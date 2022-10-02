@@ -4,20 +4,20 @@
     },
     "fixtures": [
         {
-            "name": "prod_hobby",
+            "name": "prod_tin",
             "path": "/v1/products",
             "method": "post",
             "params": {
-                "name": "Hobby",
-                "description": "Hobby product description"
+                "name": "Tin",
+                "description": "Tin product description"
             }
         },
         {
-            "name": "price_hobby_month",
+            "name": "price_tin_month",
             "path": "/v1/prices",
             "method": "post",
             "params": {
-                "product": "${prod_hobby:id}",
+                "product": "${prod_tin:id}",
                 "currency": "usd",
                 "billing_scheme": "per_unit",
                 "unit_amount": 1000,
@@ -28,11 +28,11 @@
             }
         },
         {
-            "name": "price_hobby_year",
+            "name": "price_tin_year",
             "path": "/v1/prices",
             "method": "post",
             "params": {
-                "product": "${prod_hobby:id}",
+                "product": "${prod_tin:id}",
                 "currency": "usd",
                 "billing_scheme": "per_unit",
                 "unit_amount": 10000,
@@ -43,20 +43,20 @@
             }
         },
         {
-            "name": "prod_freelancer",
+            "name": "prod_silver",
             "path": "/v1/products",
             "method": "post",
             "params": {
-                "name": "Freelancer",
-                "description": "Freelancer product description"
+                "name": "Silver",
+                "description": "Silver product description"
             }
         },
         {
-            "name": "price_freelancer_month",
+            "name": "price_silver_month",
             "path": "/v1/prices",
             "method": "post",
             "params": {
-                "product": "${prod_freelancer:id}",
+                "product": "${prod_silver:id}",
                 "currency": "usd",
                 "billing_scheme": "per_unit",
                 "unit_amount": 2000,
@@ -67,11 +67,11 @@
             }
         },
         {
-            "name": "price_freelancer_year",
+            "name": "price_silver_year",
             "path": "/v1/prices",
             "method": "post",
             "params": {
-                "product": "${prod_freelancer:id}",
+                "product": "${prod_silver:id}",
                 "currency": "usd",
                 "billing_scheme": "per_unit",
                 "unit_amount": 20000,

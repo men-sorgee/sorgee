@@ -1,12 +1,12 @@
 {
-  "name": "nextjs-subscription-payments",
-  "version": "0.0.0",
+  "name": "guysnheat",
+  "version": "1.0.0",
   "license": "MIT",
   "scripts": {
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "stripe:listen": "stripe listen --forward-to=localhost:3000/api/webhooks --project-name=saas-starter"
+    "stripe:listen": "stripe listen --forward-to=localhost:3000/api/webhooks --project-name=guysnheat"
   },
   "dependencies": {
     "@stripe/stripe-js": "1.22.0",
