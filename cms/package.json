@@ -1,0 +1,17 @@
+{
+  "name": "gnh-cms",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx directus start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "directus": "^9.18.1",
+    "pg": "^8.8.0"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "sqltools.connections": [
+    {
+      "pgOptions": {
+        "ssl": {
+          "requestCert": true,
+          "ca": "./.devcontainer/prod-ca-2021.crt"
+        }
+      },
+      "previewLimit": 50,
+      "server": "db.piunlbgdtwdczqbavotu.supabase.co",
+      "port": 5432,
+      "askForPassword": true,
+      "driver": "PostgreSQL",
+      "name": "guysnheat",
+      "database": "postgres",
+      "username": "postgres"
+    }
+  ],
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "editor.formatOnSave": true,
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "prettier.singleAttributePerLine": false,
+  "prettier.singleQuote": true,
+  "prettier.trailingComma": "none",
+  "prettier.requireConfig": true,
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "cSpell.words": [
+    "Consolas",
+    "supabase",
+    "twind"
+  ],
+  "editor.suggest.showStatusBar": true,
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+}
