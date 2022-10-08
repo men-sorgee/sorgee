@@ -23,7 +23,8 @@
 	},
 	"remoteEnv": {
 		"COMPOSE_DOCKER_CLI_BUILD": "1",
-		"DOCKER_BUILDKIT": "1"
+		"DOCKER_BUILDKIT": "1",
+		"GOOGLE_APPLICATION_CREDENTIALS": "/workspaces/guys-n-heat/.secrets/gnh-application-key.json"
 	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],

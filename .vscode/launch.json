@@ -1,0 +1,29 @@
+{
+  "configurations": [
+    {
+      "name": "Cloud Run: Run/Debug Locally",
+      "type": "cloudcode.cloudrun",
+      "request": "launch",
+      "build": {
+        "docker": {
+          "path": "cms/Dockerfile"
+        }
+      },
+      "image": "gnh-cms",
+      "service": {
+        "name": "gnh-cms",
+        "containerPort": 8055,
+        "resources": {
+          "limits": {
+            "cpu": 1,
+            "memory": "256Mi"
+          }
+        }
+      },
+      "target": {
+        "minikube": {}
+      },
+      "watch": true
+    }
+  ]
+}

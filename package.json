@@ -1,18 +1,22 @@
 {
   "name": "guys-n-heat",
   "version": "1.0.0",
-  "main": "index.js",
   "private": true,
   "repository": "https://github.com/brotherhood-group/guys-n-heat.git",
-  "author": "Jason Wicker <jlwicker@gmail.com>",
+  "author": "Jason Wicker <jason@thebrotherhoodgroup.org>",
   "license": "MIT",
   "workspaces": [
-    "cms",
-    "web"
+    "packages/*"
   ],
   "scripts": {
     "docker:build": " docker-compose build",
     "web": "yarn workspace gnh-web ",
     "cms": "yarn workspace gnh-cms "
+  },
+  "prettier": {
+    "arrowParens": "always",
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "none"
   }
 }

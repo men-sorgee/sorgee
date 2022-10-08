@@ -1,13 +1,41 @@
 version: '3'
+
 services:
+  
+  proxy:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./nginx/data:/data
+      - ./nginx/certificates:/etc/letsencrypt
+
+  adminer:
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - 8080:8080
+
   cms:
     build: ./cms
     env_file:
-      - 
+      - .env
     volumes:
       - ./cms:/app
     ports:
       - "8055:8055"
+    environment:
+      DB_CLIENT: pg
+      DB_SSL: false
+      DB_HOST: 35.223.87.210
+      DB_CONNECTION: /cloudsql/tbg-gnh:us-central1:brotherhood
+      DB_PORT: 5432
+      DB_DATABASE: guysnheat
+ 
+      
   app:
     build:
       context: ./web
@@ -15,3 +43,8 @@ services:
       - ./web:/app
     ports:
       - "3000:3000"
+
+networks:
+  default:
+    external:
+      name: gnh
