@@ -1,9 +1,28 @@
 version: '3'
 
 services:
+
+  app:
+    container_name: gnh-app
+    build: 
+      context: ./packages/app
+    #volumes:
+    #  - /packages/app:/app
+    ports:
+      - 3000:3000
+    environment:
+      - AUTH0_SECRET='9253b625557725fe9a22b89b0e9d3cd3665221bb51116a7decef241826ab4ad4'
+      - AUTH0_BASE_URL='http://localhost:3000'
+      - AUTH0_ISSUER_BASE_URL='https://dev-jlzyqb1x.us.auth0.com'
+      - AUTH0_CLIENT_ID='06E4boGvgSj32JrP0YJDpCix39TcIEES'
+      - AUTH0_CLIENT_SECRET='jQNc_OXz2MGPK3_SVWuKS1ZudGf7yFRAiI6Kv6gVuf8vP1f7omLMfpqXJmpkvGes'
+      - BASE_URL='http://localhost:3000'
+      - API_URL='http://server:8085/api/graphql'
   
-  proxy:
-    image: 'jc21/nginx-proxy-manager:latest'
+  nginx:
+    build: 
+      context: ./packages/nginx
+    container_name: gnh-proxy
     restart: unless-stopped
     ports:
       - '80:80'
@@ -12,39 +31,40 @@ services:
     volumes:
       - ./nginx/data:/data
       - ./nginx/certificates:/etc/letsencrypt
+  cache:
+    container_name: cache
+    image: redis:6
 
-  adminer:
+  db:
+    container_name: gnh-db
     image: dpage/pgadmin4
-    restart: always
+    restart: unless-stopped
     ports:
-      - 8080:8080
-
-  cms:
-    build: ./cms
-    env_file:
-      - .env
-    volumes:
-      - ./cms:/app
-    ports:
-      - "8055:8055"
+      - 8080:80
     environment:
-      DB_CLIENT: pg
-      DB_SSL: false
-      DB_HOST: 35.223.87.210
-      DB_CONNECTION: /cloudsql/tbg-gnh:us-central1:brotherhood
-      DB_PORT: 5432
-      DB_DATABASE: guysnheat
- 
-      
-  app:
-    build:
-      context: ./web
-    volumes:
-      - ./web:/app
-    ports:
-      - "3000:3000"
+      PGADMIN_DEFAULT_EMAIL: jason@thebrotherhoodgroup.org
+      PGADMIN_DEFAULT_PASSWORD: testing
+    #   DB_CLIENT: pg
+    #   DB_SSL: 'false'
+    #   DB_HOST: 35.223.87.210
+    #   DB_PORT: 5432
+    #   DB_DATABASE: guysnheat
 
-networks:
-  default:
-    external:
-      name: gnh
+  server:
+    container_name: gnh-admin
+    build: 
+      context: ./packages/server
+    depends_on:
+      - cache
+    env_file:
+      - ./packages/server/.env
+    #volumes:
+    #  - ./packages/server/extensions:/directus/extensions:rw
+    #  - ./packages/server/uploads:/directus/uploads:rw
+    ports:
+      - 8055:8055
+    environment:
+      DB_HOST: 35.223.87.210
+      PUBLIC_URL: https://server.local.guysnheat.com
+    
+ 

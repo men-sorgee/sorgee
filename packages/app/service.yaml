@@ -1,0 +1,18 @@
+piVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: gnh-app
+spec:
+  template:
+    metadata:
+      name: gnh-app
+    spec:
+      containers:
+      - image: gcr.io/tbg-gnh/gnh-app
+        ports:
+        - name: http
+          containerPort: 3000
+        resources:
+          limits:
+            cpu: 100m
+            memory: 512Mi

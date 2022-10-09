@@ -1,0 +1,45 @@
+steps:
+ 
+  # Pull last build for caching
+  - name: "gcr.io/cloud-builders/docker"
+    entrypoint: "bash"
+    args:
+      ["-c", "docker pull gcr.io/$PROJECT_ID/${_ENV}-app:latest || exit 0"]
+  # Build new image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "gcr.io/$PROJECT_ID/${_ENV}-app",
+        "--cache-from",
+        "gcr.io/$PROJECT_ID/${_ENV}-app",
+        "--build-arg",
+        "NODE_CONFIG_ENV=${_ENV}",
+        "${_PATH}",
+      ]
+  # Push new image
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/$PROJECT_ID/${_ENV}-app"]
+  # Deploy to Cloud Run
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "beta",
+        "run",
+        "deploy",
+        "${_ENV}-app",
+        "--image",
+        "gcr.io/$PROJECT_ID/${_ENV}-app",
+        "--region",
+        "us-central1",
+      ]
+
+substitutions:
+  _ENV: production
+  _PATH: .
+  _KEYRING: my-project-keyring
+  _KEY: cloudbuild
+
+images:
+  - "gcr.io/$PROJECT_ID/${_ENV}-app"

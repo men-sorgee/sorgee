@@ -1,5 +1,5 @@
 {
-  "name": "gnh-cms",
+  "name": "gnh-admin",
   "options": {
     "allow-unauthenticated": true,
     "memory": "256Mi",

@@ -16,13 +16,14 @@ export default function Directory({
 }) {
   const [query, setQuery] = useState('');
   const debouncedQuery = useDebounce(query, 200);
-  const { data: searchedUsers } = useSWR<UserProps[] | null>(
-    debouncedQuery.length > 0 && `api/user?query=${debouncedQuery}`,
-    fetcher,
-    {
-      keepPreviousData: true
-    }
-  );
+  const searchedUsers:UserProps[] = [];
+  //const { data: searchedUsers } = useSWR<UserProps[]>(
+  //  debouncedQuery.length > 0 && `api/user?query=${debouncedQuery}` || null,
+  //  debouncedQuery.length > 0 &&fetcher<UserProps | null>({ url: `api/user?query=${debouncedQuery}` }) || null,
+  //  {
+  //    keepPreviousData: true
+  //  }
+  //);
 
   return (
     <aside className="flex-shrink-0 w-full bg-black sm:w-96 h-full overflow-scroll border-r border-gray-800">

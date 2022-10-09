@@ -1,0 +1,10 @@
+{
+  "name": "gcp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "set-dns": "gcloud dns --project tbg-gnh record-sets import .gcp/dns-zone.yaml -z guysnheat-com"
+  }
+}

@@ -9,9 +9,9 @@
           "path": "cms/Dockerfile"
         }
       },
-      "image": "gnh-cms",
+      "image": "gnh-admin",
       "service": {
-        "name": "gnh-cms",
+        "name": "gnh-admin",
         "containerPort": 8055,
         "resources": {
           "limits": {

@@ -1,0 +1,50 @@
+# A .YAML file is used to export DNS records to a
+# domain managed by Google Cloud. The format is
+# exclusive to Google Cloud DNS.
+
+---
+kind: dns#resourceRecordSet
+name: 'k2._domainkey.guysnheat.com.'
+rrdatas:
+- 'dkim2.mcsv.net.'
+ttl: 3600
+type: CNAME
+---
+kind: dns#resourceRecordSet
+name: 'k3._domainkey.guysnheat.com.'
+rrdatas:
+- 'dkim3.mcsv.net.'
+ttl: 3600
+type: CNAME
+---
+kind: dns#resourceRecordSet
+name: 'guysnheat.com.'
+rrdatas:
+- '1 aspmx.l.google.com.'
+- '5 alt1.aspmx.l.google.com.'
+- '5 alt2.aspmx.l.google.com.'
+- '10 alt3.aspmx.l.google.com.'
+- '10 alt4.aspmx.l.google.com.'
+ttl: 3600
+type: MX
+---
+kind: dns#resourceRecordSet
+name: 'guysnheat.com.'
+rrdatas:
+- '"v=spf1 include:_spf.google.com ~all"'
+ttl: 3600
+type: SPF
+---
+kind: dns#resourceRecordSet
+name: 'guysnheat.com.'
+rrdatas:
+- '"v=spf1 include:_spf.google.com ~all"'
+ttl: 3600
+type: TXT
+---
+kind: dns#resourceRecordSet
+name: 'google._domainkey.guysnheat.com.'
+rrdatas:
+- '"v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuO+yJhzRRRMUMMCKVFKO3+z7xzyGW/dWAdaRZovW25mc0YdUVE7R4CXZxYFyZbe6ww26riZJs4QOtCLYfa12VhIyYXoUdYbrZnWLE0fj7k9CRgVT39m5W6SFHuuFCiXNHTD7pSf9w2TRWD6c0ufFftgNycncT8DOihN39xKme1+15ZP/2CToyz8Xq4piKgjWc" "ZKsZku5kz12QcnBeCxHKiIoxR9i2XUQPd7CPqDTK73/GkDD85scyNJ6LsvD/RsMkoYhNhuXYRw8vAe3AoLkBGw0Dk994J4RhsVBpLj1MPbm0n7TIl3G+QX6HmFWERuT/v3h8QVyLUqke7GOlYhByQIDAQAB"'
+ttl: 3600
+type: TXT

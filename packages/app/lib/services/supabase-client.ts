@@ -1,5 +1,5 @@
 import { supabaseClient, User } from '@supabase/auth-helpers-nextjs';
-import { ProductWithPrice, Subscriber } from 'types';
+import { ProductWithPrice, Subscriber } from '@/lib/types';
 
 export const supabase = supabaseClient;
 

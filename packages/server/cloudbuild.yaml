@@ -1,16 +1,5 @@
 steps:
-  # Decrypt our config for the current environment (production, staging, etc)
-  - name: "gcr.io/cloud-builders/gcloud"
-    args:
-      [
-        "kms",
-        "decrypt",
-        "--ciphertext-file=${_PATH}/config/${_ENV}.json.enc",
-        "--plaintext-file=${_PATH}/config/${_ENV}.json",
-        "--location=global",
-        "--keyring=${_KEYRING}",
-        "--key=${_KEY}",
-      ]
+ 
   # Pull last build for caching
   - name: "gcr.io/cloud-builders/docker"
     entrypoint: "bash"

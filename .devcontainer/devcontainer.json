@@ -17,14 +17,16 @@
 		"vscode": {
 			// Add the IDs of extensions you want installed when the container is created.
 			"extensions": [
-				"dbaeumer.vscode-eslint"
+				"dbaeumer.vscode-eslint",
+				"googlecloudtools.cloudcode"
 			]
 		}
 	},
 	"remoteEnv": {
 		"COMPOSE_DOCKER_CLI_BUILD": "1",
 		"DOCKER_BUILDKIT": "1",
-		"GOOGLE_APPLICATION_CREDENTIALS": "/workspaces/guys-n-heat/.secrets/gnh-application-key.json"
+		"GOOGLE_APPLICATION_CREDENTIALS": "/workspaces/guys-n-heat/.private/gnh-application-key.json",
+		"GCP_PROJECT": "tbh-gnh"
 	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],

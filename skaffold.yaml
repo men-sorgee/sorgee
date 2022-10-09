@@ -1,0 +1,23 @@
+apiVersion: skaffold/v2beta13
+kind: Config
+metadata:
+  name: guys-n-heat
+build:
+  googleCloudBuild: {}
+  artifacts:
+  - image: gnh-app
+    context: packages/app
+  - image: gnh-proxy
+    context: packages/nginx
+  - image: gnh-admin
+    context: packages/server
+# deploy:
+#   kustomize:
+#     paths:
+#     - dev/
+profiles:
+  - name: prod
+    deploy:
+      kustomize:
+        paths: 
+        - prod/

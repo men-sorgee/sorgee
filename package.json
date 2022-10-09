@@ -5,13 +5,16 @@
   "repository": "https://github.com/brotherhood-group/guys-n-heat.git",
   "author": "Jason Wicker <jason@thebrotherhoodgroup.org>",
   "license": "MIT",
+  "packageManager": "yarn@1.22.19",
   "workspaces": [
-    "packages/*"
+    "packages/**",
+    ".gcp"
   ],
   "scripts": {
-    "docker:build": " docker-compose build",
-    "web": "yarn workspace gnh-web ",
-    "cms": "yarn workspace gnh-cms "
+    "app": "yarn workspace app ",
+    "server": "yarn workspace server ",
+    "gcp": "yarn workspace gcp ",
+    "dc": "docker-compose "
   },
   "prettier": {
     "arrowParens": "always",

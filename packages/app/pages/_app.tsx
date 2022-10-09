@@ -5,12 +5,12 @@ import { AppProps } from 'next/app';
 
 import withTwindApp from '@twind/next/app';
 import { UserContextProvider } from 'lib/hooks/useUser';
-import twindConfig from 'tailwind';
+import twindConfig from '@/lib/tailwind';
 import { getDirectusClient } from 'lib/services/directus-client';
 import Layout from '@/components/Layout';
 import { Directus } from '@directus/sdk';
 import { useState } from 'react';
-import { DirectusModels } from '../types';
+import { DirectusModels } from '../lib/types';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [directusClient, setDirectusClient] =

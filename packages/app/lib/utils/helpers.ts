@@ -1,4 +1,4 @@
-import { Price } from 'types';
+import { Price } from '@/lib/types';
 
 export const getURL = () => {
   const url =

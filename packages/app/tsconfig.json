@@ -26,10 +26,10 @@
         "lib/*"
       ],
       "@/tailwind": [
-        "tailwind.ts"
+        "lib/tailwind.ts"
       ],
       "@/constants": [
-        "constants.ts"
+        "lib/constants.ts"
       ],
     },
     "incremental": true

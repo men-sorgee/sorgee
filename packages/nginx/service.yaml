@@ -1,0 +1,22 @@
+piVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: gnh-proxy
+spec:
+  template:
+    metadata:
+      name: gnh-proxy
+    spec:
+      containers:
+      - image: gcr.io/tbg-gnh/gnh-proxy
+        ports:
+        - name: http
+          containerPort: 80
+        - name: http1
+          containerPort: 81
+        - name: https
+          containerPort: 443
+        resources:
+          limits:
+            cpu: 100m
+            memory: 512Mi

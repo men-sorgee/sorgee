@@ -1,5 +1,5 @@
 import cn from 'classnames';
-import React, { forwardRef, useRef, ButtonHTMLAttributes } from 'react';
+import React, { forwardRef, useRef, ButtonHTMLAttributes, ReactNode, ComponentType } from 'react';
 import mergeRefs from 'react-merge-refs';
 import styles from './Button.module.css';
 
@@ -7,13 +7,15 @@ import LoadingDots from '@/components/ui/LoadingDots';
 import { tw } from 'twind'
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
+  children?: ReactNode;
   variant?: 'slim' | 'flat';
   active?: boolean;
   width?: number;
   loading?: boolean;
-  Component?: React.ComponentType;
+  Component?: ComponentType;
 }
 
+// eslint-disable-next-line react/display-name
 const Button = forwardRef<HTMLButtonElement, Props>((props, buttonRef) => {
   const {
     className,
@@ -50,12 +52,11 @@ const Button = forwardRef<HTMLButtonElement, Props>((props, buttonRef) => {
       }}
       {...rest}
     >
-      {children}
-      {loading && (
+      { loading?  
         <i className={tw`pl-2 m-0 flex`}>
           <LoadingDots />
-        </i>
-      )}
+        </i> : children } 
+
     </Component>
   );
 });
