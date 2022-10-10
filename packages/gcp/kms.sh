@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-FILES=( "packages/server/config/staging.json" "packages/server/config/production.json" )
+FILES=( "packagesgnh-admin/config/staging.json" "packagesgnh-admin/config/production.json" )
 
 for FILE in "${FILES[@]}"
 do
