@@ -11,7 +11,7 @@ import {
   ViewGridAddIcon,
   XIcon
 } from '@heroicons/react/outline';
-import Directory from './directory';
+import Directory from './directory.bu';
 import { ResultProps } from '@/lib/api/user';
 
 export default function Sidebar({

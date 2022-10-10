@@ -1,11 +1,6 @@
-import Link from 'next/link';
+
 import { useState, ReactNode } from 'react';
-
-import LoadingDots from 'components/ui/LoadingDots';
-import Button from 'components/ui/Button';
-import { useUser } from 'lib/hooks/useUser';
-import { postData } from 'lib/utils/helpers';
-
+import { useUser } from 'lib/hooks/use-user';
 import { withPageAuthRequired, UserProfile } from '@auth0/nextjs-auth0';
 import { tw } from 'twind';
 

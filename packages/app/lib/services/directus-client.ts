@@ -1,4 +1,4 @@
-import { User, Subscription } from '@supabase/supabase-js';
+
 import getConfig from 'next/config';
 import { Directus } from '@directus/sdk';
 

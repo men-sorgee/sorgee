@@ -6,6 +6,9 @@ import { tw } from 'twind';
 export default function HomePage() {
   return (
     <>
+      <Head>
+        <title>GuysNHeat</title>
+      </Head>
       <section
         className={tw`w-full px-8 pt-20 pb-16 bg-white text-black xl:px-0`}
       >

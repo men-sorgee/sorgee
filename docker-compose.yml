@@ -1,13 +1,25 @@
 version: '3'
 
 services:
-
+  admin:
+    container_name: gnh-admin
+    build: 
+      context: ./packages/admin
+    depends_on:
+      - cache
+    env_file:
+      - ./packages/admin/.env
+    volumes:
+      - ./packages/admin/extensions:/directus/extensions:rw
+    ports:
+      - 8055:8055
+    environment:
+      DB_HOST: 35.223.87.210
+      PUBLIC_URL: https:/gnh-admin.local.guysnheat.com
   app:
     container_name: gnh-app
     build: 
       context: ./packages/app
-    #volumes:
-    #  - /packages/app:/app
     ports:
       - 3000:3000
     environment:
@@ -17,11 +29,11 @@ services:
       - AUTH0_CLIENT_ID='06E4boGvgSj32JrP0YJDpCix39TcIEES'
       - AUTH0_CLIENT_SECRET='jQNc_OXz2MGPK3_SVWuKS1ZudGf7yFRAiI6Kv6gVuf8vP1f7omLMfpqXJmpkvGes'
       - BASE_URL='http://localhost:3000'
-      - API_URL='http://server:8085/api/graphql'
+      - API_URL='http:/gnh-admin:8085/api/graphql'
   
-  nginx:
+  proxy:
     build: 
-      context: ./packages/nginx
+      context: ./packages/proxy
     container_name: gnh-proxy
     restart: unless-stopped
     ports:
@@ -29,8 +41,8 @@ services:
       - '81:81'
       - '443:443'
     volumes:
-      - ./nginx/data:/data
-      - ./nginx/certificates:/etc/letsencrypt
+      - ./packages/proxy/data:/data
+      - ./packages/proxy/certificates:/etc/letsencrypt
   cache:
     container_name: cache
     image: redis:6
@@ -44,27 +56,7 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: jason@thebrotherhoodgroup.org
       PGADMIN_DEFAULT_PASSWORD: testing
-    #   DB_CLIENT: pg
-    #   DB_SSL: 'false'
-    #   DB_HOST: 35.223.87.210
-    #   DB_PORT: 5432
-    #   DB_DATABASE: guysnheat
 
-  server:
-    container_name: gnh-admin
-    build: 
-      context: ./packages/server
-    depends_on:
-      - cache
-    env_file:
-      - ./packages/server/.env
-    #volumes:
-    #  - ./packages/server/extensions:/directus/extensions:rw
-    #  - ./packages/server/uploads:/directus/uploads:rw
-    ports:
-      - 8055:8055
-    environment:
-      DB_HOST: 35.223.87.210
-      PUBLIC_URL: https://server.local.guysnheat.com
+ 
     
  

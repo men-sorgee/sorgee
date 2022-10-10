@@ -1,18 +1,15 @@
-import cn from 'classnames';
-import React, { forwardRef, useRef, ButtonHTMLAttributes, ReactNode, ComponentType } from 'react';
-import mergeRefs from 'react-merge-refs';
-import styles from './Button.module.css';
 
+import React, { forwardRef, useRef, ButtonHTMLAttributes } from 'react';
+import mergeRefs from 'react-merge-refs';
 import LoadingDots from '@/components/ui/LoadingDots';
 import { tw } from 'twind'
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
-  children?: ReactNode;
+  children?: React.ReactNode;
   variant?: 'slim' | 'flat';
   active?: boolean;
   width?: number;
-  loading?: boolean;
-  Component?: ComponentType;
+  loading?: boolean
 }
 
 // eslint-disable-next-line react/display-name
@@ -26,25 +23,24 @@ const Button = forwardRef<HTMLButtonElement, Props>((props, buttonRef) => {
     loading = false,
     disabled = false,
     style = {},
-    Component = 'button',
     ...rest
   } = props;
   const ref = useRef(null);
-  const rootClassName = cn(
-    styles.root,
-    {
-      [styles.slim]: variant === 'slim',
-      [styles.loading]: loading,
-      [styles.disabled]: disabled
-    },
-    className
-  );
+  //const rootClassName = cn(
+  //  styles.root,
+  //  {
+  //    [styles.slim]: variant === 'slim',
+  //    [styles.loading]: loading,
+  //    [styles.disabled]: disabled
+  //  },
+  //  className
+  //);
   return (
-    <Component
+    <button
       aria-pressed={active}
       data-variant={variant}
       ref={mergeRefs([ref, buttonRef])}
-      className={rootClassName}
+      className={tw`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded`}
       disabled={disabled}
       style={{
         width,
@@ -57,7 +53,7 @@ const Button = forwardRef<HTMLButtonElement, Props>((props, buttonRef) => {
           <LoadingDots />
         </i> : children } 
 
-    </Component>
+    </button>
   );
 });
 

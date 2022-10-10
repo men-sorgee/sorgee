@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Navbar from './navbar';
-import Footer from '@/components/ui/Footer';
+import Footer from './footer';
 import { ReactNode } from 'react';
 import { PageMeta } from 'lib/types';
 import constants from 'lib/constants';

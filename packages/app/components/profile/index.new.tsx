@@ -9,12 +9,11 @@ import {
   UploadIcon,
   XIcon
 } from '@/components/icons';
-import { useSession } from 'next-auth/react';
+import { useUser } from '@auth0/nextjs-auth0';
 import BlurImage from '../blur-image';
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import TextareaAutosize from 'react-textarea-autosize';
 import { MDXRemote } from 'next-mdx-remote';
 
 export const profileWidth = 'max-w-5xl mx-auto px-4 sm:px-6 lg:px-8';
@@ -27,7 +26,7 @@ export default function Profile({
   user: UserProps;
 }) {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { user: session } = useUser();
   const [saving, setSaving] = useState(false);
   const [data, setData] = useState({
     username: user.username,
@@ -188,9 +187,9 @@ export default function Profile({
         <h2 className="font-semibold font-mono text-2xl text-white">Bio</h2>
         {settingsPage ? (
           <>
-            <TextareaAutosize
+            <textarea
               name="description"
-              onInput={(e) => {
+              onInput={(e:any) => {
                 setData({
                   ...data,
                   bio: (e.target as HTMLTextAreaElement).value

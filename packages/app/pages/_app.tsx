@@ -1,23 +1,23 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { UserProvider } from '@auth0/nextjs-auth0';
 import { tw } from 'twind';
-import { AppProps } from 'next/app';
-
-import withTwindApp from '@twind/next/app';
-import { UserContextProvider } from 'lib/hooks/useUser';
+import Layout from 'components/layout';
 import twindConfig from '@/lib/tailwind';
+import withTwindApp from '@twind/next/app';
+import { UserContextProvider } from 'lib/hooks/use-user';
 import { getDirectusClient } from 'lib/services/directus-client';
-import Layout from '@/components/Layout';
 import { Directus } from '@directus/sdk';
-import { useState } from 'react';
 import { DirectusModels } from '../lib/types';
-
+import { AppProps } from 'next/app';
 function MyApp({ Component, pageProps }: AppProps) {
-  const [directusClient, setDirectusClient] =
-    useState<Directus<DirectusModels> | null>(null);
-  getDirectusClient().then((client) => {
-    setDirectusClient(client);
-  });
+  const [directusClient, setDirectusClient] =  useState<Directus<DirectusModels> | null>(null);
+ 
+  useEffect(() => {
+    getDirectusClient().then((client) => {
+      setDirectusClient(client);
+    });
+  }, [directusClient, setDirectusClient]);
+
   return (
     <div className={tw`bg-black text-white`}>
       <UserProvider>
