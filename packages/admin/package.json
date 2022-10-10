@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "admin",
   "version": "1.0.0",
   "private": true,
   "description": "",
@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "directus": "^9.18.1",
-    "pg": "^8.8.0"
+    "pg": "^8.8.0",
+    "typescript": "^4.8.4"
   }
 }
