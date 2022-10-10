@@ -1,0 +1,10 @@
+{
+  "name": "gnh-admin",
+  "options": {
+    "allow-unauthenticated": true,
+    "memory": "256Mi",
+    "cpu": "1",
+    "port": 8055,
+    "http2": true
+  }
+}
