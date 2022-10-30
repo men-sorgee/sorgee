@@ -1530,6 +1530,29 @@
   resolved "https://registry.yarnpkg.com/@phc/format/-/format-1.0.0.tgz#b5627003b3216dc4362125b13f48a4daa76680e4"
   integrity sha512-m7X9U6BG2+J+R1lSOdCiITLLrxm+cWlNI3HUFA92oLO77ObGNzaKdh8pMLqdZcshtkKuV84olNNXDfMc4FezBQ==
 
+"@revolist/revogrid-column-numeral@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@revolist/revogrid-column-numeral/-/revogrid-column-numeral-1.0.2.tgz#794dcbe40d9a8d9b97ce151d5d2f184eb960bf40"
+  integrity sha512-f5Z1QfxlsdXf6l+Aocd5RewFOpnaPj5Sl+HHJEjeRPjQGZv6Bx/ibAdyA3gtRoiSAaQuTt3BwWyfRTQNJHwWwQ==
+  dependencies:
+    "@types/numeral" "0.0.28"
+    numeral "^2.0.6"
+
+"@revolist/revogrid@^3.2.16":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@revolist/revogrid/-/revogrid-3.3.0.tgz#ab931a4b1e9bce856b9b5dc71e9b910262a83408"
+  integrity sha512-fmLRNh53mo7R+kfchpnqg+dlPVvSjotodTUYn6pnI45M9vr5Bs3iiov6LyVCTy4WIYEgYG9ikCSkcZuLtojTog==
+  dependencies:
+    lodash "^4.17.20"
+
+"@revolist/vue3-datagrid@^3.0.97":
+  version "3.2.17"
+  resolved "https://registry.yarnpkg.com/@revolist/vue3-datagrid/-/vue3-datagrid-3.2.17.tgz#7d2b12ca6131c27990dc1999283bbf78de9bfa74"
+  integrity sha512-hl2E/W2X1AGP41ZPNcKdMmx6X7D6VuhogsVorYNCtUhEsYed1ZTLBS3+XohZTPOGCLE5F3J8HQHOcT+234nQBA==
+  dependencies:
+    "@revolist/revogrid" "^3.2.16"
+    "@stencil/core" "^2.17.3"
+
 "@rollup/plugin-alias@^3.1.9":
   version "3.1.9"
   resolved "https://registry.yarnpkg.com/@rollup/plugin-alias/-/plugin-alias-3.1.9.tgz#a5d267548fe48441f34be8323fb64d1d4a1b3fdf"
@@ -1650,6 +1673,11 @@
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-4.6.0.tgz#3c7c9c46e678feefe7a2e5bb609d3dbd665ffb3f"
   integrity sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==
+
+"@stencil/core@^2.17.3":
+  version "2.19.2"
+  resolved "https://registry.yarnpkg.com/@stencil/core/-/core-2.19.2.tgz#87fb22cad487e667e533dc61d542f75af9932265"
+  integrity sha512-TK3sHqyQAACwcac4fWntypFtN9c/y+y9ioZojeCnNDY3dxF33Ax70lL9ZLDyQnWWR+aTh1WFoqB5sYOnZIUKMA==
 
 "@stripe/stripe-js@1.22.0":
   version "1.22.0"
@@ -1837,6 +1865,11 @@
   version "17.0.45"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.45.tgz#2c0fafd78705e7a18b7906b5201a522719dc5190"
   integrity sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==
+
+"@types/numeral@0.0.28":
+  version "0.0.28"
+  resolved "https://registry.yarnpkg.com/@types/numeral/-/numeral-0.0.28.tgz#e43928f0bda10b169b6f7ecf99e3ddf836b8ebe4"
+  integrity sha512-Sjsy10w6XFHDktJJdXzBJmoondAKW+LcGpRFH+9+zXEDj0cOH8BxJuZA9vUDSMAzU1YRJlsPKmZEEiTYDlICLw==
 
 "@types/parse-json@^4.0.0":
   version "4.0.0"
@@ -2389,6 +2422,18 @@ anymatch@~3.1.2:
   dependencies:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
+
+apexcharts@^3.35.0:
+  version "3.36.0"
+  resolved "https://registry.yarnpkg.com/apexcharts/-/apexcharts-3.36.0.tgz#eba378167be3ebe5044b8980d5907bad9e9a7fff"
+  integrity sha512-9r7M/SOfnYS1g4G1gmRRgeIN1Oj+ct1S0G6PpMPPD3F4jGHgWl5EzxqvoQkk3vpTxN8MbZB5ZHWIAQvPuFiA+w==
+  dependencies:
+    svg.draggable.js "^2.2.2"
+    svg.easing.js "^2.0.0"
+    svg.filter.js "^2.0.2"
+    svg.pathmorphing.js "^0.1.3"
+    svg.resize.js "^1.4.3"
+    svg.select.js "^3.0.1"
 
 "aproba@^1.0.3 || ^2.0.0":
   version "2.0.0"
@@ -3537,6 +3582,48 @@ dir-glob@^3.0.1:
   integrity sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==
   dependencies:
     path-type "^4.0.0"
+
+directus-extension-display-link@^1.5.2:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/directus-extension-display-link/-/directus-extension-display-link-1.5.2.tgz#7558dd5165ae00ff47761215b0293307bb1e6790"
+  integrity sha512-LG1KGynare2qUCbCVwjn7i9XU7immvfneAJF49Y8NZOMBY87Vw8Wjs6YYNyfr47NkOCQ0E0xgUQSIM5hauoP7Q==
+
+directus-extension-editorjs@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/directus-extension-editorjs/-/directus-extension-editorjs-1.5.0.tgz#3fa32e663b42fa0396e9df0a70a34216f3ff69de"
+  integrity sha512-Rz0DCBp+Xulot6PEcfVnSUS9ekSO9VfnNMAMqA05i4p1REz3AXoWWO6wKE1p+1W+XNkZs9S1MvwVni6XGJzjcA==
+
+directus-extension-group-modal-interface@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/directus-extension-group-modal-interface/-/directus-extension-group-modal-interface-1.2.0.tgz#295c709f8e9e9561f0adbf50bbafc2c193bba542"
+  integrity sha512-8+j06CzxtlaIOlxj4OysGajlobFcKttS2XgAHeDF9jJ6ZhPEI0Jq9WVjuOINf5IPnNhehW+94N7Jc2xyAABAsQ==
+
+directus-extension-masked-interface@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/directus-extension-masked-interface/-/directus-extension-masked-interface-1.1.0.tgz#6b3456bdc415a842145d896a2b923a33e60f3255"
+  integrity sha512-x1kxB9mIx7izgjNCeUZ3MXw5srC4lqTnoNolW5cCVrYHoZi+1897BVXdgMqBV1dmjH/nErAvD0LTeZGHlL0SXA==
+
+directus-extension-sparkline-display@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/directus-extension-sparkline-display/-/directus-extension-sparkline-display-1.0.5.tgz#b2f9cc1f4731d4330bf0e4cdfcc9e17827202ca5"
+  integrity sha512-sxoMWNBeNYV8Oln3oegHqpPgaDQwioV2wX7d2WSx1P8jPh93F1BJyNbGcaDM3jN1s3fc1s4N858wsbmWHiFwsA==
+  dependencies:
+    papaparse "^5.3.2"
+
+directus-extension-tags-m2m-interface@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/directus-extension-tags-m2m-interface/-/directus-extension-tags-m2m-interface-0.8.0.tgz#877971d7b70ee7773660340dd0ff8e988b068a5d"
+  integrity sha512-d9at+gzY86ztS6cRsd3CdjfOH1D3FREQZRz2FWD9CgHpySG84UWrLgrvEGunl2yM07mEX9KdQeE+LPlYTMbjoQ==
+
+directus-extension-vgrid-interface@^1.0.15:
+  version "1.0.15"
+  resolved "https://registry.yarnpkg.com/directus-extension-vgrid-interface/-/directus-extension-vgrid-interface-1.0.15.tgz#f0fdbb08fb5e843635232532987aa923ea3f17be"
+  integrity sha512-IUoeyG5LmhF9dxxzo9b5qt45zuGRmuE1/41qx6NOYEIKj6nX3D1k0a8d+Y3BHVkdVsZZefQa/Fcv1EnucwkJuw==
+  dependencies:
+    "@revolist/revogrid-column-numeral" "^1.0.2"
+    "@revolist/vue3-datagrid" "^3.0.97"
+    apexcharts "^3.35.0"
+    papaparse "^5.3.2"
 
 directus@^9.18.1:
   version "9.18.1"
@@ -5950,7 +6037,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha512-xfBaXQd9ryd9dlSDvnvI0lvxfLJlYAZzXomUYzLKtUeOQvOP5piqAWuGtrhWeqaXK9hhoM/iyJc5AV+XfsX3HQ==
 
-lodash@4.17.21, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.21:
+lodash@4.17.21, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.20, lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -6900,6 +6987,11 @@ nth-check@^2.0.1:
   dependencies:
     boolbase "^1.0.0"
 
+numeral@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/numeral/-/numeral-2.0.6.tgz#4ad080936d443c2561aed9f2197efffe25f4e506"
+  integrity sha512-qaKRmtYPZ5qdw4jWJD6bxEf1FJEqllJrwxCLIm0sQU/A7v2/czigzOb+C2uSiFsa9lBUzeH7M1oK+Q+OLxL3kA==
+
 oao@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/oao/-/oao-2.0.2.tgz#c837a49e17e01416a94d0255b69e9a79a568b94b"
@@ -7181,6 +7273,11 @@ packet-reader@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/packet-reader/-/packet-reader-1.0.0.tgz#9238e5480dedabacfe1fe3f2771063f164157d74"
   integrity sha512-HAKu/fG3HpHFO0AA8WE8q2g+gBJaZ9MG7fcKk+IJPLTGAD6Psw4443l+9DGRbOIh3/aXr7Phy0TjilYivJo5XQ==
+
+papaparse@^5.3.2:
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/papaparse/-/papaparse-5.3.2.tgz#d1abed498a0ee299f103130a6109720404fbd467"
+  integrity sha512-6dNZu0Ki+gyV0eBsFKJhYr+MdQYAzFUGlBMNj3GNrmHxmz1lfRa24CjFObPXtjcetlOv5Ad299MhIK0znp3afw==
 
 parent-module@^1.0.0:
   version "1.0.1"
@@ -9056,6 +9153,61 @@ supports-preserve-symlinks-flag@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
+
+svg.draggable.js@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/svg.draggable.js/-/svg.draggable.js-2.2.2.tgz#c514a2f1405efb6f0263e7958f5b68fce50603ba"
+  integrity sha512-JzNHBc2fLQMzYCZ90KZHN2ohXL0BQJGQimK1kGk6AvSeibuKcIdDX9Kr0dT9+UJ5O8nYA0RB839Lhvk4CY4MZw==
+  dependencies:
+    svg.js "^2.0.1"
+
+svg.easing.js@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/svg.easing.js/-/svg.easing.js-2.0.0.tgz#8aa9946b0a8e27857a5c40a10eba4091e5691f12"
+  integrity sha512-//ctPdJMGy22YoYGV+3HEfHbm6/69LJUTAqI2/5qBvaNHZ9uUFVC82B0Pl299HzgH13rKrBgi4+XyXXyVWWthA==
+  dependencies:
+    svg.js ">=2.3.x"
+
+svg.filter.js@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/svg.filter.js/-/svg.filter.js-2.0.2.tgz#91008e151389dd9230779fcbe6e2c9a362d1c203"
+  integrity sha512-xkGBwU+dKBzqg5PtilaTb0EYPqPfJ9Q6saVldX+5vCRy31P6TlRCP3U9NxH3HEufkKkpNgdTLBJnmhDHeTqAkw==
+  dependencies:
+    svg.js "^2.2.5"
+
+svg.js@>=2.3.x, svg.js@^2.0.1, svg.js@^2.2.5, svg.js@^2.4.0, svg.js@^2.6.5:
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/svg.js/-/svg.js-2.7.1.tgz#eb977ed4737001eab859949b4a398ee1bb79948d"
+  integrity sha512-ycbxpizEQktk3FYvn/8BH+6/EuWXg7ZpQREJvgacqn46gIddG24tNNe4Son6omdXCnSOaApnpZw6MPCBA1dODA==
+
+svg.pathmorphing.js@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/svg.pathmorphing.js/-/svg.pathmorphing.js-0.1.3.tgz#c25718a1cc7c36e852ecabc380e758ac09bb2b65"
+  integrity sha512-49HWI9X4XQR/JG1qXkSDV8xViuTLIWm/B/7YuQELV5KMOPtXjiwH4XPJvr/ghEDibmLQ9Oc22dpWpG0vUDDNww==
+  dependencies:
+    svg.js "^2.4.0"
+
+svg.resize.js@^1.4.3:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/svg.resize.js/-/svg.resize.js-1.4.3.tgz#885abd248e0cd205b36b973c4b578b9a36f23332"
+  integrity sha512-9k5sXJuPKp+mVzXNvxz7U0uC9oVMQrrf7cFsETznzUDDm0x8+77dtZkWdMfRlmbkEEYvUn9btKuZ3n41oNA+uw==
+  dependencies:
+    svg.js "^2.6.5"
+    svg.select.js "^2.1.2"
+
+svg.select.js@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/svg.select.js/-/svg.select.js-2.1.2.tgz#e41ce13b1acff43a7441f9f8be87a2319c87be73"
+  integrity sha512-tH6ABEyJsAOVAhwcCjF8mw4crjXSI1aa7j2VQR8ZuJ37H2MBUbyeqYr5nEO7sSN3cy9AR9DUwNg0t/962HlDbQ==
+  dependencies:
+    svg.js "^2.2.5"
+
+svg.select.js@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/svg.select.js/-/svg.select.js-3.0.1.tgz#a4198e359f3825739226415f82176a90ea5cc917"
+  integrity sha512-h5IS/hKkuVCbKSieR9uQCj9w+zLHoPh+ce19bBYyqF53g6mnPB8sAtIbe1s9dh2S2fCmYX2xel1Ln3PJBbK4kw==
+  dependencies:
+    svg.js "^2.6.5"
 
 svgo@^2.7.0:
   version "2.8.0"

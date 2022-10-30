@@ -14,6 +14,13 @@
   "license": "ISC",
   "dependencies": {
     "directus": "^9.18.1",
+    "directus-extension-display-link": "^1.5.2",
+    "directus-extension-editorjs": "^1.5.0",
+    "directus-extension-group-modal-interface": "^1.2.0",
+    "directus-extension-masked-interface": "^1.1.0",
+    "directus-extension-sparkline-display": "^1.0.5",
+    "directus-extension-tags-m2m-interface": "^0.8.0",
+    "directus-extension-vgrid-interface": "^1.0.15",
     "pg": "^8.8.0",
     "typescript": "^4.8.4"
   }
