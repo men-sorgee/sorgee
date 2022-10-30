@@ -41,4 +41,7 @@
   "editor.quickSuggestions": {
     "strings": true
   },
+  "vs-knative": {
+    "vs-knative.outputFormat": "yaml"
+  },
 }

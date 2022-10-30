@@ -9,8 +9,7 @@
     "packages/*"
   ],
   "scripts": {
-    "postinstall": "chmod +x .devcontainer/.bashrc && .devcontainer/.bashrc",
-    "dc": "docker-compose "
+    "postinstall": "chmod +x .devcontainer/.bashrc && bash -c 'source .devcontainer/.bashrc'"
   },
   "prettier": {
     "arrowParens": "always",

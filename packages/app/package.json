@@ -8,6 +8,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "docker:build": "docker build -t gcr.io/tbg-gnh/gnh-app .",
+    "docker:push": "docker push gcr.io/tbg-gnh/gnh-app",
+    "deploy": "gcloud run services replace service.yaml",
     "codegen:schema": "npx apollo client:download-schema --endpoint=http://localhost:8500/api",
     "codegen:generate": "npx apollo client:codegen --localSchemaFile=schema.json --includes=src/**/*.tsx --target=typescript"
   },
