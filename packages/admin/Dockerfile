@@ -4,7 +4,7 @@ WORKDIR /directus
 
 ADD . /directus
 
-RUN npm install --production
+RUN npm install
 
 ENV ENV="/directus/profile" 
 

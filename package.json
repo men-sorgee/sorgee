@@ -9,6 +9,10 @@
     "packages/*"
   ],
   "scripts": {
+    "admin": "yarn workspace admin ",
+    "app": "yarn workspace app ",
+    "start": "docker-compose up -d",
+    "stop": "docker-compose down",
     "postinstall": "chmod +x .devcontainer/.bashrc && bash -c 'source .devcontainer/.bashrc'"
   },
   "prettier": {

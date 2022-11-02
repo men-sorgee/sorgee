@@ -37,8 +37,7 @@ services:
   
   # Development Tools ------------------------------------------
   proxy:
-    build: 
-      context: ./packages/proxy
+    image: jc21/nginx-proxy-manager:latest
     container_name: gnh-proxy
     restart: unless-stopped
     ports:
