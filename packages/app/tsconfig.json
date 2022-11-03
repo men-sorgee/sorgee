@@ -39,9 +39,6 @@
     "**/*.ts",
     "**/*.tsx",
     "next.config.js",
-    "components/profile/index.pu",
-    "components/layout/sidebar.bu",
-    "components/layout/directory.bu",
   ],
   "exclude": [
     "node_modules",

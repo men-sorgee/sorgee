@@ -12,7 +12,7 @@
     "docker:push": "docker push gcr.io/tbg-gnh/gnh-app",
     "deploy": "gcloud run services replace service.yaml",
     "codegen:schema": "npx apollo client:download-schema --endpoint=http://localhost:8500/api",
-    "codegen:generate": "npx apollo client:codegen --localSchemaFile=schema.json --includes=src/**/*.tsx --target=typescript"
+    "codegen:generate": "npx directus-typescript-gen --host http://localhost:8055 --email admin@example.com --password <...> --typeName MyCollections --outFile my-collections.d.tst"
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^1.9.1",
@@ -39,6 +39,7 @@
     "@twind/next": "^1.0.9",
     "@types/js-cookie": "^3.0.2",
     "@types/node": "^17.0.13",
+    "@types/yargs": "^17.0.13",
     "eslint": "8.17.0",
     "eslint-config-next": "12.1.6",
     "postcss": "^8.4.12",

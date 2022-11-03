@@ -34,6 +34,7 @@
     "ethnicities",
     "guysnheat",
     "nextjs",
+    "openapi",
     "supabase",
     "twind"
   ],
@@ -43,5 +44,8 @@
   },
   "vs-knative": {
     "vs-knative.outputFormat": "yaml"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "hb432.prettier-eslint-typescript"
   },
 }
