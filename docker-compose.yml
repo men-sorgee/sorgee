@@ -60,4 +60,8 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: jason@thebrotherhoodgroup.org
       PGADMIN_DEFAULT_PASSWORD: testing
-
+    volumes:
+      - db_data:/data:rw
+      
+volumes:
+  db_data:

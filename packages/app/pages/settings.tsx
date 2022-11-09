@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
 //import Profile from '@/components/profile';
-import { defaultMetaProps } from '@/components/layout/meta';
+import  defaultMetaProps from '@/components/layout/meta';
 //import { getUser, getAllUsers, UserProps, getUserCount } from 'lib/hooks/use-user';
 import { getSession } from '@auth0/nextjs-auth0'
 //import { getSession } from 'next-auth/react';

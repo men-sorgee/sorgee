@@ -49,7 +49,7 @@ const exportProperties = baseSource
   .filter((line) => typeof line === `string`)
   .join(`\n`);
 
-const exportSource = `export type Directus = {\n${exportProperties}\n};`;
+const exportSource = `export type DataSchema = {\n${exportProperties}\n};`;
 
 const source = [baseSource, exportSource].join(`\n`);
 

@@ -4,6 +4,7 @@ import { useUser as useAuthUser, UserProfile } from '@auth0/nextjs-auth0';
 import { DirectusModels, Subscriber, User } from '@/lib/types';
 import { Subscription } from '@/lib/types';
 import { Directus, ID, QueryOne } from '@directus/sdk';
+import { DataSchema } from '../directus/types'
 // import {  } from '@supabase/auth-helpers-nextjs';
 
 type UserContextType = {
@@ -19,7 +20,7 @@ export const UserContext = createContext<UserContextType | undefined>(
 );
 
 export interface Props {
-  directusClient: Directus<DirectusModels> | null;
+  directusClient: Directus<DataSchema> | null;
   [propName: string]: any;
 }
 

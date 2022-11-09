@@ -7,10 +7,10 @@ import withTwindApp from '@twind/next/app';
 import { UserContextProvider } from 'lib/hooks/use-user';
 import { getDirectusClient } from 'lib/services/directus-client';
 import { Directus } from '@directus/sdk';
-import { DirectusModels } from '../lib/types';
 import { AppProps } from 'next/app';
+import { DataSchema } from '../lib/directus/types'
 function MyApp({ Component, pageProps }: AppProps) {
-  const [directusClient, setDirectusClient] =  useState<Directus<DirectusModels> | null>(null);
+  const [directusClient, setDirectusClient] =  useState<Directus<DataSchema> | null>(null);
  
   useEffect(() => {
     getDirectusClient().then((client) => {
@@ -18,6 +18,13 @@ function MyApp({ Component, pageProps }: AppProps) {
     });
   }, [directusClient, setDirectusClient]);
 
+    return (
+    <div className={tw`bg-black text-white`}>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </div>
+  );
   return (
     <div className={tw`bg-black text-white`}>
       <UserProvider>

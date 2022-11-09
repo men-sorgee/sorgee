@@ -1,33 +1,36 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import Navbar from './navbar';
-import Footer from './footer';
+import Script from 'next/script'
+// import Navbar from './navbar';
+//import Footer from './footer';
 import { ReactNode } from 'react';
 import { PageMeta } from 'lib/types';
 import constants from 'lib/constants';
-import { tw, css, apply } from 'twind/css';
+import { tw, css, apply, Context } from 'twind/css';
 import React from 'react';
+import Link from 'next/link'
+import Logo from '../icons/Logo'
+
 
 const styles = css({
-  '&::before': { boxSizing: 'inherit' },
-  '&::after': { boxSizing: 'inherit' },
-  '*:focus': apply`outline-none ring-2 ring-pink-500 ring-opacity-50`,
-  html: {
-    touchAction: 'manipulation',
-    fontFeatureSettings: `'case' 1, 'rlig' 1, 'calt' 0'`
-  },
-  body: {
-    textRendering: 'optimizeLegibility',
-    MozOsxFontSmoothing: 'grayscale',
-    '@apply':
-      'text-base min-h-full m-0 relative text-white bg-gray-500 antialiased'
-  },
-  p: {
-    WebkitTapHighlightColor: 'black',
-    '@apply': `mt-5 text-xl text-gray-200 sm:text-center sm:text-2xl max-w-2xl m-auto`
-  },
-  h1: {
-    '@apply': `text-4xl font-extrabold text-white sm:text-center sm:text-6xl`
+  ':global': {
+    html: {
+      touchAction: 'manipulation',
+      fontFeatureSettings: `'case' 1, 'rlig' 1, 'calt' 0'`
+    },
+    body: {
+      textRendering: 'optimizeLegibility',
+      MozOsxFontSmoothing: 'grayscale',
+      '@apply':
+        'text-base min-h-full m-0 relative text-white bg-black antialiased'
+    },
+    p: {
+      WebkitTapHighlightColor: 'black',
+      '@apply': `mt-5 text-xl text-base sm:text-center sm:text-2xl max-w-2xl m-auto`
+    },
+    h1: {
+      '@apply': `text-4xl font-extrabold text-white sm:text-center sm:text-6xl`
+    }
   }
 });
 
@@ -93,21 +96,36 @@ export default function Layout({ children, meta: pageMeta }: Props) {
         <meta name="theme-color" content="#000" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
       </Head>
-      <Navbar />
+      
       <div className={tw(styles)}>
-        <main id="skip" className={tw`min-h-full`}>
-          <section className={tw`bg-black mb-32`}>
-            <div
-              className={tw`max-w-6xl mx-auto pt-8 sm:pt-24 pb-8 px-4 sm:px-6 lg:px-8`}
-            >
-              <div className={tw`sm:flex sm:flex-col sm:text-center`}>
-                {children}
-              </div>
-            </div>
-          </section>
+        <main id="skip" className={tw`min-h-full bg-black`}>
+          
+          <div
+            className={tw`max-w-6xl mx-auto p-4`}
+          >
+            <nav className='flex items-center justify-between p-1'>
+            <Link href="/">
+              <a
+                className={tw` cursor-pointer rounded-full transform duration-100 ease-in-out flex-row`}
+                aria-label="Logo"
+              >
+                <Logo width="50px" height="50px" />
+              </a>
+            </Link>
+            <h1
+              className={tw`font-bold text-4xl p-1 m-1 text-green-500`}
+              >
+                GuysNHeat
+            </h1>
+            </nav>
+            <article className={tw`sm:flex sm:flex-col sm:text-center`}>
+              {children}
+            </article>
+          </div>
         </main>
+        <Script defer src="https://chimpstatic.com/mcjs-connected/js/users/402ed825f5ff12c2a4e3e8b94/da473e2309b4600081fba1614.js"/>
       </div>
-      <Footer />
+     
     </>
   );
 }

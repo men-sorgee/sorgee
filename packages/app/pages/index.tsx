@@ -1,112 +1,123 @@
-import Head from 'next/head';
-import Link from 'next/link';
-import React from 'react';
+import Head from 'next/head'
+import Image from 'next/image'
+import React, { FormEvent } from 'react';
 import { tw } from 'twind';
+
+
 
 export default function HomePage() {
   return (
     <>
       <Head>
-        <title>GuysNHeat</title>
+        <title>Guys-N-Heat: Home</title>
       </Head>
+      
       <section
-        className={tw`w-full px-8 pt-20 pb-16 bg-white text-black xl:px-0`}
+        className={tw`w-full p-8 bg-white text-black`}
       >
+        
         <div
-          className={tw`flex flex-col items-start max-w-6xl mx-auto md:flex-row`}
+          className={tw`flex flex-col items-center max-w-6xl mx-auto md:flex-row`}
         >
-          <h2
-            className={tw`tracking-normal text-black md:pr-10 lg:pr-16 xl:pr-20 md:-mt-2 md:w-1/2`}
-          >
-            Men helping men
-          </h2>
-          <div className="flex flex-col w-full mt-8 space-y-5 md:w-1/2 md:space-y-10 md:mt-0">
-            <p className={tw`text-gray-700 leading-8 md:text-xl`}>
-              The Brotherhood Group is an organization for men who are looking
-              for a place to belong and make friends. We are not a religious
-              group or work-related, we simply seek to improve the health and
-              happiness of underserved communities.
-            </p>
-            <p
-              className={tw`text-base font-normal text-gray-700 lg:leading-8 xl:leading-9 md:text-xl`}
+          <div className={tw`w-full space-y-5 md:w-1/2 md:pr-16 text-center`}>
+          
+            <Image src={'/logo.svg'} width={200} height={200} className={tw`p-2`} />
+            
+          </div>
+          <div className={tw`flex flex-col md:w-1/2  md:mt-0`}>
+            <h3
+              className={tw`tracking-normal font-extrabold text-5xl m-1`}
             >
-              Our foundation provides free resources to our members via support
-              groups, events, workshops and referrals to local health care
-              providers.
+              Guys N Heat
+            </h3>
+            <p className={tw`text-black md:text-xl mb-2`}>
+              Hot social events for bisexual and married men who value discretion.
+              A discrete environment to express, explore and discover without the
+              hassle of dating apps.
             </p>
           </div>
         </div>
       </section>
       <section
-        className={tw`w-full px-8 py-16 bg-gray-800 text-white xl:px-8 `}
+        className={tw`w-full p-8  bg-gray-800 text-white`}
       >
         <div className={tw`max-w-6xl mx-auto`}>
           <div className={tw`flex flex-col items-center md:flex-row`}>
-            <div className="w-full space-y-5 md:w-3/5 md:pr-16">
-              <p className={tw`font-medium text-blue-500 uppercase`}>
-                Building Friendships
-              </p>
+            <div className={tw`w-full  md:w-1/2 `}>
 
               <p className={tw`text-xl md:pr-16`}>
-                The purpose of our club is to foster the development of healthy
-                relationships among men through friendly companionship in a
-                relaxed atmosphere conducive to meeting people and socializing
-                with others.
+                We use your stated preferences to craft
+                events that maximize fun for everyone! 
               </p>
+             
             </div>
-            <div className="w-full mt-16 md:mt-0 md:w-2/5">
-              <div className={tw` h-auto p-8 py-10  px-7`}>
+            <div className={tw`w-full md:w-1/2`}>
+              
+              <form action="https://thebrotherhoodgroup.us13.list-manage.com/subscribe/post?u=402ed825f5ff12c2a4e3e8b94&amp;id=05b4cabc8b&amp;f_id=009608e3f0" 
+                method="post" target="_blank">
+                  
                 <h3 className={tw`mb-6 text-2xl font-medium text-center`}>
-                  Get Notified
+                  Learn More
                 </h3>
                 <input
+                  type="text"
+                  name="FNAME"
+                  id="FNAME"
+                  className={tw`block text-black w-full px-4 py-3 mb-4 rounded-lg focus:ring focus:ring-blue-500 focus:outline-none`}
+                  placeholder="Name"
+                  required
+                  autoComplete='first-name'
+                />
+                <input
                   type="email"
-                  name="email"
-                  id="email"
-                  className={tw`block w-full px-4 py-3 mb-4 rounded-lg focus:ring focus:ring-blue-500 focus:outline-none`}
+                  name="EMAIL"
+                  id="EMAIL"
+                  className={tw`block text-black w-full px-4 py-3 mb-4 rounded-lg focus:ring focus:ring-blue-500 focus:outline-none`}
                   placeholder="Email address"
+                  required
+                  autoComplete='email'
                 />
 
                 <div className={tw`block`}>
                   <button
                     className={tw`w-full px-3 py-4 font-medium text-white bg-blue-500 rounded-lg`}
                   >
-                    Subscribe
+                    Submit
                   </button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         </div>
       </section>
       <section
-        className={tw`w-full px-8 pt-20 pb-16 bg-white text-black xl:px-0`}
+        className={tw`w-full p-8  bg-white text-black`}
       >
         <div
           className={tw`flex flex-col items-start max-w-6xl mx-auto md:flex-row`}
         >
-          <h2
-            className={tw`tracking-normal text-black md:pr-10 lg:pr-16 xl:pr-20 md:leading-none md:-mt-2 md:w-1/2`}
+          <h3
+            className={tw`tracking-normal font-extrabold text-5xl md:hidden md:w-1/2`}
           >
-            Friends IRL
-          </h2>
-          <div className="flex flex-col w-full mt-8 space-y-5 md:w-1/2 md:space-y-10 md:mt-0">
-            <p
-              className={tw`col-span-6 text-base font-normal text-gray-700 lg:leading-8 xl:leading-8 md:text-xl`}
-            >
-              Do you feel like your social circle can be more inclusive?
-              Brotherhood Group was created by a group of men who felt that
-              there is value in every perspective, every person and every skill.
-            </p>
+            Men,<br/> not<br/> Numbers
+          </h3>
+          <h3
+            className={tw`tracking-normal font-extrabold text-5xl hidden md:block  md:w-1/2`}
+          >
+            Men, not Numbers
+          </h3>
+          <div className={tw`flex flex-col w-full mt-8 space-y-5 md:w-1/2 md:space-y-10 md:mt-0`}>
             <p
               className={tw`col-span-6 text-base font-normal text-gray-700 lg:leading-8 xl:leading-9 md:text-xl`}
             >
-              We provide an environment where men of all races, ethnicities,
-              faiths and experiences can find healthy companionship.
+              Hookups suck! Don't waste time staring at screens, searching through profile after profile. 
+              Our events are designed to maximize your fun! 
+             
             </p>
           </div>
         </div>
       </section>
+            
     </>
   );
 }

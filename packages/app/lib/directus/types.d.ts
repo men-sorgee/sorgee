@@ -3296,7 +3296,7 @@ export interface operations {
 
 export interface external {}
 
-export type Directus = {
+export type DataSchema = {
   events: components["schemas"]["ItemsEvents"];
   events_users: components["schemas"]["ItemsEventsUsers"];
   location: components["schemas"]["ItemsLocation"];
