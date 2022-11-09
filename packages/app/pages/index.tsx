@@ -21,7 +21,7 @@ export default function HomePage() {
         >
           <div className={tw`w-full space-y-5 md:w-1/2 md:pr-16 text-center`}>
           
-            <Image src={'/logo.svg'} width={200} height={200} className={tw`p-2`} />
+            <Image src={'/logo.svg'} alt="logo" width={200} height={200} className={tw`p-2`} />
             
           </div>
           <div className={tw`flex flex-col md:w-1/2  md:mt-0`}>
@@ -110,7 +110,7 @@ export default function HomePage() {
             <p
               className={tw`col-span-6 text-base font-normal text-gray-700 lg:leading-8 xl:leading-9 md:text-xl`}
             >
-              Hookups suck! Don't waste time staring at screens, searching through profile after profile. 
+              Hookups suck! Don&rsquo;t waste time staring at screens, searching through profile after profile. 
               Our events are designed to maximize your fun! 
              
             </p>
