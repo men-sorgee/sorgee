@@ -1,7 +1,7 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import React, { FormEvent } from 'react';
 import { tw } from 'twind';
+import Logo from '../components/icons/Logo'
 
 
 
@@ -21,7 +21,7 @@ export default function HomePage() {
         >
           <div className={tw`w-full space-y-5 md:w-1/2 md:pr-16 text-center`}>
           
-            <Image src={'/logo.svg'} alt="logo" width={200} height={200} className={tw`p-2`} />
+            <Logo width={200} height={200} className={tw`p-2`} />
             
           </div>
           <div className={tw`flex flex-col md:w-1/2  md:mt-0`}>
