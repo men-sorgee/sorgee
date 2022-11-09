@@ -5,6 +5,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "set-dns": "gcloud dns --project tbg-gnh record-sets import .gcp/dns-zone.yaml -z guysnheat-com"
+    "set-dns": "gcloud dns --project tbg-gnh record-sets import ./dns-zone.yaml -z guysnheat-com",
+    "get-dns": "gcloud dns --project tbg-gnh record-sets export -z guysnheat-com ./dns-zone.yaml"
   }
 }
