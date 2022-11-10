@@ -9,8 +9,14 @@ module.exports = {
 
   publicRuntimeConfig: {
     // Will be available on both server and client
-    basePath: process.env.BASE_PATH || ''
-
+    basePath: process.env.BASE_PATH || '',
+    adminUrl: process.env.ADMIN_URL || 'https://admin.guysnheat.com'
+  },
+  serverRuntimeConfig: {
+    adminToken: process.env.ADMIN_TOKEN || '',
+  },
+  api: {
+    externalResolver: true
   }
 }
 

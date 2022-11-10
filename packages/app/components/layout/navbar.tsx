@@ -22,36 +22,30 @@ export default function Navbar() {
                 className={tw` cursor-pointer rounded-full transform duration-100 ease-in-out`}
                 aria-label="Logo"
               >
-                <Logo width="24px" height="24px" />
+                <Logo width="50" height="50" />
               </a>
             </Link>
-            <nav className={tw`space-x-2 ml-6 `}>
-              <Link href="/learn">
-                <a className={linkStyles}>Learn More</a>
-              </Link>
-              <Link href="/terms">
-                <a className={linkStyles}>Terms</a>
-              </Link>
-            </nav>
+            <h1 className={tw`font-extrabold text-4xl p-1 m-1 ml-2 text-purple-500`}>Guys N Heat</h1>
+            
           </div>
 
-          <div className={tw`flex flex-1 justify-end space-x-8`}>
+          <div className={tw`flex flex-1 justify-end space-x-8 hidden`}>
             {user ? (
               <>
-                <Link href="/account">
+                <Link href="/profile">
                   <a className={linkStyles}>Account</a>
                 </Link>
                 <Link href="/api/auth/logout">
-                  <a className={linkStyles}>Sign out</a>
+                  <a className={linkStyles}>Logout</a>
                 </Link>
               </>
             ) : (
               <>
                 <Link href="/api/auth/login">
-                  <a className={linkStyles}>Sign in</a>
+                  <a className={linkStyles}>Login</a>
                 </Link>
-                <Link href="/api/auth/join">
-                  <a className={linkStyles}>Sign up</a>
+                <Link href="/api/auth/login">
+                  <a className={linkStyles}>Apply</a>
                 </Link>
               </>
             )}

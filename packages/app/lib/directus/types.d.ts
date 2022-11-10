@@ -3296,9 +3296,14 @@ export interface operations {
 
 export interface external {}
 
+export type Event = components["schemas"]["ItemsEvents"];
+export type EventUser = components["schemas"]["ItemsEventsUsers"];
+export type Location = components["schemas"]["ItemsLocation"];
+export type User = components["schemas"]["ItemsUsers"];
+
 export type DataSchema = {
-  events: components["schemas"]["ItemsEvents"];
-  events_users: components["schemas"]["ItemsEventsUsers"];
-  location: components["schemas"]["ItemsLocation"];
-  users: components["schemas"]["ItemsUsers"];
+  events: Event;
+  events_users: EventUser;
+  location: Location;
+  users: User;
 };

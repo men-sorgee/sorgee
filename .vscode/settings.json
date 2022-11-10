@@ -30,11 +30,15 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "cSpell.words": [
+    "calt",
     "Consolas",
     "ethnicities",
+    "flowbit",
+    "flowbite",
     "guysnheat",
     "nextjs",
     "openapi",
+    "rlig",
     "supabase",
     "twind"
   ],

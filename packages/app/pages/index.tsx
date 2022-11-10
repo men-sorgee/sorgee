@@ -1,9 +1,7 @@
 import Head from 'next/head'
-import React, { FormEvent } from 'react';
+import React from 'react';
 import { tw } from 'twind';
 import Logo from '../components/icons/Logo'
-
-
 
 export default function HomePage() {
   return (

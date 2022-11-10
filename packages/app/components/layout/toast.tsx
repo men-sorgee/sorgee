@@ -1,4 +1,4 @@
-import { getGradient } from '@/lib/gradients';
+import { getGradient } from '@/lib/utils/gradients';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 

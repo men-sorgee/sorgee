@@ -2,17 +2,15 @@ import getConfig from "next/config";
 import { Directus } from "@directus/sdk";
 import { DataSchema } from "../directus/types";
 const { publicRuntimeConfig, serverRuntimeConfig } = getConfig();
-const { url } = publicRuntimeConfig;
-const { email, password, token } = serverRuntimeConfig;
+const { adminUrl: url } = publicRuntimeConfig;
+const { adminToken: token } = serverRuntimeConfig;
 
 const directus = new Directus<DataSchema>(url);
 
 export async function getDirectusClient() {
   if (await directus.auth.token) return directus;
 
-  if (email && password) {
-    await directus.auth.login({ email, password });
-  } else if (token) {
+  if (token) {
     await directus.auth.static(token);
   }
 

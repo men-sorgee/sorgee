@@ -18,15 +18,17 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "baseUrl": ".",
+    "plugins": [
+      {
+        "name": "@twind/typescript-plugin"
+      }
+    ],
     "paths": {
       "@/components/*": [
         "components/*"
       ],
       "@/lib/*": [
         "lib/*"
-      ],
-      "@/tailwind": [
-        "lib/tailwind.ts"
       ],
       "@/constants": [
         "lib/constants.ts"

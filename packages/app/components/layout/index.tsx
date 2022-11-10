@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Script from 'next/script'
-// import Navbar from './navbar';
+import Navbar from './navbar';
 //import Footer from './footer';
 import { ReactNode } from 'react';
 import { PageMeta } from 'lib/types';
@@ -11,28 +11,6 @@ import React from 'react';
 import Link from 'next/link'
 import Logo from '../icons/Logo'
 
-
-const styles = css({
-  ':global': {
-    html: {
-      touchAction: 'manipulation',
-      fontFeatureSettings: `'case' 1, 'rlig' 1, 'calt' 0'`
-    },
-    body: {
-      textRendering: 'optimizeLegibility',
-      MozOsxFontSmoothing: 'grayscale',
-      '@apply':
-        'text-base min-h-full m-0 relative text-white bg-black antialiased'
-    },
-    p: {
-      WebkitTapHighlightColor: 'black',
-      '@apply': `mt-5 text-xl text-base sm:text-center sm:text-2xl max-w-2xl m-auto`
-    },
-    h1: {
-      '@apply': `text-4xl font-extrabold text-white sm:text-center sm:text-6xl`
-    }
-  }
-});
 
 interface Props {
   children: ReactNode | ReactNode[];
@@ -97,27 +75,13 @@ export default function Layout({ children, meta: pageMeta }: Props) {
         <link rel="preconnect" href="https://fonts.googleapis.com" />
       </Head>
       
-      <div className={tw(styles)}>
+      <div> 
         <main id="skip" className={tw`min-h-full bg-black`}>
           
           <div
             className={tw`max-w-6xl mx-auto p-4`}
           >
-            <nav className='flex items-center justify-between p-1'>
-            <Link href="/">
-              <a
-                className={tw` cursor-pointer rounded-full transform duration-100 ease-in-out flex-row`}
-                aria-label="Logo"
-              >
-                <Logo width="50px" height="50px" />
-              </a>
-            </Link>
-            <h1
-              className={tw`font-bold text-4xl p-1 m-1 text-green-500`}
-              >
-                GuysNHeat
-            </h1>
-            </nav>
+            <Navbar/>
             <article className={tw`sm:flex sm:flex-col sm:text-center`}>
               {children}
             </article>

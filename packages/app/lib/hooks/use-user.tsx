@@ -1,21 +1,16 @@
 import { useEffect, useState, createContext, useContext } from 'react';
-//import { useUser as useSupaUser, User } from '@supabase/auth-helpers-react';
 import { useUser as useAuthUser, UserProfile } from '@auth0/nextjs-auth0';
-import { DirectusModels, Subscriber, User } from '@/lib/types';
-import { Subscription } from '@/lib/types';
 import { Directus, ID, QueryOne } from '@directus/sdk';
-import { DataSchema } from '../directus/types'
-// import {  } from '@supabase/auth-helpers-nextjs';
+import { DataSchema, User } from '../directus/types'
 
-type UserContextType = {
+type UserContext = {
   accessToken: string | null;
-  user?: UserProfile | null;
-  userDetails: Subscriber | null;
+  user: UserProfile | null;
+  userDetails: User | null;
   isLoading: boolean;
-  subscription: Subscription | null;
 };
 
-export const UserContext = createContext<UserContextType | undefined>(
+export const UserContext = createContext<UserContext | undefined>(
   undefined
 );
 
@@ -31,7 +26,10 @@ export const UserContextProvider = (props: Props) => {
   const [userDetails, setUserDetails] = useState<User | null>(null);
 
   useEffect(() => {
-    const getUserDetails = (id: ID) => directus!.items('users').readOne(id);
+    
+    const getUserDetails = async (email: string) => {
+      
+    }
     if (user && !isLoadingData && !userDetails) {
       setIsLoadingData(true);
       getUserDetails(user.email!).then((userDetails) => {
@@ -47,10 +45,9 @@ export const UserContextProvider = (props: Props) => {
 
   const value = {
     accessToken: null,
-    user,
-    userDetails: null, // fix
+    user: user || null,
+    userDetails: null,
     isLoading: isLoadingUser || isLoadingData,
-    subscription: null // fix
   };
 
   return <UserContext.Provider value={value} {...props} />;
