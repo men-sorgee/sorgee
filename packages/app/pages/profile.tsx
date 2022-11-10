@@ -1,5 +1,6 @@
 import { useUser, withPageAuthRequired, UserProfile } from '@auth0/nextjs-auth0'
 import Script from 'next/script'
+import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { tw } from 'twind'
 import { User } from '../lib/directus/types'
@@ -18,7 +19,7 @@ const ProfileCard = ({ profile }: { profile: Profile}) => {
               <div className={tw`sm:col-span-2`}>
                   <label className={tw`block mb-2 text-sm font-medium text-white`} htmlFor="file_input">Upload avatar</label>
                   <div className={tw`items-center w-full sm:flex`}>
-                      { profile?.picture && <img className={tw`w-20 h-20 mb-4 rounded-full sm:mr-4 sm:mb-0`} src={profile?.picture||''} alt={profile?.name||''}/>}
+                      { profile?.picture && <Image className={tw`w-20 h-20 mb-4 rounded-full sm:mr-4 sm:mb-0`} src={profile?.picture||''} alt={profile?.name||''}/>}
                       <div className={tw`w-full`}>
                           <input className={tw`w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400`} aria-describedby="file_input_help" id="file_input" type="file"/>
                           <p className={tw`mt-1 text-xs font-normal text-gray-500 dark:text-gray-300`} id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
@@ -65,7 +66,7 @@ const ProfileCard = ({ profile }: { profile: Profile}) => {
                           <span className={tw`sr-only`}>Show information</span>
                       </button>
                       <div id="tooltip-email-status" role="tooltip" className={tw`absolute z-10 invisible inline-block max-w-sm px-3 py-2 text-xs font-normal text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700`}>
-                          As an administrator, you can view the status of a user's email. The status indicates whether a user's email is verified or not.
+                          As an administrator, you can view the status of a user&rsquo;s email. The status indicates whether a user&rsquo;s email is verified or not.
                           <div className={tw`tooltip-arrow`} data-popper-arrow></div>
                       </div>
                   </label>
@@ -294,7 +295,7 @@ const Profile = () => {
     fetcher<User>('/api/members/me')
         .then(data => setData(data))
             .then(() => setProfile(Object.assign({}, user, userDetails)))
-  }, [])
+  }, [user, userDetails])
   return (
     <>
       {isLoading ? <p>Loading...</p> : <ProfileCard profile={profile!} />}
