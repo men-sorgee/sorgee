@@ -371,22 +371,48 @@ export interface components {
       spectrum?: string | null;
       relationship_status?: string | null;
       skin_tone?: string | null;
-      sexual_roles?: unknown | null;
       photo?: (string | components["schemas"]["Files"]) | null;
       notes?: string | null;
-      sexual_interests?: unknown | null;
-      sexual_kinks?: unknown | null;
       flags?: unknown | null;
       age?: number | null;
       mannerisms?: string | null;
       height?: string | null;
+      nickname?: string | null;
+      /** Format: date-time */
+      last_login?: string | null;
+      vouched_by?: (string | components["schemas"]["ItemsUsers"]) | null;
+      /** @description Are you new to the scene or consider yourself a newbie? Check this and we will help you along the way. */
+      needs_guidance?: boolean | null;
+      referring_email?: string | null;
+      referring_user?: (string | components["schemas"]["ItemsUsers"]) | null;
+      biography?: string | null;
+      event_availability?: unknown | null;
+      sexual_scenes?: unknown | null;
+      /** @description Select all positions you like. */
+      my_positions?: unknown | null;
+      /** @description What positions do you like from them? */
+      their_positions?: unknown | null;
+      /** @description What roles do you like to play? */
+      my_roles?: unknown | null;
+      their_roles?: unknown | null;
+      body_hair?: string | null;
+      facial_hair?: string | null;
+      social_scenes?: unknown | null;
+      hair_color?: string | null;
+      hair_style?: string | null;
+      body_attributes?: unknown | null;
+      their_spectrum?: unknown | null;
       events?: (number | components["schemas"]["ItemsEventsUsers"])[];
       profile?: string;
-      information?: string;
-      statistics?: string;
-      preferences?: string;
       administrative?: string;
+      information?: string;
+      preferences?: string;
       images?: string;
+      my_files?: string;
+      users?: string;
+      network?: string;
+      their_sex?: string;
+      my_sex?: string;
     };
     Activity: {
       /**
@@ -3300,10 +3326,9 @@ export type Event = components["schemas"]["ItemsEvents"];
 export type EventUser = components["schemas"]["ItemsEventsUsers"];
 export type Location = components["schemas"]["ItemsLocation"];
 export type User = components["schemas"]["ItemsUsers"];
-
-export type DataSchema = {
-  events: Event;
-  events_users: EventUser;
-  location: Location;
-  users: User;
+export type Collections = {
+  events: ItemsHandler<Event>;
+  events_users: ItemsHandler<EventUser>;
+  location: ItemsHandler<Location>;
+  users: ItemsHandler<User>;
 };

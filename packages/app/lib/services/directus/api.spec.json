@@ -3,7 +3,7 @@
   "info": {
     "title": "Dynamic API Specification",
     "description": "This is a dynamically generated API specification for all endpoints existing on the current project.",
-    "version": "9.19.2"
+    "version": "9.20.4"
   },
   "servers": [
     {
@@ -4776,9 +4776,6 @@
             "nullable": true,
             "type": "string"
           },
-          "sexual_roles": {
-            "nullable": true
-          },
           "photo": {
             "nullable": true,
             "oneOf": [
@@ -4795,12 +4792,6 @@
             "nullable": true,
             "type": "string"
           },
-          "sexual_interests": {
-            "nullable": true
-          },
-          "sexual_kinks": {
-            "nullable": true
-          },
           "flags": {
             "nullable": true
           },
@@ -4815,6 +4806,96 @@
           "height": {
             "nullable": true,
             "type": "string"
+          },
+          "nickname": {
+            "nullable": true,
+            "type": "string"
+          },
+          "last_login": {
+            "nullable": true,
+            "type": "string",
+            "format": "date-time"
+          },
+          "vouched_by": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/ItemsUsers"
+              }
+            ]
+          },
+          "needs_guidance": {
+            "nullable": true,
+            "description": "Are you new to the scene or consider yourself a newbie? Check this and we will help you along the way.",
+            "type": "boolean"
+          },
+          "referring_email": {
+            "nullable": true,
+            "type": "string"
+          },
+          "referring_user": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/ItemsUsers"
+              }
+            ]
+          },
+          "biography": {
+            "nullable": true,
+            "type": "string"
+          },
+          "event_availability": {
+            "nullable": true
+          },
+          "sexual_scenes": {
+            "nullable": true
+          },
+          "my_positions": {
+            "nullable": true,
+            "description": "Select all positions you like."
+          },
+          "their_positions": {
+            "nullable": true,
+            "description": "What positions do you like from them?"
+          },
+          "my_roles": {
+            "nullable": true,
+            "description": "What roles do you like to play?"
+          },
+          "their_roles": {
+            "nullable": true
+          },
+          "body_hair": {
+            "nullable": true,
+            "type": "string"
+          },
+          "facial_hair": {
+            "nullable": true,
+            "type": "string"
+          },
+          "social_scenes": {
+            "nullable": true
+          },
+          "hair_color": {
+            "nullable": true,
+            "type": "string"
+          },
+          "hair_style": {
+            "nullable": true,
+            "type": "string"
+          },
+          "body_attributes": {
+            "nullable": true
+          },
+          "their_spectrum": {
+            "nullable": true
           },
           "events": {
             "type": "array",
@@ -4832,19 +4913,31 @@
           "profile": {
             "type": "string"
           },
-          "information": {
+          "administrative": {
             "type": "string"
           },
-          "statistics": {
+          "information": {
             "type": "string"
           },
           "preferences": {
             "type": "string"
           },
-          "administrative": {
+          "images": {
             "type": "string"
           },
-          "images": {
+          "my_files": {
+            "type": "string"
+          },
+          "users": {
+            "type": "string"
+          },
+          "network": {
+            "type": "string"
+          },
+          "their_sex": {
+            "type": "string"
+          },
+          "my_sex": {
             "type": "string"
           }
         },
