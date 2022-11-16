@@ -78,6 +78,11 @@ export default function Layout({ children, meta: pageMeta }: Props) {
         <meta name="msapplication-TileColor" content="#00aba9" />
         <meta name="theme-color" content="#000" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Crete+Round&family=Exo&family=Oswald:wght@200;400&display=swap"
+          rel="stylesheet"
+        ></link>
       </Head>
       <div className={tw`max-w-6xl mx-auto p-4`}>
         <main id="skip" className={tw`min-h-full bg-black`}>

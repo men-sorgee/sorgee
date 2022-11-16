@@ -431,8 +431,6 @@ export interface components {
       vouched_by?: (string | components["schemas"]["ItemsUsers"]) | null;
       /** @description Are you new to the scene or consider yourself a newbie? Check this and we will help you along the way. */
       needs_guidance?: boolean | null;
-      referring_email?: string | null;
-      referring_user?: (string | components["schemas"]["ItemsUsers"]) | null;
       biography?: string | null;
       event_availability?: unknown | null;
       sexual_scenes?: unknown | null;
@@ -450,17 +448,16 @@ export interface components {
       hair_style?: string | null;
       body_attributes?: unknown | null;
       their_spectrum?: unknown | null;
+      privileged?: boolean | null;
       events?: (number | components["schemas"]["ItemsEventsUsers"])[];
-      profile?: string;
-      administrative?: string;
       information?: string;
       preferences?: string;
-      images?: (number | components["schemas"]["ItemsUsersFiles"])[];
+      administrative?: string;
       my_files?: (number | components["schemas"]["ItemsUsersPhotos"])[];
+      images?: (number | components["schemas"]["ItemsUsersFiles"])[];
       users?: (number | components["schemas"]["ItemsUserRelationships"])[];
-      network?: string;
-      their_sex?: string;
       my_sex?: string;
+      their_sex?: string;
     };
     ItemsUsersFiles: {
       id?: number;

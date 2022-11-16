@@ -10,11 +10,25 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<any>) {
     return;
   }
 
-  const userDetails = req.body as User;
   const adminClient = await getAdminClient();
   const existingUserQuery = await adminClient.items("users").readByQuery({
     filter: { email: user.email },
   });
+
+  const userDetails = req.body as User;
+  userDetails.email = user.email;
+
+  if (userDetails?.vouched_by) {
+    const vouchingUser = await adminClient
+      .items("users")
+      .readOne(userDetails.vouched_by as string);
+    if (vouchingUser && vouchingUser.status == "active") {
+      userDetails.user_type = vouchingUser.privileged ? "member" : "applicant";
+    } else {
+      userDetails.vouched_by = null;
+    }
+  }
+
   const existingUser = existingUserQuery?.data
     ? existingUserQuery.data[0]
     : null;

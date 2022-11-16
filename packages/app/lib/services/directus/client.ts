@@ -10,3 +10,5 @@ export async function getAdminClient(): Promise<Directus<Collections>> {
   await adminDb.auth.static(token);
   return adminDb;
 }
+
+export const cache: { [key: string]: any } = {};

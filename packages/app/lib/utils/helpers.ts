@@ -51,3 +51,11 @@ export async function copyTextToClipboard(text: string) {
     return document.execCommand("copy", true, text);
   }
 }
+
+export function pruneUndefined(obj: Record<string, any>) {
+  return Object.fromEntries(
+    Object.entries(obj).filter(
+      ([_, v]) => v !== undefined && v !== null && v !== ""
+    )
+  );
+}

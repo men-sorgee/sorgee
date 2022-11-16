@@ -5774,21 +5774,6 @@
             "description": "Are you new to the scene or consider yourself a newbie? Check this and we will help you along the way.",
             "type": "boolean"
           },
-          "referring_email": {
-            "nullable": true,
-            "type": "string"
-          },
-          "referring_user": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "#/components/schemas/ItemsUsers"
-              }
-            ]
-          },
           "biography": {
             "nullable": true,
             "type": "string"
@@ -5839,6 +5824,10 @@
           "their_spectrum": {
             "nullable": true
           },
+          "privileged": {
+            "nullable": true,
+            "type": "boolean"
+          },
           "events": {
             "type": "array",
             "items": {
@@ -5852,30 +5841,14 @@
               ]
             }
           },
-          "profile": {
-            "type": "string"
-          },
-          "administrative": {
-            "type": "string"
-          },
           "information": {
             "type": "string"
           },
           "preferences": {
             "type": "string"
           },
-          "images": {
-            "type": "array",
-            "items": {
-              "oneOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "$ref": "#/components/schemas/ItemsUsersFiles"
-                }
-              ]
-            }
+          "administrative": {
+            "type": "string"
           },
           "my_files": {
             "type": "array",
@@ -5886,6 +5859,19 @@
                 },
                 {
                   "$ref": "#/components/schemas/ItemsUsersPhotos"
+                }
+              ]
+            }
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "$ref": "#/components/schemas/ItemsUsersFiles"
                 }
               ]
             }
@@ -5903,13 +5889,10 @@
               ]
             }
           },
-          "network": {
+          "my_sex": {
             "type": "string"
           },
           "their_sex": {
-            "type": "string"
-          },
-          "my_sex": {
             "type": "string"
           }
         },

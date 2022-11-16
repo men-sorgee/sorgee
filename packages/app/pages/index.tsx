@@ -74,10 +74,8 @@ export default function HomePage() {
                 />
 
                 <div className={tw`block`}>
-                  <button
-                    className={tw`w-full px-3 py-4 font-medium text-white bg-blue-500 rounded-lg`}
-                  >
-                    Submit
+                  <button className={tw(styles.button)}>
+                    Get Notifications
                   </button>
                 </div>
               </form>

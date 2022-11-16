@@ -6,7 +6,6 @@
 .mo-fire svg {
   width: 100%;
   height: auto;
-  position: relative;
 }
 .mo-fire .flame {
   animation-name: flamefly;

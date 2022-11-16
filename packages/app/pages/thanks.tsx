@@ -9,9 +9,9 @@ export default function Thanks() {
       <Head>
         <title>Thanks</title>
       </Head>
-      <section className={tw`${styles.sectionDark} relative h-[40vh]`}>
+      <section className={tw`${styles.sectionDark} relative h-[80vh]`}>
         <h2 className={tw(styles.h2page)}>Thank you!</h2>
-        <p className={tw(styles.p)}>
+        <p className={tw`${styles.p} !sm:text-center`}>
           We&apos;ve received your request and will be in touch shortly.
         </p>
 

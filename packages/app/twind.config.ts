@@ -7,7 +7,7 @@ const config: Configuration = {
   mode: warn,
   theme: {
     fontFamily: {
-      sans: ["Oswald", "sans-serif"],
+      sans: ["Exo", "sans-serif"],
       serif: ["Crete Round", "serif"],
       mono: ["Consolas"],
     },
