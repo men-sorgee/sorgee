@@ -1,6 +1,5 @@
 import { withApiAuthRequired, getSession, Session } from "@auth0/nextjs-auth0";
-
-import { getAdminClient } from "lib/services/directus/client";
+import { getAdminClient } from "lib/services/directus";
 import { NextApiRequest, NextApiResponse } from "next";
 
 async function getUserDetails(req: NextApiRequest, res: NextApiResponse<any>) {
@@ -9,31 +8,16 @@ async function getUserDetails(req: NextApiRequest, res: NextApiResponse<any>) {
 
   const { user } = session;
   if (user?.email) {
-    const results = await adminClient
-      .items("users")
-      .readByQuery({ filter: { email: { _eq: user.email } } });
+    const existingUserQuery = await adminClient.items("users").readByQuery({
+      filter: { email: user.email },
+    });
+    const existingUser = existingUserQuery?.data
+      ? existingUserQuery.data[0]
+      : null;
 
-    if (results.data) {
-      res.status(200).json(Object.assign({}, user, results.data || {}));
+    if (existingUser) {
+      res.status(200).json(existingUser);
       return;
-    }
-
-    try {
-      const { nickname, name, email, email_verified, picture } = user;
-      const result = await adminClient.items("users").createOne({
-        nickname,
-        first_name: name,
-        email,
-        email_verified,
-        photo: picture,
-      });
-
-      if (result?.id) {
-        res.status(200).json(Object.assign({}, user, result));
-        return;
-      }
-    } catch (error) {
-      res.status(500).json({ error });
     }
   }
 

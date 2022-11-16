@@ -1,6 +1,6 @@
 import { useEffect, useState, createContext, useContext } from 'react';
 import { useUser as useAuthUser, UserProfile } from '@auth0/nextjs-auth0';
-import { User } from 'lib/services/directus/client';
+import { User } from 'lib/services/directus';
 import { fetcher } from 'lib/utils/helpers';
 
 export type UserContext = {
@@ -35,8 +35,6 @@ export const UserContextProvider = (props: Props) => {
     if (user && !isLoadingData && !userDetails) {
       setIsLoadingData(true);
       getUserDetails().finally(() => setIsLoadingData(false));
-    } else {
-      setUserDetails(null);
     }
   }, [user, isLoadingUser, isLoadingData, userDetails]);
 

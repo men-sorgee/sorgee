@@ -7,17 +7,18 @@ import styles from '_styles';
 import { NextPageContext } from 'next';
 import Head from 'next/head';
 import Info from '../components/ui/Info';
-import { getAdminClient } from '../lib/services/directus';
+import { getAdminClient, User } from '../lib/services/directus';
+import router from 'next/router';
 
 type FormOptions = Array<{
   text: string;
   value: string;
 }>;
-// TEST: http://localhost:3000/apply?email=jlwicker@gmail.com&referring_email=jason@thebrotherhoodgroup.org
+// TEST: http://localhost:3000/apply?email=jlwicker@gmail.com&vouched_by=jason@thebrotherhoodgroup.org
 
 type PageProps = {
   email?: string;
-  referring_email?: string;
+  vouched_by?: string;
   spectrumOptions: FormOptions;
   relationshipOptions: FormOptions;
   timeOfDayOptions: FormOptions;
@@ -28,7 +29,6 @@ type PageProps = {
 
 export async function getServerSideProps({ query }: NextPageContext) {
   const adminClient = await getAdminClient();
-
   const getOptions = async (field: string) => {
     const positionResponse: any = await adminClient.fields.readOne(
       'users',
@@ -37,11 +37,14 @@ export async function getServerSideProps({ query }: NextPageContext) {
     return positionResponse!.meta!.options.choices;
   };
 
-  const { email, referring_email } = query;
+  const { id, vid } = query;
+  const email = id
+    ? Buffer.from(id as string, 'base64').toString('utf-8')
+    : null;
   return {
     props: {
       email,
-      referring_email,
+      vouched_by: vid,
       spectrumOptions: await getOptions('spectrum'),
       relationshipOptions: await getOptions('relationship_status'),
       timeOfDayOptions: await getOptions('event_availability'),
@@ -57,7 +60,7 @@ const Apply = (props: PageProps) => {
   const { name, email } = user!;
   const {
     email: incoming_email,
-    referring_email,
+    vouched_by,
     spectrumOptions,
     relationshipOptions,
     timeOfDayOptions,
@@ -68,6 +71,7 @@ const Apply = (props: PageProps) => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors }
   } = useForm({
     defaultValues: {
@@ -76,28 +80,88 @@ const Apply = (props: PageProps) => {
       last_name: name?.split(' ')[1] || '',
       email,
       incoming_email,
-      referring_email,
-      email_verified: email == incoming_email,
+      vouched_by,
+      email_verified: user?.email_verified || false,
       phone: null,
       biography: null,
       needs_guidance: false,
       spectrum: null,
       relationship_status: null,
       event_availability: [],
-      age: undefined,
-      height_feet: null,
-      height_inches: null,
-      weight: undefined,
+      age: 0,
+      height_feet: 0,
+      height_inches: 0,
+      weight: 0,
       skin_tone: null,
       my_positions: [],
-      sexual_interests: []
+      sexual_scenes: []
     }
   });
+
+  if (incoming_email && email != incoming_email)
+    setError('email', {
+      message:
+        "This email doesn't match the invite. Please login with the email address you were invited with."
+    });
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error.message}</div>;
 
-  const onSubmit = (data: any) => console.log(data);
+  const onSubmit = async (data: any) => {
+    const {
+      first_name,
+      last_name,
+      email,
+      vouched_by,
+      email_verified,
+      phone,
+      biography,
+      needs_guidance,
+      spectrum,
+      relationship_status,
+      event_availability,
+      age,
+      height_feet,
+      height_inches,
+      weight,
+      skin_tone,
+      my_positions,
+      sexual_scenes
+    } = data;
+
+    const userDetails: User = {
+      //photo,
+      first_name,
+      last_name,
+      email,
+      vouched_by,
+      email_verified,
+      phone,
+      biography,
+      needs_guidance,
+      spectrum,
+      relationship_status,
+      event_availability,
+      age,
+      height: `${height_feet} ${height_inches}`,
+      weight,
+      skin_tone,
+      my_positions,
+      sexual_scenes
+    };
+
+    const response = await fetch('/api/admin/apply', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: Buffer.from(JSON.stringify(userDetails))
+    });
+
+    if (response.ok) {
+      router.push('/thanks');
+    }
+  };
 
   const {
     h2page,
@@ -371,7 +435,7 @@ const Apply = (props: PageProps) => {
                       id={value}
                       type="checkbox"
                       value={value}
-                      {...register('sexual_interests')}
+                      {...register('sexual_scenes')}
                       className={tw(checkbox)}
                     />
                     <label htmlFor={value} className={tw(checkboxLabel)}>
@@ -384,7 +448,7 @@ const Apply = (props: PageProps) => {
           </div>
 
           <input type="hidden" {...register('photo')} />
-          <input type="hidden" {...register('referring_email')} />
+          <input type="hidden" {...register('vouched_by')} />
           <input type="hidden" {...register('incoming_email')} />
           <input type="hidden" {...register('email_verified')} />
           <div className={tw`flex items-center space-x-4`}>
