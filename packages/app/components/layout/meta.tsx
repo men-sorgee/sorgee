@@ -1,6 +1,6 @@
 import Head from 'next/head';
 
-import config from '../../lib/constants';
+import { Configuration } from '../../_styles';
 
 export interface MetaProps {
   title: string;
@@ -9,8 +9,8 @@ export interface MetaProps {
   ogImage: string;
 }
 
-const{ title, description } = config
-export const defaultMetaProps = { title, description }
+const { title, description } = Configuration;
+export const defaultMetaProps = { title, description };
 
 export default function Meta({ props }: { props: MetaProps }) {
   return (

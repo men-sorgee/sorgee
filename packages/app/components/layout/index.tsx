@@ -1,28 +1,33 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import Script from 'next/script'
+import Script from 'next/script';
 import Navbar from './navbar';
-//import Footer from './footer';
+import Footer from './footer';
 import { ReactNode } from 'react';
-import { PageMeta } from 'lib/types';
-import constants from 'lib/constants';
+import getConfig from 'next/config';
 import { tw, css, apply, Context } from 'twind/css';
 import React from 'react';
-import Link from 'next/link'
-import Logo from '../icons/Logo'
+import Link from 'next/link';
+import Logo from '../ui/Logo';
 
+export interface PageMeta {
+  title: string;
+  description: string;
+  cardImage: string;
+}
 
 interface Props {
   children: ReactNode | ReactNode[];
   meta?: PageMeta;
 }
+const { publicRuntimeConfig } = getConfig();
 
 export default function Layout({ children, meta: pageMeta }: Props) {
   const router = useRouter();
 
   const meta = {
-    title: constants.title,
-    description: constants.description,
+    title: publicRuntimeConfig.title,
+    description: publicRuntimeConfig.description,
     basePath: router.basePath,
     url: `${router.basePath}${router.asPath}`,
     ...pageMeta
@@ -74,36 +79,33 @@ export default function Layout({ children, meta: pageMeta }: Props) {
         <meta name="theme-color" content="#000" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
       </Head>
-      
-      <div> 
+      <div className={tw`max-w-6xl mx-auto p-4`}>
         <main id="skip" className={tw`min-h-full bg-black`}>
-          
-          <div
-            className={tw`max-w-6xl mx-auto p-4`}
-          >
-            <Navbar/>
-            <article className={tw`sm:flex sm:flex-col sm:text-center`}>
-              {children}
-            </article>
-          </div>
+          <Navbar />
+          <article className={tw`sm:flex sm:flex-col sm:text-center`}>
+            {children}
+          </article>
         </main>
-        <Script defer src="https://chimpstatic.com/mcjs-connected/js/users/402ed825f5ff12c2a4e3e8b94/da473e2309b4600081fba1614.js"/>
+        <Footer />
       </div>
-     
+      <Script
+        defer
+        src="https://chimpstatic.com/mcjs-connected/js/users/402ed825f5ff12c2a4e3e8b94/da473e2309b4600081fba1614.js"
+      />
     </>
   );
 }
 
 //  import { useState, ReactNode } from 'react';
 //  import Sidebar from './sidebar';
-//  import Navbar from './navbar'; 
+//  import Navbar from './navbar';
 //  import Directory from './directory';
 //  import { ResultProps } from '@/lib/api/user';
 //  import Toast from '@/components/layout/toast';
 //  import Meta, { MetaProps } from '@/components/layout/meta';
 //  import { useRouter } from 'next/router';
 //  import { LoadingDots } from '@/components/icons';
-//  
+//
 //  export default function Layout({
 //    meta,
 //    results,
@@ -118,9 +120,9 @@ export default function Layout({ children, meta: pageMeta }: Props) {
 //    children: ReactNode;
 //  }) {
 //    const router = useRouter();
-//  
+//
 //    const [sidebarOpen, setSidebarOpen] = useState(false);
-//  
+//
 //    if (router.isFallback) {
 //      return (
 //        <div className="h-screen w-screen flex justify-center items-center bg-black">
@@ -128,11 +130,11 @@ export default function Layout({ children, meta: pageMeta }: Props) {
 //        </div>
 //      );
 //    }
-//  
-//    
-//  
+//
+//
+//
 //    return (
-//      
+//
 //      <div className="w-full mx-auto h-screen flex overflow-hidden bg-black">
 //        <Navbar  />
 //        <Meta props={meta} />
@@ -143,7 +145,7 @@ export default function Layout({ children, meta: pageMeta }: Props) {
 //          results={results}
 //          totalUsers={totalUsers}
 //        />
-//  
+//
 //        <div className="flex flex-col min-w-0 flex-1 overflow-hidden">
 //          <div className="flex-1 relative z-0 flex overflow-hidden">
 //            <main className="flex-1 relative z-0 overflow-y-auto focus:outline-none xl:order-last">
@@ -157,4 +159,4 @@ export default function Layout({ children, meta: pageMeta }: Props) {
 //      </div>
 //    );
 //  }
-//  
+//
