@@ -6,22 +6,26 @@ async function getUserDetails(req: NextApiRequest, res: NextApiResponse<any>) {
   const adminClient = await getAdminClient();
   const session = getSession(req, res) as Session;
 
-  const { user } = session;
-  if (user?.email) {
-    const existingUserQuery = await adminClient.items("users").readByQuery({
-      filter: { email: user.email },
-    });
-    const existingUser = existingUserQuery?.data
-      ? existingUserQuery.data[0]
-      : null;
+  try {
+    const { user } = session;
+    if (user?.email) {
+      const existingUserQuery = await adminClient.items("users").readByQuery({
+        filter: { email: user.email },
+      });
+      const existingUser = existingUserQuery?.data
+        ? existingUserQuery.data[0]
+        : null;
 
-    if (existingUser) {
-      res.status(200).json(existingUser);
-      return;
+      if (existingUser) {
+        res.status(200).json(existingUser);
+        return;
+      }
     }
+    res.status(403).json({ error: "There was a problem" });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json(e);
   }
-
-  res.status(403).json({ error: "There was a problem" });
 }
 
 export default withApiAuthRequired(getUserDetails);
