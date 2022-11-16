@@ -11,7 +11,7 @@ export default function Thanks() {
       <section className={tw`${styles.sectionDark} relative h-[40vh]`}>
         <h2 className={tw(styles.h2page)}>Thank you!</h2>
         <p className={tw(styles.p)}>
-          We've received your request and will be in touch shortly.
+          We&apos;ve received your request and will be in touch shortly.
         </p>
 
         <div className="mo-fire">

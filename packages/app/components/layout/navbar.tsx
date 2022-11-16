@@ -17,10 +17,10 @@ export default function Navbar() {
       </a>
       <nav className={tw`mx-auto max-w-6xl px-6`}>
         <div
-          className={tw`flex justify-between align-middle flex-row py-4 md:py-6 relative`}
+          className={tw`flex justify-between align-middle flex-row relative`}
         >
           <div
-            className={tw`flex flex-1 align-middle items-center text-purple`}
+            className={tw`flex align-middle items-center text-center text-purple`}
           >
             <Link href="/">
               <a
@@ -30,7 +30,7 @@ export default function Navbar() {
                 <Logo width="50" height="50" />
               </a>
             </Link>
-            <h1 className={tw`${styles.h1site}`}>Guys N Heat</h1>
+            <h1 className={tw`${styles.h1site} ml-4`}>Guys N Heat</h1>
           </div>
 
           <div className={tw`flex flex-1 justify-end space-x-8`}>

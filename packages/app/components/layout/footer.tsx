@@ -17,6 +17,7 @@ export default function Footer() {
             <a
               href="https://www.instagram.com/guysnheat/"
               target={'_blank'}
+              rel="noreferrer"
               className={tw`text-gray-400 hover:text-gray-200`}
             >
               <span className={tw`sr-only`}>Instagram</span>
@@ -37,6 +38,7 @@ export default function Footer() {
             <a
               href="https://twitter.com/guysnheat"
               target={'_blank'}
+              rel="noreferrer"
               className={tw`text-gray-400 hover:text-gray-200`}
             >
               <span className={tw`sr-only`}>Twitter</span>
@@ -53,6 +55,7 @@ export default function Footer() {
             <a
               href="https://github.com/brotherhood-group"
               target={'_blank'}
+              rel="noreferrer"
               className={tw`text-gray-400 hover:text-gray-200`}
             >
               <span className={tw`sr-only`}>GitHub</span>

@@ -4,7 +4,7 @@ import twindConfig from 'twind.config';
 import withTwindApp from '@twind/next/app';
 import { UserContextProvider } from 'lib/hooks/use-user';
 import { AppProps } from 'next/app';
-import '../public/fire.scss';
+import '../public/fire.css';
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <UserProvider>

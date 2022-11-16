@@ -17,7 +17,7 @@ function Invite() {
   if (isLoading) return <div>Loading...</div>;
 
   if (userDetails?.status !== 'active')
-    return <div>You aren't allowed here.</div>;
+    return <div>You aren&apos;t allowed here.</div>;
 
   const getLink = (data: { email: string }) => {
     const { email } = data;
@@ -45,8 +45,8 @@ function Invite() {
           className={tw`max-w-3xl mx-auto`}
         >
           <p className={tw(styles.p)}>
-            {userDetails!.first_name}, enter your friend's email address and we
-            will create a special link for you to share.
+            {userDetails!.first_name}, enter your friend&apos;s email address
+            and we will create a special link for you to share.
           </p>
           <div className={tw`grid grid-cols-1 gap-4 `}>
             <input
