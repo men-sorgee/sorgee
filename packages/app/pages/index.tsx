@@ -1,62 +1,53 @@
-import Head from 'next/head'
+import Head from 'next/head';
 import React from 'react';
 import { tw } from 'twind';
-import Logo from '../components/icons/Logo'
+import Logo from 'components/ui/Logo';
+import styles from '_styles';
 
 export default function HomePage() {
+  const { h2page, h3section, p, sectionWhite, sectionDark } = styles;
   return (
     <>
       <Head>
         <title>Guys-N-Heat: Home</title>
       </Head>
-      
-      <section
-        className={tw`w-full p-8 bg-white text-black`}
-      >
-        
+
+      <section className={tw(sectionWhite)}>
         <div
           className={tw`flex flex-col items-center max-w-6xl mx-auto md:flex-row`}
         >
-          <div className={tw`w-full space-y-5 md:w-1/2 md:pr-16 text-center`}>
-          
-            <Logo width={200} height={200} className={tw`p-2`} />
-            
+          <div className={tw`w-full md:w-1/2`}>
+            <Logo width={200} height={200} className={tw`p-2 mx-auto`} />
           </div>
           <div className={tw`flex flex-col md:w-1/2  md:mt-0`}>
-            <h3
-              className={tw`tracking-normal font-extrabold text-5xl m-1`}
-            >
-              Guys N Heat
-            </h3>
-            <p className={tw`text-black md:text-xl mb-2`}>
-              Hot social events for bisexual and married men who value discretion.
-              A discrete environment to express, explore and discover without the
-              hassle of dating apps.
+            <h2 className={tw(h2page)}>Guys N Heat</h2>
+            <p className={tw(p)}>
+              Hot social events for bisexual and married men who value
+              discretion. A discrete environment to express, explore and
+              discover.
             </p>
           </div>
         </div>
       </section>
-      <section
-        className={tw`w-full p-8  bg-gray-800 text-white`}
-      >
+      <section className={tw(sectionDark)}>
         <div className={tw`max-w-6xl mx-auto`}>
           <div className={tw`flex flex-col items-center md:flex-row`}>
-            <div className={tw`w-full  md:w-1/2 `}>
-
-              <p className={tw`text-xl md:pr-16`}>
-                We use your stated preferences to craft
-                events that maximize fun for everyone! 
+            <div className={tw`w-full md:w-1/2 md:pr-8`}>
+              <p className={tw(p)}>
+                We use your stated preferences to craft events that maximize fun
+                for everyone!
               </p>
-             
+              <p className={tw(p)}>
+                Our events are designed to maximize your fun!
+              </p>
             </div>
             <div className={tw`w-full md:w-1/2`}>
-              
-              <form action="https://thebrotherhoodgroup.us13.list-manage.com/subscribe/post?u=402ed825f5ff12c2a4e3e8b94&amp;id=05b4cabc8b&amp;f_id=009608e3f0" 
-                method="post" target="_blank">
-                  
-                <h3 className={tw`mb-6 text-2xl font-medium text-center`}>
-                  Learn More
-                </h3>
+              <form
+                action="https://thebrotherhoodgroup.us13.list-manage.com/subscribe/post?u=402ed825f5ff12c2a4e3e8b94&amp;id=05b4cabc8b&amp;f_id=009608e3f0"
+                method="post"
+                target="_blank"
+              >
+                <h3 className={tw(h3section)}>Receive Updates</h3>
                 <input
                   type="text"
                   name="FNAME"
@@ -64,7 +55,7 @@ export default function HomePage() {
                   className={tw`block text-black w-full px-4 py-3 mb-4 rounded-lg focus:ring focus:ring-blue-500 focus:outline-none`}
                   placeholder="Name"
                   required
-                  autoComplete='first-name'
+                  autoComplete="first-name"
                 />
                 <input
                   type="email"
@@ -73,7 +64,7 @@ export default function HomePage() {
                   className={tw`block text-black w-full px-4 py-3 mb-4 rounded-lg focus:ring focus:ring-blue-500 focus:outline-none`}
                   placeholder="Email address"
                   required
-                  autoComplete='email'
+                  autoComplete="email"
                 />
 
                 <div className={tw`block`}>
@@ -88,34 +79,18 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <section
-        className={tw`w-full p-8  bg-white text-black`}
-      >
+      <section className={tw(sectionWhite)}>
         <div
           className={tw`flex flex-col items-start max-w-6xl mx-auto md:flex-row`}
         >
-          <h3
-            className={tw`tracking-normal font-extrabold text-5xl md:hidden md:w-1/2`}
-          >
-            Men,<br/> not<br/> Numbers
-          </h3>
-          <h3
-            className={tw`tracking-normal font-extrabold text-5xl hidden md:block  md:w-1/2`}
-          >
-            Men, not Numbers
-          </h3>
-          <div className={tw`flex flex-col w-full mt-8 space-y-5 md:w-1/2 md:space-y-10 md:mt-0`}>
-            <p
-              className={tw`col-span-6 text-base font-normal text-gray-700 lg:leading-8 xl:leading-9 md:text-xl`}
-            >
-              Hookups suck! Don&rsquo;t waste time staring at screens, searching through profile after profile. 
-              Our events are designed to maximize your fun! 
-             
-            </p>
-          </div>
+          <h3 className={tw`${h3section} sm:w-1/2`}>Men, not Numbers</h3>
+
+          <p className={tw`${p} w-full md:w-1/2`}>
+            Don&rsquo;t waste time staring at screens, searching through profile
+            after profile.
+          </p>
         </div>
       </section>
-            
     </>
   );
 }
