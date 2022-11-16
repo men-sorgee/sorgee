@@ -130,6 +130,20 @@ export interface paths {
     /** Update an existing location item. */
     patch: operations["updateSingleItemsLocation"];
   };
+  "/items/user_relationships": {
+    /** List the user_relationships items. */
+    get: operations["readItemsUserRelationships"];
+    /** Create a new user_relationships item. */
+    post: operations["createItemsUserRelationships"];
+  };
+  "/items/user_relationships/{id}": {
+    /** Retrieve a single user_relationships item by unique identifier. */
+    get: operations["readSingleItemsUserRelationships"];
+    /** Delete an existing user_relationships item. */
+    delete: operations["deleteSingleItemsUserRelationships"];
+    /** Update an existing user_relationships item. */
+    patch: operations["updateSingleItemsUserRelationships"];
+  };
   "/items/users": {
     /** List the users items. */
     get: operations["readItemsUsers"];
@@ -143,6 +157,34 @@ export interface paths {
     delete: operations["deleteSingleItemsUsers"];
     /** Update an existing users item. */
     patch: operations["updateSingleItemsUsers"];
+  };
+  "/items/users_files": {
+    /** List the users_files items. */
+    get: operations["readItemsUsersFiles"];
+    /** Create a new users_files item. */
+    post: operations["createItemsUsersFiles"];
+  };
+  "/items/users_files/{id}": {
+    /** Retrieve a single users_files item by unique identifier. */
+    get: operations["readSingleItemsUsersFiles"];
+    /** Delete an existing users_files item. */
+    delete: operations["deleteSingleItemsUsersFiles"];
+    /** Update an existing users_files item. */
+    patch: operations["updateSingleItemsUsersFiles"];
+  };
+  "/items/users_photos": {
+    /** List the users_photos items. */
+    get: operations["readItemsUsersPhotos"];
+    /** Create a new users_photos item. */
+    post: operations["createItemsUsersPhotos"];
+  };
+  "/items/users_photos/{id}": {
+    /** Retrieve a single users_photos item by unique identifier. */
+    get: operations["readSingleItemsUsersPhotos"];
+    /** Delete an existing users_photos item. */
+    delete: operations["deleteSingleItemsUsersPhotos"];
+    /** Update an existing users_photos item. */
+    patch: operations["updateSingleItemsUsersPhotos"];
   };
   "/activity": {
     /** Returns a list of activity actions. */
@@ -349,6 +391,12 @@ export interface components {
       notes?: string | null;
       amenities?: unknown | null;
     };
+    ItemsUserRelationships: {
+      id?: number;
+      users_id?: (string | components["schemas"]["ItemsUsers"]) | null;
+      related_users_id?: (string | components["schemas"]["ItemsUsers"]) | null;
+      relation?: string;
+    };
     ItemsUsers: {
       id?: string;
       status?: string | null;
@@ -407,12 +455,22 @@ export interface components {
       administrative?: string;
       information?: string;
       preferences?: string;
-      images?: string;
-      my_files?: string;
-      users?: string;
+      images?: (number | components["schemas"]["ItemsUsersFiles"])[];
+      my_files?: (number | components["schemas"]["ItemsUsersPhotos"])[];
+      users?: (number | components["schemas"]["ItemsUserRelationships"])[];
       network?: string;
       their_sex?: string;
       my_sex?: string;
+    };
+    ItemsUsersFiles: {
+      id?: number;
+      users_id?: (string | components["schemas"]["ItemsUsers"]) | null;
+      directus_files_id?: (string | components["schemas"]["Files"]) | null;
+    };
+    ItemsUsersPhotos: {
+      id?: number;
+      users_id?: (string | components["schemas"]["ItemsUsers"]) | null;
+      directus_files_id?: (string | components["schemas"]["Files"]) | null;
     };
     Activity: {
       /**
@@ -1942,6 +2000,140 @@ export interface operations {
       };
     };
   };
+  /** List the user_relationships items. */
+  readItemsUserRelationships: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** A limit on the number of objects that are returned. */
+        limit?: components["parameters"]["Limit"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+        /** How many items to skip when fetching data. */
+        offset?: components["parameters"]["Offset"];
+        /** How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly. */
+        sort?: components["parameters"]["Sort"];
+        /** Select items in collection by given conditions. */
+        filter?: components["parameters"]["Filter"];
+        /** Filter by items that contain the given search query in one of their fields. */
+        search?: components["parameters"]["Search"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsUserRelationships"][];
+            meta?: components["x-metadata"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+    };
+  };
+  /** Create a new user_relationships item. */
+  createItemsUserRelationships: {
+    parameters: {
+      query: {
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsUserRelationships"][];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+    };
+    requestBody: {
+      content: {
+        "application/json":
+          | components["schemas"]["ItemsUserRelationships"][]
+          | components["schemas"]["ItemsUserRelationships"];
+      };
+    };
+  };
+  /** Retrieve a single user_relationships item by unique identifier. */
+  readSingleItemsUserRelationships: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+      path: {
+        /** Index of the item. */
+        id: number | string;
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsUserRelationships"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Delete an existing user_relationships item. */
+  deleteSingleItemsUserRelationships: {
+    parameters: {
+      path: {
+        /** Index of the item. */
+        id: number | string;
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: unknown;
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Update an existing user_relationships item. */
+  updateSingleItemsUserRelationships: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+      path: {
+        /** Index of the item. */
+        id: number | string;
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsUserRelationships"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ItemsUserRelationships"];
+      };
+    };
+  };
   /** List the users items. */
   readItemsUsers: {
     parameters: {
@@ -2073,6 +2265,274 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["ItemsUsers"];
+      };
+    };
+  };
+  /** List the users_files items. */
+  readItemsUsersFiles: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** A limit on the number of objects that are returned. */
+        limit?: components["parameters"]["Limit"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+        /** How many items to skip when fetching data. */
+        offset?: components["parameters"]["Offset"];
+        /** How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly. */
+        sort?: components["parameters"]["Sort"];
+        /** Select items in collection by given conditions. */
+        filter?: components["parameters"]["Filter"];
+        /** Filter by items that contain the given search query in one of their fields. */
+        search?: components["parameters"]["Search"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsUsersFiles"][];
+            meta?: components["x-metadata"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+    };
+  };
+  /** Create a new users_files item. */
+  createItemsUsersFiles: {
+    parameters: {
+      query: {
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsUsersFiles"][];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+    };
+    requestBody: {
+      content: {
+        "application/json":
+          | components["schemas"]["ItemsUsersFiles"][]
+          | components["schemas"]["ItemsUsersFiles"];
+      };
+    };
+  };
+  /** Retrieve a single users_files item by unique identifier. */
+  readSingleItemsUsersFiles: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+      path: {
+        /** Index of the item. */
+        id: number | string;
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsUsersFiles"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Delete an existing users_files item. */
+  deleteSingleItemsUsersFiles: {
+    parameters: {
+      path: {
+        /** Index of the item. */
+        id: number | string;
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: unknown;
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Update an existing users_files item. */
+  updateSingleItemsUsersFiles: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+      path: {
+        /** Index of the item. */
+        id: number | string;
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsUsersFiles"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ItemsUsersFiles"];
+      };
+    };
+  };
+  /** List the users_photos items. */
+  readItemsUsersPhotos: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** A limit on the number of objects that are returned. */
+        limit?: components["parameters"]["Limit"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+        /** How many items to skip when fetching data. */
+        offset?: components["parameters"]["Offset"];
+        /** How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly. */
+        sort?: components["parameters"]["Sort"];
+        /** Select items in collection by given conditions. */
+        filter?: components["parameters"]["Filter"];
+        /** Filter by items that contain the given search query in one of their fields. */
+        search?: components["parameters"]["Search"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsUsersPhotos"][];
+            meta?: components["x-metadata"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+    };
+  };
+  /** Create a new users_photos item. */
+  createItemsUsersPhotos: {
+    parameters: {
+      query: {
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsUsersPhotos"][];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+    };
+    requestBody: {
+      content: {
+        "application/json":
+          | components["schemas"]["ItemsUsersPhotos"][]
+          | components["schemas"]["ItemsUsersPhotos"];
+      };
+    };
+  };
+  /** Retrieve a single users_photos item by unique identifier. */
+  readSingleItemsUsersPhotos: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+      path: {
+        /** Index of the item. */
+        id: number | string;
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsUsersPhotos"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Delete an existing users_photos item. */
+  deleteSingleItemsUsersPhotos: {
+    parameters: {
+      path: {
+        /** Index of the item. */
+        id: number | string;
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: unknown;
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Update an existing users_photos item. */
+  updateSingleItemsUsersPhotos: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+      path: {
+        /** Index of the item. */
+        id: number | string;
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsUsersPhotos"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ItemsUsersPhotos"];
       };
     };
   };
@@ -3325,10 +3785,20 @@ export interface external {}
 export type Event = components["schemas"]["ItemsEvents"];
 export type EventUser = components["schemas"]["ItemsEventsUsers"];
 export type Location = components["schemas"]["ItemsLocation"];
+export type UserRelationship = components["schemas"]["ItemsUserRelationships"];
 export type User = components["schemas"]["ItemsUsers"];
+export type UserFile = components["schemas"]["ItemsUsersFiles"];
+export type UserPhoto = components["schemas"]["ItemsUsersPhotos"];
 export type Collections = {
-  events: ItemsHandler<Event>;
-  events_users: ItemsHandler<EventUser>;
-  location: ItemsHandler<Location>;
-  users: ItemsHandler<User>;
+  events: Event;
+  events_users: EventUser;
+  location: Location;
+  user_relationships: UserRelationship;
+  users: User;
+  users_files: UserFile;
+  users_photos: UserPhoto;
+  collections: components["schemas"]["Collections"];
+  fields: components["schemas"]["Fields"];
+  files: components["schemas"]["Files"];
+  folders: components["schemas"]["Folders"];
 };

@@ -1,6 +1,8 @@
 #!/usr/bin/env node
+require( 'dotenv' ).config()
 
-const { existsSync, rmSync, mkdirSync, writeFileSync } = require( "fs" )
+const API_KEY = process.env.DIRECTUS_API_KEY
+const { writeFileSync } = require( "fs" )
 const { resolve } = require( "path" )
 
 const { snakeCase, capitalCase } = require( "change-case" )
@@ -10,16 +12,9 @@ const host = "https://admin.guysnheat.com"
 const outputDir = resolve( process.cwd(), "./lib/services/directus" )
 
 
-
-async function getSpec() {
-  const request = await fetch( `${ host }/server/specs/oas?access_token=${ "hd6Ge9Je438eb-lhOO4cCganj2Em1Z9i" }` )
-  return await request.json()
-}
-
 async function main() {
-
-  const spec = await getSpec()
-
+  const request = await fetch( `${ host }/server/specs/oas?access_token=${ API_KEY }` )
+  const spec = await request.json()
 
   writeFileSync(
     `${ outputDir }/api.spec.json`,
@@ -48,9 +43,16 @@ async function main() {
         .join( '' )
       const propertyKey = snakeCase( collectionName )
       exportTypes.push( `export type ${ collectionType } = components["schemas"]["Items${ collectionName }"];` )
-      return `  ${ propertyKey }: ItemsHandler<${ collectionType }>;`
+
+      return `  ${ propertyKey }: ${ collectionType };`
     } )
     .filter( ( line ) => typeof line === `string` )
+    .concat( [
+      `  collections: components["schemas"]["Collections"];`,
+      `  fields: components["schemas"]["Fields"];`,
+      `  files: components["schemas"]["Files"];`,
+      `  folders: components["schemas"]["Folders"];`
+    ] )
     .join( `\n` )
 
   const exportSource = `export type Collections = {\n${ exportProperties }\n};`
