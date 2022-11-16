@@ -8,7 +8,7 @@
   height: auto;
   position: relative;
 }
-.flame {
+.mo-fire .flame {
   animation-name: flamefly;
   animation-duration: 2s;
   animation-timing-function: linear;
@@ -16,41 +16,42 @@
   opacity: 0;
   transform-origin: 50% 50% 0;
 }
-.flame.one {
+.mo-fire .flame.one {
   animation-delay: 1s;
   animation-duration: 3s;
 }
-.flame3.two {
+.mo-fire .flame3.two {
   animation-duration: 5s;
   animation-delay: 1s;
 }
 
-.flame-main {
+.mo-fire .flame-main {
   animation-name: flameWobble;
   animation-duration: 3s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
 }
-.flame-main.one {
+.mo-fire .flame-main.one {
   animation-duration: 4s;
   animation-delay: 1s;
 }
-.flame-main.two {
+.mo-fire .flame-main.two {
   animation-duration: 3s;
   animation-delay: 2s;
 }
-.flame-main.three {
+.mo-fire .flame-main.three {
   animation-duration: 2.1s;
   animation-delay: 3s;
 }
-.flame-main.four {
+.mo-fire .flame-main.four {
   animation-duration: 3.2s;
   animation-delay: 4s;
 }
-.flame-main.five {
+.mo-fire .flame-main.five {
   animation-duration: 2.5s;
   animation-delay: 5s;
 }
+
 @keyframes flameWobble {
   50% {
     transform: scale(1, 1.2) translate(0, -30px) rotate(-2deg);
@@ -66,5 +67,46 @@
   100% {
     transform: translate(-20px, -100px) rotate(180deg);
     opacity: 0;
+  }
+}
+
+.loading {
+  display: inline-flex;
+  align-items: center;
+}
+
+.loading .spacer {
+  margin-right: 2px;
+}
+
+.loading span {
+  animation-name: blink;
+  animation-duration: 1.4s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0 1px;
+}
+
+.loading span:nth-of-type(2) {
+  animation-delay: 0.2s;
+}
+
+.loading span:nth-of-type(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0.2;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.2;
   }
 }
