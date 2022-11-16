@@ -5,7 +5,6 @@
   "repository": "https://github.com/brotherhood-group/guys-n-heat.git",
   "author": "Jason Wicker <jason@thebrotherhoodgroup.org>",
   "license": "MIT",
-  "type": "module",
   "workspaces": [
     "packages/*"
   ],
@@ -15,22 +14,12 @@
     "gcp": "yarn workspace gcp ",
     "start": "docker-compose up -d",
     "stop": "docker-compose down",
-    "postinstall": "chmod +x .devcontainer/.bashrc && bash -c 'source .devcontainer/.bashrc'",
-    "types": "ts-node-esm .build/generate-types.ts"
+    "postinstall": "chmod +x .devcontainer/.bashrc && bash -c 'source .devcontainer/.bashrc'"
   },
   "prettier": {
     "arrowParens": "always",
     "singleQuote": true,
     "tabWidth": 2,
     "trailingComma": "none"
-  },
-  "devDependencies": {
-    "change-case": "^4.1.2",
-    "oao": "^2.0.2",
-    "openapi-typescript": "^5.4.1",
-    "ts-node": "^10.9.1"
-  },
-  "dependencies": {
-    "next": "^13.0.1"
   }
 }

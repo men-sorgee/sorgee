@@ -1,10 +1,10 @@
-import { Configuration, strict } from "twind";
+import { Configuration, warn } from "twind";
 import * as colors from "twind/colors";
 
 const config: Configuration = {
   // Twind configuration: https://twind.dev/handbook/configuration.html
   darkMode: "class",
-  mode: strict,
+  mode: warn,
   theme: {
     fontFamily: {
       sans: ["Oswald", "sans-serif"],
@@ -52,16 +52,11 @@ const config: Configuration = {
       body: {
         textRendering: "optimizeLegibility",
         MozOsxFontSmoothing: "grayscale",
-        "@apply":
-          "text-base min-h-full m-0 relative text-white bg-black antialiased",
       },
       p: {
-        WebkitTapHighlightColor: "black",
-        "@apply": `mt-5 text-xl text-base sm:text-center sm:text-2xl max-w-2xl m-auto`,
+        WebkitTapHighlightColor: "white",
       },
-      h1: {
-        "@apply": `text-4xl font-extrabold text-white sm:text-center sm:text-6xl`,
-      },
+
       // @ts-ignore
       [[".tooltip-arrow", ".tooltip-arrow:before"]]: {
         position: "absolute",
@@ -214,8 +209,11 @@ const config: Configuration = {
   },
 
   plugins: {
-    ["tooltip"]: {},
-    ["tooltip-arrow"]: {},
+    custom: {
+      ".tooltip": {},
+      "tooltip-arrow": {},
+      ".dark": {},
+    },
   },
 };
 

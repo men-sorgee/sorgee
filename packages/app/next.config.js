@@ -1,37 +1,27 @@
-// const { PHASE_DEVELOPMENT_SERVER } = require( 'next/constants' )
+const { PHASE_DEVELOPMENT_SERVER } = require( 'next/constants' )
+module.exports = ( phase, { defaultConfig } ) => {
+  const dev = PHASE_DEVELOPMENT_SERVER === phase
+  /**
+   * @type {import('next').NextConfig}
+   */
+  const nextConfig = {
+    //...defaultConfig,
+    // Append the default value with md extensions
+    pageExtensions: ['ts', 'tsx', 'js', 'jsx'],
+    publicRuntimeConfig: {
+      dev,
+      title: "Guys in Heat",
+      description: "Denver's social events for bi, married and discrete men.",
+      baseUrl: dev ? 'http://localhost:3000' : 'https://guysnheat.com',
+      adminUrl: 'https://admin.guysnheat.com'
+    },
+    serverRuntimeConfig: {
+      adminToken: process.env.ADMIN_TOKEN || '',
+    },
+    images: {
+      domains: ['guysnheat.com', 'admin.guysnheat.com', 'localhost', 'lh3.googleusercontent.com', 'cdn.discordapp.com'],
+    }
 
-/**
- * @type {import('next').NextConfig}
- */
-module.exports = {
-  // Append the default value with md extensions
-  pageExtensions: ['ts', 'tsx', 'js', 'jsx'],
-
-  publicRuntimeConfig: {
-    // Will be available on both server and client
-    basePath: process.env.BASE_PATH || 'https://guysnheat.com',
-    adminUrl: process.env.ADMIN_URL || 'https://admin.guysnheat.com'
-  },
-  serverRuntimeConfig: {
-    adminToken: process.env.ADMIN_TOKEN || '',
-  },
-  api: {
-    externalResolver: true
   }
+  return nextConfig
 }
-
-
-// Plugins
-//const withMDX = require( '@next/mdx' )( {
-//  extension: /\.mdx?$/,
-//  options: {
-//    remarkPlugins: [],
-//    rehypePlugins: [],
-//    // providerImportSource: "@mdx-js/react",
-//  },
-//} )
-
-//module.exports = withMDX( nextConfig )
-
-
-

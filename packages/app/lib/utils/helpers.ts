@@ -1,55 +1,45 @@
-import { Price } from '@/lib/types';
+import cookie from "cookie";
+import { IncomingMessage, OutgoingMessage, ServerResponse } from "http";
+import getConfig from "next/config";
+const { publicRuntimeConfig } = getConfig();
+const { dev } = publicRuntimeConfig;
 
-export const getURL = () => {
-  const url =
-    process?.env?.URL && process.env.URL !== ''
-      ? process.env.URL
-      : process?.env?.VERCEL_URL && process.env.VERCEL_URL !== ''
-      ? process.env.VERCEL_URL
-      : 'http://localhost:3000';
-  return url.includes('http') ? url : `https://${url}`;
-};
-
-export const postData = async ({
-  url,
-  data
-}: {
-  url: string;
-  data?: { price: Price };
-}) => {
-  console.log('posting,', url, data);
-
-  const res: Response = await fetch(url, {
-    method: 'POST',
-    headers: new Headers({ 'Content-Type': 'application/json' }),
-    credentials: 'same-origin',
-    body: JSON.stringify(data)
-  });
-
-  if (!res.ok) {
-    console.log('Error in postData', { url, data, res });
-
-    throw Error(res.statusText);
-  }
-
-  return res.json();
-};
-
-export const toDateTime = (secs: number) => {
-  var t = new Date('1970-01-01T00:30:00Z'); // Unix epoch start.
+export function toDateTime(secs: number) {
+  var t = new Date("1970-01-01T00:30:00Z"); // Unix epoch start.
   t.setSeconds(secs);
   return t;
-};
+}
 
-export default async function fetcher<JSON = any>(
+export async function fetcher<JSON = any>(
   input: RequestInfo,
   init?: RequestInit
 ): Promise<JSON> {
   const res = await fetch(input, init);
-
   if (!res.ok && res.status === 401) {
-    throw new Error('Unauthorized');
+    throw new Error("Unauthorized");
   }
+  return await res.json();
+}
 
-  return res.json();
+export function parseCookies(req: IncomingMessage) {
+  return cookie.parse(req ? req.headers.cookie || "" : document.cookie);
+}
+
+export function setCookie(
+  res: ServerResponse | OutgoingMessage,
+  name: string,
+  value: string,
+  path: string = "/",
+  maxAge: number = -1
+) {
+  res.setHeader(
+    "Set-Cookie",
+    cookie.serialize(name, value, {
+      httpOnly: dev === true,
+      secure: dev === false,
+      sameSite: "strict",
+      maxAge,
+      path,
+    })
+  );
 }

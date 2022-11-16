@@ -31,7 +31,7 @@
         "lib/*"
       ],
       "@/constants": [
-        "lib/constants.ts"
+        "lib/_styles.ts"
       ],
     },
     "incremental": true

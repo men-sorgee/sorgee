@@ -12,7 +12,7 @@ export const gradients = [
 
 /** Select a random gradient from the array of gradients based on a
  *  hash of the username string. If the username has already been hashed,
- *  reuse the same graident picked.
+ *  reuse the same gradient picked.
  */
 export function getGradient(username?: string) {
   function hashCode(str: string) {
