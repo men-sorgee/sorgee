@@ -16,9 +16,10 @@ export default function HomePage() {
         <div
           className={tw`flex flex-col items-center max-w-6xl mx-auto md:flex-row`}
         >
-          <div className={tw`w-full sm:w-1/2`}></div>
-          <div className={tw`flex flex-col md:w-1/2 md:mt-0`}>
+          <div className={tw`w-full sm:w-1/2`}>
             <Fire />
+          </div>
+          <div className={tw`flex flex-col md:w-1/2 md:mt-0`}>
             <h2 className={tw(h2page)}>Too Hot for the Public</h2>
             <p className={tw(p)}>
               A hot new social club for bisexual and married men who value
