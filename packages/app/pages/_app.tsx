@@ -1,5 +1,5 @@
 import { UserProvider } from '@auth0/nextjs-auth0';
-import Layout from 'components/layout';
+import Layout from 'components/layout/index';
 import twindConfig from 'twind.config';
 import withTwindApp from '@twind/next/app';
 import { UserContextProvider } from 'lib/hooks/use-user';

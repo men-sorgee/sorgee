@@ -1,5 +1,3 @@
-import "./animations.css";
-
 export default {
   h1site: `my-4 font-serif md:block text-4xl lg:text-5xl xl:text-6xl font-extrabold md:text-center  leading-none   text-purple-500 mx-2`,
   h2page: `mt-4 font-serif mb-8 text-3xl font-extrabold md:text-center md:text-5xl text-green`,
@@ -20,3 +18,5 @@ export default {
   button:
     "text-white bg-purple-500 font-bold text-xl hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-white-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ",
 };
+
+export * from "./gradients";
