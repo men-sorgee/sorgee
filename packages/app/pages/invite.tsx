@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import styles from '_styles';
+import styles from 'index';
 import { tw } from 'twind';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useUser } from '../lib/hooks/use-user';

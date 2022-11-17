@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Script from 'next/script';
 import { tw } from 'twind';
-import _styles from '../_styles';
+import _styles from '../styles';
 
 export default function Learn() {
   return (

@@ -1,3 +1,5 @@
+import "./animations.css";
+
 export default {
   h1site: `my-4 font-serif md:block text-4xl lg:text-5xl xl:text-6xl font-extrabold md:text-center  leading-none   text-purple-500 mx-2`,
   h2page: `mt-4 font-serif mb-8 text-3xl font-extrabold md:text-center md:text-5xl text-green`,

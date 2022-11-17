@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { tw } from 'twind';
-import _styles from '../_styles';
+import _styles from '../styles';
 
 export default function Learn() {
   const {

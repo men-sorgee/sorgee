@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import React from 'react';
 import { tw } from 'twind';
-import styles from '_styles';
+import styles from 'styles';
 import Fire from '../components/icons/fire';
 
 export default function HomePage() {

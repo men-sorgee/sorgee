@@ -7,7 +7,7 @@ import {
 import { useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
 import { tw } from 'twind';
-import styles from '_styles';
+import styles from 'index';
 import { NextPageContext } from 'next';
 import Head from 'next/head';
 import Info from '../components/ui/Info';
