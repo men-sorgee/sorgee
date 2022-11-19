@@ -2,7 +2,6 @@ import { tw } from 'twind';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useMember } from 'lib/hooks/use-member';
 import styles from 'styles';
-import Loading from 'components/ui';
 
 function Verification() {
   const { user, member, loading } = useMember();
