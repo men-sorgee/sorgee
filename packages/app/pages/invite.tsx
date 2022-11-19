@@ -45,8 +45,9 @@ function Invite({ userTypeOptions }: PageProps) {
     const data = Buffer.from(JSON.stringify({ e, t, v: member.id })).toString(
       'base64'
     );
-    setLink(`${location.protocol}//${location.host}/apply/${data}`);
-    copyTextToClipboard(link!);
+    const invite = `${location.protocol}//${location.host}/apply/${data}`;
+    setLink(invite);
+    copyTextToClipboard(invite);
   };
   const copy = () => {};
 
@@ -69,6 +70,7 @@ function Invite({ userTypeOptions }: PageProps) {
           <div className={tw`grid grid-cols-1 gap-4 `}>
             <input
               type="email"
+              autoComplete="email"
               {...register('e', { required: true })}
               className={tw(styles.input)}
               placeholder="Email address"

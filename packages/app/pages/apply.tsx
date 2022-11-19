@@ -12,6 +12,7 @@ import { getFieldOptions } from 'lib/services/directus/service';
 import { useMember } from 'lib/hooks/use-member';
 import { Loading } from 'components/ui';
 import { InfoIcon } from 'components/icons';
+import { useRouter } from 'next/router';
 
 export type PageProps = {
   email?: string;
@@ -21,9 +22,10 @@ export type PageProps = {
   timeOfDayOptions: FormOptions;
   positionsOptions: FormOptions;
   skinToneOptions: FormOptions;
+  page?: string;
 };
 
-export async function getServerSideProps({ query }: NextPageContext) {
+export async function getServerSideProps(context: NextPageContext) {
   const props: PageProps = {
     spectrumOptions: await getFieldOptions('spectrum'),
     relationshipOptions: await getFieldOptions('relationship_status'),
@@ -73,7 +75,6 @@ function Form(props: PageProps & { user?: UserProfile; member?: FormUser }) {
     timeOfDayOptions
   } = props;
   const { name, email } = user!;
-  const [registered, setRegistered] = useState(false);
   const {
     register,
     handleSubmit,
@@ -101,6 +102,7 @@ function Form(props: PageProps & { user?: UserProfile; member?: FormUser }) {
       invite
     }
   });
+  const router = useRouter();
 
   async function onSubmit(data: any) {
     if (data.height_feet || data.height_inches) {
@@ -115,26 +117,21 @@ function Form(props: PageProps & { user?: UserProfile; member?: FormUser }) {
     });
 
     if (response.ok) {
-      setRegistered(true);
-      return true;
+      router.push('/apply/verification');
+      return;
     }
-    try {
-      const body = await response.json();
-      if (Array.isArray(body.errors)) {
-        body.errors.forEach((error) => {
-          setError(error.extensions.field, { message: error.message });
-        });
-      }
-    } catch (e) {
-      console.error(e);
+
+    const body = await response.json();
+    if (Array.isArray(body.errors)) {
+      body.errors.forEach((error) => {
+        setError(error.extensions.field, { message: error.message });
+      });
     }
   }
 
   const intro = invite
     ? 'You&apos;ve been invited to join our community of men! While your application is pre-approved, we still need to perform a few verification steps.'
     : 'Thanks for requesting to join our community. Please fill out the form and one of our team members will review your application and get back to you shortly.';
-
-  if (registered && member) return <Verification member={member} />;
 
   return (
     <>
@@ -482,33 +479,6 @@ function Form(props: PageProps & { user?: UserProfile; member?: FormUser }) {
           </button>
         </div>
       </form>
-    </>
-  );
-}
-
-function Verification({ member }: { member: FormUser }) {
-  return (
-    <>
-      <h3 className={tw(styles.h3section)}>Photo Verification</h3>
-      <p className={tw(styles.pLg)}>
-        To complete your application, take a selfie while holding a piece of
-        paper the following verification code on it, and email it to&nbsp;
-        <a className={tw(styles.link)} href="mailto:support@guysnheat.com">
-          support@guysnheat.com
-        </a>
-        &nbsp; using the email address you registered with.
-      </p>
-      <h2 className={tw`font-sans !text-6xl`}>
-        {member.id.slice(0, 4)} {member.id.slice(4, 8)}
-      </h2>
-      <p className={tw`${styles.pLg} mt-8`}>
-        <strong>
-          Be sure your face and code is clearly visible, with no sunglasses or
-          hats.
-        </strong>
-        &nbsp; This photo will not be shared with anyone and will not be used
-        for your profile.
-      </p>
     </>
   );
 }

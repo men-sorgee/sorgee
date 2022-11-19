@@ -40,14 +40,18 @@ export default function Navbar() {
               <a className={tw`${styles.headLink} !hidden`}>Learn</a>
             </Link>
             <Link href="/about">
-              <a className={tw`${styles.headLink} !hidden`}>About</a>
+              <a className={tw`${styles.headLink} `}>About</a>
             </Link>
             {user && (
               <>
                 <Link href="/apply">
                   <a className={tw`${styles.headLink} !hidden`}>Apply Now</a>
                 </Link>
-                {user?.src && (
+
+                <Link href="/api/auth/logout">
+                  <a className={tw`${styles.headLink}`}>Logout</a>
+                </Link>
+                {user?.picture && (
                   <div className="w-10 h-10 ">
                     <Photo
                       className=" ring-2 ring-gray-300 p-1 rounded-full border-2 border-white"
@@ -58,9 +62,6 @@ export default function Navbar() {
                     />
                   </div>
                 )}
-                <Link href="/api/auth/logout">
-                  <a className={tw`${styles.headLink}`}>Logout</a>
-                </Link>
               </>
             )}
           </div>

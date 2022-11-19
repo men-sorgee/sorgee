@@ -18,7 +18,6 @@ export default function HomePage() {
         >
           <div className={tw` hidden md:block w-1/2 flex`}>
             <Fire />
-            <Fire />
           </div>
           <div className={tw`flex flex-col md:w-1/2 md:mt-0`}>
             <h2 className={tw(h2page)}>Too Hot for the Public</h2>

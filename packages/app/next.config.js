@@ -19,7 +19,7 @@ module.exports = ( phase, { defaultConfig } ) => {
       adminToken: process.env.ADMIN_TOKEN || '',
     },
     images: {
-      domains: ['guysnheat.com', 'admin.guysnheat.com', 'localhost', 'lh3.googleusercontent.com', 'cdn.discordapp.com'],
+      domains: ['guysnheat.com', 'admin.guysnheat.com', 'localhost', 'lh3.googleusercontent.com', 'cdn.discordapp.com', 's.gravatar.com'],
     }
 
   }

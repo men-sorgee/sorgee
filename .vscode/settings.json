@@ -27,7 +27,7 @@
   "prettier.trailingComma": "none",
   "prettier.requireConfig": true,
   "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
   },
   "cSpell.words": [
     "authentification",
