@@ -8,7 +8,7 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": false,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
@@ -41,11 +41,11 @@
     "**/*.ts",
     "**/*.tsx",
     "next.config.js",
-    "types.d.ts"
   ],
   "exclude": [
     "node_modules",
     ".idea",
-    "**/*.new.tsx"
+    "**/*.new.tsx",
+    "lib/services/directus/types.d.ts"
   ]
 }

@@ -62,7 +62,7 @@ function Invite({ userTypeOptions }: PageProps) {
           onSubmit={handleSubmit(getLink)}
           className={tw`max-w-3xl mx-auto`}
         >
-          <p className={tw(styles.p)}>
+          <p className={tw(styles.pLg)}>
             {member?.first_name || 'Brother'}, enter your friend&apos;s email
             address and we will create a special link for you to share.
           </p>
@@ -75,7 +75,6 @@ function Invite({ userTypeOptions }: PageProps) {
             />
             {member?.privileged && (
               <select
-                type="text"
                 {...register('t', { required: true })}
                 className={tw(styles.select)}
               >
@@ -91,13 +90,14 @@ function Invite({ userTypeOptions }: PageProps) {
         </form>
 
         {link && (
-          <p className={tw`${styles.p} mt-8`}>
+          <p className={tw` mt-8`}>
             The &nbsp;
             <a
               title={link}
               target={'_blank'}
               href={link}
-              className={tw(styles.link)} rel="noreferrer"
+              className={tw(styles.link)}
+              rel="noreferrer"
             >
               link
             </a>

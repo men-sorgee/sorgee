@@ -1,4 +1,4 @@
-import { User } from "./types.d";
+import { User } from './types'
 
 export * from "./client";
 

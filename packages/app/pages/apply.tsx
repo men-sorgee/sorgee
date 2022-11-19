@@ -61,13 +61,17 @@ function Apply(props: PageProps) {
   );
 }
 
-type FormProps = FormUser & {
-  height_feet?: string;
-  height_inches?: string;
-};
-
 function Form(props: PageProps & { user?: UserProfile; member?: FormUser }) {
-  const { member, user, invite } = props;
+  const {
+    member,
+    user,
+    invite,
+    spectrumOptions,
+    positionsOptions,
+    relationshipOptions,
+    skinToneOptions,
+    timeOfDayOptions
+  } = props;
   const { name, email } = user!;
   const [registered, setRegistered] = useState(false);
   const {
@@ -76,10 +80,8 @@ function Form(props: PageProps & { user?: UserProfile; member?: FormUser }) {
     setError,
     watch,
     formState: { errors, isSubmitting }
-  } = useForm<FormProps>({
+  } = useForm({
     defaultValues: {
-      ...props,
-      picture: user?.picture,
       first_name: member?.first_name || name?.split(' ')[0] || name,
       last_name: member?.last_name || name?.split(' ')[1] || '',
       email,
@@ -95,7 +97,8 @@ function Form(props: PageProps & { user?: UserProfile; member?: FormUser }) {
       height_inches: member?.height?.toString().substring(2),
       weight: member?.weight || null,
       skin_tone: member?.skin_tone || null,
-      my_positions: member?.my_positions || []
+      my_positions: member?.my_positions || [],
+      invite
     }
   });
 
@@ -115,11 +118,15 @@ function Form(props: PageProps & { user?: UserProfile; member?: FormUser }) {
       setRegistered(true);
       return true;
     }
-    const body = await response.json();
-    if (Array.isArray(body)) {
-      body.forEach((error: any) => {
-        setError(error.extensions.field, { message: error.message });
-      });
+    try {
+      const body = await response.json();
+      if (Array.isArray(body.errors)) {
+        body.errors.forEach((error) => {
+          setError(error.extensions.field, { message: error.message });
+        });
+      }
+    } catch (e) {
+      console.error(e);
     }
   }
 
@@ -145,7 +152,7 @@ function Form(props: PageProps & { user?: UserProfile; member?: FormUser }) {
         <h3 className={tw`${styles.h3section} !text-2xl !text-left`}>
           Private Information
         </h3>
-        <p className={tw(styles.p)}>
+        <p>
           We collect this information for verification purposes only. We will
           not share, show or sell this information to anyone.
         </p>
@@ -161,7 +168,9 @@ function Form(props: PageProps & { user?: UserProfile; member?: FormUser }) {
               className={tw(styles.input)}
             />
             <ErrorMessage
-              render={(m) => <div className={tw(inputError)}>{m.message}</div>}
+              render={(m) => (
+                <div className={tw(styles.inputError)}>{m.message}</div>
+              )}
               errors={errors}
               name="first_name"
             />
@@ -222,7 +231,9 @@ function Form(props: PageProps & { user?: UserProfile; member?: FormUser }) {
               placeholder="123 456 7890"
             />
             <ErrorMessage
-              render={(m) => <div className={tw(inputError)}>{m.message}</div>}
+              render={(m) => (
+                <div className={tw(styles.inputError)}>{m.message}</div>
+              )}
               errors={errors}
               name="phone"
             />
@@ -230,7 +241,7 @@ function Form(props: PageProps & { user?: UserProfile; member?: FormUser }) {
           <h3 className={tw`${styles.h3section} !text-2xl !text-left`}>
             About You
           </h3>
-          <p className={tw(styles.p)}>
+          <p>
             <strong>Please be as honest as possible.</strong> Honest answers
             will help your chances of approval and help our AI create the
             perfect group events!
@@ -330,7 +341,7 @@ function Form(props: PageProps & { user?: UserProfile; member?: FormUser }) {
                 {...register('weight')}
               />
             </div>
-            <div className={tw`${controlGroup2} !pr-0 `}>
+            <div className={tw`pb-4 pr-4 !pr-0 `}>
               <label htmlFor="skin_tone" className={tw(styles.label)}>
                 Skin Tone
               </label>
@@ -368,13 +379,13 @@ function Form(props: PageProps & { user?: UserProfile; member?: FormUser }) {
         <h3 className={tw`${styles.h3section} !text-2xl !text-left`}>
           Preferences
         </h3>
-        <p className={tw(styles.p)}>
+        <p>
           We currently coordinate events in Denver, for the following times
           bi-monthly. We try to create events that can include new members,
           however, we do not guarantee that you will be included in every event.
           As the group grows, so too will the number of events we can create.
         </p>
-        <div className={tw(styles.formSection)}>
+        <div className={tw`w-full pb-4`}>
           <div className={tw`w-full mb-4`}>
             <label className={tw(styles.label)}>
               Preferred Event Times
@@ -400,7 +411,7 @@ function Form(props: PageProps & { user?: UserProfile; member?: FormUser }) {
               ))}
             </div>
           </div>
-          <p className={tw`${styles.p} !text-sm`}>
+          <p className={tw` !text-sm`}>
             <strong>Important:</strong> Members who RSVP to events are expected
             to attend. Members that RSVP to event and do not attend, decrease
             the likelihood of getting invited again. We understand that things
@@ -459,9 +470,8 @@ function Form(props: PageProps & { user?: UserProfile; member?: FormUser }) {
             </label>
           </div>
         </div>
-        <input type="hidden" {...register('picture')} />
-        <input type="hidden" {...register('invite')} />
 
+        <input type="hidden" {...register('invite')} />
         <div className={tw`flex items-center space-x-4 mt-2 pt-4`}>
           <button
             type="submit"
