@@ -1,7 +1,7 @@
 import { withApiAuthRequired, getSession, Session } from "@auth0/nextjs-auth0";
 import { getAdminClient } from "lib/services/directus";
+import { userFields } from "lib/services/directus";
 import { NextApiRequest, NextApiResponse } from "next";
-
 async function getUserDetails(req: NextApiRequest, res: NextApiResponse<any>) {
   const adminClient = await getAdminClient();
   const session = getSession(req, res) as Session;
@@ -11,6 +11,7 @@ async function getUserDetails(req: NextApiRequest, res: NextApiResponse<any>) {
     if (user?.email) {
       const existingUserQuery = await adminClient.items("users").readByQuery({
         filter: { email: user.email },
+        fields: [...(userFields as any)],
       });
       const existingUser = existingUserQuery?.data
         ? existingUserQuery.data[0]

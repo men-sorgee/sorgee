@@ -13,12 +13,7 @@ class MyDocument extends Document {
           <Main />
           <NextScript />
         </body>
-        <Script
-          type="text/javascript"
-          src="https://app.termly.io/embed.min.js"
-          data-auto-block="on"
-          data-website-uuid="8fbb3f3c-9fc6-4256-ad1f-7c061dabb965"
-        ></Script>
+        
       </Html>
     );
   }

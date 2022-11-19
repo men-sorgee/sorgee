@@ -1,36 +1,54 @@
 import Head from 'next/head';
-import styles from 'index';
+import styles from 'styles';
 import { tw } from 'twind';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
-import { useUser } from '../lib/hooks/use-user';
+import { useMember } from '../lib/hooks/use-member';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { copyTextToClipboard } from '../lib/utils/helpers';
+import { copyTextToClipboard } from '../lib/utils';
+import {
+  getFieldOptions,
+  FormOptions,
+  UserInvite
+} from 'lib/services/directus';
+import Toast from '../components/layout/Toast';
 
-function Invite() {
-  const { userDetails, isLoading } = useUser();
+type PageProps = {
+  userTypeOptions: FormOptions;
+};
+
+export async function getServerSideProps(context) {
+  const userTypeOptions = await getFieldOptions('user_type');
+  const exclude = ['subscriber', 'reject'];
+  return {
+    props: {
+      userTypeOptions: userTypeOptions.filter((o) => !exclude.includes(o.value))
+    }
+  };
+}
+
+function Invite({ userTypeOptions }: PageProps) {
+  const { member, loading } = useMember();
   const [link, setLink] = useState<string>();
-  const { handleSubmit, register } = useForm({
-    defaultValues: { email: '' }
+  const { handleSubmit, register } = useForm<UserInvite>({
+    defaultValues: {
+      t: 'pledge'
+    }
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (loading) return <div>Loading...</div>;
 
-  if (userDetails?.status !== 'active')
+  if (member?.status !== 'active')
     return <div>You aren&apos;t allowed here.</div>;
 
-  const getLink = (data: { email: string }) => {
-    const { email } = data;
-    const id = Buffer.from(email).toString('base64');
-    setLink(
-      `${location.protocol}://${location.host}/apply?id=${id}&vid=${
-        userDetails!.id
-      }`
+  const getLink = ({ e, t }) => {
+    const data = Buffer.from(JSON.stringify({ e, t, v: member.id })).toString(
+      'base64'
     );
-  };
-  const copy = () => {
+    setLink(`${location.protocol}//${location.host}/apply/${data}`);
     copyTextToClipboard(link!);
   };
+  const copy = () => {};
 
   return (
     <>
@@ -45,29 +63,47 @@ function Invite() {
           className={tw`max-w-3xl mx-auto`}
         >
           <p className={tw(styles.p)}>
-            {userDetails!.first_name}, enter your friend&apos;s email address
-            and we will create a special link for you to share.
+            {member?.first_name || 'Brother'}, enter your friend&apos;s email
+            address and we will create a special link for you to share.
           </p>
           <div className={tw`grid grid-cols-1 gap-4 `}>
             <input
               type="email"
-              {...register('email', { required: true })}
+              {...register('e', { required: true })}
               className={tw(styles.input)}
               placeholder="Email address"
             />
-            <button className={tw(styles.buttonPrimary)}>Get Link</button>
+            {member?.privileged && (
+              <select
+                type="text"
+                {...register('t', { required: true })}
+                className={tw(styles.select)}
+              >
+                {userTypeOptions.map((option, index) => (
+                  <option key={index} value={option.value}>
+                    {option.text}
+                  </option>
+                ))}
+              </select>
+            )}
+            <button className={tw(styles.buttonPrimary)}>Copy Link</button>
           </div>
         </form>
-        <div className={tw`block`}>
-          {link && (
-            <pre
-              onClick={copy}
-              className={tw`mt-8 border rounded bg-gray-800 text-white p-8`}
+
+        {link && (
+          <p className={tw`${styles.p} mt-8`}>
+            The &nbsp;
+            <a
+              title={link}
+              target={'_blank'}
+              href={link}
+              className={tw(styles.link)}
             >
-              {link}
-            </pre>
-          )}
-        </div>
+              link
+            </a>
+            &nbsp; has been copied to your clipboard.
+          </p>
+        )}
       </section>
     </>
   );

@@ -1,4 +1,4 @@
-export { default as ExpandingArrow } from './expanding-arrow';
+export { default as ExpandingArrow } from './arrow';
 export { default as SearchIcon } from './search';
 export { default as XCircleIcon } from './x-circle';
 export { default as XIcon } from './x';
@@ -9,7 +9,8 @@ export { default as EditIcon } from './edit';
 export { default as UploadIcon } from './upload';
 export { default as DirectoryIcon } from './directory';
 export { default as GitHubIcon } from './github';
-export { default as AlertCircleIcon } from './alert-circle';
+export { default as AlertCircleIcon } from './alert';
 export { default as InstagramIcon } from './instagram';
 export { default as TwitterIcon } from './twitter';
 export { default as DiscordIcon } from './discord';
+export { default as InfoIcon } from './info';

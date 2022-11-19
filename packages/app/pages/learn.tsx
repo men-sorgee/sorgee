@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { tw } from 'twind';
-import _styles from '../styles';
+import styles from 'styles';
 
 export default function Learn() {
   const {
@@ -8,7 +8,7 @@ export default function Learn() {
     h3section: h3Classes,
     h4callout: h4Classes,
     p: paragraphClasses
-  } = _styles;
+  } = styles;
   return (
     <>
       <Head>

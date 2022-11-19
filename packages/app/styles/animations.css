@@ -1,13 +1,13 @@
-.mo-fire {
+.fire {
   width: 50%;
   height: auto;
-  margin-x: auto;
+  margin: 0 auto;
 }
-.mo-fire svg {
+.fire svg {
   width: 100%;
   height: auto;
 }
-.mo-fire .flame {
+.fire .flame {
   animation-name: flamefly;
   animation-duration: 2s;
   animation-timing-function: linear;
@@ -15,38 +15,38 @@
   opacity: 0;
   transform-origin: 50% 50% 0;
 }
-.mo-fire .flame.one {
+.fire .flame.one {
   animation-delay: 1s;
   animation-duration: 3s;
 }
-.mo-fire .flame3.two {
+.fire .flame3.two {
   animation-duration: 5s;
   animation-delay: 1s;
 }
 
-.mo-fire .flame-main {
+.fire .flame-main {
   animation-name: flameWobble;
   animation-duration: 3s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
 }
-.mo-fire .flame-main.one {
+.fire .flame-main.one {
   animation-duration: 4s;
   animation-delay: 1s;
 }
-.mo-fire .flame-main.two {
+.fire .flame-main.two {
   animation-duration: 3s;
   animation-delay: 2s;
 }
-.mo-fire .flame-main.three {
+.fire .flame-main.three {
   animation-duration: 2.1s;
   animation-delay: 3s;
 }
-.mo-fire .flame-main.four {
+.fire .flame-main.four {
   animation-duration: 3.2s;
   animation-delay: 4s;
 }
-.mo-fire .flame-main.five {
+.fire .flame-main.five {
   animation-duration: 2.5s;
   animation-delay: 5s;
 }

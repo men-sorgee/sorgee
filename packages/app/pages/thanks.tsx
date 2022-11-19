@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import styles from 'index';
+import styles from 'styles';
 import { tw } from 'twind';
 import Fire from '../components/icons/fire';
 

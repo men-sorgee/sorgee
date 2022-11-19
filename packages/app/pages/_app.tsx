@@ -2,17 +2,17 @@ import { UserProvider } from '@auth0/nextjs-auth0';
 import Layout from 'components/layout/index';
 import twindConfig from 'twind.config';
 import withTwindApp from '@twind/next/app';
-import { UserContextProvider } from 'lib/hooks/use-user';
+import { MemberContextProvider } from 'lib/hooks/use-member';
 import { AppProps } from 'next/app';
-import '../styles/animations.css';
+import 'styles/animations.css';
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <UserProvider>
-      <UserContextProvider>
+      <MemberContextProvider>
         <Layout>
           <Component {...pageProps} />
         </Layout>
-      </UserContextProvider>
+      </MemberContextProvider>
     </UserProvider>
   );
 }

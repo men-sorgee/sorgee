@@ -35,19 +35,19 @@ export default function Navbar() {
 
           <div className={tw`flex flex-1 justify-end space-x-8`}>
             <Link href="/learn">
-              <a className={tw`${styles.link} !hidden`}>Learn</a>
+              <a className={tw`${styles.headLink} !hidden`}>Learn</a>
             </Link>
             <Link href="/about">
-              <a className={tw`${styles.link} !hidden`}>About</a>
+              <a className={tw`${styles.headLink} !hidden`}>About</a>
             </Link>
             {user && (
               <>
                 <Link href="/apply">
-                  <a className={tw`${styles.link} !hidden`}>Apply Now</a>
+                  <a className={tw`${styles.headLink} !hidden`}>Apply Now</a>
                 </Link>
 
                 <Link href="/api/auth/logout">
-                  <a className={tw`${styles.link}`}>Logout</a>
+                  <a className={tw`${styles.headLink}`}>Logout</a>
                 </Link>
               </>
             )}

@@ -13,7 +13,7 @@ export default function Toast({
   const [bannerHidden, setBannerHidden] = useState(true);
 
   useEffect(() => {
-    setBannerHidden(showWhen());
+    setBannerHidden(showWhen);
   }, []);
 
   return bannerHidden ? null : (

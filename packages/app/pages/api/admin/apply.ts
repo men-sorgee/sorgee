@@ -1,6 +1,8 @@
 import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getAdminClient, User } from "lib/services/directus";
+import { DirectusTypes } from "@directus/sdk";
+import { NextFetchEvent } from "next/server";
 
 async function Apply(req: NextApiRequest, res: NextApiResponse<any>) {
   const session = getSession(req, res);
@@ -11,34 +13,44 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<any>) {
   }
 
   const adminClient = await getAdminClient();
-  const existingUserQuery = await adminClient.items("users").readByQuery({
+  const users = adminClient.items("users");
+  const existingUserQuery = await users.readByQuery({
     filter: { email: user.email },
   });
 
-  const userDetails = req.body as User;
-  userDetails.email = user.email;
+  try {
+    let userDetails = req.body;
+    userDetails.email = user.email;
 
-  if (userDetails?.vouched_by) {
-    const vouchingUser = await adminClient
-      .items("users")
-      .readOne(userDetails.vouched_by as string);
-    if (vouchingUser && vouchingUser.status == "active") {
-      userDetails.user_type = vouchingUser.privileged ? "member" : "applicant";
-    } else {
-      userDetails.vouched_by = null;
+    if (userDetails?.vouched_by) {
+      const vouchingUser = await users.readOne(
+        userDetails.vouched_by as string
+      );
+      if (vouchingUser?.status !== "active") {
+        userDetails.user_type = vouchingUser?.privileged ? "member" : "pledge";
+      } else {
+        userDetails.vouched_by = null;
+      }
     }
-  }
 
-  const existingUser = existingUserQuery?.data
-    ? existingUserQuery.data[0]
-    : null;
+    const existingUser = existingUserQuery?.data
+      ? existingUserQuery.data[0]
+      : null;
 
-  if (existingUser) {
-    await adminClient.items("users").updateOne(existingUser.id!, userDetails);
-  } else {
-    await adminClient.items("users").createOne(userDetails);
+    userDetails.status = existingUser?.status || "new";
+
+    await (existingUser
+      ? users.updateOne(existingUser.id!, userDetails, { fields: "*" })
+      : users.createOne(userDetails)
+    )
+      .then(
+        () => res.status(200).end(),
+        (err) => res.status(500).json(err)
+      )
+      .catch((err) => console.error(err));
+  } catch (e: any) {
+    res.status(400).json({ message: e?.message || e });
   }
-  res.status(200).json({ message: "Success" });
 }
 
 export default withApiAuthRequired(Apply);

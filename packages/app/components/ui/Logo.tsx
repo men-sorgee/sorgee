@@ -1,4 +1,4 @@
-const Logo = ({ className = 'w-2 h-2', ...props }) => (
+const Logo = ({ className = '', ...props }) => (
   <svg
     color="#7c3aed"
     viewBox="0 0 100 100"
