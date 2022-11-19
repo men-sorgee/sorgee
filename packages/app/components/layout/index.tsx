@@ -9,7 +9,7 @@ import { tw, css, apply, Context } from 'twind/css';
 import React from 'react';
 import Link from 'next/link';
 import Logo from '../ui/Logo';
-import Meta, { MetaProps } from './Meta';
+import Meta, { MetaProps } from '../meta';
 
 interface Props {
   children: ReactNode | ReactNode[];
@@ -31,13 +31,7 @@ export default function Layout({ children, meta: pageMeta }: Props) {
   return (
     <>
       <Meta props={meta} />
-      <Script
-        defer
-        type="text/javascript"
-        src="https://app.termly.io/embed.min.js"
-        data-auto-block="on"
-        data-website-uuid="8fbb3f3c-9fc6-4256-ad1f-7c061dabb965"
-      />
+
       <div className={tw`max-w-6xl mx-auto p-4`}>
         <main id="skip" className={tw`min-h-full bg-black`}>
           <Navbar />
@@ -47,12 +41,6 @@ export default function Layout({ children, meta: pageMeta }: Props) {
         </main>
         <Footer />
       </div>
-      <Script
-        defer
-        src="https://chimpstatic.com/mcjs-connected/js/users/402ed825f5ff12c2a4e3e8b94/da473e2309b4600081fba1614.js"
-      />
-
-      <Script src="https://unpkg.com/flowbite@1.5.4/dist/flowbite.js" />
     </>
   );
 }

@@ -1,8 +1,6 @@
 import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0";
 import { NextApiRequest, NextApiResponse } from "next";
-import { getAdminClient, User } from "lib/services/directus";
-import { DirectusTypes } from "@directus/sdk";
-import { NextFetchEvent } from "next/server";
+import { getAdminClient, FormUser, userFields } from "lib/services/directus";
 
 async function Apply(req: NextApiRequest, res: NextApiResponse<any>) {
   const session = getSession(req, res);
@@ -16,36 +14,47 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<any>) {
   const users = adminClient.items("users");
   const existingUserQuery = await users.readByQuery({
     filter: { email: user.email },
+    fields: [...(userFields as any)],
   });
 
   try {
     let userDetails = req.body;
     userDetails.email = user.email;
 
-    if (userDetails?.vouched_by) {
-      const vouchingUser = await users.readOne(
-        userDetails.vouched_by as string
+    if (userDetails?.invite) {
+      const inviteJson = Buffer.from(userDetails.invite, "base64").toString(
+        "utf-8"
       );
+      const invite = JSON.parse(inviteJson);
+      const { v: vid, t: user_type } = invite;
+      const vouchingUser: any = await users.readOne(vid, {
+        fields: ["id", "privileged", "status"],
+      });
       if (vouchingUser?.status !== "active") {
-        userDetails.user_type = vouchingUser?.privileged ? "member" : "pledge";
-      } else {
-        userDetails.vouched_by = null;
+        userDetails.vouched_by = vid;
+        userDetails.user_type = vouchingUser?.privileged ? user_type : "pledge";
       }
+      delete userDetails.invite;
     }
 
-    const existingUser = existingUserQuery?.data
+    const existingUser: any = existingUserQuery?.data
       ? existingUserQuery.data[0]
       : null;
 
     userDetails.status = existingUser?.status || "new";
 
     await (existingUser
-      ? users.updateOne(existingUser.id!, userDetails, { fields: "*" })
+      ? users.updateOne(existingUser.id!, userDetails, {
+          fields: [...(userFields as any)],
+        })
       : users.createOne(userDetails)
     )
       .then(
         () => res.status(200).end(),
-        (err) => res.status(500).json(err)
+        (err) => {
+          console.error(err);
+          res.status(500).json(err);
+        }
       )
       .catch((err) => console.error(err));
   } catch (e: any) {

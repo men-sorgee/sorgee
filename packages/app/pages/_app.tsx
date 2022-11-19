@@ -4,16 +4,17 @@ import twindConfig from 'twind.config';
 import withTwindApp from '@twind/next/app';
 import { MemberContextProvider } from 'lib/hooks/use-member';
 import { AppProps } from 'next/app';
-import 'styles/animations.css';
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <UserProvider>
-      <MemberContextProvider>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </MemberContextProvider>
-    </UserProvider>
+    <>
+      <UserProvider>
+        <MemberContextProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </MemberContextProvider>
+      </UserProvider>
+    </>
   );
 }
 

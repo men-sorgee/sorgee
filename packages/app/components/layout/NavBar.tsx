@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import 'react';
-import { Logo } from 'components/ui';
+import { Logo, Photo } from 'components/ui';
 import { useUser } from '@auth0/nextjs-auth0';
 import { tw } from 'twind';
 import styles from 'styles';
@@ -33,7 +33,9 @@ export default function Navbar() {
             <h1 className={tw`${styles.h1site} ml-4`}>Guys N Heat</h1>
           </div>
 
-          <div className={tw`flex flex-1 justify-end space-x-8`}>
+          <div
+            className={tw`flex flex-1 justify-end align-middle space-x-8 items-center`}
+          >
             <Link href="/learn">
               <a className={tw`${styles.headLink} !hidden`}>Learn</a>
             </Link>
@@ -45,7 +47,17 @@ export default function Navbar() {
                 <Link href="/apply">
                   <a className={tw`${styles.headLink} !hidden`}>Apply Now</a>
                 </Link>
-
+                {user?.src && (
+                  <div className="w-10 h-10 ">
+                    <Photo
+                      className=" ring-2 ring-gray-300 p-1 rounded-full border-2 border-white"
+                      src={user.picture!}
+                      alt={user.name!}
+                      width={50}
+                      height={50}
+                    />
+                  </div>
+                )}
                 <Link href="/api/auth/logout">
                   <a className={tw`${styles.headLink}`}>Logout</a>
                 </Link>

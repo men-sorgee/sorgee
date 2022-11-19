@@ -399,14 +399,14 @@ export interface components {
     };
     ItemsUsers: {
       id?: string;
-      status?: string | null;
+      status?: string;
       /** Format: timestamp */
       date_created?: string | null;
       /** Format: timestamp */
       date_updated?: string | null;
       first_name?: string | null;
       last_name?: string | null;
-      user_type?: string | null;
+      user_type?: string;
       phone?: string | null;
       phone_verified?: boolean | null;
       email?: string | null;
@@ -448,13 +448,24 @@ export interface components {
       hair_style?: string | null;
       body_attributes?: unknown | null;
       their_spectrum?: unknown | null;
-      privileged?: boolean | null;
+      privileged?: boolean;
+      eye_color?: string | null;
+      ball_size?: string | null;
+      ball_gravity?: string | null;
+      city?: string | null;
+      cum_attributes?: unknown | null;
+      load_policy?: unknown | null;
+      hiv_status?: string | null;
+      /** Format: date */
+      last_tested?: string | null;
+      vaccinations?: unknown | null;
+      verification?: string | null;
       events?: (number | components["schemas"]["ItemsEventsUsers"])[];
+      administrative?: string;
       information?: string;
       preferences?: string;
-      administrative?: string;
-      my_files?: (number | components["schemas"]["ItemsUsersPhotos"])[];
       images?: (number | components["schemas"]["ItemsUsersFiles"])[];
+      my_files?: (number | components["schemas"]["ItemsUsersPhotos"])[];
       users?: (number | components["schemas"]["ItemsUserRelationships"])[];
       my_sex?: string;
       their_sex?: string;
@@ -1467,7 +1478,7 @@ export interface operations {
       content: {
         "application/json": {
           /** @description String to hash. */
-          string?: string;
+          string: string;
         };
       };
     };
@@ -1489,9 +1500,9 @@ export interface operations {
       content: {
         "application/json": {
           /** @description String to hash. */
-          string?: string;
+          string: string;
           /** @description Hash you want to verify against. */
-          hash?: string;
+          hash: string;
         };
       };
     };
@@ -1559,11 +1570,9 @@ export interface operations {
            * @description What file format to save the export to. One of csv, xml, json
            * @enum {string}
            */
-          format?: "csv" | "xml" | "json";
-          /** @description The query object to use for the export */
-          query?: components["definitions"]["Query"];
-          /** @description Partial file object to tweak where / how the export file is saved */
-          file?: components["schemas"]["Files"];
+          format: "csv" | "xml" | "json";
+          query: components["schemas"]["Query"];
+          file: components["schemas"]["Files"];
         };
       };
     };
@@ -1621,7 +1630,7 @@ export interface operations {
         content: {
           "application/json": {
             data?: components["schemas"]["ItemsEvents"][];
-            meta?: components["x-metadata"];
+            meta?: components["schemas"]["x-metadata"];
           };
         };
       };
@@ -1755,7 +1764,7 @@ export interface operations {
         content: {
           "application/json": {
             data?: components["schemas"]["ItemsEventsUsers"][];
-            meta?: components["x-metadata"];
+            meta?: components["schemas"]["x-metadata"];
           };
         };
       };
@@ -1889,7 +1898,7 @@ export interface operations {
         content: {
           "application/json": {
             data?: components["schemas"]["ItemsLocation"][];
-            meta?: components["x-metadata"];
+            meta?: components["schemas"]["x-metadata"];
           };
         };
       };
@@ -2023,7 +2032,7 @@ export interface operations {
         content: {
           "application/json": {
             data?: components["schemas"]["ItemsUserRelationships"][];
-            meta?: components["x-metadata"];
+            meta?: components["schemas"]["x-metadata"];
           };
         };
       };
@@ -2157,7 +2166,7 @@ export interface operations {
         content: {
           "application/json": {
             data?: components["schemas"]["ItemsUsers"][];
-            meta?: components["x-metadata"];
+            meta?: components["schemas"]["x-metadata"];
           };
         };
       };
@@ -2291,7 +2300,7 @@ export interface operations {
         content: {
           "application/json": {
             data?: components["schemas"]["ItemsUsersFiles"][];
-            meta?: components["x-metadata"];
+            meta?: components["schemas"]["x-metadata"];
           };
         };
       };
@@ -2425,7 +2434,7 @@ export interface operations {
         content: {
           "application/json": {
             data?: components["schemas"]["ItemsUsersPhotos"][];
-            meta?: components["x-metadata"];
+            meta?: components["schemas"]["x-metadata"];
           };
         };
       };
@@ -2559,7 +2568,7 @@ export interface operations {
         content: {
           "application/json": {
             data?: components["schemas"]["Activity"][];
-            meta?: components["x-metadata"];
+            meta?: components["schemas"]["x-metadata"];
           };
         };
       };
@@ -2772,7 +2781,7 @@ export interface operations {
         content: {
           "application/json": {
             data?: components["schemas"]["Files"][];
-            meta?: components["x-metadata"];
+            meta?: components["schemas"]["x-metadata"];
           };
         };
       };
@@ -2937,7 +2946,7 @@ export interface operations {
         content: {
           "application/json": {
             data?: components["schemas"]["Folders"][];
-            meta?: components["x-metadata"];
+            meta?: components["schemas"]["x-metadata"];
           };
         };
       };
@@ -3091,7 +3100,7 @@ export interface operations {
         content: {
           "application/json": {
             data?: components["schemas"]["Permissions"][];
-            meta?: components["x-metadata"];
+            meta?: components["schemas"]["x-metadata"];
           };
         };
       };
@@ -3169,7 +3178,7 @@ export interface operations {
         content: {
           "application/json": {
             data?: components["schemas"]["Presets"][];
-            meta?: components["x-metadata"];
+            meta?: components["schemas"]["x-metadata"];
           };
         };
       };
@@ -3429,7 +3438,7 @@ export interface operations {
         content: {
           "application/json": {
             data?: components["schemas"]["Roles"][];
-            meta?: components["x-metadata"];
+            meta?: components["schemas"]["x-metadata"];
           };
         };
       };
@@ -3517,7 +3526,7 @@ export interface operations {
         content: {
           "application/json": {
             data?: components["schemas"]["Users"][];
-            meta?: components["x-metadata"];
+            meta?: components["schemas"]["x-metadata"];
           };
         };
       };
@@ -3746,7 +3755,7 @@ export interface operations {
         content: {
           "application/json": {
             data?: components["schemas"]["Flows"][];
-            meta?: components["x-metadata"];
+            meta?: components["schemas"]["x-metadata"];
           };
         };
       };

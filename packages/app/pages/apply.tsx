@@ -1,22 +1,17 @@
-import { withPageAuthRequired } from '@auth0/nextjs-auth0';
+import { UserProfile, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
 import { tw } from 'twind';
 import styles from 'styles';
 import { NextPageContext } from 'next';
 import Head from 'next/head';
-import router from 'next/router';
-import { getAdminClient, User, FormOptions } from 'lib/services/directus';
-
+import { FormOptions, FormUser } from 'lib/services/directus';
 import { pruneUndefined } from 'lib/utils';
 import { useEffect, useState } from 'react';
 import { getFieldOptions } from 'lib/services/directus/service';
 import { useMember } from 'lib/hooks/use-member';
 import { Loading } from 'components/ui';
-import { Tooltip } from 'flowbite-react';
 import { InfoIcon } from 'components/icons';
-
-// TEST: http://localhost:3000/apply?email=jlwicker@gmail.com&vouched_by=jason@thebrotherhoodgroup.org
 
 export type PageProps = {
   email?: string;
@@ -48,7 +43,7 @@ function Apply(props: PageProps) {
       setFormError(
         `You must login using the email address ${props.email} to use this invite.`
       );
-  }, [user, loading, member]);
+  }, [user, loading, member, props.email]);
 
   const data = { user, member, ...props };
   const title = props.invite ? 'Member Registration' : 'Member Application';
@@ -66,18 +61,13 @@ function Apply(props: PageProps) {
   );
 }
 
-function Form(props: PageProps & { user?: UserProfile; member?: User }) {
-  const {
-    user,
-    email: incoming_email = null,
-    invite,
-    spectrumOptions,
-    relationshipOptions,
-    timeOfDayOptions,
-    positionsOptions,
-    skinToneOptions,
-    member
-  } = props;
+type FormProps = FormUser & {
+  height_feet?: string;
+  height_inches?: string;
+};
+
+function Form(props: PageProps & { user?: UserProfile; member?: FormUser }) {
+  const { member, user, invite } = props;
   const { name, email } = user!;
   const [registered, setRegistered] = useState(false);
   const {
@@ -86,8 +76,9 @@ function Form(props: PageProps & { user?: UserProfile; member?: User }) {
     setError,
     watch,
     formState: { errors, isSubmitting }
-  } = useForm<User & { invite: string }>({
+  } = useForm<FormProps>({
     defaultValues: {
+      ...props,
       picture: user?.picture,
       first_name: member?.first_name || name?.split(' ')[0] || name,
       last_name: member?.last_name || name?.split(' ')[1] || '',
@@ -100,12 +91,11 @@ function Form(props: PageProps & { user?: UserProfile; member?: User }) {
       relationship_status: member?.relationship_status || null,
       event_availability: [],
       age: member?.age || null,
-      height_feet: member?.height?.toString().substring(0, 1) || null,
-      height_inches: member?.height?.toString().substring(2) || null,
+      height_feet: member?.height?.toString().substring(0, 1),
+      height_inches: member?.height?.toString().substring(2),
       weight: member?.weight || null,
       skin_tone: member?.skin_tone || null,
-      my_positions: member?.my_positions || [],
-      invite
+      my_positions: member?.my_positions || []
     }
   });
 
@@ -126,17 +116,15 @@ function Form(props: PageProps & { user?: UserProfile; member?: User }) {
       return true;
     }
     const body = await response.json();
-    if (Array.isArray(body.errors)) {
-      body.errors.forEach((error: any) => {
+    if (Array.isArray(body)) {
+      body.forEach((error: any) => {
         setError(error.extensions.field, { message: error.message });
       });
     }
   }
 
-  const controlGroup1 = styles.inputGroup + ' md:pr-4';
-  const controlGroup2 = ' pb-4';
-  const intro = watch('invite')
-    ? "You've been invited to join our community of men! While your application is pre-approved, we still need to perform a few verification steps."
+  const intro = invite
+    ? 'You&apos;ve been invited to join our community of men! While your application is pre-approved, we still need to perform a few verification steps.'
     : 'Thanks for requesting to join our community. Please fill out the form and one of our team members will review your application and get back to you shortly.';
 
   if (registered && member) return <Verification member={member} />;
@@ -162,7 +150,7 @@ function Form(props: PageProps & { user?: UserProfile; member?: User }) {
           not share, show or sell this information to anyone.
         </p>
         <div className={tw`flex flex-col md:flex-row flex-wrap`}>
-          <div className={tw(controlGroup1)}>
+          <div className={tw`${styles.inputGroup} md:pr-4`}>
             <label htmlFor="first_name" className={tw(styles.label)}>
               First Name
             </label>
@@ -189,12 +177,14 @@ function Form(props: PageProps & { user?: UserProfile; member?: User }) {
               className={tw(styles.input)}
             />
             <ErrorMessage
-              render={(m) => <div className={tw(inputError)}>{m.message}</div>}
+              render={(m) => (
+                <div className={tw(styles.inputError)}>{m.message}</div>
+              )}
               errors={errors}
               name="last_name"
             />
           </div>
-          <div className={tw(controlGroup1)}>
+          <div className={tw`${styles.inputGroup} md:pr-4`}>
             <label htmlFor="email" className={tw(styles.label)}>
               Email
               <InfoIcon
@@ -245,7 +235,7 @@ function Form(props: PageProps & { user?: UserProfile; member?: User }) {
             will help your chances of approval and help our AI create the
             perfect group events!
           </p>
-          <div className={tw(controlGroup1)}>
+          <div className={tw`${styles.inputGroup} md:pr-4`}>
             <label htmlFor="spectrum" className={tw(styles.label)}>
               Orientation
             </label>
@@ -308,7 +298,7 @@ function Form(props: PageProps & { user?: UserProfile; member?: User }) {
                 name="age"
               />
             </div>
-            <div className={tw(controlGroup2)}>
+            <div className={tw`pb-4`}>
               <label htmlFor="height_feet" className={tw(styles.label)}>
                 Height
               </label>
@@ -412,10 +402,10 @@ function Form(props: PageProps & { user?: UserProfile; member?: User }) {
           </div>
           <p className={tw`${styles.p} !text-sm`}>
             <strong>Important:</strong> Members who RSVP to events are expected
-            to attend. Members that RSVP to event and do not attend,
-            dramatically decrease the chances of getting invited again. We
-            understand that things come up, but please be respectful of your
-            brothers and RSVP accurately and let us know if you can't make it.
+            to attend. Members that RSVP to event and do not attend, decrease
+            the likelihood of getting invited again. We understand that things
+            come up, but please be respectful of your brothers and RSVP
+            accurately and let us know if you can&apos;t make it.
           </p>
 
           <div className={tw`w-full mb-4`}>
@@ -478,7 +468,7 @@ function Form(props: PageProps & { user?: UserProfile; member?: User }) {
             className={tw(styles.buttonPrimary)}
             disabled={isSubmitting}
           >
-            {watch('invite') ? 'Join' : 'Apply'}
+            {invite ? 'Join' : 'Apply'}
           </button>
         </div>
       </form>
@@ -486,7 +476,7 @@ function Form(props: PageProps & { user?: UserProfile; member?: User }) {
   );
 }
 
-function Verification({ member }: { member: User }) {
+function Verification({ member }: { member: FormUser }) {
   return (
     <>
       <h3 className={tw(styles.h3section)}>Photo Verification</h3>

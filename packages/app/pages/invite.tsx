@@ -97,7 +97,7 @@ function Invite({ userTypeOptions }: PageProps) {
               title={link}
               target={'_blank'}
               href={link}
-              className={tw(styles.link)}
+              className={tw(styles.link)} rel="noreferrer"
             >
               link
             </a>

@@ -2,13 +2,14 @@ import Head from 'next/head';
 
 export interface MetaProps {
   title: string;
-  description: string;
-  basePath: string;
-  ogUrl: string;
-  ogImage: string;
+  description?: string;
+  basePath?: string;
+  ogUrl?: string;
+  ogImage?: string;
+  url?: string;
 }
 
-export default function Meta(props: MetaProps) {
+export default function Meta({ props }: { props: MetaProps }) {
   return (
     <Head>
       <title>{props.title}</title>
@@ -51,19 +52,10 @@ export default function Meta(props: MetaProps) {
       <meta name="twitter:title" content={props.title} />
       <meta name="twitter:description" content={props.description} />
       {props.ogImage && <meta name="twitter:image" content={props.ogImage} />}
-
       <meta name="msapplication-TileColor" content="#00aba9" />
       <meta name="theme-color" content="#000" />
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Crete+Round&family=Exo&family=Oswald:wght@200;400&display=swap"
-        rel="stylesheet"
-      ></link>
-      <link
-        rel="stylesheet"
-        href="https://unpkg.com/flowbite@1.5.4/dist/flowbite.min.css"
-      />
     </Head>
   );
 }

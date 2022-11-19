@@ -1,19 +1,21 @@
-import { Configuration, warn } from "twind";
+import { Configuration, warn, apply } from "twind";
 import * as colors from "twind/colors";
 
 const config: Configuration = {
   // Twind configuration: https://twind.dev/handbook/configuration.html
-  darkMode: "class",
   mode: warn,
   theme: {
-    fontFamily: {
-      sans: ["Exo", "sans-serif"],
-      serif: ["Crete Round", "serif"],
-      mono: ["Consolas"],
-    },
-    colors,
     extend: {
+      screens: {
+        standalone: { raw: "(display-mode:standalone)" },
+      },
+      fontFamily: {
+        sans: ["Exo", "sans-serif"],
+        serif: ["Crete Round", "serif"],
+        mono: ["Consolas"],
+      },
       colors: {
+        ...colors,
         purple: {
           DEFAULT: "#7C3AED",
           "50": "#ECE2FC",
@@ -43,23 +45,29 @@ const config: Configuration = {
       },
     },
   },
-  preflight: {
-    ":global": {
-      html: {
-        touchAction: "manipulation",
-        fontFeatureSettings: `'case' 1, 'rlig' 1, 'calt' 0'`,
-      },
-      body: {
-        textRendering: "optimizeLegibility",
-        MozOsxFontSmoothing: "grayscale",
-      },
-      p: {
-        WebkitTapHighlightColor: "white",
-      },
+  preflight: (preflight, { theme }) => ({
+    ...preflight,
+    "@import":
+      'url("https://fonts.googleapis.com/css2?family=Crete+Round&family=Exo:wght@400;500;600;700&display=swap")',
+    html: {
+      touchAction: "manipulation",
+      fontFeatureSettings: `'case' 1, 'rlig' 1, 'calt' 0'`,
+      "@apply": "text-base font-sans",
     },
-  },
+    body: {
+      textRendering: "optimizeLegibility",
+      MozOsxFontSmoothing: "grayscale",
+      "@apply":
+        "text-lg font-sans min-h-full m-0 relative text-white bg-black antialiased font-sans",
+    },
+    p: {
+      WebkitTapHighlightColor: "white",
+      "@apply": "my-4 text-md text-justify sm:text-left md:text-center  ",
+    },
+  }),
   plugins: {
     flowbite: require("flowbite/plugin"),
+    components: {},
   },
 };
 

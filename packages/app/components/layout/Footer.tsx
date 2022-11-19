@@ -50,22 +50,20 @@ export default function Footer() {
           className={tw`flex my-6 text-sm text-gray-500 list-none lg:flex-grow-0 lg:flex-shrink-0 lg:my-0`}
         >
           <li className={tw`box-border block font-semibold text-left`}>
-            <Link href="/terms">
-              <a
-                className={tw`pr-5 mr-5 text-gray-500 no-underline  border-r border-gray-700 cursor-pointer`}
-              >
-                Terms of service
-              </a>
-            </Link>
+            <a
+              href="/terms"
+              className={tw`pr-5 mr-5 text-gray-500 no-underline  border-r border-gray-700 cursor-pointer`}
+            >
+              Terms of service
+            </a>
           </li>
           <li className={tw`box-border block font-semibold text-left`}>
-            <Link href="/privacy">
-              <a
-                className={tw`pr-5 mr-5 text-gray-500 no-underline  cursor-pointer`}
-              >
-                Privacy policy
-              </a>
-            </Link>
+            <a
+              href="/privacy"
+              className={tw`pr-5 mr-5 text-gray-500 no-underline  cursor-pointer`}
+            >
+              Privacy policy
+            </a>
           </li>
         </ul>
 

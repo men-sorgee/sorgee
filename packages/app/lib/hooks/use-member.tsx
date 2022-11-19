@@ -1,11 +1,11 @@
 import { useEffect, useState, createContext, useContext } from 'react';
 import { useUser, UserProfile } from '@auth0/nextjs-auth0';
-import { User, userFields } from 'lib/services/directus';
+import { FormUser, userFields } from 'lib/services/directus';
 import { fetcher } from '@/lib/utils';
 
 export type Context = {
   user?: UserProfile;
-  member?: User;
+  member?: FormUser;
   loading: boolean;
   fields: string[];
 };
@@ -19,16 +19,16 @@ export interface Props {
 export const MemberContextProvider = (props: Props) => {
   const { user, isLoading } = useUser();
   const [loading, setLoading] = useState(true);
-  const [member, setMember] = useState<User>();
+  const [member, setMember] = useState<FormUser>();
 
   useEffect(() => {
     if (user && !member) {
-      fetcher<User>('/api/admin/me')
+      fetcher<FormUser>('/api/admin/me')
         .then(setMember)
         .catch(console.debug)
         .finally(() => setLoading(false));
     }
-  }, [user, isLoading]);
+  }, [user, isLoading, member]);
 
   const value: Context = {
     user,

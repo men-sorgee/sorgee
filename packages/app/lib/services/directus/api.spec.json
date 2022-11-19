@@ -3,7 +3,7 @@
   "info": {
     "title": "Dynamic API Specification",
     "description": "This is a dynamically generated API specification for all endpoints existing on the current project.",
-    "version": "9.20.4"
+    "version": "9.21.0"
   },
   "servers": [
     {
@@ -756,10 +756,12 @@
                 "properties": {
                   "string": {
                     "description": "String to hash.",
-                    "type": "string",
-                    "required": true
+                    "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "string"
+                ]
               }
             }
           }
@@ -799,15 +801,17 @@
                 "properties": {
                   "string": {
                     "description": "String to hash.",
-                    "type": "string",
-                    "required": true
+                    "type": "string"
                   },
                   "hash": {
                     "description": "Hash you want to verify against.",
-                    "type": "string",
-                    "required": true
+                    "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "string",
+                  "hash"
+                ]
               }
             }
           }
@@ -948,21 +952,20 @@
                       "csv",
                       "xml",
                       "json"
-                    ],
-                    "required": true
+                    ]
                   },
                   "query": {
-                    "description": "The query object to use for the export",
-                    "required": true,
-                    "$ref": "#/components/definitions/Query"
+                    "$ref": "#/components/schemas/Query"
                   },
                   "file": {
-                    "description": "Partial file object to tweak where / how the export file is saved",
-                    "type": "object",
-                    "required": true,
                     "$ref": "#/components/schemas/Files"
                   }
-                }
+                },
+                "required": [
+                  "format",
+                  "query",
+                  "file"
+                ]
               }
             }
           }
@@ -1049,7 +1052,6 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
                 "oneOf": [
                   {
                     "type": "array",
@@ -1140,7 +1142,7 @@
                       }
                     },
                     "meta": {
-                      "$ref": "#/components/x-metadata"
+                      "$ref": "#/components/schemas/x-metadata"
                     }
                   }
                 }
@@ -1347,7 +1349,6 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
                 "oneOf": [
                   {
                     "type": "array",
@@ -1438,7 +1439,7 @@
                       }
                     },
                     "meta": {
-                      "$ref": "#/components/x-metadata"
+                      "$ref": "#/components/schemas/x-metadata"
                     }
                   }
                 }
@@ -1645,7 +1646,6 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
                 "oneOf": [
                   {
                     "type": "array",
@@ -1736,7 +1736,7 @@
                       }
                     },
                     "meta": {
-                      "$ref": "#/components/x-metadata"
+                      "$ref": "#/components/schemas/x-metadata"
                     }
                   }
                 }
@@ -1943,7 +1943,6 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
                 "oneOf": [
                   {
                     "type": "array",
@@ -2034,7 +2033,7 @@
                       }
                     },
                     "meta": {
-                      "$ref": "#/components/x-metadata"
+                      "$ref": "#/components/schemas/x-metadata"
                     }
                   }
                 }
@@ -2241,7 +2240,6 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
                 "oneOf": [
                   {
                     "type": "array",
@@ -2332,7 +2330,7 @@
                       }
                     },
                     "meta": {
-                      "$ref": "#/components/x-metadata"
+                      "$ref": "#/components/schemas/x-metadata"
                     }
                   }
                 }
@@ -2539,7 +2537,6 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
                 "oneOf": [
                   {
                     "type": "array",
@@ -2630,7 +2627,7 @@
                       }
                     },
                     "meta": {
-                      "$ref": "#/components/x-metadata"
+                      "$ref": "#/components/schemas/x-metadata"
                     }
                   }
                 }
@@ -2837,7 +2834,6 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
                 "oneOf": [
                   {
                     "type": "array",
@@ -2928,7 +2924,7 @@
                       }
                     },
                     "meta": {
-                      "$ref": "#/components/x-metadata"
+                      "$ref": "#/components/schemas/x-metadata"
                     }
                   }
                 }
@@ -3159,7 +3155,7 @@
                       }
                     },
                     "meta": {
-                      "$ref": "#/components/x-metadata"
+                      "$ref": "#/components/schemas/x-metadata"
                     }
                   }
                 }
@@ -3574,7 +3570,7 @@
                       }
                     },
                     "meta": {
-                      "$ref": "#/components/x-metadata"
+                      "$ref": "#/components/schemas/x-metadata"
                     }
                   }
                 }
@@ -3868,7 +3864,7 @@
                       }
                     },
                     "meta": {
-                      "$ref": "#/components/x-metadata"
+                      "$ref": "#/components/schemas/x-metadata"
                     }
                   }
                 }
@@ -4125,7 +4121,7 @@
                       }
                     },
                     "meta": {
-                      "$ref": "#/components/x-metadata"
+                      "$ref": "#/components/schemas/x-metadata"
                     }
                   }
                 }
@@ -4278,7 +4274,7 @@
                       }
                     },
                     "meta": {
-                      "$ref": "#/components/x-metadata"
+                      "$ref": "#/components/schemas/x-metadata"
                     }
                   }
                 }
@@ -4727,7 +4723,7 @@
                       }
                     },
                     "meta": {
-                      "$ref": "#/components/x-metadata"
+                      "$ref": "#/components/schemas/x-metadata"
                     }
                   }
                 }
@@ -4880,7 +4876,7 @@
                       }
                     },
                     "meta": {
-                      "$ref": "#/components/x-metadata"
+                      "$ref": "#/components/schemas/x-metadata"
                     }
                   }
                 }
@@ -5313,7 +5309,7 @@
                       }
                     },
                     "meta": {
-                      "$ref": "#/components/x-metadata"
+                      "$ref": "#/components/schemas/x-metadata"
                     }
                   }
                 }
@@ -5646,7 +5642,7 @@
             "type": "string"
           },
           "status": {
-            "nullable": true,
+            "nullable": false,
             "type": "string"
           },
           "date_created": {
@@ -5668,7 +5664,7 @@
             "type": "string"
           },
           "user_type": {
-            "nullable": true,
+            "nullable": false,
             "type": "string"
           },
           "phone": {
@@ -5825,8 +5821,46 @@
             "nullable": true
           },
           "privileged": {
-            "nullable": true,
+            "nullable": false,
             "type": "boolean"
+          },
+          "eye_color": {
+            "nullable": true,
+            "type": "string"
+          },
+          "ball_size": {
+            "nullable": true,
+            "type": "string"
+          },
+          "ball_gravity": {
+            "nullable": true,
+            "type": "string"
+          },
+          "city": {
+            "nullable": true,
+            "type": "string"
+          },
+          "cum_attributes": {
+            "nullable": true
+          },
+          "load_policy": {
+            "nullable": true
+          },
+          "hiv_status": {
+            "nullable": true,
+            "type": "string"
+          },
+          "last_tested": {
+            "nullable": true,
+            "type": "string",
+            "format": "date"
+          },
+          "vaccinations": {
+            "nullable": true
+          },
+          "verification": {
+            "nullable": true,
+            "type": "string"
           },
           "events": {
             "type": "array",
@@ -5841,27 +5875,14 @@
               ]
             }
           },
+          "administrative": {
+            "type": "string"
+          },
           "information": {
             "type": "string"
           },
           "preferences": {
             "type": "string"
-          },
-          "administrative": {
-            "type": "string"
-          },
-          "my_files": {
-            "type": "array",
-            "items": {
-              "oneOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "$ref": "#/components/schemas/ItemsUsersPhotos"
-                }
-              ]
-            }
           },
           "images": {
             "type": "array",
@@ -5872,6 +5893,19 @@
                 },
                 {
                   "$ref": "#/components/schemas/ItemsUsersFiles"
+                }
+              ]
+            }
+          },
+          "my_files": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "$ref": "#/components/schemas/ItemsUsersPhotos"
                 }
               ]
             }
@@ -7211,67 +7245,6 @@
         }
       }
     },
-    "definitions": {
-      "Query": {
-        "type": "object",
-        "properties": {
-          "fields": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Control what fields are being returned in the object.",
-            "example": [
-              "*",
-              "*.*"
-            ]
-          },
-          "filter": {
-            "type": "object",
-            "example": {
-              "<field>": {
-                "<operator>": "<value>"
-              }
-            }
-          },
-          "search": {
-            "description": "Filter by items that contain the given search query in one of their fields.",
-            "type": "string"
-          },
-          "sort": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "How to sort the returned items.",
-            "example": [
-              "-date_created"
-            ]
-          },
-          "limit": {
-            "type": "number",
-            "description": "Set the maximum number of items that will be returned"
-          },
-          "offset": {
-            "type": "number",
-            "description": "How many items to skip when fetching data."
-          },
-          "page": {
-            "type": "number",
-            "description": "Cursor for use in pagination. Often used in combination with limit."
-          },
-          "deep": {
-            "type": "object",
-            "description": "Deep allows you to set any of the other query parameters on a nested relational dataset.",
-            "example": {
-              "related_articles": {
-                "_limit": 3
-              }
-            }
-          }
-        }
-      }
-    },
     "responses": {
       "NotFoundError": {
         "description": "Error: Not found.",
@@ -7332,19 +7305,6 @@
         "type": "apiKey",
         "in": "header",
         "name": "Authorization"
-      }
-    },
-    "x-metadata": {
-      "type": "object",
-      "properties": {
-        "total_count": {
-          "description": "Returns the total item count of the collection you're querying.",
-          "type": "integer"
-        },
-        "filter_count": {
-          "description": "Returns the item count of the collection you're querying, taking the current filter/search parameters into account.",
-          "type": "integer"
-        }
       }
     }
   }

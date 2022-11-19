@@ -6,7 +6,7 @@ export default function Toast({
   message,
   onHide
 }: {
-  showWhen: () => boolean;
+  showWhen: boolean;
   onHide: () => void;
   message: string;
 }) {
@@ -14,7 +14,7 @@ export default function Toast({
 
   useEffect(() => {
     setBannerHidden(showWhen);
-  }, []);
+  }, [bannerHidden, showWhen]);
 
   return bannerHidden ? null : (
     <div
