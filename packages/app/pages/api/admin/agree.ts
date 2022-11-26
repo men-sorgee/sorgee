@@ -3,6 +3,7 @@ import { updateUser } from 'lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { AgreementData, ApiResponse } from '@/lib/types'
 import { withAppUser, withMethods } from '../_utils'
+import { sendApplicationWorkflowEmail } from '../../../lib/services/sendgrid/server'
 
 async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
  
@@ -16,6 +17,12 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
       await updateUser(applicant.id, {
         application_status: 'approved'
       })
+      sendApplicationWorkflowEmail(
+        applicant.email, 
+        `Application Status`, 
+        `Your free membership is now active!`,
+        'Manage Profile',
+        'https://guysnheat.com/member/profile')
       res.status(200).end();
     }
 

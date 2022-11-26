@@ -2,8 +2,11 @@ import { withApiAuthRequired } from "@auth0/nextjs-auth0";
 import { NextApiRequest, NextApiResponse } from "next";
 import { createUser, getUser, updateUser } from 'lib/services/directus/server'
 import { withAppUser, withUser } from '../_utils'
-import { Applicant } from 'lib/services/directus'
+
 import { ApiResponse } from '../../../lib/types'
+import { addSubscriber, sendApplicationWorkflowEmail } from '../../../lib/services/sendgrid/server'
+import { User } from '../../../lib/services/directus/types'
+import { Applicant } from '../../../lib/services/directus'
 
 async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   
@@ -14,6 +17,8 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     const userDetails = req.body as Applicant;
     userDetails.email = existingUser?.email || user.email;
     userDetails.application_status = "verify";
+
+
 
     if (userDetails?.invite && existingUser == null) {
       const inviteJson = Buffer.from(userDetails.invite, "base64").toString(
@@ -33,10 +38,19 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
       delete userDetails.invite;
     }
 
+    
+    await addSubscriber(userDetails.first_name, userDetails.email)
     await (existingUser
-      ? updateUser(existingUser.id!, userDetails)
-      : createUser(userDetails)
+      ? updateUser(existingUser.id!, { ...userDetails, in_sendgrid: true })
+      : createUser({ ...userDetails, in_sendgrid: true })
     )
+
+    sendApplicationWorkflowEmail(
+      userDetails.email, 
+      `Application Status`, 
+      'Your membership application has started.',
+      'Complete Application',
+      'https://guysnheat.com/apply')
 
     res.status(200).end()
   } catch (e: any) {

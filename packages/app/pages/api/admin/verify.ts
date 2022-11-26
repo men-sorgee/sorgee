@@ -3,6 +3,7 @@ import { updateUser, uploadFile, UploadFolder } from 'lib/services/directus/serv
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse } from '@/lib/types'
 import { withAppUser, withMethods } from '../_utils'
+import { sendApplicationWorkflowEmail } from '../../../lib/services/sendgrid/server'
 
 export const config = {
   api: {
@@ -27,6 +28,13 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
       photo: file.id,
       application_status: "review"
     })
+
+    sendApplicationWorkflowEmail(
+      member.email, 
+      `Application Status`, 
+      'Your photo ID was submitted. It may take a few days to review.',
+      'Check Application Results',
+      'https://guysnheat.com/apply/verify')
    
     res.status(200).end();
   } catch (e: any) {
