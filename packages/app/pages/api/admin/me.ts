@@ -1,28 +1,11 @@
-import { withApiAuthRequired, getSession, Session } from "@auth0/nextjs-auth0";
-import { getAdminClient } from "lib/services/directus";
-import { userFields } from "lib/services/directus";
+import { withApiAuthRequired } from "@auth0/nextjs-auth0";
 import { NextApiRequest, NextApiResponse } from "next";
+import { withMember } from '../_utils'
+
 async function getUserDetails(req: NextApiRequest, res: NextApiResponse<any>) {
-  const adminClient = await getAdminClient();
-  const session = getSession(req, res) as Session;
-
   try {
-    const { user } = session;
-    if (user?.email) {
-      const existingUserQuery = await adminClient.items("users").readByQuery({
-        filter: { email: user.email },
-        fields: [...(userFields as any)],
-      });
-      const existingUser = existingUserQuery?.data
-        ? existingUserQuery.data[0]
-        : null;
-
-      if (existingUser) {
-        res.status(200).json(existingUser);
-        return;
-      }
-    }
-    res.status(403).json({ error: "There was a problem" });
+    const member = await withMember(req, res);
+    res.status(200).json(member);
   } catch (e) {
     console.error(e);
     res.status(500).json(e);

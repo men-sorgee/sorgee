@@ -5,14 +5,14 @@ import { tw } from 'twind';
 import styles from 'styles';
 import { NextPageContext } from 'next';
 import Head from 'next/head';
-import { FormOptions, FormUser } from 'lib/services/directus';
+import { Member } from 'lib/services/directus';
 import { pruneUndefined } from 'lib/utils';
 import { useEffect, useState } from 'react';
-import { getFieldOptions } from 'lib/services/directus/service';
+import { getFieldOptions} from '@/lib/services/directus/server';
 import { useMember } from 'lib/hooks/use-member';
-import { Loading } from 'components/ui';
 import { InfoIcon } from 'components/icons';
 import { useRouter } from 'next/router';
+import { FormOptions } from 'lib/types'
 
 export type PageProps = {
   email?: string;
@@ -37,6 +37,7 @@ export async function getServerSideProps(context: NextPageContext) {
 }
 
 function Apply(props: PageProps) {
+  const router = useRouter();
   const { user, member, loading } = useMember();
   const [formError, setFormError] = useState<string>();
 
@@ -45,17 +46,21 @@ function Apply(props: PageProps) {
       setFormError(
         `You must login using the email address ${props.email} to use this invite.`
       );
-  }, [user, loading, member, props.email]);
+    if (member && member.application_status !== 'apply') {
+      router.push(`/apply/${member.application_status}`);
+      return
+    }
+  }, [user, loading, member, props.email, router]);
 
   const data = { user, member, ...props };
-  const title = props.invite ? 'Member Registration' : 'Member Application';
+  
   return (
     <>
       <Head>
-        <title>{title}</title>
+        <title>Application: Profile</title>
       </Head>
       <section className={tw`${styles.sectionDark}`}>
-        <h2 className={tw(styles.h2page)}>{loading ? 'Loading' : title}</h2>
+        <h2 className={tw(styles.h2page)}>{loading ? 'Loading' : 'Application: Profile'}</h2>
         {formError && <p className={styles.inputError}>{formError}</p>}
         {!loading && !formError && <Form {...data} />}
       </section>
@@ -63,7 +68,8 @@ function Apply(props: PageProps) {
   );
 }
 
-function Form(props: PageProps & { user?: UserProfile; member?: FormUser }) {
+function Form(props: PageProps & { user?: UserProfile; member?: Member }) {
+  const router = useRouter();
   const {
     member,
     user,
@@ -79,7 +85,6 @@ function Form(props: PageProps & { user?: UserProfile; member?: FormUser }) {
     register,
     handleSubmit,
     setError,
-    watch,
     formState: { errors, isSubmitting }
   } = useForm({
     defaultValues: {
@@ -102,7 +107,7 @@ function Form(props: PageProps & { user?: UserProfile; member?: FormUser }) {
       invite
     }
   });
-  const router = useRouter();
+  
 
   async function onSubmit(data: any) {
     if (data.height_feet || data.height_inches) {
@@ -117,7 +122,7 @@ function Form(props: PageProps & { user?: UserProfile; member?: FormUser }) {
     });
 
     if (response.ok) {
-      router.push('/apply/verification');
+      router.push('/apply/verify');
       return;
     }
 

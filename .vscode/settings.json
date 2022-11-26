@@ -1,31 +1,8 @@
 {
-  "sqltools.connections": [
-    {
-      "pgOptions": {
-        "ssl": {
-          "requestCert": true,
-          "ca": "./.devcontainer/prod-ca-2021.crt"
-        }
-      },
-      "previewLimit": 50,
-      "server": "db.piunlbgdtwdczqbavotu.supabase.co",
-      "port": 5432,
-      "askForPassword": true,
-      "driver": "PostgreSQL",
-      "name": "guysnheat",
-      "database": "postgres",
-      "username": "postgres"
-    }
-  ],
-  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
   "editor.formatOnSave": true,
   "[jsonc]": {
     "editor.defaultFormatter": "vscode.json-language-features"
   },
-  "prettier.singleAttributePerLine": false,
-  "prettier.singleQuote": true,
-  "prettier.trailingComma": "none",
-  "prettier.requireConfig": true,
   "[typescriptreact]": {
     "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
   },
@@ -33,6 +10,7 @@
     "authentification",
     "basemaps",
     "Consolas",
+    "daisyui",
     "datetime",
     "ethnicities",
     "EXIF",
@@ -50,6 +28,7 @@
     "Parens",
     "Polyamorous",
     "rlig",
+    "sendgrid",
     "supabase",
     "twind",
     "uuidv"
@@ -58,10 +37,7 @@
   "editor.quickSuggestions": {
     "strings": true
   },
-  "vs-knative": {
-    "vs-knative.outputFormat": "yaml"
-  },
   "[typescript]": {
-    "editor.defaultFormatter": "hb432.prettier-eslint-typescript"
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
   },
 }

@@ -1,134 +1,169 @@
 import Head from 'next/head';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { tw } from 'twind';
 import styles from 'styles';
 import Fire from '../components/icons/fire';
+import { useForm, FieldError } from 'react-hook-form'
+import { useUser } from '@auth0/nextjs-auth0'
+import { SubscriptionData } from 'lib/types'
+import { ErrorMessage } from '@hookform/error-message'
+import { useMember } from '../lib/hooks/use-member'
 
-export default function HomePage() {
-  const { h2page, h3section, pLg, sectionWhite, sectionDark } = styles;
+export default function Home() {
+  const { user } = useUser();
+  const { member } = useMember();
+  const [subscribed, setSubscribed] = React.useState(false);
+  const { handleSubmit, register, setError, formState: {
+    errors,
+  }} = useForm<SubscriptionData>({
+    defaultValues: {
+      email: user?.email,
+      name: user?.name,
+    }
+  });
+  useEffect(() => {
+    if (member && member.user_type != 'user' ) {
+      setSubscribed(true);
+    }
+  }, [subscribed, member, user]);
+  const onSubmit = async (data:SubscriptionData) => {
+    const response = await fetch('/api/admin/subscribe', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: Buffer.from(JSON.stringify(data))
+    });
+
+    if (response.ok) {
+      setSubscribed(true);
+    } else {
+      const { error } = await response.json();
+      setError('email', { message: error });
+    }
+  }
   return (
     <>
       <Head>
-        <title>Home</title>
+        <title>Home </title>
       </Head>
 
-      <section className={tw(sectionWhite)}>
+      <section className={tw(styles.sectionWhite)}>
         <div
-          className={tw`flex flex-col items-center max-w-6xl mx-auto md:flex-row`}
+          className={tw`flex flex-col items-center md:flex-row max-w-6xl flex-col-reverse `}
         >
-          <div className={tw` hidden md:block w-1/2 flex`}>
-            <Fire />
+          <div className={tw`hidden md:block md:w-1/2 mt-4`}>
+             <Fire  />
           </div>
-          <div className={tw`flex flex-col md:w-1/2 md:mt-0`}>
-            <h2 className={tw(h2page)}>Too Hot for the Public</h2>
-            <p className={tw`${pLg} !md:text-left`}>
-              A hot new social club for bisexual and married men who value
-              discretion. We facilitate discrete events, in safe environments to
-              express, explore and discover.
+          <div className={tw` md:w-1/2`}>
+            <h2 className={tw(styles.h2page)}>Too Hot for the Public</h2>
+            <p>
+              A hot new social club for men who value discretion. 
+              We facilitate discrete events, in safe environments
+              for men to express, explore and discover with other
+              like-minded men.
             </p>
-            <p className={tw`${pLg} italic !text-sm !text-left`}>
-              (Accepting applications through invites only.)
+            <p className={tw`italic`}>
+              This club is invite only, but soon we will accept
+              applications from 
+
             </p>
           </div>
         </div>
       </section>
-      <section className={tw(sectionDark)}>
-        <div className={tw`max-w-6xl mx-auto`}>
-          <div className={tw`flex flex-col items-center md:flex-row `}>
-            <div className={tw`w-full md:w-1/2 md:pr-8 mt-8`}>
-              <h3 className={tw`${h3section}] `}>Want to experiment?</h3>
-              <p className={tw`${pLg} !md:text-right`}>
-                When send invites to our newsletter subscribers first. Learn
-                more and get important updates and milestones as we build
-                something brand new for men who have sex with men in Denver
+      { subscribed ? 
+      <section className={tw(styles.sectionDark)}>
+        <div className={tw`max-w-6xl mx-auto flex flex-col items-center md:flex-row `}>
+            <div className={tw`w-full mb-4 md:mb-0 pr-8`}>
+              <h3 className={tw`${styles.h3section} `}>Interest Noted</h3>
+              <p>
+                You are signed up to get important updates with 
+                our newsletter!
               </p>
             </div>
-            <div className={tw`w-full md:w-1/2`}>
+          </div>
+      </section> :
+      <section className={tw(styles.sectionDark)}>
+        <div className={tw`max-w-6xl mx-auto flex flex-col items-center md:flex-row `}>
+            <div className={tw`w-full md:w-1/2 mb-4 md:mb-0 pr-8`}>
+              <h3 className={tw`${styles.h3section} `}>Interested?</h3>
+              <p>
+                Learn more about us and get important updates by 
+                subscribing to our newsletter!
+              </p>
+            </div>
+            <div className={tw`w-full md:w-1/2 text-left`}>
               <form
-                action="https://thebrotherhoodgroup.us13.list-manage.com/subscribe/post?u=402ed825f5ff12c2a4e3e8b94&amp;id=05b4cabc8b&amp;f_id=009608e3f0"
-                method="post"
-                target="_blank"
+                onSubmit={handleSubmit(onSubmit)}
               >
-                <h3 className={tw(h3section)}>Receive Updates</h3>
-                <input
-                  type="text"
-                  name="FNAME"
-                  id="FNAME"
-                  className={tw`block text-black w-full px-4 py-3 mb-4 rounded-lg focus:ring focus:ring-blue-500 focus:outline-none`}
-                  placeholder="Name"
-                  required
-                  autoComplete="first-name"
-                />
-                <input
-                  type="email"
-                  name="EMAIL"
-                  id="EMAIL"
-                  className={tw`block text-black w-full px-4 py-3 mb-4 rounded-lg focus:ring focus:ring-blue-500 focus:outline-none`}
-                  placeholder="Email address"
-                  required
-                  autoComplete="email"
-                />
 
+                <div className={tw`mb-2`}>
+                  <input
+                    type="text"
+                    {...register('name', {required: true})}
+                    className={tw(styles.input)}
+                    placeholder="Name"
+                  />
+                </div>
+                <div className={tw`mb-2`}>
+                  <input
+                    type="email"
+                    {...register('email', {required: true})}
+                    className={tw(styles.input)}
+                    placeholder="Email address"
+                    autoComplete="email"
+                  />
+                  <ErrorMessage
+                    render={(m) => (
+                      <div className={tw(styles.inputError)}>{m.message}</div>
+                    )}
+                    errors={errors} 
+                    name="email" />
+                </div>
                 <div className={tw`block`}>
-                  <button className={tw(styles.button)}>
+                  <button className={tw(styles.buttonPrimary)}>
                     Get Notifications
                   </button>
                 </div>
               </form>
             </div>
-          </div>
+       
         </div>
       </section>
-      <section className={tw(sectionWhite)}>
+      }
+      <section className={tw(styles.sectionWhite)}>
         <div
-          className={tw`flex flex-col items-start max-w-6xl mx-auto md:flex-row`}
+          className={tw`flex flex-col items-center max-w-6xl mx-auto md:flex-row`}
         >
-          <h3 className={tw`${h3section} sm:w-1/2 !md:text-6xl mt-8`}>
-            Men, <br />
-            not Numbers
+          <h3 className={tw`${styles.h3section} sm:w-1/2 !md:text-6xl mt-8`}>
+            Real Men, <br className={tw`hidden md:inline`} />
+            No Drama
           </h3>
           <div className={tw` w-full md:w-1/2`}>
-            <p className={tw`${pLg} !md:text-left`}>
-              We use guests&apos; preferences to craft the events with
-              compatible men to make things easy for you!
+            
+            <p className={tw`md:text-left`}>
+              All members are verified by staff or vouched for by trusted members. 
+              We are building a community of real guys who are seriously looking for fun,
+              and doing so with integrity.
             </p>
-            <p className={tw`${pLg} !md:text-left`}>
-              All guests are pre-screened and vetted to weed-out weirdos, bots
-              and scammers.
-            </p>
+           
           </div>
         </div>
       </section>
-      <section className={tw(sectionDark)}>
+      <section className={tw(styles.sectionDark)}>
         <div
           className={tw`flex flex-col items-start max-w-6xl mx-auto md:flex-row flex-col-reverse`}
         >
           <div className={tw`w-full md:w-1/2 `}>
-            <p className={tw`${pLg}  `}>
-              Tired of wasting your time staring at screens, searching through
-              profile after profile, just to end up alone?
+            <p>
+              
             </p>
-            <p className={tw`${pLg}  !md:text-right`}>
-              Tell what you like and let big data do the rest!
-            </p>
+          
           </div>
           <div className={tw`w-full md:w-1/2 !md:text-right`}>
-            <svg
-              className={tw`w-20 h-20 text-yellow-500 mx-none md:mx-auto`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
-              ></path>
-            </svg>
-            <h3 className={tw`${h3section}] !text-green`}>
-              Now Testing in Denver
+           
+            <h3 className={tw`${styles.h3section}] !text-green`}>
+              
             </h3>
           </div>
         </div>

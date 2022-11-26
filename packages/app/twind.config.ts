@@ -62,13 +62,10 @@ const config: Configuration = {
     },
     p: {
       WebkitTapHighlightColor: "white",
-      "@apply": "my-4 text-md text-justify sm:text-left md:text-center  ",
+      "@apply": "my-4 text-base text-justify sm:text-left md:text-center  ",
     },
   }),
-  plugins: {
-    flowbite: require("flowbite/plugin"),
-    components: {},
-  },
+
 };
 
 export default config;

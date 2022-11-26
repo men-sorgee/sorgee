@@ -130,6 +130,34 @@ export interface paths {
     /** Update an existing location item. */
     patch: operations["updateSingleItemsLocation"];
   };
+  "/items/page": {
+    /** List the page items. */
+    get: operations["readItemsPage"];
+    /** Create a new page item. */
+    post: operations["createItemsPage"];
+  };
+  "/items/page/{id}": {
+    /** Retrieve a single page item by unique identifier. */
+    get: operations["readSingleItemsPage"];
+    /** Delete an existing page item. */
+    delete: operations["deleteSingleItemsPage"];
+    /** Update an existing page item. */
+    patch: operations["updateSingleItemsPage"];
+  };
+  "/items/page_content": {
+    /** List the page_content items. */
+    get: operations["readItemsPageContent"];
+    /** Create a new page_content item. */
+    post: operations["createItemsPageContent"];
+  };
+  "/items/page_content/{id}": {
+    /** Retrieve a single page_content item by unique identifier. */
+    get: operations["readSingleItemsPageContent"];
+    /** Delete an existing page_content item. */
+    delete: operations["deleteSingleItemsPageContent"];
+    /** Update an existing page_content item. */
+    patch: operations["updateSingleItemsPageContent"];
+  };
   "/items/user_relationships": {
     /** List the user_relationships items. */
     get: operations["readItemsUserRelationships"];
@@ -281,6 +309,14 @@ export interface paths {
     /** Retrieve a single relation by unique identifier. */
     get: operations["getRelation"];
   };
+  "/revisions": {
+    /** List the revisions. */
+    get: operations["getRevisions"];
+  };
+  "/revisions/{id}": {
+    /** Retrieve a single revision by unique identifier. */
+    get: operations["getRevision"];
+  };
   "/roles": {
     /** List the roles. */
     get: operations["getRoles"];
@@ -292,6 +328,8 @@ export interface paths {
   "/settings": {
     /** List the settings. */
     get: operations["getSettings"];
+    /** Update the settings */
+    patch: operations["updateSetting"];
   };
   "/users": {
     /** List the users. */
@@ -330,6 +368,20 @@ export interface paths {
   "/users/me/tfa/disable": {
     /** Disables two-factor authentication for the currently authenticated user. */
     post: operations["meTfaDisable"];
+  };
+  "/webhooks": {
+    /** Get all webhooks. */
+    get: operations["getWebhooks"];
+    /** Create a new webhook. */
+    post: operations["createWebhook"];
+  };
+  "/webhooks/{id}": {
+    /** Retrieve a single webhook by unique identifier. */
+    get: operations["getWebhook"];
+    /** Delete an existing webhook */
+    delete: operations["deleteWebhook"];
+    /** Update an existing webhook */
+    patch: operations["updateWebhook"];
   };
   "/flows": {
     /** Get all flows. */
@@ -391,9 +443,45 @@ export interface components {
       notes?: string | null;
       amenities?: unknown | null;
     };
+    ItemsPage: {
+      /** Format: uuid */
+      id?: string;
+      status?: string;
+      user_created?: (string | components["schemas"]["Users"]) | null;
+      /** Format: timestamp */
+      date_created?: string | null;
+      user_updated?: (string | components["schemas"]["Users"]) | null;
+      /** Format: timestamp */
+      date_updated?: string | null;
+      title?: string | null;
+      description?: string | null;
+      layout?: string | null;
+      url?: string | null;
+      content?: (string | components["schemas"]["ItemsPageContent"])[];
+    };
+    ItemsPageContent: {
+      /** Format: uuid */
+      id?: string;
+      status?: string;
+      sort?: number | null;
+      user_created?: (string | components["schemas"]["Users"]) | null;
+      /** Format: timestamp */
+      date_created?: string | null;
+      user_updated?: (string | components["schemas"]["Users"]) | null;
+      /** Format: timestamp */
+      date_updated?: string | null;
+      name?: string | null;
+      html?: string | null;
+      markdown?: string | null;
+      control?: unknown | null;
+      image?: (string | components["schemas"]["Files"]) | null;
+      type?: string | null;
+      page?: (string | components["schemas"]["ItemsPage"]) | null;
+    };
+    ItemsSite: { [key: string]: unknown };
     ItemsUserRelationships: {
       id?: number;
-      users_id?: (string | components["schemas"]["ItemsUsers"]) | null;
+      users_id?: string | components["schemas"]["ItemsUsers"];
       related_users_id?: (string | components["schemas"]["ItemsUsers"]) | null;
       relation?: string;
     };
@@ -459,13 +547,15 @@ export interface components {
       /** Format: date */
       last_tested?: string | null;
       vaccinations?: unknown | null;
-      verification?: string | null;
+      approved_by?: (string | components["schemas"]["Users"]) | null;
+      application_status?: string;
+      in_sendgrid?: boolean | null;
       events?: (number | components["schemas"]["ItemsEventsUsers"])[];
       administrative?: string;
       information?: string;
       preferences?: string;
-      images?: (number | components["schemas"]["ItemsUsersFiles"])[];
       my_files?: (number | components["schemas"]["ItemsUsersPhotos"])[];
+      images?: (number | components["schemas"]["ItemsUsersFiles"])[];
       users?: (number | components["schemas"]["ItemsUserRelationships"])[];
       my_sex?: string;
       their_sex?: string;
@@ -527,7 +617,7 @@ export interface components {
        * @example https://directus.io
        */
       origin?: string;
-      revisions?: string;
+      revisions?: (number | components["schemas"]["Revisions"])[];
     };
     Collections: {
       /**
@@ -817,6 +907,51 @@ export interface components {
       sort_field?: string | null;
       one_deselect_action?: string;
     };
+    Revisions: {
+      /**
+       * @description Unique identifier for the revision.
+       * @example 1
+       */
+      id?: number;
+      /**
+       * @description Unique identifier for the activity record.
+       * @example 2
+       */
+      activity?: number | components["schemas"]["Activity"];
+      /**
+       * @description Collection of the updated item.
+       * @example articles
+       */
+      collection?: string | components["schemas"]["Collections"];
+      /**
+       * @description Primary key of updated item.
+       * @example 168
+       */
+      item?: string;
+      /**
+       * @description Copy of item state at time of update.
+       * @example {
+       *   "author": 1,
+       *   "body": "This is my first post",
+       *   "featured_image": 15,
+       *   "id": "168",
+       *   "title": "Hello, World!"
+       * }
+       */
+      data?: { [key: string]: unknown } | null;
+      /**
+       * @description Changes between the previous and the current revision.
+       * @example {
+       *   "title": "Hello, World!"
+       * }
+       */
+      delta?: { [key: string]: unknown };
+      /**
+       * @description If the current item was updated relationally, this is the id of the parent revision record
+       * @example null
+       */
+      parent?: number | null;
+    };
     Roles: {
       /**
        * @description Unique identifier for the role.
@@ -1067,6 +1202,46 @@ export interface components {
       email_notifications?: boolean | null;
       preferences_divider?: string;
       admin_divider?: string;
+    };
+    Webhooks: {
+      /**
+       * @description The index of the webhook.
+       * @example 1
+       */
+      id?: number;
+      /**
+       * @description The name of the webhook.
+       * @example create articles
+       */
+      name?: string;
+      /**
+       * @description Method used in the webhook.
+       * @example POST
+       */
+      method?: string;
+      /**
+       * @description The url of the webhook.
+       * @example null
+       */
+      url?: string | null;
+      /**
+       * @description The status of the webhook.
+       * @example inactive
+       */
+      status?: string;
+      /**
+       * @description If yes, send the content of what was done
+       * @example true
+       */
+      data?: boolean;
+      /**
+       * @description The actions that triggers this webhook.
+       * @example null
+       */
+      actions?: string[] | null;
+      collections?: string[];
+      headers?: unknown | null;
+      triggers_divider?: string;
     };
     Flows: {
       /**
@@ -2003,6 +2178,274 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["ItemsLocation"];
+      };
+    };
+  };
+  /** List the page items. */
+  readItemsPage: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** A limit on the number of objects that are returned. */
+        limit?: components["parameters"]["Limit"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+        /** How many items to skip when fetching data. */
+        offset?: components["parameters"]["Offset"];
+        /** How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly. */
+        sort?: components["parameters"]["Sort"];
+        /** Select items in collection by given conditions. */
+        filter?: components["parameters"]["Filter"];
+        /** Filter by items that contain the given search query in one of their fields. */
+        search?: components["parameters"]["Search"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsPage"][];
+            meta?: components["schemas"]["x-metadata"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+    };
+  };
+  /** Create a new page item. */
+  createItemsPage: {
+    parameters: {
+      query: {
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsPage"][];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+    };
+    requestBody: {
+      content: {
+        "application/json":
+          | components["schemas"]["ItemsPage"][]
+          | components["schemas"]["ItemsPage"];
+      };
+    };
+  };
+  /** Retrieve a single page item by unique identifier. */
+  readSingleItemsPage: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+      path: {
+        /** Index of the item. */
+        id: number | string;
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsPage"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Delete an existing page item. */
+  deleteSingleItemsPage: {
+    parameters: {
+      path: {
+        /** Index of the item. */
+        id: number | string;
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: unknown;
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Update an existing page item. */
+  updateSingleItemsPage: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+      path: {
+        /** Index of the item. */
+        id: number | string;
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsPage"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ItemsPage"];
+      };
+    };
+  };
+  /** List the page_content items. */
+  readItemsPageContent: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** A limit on the number of objects that are returned. */
+        limit?: components["parameters"]["Limit"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+        /** How many items to skip when fetching data. */
+        offset?: components["parameters"]["Offset"];
+        /** How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly. */
+        sort?: components["parameters"]["Sort"];
+        /** Select items in collection by given conditions. */
+        filter?: components["parameters"]["Filter"];
+        /** Filter by items that contain the given search query in one of their fields. */
+        search?: components["parameters"]["Search"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsPageContent"][];
+            meta?: components["schemas"]["x-metadata"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+    };
+  };
+  /** Create a new page_content item. */
+  createItemsPageContent: {
+    parameters: {
+      query: {
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsPageContent"][];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+    };
+    requestBody: {
+      content: {
+        "application/json":
+          | components["schemas"]["ItemsPageContent"][]
+          | components["schemas"]["ItemsPageContent"];
+      };
+    };
+  };
+  /** Retrieve a single page_content item by unique identifier. */
+  readSingleItemsPageContent: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+      path: {
+        /** Index of the item. */
+        id: number | string;
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsPageContent"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Delete an existing page_content item. */
+  deleteSingleItemsPageContent: {
+    parameters: {
+      path: {
+        /** Index of the item. */
+        id: number | string;
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: unknown;
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Update an existing page_content item. */
+  updateSingleItemsPageContent: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+      path: {
+        /** Index of the item. */
+        id: number | string;
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsPageContent"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ItemsPageContent"];
       };
     };
   };
@@ -3410,6 +3853,69 @@ export interface operations {
       404: components["responses"]["NotFoundError"];
     };
   };
+  /** List the revisions. */
+  getRevisions: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** A limit on the number of objects that are returned. */
+        limit?: components["parameters"]["Limit"];
+        /** How many items to skip when fetching data. */
+        offset?: components["parameters"]["Offset"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+        /** How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly. */
+        sort?: components["parameters"]["Sort"];
+        /** Select items in collection by given conditions. */
+        filter?: components["parameters"]["Filter"];
+        /** Filter by items that contain the given search query in one of their fields. */
+        search?: components["parameters"]["Search"];
+        /** Cursor for use in pagination. Often used in combination with limit. */
+        page?: components["parameters"]["Page"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Revisions"][];
+            meta?: components["schemas"]["x-metadata"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Retrieve a single revision by unique identifier. */
+  getRevision: {
+    parameters: {
+      path: {
+        /** Index */
+        id: components["parameters"]["Id"];
+      };
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Revisions"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
   /** List the roles. */
   getRoles: {
     parameters: {
@@ -3498,6 +4004,26 @@ export interface operations {
       };
       401: components["responses"]["UnauthorizedError"];
       404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Update the settings */
+  updateSetting: {
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Settings"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": { [key: string]: unknown };
+      };
     };
   };
   /** List the users. */
@@ -3747,6 +4273,189 @@ export interface operations {
       404: components["responses"]["NotFoundError"];
     };
   };
+  /** Get all webhooks. */
+  getWebhooks: {
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Webhooks"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Create a new webhook. */
+  createWebhook: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Roles"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /**
+           * @description The name of the webhook.
+           * @example create articles
+           */
+          name?: string;
+          /**
+           * @description Method used in the webhook.
+           * @example POST
+           */
+          method?: string;
+          /**
+           * @description The url of the webhook.
+           * @example null
+           */
+          url?: string;
+          /**
+           * @description The status of the webhook.
+           * @example active
+           */
+          status?: string;
+          /**
+           * @description If yes, send the content of what was done
+           * @example true
+           */
+          data?: boolean;
+          /**
+           * @description The actions that triggers this webhook.
+           * @example null
+           */
+          actions?: unknown;
+          /**
+           * @description The collections that triggers this webhook.
+           * @example null
+           */
+          "system-collections"?: unknown;
+        };
+      };
+    };
+  };
+  /** Retrieve a single webhook by unique identifier. */
+  getWebhook: {
+    parameters: {
+      path: {
+        /** Unique identifier for the object. */
+        id: components["parameters"]["UUId"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Webhooks"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Delete an existing webhook */
+  deleteWebhook: {
+    parameters: {
+      path: {
+        /** Unique identifier for the object. */
+        id: components["parameters"]["UUId"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: unknown;
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Update an existing webhook */
+  updateWebhook: {
+    parameters: {
+      path: {
+        /** Unique identifier for the object. */
+        id: components["parameters"]["UUId"];
+      };
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Roles"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /**
+           * @description The name of the webhook.
+           * @example create articles
+           */
+          name?: string;
+          /**
+           * @description Method used in the webhook.
+           * @example POST
+           */
+          method?: string;
+          /**
+           * @description The url of the webhook.
+           * @example null
+           */
+          url?: string;
+          /**
+           * @description The status of the webhook.
+           * @example active
+           */
+          status?: string;
+          /**
+           * @description If yes, send the content of what was done
+           * @example true
+           */
+          data?: boolean;
+          /**
+           * @description The actions that triggers this webhook.
+           * @example null
+           */
+          actions?: unknown;
+          /**
+           * @description The collections that triggers this webhook.
+           * @example null
+           */
+          "system-collections"?: unknown;
+        };
+      };
+    };
+  };
   /** Get all flows. */
   getFlows: {
     responses: {
@@ -3791,6 +4500,9 @@ export interface external {}
 export type Event = components["schemas"]["ItemsEvents"];
 export type EventUser = components["schemas"]["ItemsEventsUsers"];
 export type Location = components["schemas"]["ItemsLocation"];
+export type Page = components["schemas"]["ItemsPage"];
+export type PageContent = components["schemas"]["ItemsPageContent"];
+export type Site = components["schemas"]["ItemsSite"];
 export type UserRelationship = components["schemas"]["ItemsUserRelationships"];
 export type User = components["schemas"]["ItemsUsers"];
 export type UserFile = components["schemas"]["ItemsUsersFiles"];
@@ -3799,6 +4511,9 @@ export type Collections = {
   events: Event;
   events_users: EventUser;
   location: Location;
+  page: Page;
+  page_content: PageContent;
+  site: Site;
   user_relationships: UserRelationship;
   users: User;
   users_files: UserFile;

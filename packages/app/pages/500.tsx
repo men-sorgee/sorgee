@@ -1,6 +1,6 @@
 import { tw } from 'twind'
 
-export default function Custom404() {
+export default function Custom500() {
   return  <section className={tw`bg-gray-900`}>
     <div className={tw`py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6`}>
         <div className={tw`mx-auto max-w-screen-sm text-center`}>

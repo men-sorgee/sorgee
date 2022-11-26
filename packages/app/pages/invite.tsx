@@ -7,11 +7,10 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { copyTextToClipboard } from '../lib/utils';
 import {
-  getFieldOptions,
-  FormOptions,
   UserInvite
 } from 'lib/services/directus';
-import Toast from '../components/layout/Toast';
+import { getFieldOptions } from 'lib/services/directus/server'
+import { FormOptions } from '../lib/types'
 
 type PageProps = {
   userTypeOptions: FormOptions;
@@ -49,7 +48,7 @@ function Invite({ userTypeOptions }: PageProps) {
     setLink(invite);
     copyTextToClipboard(invite);
   };
-  const copy = () => {};
+
 
   return (
     <>

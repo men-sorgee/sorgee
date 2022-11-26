@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "repository": "https://github.com/brotherhood-group/guys-n-heat.git",
-  "author": "Jason Wicker <jason@thebrotherhoodgroup.org>",
+  "author": "Jason <jason@guysnheat.com>",
   "license": "MIT",
   "workspaces": [
     "packages/*"
@@ -15,11 +15,5 @@
     "start": "docker-compose up -d",
     "stop": "docker-compose down",
     "postinstall": "chmod +x .devcontainer/.bashrc && bash -c 'source .devcontainer/.bashrc'"
-  },
-  "prettier": {
-    "arrowParens": "always",
-    "singleQuote": true,
-    "tabWidth": 2,
-    "trailingComma": "none"
   }
 }

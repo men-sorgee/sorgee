@@ -1,19 +1,14 @@
 import { User } from './types'
 
-export * from "./client";
 
-export type FormOptions = Array<{
-  text: string;
-  value: string;
-}>;
-export * from "./service";
 
-export const userFields = [
+export const memberFields = [
   "id",
   "first_name",
   "last_name",
   "email",
   "email_verified",
+  "photo",
   "phone",
   "biography",
   "needs_guidance",
@@ -26,13 +21,17 @@ export const userFields = [
   "skin_tone",
   "my_positions",
   "sexual_scenes",
-  "user_type",
+  "application_status",
+  "user_type", // level
   "privileged",
-  "status",
   "vouched_by",
+  "last_login",
+  "status",
+  "in_sendgrid"
 ];
 
-export type FormUser = {
+export type Member = {
+  photo: string
   id: User["id"];
   first_name: User["first_name"];
   last_name: User["last_name"];
@@ -51,11 +50,14 @@ export type FormUser = {
   skin_tone: User["skin_tone"];
   my_positions: User["my_positions"];
   sexual_scenes: User["sexual_scenes"];
-  user_type: User["user_type"];
+  user_type: "reject" | "subscriber" | "user" | "pledge" | "member" | "brother" | "big_brother"| "staff";
   privileged: User["privileged"];
-  status: User["status"];
   invite?: string;
   picture?: string | null;
+  status: "new" | "active" | "inactive" | "stale" | "deleted" | "banned";
+  application_status: "apply"| "verify" | "review" | "agreement" | "approved" | "denied";
+  last_login: User["last_login"];
+  in_sendgrid: User["in_sendgrid"];
 };
 
 export type UserInvite = {

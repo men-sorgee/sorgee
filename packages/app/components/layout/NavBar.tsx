@@ -40,7 +40,7 @@ export default function Navbar() {
               <a className={tw`${styles.headLink} !hidden`}>Learn</a>
             </Link>
             <Link href="/about">
-              <a className={tw`${styles.headLink} `}>About</a>
+              <a className={tw`${styles.headLink} !hidden`}>About</a>
             </Link>
             {user && (
               <>
@@ -53,7 +53,7 @@ export default function Navbar() {
                 </Link>
                 {user?.picture && (
                   <div className="w-10 h-10 ">
-                    <Photo
+                    <img
                       className=" ring-2 ring-gray-300 p-1 rounded-full border-2 border-white"
                       src={user.picture!}
                       alt={user.name!}
