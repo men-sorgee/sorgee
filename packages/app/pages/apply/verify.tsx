@@ -94,7 +94,7 @@ function Form ({code, router }: { code: string, router: NextRouter }) {
 
       if (res.ok) {
         setComplete(true);
-        router.push('/apply/agree');
+        router.push('/apply/review');
         return;
       }
 

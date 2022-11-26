@@ -31,7 +31,7 @@ function Agreement() {
 
     if (response.ok) {
       setAgreed(true);
-      router.push('/apply')
+      router.reload()
     } else {
       const { error } = await response.json();
       setError('agree', { message: error });
