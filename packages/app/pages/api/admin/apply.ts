@@ -5,7 +5,6 @@ import { withAppUser, withUser } from '../_utils'
 
 import { ApiResponse } from '../../../lib/types'
 import { addSubscriber, sendApplicationWorkflowEmail } from '../../../lib/services/sendgrid/server'
-import { User } from '../../../lib/services/directus/types'
 import { Applicant } from '../../../lib/services/directus'
 
 async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
@@ -29,7 +28,7 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
       const vouchingUser = await getUser(vid)
       if (vouchingUser?.status !== "active") {
         userDetails.vouched_by = vid;
-        if (vouchingUser?.privileged) {
+        if (vouchingUser?.user_type == 'staff') {
           userDetails.user_type = user_type;
           userDetails.application_status = user_type == "brother"?  
             "agreement": "verify";
