@@ -12,6 +12,7 @@
     "admin": "yarn workspace admin ",
     "app": "yarn workspace app ",
     "gcp": "yarn workspace gcp ",
+    "email": "yarn workspace email ",
     "start": "docker-compose up -d",
     "stop": "docker-compose down",
     "postinstall": "chmod +x .devcontainer/.bashrc && bash -c 'source .devcontainer/.bashrc'"

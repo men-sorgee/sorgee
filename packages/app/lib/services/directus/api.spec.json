@@ -142,6 +142,11 @@
       "name": "Flows",
       "description": "Flows enable custom, event-driven data processing and task automation.",
       "x-collection": "directus_flows"
+    },
+    {
+      "name": "Operations",
+      "description": "Operations are the building blocks within Data Flows.",
+      "x-collection": "directus_operations"
     }
   ],
   "paths": {
@@ -2542,6 +2547,303 @@
         ]
       }
     },
+    "/items/Site": {
+      "post": {
+        "summary": "Create an Item",
+        "description": "Create a new Site item.",
+        "tags": [
+          "Items",
+          "ItemsSite"
+        ],
+        "operationId": "createItemsSite",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ItemsSite"
+                    }
+                  },
+                  {
+                    "$ref": "#/components/schemas/ItemsSite"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "items": {
+                        "$ref": "#/components/schemas/ItemsSite"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "get": {
+        "summary": "List Items",
+        "description": "List the Site items.",
+        "tags": [
+          "Items",
+          "ItemsSite"
+        ],
+        "operationId": "readItemsSite",
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "$ref": "#/components/schemas/ItemsSite"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/x-metadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/items/Site/{id}": {
+      "get": {
+        "summary": "Retrieve an Item",
+        "description": "Retrieve a single Site item by unique identifier.",
+        "tags": [
+          "Items",
+          "ItemsSite"
+        ],
+        "operationId": "readSingleItemsSite",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ItemsSite"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update an Item",
+        "description": "Update an existing Site item.",
+        "tags": [
+          "Items",
+          "ItemsSite"
+        ],
+        "operationId": "updateSingleItemsSite",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/ItemsSite"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ItemsSite"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an Item",
+        "description": "Delete an existing Site item.",
+        "tags": [
+          "Items",
+          "ItemsSite"
+        ],
+        "operationId": "deleteSingleItemsSite",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
     "/items/user_relationships": {
       "post": {
         "summary": "Create an Item",
@@ -3902,7 +4204,86 @@
         ]
       }
     },
-    "/activity/comment/{id}": {},
+    "/activity/comment/{id}": {
+      "patch": {
+        "summary": "Update a Comment",
+        "description": "Update the content of an existing comment.",
+        "operationId": "updateComment",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "comment": {
+                    "type": "string",
+                    "example": "My updated comment"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Activity"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Activity"
+        ]
+      },
+      "delete": {
+        "summary": "Delete a Comment",
+        "description": "Delete an existing comment. Deleted comments can not be retrieved.",
+        "operationId": "deleteComment",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
+        "responses": {
+          "203": {
+            "description": "Deleted successfully"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Activity"
+        ]
+      }
+    },
     "/collections": {
       "get": {
         "summary": "List Collections",
@@ -3934,6 +4315,133 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Collections"
+        ]
+      },
+      "post": {
+        "summary": "Create a Collection",
+        "description": "Create a new collection in Directus.",
+        "operationId": "createCollection",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "collection",
+                  "fields"
+                ],
+                "properties": {
+                  "collection": {
+                    "type": "string",
+                    "description": "Unique name of the collection.",
+                    "example": "my_collection"
+                  },
+                  "fields": {
+                    "type": "array",
+                    "description": "The fields contained in this collection. See the fields reference for more information. Each individual field requires field, type, and interface to be provided.",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "icon": {
+                    "description": "Name of a Google Material Design Icon that's assigned to this collection.",
+                    "type": "string",
+                    "example": "people",
+                    "nullable": true
+                  },
+                  "note": {
+                    "description": "A note describing the collection.",
+                    "type": "string",
+                    "example": null,
+                    "nullable": true
+                  },
+                  "display_template": {
+                    "description": "Text representation of how items from this collection are shown across the system.",
+                    "type": "string",
+                    "example": null,
+                    "nullable": true
+                  },
+                  "hidden": {
+                    "description": "Whether or not the collection is hidden from the navigation in the admin app.",
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "singleton": {
+                    "description": "Whether or not the collection is treated as a single object.",
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "translation": {
+                    "description": "Key value pairs of how to show this collection's name in different languages in the admin app.",
+                    "type": "string",
+                    "example": null,
+                    "nullable": true
+                  },
+                  "archive_field": {
+                    "description": "What field holds the archive value.",
+                    "type": "string",
+                    "example": null,
+                    "nullable": true
+                  },
+                  "archive_app_filter": {
+                    "description": "What value to use for \"archived\" items.",
+                    "type": "string",
+                    "example": null,
+                    "nullable": true
+                  },
+                  "archive_value": {
+                    "description": "What value to use to \"unarchive\" items.",
+                    "type": "string",
+                    "example": null,
+                    "nullable": true
+                  },
+                  "unarchive_value": {
+                    "description": "Whether or not to show the \"archived\" filter.",
+                    "type": "string",
+                    "example": null,
+                    "nullable": true
+                  },
+                  "sort_field": {
+                    "description": "The sort field in the collection.",
+                    "type": "string",
+                    "example": null,
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Collections"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Successful request"
           },
           "401": {
             "$ref": "#/components/responses/UnauthorizedError"
@@ -3991,6 +4499,168 @@
         },
         "tags": [
           "Collections"
+        ]
+      },
+      "patch": {
+        "summary": "Update a Collection",
+        "description": "Update an existing collection.",
+        "operationId": "updateCollection",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique identifier of the collection.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "meta": {
+                    "description": "Metadata of the collection.",
+                    "type": "object",
+                    "properties": {
+                      "icon": {
+                        "description": "Name of a Google Material Design Icon that's assigned to this collection.",
+                        "type": "string",
+                        "example": "people",
+                        "nullable": true
+                      },
+                      "color": {
+                        "description": "Choose the color for the icon assigned to this collection.",
+                        "type": "string",
+                        "example": "#6644ff",
+                        "nullable": true
+                      },
+                      "note": {
+                        "description": "A note describing the collection.",
+                        "type": "string",
+                        "example": null,
+                        "nullable": true
+                      },
+                      "display_template": {
+                        "description": "Text representation of how items from this collection are shown across the system.",
+                        "type": "string",
+                        "example": null,
+                        "nullable": true
+                      },
+                      "hidden": {
+                        "description": "Whether or not the collection is hidden from the navigation in the admin app.",
+                        "type": "boolean",
+                        "example": false
+                      },
+                      "singleton": {
+                        "description": "Whether or not the collection is treated as a single object.",
+                        "type": "boolean",
+                        "example": false
+                      },
+                      "translation": {
+                        "description": "Key value pairs of how to show this collection's name in different languages in the admin app.",
+                        "type": "string",
+                        "example": null,
+                        "nullable": true
+                      },
+                      "archive_field": {
+                        "description": "What field holds the archive value.",
+                        "type": "string",
+                        "example": null,
+                        "nullable": true
+                      },
+                      "archive_app_filter": {
+                        "description": "What value to use for \"archived\" items.",
+                        "type": "string",
+                        "example": null,
+                        "nullable": true
+                      },
+                      "archive_value": {
+                        "description": "What value to use to \"unarchive\" items.",
+                        "type": "string",
+                        "example": null,
+                        "nullable": true
+                      },
+                      "unarchive_value": {
+                        "description": "Whether or not to show the \"archived\" filter.",
+                        "type": "string",
+                        "example": null,
+                        "nullable": true
+                      },
+                      "sort_field": {
+                        "description": "The sort field in the collection.",
+                        "type": "string",
+                        "example": null,
+                        "nullable": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Collections"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Collections"
+        ]
+      },
+      "delete": {
+        "summary": "Delete a Collection",
+        "description": "Delete an existing collection. Warning: This will delete the whole collection, including the items within. Proceed with caution.",
+        "operationId": "deleteCollection",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Collections"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique identifier of the collection.",
+            "schema": {
+              "type": "string"
+            }
+          }
         ]
       }
     },
@@ -4086,6 +4756,260 @@
         "tags": [
           "Fields"
         ]
+      },
+      "post": {
+        "summary": "Create Field in Collection",
+        "description": "Create a new field in a given collection.",
+        "operationId": "createField",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "field",
+                  "datatype",
+                  "type",
+                  "length"
+                ],
+                "type": "object",
+                "properties": {
+                  "field": {
+                    "description": "Unique name of the field. Field name is unique within the collection.",
+                    "example": "id",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "Directus specific data type. Used to cast values in the API.",
+                    "example": "integer",
+                    "type": "string"
+                  },
+                  "schema": {
+                    "description": "The schema info.",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "description": "The name of the field.",
+                        "example": "title",
+                        "type": "string"
+                      },
+                      "table": {
+                        "description": "The collection of the field.",
+                        "example": "posts",
+                        "type": "string"
+                      },
+                      "type": {
+                        "description": "The type of the field.",
+                        "example": "string",
+                        "type": "string"
+                      },
+                      "default_value": {
+                        "description": "The default value of the field.",
+                        "example": null,
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "max_length": {
+                        "description": "The max length of the field.",
+                        "example": null,
+                        "type": "integer",
+                        "nullable": true
+                      },
+                      "is_nullable": {
+                        "description": "If the field is nullable.",
+                        "example": false,
+                        "type": "boolean"
+                      },
+                      "is_primary_key": {
+                        "description": "If the field is primary key.",
+                        "example": false,
+                        "type": "boolean"
+                      },
+                      "has_auto_increment": {
+                        "description": "If the field has auto increment.",
+                        "example": false,
+                        "type": "boolean"
+                      },
+                      "foreign_key_column": {
+                        "description": "Related column from the foreign key constraint.",
+                        "example": null,
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "foreign_key_table": {
+                        "description": "Related table from the foreign key constraint.",
+                        "example": null,
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "comment": {
+                        "description": "Comment as saved in the database.",
+                        "example": null,
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "schema": {
+                        "description": "Database schema (pg only).",
+                        "example": "public",
+                        "type": "string"
+                      },
+                      "foreign_key_schema": {
+                        "description": "Related schema from the foreign key constraint (pg only).",
+                        "example": null,
+                        "type": "string",
+                        "nullable": true
+                      }
+                    }
+                  },
+                  "meta": {
+                    "description": "The meta info.",
+                    "type": "object",
+                    "nullable": true,
+                    "properties": {
+                      "id": {
+                        "description": "Unique identifier for the field in the `directus_fields` collection.",
+                        "example": 3,
+                        "type": "integer"
+                      },
+                      "collection": {
+                        "description": "Unique name of the collection this field is in.",
+                        "example": "posts",
+                        "type": "string"
+                      },
+                      "field": {
+                        "description": "Unique name of the field. Field name is unique within the collection.",
+                        "example": "title",
+                        "type": "string"
+                      },
+                      "special": {
+                        "description": "Transformation flag for field",
+                        "example": null,
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true
+                      },
+                      "system-interface": {
+                        "description": "What interface is used in the admin app to edit the value for this field.",
+                        "example": "primary-key",
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "options": {
+                        "description": "Options for the interface that's used. This format is based on the individual interface.",
+                        "example": null,
+                        "type": "object",
+                        "nullable": true
+                      },
+                      "display": {
+                        "description": "What display is used in the admin app to display the value for this field.",
+                        "example": null,
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "display_options": {
+                        "description": "Options for the display that's used. This format is based on the individual display.",
+                        "example": null,
+                        "type": "object",
+                        "nullable": true
+                      },
+                      "locked": {
+                        "description": "If the field can be altered by the end user. Directus system fields have this value set to `true`.",
+                        "example": true,
+                        "type": "boolean"
+                      },
+                      "readonly": {
+                        "description": "Prevents the user from editing the value in the field.",
+                        "example": false,
+                        "type": "boolean"
+                      },
+                      "hidden": {
+                        "description": "If this field should be hidden.",
+                        "example": true,
+                        "type": "boolean"
+                      },
+                      "sort": {
+                        "description": "Sort order of this field on the edit page of the admin app.",
+                        "example": 1,
+                        "type": "integer",
+                        "nullable": true
+                      },
+                      "width": {
+                        "description": "Width of the field on the edit form.",
+                        "example": null,
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                          "half",
+                          "half-left",
+                          "half-right",
+                          "full",
+                          "fill",
+                          null
+                        ]
+                      },
+                      "group": {
+                        "description": "What field group this field is part of.",
+                        "example": null,
+                        "type": "integer",
+                        "nullable": true
+                      },
+                      "translation": {
+                        "description": "Key value pair of `<language>: <translation>` that allows the user to change the displayed name of the field in the admin app.",
+                        "example": null,
+                        "type": "object",
+                        "nullable": true
+                      },
+                      "note": {
+                        "description": "A user provided note for the field. Will be rendered alongside the interface on the edit page.",
+                        "example": "",
+                        "type": "string",
+                        "nullable": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Fields"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Fields"
+        ],
+        "parameters": [
+          {
+            "description": "Unique identifier of the collection the item resides in.",
+            "in": "path",
+            "name": "collection",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
       }
     },
     "/fields/{collection}/{id}": {
@@ -4108,6 +5032,302 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Fields"
+        ],
+        "parameters": [
+          {
+            "name": "collection",
+            "in": "path",
+            "description": "Unique identifier of the collection the item resides in.",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier of the field.",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      },
+      "patch": {
+        "summary": "Update a Field",
+        "description": "Update an existing field.",
+        "operationId": "updateField",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "field": {
+                    "description": "Unique name of the field. Field name is unique within the collection.",
+                    "example": "id",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "Directus specific data type. Used to cast values in the API.",
+                    "example": "integer",
+                    "type": "string"
+                  },
+                  "schema": {
+                    "description": "The schema info.",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "description": "The name of the field.",
+                        "example": "title",
+                        "type": "string"
+                      },
+                      "table": {
+                        "description": "The collection of the field.",
+                        "example": "posts",
+                        "type": "string"
+                      },
+                      "type": {
+                        "description": "The type of the field.",
+                        "example": "string",
+                        "type": "string"
+                      },
+                      "default_value": {
+                        "description": "The default value of the field.",
+                        "example": null,
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "max_length": {
+                        "description": "The max length of the field.",
+                        "example": null,
+                        "type": "integer",
+                        "nullable": true
+                      },
+                      "is_nullable": {
+                        "description": "If the field is nullable.",
+                        "example": false,
+                        "type": "boolean"
+                      },
+                      "is_primary_key": {
+                        "description": "If the field is primary key.",
+                        "example": false,
+                        "type": "boolean"
+                      },
+                      "has_auto_increment": {
+                        "description": "If the field has auto increment.",
+                        "example": false,
+                        "type": "boolean"
+                      },
+                      "foreign_key_column": {
+                        "description": "Related column from the foreign key constraint.",
+                        "example": null,
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "foreign_key_table": {
+                        "description": "Related table from the foreign key constraint.",
+                        "example": null,
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "comment": {
+                        "description": "Comment as saved in the database.",
+                        "example": null,
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "schema": {
+                        "description": "Database schema (pg only).",
+                        "example": "public",
+                        "type": "string"
+                      },
+                      "foreign_key_schema": {
+                        "description": "Related schema from the foreign key constraint (pg only).",
+                        "example": null,
+                        "type": "string",
+                        "nullable": true
+                      }
+                    }
+                  },
+                  "meta": {
+                    "description": "The meta info.",
+                    "type": "object",
+                    "nullable": true,
+                    "properties": {
+                      "id": {
+                        "description": "Unique identifier for the field in the `directus_fields` collection.",
+                        "example": 3,
+                        "type": "integer"
+                      },
+                      "collection": {
+                        "description": "Unique name of the collection this field is in.",
+                        "example": "posts",
+                        "type": "string"
+                      },
+                      "field": {
+                        "description": "Unique name of the field. Field name is unique within the collection.",
+                        "example": "title",
+                        "type": "string"
+                      },
+                      "special": {
+                        "description": "Transformation flag for field",
+                        "example": null,
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "nullable": true
+                      },
+                      "system-interface": {
+                        "description": "What interface is used in the admin app to edit the value for this field.",
+                        "example": "primary-key",
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "options": {
+                        "description": "Options for the interface that's used. This format is based on the individual interface.",
+                        "example": null,
+                        "type": "object",
+                        "nullable": true
+                      },
+                      "display": {
+                        "description": "What display is used in the admin app to display the value for this field.",
+                        "example": null,
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "display_options": {
+                        "description": "Options for the display that's used. This format is based on the individual display.",
+                        "example": null,
+                        "type": "object",
+                        "nullable": true
+                      },
+                      "locked": {
+                        "description": "If the field can be altered by the end user. Directus system fields have this value set to `true`.",
+                        "example": true,
+                        "type": "boolean"
+                      },
+                      "readonly": {
+                        "description": "Prevents the user from editing the value in the field.",
+                        "example": false,
+                        "type": "boolean"
+                      },
+                      "hidden": {
+                        "description": "If this field should be hidden.",
+                        "example": true,
+                        "type": "boolean"
+                      },
+                      "sort": {
+                        "description": "Sort order of this field on the edit page of the admin app.",
+                        "example": 1,
+                        "type": "integer",
+                        "nullable": true
+                      },
+                      "width": {
+                        "description": "Width of the field on the edit form.",
+                        "example": null,
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                          "half",
+                          "half-left",
+                          "half-right",
+                          "full",
+                          "fill",
+                          null
+                        ]
+                      },
+                      "group": {
+                        "description": "What field group this field is part of.",
+                        "example": null,
+                        "type": "integer",
+                        "nullable": true
+                      },
+                      "translation": {
+                        "description": "Key value pair of `<language>: <translation>` that allows the user to change the displayed name of the field in the admin app.",
+                        "example": null,
+                        "type": "object",
+                        "nullable": true
+                      },
+                      "note": {
+                        "description": "A user provided note for the field. Will be rendered alongside the interface on the edit page.",
+                        "example": "",
+                        "type": "string",
+                        "nullable": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Fields"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Fields"
+        ],
+        "parameters": [
+          {
+            "name": "collection",
+            "in": "path",
+            "description": "Unique identifier of the collection the item resides in.",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier of the field.",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete a Field",
+        "description": "Delete an existing field.",
+        "operationId": "deleteField",
+        "responses": {
+          "200": {
+            "description": "Successful request"
           },
           "401": {
             "$ref": "#/components/responses/UnauthorizedError"
@@ -4755,6 +5975,149 @@
         "tags": [
           "Permissions"
         ]
+      },
+      "post": {
+        "summary": "Create a Permission",
+        "description": "Create a new permission.",
+        "operationId": "createPermission",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "collection": {
+                    "description": "What collection this permission applies to.",
+                    "type": "string",
+                    "example": "customers"
+                  },
+                  "comment": {
+                    "description": "If the user can post comments.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "create",
+                      "update",
+                      "full"
+                    ]
+                  },
+                  "create": {
+                    "description": "If the user can create items.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "full"
+                    ]
+                  },
+                  "delete": {
+                    "description": "If the user can update items.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "mine",
+                      "role",
+                      "full"
+                    ]
+                  },
+                  "explain": {
+                    "description": "If the user is required to leave a comment explaining what was changed.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "create",
+                      "update",
+                      "always"
+                    ]
+                  },
+                  "read": {
+                    "description": "If the user can read items.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "mine",
+                      "role",
+                      "full"
+                    ]
+                  },
+                  "role": {
+                    "description": "Unique identifier of the role this permission applies to.",
+                    "type": "integer",
+                    "example": 3
+                  },
+                  "read_field_blacklist": {
+                    "description": "Explicitly denies read access for specific fields.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": [
+                      "featured_image"
+                    ]
+                  },
+                  "status": {
+                    "description": "What status this permission applies to.",
+                    "type": "string"
+                  },
+                  "status_blacklist": {
+                    "description": "Explicitly denies specific statuses to be used.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "update": {
+                    "description": "If the user can update items.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "mine",
+                      "role",
+                      "full"
+                    ]
+                  },
+                  "write_field_blacklist": {
+                    "description": "Explicitly denies write access for specific fields.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Permissions"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Permissions"
+        ]
       }
     },
     "/permissions/me": {
@@ -4834,6 +6197,161 @@
         },
         "tags": [
           "Permissions"
+        ]
+      },
+      "patch": {
+        "summary": "Update a Permission",
+        "description": "Update an existing permission",
+        "operationId": "updatePermission",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "collection": {
+                    "description": "What collection this permission applies to.",
+                    "type": "object"
+                  },
+                  "comment": {
+                    "description": "If the user can post comments. `full`.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "create",
+                      "update"
+                    ]
+                  },
+                  "create": {
+                    "description": "If the user can create items.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "full"
+                    ]
+                  },
+                  "delete": {
+                    "description": "If the user can update items.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "mine",
+                      "role",
+                      "full"
+                    ]
+                  },
+                  "explain": {
+                    "description": "If the user is required to leave a comment explaining what was changed.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "create",
+                      "update",
+                      "always"
+                    ]
+                  },
+                  "read": {
+                    "description": "If the user can read items.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "mine",
+                      "role",
+                      "full"
+                    ]
+                  },
+                  "read_field_blacklist": {
+                    "description": "Explicitly denies read access for specific fields.",
+                    "type": "object"
+                  },
+                  "role": {
+                    "description": "Unique identifier of the role this permission applies to.",
+                    "type": "object"
+                  },
+                  "status": {
+                    "description": "What status this permission applies to.",
+                    "type": "object"
+                  },
+                  "status_blacklist": {
+                    "description": "Explicitly denies specific statuses to be used.",
+                    "type": "object"
+                  },
+                  "update": {
+                    "description": "If the user can update items.",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "mine",
+                      "role",
+                      "full"
+                    ]
+                  },
+                  "write_field_blacklist": {
+                    "description": "Explicitly denies write access for specific fields.",
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Permissions"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Permissions"
+        ]
+      },
+      "delete": {
+        "summary": "Delete a Permission",
+        "description": "Delete an existing permission",
+        "operationId": "deletePermission",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Permissions"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
         ]
       }
     },
@@ -5248,6 +6766,80 @@
         "tags": [
           "Relations"
         ]
+      },
+      "post": {
+        "summary": "Create a Relation",
+        "description": "Create a new relation.",
+        "operationId": "createRelation",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "collection_many": {
+                    "description": "Collection that has the field that holds the foreign key.",
+                    "type": "string",
+                    "example": "articles"
+                  },
+                  "collection_one": {
+                    "description": "Collection on the _one_ side of the relationship.",
+                    "type": "string",
+                    "example": "authors"
+                  },
+                  "field_many": {
+                    "description": "Foreign key. Field that holds the primary key of the related collection.",
+                    "type": "string",
+                    "example": "author"
+                  },
+                  "field_one": {
+                    "description": "Alias column that serves as the _one_ side of the relationship.",
+                    "type": "string",
+                    "example": "books"
+                  },
+                  "junction_field": {
+                    "description": "Field on the junction table that holds the primary key of the related collection.",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Relations"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Relations"
+        ]
       }
     },
     "/relations/{id}": {
@@ -5291,6 +6883,104 @@
         },
         "tags": [
           "Relations"
+        ]
+      },
+      "patch": {
+        "summary": "Update a Relation",
+        "description": "Update an existing relation",
+        "operationId": "updateRelation",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          },
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "collection_many": {
+                    "description": "Collection that has the field that holds the foreign key.",
+                    "type": "string"
+                  },
+                  "collection_one": {
+                    "description": "Collection on the _one_ side of the relationship.",
+                    "type": "string"
+                  },
+                  "field_many": {
+                    "description": "Foreign key. Field that holds the primary key of the related collection.",
+                    "type": "string"
+                  },
+                  "field_one": {
+                    "description": "Alias column that serves as the _one_ side of the relationship.",
+                    "type": "string",
+                    "example": "books"
+                  },
+                  "junction_field": {
+                    "description": "Field on the junction table that holds the primary key of the related collection.",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Relations"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Relations"
+        ]
+      },
+      "delete": {
+        "summary": "Delete a Relation",
+        "description": "Delete an existing relation.",
+        "operationId": "deleteRelation",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Relations"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
         ]
       }
     },
@@ -5466,6 +7156,84 @@
         "tags": [
           "Roles"
         ]
+      },
+      "post": {
+        "summary": "Create a Role",
+        "description": "Create a new role.",
+        "operationId": "createRole",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "description": {
+                    "description": "Description of the role.",
+                    "type": "string"
+                  },
+                  "enforce_tfa": {
+                    "description": "Whether or not this role enforces the use of 2FA.",
+                    "type": "boolean"
+                  },
+                  "external_id": {
+                    "description": "ID used with external services in SCIM.",
+                    "type": "string"
+                  },
+                  "ip_whitelist": {
+                    "description": "Array of IP addresses that are allowed to connect to the API as a user of this role.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "module_listing": {
+                    "description": "Custom override for the admin app module bar navigation.",
+                    "type": "string"
+                  },
+                  "name": {
+                    "description": "Name of the role.",
+                    "type": "string",
+                    "example": "Interns"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Roles"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Roles"
+        ]
       }
     },
     "/roles/{id}": {
@@ -5509,6 +7277,110 @@
         },
         "tags": [
           "Roles"
+        ]
+      },
+      "patch": {
+        "summary": "Update a Role",
+        "description": "Update an existing role",
+        "operationId": "updateRole",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/UUId"
+          },
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "description": {
+                    "description": "Description of the role.",
+                    "type": "string"
+                  },
+                  "enforce_tfa": {
+                    "description": "Whether or not this role enforces the use of 2FA.",
+                    "type": "boolean"
+                  },
+                  "external_id": {
+                    "description": "ID used with external services in SCIM.",
+                    "type": "string"
+                  },
+                  "ip_whitelist": {
+                    "description": "Array of IP addresses that are allowed to connect to the API as a user of this role.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "module_listing": {
+                    "description": "Custom override for the admin app module bar navigation.",
+                    "type": "string"
+                  },
+                  "name": {
+                    "description": "Name of the role.",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Roles"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Roles"
+        ]
+      },
+      "delete": {
+        "summary": "Delete a Role",
+        "description": "Delete an existing role",
+        "operationId": "deleteRole",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Roles"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/UUId"
+          }
         ]
       }
     },
@@ -5798,6 +7670,30 @@
         },
         "tags": [
           "Users"
+        ]
+      },
+      "delete": {
+        "summary": "Delete a User",
+        "description": "Delete an existing user",
+        "operationId": "deleteUser",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/UUId"
+          }
         ]
       }
     },
@@ -6356,6 +8252,58 @@
         "tags": [
           "Flows"
         ]
+      },
+      "post": {
+        "summary": "Create a Flow",
+        "description": "Create a new flow.",
+        "operationId": "createFlow",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/Flows"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Flows"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Flows"
+        ]
       }
     },
     "/flows/{id}": {
@@ -6388,6 +8336,293 @@
         },
         "tags": [
           "Flows"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/UUId"
+          }
+        ]
+      },
+      "patch": {
+        "summary": "Update a Flow",
+        "description": "Update an existing flow",
+        "operationId": "updateFlow",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/UUId"
+          },
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/Flows"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Flows"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Flows"
+        ]
+      },
+      "delete": {
+        "summary": "Delete a Flow",
+        "description": "Delete an existing flow",
+        "operationId": "deleteFlow",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Flows"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/UUId"
+          }
+        ]
+      }
+    },
+    "/operations": {
+      "get": {
+        "summary": "List Operations",
+        "description": "Get all operations.",
+        "operationId": "getOperations",
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Operations"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/x-metadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Operations"
+        ]
+      },
+      "post": {
+        "summary": "Create an Operation",
+        "description": "Create a new operation.",
+        "operationId": "createOperation",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/Operations"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Operations"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Operations"
+        ]
+      }
+    },
+    "/operations/{id}": {
+      "get": {
+        "summary": "Retrieve an Operation",
+        "description": "Retrieve a single operation by unique identifier.",
+        "operationId": "getOperation",
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Operations"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Operations"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/UUId"
+          }
+        ]
+      },
+      "patch": {
+        "summary": "Update an Operation",
+        "description": "Update an existing operation",
+        "operationId": "updateOperation",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/UUId"
+          },
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/Operations"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Operations"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Operations"
+        ]
+      },
+      "delete": {
+        "summary": "Delete an Operation",
+        "description": "Delete an existing operation",
+        "operationId": "deleteOperation",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Operations"
         ],
         "parameters": [
           {
@@ -7030,10 +9265,6 @@
           "their_spectrum": {
             "nullable": true
           },
-          "privileged": {
-            "nullable": false,
-            "type": "boolean"
-          },
           "eye_color": {
             "nullable": true,
             "type": "string"
@@ -7087,6 +9318,18 @@
           "in_sendgrid": {
             "nullable": true,
             "type": "boolean"
+          },
+          "picture": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "$ref": "#/components/schemas/Files"
+              }
+            ]
           },
           "events": {
             "type": "array",
@@ -8464,16 +10707,177 @@
             "example": "#112233",
             "nullable": true
           },
+          "description": {
+            "nullable": true,
+            "type": "string"
+          },
+          "status": {
+            "description": "Current status of the flow.",
+            "type": "string",
+            "example": "active",
+            "default": "active",
+            "enum": [
+              "active",
+              "inactive"
+            ]
+          },
           "trigger": {
             "description": "Type of trigger for the flow. One of `hook`, `webhook`, `operation`, `schedule`, `manual`.",
             "type": "string",
             "example": "manual"
+          },
+          "accountability": {
+            "description": "The permission used during the flow. One of `$public`, `$trigger`, `$full`, or UUID of a role.",
+            "type": "string",
+            "example": "$trigger"
           },
           "options": {
             "description": "Options of the selected trigger for the flow.",
             "type": "object",
             "example": null,
             "nullable": true
+          },
+          "operation": {
+            "description": "UUID of the operation connected to the trigger in the flow.",
+            "example": "92e82998-e421-412f-a513-13701e83e4ce",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/Operations"
+              }
+            ]
+          },
+          "date_created": {
+            "description": "Timestamp in ISO8601 when the flow was created.",
+            "type": "string",
+            "example": "2022-05-11T13:14:52Z",
+            "format": "date-time",
+            "nullable": true
+          },
+          "user_created": {
+            "description": "The user who created the flow.",
+            "example": "63716273-0f29-4648-8a2a-2af2948f6f78",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/Users"
+              }
+            ]
+          },
+          "operations": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "$ref": "#/components/schemas/Operations"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Operations": {
+        "type": "object",
+        "x-collection": "directus_operations",
+        "properties": {
+          "id": {
+            "description": "Unique identifier for the operation.",
+            "type": "string",
+            "example": "2f24211d-d928-469a-aea3-3c8f53d4e426"
+          },
+          "name": {
+            "description": "The name of the operation.",
+            "type": "string",
+            "example": "Log to Console"
+          },
+          "key": {
+            "description": "Key for the operation. Must be unique within a given flow.",
+            "type": "string",
+            "example": "log_console"
+          },
+          "type": {
+            "description": "Type of operation. One of `log`, `mail`, `notification`, `create`, `read`, `request`, `sleep`, `transform`, `trigger`, `condition`, or any type of custom operation extensions.",
+            "type": "string",
+            "example": "log"
+          },
+          "position_x": {
+            "description": "Position of the operation on the X axis within the flow workspace.",
+            "type": "integer",
+            "example": 12
+          },
+          "position_y": {
+            "description": "Position of the operation on the Y axis within the flow workspace.",
+            "type": "integer",
+            "example": 12
+          },
+          "options": {
+            "description": "Options depending on the type of the operation.",
+            "type": "object",
+            "example": null,
+            "nullable": true
+          },
+          "resolve": {
+            "description": "The operation triggered when the current operation succeeds (or `then` logic of a condition operation).",
+            "example": "63716273-0f29-4648-8a2a-2af2948f6f78",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/Operations"
+              }
+            ]
+          },
+          "reject": {
+            "description": "The operation triggered when the current operation fails (or `otherwise` logic of a condition operation).",
+            "example": "63716273-0f29-4648-8a2a-2af2948f6f78",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/Operations"
+              }
+            ]
+          },
+          "flow": {
+            "nullable": false,
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "$ref": "#/components/schemas/Flows"
+              }
+            ]
+          },
+          "date_created": {
+            "description": "Timestamp in ISO8601 when the operation was created.",
+            "type": "string",
+            "example": "2022-05-11T13:14:52Z",
+            "format": "date-time",
+            "nullable": true
+          },
+          "user_created": {
+            "description": "The user who created the operation.",
+            "example": "63716273-0f29-4648-8a2a-2af2948f6f78",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/Users"
+              }
+            ]
           }
         }
       }

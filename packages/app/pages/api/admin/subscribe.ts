@@ -1,4 +1,4 @@
-import { createMember, findMember, updateMember} from 'lib/services/directus/server'
+import { createUser, findUser, updateUser} from 'lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse, SubscriptionData } from '@/lib/types'
 import { withMethods } from '../_utils'
@@ -17,14 +17,14 @@ async function Subscribe(req: NextApiRequest, res: NextApiResponse<ApiResponse>)
 
     await addSubscriber(name, email)
 
-    const member = await findMember(email)
+    const member = await findUser(email)
 
     if (member)  {
-      await updateMember(member.id, {
+      await updateUser(member.id, {
          in_sendgrid: true
       })
     } else {
-      await createMember({
+      await createUser({
         first_name: name,
         email,
         user_type: 'subscriber',

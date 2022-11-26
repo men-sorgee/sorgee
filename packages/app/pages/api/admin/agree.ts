@@ -1,8 +1,8 @@
 import { withApiAuthRequired } from "@auth0/nextjs-auth0";
-import { updateMember } from 'lib/services/directus/server'
+import { updateUser } from 'lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { AgreementData, ApiResponse } from '@/lib/types'
-import { withMember, withMethods } from '../_utils'
+import { withAppUser, withMethods } from '../_utils'
 
 async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
  
@@ -10,10 +10,10 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     if (!withMethods(req, ["POST"])) return
 
     const {agree} = req.body as AgreementData
-    const member = await withMember(req, res)
+    const applicant = await withAppUser(req, res)
 
-    if (member && member.application_status == 'agreement' && agree) {
-      await updateMember(member.id, {
+    if (applicant && applicant.application_status == 'agreement' && agree) {
+      await updateUser(applicant.id, {
         application_status: 'approved'
       })
       res.status(200).end();

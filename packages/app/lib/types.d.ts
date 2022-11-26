@@ -20,3 +20,8 @@ export type SubscriptionData = {
 export type AgreementData = {
   agree: boolean
 }
+
+export type InviteLink = {
+  email: string,
+  link: string
+};

@@ -1,6 +1,6 @@
 import { withPageAuthRequired } from '@auth0/nextjs-auth0'
 import { tw } from 'twind';
-import { useMember } from 'lib/hooks/use-member';
+import { useAppUser } from 'lib/hooks/use-member';
 import styles from 'styles';
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -10,7 +10,7 @@ import { AgreementData } from '../../lib/types'
 
 function Agreement() {
   const router = useRouter();
-  const { loading, member } = useMember();
+  const { loading, member } = useAppUser();
   const [agreed, setAgreed] = useState(false);
   const { handleSubmit, register, formState: { errors }, setError } = useForm<AgreementData>();
   useEffect(() => {
@@ -70,7 +70,7 @@ function Agreement() {
               I have read the terms and conditions and herby agree to them.
             </label>
           </div>
-          <div className={tw`text-center space-x-4 mt-2 pt-4`}>
+          <div className={tw`flex text-center space-x-4 mt-2 pt-4`}>
             <button
               type="submit"
               className={tw(styles.buttonPrimary)}

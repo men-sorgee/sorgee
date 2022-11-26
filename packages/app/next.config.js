@@ -20,8 +20,17 @@ module.exports = ( phase, { defaultConfig } ) => {
     },
     images: {
       domains: ['guysnheat.com', 'admin.guysnheat.com', 'localhost', 'lh3.googleusercontent.com', 'cdn.discordapp.com', 's.gravatar.com'],
-    }
-
+    },
+    async redirects() {
+      return [
+        {
+          source: '/invite',
+          destination: '/member/invite',
+          permanent: true,
+        },
+      ]
+    },
+    poweredByHeader: false,
   }
   return nextConfig
 }

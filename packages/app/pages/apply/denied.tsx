@@ -2,9 +2,10 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0'
 import { tw } from 'twind';
 import { useAppUser } from 'lib/hooks/use-member';
 import styles from 'styles';
-import { NextRouter, useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { useEffect } from 'react'
+import Link from 'next/link'
 
 
 function Review() {
@@ -12,7 +13,7 @@ function Review() {
   const { loading, member } = useAppUser();
 
   useEffect(() => {
-    if (member && member!.application_status !== 'review') {
+    if (member && member!.application_status !== 'denied') {
       router.push(`/apply/${member.application_status}`);
       return;
     }
@@ -20,14 +21,19 @@ function Review() {
 
   return (<>
       <Head>
-        <title>Application: In Review</title>
+        <title>Application: Denied</title>
       </Head>
       <section className={tw`${styles.sectionDark}`}>
-        <h2 className={tw(styles.h2page)}>Application: In Review</h2>
+        <h2 className={tw(styles.h2page)}>Application: Denied</h2>
 
-        <p>Thank you for submitting your application and verification photo.</p>
-        <p>Your application is currently being reviewed by our team.</p>
-        
+        <p>Unfortunately, your application was denied.</p>
+        <p>
+          You should receive an email with more information. To 
+          re-apply or appeal, please contact us at <a className={tw(styles.link)} 
+            href="mailto:support@guysnheat.com">
+          support
+          </a>.
+        </p>
       </section>
     </>)
 }

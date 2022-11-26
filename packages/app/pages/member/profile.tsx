@@ -1,86 +1,69 @@
-import { UserProfile, withPageAuthRequired } from '@auth0/nextjs-auth0';
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
 import { tw } from 'twind';
 import styles from 'styles';
 import { NextPageContext } from 'next';
 import Head from 'next/head';
-import { Applicant } from 'lib/services/directus';
+import { Member } from 'lib/services/directus';
 import { pruneUndefined } from 'lib/utils';
-import { useEffect, useState } from 'react';
 import { getFieldOptions} from '@/lib/services/directus/server';
 import { useAppUser } from 'lib/hooks/use-member';
 import { InfoIcon } from 'components/icons';
-import { useRouter } from 'next/router';
 import { FormOptions } from 'lib/types'
+import { useEffect, useState } from 'react'
 
 export type PageProps = {
-  email?: string;
-  invite?: string;
   spectrumOptions: FormOptions;
   relationshipOptions: FormOptions;
   timeOfDayOptions: FormOptions;
   positionsOptions: FormOptions;
   skinToneOptions: FormOptions;
-  page?: string;
+  scenesOptions: FormOptions;
 };
 
 export async function getServerSideProps(context: NextPageContext) {
   const props: PageProps = {
-    spectrumOptions: await getFieldOptions('spectrum'),
-    relationshipOptions: await getFieldOptions('relationship_status'),
-    timeOfDayOptions: await getFieldOptions('event_availability'),
-    positionsOptions: await getFieldOptions('my_positions'),
-    skinToneOptions: await getFieldOptions('skin_tone')
+    spectrumOptions: await getFieldOptions<Member>('spectrum'),
+    relationshipOptions: await getFieldOptions<Member>('relationship_status'),
+    timeOfDayOptions: await getFieldOptions<Member>('event_availability'),
+    positionsOptions: await getFieldOptions<Member>('my_positions'),
+    skinToneOptions: await getFieldOptions<Member>('skin_tone'),
+    scenesOptions: await getFieldOptions<Member>('sexual_scenes')
   };
   return { props };
 }
 
-function Apply(props: PageProps) {
-  const router = useRouter();
-  const { user, member, loading } = useAppUser();
-  const [formError, setFormError] = useState<string>();
-
-  useEffect(() => {
-    if (user && props.email && user.email != props.email)
-      setFormError(
-        `You must login using the email address ${props.email} to use this invite.`
-      );
-    if (member && member.application_status !== 'apply') {
-      router.push(`/apply/${member.application_status}`);
-      return
-    }
-  }, [user, loading, member, props.email, router]);
-
-  const data = { user, member, ...props };
+function Profile(props: PageProps) {
+  const { member, loading } = useAppUser();
+ 
+  const data = { member, ...props };
   
   return (
     <>
       <Head>
-        <title>Application: Profile</title>
+        <title>Member Profile</title>
       </Head>
       <section className={tw`${styles.sectionDark}`}>
-        <h2 className={tw(styles.h2page)}>{loading ? 'Loading' : 'Application: Profile'}</h2>
-        {formError && <p className={styles.inputError}>{formError}</p>}
-        {!loading && !formError && <Form {...data} />}
+        <h2 className={tw(styles.h2page)}>{loading ? 'Loading' : 'Member Profile'}</h2>
+
+        {!loading && <Form {...data} />}
       </section>
     </>
   );
 }
 
-function Form(props: PageProps & { user?: UserProfile; member?: Applicant }) {
-  const router = useRouter();
+function Form(props: PageProps & { member?: Member }) {
   const {
     member,
-    user,
-    invite,
     spectrumOptions,
     positionsOptions,
     relationshipOptions,
     skinToneOptions,
-    timeOfDayOptions
+    timeOfDayOptions,
+    scenesOptions
   } = props;
-  const { name, email } = user!;
+  const [updated, setUpdated] = useState(false);
   const {
     register,
     handleSubmit,
@@ -88,32 +71,23 @@ function Form(props: PageProps & { user?: UserProfile; member?: Applicant }) {
     formState: { errors, isSubmitting }
   } = useForm({
     defaultValues: {
-      first_name: member?.first_name || name?.split(' ')[0] || name,
-      last_name: member?.last_name || name?.split(' ')[1] || '',
-      email,
-      email_verified: user?.email_verified || false,
-      phone: member?.phone || '',
-      biography: member?.biography || null,
-      needs_guidance: member?.needs_guidance || false,
-      spectrum: member?.spectrum || null,
-      relationship_status: member?.relationship_status || null,
-      event_availability: [],
-      age: member?.age || null,
+      ...member,
       height_feet: member?.height?.toString().substring(0, 1),
-      height_inches: member?.height?.toString().substring(2),
-      weight: member?.weight || null,
-      skin_tone: member?.skin_tone || null,
-      my_positions: member?.my_positions || [],
-      invite
+      height_inches: member?.height?.toString().substring(2)
     }
   });
-  
+    
+  useEffect(() => {
+    if (updated) {
+      setTimeout(() => setUpdated(false), 3000);
+    }
+  }, [updated]);
 
   async function onSubmit(data: any) {
     if (data.height_feet || data.height_inches) {
       data.height = `${data.height_feet}' ${data.height_inches}"`;
     }
-    const response = await fetch('/api/admin/apply', {
+    const response = await fetch('/api/admin/me', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -122,7 +96,7 @@ function Form(props: PageProps & { user?: UserProfile; member?: Applicant }) {
     });
 
     if (response.ok) {
-      router.push('/apply/verify');
+      setUpdated(true)
       return;
     }
 
@@ -134,10 +108,6 @@ function Form(props: PageProps & { user?: UserProfile; member?: Applicant }) {
     }
   }
 
-  const intro = invite
-    ? 'You&apos;ve been invited to join our community of men! While your application is pre-approved, we still need to perform a few verification steps.'
-    : 'Thanks for requesting to join our community. Please fill out the form and one of our team members will review your application and get back to you shortly.';
-
   return (
     <>
       <form
@@ -145,19 +115,9 @@ function Form(props: PageProps & { user?: UserProfile; member?: Applicant }) {
         onSubmit={handleSubmit(onSubmit)}
         className={tw`max-w-3xl mx-auto text-left`}
       >
-        <p className={tw(styles.pLg)}>{intro}</p>
-        <p className={tw(styles.pLg)}>
-          Membership is free, but there is a vetting and verification process.
-          We do this to ensure the safety of our members and to weed out any
-          liars, spammers, bots, or flakes.
-        </p>
         <h3 className={tw`${styles.h3section} !text-2xl !text-left`}>
           Private Information
         </h3>
-        <p>
-          We collect this information for verification purposes only. We will
-          not share, show or sell this information to anyone.
-        </p>
         <div className={tw`flex flex-col md:flex-row flex-wrap`}>
           <div className={tw`${styles.inputGroup} md:pr-4`}>
             <label htmlFor="first_name" className={tw(styles.label)}>
@@ -198,15 +158,11 @@ function Form(props: PageProps & { user?: UserProfile; member?: Applicant }) {
           <div className={tw`${styles.inputGroup} md:pr-4`}>
             <label htmlFor="email" className={tw(styles.label)}>
               Email
-              <InfoIcon
-                title="Required for authentication.."
-                className={tw(styles.infoIcon)}
-              />
             </label>
             <input
               type="email"
               id="email"
-              {...register('email')}
+              {...register('email', { required: true })}
               className={tw(styles.input)}
               placeholder="name@gmail.com"
               readOnly={true}
@@ -240,14 +196,21 @@ function Form(props: PageProps & { user?: UserProfile; member?: Applicant }) {
               name="phone"
             />
           </div>
-          <h3 className={tw`${styles.h3section} !text-2xl !text-left`}>
-            About You
+          <h3 className={tw`${styles.h3section} w-full !text-2xl !text-left`}>
+            You Profile
           </h3>
-          <p>
-            <strong>Please be as honest as possible.</strong> Honest answers
-            will help your chances of approval and help our AI create the
-            perfect group events!
-          </p>
+          <div className={tw`mb-4 w-full`}>
+            <label htmlFor="nickname" className={tw(styles.label)}>
+              Nickname
+            </label>
+            <input
+              id="nickname"
+              type="text"
+              {...register('nickname', { required: true })}
+              className={tw(styles.select)}
+            />
+              
+          </div>
           <div className={tw`${styles.inputGroup} md:pr-4`}>
             <label htmlFor="spectrum" className={tw(styles.label)}>
               Orientation
@@ -379,14 +342,9 @@ function Form(props: PageProps & { user?: UserProfile; member?: Applicant }) {
           </div>
         </div>
         <h3 className={tw`${styles.h3section} !text-2xl !text-left`}>
-          Preferences
+          Event Preferences
         </h3>
-        <p>
-          We currently coordinate events in Denver, for the following times
-          bi-monthly. We try to create events that can include new members,
-          however, we do not guarantee that you will be included in every event.
-          As the group grows, so too will the number of events we can create.
-        </p>
+
         <div className={tw`w-full pb-4`}>
           <div className={tw`w-full mb-4`}>
             <label className={tw(styles.label)}>
@@ -420,7 +378,9 @@ function Form(props: PageProps & { user?: UserProfile; member?: Applicant }) {
             come up, but please be respectful of your brothers and RSVP
             accurately and let us know if you can&apos;t make it.
           </p>
-
+          <h3 className={tw`${styles.h3section} !text-2xl !text-left`}>
+          Sexual Preferences
+          </h3>
           <div className={tw`w-full mb-4`}>
             <label className={tw(styles.label)}>
               Your Positions
@@ -447,46 +407,45 @@ function Form(props: PageProps & { user?: UserProfile; member?: Applicant }) {
             </div>
           </div>
         </div>
-
-        <div className={tw`w-full pb-4`}>
+        <div className={tw`w-full mb-4`}>
           <label className={tw(styles.label)}>
-            New to this?
+            Your Scenes
             <InfoIcon
+              title="What scenes are you interested in? We will use this to match you with compatible events. Select all that apply."
               className={tw(styles.infoIcon)}
-              title="We want you to be comfortable. Check this and we will
-            help guide you along the way."
             />
           </label>
-          <div className={tw(`flex flex-row align-middle items-center`)}>
-            <input
-              id="needs_guidance"
-              type="checkbox"
-              {...register('needs_guidance')}
-              className={tw(styles.checkbox)}
-            />
-            <label
-              htmlFor={'needs_guidance'}
-              className={tw(styles.checkboxLabel)}
-            >
-              I Need Guidance
-            </label>
+          <div className={tw`grid grid-cols-2 md:grid-cols-3 gap-2`}>
+            {scenesOptions?.map(({ text, value }, index) => (
+              <div key={index.toString()} className={tw`flex flex-row`}>
+                <input
+                  id={value}
+                  type="checkbox"
+                  value={value}
+                  {...register('sexual_scenes')}
+                  className={tw(styles.checkbox)}
+                />
+                <label htmlFor={value} className={tw(styles.checkboxLabel)}>
+                  {text}
+                </label>
+              </div>
+            ))}
           </div>
         </div>
-
-        <input type="hidden" {...register('invite')} />
+  
         <div className={tw`flex items-center space-x-4 mt-2 pt-4`}>
           <button
             type="submit"
             className={tw(styles.buttonPrimary)}
             disabled={isSubmitting}
           >
-            {invite ? 'Join' : 'Apply'}
+            Update Profile
           </button>
         </div>
+        { updated && <p className={tw`text-green-500 text-left m-2`}>Profile Updated</p>}
       </form>
     </>
   );
 }
 
-// Protected route, checking user authentication client-side.(CSR)
-export default withPageAuthRequired(Apply);
+export default withPageAuthRequired(Profile);

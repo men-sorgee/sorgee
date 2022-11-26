@@ -12,7 +12,7 @@ export default function Thanks() {
       <section className={tw`${styles.sectionDark} relative h-[80vh]`}>
         <h2 className={tw(styles.h2page)}>Thank you!</h2>
         <p className={tw` !sm:text-center`}>
-          We&apos;ve received your request and will be in touch shortly.
+          We&apos;ve received your request. Watch your email for a confirmation.
         </p>
 
         <Fire />

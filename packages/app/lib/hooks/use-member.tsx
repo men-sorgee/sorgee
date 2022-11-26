@@ -1,6 +1,6 @@
 import { useEffect, useState, createContext, useContext } from 'react';
 import { useUser, UserProfile } from '@auth0/nextjs-auth0';
-import { Member, memberFields } from 'lib/services/directus';
+import { Member, applicantFields } from 'lib/services/directus';
 import { fetcher } from '@/lib/utils';
 
 export type Context = {
@@ -16,7 +16,7 @@ export interface Props {
   [propName: string]: any;
 }
 
-export const MemberContextProvider = (props: Props) => {
+export const AppUserContextProvider = (props: Props) => {
   const { user, isLoading } = useUser();
   const [loading, setLoading] = useState(true);
   const [member, setMember] = useState<Member>();
@@ -35,13 +35,13 @@ export const MemberContextProvider = (props: Props) => {
     user,
     member,
     loading,
-    fields: memberFields
+    fields: applicantFields
   };
 
   return <MemberContext.Provider value={value} {...props} />;
 };
 
-export const useMember = () => {
+export const useAppUser = () => {
   const context = useContext(MemberContext);
   if (context === undefined) {
     throw new Error(`useMember must be used within a UserContextProvider.`);

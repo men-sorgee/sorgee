@@ -158,6 +158,20 @@ export interface paths {
     /** Update an existing page_content item. */
     patch: operations["updateSingleItemsPageContent"];
   };
+  "/items/Site": {
+    /** List the Site items. */
+    get: operations["readItemsSite"];
+    /** Create a new Site item. */
+    post: operations["createItemsSite"];
+  };
+  "/items/Site/{id}": {
+    /** Retrieve a single Site item by unique identifier. */
+    get: operations["readSingleItemsSite"];
+    /** Delete an existing Site item. */
+    delete: operations["deleteSingleItemsSite"];
+    /** Update an existing Site item. */
+    patch: operations["updateSingleItemsSite"];
+  };
   "/items/user_relationships": {
     /** List the user_relationships items. */
     get: operations["readItemsUserRelationships"];
@@ -226,14 +240,25 @@ export interface paths {
     /** Retrieves the details of an existing activity action. Provide the primary key of the activity action and Directus will return the corresponding information. */
     get: operations["getActivity"];
   };
-  "/activity/comment/{id}": {};
+  "/activity/comment/{id}": {
+    /** Delete an existing comment. Deleted comments can not be retrieved. */
+    delete: operations["deleteComment"];
+    /** Update the content of an existing comment. */
+    patch: operations["updateComment"];
+  };
   "/collections": {
     /** Returns a list of the collections available in the project. */
     get: operations["getCollections"];
+    /** Create a new collection in Directus. */
+    post: operations["createCollection"];
   };
   "/collections/{id}": {
     /** Retrieves the details of a single collection. */
     get: operations["getCollection"];
+    /** Delete an existing collection. Warning: This will delete the whole collection, including the items within. Proceed with caution. */
+    delete: operations["deleteCollection"];
+    /** Update an existing collection. */
+    patch: operations["updateCollection"];
   };
   "/fields": {
     /** Returns a list of the fields available in the project. */
@@ -242,10 +267,16 @@ export interface paths {
   "/fields/{collection}": {
     /** Returns a list of the fields available in the given collection. */
     get: operations["getCollectionFields"];
+    /** Create a new field in a given collection. */
+    post: operations["createField"];
   };
   "/fields/{collection}/{id}": {
     /** Retrieves the details of a single field in a given collection. */
     get: operations["getCollectionField"];
+    /** Delete an existing field. */
+    delete: operations["deleteField"];
+    /** Update an existing field. */
+    patch: operations["updateField"];
   };
   "/files": {
     /** List the files. */
@@ -278,6 +309,8 @@ export interface paths {
   "/permissions": {
     /** List all permissions. */
     get: operations["getPermissions"];
+    /** Create a new permission. */
+    post: operations["createPermission"];
   };
   "/permissions/me": {
     /** List the permissions that apply to the current user. */
@@ -286,6 +319,10 @@ export interface paths {
   "/permissions/{id}": {
     /** Retrieve a single permissions object by unique identifier. */
     get: operations["getPermission"];
+    /** Delete an existing permission */
+    delete: operations["deletePermission"];
+    /** Update an existing permission */
+    patch: operations["updatePermission"];
   };
   "/presets": {
     /** List the presets. */
@@ -304,10 +341,16 @@ export interface paths {
   "/relations": {
     /** List the relations. */
     get: operations["getRelations"];
+    /** Create a new relation. */
+    post: operations["createRelation"];
   };
   "/relations/{id}": {
     /** Retrieve a single relation by unique identifier. */
     get: operations["getRelation"];
+    /** Delete an existing relation. */
+    delete: operations["deleteRelation"];
+    /** Update an existing relation */
+    patch: operations["updateRelation"];
   };
   "/revisions": {
     /** List the revisions. */
@@ -320,10 +363,16 @@ export interface paths {
   "/roles": {
     /** List the roles. */
     get: operations["getRoles"];
+    /** Create a new role. */
+    post: operations["createRole"];
   };
   "/roles/{id}": {
     /** Retrieve a single role by unique identifier. */
     get: operations["getRole"];
+    /** Delete an existing role */
+    delete: operations["deleteRole"];
+    /** Update an existing role */
+    patch: operations["updateRole"];
   };
   "/settings": {
     /** List the settings. */
@@ -340,6 +389,8 @@ export interface paths {
   "/users/{id}": {
     /** Retrieve a single user by unique identifier. */
     get: operations["getUser"];
+    /** Delete an existing user */
+    delete: operations["deleteUser"];
     /** Update an existing user */
     patch: operations["updateUser"];
   };
@@ -386,10 +437,30 @@ export interface paths {
   "/flows": {
     /** Get all flows. */
     get: operations["getFlows"];
+    /** Create a new flow. */
+    post: operations["createFlow"];
   };
   "/flows/{id}": {
     /** Retrieve a single flow by unique identifier. */
     get: operations["getFlow"];
+    /** Delete an existing flow */
+    delete: operations["deleteFlow"];
+    /** Update an existing flow */
+    patch: operations["updateFlow"];
+  };
+  "/operations": {
+    /** Get all operations. */
+    get: operations["getOperations"];
+    /** Create a new operation. */
+    post: operations["createOperation"];
+  };
+  "/operations/{id}": {
+    /** Retrieve a single operation by unique identifier. */
+    get: operations["getOperation"];
+    /** Delete an existing operation */
+    delete: operations["deleteOperation"];
+    /** Update an existing operation */
+    patch: operations["updateOperation"];
   };
 }
 
@@ -536,7 +607,6 @@ export interface components {
       hair_style?: string | null;
       body_attributes?: unknown | null;
       their_spectrum?: unknown | null;
-      privileged?: boolean;
       eye_color?: string | null;
       ball_size?: string | null;
       ball_gravity?: string | null;
@@ -550,6 +620,7 @@ export interface components {
       approved_by?: (string | components["schemas"]["Users"]) | null;
       application_status?: string;
       in_sendgrid?: boolean | null;
+      picture?: (string | components["schemas"]["Files"]) | null;
       events?: (number | components["schemas"]["ItemsEventsUsers"])[];
       administrative?: string;
       information?: string;
@@ -1264,16 +1335,105 @@ export interface components {
        * @example #112233
        */
       color?: string | null;
+      description?: string | null;
+      /**
+       * @description Current status of the flow.
+       * @default active
+       * @example active
+       * @enum {string}
+       */
+      status?: "active" | "inactive";
       /**
        * @description Type of trigger for the flow. One of `hook`, `webhook`, `operation`, `schedule`, `manual`.
        * @example manual
        */
       trigger?: string;
       /**
+       * @description The permission used during the flow. One of `$public`, `$trigger`, `$full`, or UUID of a role.
+       * @example $trigger
+       */
+      accountability?: string;
+      /**
        * @description Options of the selected trigger for the flow.
        * @example null
        */
       options?: { [key: string]: unknown } | null;
+      /**
+       * @description UUID of the operation connected to the trigger in the flow.
+       * @example 92e82998-e421-412f-a513-13701e83e4ce
+       */
+      operation?: string | components["schemas"]["Operations"];
+      /**
+       * Format: date-time
+       * @description Timestamp in ISO8601 when the flow was created.
+       * @example 2022-05-11T13:14:52Z
+       */
+      date_created?: string | null;
+      /**
+       * @description The user who created the flow.
+       * @example 63716273-0f29-4648-8a2a-2af2948f6f78
+       */
+      user_created?: string | components["schemas"]["Users"];
+      operations?: (string | components["schemas"]["Operations"])[];
+    };
+    Operations: {
+      /**
+       * @description Unique identifier for the operation.
+       * @example 2f24211d-d928-469a-aea3-3c8f53d4e426
+       */
+      id?: string;
+      /**
+       * @description The name of the operation.
+       * @example Log to Console
+       */
+      name?: string;
+      /**
+       * @description Key for the operation. Must be unique within a given flow.
+       * @example log_console
+       */
+      key?: string;
+      /**
+       * @description Type of operation. One of `log`, `mail`, `notification`, `create`, `read`, `request`, `sleep`, `transform`, `trigger`, `condition`, or any type of custom operation extensions.
+       * @example log
+       */
+      type?: string;
+      /**
+       * @description Position of the operation on the X axis within the flow workspace.
+       * @example 12
+       */
+      position_x?: number;
+      /**
+       * @description Position of the operation on the Y axis within the flow workspace.
+       * @example 12
+       */
+      position_y?: number;
+      /**
+       * @description Options depending on the type of the operation.
+       * @example null
+       */
+      options?: { [key: string]: unknown } | null;
+      /**
+       * @description The operation triggered when the current operation succeeds (or `then` logic of a condition operation).
+       * @example 63716273-0f29-4648-8a2a-2af2948f6f78
+       */
+      resolve?: string | components["schemas"]["Operations"];
+      /**
+       * @description The operation triggered when the current operation fails (or `otherwise` logic of a condition operation).
+       * @example 63716273-0f29-4648-8a2a-2af2948f6f78
+       */
+      reject?: string | components["schemas"]["Operations"];
+      flow?: string | components["schemas"]["Flows"];
+      /**
+       * Format: date-time
+       * @description Timestamp in ISO8601 when the operation was created.
+       * @example 2022-05-11T13:14:52Z
+       */
+      date_created?: string | null;
+      /**
+       * @description The user who created the operation.
+       * @example 63716273-0f29-4648-8a2a-2af2948f6f78
+       */
+      user_created?: string | components["schemas"]["Users"];
     };
   };
   responses: {
@@ -2449,6 +2609,140 @@ export interface operations {
       };
     };
   };
+  /** List the Site items. */
+  readItemsSite: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** A limit on the number of objects that are returned. */
+        limit?: components["parameters"]["Limit"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+        /** How many items to skip when fetching data. */
+        offset?: components["parameters"]["Offset"];
+        /** How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly. */
+        sort?: components["parameters"]["Sort"];
+        /** Select items in collection by given conditions. */
+        filter?: components["parameters"]["Filter"];
+        /** Filter by items that contain the given search query in one of their fields. */
+        search?: components["parameters"]["Search"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsSite"][];
+            meta?: components["schemas"]["x-metadata"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+    };
+  };
+  /** Create a new Site item. */
+  createItemsSite: {
+    parameters: {
+      query: {
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsSite"][];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+    };
+    requestBody: {
+      content: {
+        "application/json":
+          | components["schemas"]["ItemsSite"][]
+          | components["schemas"]["ItemsSite"];
+      };
+    };
+  };
+  /** Retrieve a single Site item by unique identifier. */
+  readSingleItemsSite: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+      path: {
+        /** Index of the item. */
+        id: number | string;
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsSite"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Delete an existing Site item. */
+  deleteSingleItemsSite: {
+    parameters: {
+      path: {
+        /** Index of the item. */
+        id: number | string;
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: unknown;
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Update an existing Site item. */
+  updateSingleItemsSite: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+      path: {
+        /** Index of the item. */
+        id: number | string;
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsSite"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ItemsSite"];
+      };
+    };
+  };
   /** List the user_relationships items. */
   readItemsUserRelationships: {
     parameters: {
@@ -3079,6 +3373,54 @@ export interface operations {
       404: components["responses"]["NotFoundError"];
     };
   };
+  /** Delete an existing comment. Deleted comments can not be retrieved. */
+  deleteComment: {
+    parameters: {
+      path: {
+        /** Index */
+        id: components["parameters"]["Id"];
+      };
+    };
+    responses: {
+      /** Deleted successfully */
+      203: unknown;
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Update the content of an existing comment. */
+  updateComment: {
+    parameters: {
+      path: {
+        /** Index */
+        id: components["parameters"]["Id"];
+      };
+      query: {
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Activity"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /** @example My updated comment */
+          comment?: string;
+        };
+      };
+    };
+  };
   /** Returns a list of the collections available in the project. */
   getCollections: {
     parameters: {
@@ -3100,6 +3442,95 @@ export interface operations {
       };
       401: components["responses"]["UnauthorizedError"];
       404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Create a new collection in Directus. */
+  createCollection: {
+    parameters: {
+      query: {
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Collections"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /**
+           * @description Unique name of the collection.
+           * @example my_collection
+           */
+          collection: string;
+          /** @description The fields contained in this collection. See the fields reference for more information. Each individual field requires field, type, and interface to be provided. */
+          fields: { [key: string]: unknown }[];
+          /**
+           * @description Name of a Google Material Design Icon that's assigned to this collection.
+           * @example people
+           */
+          icon?: string | null;
+          /**
+           * @description A note describing the collection.
+           * @example null
+           */
+          note?: string | null;
+          /**
+           * @description Text representation of how items from this collection are shown across the system.
+           * @example null
+           */
+          display_template?: string | null;
+          /**
+           * @description Whether or not the collection is hidden from the navigation in the admin app.
+           * @example false
+           */
+          hidden?: boolean;
+          /**
+           * @description Whether or not the collection is treated as a single object.
+           * @example false
+           */
+          singleton?: boolean;
+          /**
+           * @description Key value pairs of how to show this collection's name in different languages in the admin app.
+           * @example null
+           */
+          translation?: string | null;
+          /**
+           * @description What field holds the archive value.
+           * @example null
+           */
+          archive_field?: string | null;
+          /**
+           * @description What value to use for "archived" items.
+           * @example null
+           */
+          archive_app_filter?: string | null;
+          /**
+           * @description What value to use to "unarchive" items.
+           * @example null
+           */
+          archive_value?: string | null;
+          /**
+           * @description Whether or not to show the "archived" filter.
+           * @example null
+           */
+          unarchive_value?: string | null;
+          /**
+           * @description The sort field in the collection.
+           * @example null
+           */
+          sort_field?: string | null;
+        };
+      };
     };
   };
   /** Retrieves the details of a single collection. */
@@ -3125,6 +3556,115 @@ export interface operations {
       };
       401: components["responses"]["UnauthorizedError"];
       404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Delete an existing collection. Warning: This will delete the whole collection, including the items within. Proceed with caution. */
+  deleteCollection: {
+    parameters: {
+      path: {
+        /** Unique identifier of the collection. */
+        id: string;
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: unknown;
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Update an existing collection. */
+  updateCollection: {
+    parameters: {
+      path: {
+        /** Unique identifier of the collection. */
+        id: string;
+      };
+      query: {
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Collections"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /** @description Metadata of the collection. */
+          meta?: {
+            /**
+             * @description Name of a Google Material Design Icon that's assigned to this collection.
+             * @example people
+             */
+            icon?: string | null;
+            /**
+             * @description Choose the color for the icon assigned to this collection.
+             * @example #6644ff
+             */
+            color?: string | null;
+            /**
+             * @description A note describing the collection.
+             * @example null
+             */
+            note?: string | null;
+            /**
+             * @description Text representation of how items from this collection are shown across the system.
+             * @example null
+             */
+            display_template?: string | null;
+            /**
+             * @description Whether or not the collection is hidden from the navigation in the admin app.
+             * @example false
+             */
+            hidden?: boolean;
+            /**
+             * @description Whether or not the collection is treated as a single object.
+             * @example false
+             */
+            singleton?: boolean;
+            /**
+             * @description Key value pairs of how to show this collection's name in different languages in the admin app.
+             * @example null
+             */
+            translation?: string | null;
+            /**
+             * @description What field holds the archive value.
+             * @example null
+             */
+            archive_field?: string | null;
+            /**
+             * @description What value to use for "archived" items.
+             * @example null
+             */
+            archive_app_filter?: string | null;
+            /**
+             * @description What value to use to "unarchive" items.
+             * @example null
+             */
+            archive_value?: string | null;
+            /**
+             * @description Whether or not to show the "archived" filter.
+             * @example null
+             */
+            unarchive_value?: string | null;
+            /**
+             * @description The sort field in the collection.
+             * @example null
+             */
+            sort_field?: string | null;
+          };
+        };
+      };
     };
   };
   /** Returns a list of the fields available in the project. */
@@ -3175,6 +3715,200 @@ export interface operations {
       404: components["responses"]["NotFoundError"];
     };
   };
+  /** Create a new field in a given collection. */
+  createField: {
+    parameters: {
+      path: {
+        /** Unique identifier of the collection the item resides in. */
+        collection: string;
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Fields"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /**
+           * @description Unique name of the field. Field name is unique within the collection.
+           * @example id
+           */
+          field: string;
+          /**
+           * @description Directus specific data type. Used to cast values in the API.
+           * @example integer
+           */
+          type: string;
+          /** @description The schema info. */
+          schema?: {
+            /**
+             * @description The name of the field.
+             * @example title
+             */
+            name?: string;
+            /**
+             * @description The collection of the field.
+             * @example posts
+             */
+            table?: string;
+            /**
+             * @description The type of the field.
+             * @example string
+             */
+            type?: string;
+            /**
+             * @description The default value of the field.
+             * @example null
+             */
+            default_value?: string | null;
+            /**
+             * @description The max length of the field.
+             * @example null
+             */
+            max_length?: number | null;
+            /**
+             * @description If the field is nullable.
+             * @example false
+             */
+            is_nullable?: boolean;
+            /**
+             * @description If the field is primary key.
+             * @example false
+             */
+            is_primary_key?: boolean;
+            /**
+             * @description If the field has auto increment.
+             * @example false
+             */
+            has_auto_increment?: boolean;
+            /**
+             * @description Related column from the foreign key constraint.
+             * @example null
+             */
+            foreign_key_column?: string | null;
+            /**
+             * @description Related table from the foreign key constraint.
+             * @example null
+             */
+            foreign_key_table?: string | null;
+            /**
+             * @description Comment as saved in the database.
+             * @example null
+             */
+            comment?: string | null;
+            /**
+             * @description Database schema (pg only).
+             * @example public
+             */
+            schema?: string;
+            /**
+             * @description Related schema from the foreign key constraint (pg only).
+             * @example null
+             */
+            foreign_key_schema?: string | null;
+          };
+          /** @description The meta info. */
+          meta?: {
+            /**
+             * @description Unique identifier for the field in the `directus_fields` collection.
+             * @example 3
+             */
+            id?: number;
+            /**
+             * @description Unique name of the collection this field is in.
+             * @example posts
+             */
+            collection?: string;
+            /**
+             * @description Unique name of the field. Field name is unique within the collection.
+             * @example title
+             */
+            field?: string;
+            /**
+             * @description Transformation flag for field
+             * @example null
+             */
+            special?: string[] | null;
+            /**
+             * @description What interface is used in the admin app to edit the value for this field.
+             * @example primary-key
+             */
+            "system-interface"?: string | null;
+            /**
+             * @description Options for the interface that's used. This format is based on the individual interface.
+             * @example null
+             */
+            options?: { [key: string]: unknown } | null;
+            /**
+             * @description What display is used in the admin app to display the value for this field.
+             * @example null
+             */
+            display?: string | null;
+            /**
+             * @description Options for the display that's used. This format is based on the individual display.
+             * @example null
+             */
+            display_options?: { [key: string]: unknown } | null;
+            /**
+             * @description If the field can be altered by the end user. Directus system fields have this value set to `true`.
+             * @example true
+             */
+            locked?: boolean;
+            /**
+             * @description Prevents the user from editing the value in the field.
+             * @example false
+             */
+            readonly?: boolean;
+            /**
+             * @description If this field should be hidden.
+             * @example true
+             */
+            hidden?: boolean;
+            /**
+             * @description Sort order of this field on the edit page of the admin app.
+             * @example 1
+             */
+            sort?: number | null;
+            /**
+             * @description Width of the field on the edit form.
+             * @example null
+             * @enum {string|null}
+             */
+            width?:
+              | ("half" | "half-left" | "half-right" | "full" | "fill" | null)
+              | null;
+            /**
+             * @description What field group this field is part of.
+             * @example null
+             */
+            group?: number | null;
+            /**
+             * @description Key value pair of `<language>: <translation>` that allows the user to change the displayed name of the field in the admin app.
+             * @example null
+             */
+            translation?: { [key: string]: unknown } | null;
+            /**
+             * @description A user provided note for the field. Will be rendered alongside the interface on the edit page.
+             * @example
+             */
+            note?: string | null;
+          } | null;
+        } & {
+          datatype: unknown;
+          length: unknown;
+        };
+      };
+    };
+  };
   /** Retrieves the details of a single field in a given collection. */
   getCollectionField: {
     parameters: {
@@ -3196,6 +3930,216 @@ export interface operations {
       };
       401: components["responses"]["UnauthorizedError"];
       404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Delete an existing field. */
+  deleteField: {
+    parameters: {
+      path: {
+        /** Unique identifier of the collection the item resides in. */
+        collection: string;
+        /** Unique identifier of the field. */
+        id: string;
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: unknown;
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Update an existing field. */
+  updateField: {
+    parameters: {
+      path: {
+        /** Unique identifier of the collection the item resides in. */
+        collection: string;
+        /** Unique identifier of the field. */
+        id: string;
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Fields"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /**
+           * @description Unique name of the field. Field name is unique within the collection.
+           * @example id
+           */
+          field?: string;
+          /**
+           * @description Directus specific data type. Used to cast values in the API.
+           * @example integer
+           */
+          type?: string;
+          /** @description The schema info. */
+          schema?: {
+            /**
+             * @description The name of the field.
+             * @example title
+             */
+            name?: string;
+            /**
+             * @description The collection of the field.
+             * @example posts
+             */
+            table?: string;
+            /**
+             * @description The type of the field.
+             * @example string
+             */
+            type?: string;
+            /**
+             * @description The default value of the field.
+             * @example null
+             */
+            default_value?: string | null;
+            /**
+             * @description The max length of the field.
+             * @example null
+             */
+            max_length?: number | null;
+            /**
+             * @description If the field is nullable.
+             * @example false
+             */
+            is_nullable?: boolean;
+            /**
+             * @description If the field is primary key.
+             * @example false
+             */
+            is_primary_key?: boolean;
+            /**
+             * @description If the field has auto increment.
+             * @example false
+             */
+            has_auto_increment?: boolean;
+            /**
+             * @description Related column from the foreign key constraint.
+             * @example null
+             */
+            foreign_key_column?: string | null;
+            /**
+             * @description Related table from the foreign key constraint.
+             * @example null
+             */
+            foreign_key_table?: string | null;
+            /**
+             * @description Comment as saved in the database.
+             * @example null
+             */
+            comment?: string | null;
+            /**
+             * @description Database schema (pg only).
+             * @example public
+             */
+            schema?: string;
+            /**
+             * @description Related schema from the foreign key constraint (pg only).
+             * @example null
+             */
+            foreign_key_schema?: string | null;
+          };
+          /** @description The meta info. */
+          meta?: {
+            /**
+             * @description Unique identifier for the field in the `directus_fields` collection.
+             * @example 3
+             */
+            id?: number;
+            /**
+             * @description Unique name of the collection this field is in.
+             * @example posts
+             */
+            collection?: string;
+            /**
+             * @description Unique name of the field. Field name is unique within the collection.
+             * @example title
+             */
+            field?: string;
+            /**
+             * @description Transformation flag for field
+             * @example null
+             */
+            special?: string[] | null;
+            /**
+             * @description What interface is used in the admin app to edit the value for this field.
+             * @example primary-key
+             */
+            "system-interface"?: string | null;
+            /**
+             * @description Options for the interface that's used. This format is based on the individual interface.
+             * @example null
+             */
+            options?: { [key: string]: unknown } | null;
+            /**
+             * @description What display is used in the admin app to display the value for this field.
+             * @example null
+             */
+            display?: string | null;
+            /**
+             * @description Options for the display that's used. This format is based on the individual display.
+             * @example null
+             */
+            display_options?: { [key: string]: unknown } | null;
+            /**
+             * @description If the field can be altered by the end user. Directus system fields have this value set to `true`.
+             * @example true
+             */
+            locked?: boolean;
+            /**
+             * @description Prevents the user from editing the value in the field.
+             * @example false
+             */
+            readonly?: boolean;
+            /**
+             * @description If this field should be hidden.
+             * @example true
+             */
+            hidden?: boolean;
+            /**
+             * @description Sort order of this field on the edit page of the admin app.
+             * @example 1
+             */
+            sort?: number | null;
+            /**
+             * @description Width of the field on the edit form.
+             * @example null
+             * @enum {string|null}
+             */
+            width?:
+              | ("half" | "half-left" | "half-right" | "full" | "fill" | null)
+              | null;
+            /**
+             * @description What field group this field is part of.
+             * @example null
+             */
+            group?: number | null;
+            /**
+             * @description Key value pair of `<language>: <translation>` that allows the user to change the displayed name of the field in the admin app.
+             * @example null
+             */
+            translation?: { [key: string]: unknown } | null;
+            /**
+             * @description A user provided note for the field. Will be rendered alongside the interface on the edit page.
+             * @example
+             */
+            note?: string | null;
+          } | null;
+        };
+      };
     };
   };
   /** List the files. */
@@ -3551,6 +4495,86 @@ export interface operations {
       404: components["responses"]["NotFoundError"];
     };
   };
+  /** Create a new permission. */
+  createPermission: {
+    parameters: {
+      query: {
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Permissions"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /**
+           * @description What collection this permission applies to.
+           * @example customers
+           */
+          collection?: string;
+          /**
+           * @description If the user can post comments.
+           * @enum {string}
+           */
+          comment?: "none" | "create" | "update" | "full";
+          /**
+           * @description If the user can create items.
+           * @enum {string}
+           */
+          create?: "none" | "full";
+          /**
+           * @description If the user can update items.
+           * @enum {string}
+           */
+          delete?: "none" | "mine" | "role" | "full";
+          /**
+           * @description If the user is required to leave a comment explaining what was changed.
+           * @enum {string}
+           */
+          explain?: "none" | "create" | "update" | "always";
+          /**
+           * @description If the user can read items.
+           * @enum {string}
+           */
+          read?: "none" | "mine" | "role" | "full";
+          /**
+           * @description Unique identifier of the role this permission applies to.
+           * @example 3
+           */
+          role?: number;
+          /**
+           * @description Explicitly denies read access for specific fields.
+           * @example [
+           *   "featured_image"
+           * ]
+           */
+          read_field_blacklist?: string[];
+          /** @description What status this permission applies to. */
+          status?: string;
+          /** @description Explicitly denies specific statuses to be used. */
+          status_blacklist?: string[];
+          /**
+           * @description If the user can update items.
+           * @enum {string}
+           */
+          update?: "none" | "mine" | "role" | "full";
+          /** @description Explicitly denies write access for specific fields. */
+          write_field_blacklist?: string[];
+        };
+      };
+    };
+  };
   /** List the permissions that apply to the current user. */
   getMyPermissions: {
     responses: {
@@ -3591,6 +4615,94 @@ export interface operations {
       };
       401: components["responses"]["UnauthorizedError"];
       404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Delete an existing permission */
+  deletePermission: {
+    parameters: {
+      path: {
+        /** Index */
+        id: components["parameters"]["Id"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: unknown;
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Update an existing permission */
+  updatePermission: {
+    parameters: {
+      path: {
+        /** Index */
+        id: components["parameters"]["Id"];
+      };
+      query: {
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Permissions"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /** @description What collection this permission applies to. */
+          collection?: { [key: string]: unknown };
+          /**
+           * @description If the user can post comments. `full`.
+           * @enum {string}
+           */
+          comment?: "none" | "create" | "update";
+          /**
+           * @description If the user can create items.
+           * @enum {string}
+           */
+          create?: "none" | "full";
+          /**
+           * @description If the user can update items.
+           * @enum {string}
+           */
+          delete?: "none" | "mine" | "role" | "full";
+          /**
+           * @description If the user is required to leave a comment explaining what was changed.
+           * @enum {string}
+           */
+          explain?: "none" | "create" | "update" | "always";
+          /**
+           * @description If the user can read items.
+           * @enum {string}
+           */
+          read?: "none" | "mine" | "role" | "full";
+          /** @description Explicitly denies read access for specific fields. */
+          read_field_blacklist?: { [key: string]: unknown };
+          /** @description Unique identifier of the role this permission applies to. */
+          role?: { [key: string]: unknown };
+          /** @description What status this permission applies to. */
+          status?: { [key: string]: unknown };
+          /** @description Explicitly denies specific statuses to be used. */
+          status_blacklist?: { [key: string]: unknown };
+          /**
+           * @description If the user can update items.
+           * @enum {string}
+           */
+          update?: "none" | "mine" | "role" | "full";
+          /** @description Explicitly denies write access for specific fields. */
+          write_field_blacklist?: { [key: string]: unknown };
+        };
+      };
     };
   };
   /** List the presets. */
@@ -3826,6 +4938,57 @@ export interface operations {
       404: components["responses"]["NotFoundError"];
     };
   };
+  /** Create a new relation. */
+  createRelation: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Relations"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /**
+           * @description Collection that has the field that holds the foreign key.
+           * @example articles
+           */
+          collection_many?: string;
+          /**
+           * @description Collection on the _one_ side of the relationship.
+           * @example authors
+           */
+          collection_one?: string;
+          /**
+           * @description Foreign key. Field that holds the primary key of the related collection.
+           * @example author
+           */
+          field_many?: string;
+          /**
+           * @description Alias column that serves as the _one_ side of the relationship.
+           * @example books
+           */
+          field_one?: string;
+          /** @description Field on the junction table that holds the primary key of the related collection. */
+          junction_field?: string;
+        };
+      };
+    };
+  };
   /** Retrieve a single relation by unique identifier. */
   getRelation: {
     parameters: {
@@ -3851,6 +5014,67 @@ export interface operations {
       };
       401: components["responses"]["UnauthorizedError"];
       404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Delete an existing relation. */
+  deleteRelation: {
+    parameters: {
+      path: {
+        /** Index */
+        id: components["parameters"]["Id"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: unknown;
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Update an existing relation */
+  updateRelation: {
+    parameters: {
+      path: {
+        /** Index */
+        id: components["parameters"]["Id"];
+      };
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Relations"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /** @description Collection that has the field that holds the foreign key. */
+          collection_many?: string;
+          /** @description Collection on the _one_ side of the relationship. */
+          collection_one?: string;
+          /** @description Foreign key. Field that holds the primary key of the related collection. */
+          field_many?: string;
+          /**
+           * @description Alias column that serves as the _one_ side of the relationship.
+           * @example books
+           */
+          field_one?: string;
+          /** @description Field on the junction table that holds the primary key of the related collection. */
+          junction_field?: string;
+        };
+      };
     };
   };
   /** List the revisions. */
@@ -3952,6 +5176,50 @@ export interface operations {
       404: components["responses"]["NotFoundError"];
     };
   };
+  /** Create a new role. */
+  createRole: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Roles"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /** @description Description of the role. */
+          description?: string;
+          /** @description Whether or not this role enforces the use of 2FA. */
+          enforce_tfa?: boolean;
+          /** @description ID used with external services in SCIM. */
+          external_id?: string;
+          /** @description Array of IP addresses that are allowed to connect to the API as a user of this role. */
+          ip_whitelist?: string[];
+          /** @description Custom override for the admin app module bar navigation. */
+          module_listing?: string;
+          /**
+           * @description Name of the role.
+           * @example Interns
+           */
+          name?: string;
+        };
+      };
+    };
+  };
   /** Retrieve a single role by unique identifier. */
   getRole: {
     parameters: {
@@ -3977,6 +5245,66 @@ export interface operations {
       };
       401: components["responses"]["UnauthorizedError"];
       404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Delete an existing role */
+  deleteRole: {
+    parameters: {
+      path: {
+        /** Unique identifier for the object. */
+        id: components["parameters"]["UUId"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: unknown;
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Update an existing role */
+  updateRole: {
+    parameters: {
+      path: {
+        /** Unique identifier for the object. */
+        id: components["parameters"]["UUId"];
+      };
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Roles"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /** @description Description of the role. */
+          description?: string;
+          /** @description Whether or not this role enforces the use of 2FA. */
+          enforce_tfa?: boolean;
+          /** @description ID used with external services in SCIM. */
+          external_id?: string;
+          /** @description Array of IP addresses that are allowed to connect to the API as a user of this role. */
+          ip_whitelist?: string[];
+          /** @description Custom override for the admin app module bar navigation. */
+          module_listing?: string;
+          /** @description Name of the role. */
+          name?: string;
+        };
+      };
     };
   };
   /** List the settings. */
@@ -4109,6 +5437,21 @@ export interface operations {
           };
         };
       };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Delete an existing user */
+  deleteUser: {
+    parameters: {
+      path: {
+        /** Unique identifier for the object. */
+        id: components["parameters"]["UUId"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: unknown;
       401: components["responses"]["UnauthorizedError"];
       404: components["responses"]["NotFoundError"];
     };
@@ -4472,6 +5815,34 @@ export interface operations {
       404: components["responses"]["NotFoundError"];
     };
   };
+  /** Create a new flow. */
+  createFlow: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Flows"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": Partial<components["schemas"]["Flows"]>;
+      };
+    };
+  };
   /** Retrieve a single flow by unique identifier. */
   getFlow: {
     parameters: {
@@ -4491,6 +5862,165 @@ export interface operations {
       };
       401: components["responses"]["UnauthorizedError"];
       404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Delete an existing flow */
+  deleteFlow: {
+    parameters: {
+      path: {
+        /** Unique identifier for the object. */
+        id: components["parameters"]["UUId"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: unknown;
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Update an existing flow */
+  updateFlow: {
+    parameters: {
+      path: {
+        /** Unique identifier for the object. */
+        id: components["parameters"]["UUId"];
+      };
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Flows"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": Partial<components["schemas"]["Flows"]>;
+      };
+    };
+  };
+  /** Get all operations. */
+  getOperations: {
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Operations"][];
+            meta?: components["schemas"]["x-metadata"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Create a new operation. */
+  createOperation: {
+    parameters: {
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Operations"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": Partial<components["schemas"]["Operations"]>;
+      };
+    };
+  };
+  /** Retrieve a single operation by unique identifier. */
+  getOperation: {
+    parameters: {
+      path: {
+        /** Unique identifier for the object. */
+        id: components["parameters"]["UUId"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Operations"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Delete an existing operation */
+  deleteOperation: {
+    parameters: {
+      path: {
+        /** Unique identifier for the object. */
+        id: components["parameters"]["UUId"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: unknown;
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  /** Update an existing operation */
+  updateOperation: {
+    parameters: {
+      path: {
+        /** Unique identifier for the object. */
+        id: components["parameters"]["UUId"];
+      };
+      query: {
+        /** Control what fields are being returned in the object. */
+        fields?: components["parameters"]["Fields"];
+        /** What metadata to return in the response. */
+        meta?: components["parameters"]["Meta"];
+      };
+    };
+    responses: {
+      /** Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["Operations"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+    requestBody: {
+      content: {
+        "application/json": Partial<components["schemas"]["Operations"]>;
+      };
     };
   };
 }

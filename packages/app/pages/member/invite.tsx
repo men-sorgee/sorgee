@@ -2,15 +2,16 @@ import Head from 'next/head';
 import styles from 'styles';
 import { tw } from 'twind';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
-import { useMember } from '../lib/hooks/use-member';
+import { useAppUser } from '../../lib/hooks/use-member';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
-import { copyTextToClipboard } from '../lib/utils';
+import { useEffect, useState } from 'react';
+import { copyTextToClipboard } from '../../lib/utils';
 import {
   UserInvite
 } from 'lib/services/directus';
 import { getFieldOptions } from 'lib/services/directus/server'
-import { FormOptions } from '../lib/types'
+import { FormOptions } from '../../lib/types'
+import { ErrorMessage } from '@hookform/error-message'
 
 type PageProps = {
   userTypeOptions: FormOptions;
@@ -18,7 +19,7 @@ type PageProps = {
 
 export async function getServerSideProps(context) {
   const userTypeOptions = await getFieldOptions('user_type');
-  const exclude = ['subscriber', 'reject'];
+  const exclude = ['subscriber', 'user', 'reject', 'staff', 'big_brother'];
   return {
     props: {
       userTypeOptions: userTypeOptions.filter((o) => !exclude.includes(o.value))
@@ -27,27 +28,74 @@ export async function getServerSideProps(context) {
 }
 
 function Invite({ userTypeOptions }: PageProps) {
-  const { member, loading } = useMember();
+  const { member, loading } = useAppUser();
   const [link, setLink] = useState<string>();
-  const { handleSubmit, register } = useForm<UserInvite>({
+  const [sent, setSent] = useState<boolean>(false);
+  const [copied, setCopied] = useState<boolean>(false);
+  const { handleSubmit, register, setError, reset, formState: { errors, isSubmitting }} = useForm<UserInvite>({
     defaultValues: {
       t: 'pledge'
     }
   });
+
+  useEffect(() => {
+    if (sent) {
+      setTimeout(() => {
+        setSent(false);
+        reset();
+      }, 5000);
+    }
+    if (copied) {
+      setTimeout(() => {
+        setCopied(false);
+        reset()
+      }, 5000);
+    }
+  })
 
   if (loading) return <div>Loading...</div>;
 
   if (member?.status !== 'active')
     return <div>You aren&apos;t allowed here.</div>;
 
-  const getLink = ({ e, t }) => {
+  const getLink = ({ e, t }: UserInvite) => {
     const data = Buffer.from(JSON.stringify({ e, t, v: member.id })).toString(
       'base64'
     );
     const invite = `${location.protocol}//${location.host}/apply/${data}`;
     setLink(invite);
-    copyTextToClipboard(invite);
+    return invite
   };
+
+  const onCopyClick = (e) => {
+    e.preventDefault();
+    const invite = getLink(e.target.dataset);
+    copyTextToClipboard(invite);
+    setCopied(true);
+    setSent(false);
+  }
+
+  const onSubmit =  async (data: UserInvite) => {
+    const invite = getLink(data);
+    const response = await fetch('/api/admin/invite', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: Buffer.from(JSON.stringify({
+        email: data.e,
+        link: invite
+      }))
+    });
+
+    if (response.ok) {
+      setSent(true);
+      setCopied(false);
+    } else {
+      const { error } = await response.json();
+      setError('e', { message: error });
+    }
+  }
 
 
   return (
@@ -59,7 +107,7 @@ function Invite({ userTypeOptions }: PageProps) {
         <h2 className={tw(styles.h2page)}>Invite Someone</h2>
 
         <form
-          onSubmit={handleSubmit(getLink)}
+          onSubmit={handleSubmit(onSubmit)}
           className={tw`max-w-3xl mx-auto`}
         >
           <p className={tw(styles.pLg)}>
@@ -67,6 +115,7 @@ function Invite({ userTypeOptions }: PageProps) {
             address and we will create a special link for you to share.
           </p>
           <div className={tw`grid grid-cols-1 gap-4 `}>
+            <div>
             <input
               type="email"
               autoComplete="email"
@@ -74,8 +123,11 @@ function Invite({ userTypeOptions }: PageProps) {
               className={tw(styles.input)}
               placeholder="Email address"
             />
-            {member?.privileged && (
-              <select
+            <ErrorMessage errors={errors} name="e" />
+            </div>
+            {member?.user_type == 'staff' && (
+               <div>
+                <select
                 {...register('t', { required: true })}
                 className={tw(styles.select)}
               >
@@ -85,14 +137,16 @@ function Invite({ userTypeOptions }: PageProps) {
                   </option>
                 ))}
               </select>
+              </div>
             )}
-            <button className={tw(styles.buttonPrimary)}>Copy Link</button>
+            <button onClick={onCopyClick} className={tw(styles.button)}>Copy Link</button>
+            <button className={tw(styles.buttonPrimary)}>Send Invite</button>
           </div>
         </form>
 
-        {link && (
+        {copied && (
           <p className={tw` mt-8`}>
-            The &nbsp;
+            Your &nbsp;
             <a
               title={link}
               target={'_blank'}
@@ -102,7 +156,22 @@ function Invite({ userTypeOptions }: PageProps) {
             >
               link
             </a>
-            &nbsp; has been copied to your clipboard.
+            &nbsp;  has been copied to your clipboard.
+          </p>
+        )}
+        {sent && (
+          <p className={tw` mt-8`}>
+            Your &nbsp;
+            <a
+              title={link}
+              target={'_blank'}
+              href={link}
+              className={tw(styles.link)}
+              rel="noreferrer"
+            >
+              link
+            </a>
+            &nbsp;  was sent.
           </p>
         )}
       </section>

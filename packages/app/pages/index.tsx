@@ -7,11 +7,11 @@ import { useForm, FieldError } from 'react-hook-form'
 import { useUser } from '@auth0/nextjs-auth0'
 import { SubscriptionData } from 'lib/types'
 import { ErrorMessage } from '@hookform/error-message'
-import { useMember } from '../lib/hooks/use-member'
+import { useAppUser } from '../lib/hooks/use-member'
 
 export default function Home() {
   const { user } = useUser();
-  const { member } = useMember();
+  const { member } = useAppUser();
   const [subscribed, setSubscribed] = React.useState(false);
   const { handleSubmit, register, setError, formState: {
     errors,

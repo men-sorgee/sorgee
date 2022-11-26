@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 require( 'dotenv' ).config()
 
-const API_KEY = process.env.DIRECTUS_API_KEY
+const API_KEY = process.env.ADMIN_TOKEN
 const { writeFileSync } = require( "fs" )
 const { resolve } = require( "path" )
 
@@ -64,4 +64,8 @@ async function main() {
   } )
 }
 
-main().catch( console.error ).finally( () => process.exit( 0 ) )
+console.log( 'Generating Directus API types... ' )
+
+main().catch( console.error )
+  .then( () => console.log( 'Done Generating Types' ) )
+  .finally( () => process.exit( 0 ) )

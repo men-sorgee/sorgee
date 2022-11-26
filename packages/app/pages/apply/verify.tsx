@@ -1,14 +1,15 @@
 import { tw } from 'twind';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
-import { useMember } from 'lib/hooks/use-member';
+import { useAppUser } from 'lib/hooks/use-member';
 import styles from 'styles';
 import { NextRouter, useRouter } from 'next/router'
 import { useState, ChangeEvent, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useForm } from 'react-hook-form'
 
 function Verification() {
-  const { member, loading } = useMember();
+  const { member, loading } = useAppUser();
   const router = useRouter();
 
   useEffect(() => {
@@ -37,6 +38,8 @@ function Form ({code, router }: { code: string, router: NextRouter }) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [complete, setComplete] = useState(false);
+
+  const { register, handleSubmit, formState: { isSubmitting } } = useForm()
 
   const onFileUploadChange = (e: ChangeEvent<HTMLInputElement>) => {
     const fileInput = e.target;
@@ -76,8 +79,7 @@ function Form ({code, router }: { code: string, router: NextRouter }) {
     setPreviewUrl(null);
   };
 
-  const onUploadFile = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
     setError(null);
     if (!file) {
       return;
@@ -125,7 +127,7 @@ function Form ({code, router }: { code: string, router: NextRouter }) {
      
         <form
           className={tw`w-full py-3 md:mx-auto max-w-md`}
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={handleSubmit(onSubmit)}
         >
           <p className={tw(styles.pLg)}>
             To complete your application, take a selfie while holding a piece of
@@ -159,6 +161,7 @@ function Form ({code, router }: { code: string, router: NextRouter }) {
                     name="file"
                     type="file"
                     onChange={onFileUploadChange}
+                    {...register("file", { required: true })}
                   />
                 </label>
                 
@@ -173,18 +176,18 @@ function Form ({code, router }: { code: string, router: NextRouter }) {
                 onClick={onCancelFile}
                 className={tw`${styles.button}`}
               >
-                Cancel
+                Clear
               </button>
               <button
-                disabled={!previewUrl}
-                onClick={onUploadFile}
+                type='submit'
+                disabled={!previewUrl || isSubmitting}  
                 className={tw`${styles.buttonPrimary}`}
               >
                 Upload
               </button>
             </div>
           </div>
-          <p className={tw`${styles.pLg} mt-8`}>
+          <p className={tw`mt-8`}>
             <strong>
               Be sure your face and code is clearly visible, with no sunglasses or
               hats.

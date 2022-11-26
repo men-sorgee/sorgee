@@ -1,13 +1,12 @@
 import Link from 'next/link';
 import 'react';
-import { Logo, Photo } from 'components/ui';
-import { useUser } from '@auth0/nextjs-auth0';
+import { Logo } from 'components/ui';
 import { tw } from 'twind';
 import styles from 'styles';
+import { useAppUser } from '../../lib/hooks/use-member'
 
 export default function Navbar() {
-  const { user } = useUser();
-
+  const { user, member } = useAppUser();
   return (
     <header
       className={tw`sticky top-0 bg-black z-40 transition-all duration-150`}
@@ -51,17 +50,31 @@ export default function Navbar() {
                 <Link href="/api/auth/logout">
                   <a className={tw`${styles.headLink}`}>Logout</a>
                 </Link>
-                {user?.picture && (
+                {user?.picture && 
                   <div className="w-10 h-10 ">
+                    { member?.application_status == 'approved' && 
+                    <Link href="/member/profile">
+                      <a className={tw`cursor-pointer`}>
+                        <img
+                          className=" ring-2 ring-gray-300 p-1 rounded-full border-2 border-white"
+                          src={user.picture!}
+                          alt={user.name!}
+                          title={user.email}
+                          width={50}
+                          height={50}
+                        />
+                      </a>
+                    </Link> ||
                     <img
                       className=" ring-2 ring-gray-300 p-1 rounded-full border-2 border-white"
                       src={user.picture!}
                       alt={user.name!}
+                      title={user.email}
                       width={50}
                       height={50}
-                    />
+                    />}
                   </div>
-                )}
+                }
               </>
             )}
           </div>

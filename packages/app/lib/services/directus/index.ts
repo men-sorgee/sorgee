@@ -1,8 +1,6 @@
 import { User } from './types'
 
-
-
-export const memberFields = [
+export const applicantFields: Array<keyof User> = [
   "id",
   "first_name",
   "last_name",
@@ -10,6 +8,7 @@ export const memberFields = [
   "email_verified",
   "photo",
   "phone",
+  "phone_verified",
   "biography",
   "needs_guidance",
   "spectrum",
@@ -22,21 +21,22 @@ export const memberFields = [
   "my_positions",
   "sexual_scenes",
   "application_status",
-  "user_type", // level
-  "privileged",
+  "user_type", 
   "vouched_by",
   "last_login",
-  "status",
-  "in_sendgrid"
+  "status"
 ];
 
-export type Member = {
-  photo: string
+export type ApplicationStatusType = "apply" | "verify" | "review" | "agreement" | "approved" | "denied"
+export type StatusType = "new" | "active" | "inactive" | "stale" | "deleted" | "banned"
+export type UserType = "reject" | "subscriber" | "user" | "pledge" | "member" | "brother" | "big_brother"| "staff"
+
+export type Applicant = {
   id: User["id"];
   first_name: User["first_name"];
   last_name: User["last_name"];
   email: User["email"];
-  vouched_by: User["vouched_by"];
+  vouched_by: string;
   email_verified: User["email_verified"];
   phone: User["phone"];
   biography: User["biography"];
@@ -49,15 +49,23 @@ export type Member = {
   weight: User["weight"];
   skin_tone: User["skin_tone"];
   my_positions: User["my_positions"];
-  sexual_scenes: User["sexual_scenes"];
-  user_type: "reject" | "subscriber" | "user" | "pledge" | "member" | "brother" | "big_brother"| "staff";
-  privileged: User["privileged"];
+  user_type: UserType;
   invite?: string;
   picture?: string | null;
-  status: "new" | "active" | "inactive" | "stale" | "deleted" | "banned";
-  application_status: "apply"| "verify" | "review" | "agreement" | "approved" | "denied";
+  status: StatusType ;
+  application_status: ApplicationStatusType;
   last_login: User["last_login"];
-  in_sendgrid: User["in_sendgrid"];
+};
+
+export const memberFields: Array<keyof User> = [
+  'nickname',
+  ...applicantFields,
+  'sexual_scenes'
+];
+
+export type Member = Applicant & {
+  nickname: User["nickname"];
+  sexual_scenes: User["sexual_scenes"];
 };
 
 export type UserInvite = {

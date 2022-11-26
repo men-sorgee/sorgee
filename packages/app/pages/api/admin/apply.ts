@@ -1,19 +1,19 @@
 import { withApiAuthRequired } from "@auth0/nextjs-auth0";
 import { NextApiRequest, NextApiResponse } from "next";
-import { createMember, getMember, updateMember } from 'lib/services/directus/server'
-import { withMember, withUser } from '../_utils'
-import { Member } from 'lib/services/directus'
+import { createUser, getUser, updateUser } from 'lib/services/directus/server'
+import { withAppUser, withUser } from '../_utils'
+import { Applicant } from 'lib/services/directus'
 import { ApiResponse } from '../../../lib/types'
 
 async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   
   try {
     const user = await withUser(req, res);
-    const existingUser = await withMember(req, res, false);
+    const existingUser = await withAppUser(req, res, false);
 
-    const userDetails = req.body as Member;
+    const userDetails = req.body as Applicant;
     userDetails.email = existingUser?.email || user.email;
-    userDetails.application_status = existingUser?.photo ? "review" : "verify";
+    userDetails.application_status = "verify";
 
     if (userDetails?.invite && existingUser == null) {
       const inviteJson = Buffer.from(userDetails.invite, "base64").toString(
@@ -21,7 +21,7 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
       );
       const invite = JSON.parse(inviteJson);
       const { v: vid, t: user_type } = invite;
-      const vouchingUser = await getMember(vid)
+      const vouchingUser = await getUser(vid)
       if (vouchingUser?.status !== "active") {
         userDetails.vouched_by = vid;
         if (vouchingUser?.privileged) {
@@ -34,8 +34,8 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     }
 
     await (existingUser
-      ? updateMember(existingUser.id!, userDetails)
-      : createMember(userDetails)
+      ? updateUser(existingUser.id!, userDetails)
+      : createUser(userDetails)
     )
 
     res.status(200).end()

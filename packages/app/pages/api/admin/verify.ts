@@ -1,8 +1,8 @@
 import { withApiAuthRequired } from "@auth0/nextjs-auth0";
-import { updateMember, uploadFile, UploadFolder } from 'lib/services/directus/server'
+import { updateUser, uploadFile, UploadFolder } from 'lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse } from '@/lib/types'
-import { withMember, withMethods } from '../_utils'
+import { withAppUser, withMethods } from '../_utils'
 
 export const config = {
   api: {
@@ -15,7 +15,7 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
     if (!withMethods(req, ["POST"])) return
 
-    const member = await withMember(req, res)
+    const member = await withAppUser(req, res)
     if (member == null) return
    
     const file = await uploadFile(
@@ -23,7 +23,7 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
       UploadFolder.verification,
       `Verification: ${member.id.substring(0,4)}-${member.id.substring(4,8)}`)
 
-    await updateMember(member.id, {
+    await updateUser(member.id, {
       photo: file.id,
       application_status: "review"
     })

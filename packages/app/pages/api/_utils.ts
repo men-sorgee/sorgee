@@ -1,8 +1,9 @@
 import { getSession, UserProfile } from "@auth0/nextjs-auth0";
-import { findMember, getMember, recordMemberLogin} from 'lib/services/directus/server'
+import { findUser, getUser, getMember, getApplicant, recordUserLogin, importFile, UploadFolder, updateUser} from 'lib/services/directus/server'
 import { getCookie, setCookie } from 'lib/services/cookies'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { Member } from '../../lib/services/directus'
+import { Applicant, Member } from '../../lib/services/directus'
+import { User } from '../../lib/services/directus/types'
 
 export type HttpMethod = string  & "GET" | "POST"| "PATCH" | "PUT" | "DELETE"
 
@@ -28,20 +29,30 @@ export async function withUser(
   return null
 }
 
-export async function withMember(
+export async function withAppUser(
   req: NextApiRequest, 
   res: NextApiResponse,
-  throwError = true): Promise<Member|null> {
+  throwError = true): Promise<Applicant|Member|null> {
   const user = await withUser(req, res)
   if (user == null) return null;
   const id = getCookie(req, user.sub);
-  const member = id ? await getMember(id) : await findMember(user.email);
-  if (member) {
-     if (!id) {
-      recordMemberLogin(member.id);
-      setCookie(res, user.sub, member.id)
+  const userData = id ? await getUser(id) : await findUser<User>(user.email);
+  if (userData) {
+    // set cookie if not set & record login
+    if (!id) {
+      recordUserLogin(userData.id);
+      setCookie(res, user.sub, userData.id)
     }
-    return member;
+    // update picture id empty
+    if (userData.picture == null && user.picture != null) {
+      const file = await importFile(user.picture, UploadFolder.members, userData.email)
+      if (file) {
+        await updateUser(userData.id, { picture: file.id })
+      }
+    }
+    if (userData.application_status == "approved")
+      return userData as Member
+    return userData as Applicant
   }
   if (throwError)
     throw new Error("Member not found")
