@@ -64,9 +64,7 @@ export default function Home() {
               like-minded men.
             </p>
             <p className={tw`italic`}>
-              This club is invite only, but soon we will accept
-              applications from 
-
+              This club is invite only.
             </p>
           </div>
         </div>
