@@ -24,6 +24,7 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
         'Manage Profile',
         'https://guysnheat.com/member/profile')
       res.status(200).end();
+      return
     }
 
     res.status(401).json({ 

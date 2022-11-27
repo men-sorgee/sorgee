@@ -1,6 +1,6 @@
 import { withApiAuthRequired } from "@auth0/nextjs-auth0";
 import { NextApiRequest, NextApiResponse } from "next";
-import { Applicant, Member } from 'lib/services/directus'
+import { Member } from 'lib/services/directus'
 import { updateUser } from 'lib/services/directus/server'
 import { withAppUser, withMethods } from '../_utils'
 

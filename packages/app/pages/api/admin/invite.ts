@@ -1,5 +1,4 @@
 import { withApiAuthRequired } from "@auth0/nextjs-auth0";
-import { updateUser, uploadFile, UploadFolder } from 'lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse, InviteLink } from '@/lib/types'
 import { withAppUser, withMethods } from '../_utils'

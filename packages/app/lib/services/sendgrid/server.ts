@@ -6,7 +6,9 @@ export const lists = {
 }
 
 export async function addSubscriber(
-  first_name: string, email: string): Promise<string> {
+  first_name: string, 
+  last_name: string,
+  email: string): Promise<string> {
 
   client.setApiKey(process.env.SENDGRID_API_KEY);
   
@@ -16,7 +18,7 @@ export async function addSubscriber(
     method: 'PUT',
     body: {
       list_ids: [lists.subscribers],
-      contacts: [{ email, first_name }]
+      contacts: [{ email, first_name, last_name }]
     }
   });
 

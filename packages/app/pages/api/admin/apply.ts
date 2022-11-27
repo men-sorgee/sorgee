@@ -38,7 +38,11 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     }
 
     
-    await addSubscriber(userDetails.first_name, userDetails.email)
+    await addSubscriber(
+      userDetails.first_name, 
+      userDetails.last_name, 
+      userDetails.email)
+      
     await (existingUser
       ? updateUser(existingUser.id!, { ...userDetails, in_sendgrid: true })
       : createUser({ ...userDetails, in_sendgrid: true })

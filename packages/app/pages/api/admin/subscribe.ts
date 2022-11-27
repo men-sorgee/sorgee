@@ -15,7 +15,7 @@ async function Subscribe(req: NextApiRequest, res: NextApiResponse<ApiResponse>)
       email
     } = req.body as SubscriptionData
 
-    await addSubscriber(name, email)
+    await addSubscriber(name, null, email)
 
     const member = await findUser(email)
 
