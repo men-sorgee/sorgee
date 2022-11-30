@@ -2,11 +2,11 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useAppUser } from 'lib/hooks/use-member';
 
 import { useRouter } from 'next/router';
-import Head from 'next/head';
 import { useEffect } from 'react';
 import Link from 'next/link';
 import ApplicationSteps from './_steps';
 import { SparklesIcon } from '@heroicons/react/solid';
+import Page from 'components/layout/Page';
 
 function Approved() {
   const router = useRouter();
@@ -20,13 +20,13 @@ function Approved() {
   }, [member, loading, router]);
 
   return (
-    <>
-      <Head>
-        <title>Approved</title>
-      </Head>
-      <section className="dark text-center">
-        <h1>Application Approved</h1>
-        <ApplicationSteps status={'approved'} />
+    <Page
+      title="Application Approved"
+      loading={loading}
+      sectionClass="dark text-center"
+      header={<ApplicationSteps status={'approved'} />}
+    >
+      <>
         <h2>Congratulations! Your membership was approved.</h2>
         <SparklesIcon className="mx-auto my-10 h-[50px] animate-bounce" />
         <p className="text-center">
@@ -37,12 +37,12 @@ function Approved() {
           <Link href="/member/invite">
             <a className="btn-primary btn">Invite a Friend</a>
           </Link>
-          <Link href="/member/profile">
+          <Link href="/member/account">
             <a className="btn-primary btn">Manage Full Profile</a>
           </Link>
         </div>
-      </section>
-    </>
+      </>
+    </Page>
   );
 }
 

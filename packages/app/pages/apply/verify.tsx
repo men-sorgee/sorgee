@@ -6,9 +6,12 @@ import Image from 'next/image';
 import ApplicationSteps from './_steps';
 import { Button } from 'react-daisyui';
 import Loading from 'components/ui/Loading';
-import { Applicant } from '../../lib/services/directus';
+import { Applicant } from 'lib/services/directus';
+import { useMeta } from 'lib/hooks/user-meta-context';
+import Page from 'components/layout/Page';
 
 function Verification() {
+  useMeta('Identity Verification');
   const { member, loading } = useAppUser();
   const router = useRouter();
 
@@ -20,22 +23,19 @@ function Verification() {
   }, [loading, member, router]);
 
   return (
-    <section className="dark">
-      <h1>Identification</h1>
-      <ApplicationSteps status={'verify'} />
-      {(loading && (
-        <Loading>
-          <h3>Loading</h3>
-        </Loading>
-      )) ||
-        (member?.id && (
-          <Form
-            code={`${member.id.slice(0, 4)} ${member.id.slice(4, 8)}`}
-            member={member}
-            router={router}
-          />
-        ))}
-    </section>
+    <Page
+      title="Identification"
+      loading={loading}
+      header={<ApplicationSteps status={'verify'} />}
+    >
+      {member?.id && (
+        <Form
+          code={`${member.id.slice(0, 4)} ${member.id.slice(4, 8)}`}
+          member={member}
+          router={router}
+        />
+      )}
+    </Page>
   );
 }
 

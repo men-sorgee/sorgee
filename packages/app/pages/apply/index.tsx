@@ -1,7 +1,6 @@
 import { UserProfile, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { FormProvider, useForm } from 'react-hook-form';
 import { NextPageContext } from 'next';
-import Head from 'next/head';
 import { postJSON, pruneUndefined } from 'lib/utils';
 import { useEffect, useState } from 'react';
 import { getFieldOptions } from '@/lib/services/directus/server';
@@ -16,10 +15,12 @@ import {
   FieldCheckboxes
 } from 'components/forms';
 import { Button } from 'react-daisyui';
-import FieldCheckbox from '../../components/forms/FieldCheckbox';
+import FieldCheckbox from 'components/forms/FieldCheckbox';
 import ApplicationSteps from './_steps';
-import Loading from '../../components/ui/Loading';
-import { Applicant } from '../../lib/services/directus';
+import { Applicant } from 'lib/services/directus';
+import { LightBulbIcon, SupportIcon } from '@heroicons/react/solid';
+import { useMeta } from 'lib/hooks/user-meta-context';
+import Page from 'components/layout/Page';
 
 export type PageProps = {
   email?: string;
@@ -48,6 +49,7 @@ export async function getServerSideProps(context: NextPageContext) {
 }
 
 function Apply(props: PageProps) {
+  useMeta('Registration');
   const router = useRouter();
   const { user, member, loading } = useAppUser();
   const [formError, setFormError] = useState<string>();
@@ -66,13 +68,12 @@ function Apply(props: PageProps) {
 
   const data = { ...props, setComplete, member, router, user };
   return (
-    <>
-      <Head>
-        <title>Registration</title>
-      </Head>
-      <section>
-        <h1>Registration</h1>
-        <ApplicationSteps status={'apply'} />
+    <Page
+      title="Registration"
+      loading={loading}
+      header={<ApplicationSteps status={'apply'} />}
+    >
+      <>
         {formError && <p className="text-red-700">{formError}</p>}
         <p className="text-xl">{intro}</p>
         <p className="text-xl">
@@ -82,14 +83,9 @@ function Apply(props: PageProps) {
           flakes.
         </p>
         {formError && <p className="text-red-700">{formError}</p>}
-        {(loading && (
-          <Loading>
-            <h3>Loading</h3>
-          </Loading>
-        )) ||
-          (!complete && <Form {...data} />)}
-      </section>
-    </>
+        {!complete && <Form {...data} />}
+      </>
+    </Page>
   );
 }
 
@@ -140,7 +136,7 @@ function Form(props: PageProps) {
 
   async function onSubmit(data: any) {
     if (data.height_feet || data.height_inches) {
-      data.height = `${data.height_feet}' ${data.height_inches}"`;
+      data.height = `${data.height_feet} ${data.height_inches}`;
     }
     const [success, response] = await postJSON(
       '/api/admin/apply',
@@ -291,13 +287,7 @@ function Form(props: PageProps) {
             event. As the group grows, so too will the number of events we can
             create.
           </p>
-          <p>
-            <strong>Important:</strong> Members who RSVP to events are expected
-            to attend. Members that RSVP to event and do not attend, decrease
-            the likelihood of getting invited again. We understand that things
-            come up, but please be respectful of your brothers and RSVP
-            accurately and let us know if you can&apos;t make it.
-          </p>
+
           <div className="mb-8 grid grid-cols-1 gap-4">
             <FieldCheckboxes
               field="event_availability"
@@ -306,6 +296,16 @@ function Form(props: PageProps) {
               formOptions={timeOfDayOptions}
             />
           </div>
+          <p className="alert text-xs">
+            <div>
+              <LightBulbIcon className="w-10" />
+            </div>
+            Members who RSVP to events are expected to attend. Members that RSVP
+            to event and do not attend, decrease the likelihood of getting
+            invited again. We understand that things come up, but please be
+            respectful of your brothers and RSVP accurately and let us know if
+            you can&apos;t make it.
+          </p>
           <h3>Sexual Preferences</h3>
           <div className="mb-8 grid grid-cols-1 gap-4">
             <FieldCheckboxes
@@ -317,11 +317,14 @@ function Form(props: PageProps) {
 
             <FieldCheckbox
               field="needs_guidance"
-              label="I need guidance"
-              help="We want you to be comfortable. Check this and we will help guide you along the way."
+              label="I'd like some guidance"
+              help=""
             >
-              <p>
-                Unsure how to answer the above questions, or just new to this?
+              <p className="align-start alert justify-start text-xs">
+                <SupportIcon className="w-10" />
+                We want you to be comfortable. Check this and we will help guide
+                you along the way. Unsure how to answer the above questions, or
+                just new to this? Just check this box and we will help you out.
               </p>
             </FieldCheckbox>
           </div>

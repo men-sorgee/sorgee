@@ -1,6 +1,8 @@
 import Link from 'next/link';
+import { useMeta } from '../lib/hooks/user-meta-context';
 
 export default function Custom404() {
+  useMeta('Not Found');
   return (
     <section className="bg-gray-900">
       <div className="mx-auto max-w-screen-xl py-8 px-4 lg:py-16 lg:px-6">

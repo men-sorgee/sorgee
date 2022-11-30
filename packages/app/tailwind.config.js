@@ -9,7 +9,7 @@ const config = {
     '../../node_modules/react-daisyui/dist/**/*.{js,jsx,ts,tsx}'
   ],
   theme: {
-    ...defaultTheme,
+    //...defaultTheme,
     extend: {
       screens: {
         standalone: { raw: '(display-mode:standalone)' }
@@ -20,7 +20,6 @@ const config = {
         mono: ['Consolas', ...defaultTheme.fontFamily.mono]
       },
       colors: {
-        ...colors,
         primary: {
           DEFAULT: '#7C3AED',
           '50': '#ECE2FC',
@@ -46,7 +45,12 @@ const config = {
           '700': '#3C661A',
           '800': '#21390E',
           '900': '#070C03'
-        }
+        },
+        slate: colors.slate,
+        info: colors.sky,
+        success: colors.emerald,
+        warning: colors.amber,
+        error: colors.red,
       }
     }
   },

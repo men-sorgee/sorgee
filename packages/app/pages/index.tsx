@@ -7,8 +7,18 @@ import { SubscriptionData } from 'lib/types';
 import { useAppUser } from '../lib/hooks/use-member';
 import { Button } from 'react-daisyui';
 import FieldInput from '../components/forms/FieldInput';
+import { GetStaticProps } from 'next';
+import { useMeta } from '../lib/hooks/user-meta-context';
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  const pageId = 'ac330d1b-0340-4a61-9b42-996aa0936d2b';
+  return {
+    props: {}
+  };
+};
 
 export default function Home() {
+  useMeta('Home');
   const { user } = useUser();
   const { member } = useAppUser();
   const [subscribed, setSubscribed] = React.useState(false);
@@ -44,10 +54,6 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <title>Home </title>
-      </Head>
-
       <section className="">
         <div className="flex max-w-6xl flex-col-reverse items-center md:flex-row ">
           <div className="mt-4 hidden md:block md:w-1/2">
@@ -64,48 +70,54 @@ export default function Home() {
           </div>
         </div>
       </section>
-      {!subscribed && (
-        <section className="">
-          <div className="mx-auto flex max-w-6xl flex-col items-center md:flex-row ">
-            <div className="mb-4 w-full pr-8 md:mb-0 md:w-1/2">
-              <h3>Interested?</h3>
-              <p>
-                Learn more about us and get important updates by subscribing to
-                our newsletter!
-              </p>
-            </div>
-            <div className="w-full text-left md:w-1/2">
-              <FormProvider {...methods}>
-                <form
-                  onSubmit={handleSubmit(onSubmit)}
-                  className="grid grid-cols-1 gap-4"
-                >
-                  <FieldInput
-                    field="email"
-                    registerOptions={{
-                      required: true
-                    }}
-                    type="email"
-                    placeholder="email@gmail.com"
-                    autoComplete="false"
-                  />
-                  <FieldInput
-                    field="name"
-                    registerOptions={{
-                      required: true
-                    }}
-                    placeholder="John Does"
-                  />
 
-                  <div>
-                    <Button color="primary">Get Notifications</Button>
-                  </div>
-                </form>
-              </FormProvider>
-            </div>
+      <section className="">
+        <div className="mx-auto flex max-w-6xl flex-col items-center md:flex-row ">
+          <div className="mb-4 w-full pr-8 md:mb-0 md:w-1/2">
+            <h3>Interested?</h3>
+            <p>
+              Learn more about us and get important updates by subscribing to
+              our newsletter!
+            </p>
           </div>
-        </section>
-      )}
+          <div className="w-full text-left md:w-1/2">
+            <FormProvider {...methods}>
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="grid grid-cols-1 gap-4"
+              >
+                <FieldInput
+                  field="email"
+                  registerOptions={{
+                    required: true
+                  }}
+                  type="email"
+                  placeholder="email@gmail.com"
+                  autoComplete="false"
+                />
+                <FieldInput
+                  field="name"
+                  registerOptions={{
+                    required: true
+                  }}
+                  placeholder="Willy Dicks"
+                />
+                <div className="grid grid-cols-2 gap-4 align-top">
+                  <Button disabled={member != null} color="primary">
+                    Get Notifications
+                  </Button>
+                  <p className="text-xs text-gray-500">
+                    By subscribing, you agree with our{' '}
+                    <a href="/terms">Terms of Service</a>
+                    and <a href="/privacy">Privacy Policy</a>.
+                  </p>
+                </div>
+              </form>
+            </FormProvider>
+          </div>
+        </div>
+      </section>
+
       <section className="">
         <div className="mx-auto flex max-w-6xl flex-col items-center md:flex-row">
           <h3 className="  !md:text-6xl mt-8 sm:w-1/2">

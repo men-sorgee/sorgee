@@ -1,12 +1,10 @@
 import Head from 'next/head';
 import Script from 'next/script';
+import { useMeta } from '../lib/hooks/user-meta-context';
 export default function Learn() {
+  useMeta('Privacy Policy');
   return (
     <>
-      <Head>
-        <title>Privacy Policy</title>
-      </Head>
-
       <div
         name={'termly-embed'}
         data-id="f94e7630-c543-4da1-9ae7-e74267043d70"

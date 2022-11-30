@@ -16,6 +16,7 @@ export default function ApplicationSteps({
       <Steps.Step
         color={value >= 0 ? 'primary' : 'ghost'}
         title="Registration"
+        value=""
       ></Steps.Step>
       <Steps.Step
         color={value >= 1 ? 'primary' : 'ghost'}

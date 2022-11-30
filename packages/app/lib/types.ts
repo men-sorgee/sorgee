@@ -9,6 +9,11 @@ export type FormOptions = Array<{
   value: string;
 }>;
 
+export interface Props {
+  [propName: string]: any;
+  children?: React.ReactNode | React.ReactNode[];
+}
+
 export interface IApiResponse<T = never | any> {
   ok: boolean;
   error?: { message: string };
@@ -47,3 +52,11 @@ export type InviteLink = {
   email: string;
   link: string;
 };
+
+export interface MetaProps {
+  title: string;
+  description?: string;
+  basePath?: string;
+  url?: string;
+  image?: string;
+}

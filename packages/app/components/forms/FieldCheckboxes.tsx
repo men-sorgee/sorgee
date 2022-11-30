@@ -1,6 +1,6 @@
 import { InputHTMLAttributes } from 'react';
 import { useFormContext, RegisterOptions } from 'react-hook-form';
-import { FormOptions } from '../../lib/types';
+import { FormOptions } from 'lib/types';
 import FieldWrapper from './FieldWrapper';
 
 type Props = InputHTMLAttributes<HTMLInputElement> & {

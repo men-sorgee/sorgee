@@ -1,8 +1,8 @@
 import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ApiResponse, InviteLink } from 'lib/types';
-import { withAppUser, withMethods } from '../../../lib/services/api';
-import { sendApplicationWorkflowEmail } from '../../../lib/services/sendgrid/server';
+import { withAppUser, withMethods } from 'lib/services/api';
+import { sendApplicationWorkflowEmail } from 'lib/services/sendgrid/server';
 
 async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {

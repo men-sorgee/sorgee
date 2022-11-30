@@ -1,11 +1,13 @@
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useAppUser } from 'lib/hooks/use-member';
-
 import { useRouter } from 'next/router';
-import Head from 'next/head';
 import { useEffect } from 'react';
+import { useMeta } from 'lib/hooks/user-meta-context';
+import ApplicationSteps from './_steps';
+import Page from 'components/layout/Page';
 
 function Denied() {
+  useMeta('Denied');
   const router = useRouter();
   const { loading, member } = useAppUser();
 
@@ -17,13 +19,12 @@ function Denied() {
   }, [member, loading, router]);
 
   return (
-    <>
-      <Head>
-        <title>Application Denied</title>
-      </Head>
-      <section className="dark ">
-        <h1>Application Denied</h1>
-
+    <Page
+      title="Application Denied"
+      loading={loading}
+      header={<ApplicationSteps status={'denied'} />}
+    >
+      <>
         <p>Unfortunately, your application was denied.</p>
         <p>
           You should receive an email with more information. To re-apply or
@@ -33,8 +34,8 @@ function Denied() {
           </a>
           .
         </p>
-      </section>
-    </>
+      </>
+    </Page>
   );
 }
 

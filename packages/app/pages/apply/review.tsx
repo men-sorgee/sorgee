@@ -5,9 +5,12 @@ import { NextRouter, useRouter } from 'next/router';
 import Head from 'next/head';
 import { useEffect } from 'react';
 import ApplicationSteps from './_steps';
-import Loading from '../../components/ui/Loading';
+import Loading from 'components/ui/Loading';
+import { useMeta } from 'lib/hooks/user-meta-context';
+import Page from 'components/layout/Page';
 
 function Review() {
+  useMeta('Review');
   const router = useRouter();
   const { loading, member } = useAppUser();
 
@@ -26,13 +29,12 @@ function Review() {
     );
 
   return (
-    <>
-      <Head>
-        <title>Application Review</title>
-      </Head>
-      <section className="dark ">
-        <h1>Verification Review</h1>
-        <ApplicationSteps status={'review'} />
+    <Page
+      title="Verification Review"
+      loading={loading}
+      header={<ApplicationSteps status={'review'} />}
+    >
+      <>
         <h3>Good things cum to those that wait!</h3>
         <p className="text-center text-xl">
           Thank you for submitting your application and verification photo.
@@ -44,8 +46,8 @@ function Review() {
         <Loading>
           <h3>Under Review</h3>
         </Loading>
-      </section>
-    </>
+      </>
+    </Page>
   );
 }
 

@@ -1,12 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ApiResponse } from '@/lib/types';
-import { withMethods } from '../../../lib/services/api';
+import { withMethods } from 'lib/services/api';
 import { addSubscriber } from 'lib/services/sendgrid/server';
-import {
-  getMember,
-  getUser,
-  updateUser
-} from '../../../lib/services/directus/server';
+import { getUser, updateUser } from 'lib/services/directus/server';
 
 async function AddContact(
   req: NextApiRequest,

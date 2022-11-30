@@ -3,6 +3,7 @@ import { useUser, UserProfile } from '@auth0/nextjs-auth0';
 import { Member } from 'lib/services/directus';
 import { getJSON } from 'lib/utils';
 import { useRouter } from 'next/router';
+import { Props } from '../types';
 
 export type Context = {
   user?: UserProfile;
@@ -12,10 +13,6 @@ export type Context = {
 };
 
 export const MemberContext = createContext<Context | undefined>(undefined);
-
-export interface Props {
-  [propName: string]: any;
-}
 
 export const AppUserContextProvider = (props: Props) => {
   const { user, isLoading } = useUser();
@@ -47,7 +44,7 @@ export const AppUserContextProvider = (props: Props) => {
       });
       setSubscribed(true);
     }
-  }, [user, isLoading, subscribed, loading, member]);
+  }, [user, isLoading, subscribed, loading, member, getMember, router.events]);
 
   const value: Context = {
     user,

@@ -3,44 +3,47 @@
 @tailwind utilities;
 
 @layer base {
-  html, body, iframe {
-    @apply text-base font-sans text-left bg-black  text-gray-300 ;
+  html,
+  body,
+  iframe {
+    @apply bg-black text-left font-sans text-base text-gray-300 sm:text-lg lg:text-xl;
   }
+
   h1 {
-    @apply my-4 font-serif text-4xl font-extrabold lg:text-5xl text-primary-500;
+    @apply my-4 font-serif text-4xl font-extrabold text-primary-500 lg:text-5xl;
   }
   h2 {
-    @apply my-4 font-serif text-3xl font-extrabold lg:text-4xl text-primary-400;
+    @apply my-4 font-sans text-3xl font-extrabold text-secondary-500 lg:text-4xl;
   }
   h3 {
-    @apply my-4 font-serif text-2xl font-bold lg:text-3xl text-secondary-400;
+    @apply my-4 font-serif text-3xl font-bold text-primary-400 lg:text-3xl;
   }
   h4 {
-    @apply my-4 font-serif text-xl font-bold lg:text-2xl text-secondary-300;
+    @apply my-4 font-serif text-xl font-bold text-secondary-400 lg:text-2xl;
   }
   h5 {
-    @apply my-4 font-serif text-lg font-bold lg:text-xl text-gray-300;
+    @apply my-4 font-serif text-lg font-bold text-gray-300 md:text-xl lg:text-2xl;
   }
 
   label {
     @apply mb-2 block font-extrabold;
   }
   p {
-    @apply my-4 mx-auto max-w-4xl text-left;
-  },
+    @apply my-4 mx-auto max-w-4xl;
+  }
+  ,
   select {
-    @apply block w-full ;
+    @apply block w-full;
   }
   input {
-    @apply block w-full ;
+    @apply block w-full;
   }
   textarea {
     @apply block w-full;
   }
   section {
-    @apply p-8 md:text-center bg-slate-700;
+    @apply p-10 md:text-center;
   }
-  
 }
 
 @layer components {
@@ -50,15 +53,19 @@
   .select {
     @apply w-full;
   }
+
   main {
-    @apply min-h-[100vh];
+    @apply mx-auto min-h-[calc(100vh-10rem)] max-w-4xl;
+  }
+  article {
+    @apply min-w-[350px] p-4;
   }
   section.dark {
-    @apply w-full bg-gray-800 p-8 text-left  md:text-center;
+    @apply w-full bg-gray-800 text-left  md:text-center;
   }
-  
+  footer {
+  }
 }
-
 
 .fire {
   width: fit-content;
@@ -68,7 +75,7 @@
 .fire svg {
   width: 100%;
   height: auto;
-  position: relative
+  position: relative;
 }
 .spark {
   animation-name: spark;
@@ -116,16 +123,16 @@
 
 @keyframes flaming {
   50% {
-    transform: scale(1,1.2) translate(0, -30px) rotate(-2deg);
+    transform: scale(1, 1.2) translate(0, -30px) rotate(-2deg);
   }
 }
 
 @keyframes spark {
-  0%{
+  0% {
     transform: translate(0) rotate(180deg);
   }
-   50% {
-     opacity: 1;
+  50% {
+    opacity: 1;
   }
   100% {
     transform: translate(-20px, -100px) rotate(180deg);

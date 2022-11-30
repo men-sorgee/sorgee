@@ -2,9 +2,9 @@ import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { updateUser } from 'lib/services/directus/server';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { AgreementData, ApiResponse } from 'lib/types';
-import { withAppUser, withMethods } from '../../../lib/services/api';
-import { sendApplicationWorkflowEmail } from '../../../lib/services/sendgrid/server';
-import { getApplicationStatusIndex } from '../../../lib/services/directus';
+import { withAppUser, withMethods } from 'lib/services/api';
+import { sendApplicationWorkflowEmail } from 'lib/services/sendgrid/server';
+import { getApplicationStatusIndex } from 'lib/services/directus';
 
 async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
@@ -25,7 +25,7 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
           `Application Status`,
           `Your free membership is now active!`,
           'Manage Profile',
-          'https://guysnheat.com/member/profile'
+          'https://guysnheat.com/member/account'
         );
 
       await updateUser(applicant.id, {

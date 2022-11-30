@@ -1,10 +1,18 @@
+import { GetStaticProps } from 'next';
 import Head from 'next/head';
+import { useMeta } from '../lib/hooks/user-meta-context';
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  const pageId = '9f419544-5f62-4123-8cfc-d35c71085377';
+  return {
+    props: {}
+  };
+};
+
 export default function About() {
+  useMeta('About');
   return (
     <>
-      <Head>
-        <title>About</title>
-      </Head>
       <section className="dark ">
         <h2>About</h2>
         <h3>Our Mission</h3>

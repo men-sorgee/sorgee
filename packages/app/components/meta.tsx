@@ -1,18 +1,16 @@
 import Head from 'next/head';
+import { useMetaContext } from '../lib/hooks/user-meta-context';
+import { ReactNode } from 'react';
 
-export interface MetaProps {
-  title: string;
-  description?: string;
-  basePath?: string;
-  ogUrl?: string;
-  ogImage?: string;
-  url?: string;
-}
-
-export default function Meta({ props }: { props: MetaProps }) {
+export default function Meta({
+  children
+}: {
+  children?: ReactNode | ReactNode[];
+}) {
+  const { title, description, url, image } = useMetaContext();
   return (
     <Head>
-      <title>{props.title}</title>
+      <title>{title} :: GuysNHeat</title>
       <link rel="icon" href="/favicon.ico" />
       <meta name="robots" content="follow, index" />
       <link
@@ -37,26 +35,24 @@ export default function Meta({ props }: { props: MetaProps }) {
       <meta name="theme-color" content="#7b46f6" />
       <meta charSet="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <meta name="name" content={props.title} />
-      <meta name="description" content={props.description} />
-      <meta name="image" content={props.ogImage} />
-      <meta name="description" content={props.description} />
-      <meta name="og:title" content={props.title} />
-      <meta name="og:description" content={props.description} />
-      <meta name="og:url" content={props.ogUrl} />
-      <meta name="og:image" content={props.ogImage} />
+      <meta name="name" content={title} />
+      <meta name="description" content={description} />
+      {image && <meta name="image" content={image} />}
+      <meta name="description" content={description} />
+      <meta name="og:title" content={title} />
+      <meta name="og:description" content={description} />
+      <meta name="og:url" content={url} />
+      {image && <meta name="og:image" content={image} />}
       <meta name="og:type" content="website" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:domain" content="guysnheat.com" />
-      <meta name="twitter:url" content={props.ogUrl} />
-      <meta name="twitter:title" content={props.title} />
-      <meta name="twitter:description" content={props.description} />
-      {props.ogImage && <meta name="twitter:image" content={props.ogImage} />}
+      <meta name="twitter:url" content={url} />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      {image && <meta name="twitter:image" content={image} />}
       <meta name="msapplication-TileColor" content="#00aba9" />
       <meta name="theme-color" content="#000" />
-      <link rel="preconnect" href="https://fonts.googleapis.com"/>
-      <link rel="preconnect" href="https://fonts.gstatic.com" />
-     
+      {children}
     </Head>
   );
 }

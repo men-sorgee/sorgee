@@ -1,38 +1,23 @@
-import { useRouter } from 'next/router';
+import Meta from '../meta';
 import Header from './Header';
 import Footer from './Footer';
-import { ReactNode } from 'react';
-import getConfig from 'next/config';
 import 'react';
-import Meta, { MetaProps } from '../meta';
+import { useMetaContext } from 'lib/hooks/user-meta-context';
+import { Props } from 'lib/types';
 
-interface Props {
-  children: ReactNode | ReactNode[];
-  meta?: MetaProps;
-}
-const { publicRuntimeConfig } = getConfig();
-
-export default function Layout({ children, meta: pageMeta }: Props) {
-  const router = useRouter();
-
-  const meta: MetaProps = {
-    title: publicRuntimeConfig.title,
-    description: publicRuntimeConfig.description,
-    basePath: router.basePath,
-    url: `${router.basePath}${router.asPath}`,
-    ...pageMeta
-  };
-
+export default function Layout({ children }: Props) {
+  const { path } = useMetaContext();
   return (
     <>
-      <Meta props={meta} />
-      <Header path={router.asPath} />
-      <div className="mx-auto max-w-6xl p-4">
-        <main className="min-h-[calc(100vh-10rem)] bg-gray-800">
-          {children}
-        </main>
+      <Meta>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+      </Meta>
+      <Header path={path} />
+      <main>
+        <article>{children}</article>
         <Footer />
-      </div>
+      </main>
     </>
   );
 }

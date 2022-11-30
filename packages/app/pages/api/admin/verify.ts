@@ -5,10 +5,10 @@ import {
   UploadFolder
 } from 'lib/services/directus/server';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ApiResponse } from '@/lib/types';
-import { withAppUser, withMethods } from '../../../lib/services/api';
-import { sendApplicationWorkflowEmail } from '../../../lib/services/sendgrid/server';
-import { getApplicationStatusIndex } from '../../../lib/services/directus';
+import { ApiResponse } from 'lib/types';
+import { withAppUser, withMethods } from 'lib/services/api';
+import { sendApplicationWorkflowEmail } from 'lib/services/sendgrid/server';
+import { getApplicationStatusIndex } from 'lib/services/directus';
 
 export const config = {
   api: {

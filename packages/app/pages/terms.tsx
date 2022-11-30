@@ -1,13 +1,11 @@
 import Head from 'next/head';
 import Script from 'next/script';
+import { useMeta } from '../lib/hooks/user-meta-context';
 
 export default function Learn() {
+  useMeta('Terms & Conditions');
   return (
     <>
-      <Head>
-        <title>Terms Conditions</title>
-      </Head>
-
       <div
         name="termly-embed"
         data-id="287910e8-202f-4cb6-b61f-4ce31f011de8"
