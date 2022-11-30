@@ -1,73 +1,62 @@
-import Link from 'next/link';
-import Logo from 'components/ui/Logo';
-import { tw } from 'twind';
-import { DiscordIcon, GitHubIcon, InstagramIcon, TwitterIcon } from '../icons';
+import { DiscordIcon, InstagramIcon, TwitterIcon } from '../icons';
 
 export default function Footer() {
   return (
-    <footer className={tw`w-full `}>
-      <div
-        className={tw`flex flex-col items-center justify-between w-full py-12 text-xs leading-none text-gray-500 lg:flex-row`}
-      >
-        <div
-          className={tw`flex self-start flex-grow-0 flex-shrink-0 w-full leading-none lg:w-auto`}
-        >
-          <span
-            className={tw`inline-flex justify-center w-full mt-4 space-x-5 sm:ml-auto sm:mt-0`}
-          >
+    <footer className="w-full ">
+      <div className="flex w-full flex-col items-center justify-between py-6 text-xs leading-none text-gray-500 lg:flex-row">
+        <div className="flex w-full flex-shrink-0 flex-grow-0 self-start leading-none lg:w-auto">
+          <span className="mt-4 inline-flex w-full justify-center space-x-5 sm:ml-auto sm:mt-0">
             <a
               href="https://www.instagram.com/guysnheat/"
               target={'_blank'}
               rel="noreferrer"
-              className={tw`text-gray-400 hover:text-gray-200`}
+              className="text-gray-400 hover:text-gray-200"
             >
-              <span className={tw`sr-only`}>Instagram</span>
-              <InstagramIcon className={tw`w-6 h-6`} />
+              <span className="sr-only">Instagram</span>
+              <InstagramIcon className="h-6 w-6" />
             </a>
 
             <a
               href="https://twitter.com/guysnheat"
               target={'_blank'}
               rel="noreferrer"
-              className={tw`text-gray-400 hover:text-gray-200`}
+              className="text-gray-400 hover:text-gray-200"
             >
-              <span className={tw`sr-only`}>Twitter</span>
-              <TwitterIcon className={tw`w-6 h-6`} />
+              <span className="sr-only">Twitter</span>
+              <TwitterIcon className="h-6 w-6" />
             </a>
 
             <a
-              href="https://discord.gg/DmMPhMXEE6"
+              href="https://discord.gg/zMbwypyKgD"
               target={'_blank'}
               rel="noreferrer"
-              className={tw`text-gray-400 hover:text-gray-200`}
+              className="text-gray-400 hover:text-gray-200"
             >
-              <span className={tw`sr-only`}>Discord</span>
-              <DiscordIcon className={tw`w-6 h-6`} />
+              <span className="sr-only">Discord</span>
+              <DiscordIcon className="h-6 w-6" />
             </a>
           </span>
         </div>
-        <ul
-          className={tw`flex my-6 text-sm text-gray-500 list-none lg:flex-grow-0 lg:flex-shrink-0 lg:my-0`}
-        >
-          <li className={tw`box-border block font-semibold text-left`}>
+        <ul className="my-3 flex list-none text-sm text-gray-500 lg:my-0 lg:flex-shrink-0 lg:flex-grow-0">
+          <li className="box-border block text-left font-semibold">
             <a
               href="/terms"
-              className={tw`pr-5 mr-5 text-gray-500 no-underline  border-r border-gray-700 cursor-pointer`}
+              className="mr-5 cursor-pointer border-r border-gray-700  pr-5 text-gray-500 no-underline hover:text-gray-200"
             >
               Terms of service
             </a>
           </li>
-          <li className={tw`box-border block font-semibold text-left`}>
+          <li className="box-border block text-left font-semibold">
             <a
               href="/privacy"
-              className={tw`pr-5 mr-5 text-gray-500 no-underline  cursor-pointer`}
+              className="mr-5 cursor-pointer pr-5 text-gray-500 no-underline  hover:text-gray-200"
             >
               Privacy policy
             </a>
           </li>
         </ul>
 
-        <h5>&copy; Guys N Heat 2022. All rights reserved.</h5>
+        <div>&copy; Guys N Heat 2022. All rights reserved.</div>
       </div>
     </footer>
   );

@@ -1,17 +1,15 @@
 import Head from 'next/head';
-import styles from 'styles';
-import { tw } from 'twind';
+
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useAppUser } from '../../lib/hooks/use-member';
 import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { copyTextToClipboard } from '../../lib/utils';
-import {
-  UserInvite
-} from 'lib/services/directus';
-import { getFieldOptions } from 'lib/services/directus/server'
-import { FormOptions } from '../../lib/types'
-import { ErrorMessage } from '@hookform/error-message'
+import { UserInvite } from 'lib/services/directus';
+import { getFieldOptions } from 'lib/services/directus/server';
+import { FormOptions } from '../../lib/types';
+import { ErrorMessage } from '@hookform/error-message';
+import { Button } from 'react-daisyui';
 
 type PageProps = {
   userTypeOptions: FormOptions;
@@ -32,7 +30,13 @@ function Invite({ userTypeOptions }: PageProps) {
   const [link, setLink] = useState<string>();
   const [sent, setSent] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
-  const { handleSubmit, register, setError, reset, formState: { errors, isSubmitting }} = useForm<UserInvite>({
+  const {
+    handleSubmit,
+    register,
+    setError,
+    reset,
+    formState: { errors, isSubmitting }
+  } = useForm<UserInvite>({
     defaultValues: {
       t: 'pledge'
     }
@@ -48,10 +52,10 @@ function Invite({ userTypeOptions }: PageProps) {
     if (copied) {
       setTimeout(() => {
         setCopied(false);
-        reset()
+        reset();
       }, 5000);
     }
-  })
+  });
 
   if (loading) return <div>Loading...</div>;
 
@@ -64,7 +68,7 @@ function Invite({ userTypeOptions }: PageProps) {
     );
     const invite = `${location.protocol}//${location.host}/apply/${data}`;
     setLink(invite);
-    return invite
+    return invite;
   };
 
   const onCopyClick = (e) => {
@@ -73,19 +77,21 @@ function Invite({ userTypeOptions }: PageProps) {
     copyTextToClipboard(invite);
     setCopied(true);
     setSent(false);
-  }
+  };
 
-  const onSubmit =  async (data: UserInvite) => {
+  const onSubmit = async (data: UserInvite) => {
     const invite = getLink(data);
     const response = await fetch('/api/admin/invite', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: Buffer.from(JSON.stringify({
-        email: data.e,
-        link: invite
-      }))
+      body: Buffer.from(
+        JSON.stringify({
+          email: data.e,
+          link: invite
+        })
+      )
     });
 
     if (response.ok) {
@@ -95,83 +101,81 @@ function Invite({ userTypeOptions }: PageProps) {
       const { error } = await response.json();
       setError('e', { message: error });
     }
-  }
-
+  };
 
   return (
     <>
       <Head>
         <title>Invite Link</title>
       </Head>
-      <section className={tw(styles.sectionDark)}>
-        <h2 className={tw(styles.h2page)}>Invite Someone</h2>
+      <section className="dark">
+        <h2 className="">Invite Someone</h2>
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className={tw`max-w-3xl mx-auto`}
-        >
-          <p className={tw(styles.pLg)}>
+        <form onSubmit={handleSubmit(onSubmit)} className="mx-auto max-w-3xl">
+          <p className="text-xl">
             {member?.first_name || 'Brother'}, enter your friend&apos;s email
             address and we will create a special link for you to share.
           </p>
-          <div className={tw`grid grid-cols-1 gap-4 `}>
+          <div className="grid grid-cols-1 gap-4 ">
             <div>
-            <input
-              type="email"
-              autoComplete="email"
-              {...register('e', { required: true })}
-              className={tw(styles.input)}
-              placeholder="Email address"
-            />
-            <ErrorMessage errors={errors} name="e" />
+              <input
+                type="email"
+                autoComplete="email"
+                {...register('e', { required: true })}
+                className="input"
+                placeholder="Email address"
+              />
+              <ErrorMessage errors={errors} name="e" />
             </div>
             {member?.user_type == 'staff' && (
-               <div>
+              <div>
                 <select
-                {...register('t', { required: true })}
-                className={tw(styles.select)}
-              >
-                {userTypeOptions.map((option, index) => (
-                  <option key={index} value={option.value}>
-                    {option.text}
-                  </option>
-                ))}
-              </select>
+                  {...register('t', { required: true })}
+                  className="select"
+                >
+                  {userTypeOptions.map((option, index) => (
+                    <option key={index} value={option.value}>
+                      {option.text}
+                    </option>
+                  ))}
+                </select>
               </div>
             )}
-            <button onClick={onCopyClick} className={tw(styles.button)}>Copy Link</button>
-            <button className={tw(styles.buttonPrimary)}>Send Invite</button>
+            <Button onClick={onCopyClick}>Copy Link</Button>
+            <Button color="primary" type="submit">
+              Send Invite
+            </Button>
           </div>
         </form>
 
         {copied && (
-          <p className={tw` mt-8`}>
+          <p className=" mt-8">
             Your &nbsp;
             <a
               title={link}
               target={'_blank'}
               href={link}
-              className={tw(styles.link)}
+              className="link"
               rel="noreferrer"
             >
               link
             </a>
-            &nbsp;  has been copied to your clipboard.
+            &nbsp; has been copied to your clipboard.
           </p>
         )}
         {sent && (
-          <p className={tw` mt-8`}>
+          <p className=" mt-8">
             Your &nbsp;
             <a
               title={link}
               target={'_blank'}
               href={link}
-              className={tw(styles.link)}
+              className="link"
               rel="noreferrer"
             >
               link
             </a>
-            &nbsp;  was sent.
+            &nbsp; was sent.
           </p>
         )}
       </section>

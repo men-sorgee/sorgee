@@ -1,13 +1,14 @@
 import { useEffect, useState, createContext, useContext } from 'react';
 import { useUser, UserProfile } from '@auth0/nextjs-auth0';
-import { Member, applicantFields } from 'lib/services/directus';
-import { fetcher } from '@/lib/utils';
+import { Member } from 'lib/services/directus';
+import { getJSON } from 'lib/utils';
+import { useRouter } from 'next/router';
 
 export type Context = {
   user?: UserProfile;
   member?: Member;
   loading: boolean;
-  fields: string[];
+  reload: () => Promise<void>;
 };
 
 export const MemberContext = createContext<Context | undefined>(undefined);
@@ -20,22 +21,42 @@ export const AppUserContextProvider = (props: Props) => {
   const { user, isLoading } = useUser();
   const [loading, setLoading] = useState(true);
   const [member, setMember] = useState<Member>();
+  const [subscribed, setSubscribed] = useState(false);
+  const router = useRouter();
+
+  function getMember(): Promise<void> {
+    if (!loading) setLoading(true);
+    return getJSON<Member>('/api/admin/me')
+      .then(([m]) => {
+        setMember(m as Member);
+      })
+      .catch((e) => {
+        console.debug(e);
+      })
+      .finally(() => setLoading(false));
+  }
+
   useEffect(() => {
-    if (user && !member) {
-      fetcher<Member>('/api/admin/me')
-        .then(setMember)
-        .catch(console.debug)
-        .finally(() => {
-          setLoading(false);
-        });
+    if (!isLoading && user && !member) {
+      getMember();
     }
-  }, [user, isLoading, member]);
+    if (!subscribed && user && member) {
+      router.events.on('routeChangeStart', async () => {
+        await getMember();
+        return true;
+      });
+      setSubscribed(true);
+    }
+  }, [user, isLoading, subscribed, loading, member]);
 
   const value: Context = {
     user,
     member,
     loading,
-    fields: applicantFields
+    reload: () => {
+      setLoading(true);
+      return getMember();
+    }
   };
 
   return <MemberContext.Provider value={value} {...props} />;

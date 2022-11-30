@@ -1,14 +1,14 @@
-import { withPageAuthRequired } from '@auth0/nextjs-auth0'
-import { tw } from 'twind';
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useAppUser } from 'lib/hooks/use-member';
-import styles from 'styles';
-import { useRouter } from 'next/router'
-import Head from 'next/head'
-import { useEffect } from 'react'
-import Link from 'next/link'
 
+import { useRouter } from 'next/router';
+import Head from 'next/head';
+import { useEffect } from 'react';
+import Link from 'next/link';
+import ApplicationSteps from './_steps';
+import { SparklesIcon } from '@heroicons/react/solid';
 
-function Review() {
+function Approved() {
   const router = useRouter();
   const { loading, member } = useAppUser();
 
@@ -19,32 +19,31 @@ function Review() {
     }
   }, [member, loading, router]);
 
-  return (<>
+  return (
+    <>
       <Head>
-        <title>Application: Approved</title>
+        <title>Approved</title>
       </Head>
-      <section className={tw`${styles.sectionDark}`}>
-        <h2 className={tw(styles.h2page)}>Application: Approved</h2>
-
-        <p>Congratulations! Your membership was approved.</p>
-        <p>
-          You will now get periodic event invites as well as
-          access to our member-only content.
+      <section className="dark text-center">
+        <h1>Application Approved</h1>
+        <ApplicationSteps status={'approved'} />
+        <h2>Congratulations! Your membership was approved.</h2>
+        <SparklesIcon className="mx-auto my-10 h-[50px] animate-bounce" />
+        <p className="text-center">
+          You will now get periodic event invites as well as access to our
+          member-only content.
         </p>
-        <div className={tw`flex flex-row justify-center items-center space-x-4 mt-2 pt-4`}>
+        <div className="mt-2 flex flex-row items-center justify-center space-x-4 pt-4">
           <Link href="/member/invite">
-            <a className={tw(styles.buttonPrimary)}>
-              Invite a Friend
-            </a>
+            <a className="btn-primary btn">Invite a Friend</a>
           </Link>
           <Link href="/member/profile">
-            <a className={tw(styles.buttonPrimary)}>
-              Manage Full Profile
-            </a>
+            <a className="btn-primary btn">Manage Full Profile</a>
           </Link>
         </div>
       </section>
-    </>)
+    </>
+  );
 }
 
-export default withPageAuthRequired(Review);
+export default withPageAuthRequired(Approved);

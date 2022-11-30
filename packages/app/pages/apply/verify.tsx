@@ -1,12 +1,12 @@
-import { tw } from 'twind';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useAppUser } from 'lib/hooks/use-member';
-import styles from 'styles';
-import { NextRouter, useRouter } from 'next/router'
-import { useState, ChangeEvent, useEffect } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { useForm } from 'react-hook-form'
+import { NextRouter, useRouter } from 'next/router';
+import { useState, ChangeEvent, useEffect } from 'react';
+import Image from 'next/image';
+import ApplicationSteps from './_steps';
+import { Button } from 'react-daisyui';
+import Loading from 'components/ui/Loading';
+import { Applicant } from '../../lib/services/directus';
 
 function Verification() {
   const { member, loading } = useAppUser();
@@ -15,58 +15,76 @@ function Verification() {
   useEffect(() => {
     if (!loading && !member) {
       router.push('/apply');
-      return 
-    } 
-    if (member?.application_status && member!.application_status !== 'verify') {
-      router.push('/apply/' +  member!.application_status);
-      return
+      return;
     }
-  }, [loading, member, router])
+  }, [loading, member, router]);
 
   return (
-
-      <section className={tw(styles.sectionDark)}>
-        <h2 className={tw(styles.h2page)}>Application: Verification</h2>
-        {member?.id && <Form code={`${member.id.slice(0, 4)} ${member.id.slice(4, 8)}`} router={router} />}
-      </section>
-    
+    <section className="dark">
+      <h1>Identification</h1>
+      <ApplicationSteps status={'verify'} />
+      {(loading && (
+        <Loading>
+          <h3>Loading</h3>
+        </Loading>
+      )) ||
+        (member?.id && (
+          <Form
+            code={`${member.id.slice(0, 4)} ${member.id.slice(4, 8)}`}
+            member={member}
+            router={router}
+          />
+        ))}
+    </section>
   );
 }
 
-function Form ({code, router }: { code: string, router: NextRouter }) {
+function Form({
+  code,
+  member,
+  router
+}: {
+  code: string;
+  member: Applicant;
+  router: NextRouter;
+}) {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [complete, setComplete] = useState(false);
 
-  const { register, handleSubmit, formState: { isSubmitting } } = useForm()
+  useEffect(() => {
+    if (member && member.photo) {
+      setPreviewUrl(member.photo as string);
+    }
+  }, [member, setPreviewUrl]);
 
   const onFileUploadChange = (e: ChangeEvent<HTMLInputElement>) => {
     const fileInput = e.target;
 
     if (!fileInput.files) {
-      setError("No file was chosen");
+      setError('No file was chosen');
       return;
     }
 
     if (!fileInput.files || fileInput.files.length === 0) {
-      setError("Files list is empty");
+      setError('Files list is empty');
       return;
     }
 
     const file = fileInput.files[0];
 
-    if (!file.type.startsWith("image")) {
-      setError("Please select a valid image");
+    if (!file.type.startsWith('image')) {
+      setError('Please select a valid image');
       return;
     }
 
     setError(null);
     setFile(file);
-    setPreviewUrl(URL.createObjectURL(file)); 
+    setPreviewUrl(URL.createObjectURL(file));
 
-    e.currentTarget.type = "text";
-    e.currentTarget.type = "file";
+    e.currentTarget.type = 'text';
+    e.currentTarget.type = 'file';
   };
 
   const onCancelFile = (e: { preventDefault: () => void }) => {
@@ -79,19 +97,25 @@ function Form ({code, router }: { code: string, router: NextRouter }) {
     setPreviewUrl(null);
   };
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (e) => {
+    e.preventDefault();
     setError(null);
+
     if (!file) {
+      if (member.photo) {
+        setComplete(true);
+        router.push('/apply/review');
+      }
       return;
     }
 
     try {
       let formData = new FormData();
-      formData.append("media", file);
+      formData.append('media', file);
 
-      const res = await fetch("/api/admin/verify", {
-        method: "POST",
-        body: formData,
+      const res = await fetch('/api/admin/verify', {
+        method: 'POST',
+        body: formData
       });
 
       if (res.ok) {
@@ -103,99 +127,81 @@ function Form ({code, router }: { code: string, router: NextRouter }) {
       const { error } = await res.json();
 
       if (error) {
-        setError(error.message || "Sorry! something went wrong.");
+        setError(error.message || 'Sorry! something went wrong.');
         return;
       }
     } catch (error) {
       console.error(error);
-      setError("Sorry! something went wrong.");
+      setError('Sorry! something went wrong.');
     }
   };
 
-  if (complete) return (<>
-    <p>Verification photo submitted.</p>
+  if (complete)
+    return (
+      <>
+        <p className="text-center text-xl">
+          Thank you for submitting your application and verification photo.
+        </p>
+        <Loading>
+          <h3>Uploading</h3>
+        </Loading>
+      </>
+    );
 
-    <div className={tw`mt-8`}>
-      <Link href="/apply/agree">
-        <a className={tw(styles.buttonPrimary)}>Continue to Agreement</a>
-      </Link>
-    </div>
-    </>
-    )
+  return (
+    <form onSubmit={onSubmit}>
+      <p className="text-xl">
+        To complete your application, take a selfie while holding a piece of
+        paper with the following verification written on it.
+      </p>
 
-  return (   
-     
-        <form
-          className={tw`w-full py-3 md:mx-auto max-w-md`}
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <p className={tw(styles.pLg)}>
-            To complete your application, take a selfie while holding a piece of
-            paper with the following verification written on it.
-          </p>
-          <h2 className={tw`font-sans !text-6xl`}>
-            { code }
-          </h2>
-          <div className={tw`flex flex-col  gap-1.5 md:py-4`}>
-            <div className={tw`flex-grow border border-1 border-dashed`}>
-              {previewUrl ? (
-                <div className={tw`w-full`}>
-                  <Image
-                    alt="file uploader preview"
-                    objectFit="cover"
-                    src={previewUrl}
-                    width={300}
-                    height={350}
-                    layout="fixed"
-                    className={tw`w-full`}
-                  />
-                </div>
-              ) : (
-                <label className={tw`flex flex-col items-center justify-center h-full py-3 transition-colors duration-150 cursor-pointer hover:text-gray-600`}>
-                  
-                  <strong className={tw`text-sm font-medium`}>
-                    Select an image
-                  </strong>
-                  <input
-                    className={tw`block w-0 h-0`}
-                    name="file"
-                    type="file"
-                    onChange={onFileUploadChange}
-                    {...register("file", { required: true })}
-                  />
-                </label>
-                
-              )}
-            </div>
-            <p className={tw`text-red-500`}>
-              {error}
-            </p>
-            <div className={tw`grid grid-cols-2 gap-1`}>
-              <button
-                disabled={!previewUrl}
-                onClick={onCancelFile}
-                className={tw`${styles.button}`}
-              >
-                Clear
-              </button>
-              <button
-                type='submit'
-                disabled={!previewUrl || isSubmitting}  
-                className={tw`${styles.buttonPrimary}`}
-              >
-                Upload
-              </button>
-            </div>
+      <div className="flex flex-col gap-1.5 text-center md:py-4">
+        <h2 className="font-sans text-6xl">{code}</h2>
+        {previewUrl ? (
+          <div className="w-full">
+            <Image
+              alt="file uploader preview"
+              objectFit="cover"
+              src={previewUrl}
+              width={300}
+              height={350}
+              layout="fixed"
+              className="w-full"
+            />
           </div>
-          <p className={tw`mt-8`}>
-            <strong>
-              Be sure your face and code is clearly visible, with no sunglasses or
-              hats.
-            </strong>
-            &nbsp; This photo will not be shared with anyone and will not be used
-            for your profile.
-          </p>
-        </form>)
+        ) : (
+          <label className="flex h-full cursor-pointer flex-col items-center justify-center py-3 transition-colors duration-150 hover:text-gray-600">
+            <input
+              className="file-input-bordered file-input-primary file-input w-full max-w-xs"
+              name="file"
+              type="file"
+              onChange={onFileUploadChange}
+              required={true}
+            />
+          </label>
+        )}
+
+        {error && <p className="text-red-500">{error}</p>}
+        <p className="text-xl">
+          <strong>
+            Be sure your face and code is clearly visible, with no sunglasses or
+            hats.
+          </strong>
+          <br />
+          This photo will not be shared with anyone and will not be used for
+          your profile.
+        </p>
+        <div className="mx-auto mt-8 grid max-w-xl grid-cols-2 gap-4">
+          <Button disabled={!previewUrl} onClick={onCancelFile}>
+            Clear
+          </Button>
+          <Button type="submit" disabled={!previewUrl} color="primary">
+            {file && 'Upload &'} Continue
+          </Button>
+        </div>
+      </div>
+    </form>
+  );
 }
 
 export default withPageAuthRequired(Verification);

@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body, iframe {
+    @apply text-base font-sans text-left bg-black  text-gray-300 ;
+  }
+  h1 {
+    @apply my-4 font-serif text-4xl font-extrabold lg:text-5xl text-primary-500;
+  }
+  h2 {
+    @apply my-4 font-serif text-3xl font-extrabold lg:text-4xl text-primary-400;
+  }
+  h3 {
+    @apply my-4 font-serif text-2xl font-bold lg:text-3xl text-secondary-400;
+  }
+  h4 {
+    @apply my-4 font-serif text-xl font-bold lg:text-2xl text-secondary-300;
+  }
+  h5 {
+    @apply my-4 font-serif text-lg font-bold lg:text-xl text-gray-300;
+  }
+
+  label {
+    @apply mb-2 block font-extrabold;
+  }
+  p {
+    @apply my-4 mx-auto max-w-4xl text-left;
+  },
+  select {
+    @apply block w-full ;
+  }
+  input {
+    @apply block w-full ;
+  }
+  textarea {
+    @apply block w-full;
+  }
+  section {
+    @apply p-8 md:text-center bg-slate-700;
+  }
+  
+}
+
+@layer components {
+  p a:any-link {
+    @apply font-medium text-blue-600 hover:underline dark:text-blue-500;
+  }
+  .select {
+    @apply w-full;
+  }
+  main {
+    @apply min-h-[100vh];
+  }
+  section.dark {
+    @apply w-full bg-gray-800 p-8 text-left  md:text-center;
+  }
+  
+}
+
+
+.fire {
+  width: fit-content;
+  height: auto;
+  padding-right: 60px;
+}
+.fire svg {
+  width: 100%;
+  height: auto;
+  position: relative
+}
+.spark {
+  animation-name: spark;
+  animation-duration: 2s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  opacity: 0;
+  transform-origin: 50% 50% 0;
+}
+.spark1 {
+  animation-delay: 1s;
+  animation-duration: 3s;
+}
+.spark2 {
+  animation-duration: 5s;
+  animation-delay: 1s;
+}
+
+.flame {
+  animation-name: flaming;
+  animation-duration: 3s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+.flame1 {
+  animation-duration: 4s;
+  animation-delay: 1s;
+}
+.flame2 {
+  animation-duration: 3s;
+  animation-delay: 2s;
+}
+.flame3 {
+  animation-duration: 2.1s;
+  animation-delay: 3s;
+}
+.flame4 {
+  animation-duration: 3.2s;
+  animation-delay: 4s;
+}
+.flame5 {
+  animation-duration: 2.5s;
+  animation-delay: 5s;
+}
+
+@keyframes flaming {
+  50% {
+    transform: scale(1,1.2) translate(0, -30px) rotate(-2deg);
+  }
+}
+
+@keyframes spark {
+  0%{
+    transform: translate(0) rotate(180deg);
+  }
+   50% {
+     opacity: 1;
+  }
+  100% {
+    transform: translate(-20px, -100px) rotate(180deg);
+    opacity: 0;
+  }
+}

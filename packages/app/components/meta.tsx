@@ -54,8 +54,9 @@ export default function Meta({ props }: { props: MetaProps }) {
       {props.ogImage && <meta name="twitter:image" content={props.ogImage} />}
       <meta name="msapplication-TileColor" content="#00aba9" />
       <meta name="theme-color" content="#000" />
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.googleapis.com"/>
       <link rel="preconnect" href="https://fonts.gstatic.com" />
+     
     </Head>
   );
 }

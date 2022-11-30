@@ -1,43 +1,43 @@
-import { withApiAuthRequired } from "@auth0/nextjs-auth0";
-import { updateUser } from 'lib/services/directus/server'
-import { NextApiRequest, NextApiResponse } from 'next'
-import { AgreementData, ApiResponse } from '@/lib/types'
-import { withAppUser, withMethods } from '../_utils'
-import { sendApplicationWorkflowEmail } from '../../../lib/services/sendgrid/server'
+import { withApiAuthRequired } from '@auth0/nextjs-auth0';
+import { updateUser } from 'lib/services/directus/server';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { AgreementData, ApiResponse } from 'lib/types';
+import { withAppUser, withMethods } from '../../../lib/services/api';
+import { sendApplicationWorkflowEmail } from '../../../lib/services/sendgrid/server';
+import { getApplicationStatusIndex } from '../../../lib/services/directus';
 
 async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
- 
   try {
-    if (!withMethods(req, ["POST"])) return
+    if (!withMethods(req, ['POST']))
+      return res.status(401).json(new ApiResponse('Unauthorized'));
 
-    const {agree} = req.body as AgreementData
-    const applicant = await withAppUser(req, res)
+    const { agree } = req.body as AgreementData;
+    const applicant = await withAppUser(req, res);
+
+    if (applicant.application_status == 'approved')
+      return res.status(200).end();
 
     if (applicant && applicant.application_status == 'agreement' && agree) {
+      const status = getApplicationStatusIndex(applicant.application_status);
+      if (status == 3)
+        sendApplicationWorkflowEmail(
+          applicant.email,
+          `Application Status`,
+          `Your free membership is now active!`,
+          'Manage Profile',
+          'https://guysnheat.com/member/profile'
+        );
+
       await updateUser(applicant.id, {
         application_status: 'approved'
-      })
-      sendApplicationWorkflowEmail(
-        applicant.email, 
-        `Application Status`, 
-        `Your free membership is now active!`,
-        'Manage Profile',
-        'https://guysnheat.com/member/profile')
-      res.status(200).end();
-      return
-    }
+      });
 
-    res.status(401).json({ 
-      error: { message: 'You must agree as a registered user.' }  
-    });
+      return res.status(200).end();
+    }
   } catch (e: any) {
-    console.error(e)
-    res.status(500).json({ 
-      error: { message: e.message || e }  
-    });
+    console.error(e);
+    res.status(500).json(new ApiResponse(e?.message || e));
   }
 }
-
-
 
 export default withApiAuthRequired(Agree);

@@ -1,9 +1,9 @@
 import { UserProvider } from '@auth0/nextjs-auth0';
 import Layout from 'components/layout/index';
-import twindConfig from 'twind.config';
-import withTwindApp from '@twind/next/app';
 import { AppUserContextProvider } from 'lib/hooks/use-member';
 import { AppProps } from 'next/app';
+import 'styles/globals.css';
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
@@ -18,4 +18,4 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
-export default withTwindApp(twindConfig, MyApp);
+export default MyApp;

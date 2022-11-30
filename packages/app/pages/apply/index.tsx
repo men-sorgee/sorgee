@@ -1,18 +1,25 @@
 import { UserProfile, withPageAuthRequired } from '@auth0/nextjs-auth0';
-import { useForm } from 'react-hook-form';
-import { ErrorMessage } from '@hookform/error-message';
-import { tw } from 'twind';
-import styles from 'styles';
+import { FormProvider, useForm } from 'react-hook-form';
 import { NextPageContext } from 'next';
 import Head from 'next/head';
-import { Applicant } from 'lib/services/directus';
-import { pruneUndefined } from 'lib/utils';
+import { postJSON, pruneUndefined } from 'lib/utils';
 import { useEffect, useState } from 'react';
-import { getFieldOptions} from '@/lib/services/directus/server';
+import { getFieldOptions } from '@/lib/services/directus/server';
 import { useAppUser } from 'lib/hooks/use-member';
-import { InfoIcon } from 'components/icons';
-import { useRouter } from 'next/router';
-import { FormOptions } from 'lib/types'
+import { NextRouter, useRouter } from 'next/router';
+import { FormOptions } from 'lib/types';
+import {
+  FieldInput,
+  FieldSelect,
+  FieldWrapper,
+  FieldText,
+  FieldCheckboxes
+} from 'components/forms';
+import { Button } from 'react-daisyui';
+import FieldCheckbox from '../../components/forms/FieldCheckbox';
+import ApplicationSteps from './_steps';
+import Loading from '../../components/ui/Loading';
+import { Applicant } from '../../lib/services/directus';
 
 export type PageProps = {
   email?: string;
@@ -23,6 +30,10 @@ export type PageProps = {
   positionsOptions: FormOptions;
   skinToneOptions: FormOptions;
   page?: string;
+  setComplete?: (complete: boolean) => void;
+  applicant?: Applicant;
+  router?: NextRouter;
+  user?: UserProfile;
 };
 
 export async function getServerSideProps(context: NextPageContext) {
@@ -40,450 +51,293 @@ function Apply(props: PageProps) {
   const router = useRouter();
   const { user, member, loading } = useAppUser();
   const [formError, setFormError] = useState<string>();
+  const [complete, setComplete] = useState(false);
 
   useEffect(() => {
     if (user && props.email && user.email != props.email)
       setFormError(
         `You must login using the email address ${props.email} to use this invite.`
       );
-    if (member && member.application_status !== 'apply') {
-      router.push(`/apply/${member.application_status}`);
-      return
-    }
   }, [user, loading, member, props.email, router]);
 
-  const data = { user, member, ...props };
-  
+  const intro = props.invite
+    ? 'You&apos;ve been invited to join our community! While your application is pre-approved, we still need to perform a few verification steps.'
+    : 'To apply for membership, complete this application. A member of our team will review your application and contact you with next steps.';
+
+  const data = { ...props, setComplete, member, router, user };
   return (
     <>
       <Head>
-        <title>Application: Profile</title>
+        <title>Registration</title>
       </Head>
-      <section className={tw`${styles.sectionDark}`}>
-        <h2 className={tw(styles.h2page)}>{loading ? 'Loading' : 'Application: Profile'}</h2>
-        {formError && <p className={styles.inputError}>{formError}</p>}
-        {!loading && !formError && <Form {...data} />}
+      <section>
+        <h1>Registration</h1>
+        <ApplicationSteps status={'apply'} />
+        {formError && <p className="text-red-700">{formError}</p>}
+        <p className="text-xl">{intro}</p>
+        <p className="text-xl">
+          Membership is free, but not everyone can join. There is a vouching and
+          verification process for all new members. We do this to ensure the
+          safety of our members and to weed out any liars, spammers, bots, or
+          flakes.
+        </p>
+        {formError && <p className="text-red-700">{formError}</p>}
+        {(loading && (
+          <Loading>
+            <h3>Loading</h3>
+          </Loading>
+        )) ||
+          (!complete && <Form {...data} />)}
       </section>
     </>
   );
 }
 
-function Form(props: PageProps & { user?: UserProfile; member?: Applicant }) {
-  const router = useRouter();
+function Form(props: PageProps) {
   const {
-    member,
-    user,
     invite,
     spectrumOptions,
     positionsOptions,
     relationshipOptions,
     skinToneOptions,
-    timeOfDayOptions
+    timeOfDayOptions,
+    setComplete,
+    router,
+    applicant,
+    user
   } = props;
   const { name, email } = user!;
+  const methods = useForm({
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
+    defaultValues: {
+      nickname: applicant?.nickname || name,
+      first_name: applicant?.first_name || name?.split(' ')[0] || name,
+      last_name: applicant?.last_name || name?.split(' ')[1] || '',
+      email,
+      email_verified: user?.email_verified || false,
+      phone: applicant?.phone || '',
+      biography: applicant?.biography || null,
+      needs_guidance: applicant?.needs_guidance || false,
+      spectrum: applicant?.spectrum || null,
+      relationship_status: applicant?.relationship_status || null,
+      event_availability: [],
+      age: applicant?.age || null,
+      height_feet: applicant?.height?.toString().substring(0, 1),
+      height_inches: applicant?.height?.toString().substring(2),
+      weight: applicant?.weight || null,
+      skin_tone: applicant?.skin_tone || null,
+      my_positions: applicant?.my_positions || [],
+      invite
+    }
+  });
   const {
     register,
     handleSubmit,
     setError,
-    formState: { errors, isSubmitting }
-  } = useForm({
-    defaultValues: {
-      first_name: member?.first_name || name?.split(' ')[0] || name,
-      last_name: member?.last_name || name?.split(' ')[1] || '',
-      email,
-      email_verified: user?.email_verified || false,
-      phone: member?.phone || '',
-      biography: member?.biography || null,
-      needs_guidance: member?.needs_guidance || false,
-      spectrum: member?.spectrum || null,
-      relationship_status: member?.relationship_status || null,
-      event_availability: [],
-      age: member?.age || null,
-      height_feet: member?.height?.toString().substring(0, 1),
-      height_inches: member?.height?.toString().substring(2),
-      weight: member?.weight || null,
-      skin_tone: member?.skin_tone || null,
-      my_positions: member?.my_positions || [],
-      invite
-    }
-  });
-  
+    formState: { isSubmitting }
+  } = methods;
 
   async function onSubmit(data: any) {
     if (data.height_feet || data.height_inches) {
       data.height = `${data.height_feet}' ${data.height_inches}"`;
     }
-    const response = await fetch('/api/admin/apply', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: Buffer.from(JSON.stringify(pruneUndefined(data)))
-    });
+    const [success, response] = await postJSON(
+      '/api/admin/apply',
+      pruneUndefined(data)
+    );
 
-    if (response.ok) {
-      router.push('/apply/verify');
-      return;
-    }
-
-    const body = await response.json();
-    if (Array.isArray(body.errors)) {
-      body.errors.forEach((error) => {
-        setError(error.extensions.field, { message: error.message });
+    if (success) {
+      setComplete(true);
+      router.push(`/apply/verify`);
+    } else if (Array.isArray(response.errors)) {
+      response.errors.forEach((e) => {
+        setError(e.extensions.field as any, { message: e.message });
       });
+    } else {
+      setError('form' as any, { message: 'Something went wrong' });
     }
   }
 
-  const intro = invite
-    ? 'You&apos;ve been invited to join our community of men! While your application is pre-approved, we still need to perform a few verification steps.'
-    : 'Thanks for requesting to join our community. Please fill out the form and one of our team members will review your application and get back to you shortly.';
-
+  const required = { value: true, message: 'This field is required' };
   return (
     <>
-      <form
-        action="#"
-        onSubmit={handleSubmit(onSubmit)}
-        className={tw`max-w-3xl mx-auto text-left`}
-      >
-        <p className={tw(styles.pLg)}>{intro}</p>
-        <p className={tw(styles.pLg)}>
-          Membership is free, but there is a vetting and verification process.
-          We do this to ensure the safety of our members and to weed out any
-          liars, spammers, bots, or flakes.
-        </p>
-        <h3 className={tw`${styles.h3section} !text-2xl !text-left`}>
-          Private Information
-        </h3>
-        <p>
-          We collect this information for verification purposes only. We will
-          not share, show or sell this information to anyone.
-        </p>
-        <div className={tw`flex flex-col md:flex-row flex-wrap`}>
-          <div className={tw`${styles.inputGroup} md:pr-4`}>
-            <label htmlFor="first_name" className={tw(styles.label)}>
-              First Name
-            </label>
-            <input
-              type="text"
-              id="first_name"
-              {...register('first_name', { required: true })}
-              className={tw(styles.input)}
+      <FormProvider {...methods}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="mx-auto max-w-4xl text-left"
+        >
+          <h3>Private Information</h3>
+          <p>
+            We collect this information for verification purposes only. We will
+            not share, show or sell this information to anyone.
+          </p>
+          <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+            <FieldInput
+              field="first_name"
+              label="First Name"
+              registerOptions={{ required }}
             />
-            <ErrorMessage
-              render={(m) => (
-                <div className={tw(styles.inputError)}>{m.message}</div>
-              )}
-              errors={errors}
-              name="first_name"
+            <FieldInput
+              field="last_name"
+              label="Last Name"
+              registerOptions={{ required }}
             />
-          </div>
-          <div className={tw(styles.inputGroup)}>
-            <label htmlFor="last_name" className={tw(styles.label)}>
-              Last Name
-            </label>
-            <input
-              type="text"
-              id="last_name"
-              {...register('last_name', { required: true })}
-              className={tw(styles.input)}
-            />
-            <ErrorMessage
-              render={(m) => (
-                <div className={tw(styles.inputError)}>{m.message}</div>
-              )}
-              errors={errors}
-              name="last_name"
-            />
-          </div>
-          <div className={tw`${styles.inputGroup} md:pr-4`}>
-            <label htmlFor="email" className={tw(styles.label)}>
-              Email
-              <InfoIcon
-                title="Required for authentication.."
-                className={tw(styles.infoIcon)}
-              />
-            </label>
-            <input
+            <FieldInput
+              field="email"
+              label="Email"
               type="email"
-              id="email"
-              {...register('email')}
-              className={tw(styles.input)}
-              placeholder="name@gmail.com"
+              registerOptions={{ required }}
               readOnly={true}
             />
-          </div>
-          <div className={tw(styles.inputGroup)}>
-            <label htmlFor="phone-number" className={tw(styles.label)}>
-              Cell Number
-              <InfoIcon
-                className={tw(styles.infoIcon)}
-                title="Must be SMS-enabled. Used for optional verification or optional event reminders. Format: 123 456 7890"
-              />
-            </label>
-            <input
-              type="phone"
-              id="phone-number"
-              className={tw(styles.input)}
-              {...register('phone', {
+            <FieldInput
+              field="phone"
+              label="Mobile Phone"
+              help="Must be SMS-enabled. Used for optional verification or optional event reminders. Format: 123 456 7890"
+              registerOptions={{
                 pattern: {
                   value: /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
                   message: 'US numbers only. Format: 123 456 7890'
                 }
-              })}
-              placeholder="123 456 7890"
-            />
-            <ErrorMessage
-              render={(m) => (
-                <div className={tw(styles.inputError)}>{m.message}</div>
-              )}
-              errors={errors}
-              name="phone"
+              }}
+              placeholder="000 456 7890"
             />
           </div>
-          <h3 className={tw`${styles.h3section} !text-2xl !text-left`}>
-            About You
-          </h3>
+          <h3>About You</h3>
           <p>
             <strong>Please be as honest as possible.</strong> Honest answers
             will help your chances of approval and help our AI create the
             perfect group events!
           </p>
-          <div className={tw`${styles.inputGroup} md:pr-4`}>
-            <label htmlFor="spectrum" className={tw(styles.label)}>
-              Orientation
-            </label>
-            <select
-              id="spectrum"
-              {...register('spectrum', { required: true })}
-              className={tw(styles.select)}
-            >
-              {spectrumOptions?.map(({ text, value }, index) => (
-                <option key={index.toString()} value={value}>
-                  {text}
-                </option>
-              ))}
-            </select>
-          </div>
+          <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+            <FieldInput
+              field="nickname"
+              label="Nickname"
+              className="col-span-2"
+              registerOptions={{ required }}
+            />
 
-          <div className={tw(styles.inputGroup)}>
-            <label htmlFor="relationship_status" className={tw(styles.label)}>
-              Relationship Status
-            </label>
-            <select
-              id="relationship_status"
-              {...register('relationship_status')}
-              className={tw(styles.select)}
-            >
-              {relationshipOptions?.map(({ text, value }, index) => (
-                <option key={index.toString()} value={value}>
-                  {text}
-                </option>
-              ))}
-            </select>
-          </div>
+            <FieldSelect
+              field="spectrum"
+              label="Orientation"
+              registerOptions={{ required }}
+              formOptions={spectrumOptions}
+            />
 
-          <div className={tw`grid grid-cols-2 md:grid-cols-4`}>
-            <div className={tw`pb-4 pr-4`}>
-              <label htmlFor="age" className={tw(styles.label)}>
-                Age
-                <InfoIcon
-                  title="Must be 21+ to apply. We verify ages at events."
-                  className={tw(styles.infoIcon)}
-                />
-              </label>
-              <input
+            <FieldSelect
+              field="relationship_status"
+              label="Relationship Status"
+              formOptions={relationshipOptions}
+            />
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <FieldInput
+                field="age"
+                label="Age"
                 type="number"
-                id="age"
-                className={tw(styles.input)}
-                {...register('age', {
-                  required: true,
+                help="Must be 21+ to apply. We verify ages at events."
+                registerOptions={{
+                  required,
                   min: {
                     value: 21,
                     message: 'Must be 21+ to apply.'
                   }
-                })}
+                }}
+                min={21}
               />
-              <ErrorMessage
-                render={(m) => (
-                  <div className={tw(styles.inputError)}>{m.message}</div>
-                )}
-                errors={errors}
-                name="age"
-              />
-            </div>
-            <div className={tw`pb-4`}>
-              <label htmlFor="height_feet" className={tw(styles.label)}>
-                Height
-              </label>
-              <div className={tw`flex md:pr-4`}>
-                <input
-                  type="number"
-                  id="height_feet"
-                  className={tw`${styles.input} !rounded-r-none`}
-                  {...register('height_feet')}
-                  placeholder="feet"
-                />
-                <input
-                  type="number"
-                  id="height_inches"
-                  className={tw`${styles.input} !rounded-l-none`}
-                  {...register('height_inches')}
-                  placeholder="inches"
-                />
-              </div>
-            </div>
-            <div className={tw`pb-4 pr-4`}>
-              <label htmlFor="weight" className={tw(styles.label)}>
-                Weight
-              </label>
-              <input
-                type="number"
-                id="weight"
-                className={tw(styles.input)}
-                {...register('weight')}
-              />
-            </div>
-            <div className={tw`pb-4 pr-4 !pr-0 `}>
-              <label htmlFor="skin_tone" className={tw(styles.label)}>
-                Skin Tone
-              </label>
-              <select
-                id="skin_tone"
-                {...register('skin_tone')}
-                className={tw(styles.select)}
-              >
-                {skinToneOptions?.map(({ text, value }, index) => (
-                  <option key={index.toString()} value={value}>
-                    {text}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
 
-          <div className={tw`w-full mb-4`}>
-            <label htmlFor="biography" className={tw(styles.label)}>
-              Biography
-              <InfoIcon
-                title="Describe yourself in a few sentences"
-                className={tw(styles.infoIcon)}
-              />
-            </label>
-            <textarea
-              id="biography"
-              rows={4}
-              className={tw(styles.textArea)}
-              {...register('biography')}
-              placeholder="Describe yourself in a few sentences"
-            ></textarea>
-          </div>
-        </div>
-        <h3 className={tw`${styles.h3section} !text-2xl !text-left`}>
-          Preferences
-        </h3>
-        <p>
-          We currently coordinate events in Denver, for the following times
-          bi-monthly. We try to create events that can include new members,
-          however, we do not guarantee that you will be included in every event.
-          As the group grows, so too will the number of events we can create.
-        </p>
-        <div className={tw`w-full pb-4`}>
-          <div className={tw`w-full mb-4`}>
-            <label className={tw(styles.label)}>
-              Preferred Event Times
-              <InfoIcon
-                title="We host events to meet the demands of our brothers. Let us know what times work best in general."
-                className={tw(styles.infoIcon)}
-              />
-            </label>
-            <div className={tw`grid grid-cols-2 md:grid-cols-3 gap-2`}>
-              {timeOfDayOptions?.map(({ text, value }, index) => (
-                <div key={index.toString()} className={tw`flex flex-row`}>
+              <FieldWrapper field="height" label="Height">
+                <div className="flex">
                   <input
-                    id={value}
-                    value={value}
-                    type="checkbox"
-                    {...register('event_availability')}
-                    className={tw(styles.checkbox)}
+                    type="number"
+                    id="height_feet"
+                    className="input  !rounded-r-none"
+                    {...register('height_feet')}
+                    placeholder="feet"
                   />
-                  <label htmlFor={value} className={tw(styles.checkboxLabel)}>
-                    {text}
-                  </label>
+                  <input
+                    type="number"
+                    id="height_inches"
+                    className="input  !rounded-l-none"
+                    {...register('height_inches')}
+                    placeholder="inches"
+                  />
                 </div>
-              ))}
+              </FieldWrapper>
             </div>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <FieldInput field="weight" label="Weight" type="number" />
+
+              <FieldSelect
+                field="skin_tone"
+                label="Skin Tone"
+                formOptions={skinToneOptions}
+              />
+            </div>
+            <FieldText
+              className="col-span-2"
+              field="biography"
+              label="Biography"
+              help="Tell us about yourself. What are your interests? What are you looking for?"
+              rows={4}
+              placeholder="I am a bit shy, but love to get aggressive in bed."
+            />
           </div>
-          <p className={tw` !text-sm`}>
+          <h3>Event Preferences</h3>
+          <p>
+            We currently coordinate events in Denver, for the following times
+            bi-monthly. We try to create events that can include new members,
+            however, we do not guarantee that you will be included in every
+            event. As the group grows, so too will the number of events we can
+            create.
+          </p>
+          <p>
             <strong>Important:</strong> Members who RSVP to events are expected
             to attend. Members that RSVP to event and do not attend, decrease
             the likelihood of getting invited again. We understand that things
             come up, but please be respectful of your brothers and RSVP
             accurately and let us know if you can&apos;t make it.
           </p>
-
-          <div className={tw`w-full mb-4`}>
-            <label className={tw(styles.label)}>
-              Your Positions
-              <InfoIcon
-                title="What positions or acts are you interested in? We will use this to match you with compatible brothers. Select all that apply."
-                className={tw(styles.infoIcon)}
-              />
-            </label>
-            <div className={tw`grid grid-cols-2 md:grid-cols-3 gap-2`}>
-              {positionsOptions?.map(({ text, value }, index) => (
-                <div key={index.toString()} className={tw`flex flex-row`}>
-                  <input
-                    id={value}
-                    type="checkbox"
-                    value={value}
-                    {...register('my_positions')}
-                    className={tw(styles.checkbox)}
-                  />
-                  <label htmlFor={value} className={tw(styles.checkboxLabel)}>
-                    {text}
-                  </label>
-                </div>
-              ))}
-            </div>
+          <div className="mb-8 grid grid-cols-1 gap-4">
+            <FieldCheckboxes
+              field="event_availability"
+              label="Preferred Event Times"
+              help="We host events to meet the demands of our brothers. Let us know what times work best in general"
+              formOptions={timeOfDayOptions}
+            />
           </div>
-        </div>
+          <h3>Sexual Preferences</h3>
+          <div className="mb-8 grid grid-cols-1 gap-4">
+            <FieldCheckboxes
+              field="my_positions"
+              label="Your Positions"
+              help="What positions or acts are you interested in? We will use this to match you with compatible brothers. Select all that apply"
+              formOptions={positionsOptions}
+            />
 
-        <div className={tw`w-full pb-4`}>
-          <label className={tw(styles.label)}>
-            New to this?
-            <InfoIcon
-              className={tw(styles.infoIcon)}
-              title="We want you to be comfortable. Check this and we will
-            help guide you along the way."
-            />
-          </label>
-          <div className={tw(`flex flex-row align-middle items-center`)}>
-            <input
-              id="needs_guidance"
-              type="checkbox"
-              {...register('needs_guidance')}
-              className={tw(styles.checkbox)}
-            />
-            <label
-              htmlFor={'needs_guidance'}
-              className={tw(styles.checkboxLabel)}
+            <FieldCheckbox
+              field="needs_guidance"
+              label="I need guidance"
+              help="We want you to be comfortable. Check this and we will help guide you along the way."
             >
-              I Need Guidance
-            </label>
+              <p>
+                Unsure how to answer the above questions, or just new to this?
+              </p>
+            </FieldCheckbox>
           </div>
-        </div>
 
-        <input type="hidden" {...register('invite')} />
-        <div className={tw`flex items-center space-x-4 mt-2 pt-4`}>
-          <button
+          <input type="hidden" {...register('invite')} />
+
+          <Button
             type="submit"
-            className={tw(styles.buttonPrimary)}
+            className="mt-2"
+            color={'primary'}
             disabled={isSubmitting}
           >
-            {invite ? 'Join' : 'Apply'}
-          </button>
-        </div>
-      </form>
+            Save & Continue
+          </Button>
+        </form>
+      </FormProvider>
     </>
   );
 }

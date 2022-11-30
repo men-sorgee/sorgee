@@ -1,30 +1,35 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { ApiResponse } from '@/lib/types'
-import { withMethods } from '../_utils'
-import { addSubscriber, sendApplicationWorkflowEmail } from 'lib/services/sendgrid/server'
+import { NextApiRequest, NextApiResponse } from 'next';
+import { ApiResponse } from '@/lib/types';
+import { withMethods } from '../../../lib/services/api';
+import { addSubscriber } from 'lib/services/sendgrid/server';
+import {
+  getMember,
+  getUser,
+  updateUser
+} from '../../../lib/services/directus/server';
 
-
-async function AddContact(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
- 
+async function AddContact(
+  req: NextApiRequest,
+  res: NextApiResponse<ApiResponse>
+) {
   try {
-    if (!withMethods(req, ["POST"])) return
+    if (!withMethods(req, ['POST'])) return;
 
     if (req.headers['x-api-key'] !== process.env.ADMIN_TOKEN)
-      return res.status(401).json({ error: { message: 'Unauthorized' } })
+      return res.status(401).json(new ApiResponse('Unauthorized'));
 
-    const { email, first_name, last_name } = req.body
+    const { id } = req.body;
 
-    addSubscriber(
-      first_name,
-      last_name,
-      email)
-   
+    const user = await getUser(id);
+    const { first_name, last_name, email } = user;
+    await addSubscriber(first_name, last_name, email);
+    user.in_sendgrid = true;
+    await updateUser(id, user);
+
     res.status(200).end();
   } catch (e: any) {
-    console.error(e)
-    res.status(500).json({ 
-      error: { message: e.message || e }  
-    });
+    console.error(e);
+    res.status(500).json(new ApiResponse(e.message || e));
   }
 }
 

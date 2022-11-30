@@ -4,7 +4,7 @@
     "editor.defaultFormatter": "vscode.json-language-features"
   },
   "[typescriptreact]": {
-    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "cSpell.words": [
     "authentification",
@@ -28,6 +28,7 @@
     "Parens",
     "Polyamorous",
     "rlig",
+    "Roboto",
     "sendgrid",
     "supabase",
     "twind",
@@ -38,6 +39,6 @@
     "strings": true
   },
   "[typescript]": {
-    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }

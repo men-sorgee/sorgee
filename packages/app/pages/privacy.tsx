@@ -1,7 +1,5 @@
 import Head from 'next/head';
 import Script from 'next/script';
-import { tw } from 'twind';
-
 export default function Learn() {
   return (
     <>
@@ -9,18 +7,17 @@ export default function Learn() {
         <title>Privacy Policy</title>
       </Head>
 
-      <section className={tw`min-h-[80vh]`}>
-        <div
-          name={'termly-embed'}
-          data-id="f94e7630-c543-4da1-9ae7-e74267043d70"
-          data-type="iframe"
-        ></div>
-        <Script
-          id="termly-jssdk"
-          src="https://app.termly.io/embed-policy.min.js"
-          type="text/javascript"
-        />
-      </section>
+      <div
+        name={'termly-embed'}
+        data-id="f94e7630-c543-4da1-9ae7-e74267043d70"
+        data-type="iframe"
+      ></div>
+      <Script
+        strategy="lazyOnload"
+        id="termly-jssdk"
+        src="https://app.termly.io/embed-policy.min.js"
+        type="text/javascript"
+      />
     </>
   );
 }

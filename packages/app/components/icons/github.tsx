@@ -14,7 +14,7 @@ export default function GitHubIcon({ className }: { className?: string }) {
 
 /*
 <svg
-                className={tw`w-6 h-6`}
+                className="w-6 h-6"
                 fill="currentColor"
                 viewBox="0 0 24 24"
                 aria-hidden="true"

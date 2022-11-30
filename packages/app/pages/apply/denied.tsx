@@ -1,14 +1,11 @@
-import { withPageAuthRequired } from '@auth0/nextjs-auth0'
-import { tw } from 'twind';
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useAppUser } from 'lib/hooks/use-member';
-import styles from 'styles';
-import { useRouter } from 'next/router'
-import Head from 'next/head'
-import { useEffect } from 'react'
-import Link from 'next/link'
 
+import { useRouter } from 'next/router';
+import Head from 'next/head';
+import { useEffect } from 'react';
 
-function Review() {
+function Denied() {
   const router = useRouter();
   const { loading, member } = useAppUser();
 
@@ -19,23 +16,26 @@ function Review() {
     }
   }, [member, loading, router]);
 
-  return (<>
+  return (
+    <>
       <Head>
-        <title>Application: Denied</title>
+        <title>Application Denied</title>
       </Head>
-      <section className={tw`${styles.sectionDark}`}>
-        <h2 className={tw(styles.h2page)}>Application: Denied</h2>
+      <section className="dark ">
+        <h1>Application Denied</h1>
 
         <p>Unfortunately, your application was denied.</p>
         <p>
-          You should receive an email with more information. To 
-          re-apply or appeal, please contact us at <a className={tw(styles.link)} 
-            href="mailto:support@guysnheat.com">
-          support
-          </a>.
+          You should receive an email with more information. To re-apply or
+          appeal, please contact us at{' '}
+          <a className="link" href="mailto:support@guysnheat.com">
+            support
+          </a>
+          .
         </p>
       </section>
-    </>)
+    </>
+  );
 }
 
-export default withPageAuthRequired(Review);
+export default withPageAuthRequired(Denied);

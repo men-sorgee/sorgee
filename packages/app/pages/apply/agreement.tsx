@@ -1,86 +1,90 @@
-import { withPageAuthRequired } from '@auth0/nextjs-auth0'
-import { tw } from 'twind';
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
+import ApplicationSteps from './_steps';
 import { useAppUser } from 'lib/hooks/use-member';
-import styles from 'styles';
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { AgreementData } from '../../lib/types'
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { AgreementData } from '../../lib/types';
+import { Button } from 'react-daisyui';
+import FieldCheckbox from '../../components/forms/FieldCheckbox';
+import { postJSON } from '../../lib/utils';
 
 function Agreement() {
   const router = useRouter();
   const { loading, member } = useAppUser();
   const [agreed, setAgreed] = useState(false);
-  const { handleSubmit, register, formState: { errors }, setError } = useForm<AgreementData>();
+  const methods = useForm<AgreementData>();
+  const { handleSubmit, setError } = methods;
   useEffect(() => {
-    if (member && member?.application_status !== 'agreement') {
+    if (!loading && member && member?.application_status !== 'agreement') {
       router.push(`/apply/${member.application_status}`);
       return;
     }
   }, [member, loading, router]);
 
-  const onSubmit = async (data) => {
-    const response = await fetch('/api/admin/agree', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: Buffer.from(JSON.stringify(data))
-    });
+  async function onSubmit(data: AgreementData) {
+    const [success, response] = await postJSON('/api/admin/agree', data);
 
-    if (response.ok) {
+    if (success) {
       setAgreed(true);
-      router.reload()
+      router.push('/apply/approved');
+    } else if (Array.isArray(response.errors)) {
+      response.errors.forEach((e) => {
+        setError(e.extensions.field as any, { message: e.message });
+      });
     } else {
-      const { error } = await response.json();
-      setError('agree', { message: error });
+      setError('agree', { message: 'Something went wrong' });
     }
   }
 
-  return (<>
+  return (
+    <>
       <Head>
-        <title>Application: Agreement</title>
+        <title>Indemnification</title>
       </Head>
-      <section className={tw`${styles.sectionDark}`}>
-        <h2 className={tw(styles.h2page)}>Application: Agreement</h2>
-        { !agreed &&
-        <form
-          action="#"
-          onSubmit={handleSubmit(onSubmit)}
-          className={tw`max-w-3xl mx-auto text-center`}
-        >
-          <p className={tw(styles.pLg)}>
-            Please read and agree to our <a href="/terms" 
-            target="_blank" className={tw(styles.link)}> terms
-            and conditions</a>.
-          </p>
-        
-          <div className={tw(`flex flex-row items-center align-middle justify-center mx-auto`)}>
-            <input
-              id="agree"
-              type="checkbox"
-              {...register('agree', { required: true })}
-              className={tw(styles.checkbox)}
-            />
-            <label
-              htmlFor={'agree'}
-              className={tw(styles.checkboxLabel)}
+      <section className="dark ">
+        <h1>Indemnification Agreement</h1>
+        <ApplicationSteps status={'agreement'} />
+        {!agreed && (
+          <FormProvider {...methods}>
+            <form
+              action="#"
+              onSubmit={handleSubmit(onSubmit)}
+              className="mx-auto max-w-3xl text-center"
             >
-              I have read the terms and conditions and herby agree to them.
-            </label>
-          </div>
-          <div className={tw`flex text-center space-x-4 mt-2 pt-4`}>
-            <button
-              type="submit"
-              className={tw(styles.buttonPrimary)}
-            >
-              Agree
-            </button>
-          </div>
-        </form>}
+              <p className="text-center text-xl">
+                Please read and agree to our{' '}
+                <a href="/terms" target="_blank" className="link">
+                  {' '}
+                  terms and conditions
+                </a>
+                .
+              </p>
+              <div className="flex-cols-1 mx-auto mt-4 flex max-w-md flex-col text-center">
+                <FieldCheckbox
+                  field="agree"
+                  label="I agree to the terms and conditions"
+                  registerOptions={{
+                    required: {
+                      value: true,
+                      message: 'You must agree to the terms and conditions'
+                    }
+                  }}
+                ></FieldCheckbox>
+
+                <div className="mt-2 flex space-x-4 pt-4 text-center">
+                  <Button color="primary" type="submit">
+                    Agree & Continue
+                  </Button>
+                </div>
+              </div>
+            </form>
+          </FormProvider>
+        )}
       </section>
-    </>)
+    </>
+  );
 }
 
 export default withPageAuthRequired(Agreement);
