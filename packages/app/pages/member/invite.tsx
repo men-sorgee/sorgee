@@ -9,12 +9,12 @@ import { FormOptions } from 'lib/types';
 import { Button } from 'react-daisyui';
 import { FieldInput, FieldSelect, FieldText } from 'components/forms';
 import Page from '../../components/layout/Page';
-import { GetStaticProps } from 'next';
+import { GetServerSideProps, GetStaticProps } from 'next';
 
 type PageProps = {
   userTypeOptions: FormOptions;
 };
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const userTypeOptions = await getFieldOptions('user_type');
   const exclude = ['subscriber', 'user', 'reject', 'staff', 'big_brother'];
   return {

@@ -2,6 +2,8 @@ import { useRouter } from 'next/router';
 import { useEffect, useState, createContext, useContext } from 'react';
 import getConfig from 'next/config';
 import { MetaProps } from 'lib/types';
+import { getJSON } from '../utils';
+import { MenuPage } from '../services/directus';
 
 type Context = MetaProps & {
   setTitle: (title: string) => void;
@@ -11,6 +13,7 @@ type Context = MetaProps & {
   setImage: (image: string) => void;
   basePath: string;
   path: string;
+  pages?: Array<MenuPage>;
 };
 
 export interface Props {
@@ -29,6 +32,17 @@ export function MetaContextProvider(props: Props) {
   );
   const [image, setImage] = useState<string>(publicRuntimeConfig.image);
   const [metaBlob, setMetaBlob] = useState<any>();
+  const [pages, setPages] =
+    useState<Array<{ title: string; path: string }>>(undefined);
+
+  useEffect(() => {
+    if (pages == undefined)
+      getJSON<Array<MenuPage>>('/api/admin/pages')
+        .then(([s, res]) => {
+          setPages(res.data || []);
+        })
+        .catch(console.error);
+  }, [pages, setPages]);
 
   const meta: Context = {
     title,
@@ -41,7 +55,8 @@ export function MetaContextProvider(props: Props) {
     metaBlob,
     setMetaBlob,
     image,
-    setImage
+    setImage,
+    pages
   };
 
   return (

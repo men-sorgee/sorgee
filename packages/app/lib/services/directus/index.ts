@@ -118,6 +118,11 @@ export type CMSPageProps = {
   content: ContentSection[];
 };
 
+export type MenuPage = {
+  title: string;
+  path: string;
+};
+
 export const memberFields: Array<keyof User> = [
   'nickname',
   ...applicantFields,

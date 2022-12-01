@@ -3,9 +3,11 @@ import { Navbar, Dropdown, Avatar, Button, Menu, Tooltip } from 'react-daisyui';
 import 'react';
 import { Logo } from 'components/icons';
 import { useAppUser } from 'lib/hooks/use-member';
+import { useMetaContext } from '../../lib/hooks/user-meta-context';
 
-export default function Header({ path }: { path: string }) {
+export default function Header() {
   const { user, member } = useAppUser();
+  const { pages } = useMetaContext();
   return (
     <header className=" sticky top-0 z-40 bg-black transition-all duration-150 ">
       <Navbar className="mx-auto max-w-4xl justify-between bg-black px-4">
@@ -21,17 +23,25 @@ export default function Header({ path }: { path: string }) {
         <div className="my-6 flex-grow self-center whitespace-nowrap text-center text-3xl font-extrabold leading-5 text-primary md:text-left lg:text-4xl">
           GuysNHeat
         </div>
-        {!user && (
-          <div className="flex-none">
-            <Menu horizontal className="p-0">
+
+        <div className="flex-none">
+          <Menu horizontal className="p-0">
+            {!user && (
               <Menu.Item>
                 <Link href="/api/auth/login" className="btn-ghost btn">
                   Login
                 </Link>
               </Menu.Item>
-            </Menu>
-          </div>
-        )}
+            )}
+            {pages?.map((page, i) => (
+              <Menu.Item>
+                <Link href={page.path} className="" key={i}>
+                  <a>{page.title || 'Home'}</a>
+                </Link>
+              </Menu.Item>
+            ))}
+          </Menu>
+        </div>
 
         {user && (
           <Dropdown
