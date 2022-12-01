@@ -14,8 +14,8 @@ export default function Header({ path }: { path: string }) {
         <div className="flex-1">
           <a href="/">
             <Logo
-              width="50"
-              height="50"
+              width="70"
+              height="70"
               className="mr-3 h-6 cursor-pointer sm:h-10 md:h-20"
             />
           </a>
@@ -53,7 +53,7 @@ export default function Header({ path }: { path: string }) {
               <Tooltip color="ghost" message={user?.email} position="left">
                 <Avatar
                   shape="circle"
-                  size={40}
+                  size={70}
                   letters={member?.first_name[0] || 'X'}
                   src={member?.picture || user?.picture}
                 />
