@@ -5,7 +5,7 @@ import { Logo } from 'components/icons';
 import { useAppUser } from 'lib/hooks/use-member';
 import { useMetaContext } from '../../lib/hooks/user-meta-context';
 
-export default function Header() {
+export default function Header({ path }: { path: string }) {
   const { user, member } = useAppUser();
   const { pages } = useMetaContext();
   return (
