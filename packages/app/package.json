@@ -11,6 +11,7 @@
     "types": "node .build/generate-types.js",
     "docker:build": "docker build -t gcr.io/tbg-gnh/gnh-app .",
     "docker:push": "docker push gcr.io/tbg-gnh/gnh-app",
+    "docker:run": "docker run --name gnh -p 3000:3000  gcr.io/tbg-gnh/gnh-app",
     "deploy": "gcloud run services replace service.yaml",
     "kill": "bash .build/kill.sh"
   },
