@@ -1,4 +1,23 @@
-import { User } from './types';
+import { Page, PageContent, User } from './types';
+
+export type SectionContainerType =
+  | 'grid-cols-1'
+  | 'grid-cols-2'
+  | 'grid-cols-3'
+  | 'grid-cols-4';
+
+export type ContentType = 'html' | 'md' | 'image' | 'control';
+
+export type ContentSection = PageContent & {
+  hash: string;
+  image: {
+    id: string;
+    height: number;
+    width: number;
+    title: string;
+    description: string;
+  };
+};
 
 export const applicantFields: Array<keyof User> = [
   'id',
@@ -63,6 +82,8 @@ export function getApplicationStatusIndex(status: ApplicationStatusType) {
   return steps.indexOf(status);
 }
 
+export type SectionPage = Page & { content: ContentSection[] };
+
 export type Applicant = {
   nickname: User['nickname'];
   id: User['id'];
@@ -89,6 +110,12 @@ export type Applicant = {
   application_status: ApplicationStatusType;
   last_login: User['last_login'];
   photo: string | null;
+};
+
+export type CMSPageProps = {
+  title: string;
+  description: string;
+  content: ContentSection[];
 };
 
 export const memberFields: Array<keyof User> = [

@@ -22,7 +22,7 @@ const Page: FC<PageProps> = ({
   useMeta(title, description);
   return (
     <>
-      <section className={sectionClass}>
+      <section className={`${sectionClass}`}>
         <h1>{title}</h1>
         {header}
         {(loading && (

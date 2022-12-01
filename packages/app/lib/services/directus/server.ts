@@ -1,12 +1,11 @@
 import { Applicant, applicantFields, Member, memberFields } from '.';
-import { DefaultItem, Directus, FileItem } from '@directus/sdk';
-import { Collections, User } from './types';
+
+import { User } from './types';
 import FormData from 'form-data';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { parseForm } from '../forms';
-
+import { adminBaseUrl, getAdminClient } from './client';
 const cache: { [key: string]: any } = {};
-
 export enum UploadFolder {
   members = '8c3d5472-6b02-4056-affd-ab3d461b273d',
   profiles = '1ea29489-e282-4a1f-a981-8d578b6a1667',
@@ -19,17 +18,6 @@ export type File = {
   originalFilename: string;
   mimetype: string;
 };
-
-export const baseUrl = process.env.ADMIN_URL || 'https://admin.guysnheat.com';
-
-const adminDb = new Directus<Collections>(baseUrl);
-
-export async function getAdminClient(): Promise<Directus<Collections>> {
-  if (await adminDb.auth.token) return adminDb;
-  const token = process.env.ADMIN_TOKEN as string;
-  await adminDb.auth.static(token);
-  return adminDb;
-}
 
 export async function getFieldOptions<T = User>(
   field: keyof T,
@@ -159,7 +147,7 @@ export async function importFile(
 
 export async function getAsset(req: NextApiRequest, res: NextApiResponse) {
   const id = req.url.split('/').pop();
-  const url = `${baseUrl}/assets/${id}?fit=cover&access_token=${process.env.ADMIN_TOKEN}`;
+  const url = `${adminBaseUrl}/assets/${id}?fit=cover&access_token=${process.env.ADMIN_TOKEN}`;
 
   console.log(url);
   const response = await fetch(url);

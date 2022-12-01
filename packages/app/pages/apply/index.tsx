@@ -50,23 +50,22 @@ export async function getServerSideProps(context: NextPageContext) {
 
 function Apply(props: PageProps) {
   useMeta('Registration');
-  const router = useRouter();
-  const { user, member, loading } = useAppUser();
+
+  const { user, loading } = useAppUser();
   const [formError, setFormError] = useState<string>();
-  const [complete, setComplete] = useState(false);
 
   useEffect(() => {
     if (user && props.email && user.email != props.email)
       setFormError(
         `You must login using the email address ${props.email} to use this invite.`
       );
-  }, [user, loading, member, props.email, router]);
+  }, [user, props.email]);
 
   const intro = props.invite
     ? 'You&apos;ve been invited to join our community! While your application is pre-approved, we still need to perform a few verification steps.'
     : 'To apply for membership, complete this application. A member of our team will review your application and contact you with next steps.';
 
-  const data = { ...props, setComplete, member, router, user };
+  const data = { ...props };
   return (
     <Page
       title="Registration"
@@ -83,24 +82,22 @@ function Apply(props: PageProps) {
           flakes.
         </p>
         {formError && <p className="text-red-700">{formError}</p>}
-        {!complete && <Form {...data} />}
+        <Form {...data} />
       </>
     </Page>
   );
 }
 
 function Form(props: PageProps) {
+  const { member: applicant, user } = useAppUser();
+  const router = useRouter();
   const {
     invite,
     spectrumOptions,
     positionsOptions,
     relationshipOptions,
     skinToneOptions,
-    timeOfDayOptions,
-    setComplete,
-    router,
-    applicant,
-    user
+    timeOfDayOptions
   } = props;
   const { name, email } = user!;
   const methods = useForm({
@@ -144,7 +141,6 @@ function Form(props: PageProps) {
     );
 
     if (success) {
-      setComplete(true);
       router.push(`/apply/verify`);
     } else if (Array.isArray(response.errors)) {
       response.errors.forEach((e) => {
@@ -297,9 +293,7 @@ function Form(props: PageProps) {
             />
           </div>
           <p className="alert text-xs">
-            <div>
-              <LightBulbIcon className="w-10" />
-            </div>
+            <LightBulbIcon className="w-10" />
             Members who RSVP to events are expected to attend. Members that RSVP
             to event and do not attend, decrease the likelihood of getting
             invited again. We understand that things come up, but please be

@@ -1,5 +1,3 @@
-import Head from 'next/head';
-
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useAppUser } from 'lib/hooks/use-member';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -8,17 +6,15 @@ import { copyTextToClipboard } from 'lib/utils';
 import { UserInvite } from 'lib/services/directus';
 import { getFieldOptions } from 'lib/services/directus/server';
 import { FormOptions } from 'lib/types';
-import { ErrorMessage } from '@hookform/error-message';
 import { Button } from 'react-daisyui';
 import { FieldInput, FieldSelect, FieldText } from 'components/forms';
-import { useMeta } from 'lib/hooks/user-meta-context';
-import Loading from 'components/ui/Loading';
+import Page from '../../components/layout/Page';
+import { GetStaticProps } from 'next';
 
 type PageProps = {
   userTypeOptions: FormOptions;
 };
-
-export async function getServerSideProps(context) {
+export const getStaticProps: GetStaticProps = async (context) => {
   const userTypeOptions = await getFieldOptions('user_type');
   const exclude = ['subscriber', 'user', 'reject', 'staff', 'big_brother'];
   return {
@@ -26,11 +22,19 @@ export async function getServerSideProps(context) {
       userTypeOptions: userTypeOptions.filter((o) => !exclude.includes(o.value))
     }
   };
-}
+};
 
 function Invite({ userTypeOptions }: PageProps) {
-  useMeta('Invite');
-  const { member, loading } = useAppUser();
+  const { loading } = useAppUser();
+  return (
+    <Page title="Invite Someone" loading={loading}>
+      <Form userTypeOptions={userTypeOptions} />
+    </Page>
+  );
+}
+
+function Form({ userTypeOptions }: PageProps) {
+  const { member } = useAppUser();
   const [link, setLink] = useState<string>();
   const [sent, setSent] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
@@ -39,13 +43,7 @@ function Invite({ userTypeOptions }: PageProps) {
       t: 'pledge'
     }
   });
-  const {
-    handleSubmit,
-    register,
-    setError,
-    reset,
-    formState: { errors, isSubmitting }
-  } = methods;
+  const { handleSubmit, setError, reset } = methods;
 
   useEffect(() => {
     if (sent) {
@@ -105,101 +103,88 @@ function Invite({ userTypeOptions }: PageProps) {
 
   return (
     <>
-      <section className="dark">
-        <h2 className="">Invite Someone</h2>
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)} className="mx-auto max-w-3xl">
+          <p>
+            {member?.first_name || 'Brother'}, enter your friend&apos;s email
+            address and we will create a special link for you to share.
+          </p>
+          <div className="grid grid-cols-1 gap-4 ">
+            <FieldInput
+              field="email"
+              type="email"
+              autoComplete="email"
+              registerOptions={{
+                required: {
+                  value: true,
+                  message: 'Please enter an email address'
+                }
+              }}
+              placeholder="Email address"
+            />
 
-        {loading ? (
-          <Loading>
-            <h3>Loading</h3>
-          </Loading>
-        ) : (
-          <FormProvider {...methods}>
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="mx-auto max-w-3xl"
-            >
-              <p>
-                {member?.first_name || 'Brother'}, enter your friend&apos;s
-                email address and we will create a special link for you to
-                share.
-              </p>
-              <div className="grid grid-cols-1 gap-4 ">
-                <FieldInput
-                  field="email"
-                  type="email"
-                  autoComplete="email"
-                  registerOptions={{
-                    required: {
-                      value: true,
-                      message: 'Please enter an email address'
-                    }
-                  }}
-                  placeholder="Email address"
-                />
+            {member?.user_type == 'staff' && (
+              <FieldSelect
+                field="user_type"
+                formOptions={userTypeOptions}
+                registerOptions={{
+                  required: {
+                    value: true,
+                    message: 'Please enter an email address'
+                  }
+                }}
+              />
+            )}
+            <Button onClick={onCopyClick}>Copy Link</Button>
+            <Button color="primary" type="submit">
+              Send Invite
+            </Button>
+          </div>
+        </form>
+      </FormProvider>
 
-                {member?.user_type == 'staff' && (
-                  <FieldSelect
-                    field="user_type"
-                    formOptions={userTypeOptions}
-                    registerOptions={{
-                      required: {
-                        value: true,
-                        message: 'Please enter an email address'
-                      }
-                    }}
-                  />
-                )}
-                <Button onClick={onCopyClick}>Copy Link</Button>
-                <Button color="primary" type="submit">
-                  Send Invite
-                </Button>
-              </div>
-            </form>
-          </FormProvider>
-        )}
-        {copied && (
-          <div className="toast-center toast-middle toast">
-            <div className="alert-ghost alert whitespace-nowrap opacity-75">
-              <div>
-                <h4>
-                  The invite &nbsp;
-                  <a
-                    title={link}
-                    target={'_blank'}
-                    href={link}
-                    className="link"
-                    rel="noreferrer"
-                  >
-                    link
-                  </a>
-                  &nbsp; has been copied to your clipboard.
-                </h4>
-              </div>
+      {copied && (
+        <div className="toast-center toast-middle toast">
+          <div className="alert-ghost alert whitespace-nowrap opacity-75">
+            <div>
+              <h4>
+                The invite &nbsp;
+                <a
+                  title={link}
+                  target={'_blank'}
+                  href={link}
+                  className="link"
+                  rel="noreferrer"
+                >
+                  link
+                </a>
+                &nbsp; has been copied to your clipboard.
+              </h4>
             </div>
           </div>
-        )}
-        {sent && (
-          <div className="toast-center toast-middle toast">
-            <div className="alert-ghost alert whitespace-nowrap opacity-75">
-              <div>
-                <h4>
-                  The invite
-                  <a
-                    title={link}
-                    target={'_blank'}
-                    href={link}
-                    className="link"
-                    rel="noreferrer"
-                  >
-                    link
-                  </a>
-                  &nbsp; was sent.
-                </h4>
-              </div>
+        </div>
+      )}
+      {sent && (
+        <div className="toast-center toast-middle toast">
+          <div className="alert-ghost alert whitespace-nowrap opacity-75">
+            <div>
+              <h4>
+                The invite
+                <a
+                  title={link}
+                  target={'_blank'}
+                  href={link}
+                  className="link"
+                  rel="noreferrer"
+                >
+                  link
+                </a>
+                &nbsp; was sent.
+              </h4>
             </div>
           </div>
-        )}
-      </section>
+        </div>
+      )}
     </>
   );
 }

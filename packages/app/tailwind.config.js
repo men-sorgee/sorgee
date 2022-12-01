@@ -54,7 +54,7 @@ const config = {
       }
     }
   },
-  plugins: [require( '@tailwindcss/typography' ), require( 'daisyui' ), require( 'flowbite/plugin' )],
+  plugins: [require( '@tailwindcss/typography' ), require( 'daisyui' )],
   daisyui: {
     styled: true,
     themes: true,

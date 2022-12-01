@@ -7,7 +7,7 @@ import { ApiResponse } from 'lib/types';
 
 function dressMember(member: Applicant) {
   let { photo, ...rest } = member;
-  photo = `/api/admin/asset/${photo}`;
+  photo = `/api/asset/${photo}`;
   return {
     photo,
     ...rest

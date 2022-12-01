@@ -7,11 +7,9 @@ import ApplicationSteps from './_steps';
 import { Button } from 'react-daisyui';
 import Loading from 'components/ui/Loading';
 import { Applicant } from 'lib/services/directus';
-import { useMeta } from 'lib/hooks/user-meta-context';
 import Page from 'components/layout/Page';
 
 function Verification() {
-  useMeta('Identity Verification');
   const { member, loading } = useAppUser();
   const router = useRouter();
 
@@ -57,7 +55,7 @@ function Form({
     if (member && member.photo) {
       setPreviewUrl(member.photo as string);
     }
-  }, [member, setPreviewUrl]);
+  }, [member, member.photo, previewUrl, setPreviewUrl]);
 
   const onFileUploadChange = (e: ChangeEvent<HTMLInputElement>) => {
     const fileInput = e.target;
@@ -151,8 +149,9 @@ function Form({
   return (
     <form onSubmit={onSubmit}>
       <p className="text-xl">
-        To complete your application, take a selfie while holding a piece of
-        paper with the following verification written on it.
+        To verify you are who you say you are, please take a selfie while
+        holding a piece of paper with the following verification-code written on
+        it.
       </p>
 
       <div className="flex flex-col gap-1.5 text-center md:py-4">

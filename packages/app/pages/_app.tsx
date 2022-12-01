@@ -8,15 +8,15 @@ import { MetaContextProvider } from '../lib/hooks/user-meta-context';
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
-      <MetaContextProvider>
-        <UserProvider>
-          <AppUserContextProvider>
+      <UserProvider>
+        <AppUserContextProvider>
+          <MetaContextProvider>
             <Layout>
               <Component {...pageProps} />
             </Layout>
-          </AppUserContextProvider>
-        </UserProvider>
-      </MetaContextProvider>
+          </MetaContextProvider>
+        </AppUserContextProvider>
+      </UserProvider>
     </>
   );
 }

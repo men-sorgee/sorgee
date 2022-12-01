@@ -6,7 +6,6 @@ import { MetaProps } from 'lib/types';
 type Context = MetaProps & {
   setTitle: (title: string) => void;
   setDescription: (description: string) => void;
-  loading: boolean;
   metaBlob?: any;
   setMetaBlob: (metaBlob: any) => void;
   setImage: (image: string) => void;
@@ -24,8 +23,6 @@ export const MetaContext = createContext<Context | undefined>(undefined);
 
 export function MetaContextProvider(props: Props) {
   const router = useRouter();
-  const [subscribed, setSubscribed] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState<string>(publicRuntimeConfig.title);
   const [description, setDescription] = useState<string>(
     publicRuntimeConfig.description
@@ -34,7 +31,6 @@ export function MetaContextProvider(props: Props) {
   const [metaBlob, setMetaBlob] = useState<any>();
 
   const meta: Context = {
-    loading,
     title,
     description,
     basePath: router.basePath,
@@ -47,18 +43,6 @@ export function MetaContextProvider(props: Props) {
     image,
     setImage
   };
-
-  useEffect(() => {
-    if (!subscribed) {
-      router.events.on('routeChangeStart', () => {
-        setLoading(true);
-      });
-      router.events.on('routeChangeComplete', () => {
-        setLoading(false);
-      });
-      setSubscribed(true);
-    }
-  }, [subscribed, router.events]);
 
   return (
     <MetaContext.Provider value={meta}>{props.children}</MetaContext.Provider>
@@ -82,8 +66,10 @@ export const useMeta = (title: string, description?: string) => {
     setDescription,
     description: d
   } = useMetaContext();
-  if (title != t) setTitle(title);
-  if (description != d) setDescription(description);
+  useEffect(() => {
+    if (title != t) setTitle(title);
+    if (description != d) setDescription(description);
+  }, [title, description, t, d, setTitle, setDescription]);
 
   return { title: t, description: d };
 };

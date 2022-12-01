@@ -42,7 +42,10 @@
     @apply block w-full;
   }
   section {
-    @apply p-10 md:text-center;
+    @apply md:text-center;
+  }
+  form {
+    @apply p-4 md:p-8;
   }
 }
 
@@ -53,15 +56,17 @@
   .select {
     @apply w-full;
   }
-
+  section > * {
+    @apply p-4 md:p-8;
+  }
   main {
     @apply mx-auto min-h-[calc(100vh-10rem)] max-w-4xl;
   }
   article {
-    @apply min-w-[350px] p-4;
+    @apply min-w-[350px];
   }
   section.dark {
-    @apply w-full bg-gray-800 text-left  md:text-center;
+    @apply w-full bg-gray-800 py-8  text-left md:text-center;
   }
   footer {
   }
