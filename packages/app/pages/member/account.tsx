@@ -95,12 +95,10 @@ function Form(props: PageProps & { member?: Member }) {
     if (success) {
       setUpdated(true);
       return;
-    }
-
-    if (Array.isArray(response.errors)) {
-      response.errors.forEach((error) => {
-        setError(error.extensions.field as any, { message: error.message });
-      });
+    } else if (response.error?.field) {
+      setError(response.error!.field as any, response.error.message as any);
+    } else {
+      setError('form' as any, { message: 'Something went wrong' });
     }
   }
   const required = true;

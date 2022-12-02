@@ -146,10 +146,9 @@ export async function importFile(
 }
 
 export async function getAsset(req: NextApiRequest, res: NextApiResponse) {
-  const id = req.url.split('/').pop();
+  const id = req.query.id;
   const url = `${adminBaseUrl}/assets/${id}?fit=cover&access_token=${process.env.ADMIN_TOKEN}`;
 
-  console.log(url);
   const response = await fetch(url);
   return res.status(response.status).send(response.body);
 }

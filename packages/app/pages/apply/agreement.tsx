@@ -43,10 +43,8 @@ function Form({ router }: Props) {
     if (success) {
       setAgreed(true);
       router.push('/apply/approved');
-    } else if (Array.isArray(response.errors)) {
-      response.errors.forEach((e) => {
-        setError(e.extensions.field as any, { message: e.message });
-      });
+    } else if (response.error?.field) {
+      setError(response.error!.field as any, response.error.message as any);
     } else {
       setError('agree', { message: 'Something went wrong' });
     }

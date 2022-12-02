@@ -82,7 +82,23 @@ export function getApplicationStatusIndex(status: ApplicationStatusType) {
   return steps.indexOf(status);
 }
 
-export type SectionPage = Page & { content: ContentSection[] };
+export type SectionPage = {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  markdown: string;
+  status: 'published' | 'draft';
+  in_menu: boolean;
+  image?: {
+    id: string;
+    height: number;
+    width: number;
+    description: string;
+    title: string;
+  };
+  content: ContentSection[];
+};
 
 export type Applicant = {
   nickname: User['nickname'];

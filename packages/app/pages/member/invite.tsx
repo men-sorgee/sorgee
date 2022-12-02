@@ -5,11 +5,12 @@ import { useEffect, useState } from 'react';
 import { copyTextToClipboard } from 'lib/utils';
 import { UserInvite } from 'lib/services/directus';
 import { getFieldOptions } from 'lib/services/directus/server';
-import { FormOptions } from 'lib/types';
+import { FormOptions, InviteLink } from 'lib/types';
 import { Button } from 'react-daisyui';
 import { FieldInput, FieldSelect, FieldText } from 'components/forms';
 import Page from '../../components/layout/Page';
 import { GetServerSideProps, GetStaticProps } from 'next';
+import { UserType } from '@directus/sdk';
 
 type PageProps = {
   userTypeOptions: FormOptions;
@@ -38,12 +39,10 @@ function Form({ userTypeOptions }: PageProps) {
   const [link, setLink] = useState<string>();
   const [sent, setSent] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
-  const methods = useForm<UserInvite>({
-    defaultValues: {
-      t: 'pledge'
-    }
+  const methods = useForm<InviteLink & { t: string }>({
+    mode: 'onBlur'
   });
-  const { handleSubmit, setError, reset } = methods;
+  const { handleSubmit, setError, reset, getFieldState, formState } = methods;
 
   useEffect(() => {
     if (sent) {
@@ -77,8 +76,13 @@ function Form({ userTypeOptions }: PageProps) {
     setSent(false);
   };
 
-  const onSubmit = async (data: UserInvite) => {
-    const invite = getLink(data);
+  const onSubmit = async (data: InviteLink & { t: string }) => {
+    const inviteLink = getLink({
+      e: data.email,
+      t: data.t,
+      v: member.id
+    });
+    setLink(inviteLink);
     const response = await fetch('/api/admin/invite', {
       method: 'POST',
       headers: {
@@ -86,8 +90,8 @@ function Form({ userTypeOptions }: PageProps) {
       },
       body: Buffer.from(
         JSON.stringify({
-          email: data.e,
-          link: invite
+          ...data,
+          inviteLink
         })
       )
     });
@@ -97,9 +101,10 @@ function Form({ userTypeOptions }: PageProps) {
       setCopied(false);
     } else {
       const { error } = await response.json();
-      setError('e', { message: error });
+      setError('email', { message: error });
     }
   };
+  const email = getFieldState('email', formState);
 
   return (
     <>
@@ -125,7 +130,7 @@ function Form({ userTypeOptions }: PageProps) {
 
             {member?.user_type == 'staff' && (
               <FieldSelect
-                field="user_type"
+                field="t"
                 formOptions={userTypeOptions}
                 registerOptions={{
                   required: {
@@ -135,7 +140,10 @@ function Form({ userTypeOptions }: PageProps) {
                 }}
               />
             )}
-            <Button onClick={onCopyClick}>Copy Link</Button>
+            <input type="hidden" name="link" value={link} />
+            {email.isTouched && !email.invalid && (
+              <Button onClick={onCopyClick}>Copy Link</Button>
+            )}
             <Button color="primary" type="submit">
               Send Invite
             </Button>
@@ -169,7 +177,7 @@ function Form({ userTypeOptions }: PageProps) {
           <div className="alert-ghost alert whitespace-nowrap opacity-75">
             <div>
               <h4>
-                The invite
+                The invite{' '}
                 <a
                   title={link}
                   target={'_blank'}

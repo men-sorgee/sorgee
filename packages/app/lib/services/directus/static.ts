@@ -7,61 +7,43 @@ export function clearPageContentCache() {
   cache.clear();
 }
 
-const byId = `query getPage ($id: ID!) {
-        page: page_by_id(id: $id) {
-          id
-          status
-          date_created
-          date_updated
-          title
-          description
-          url
-          status
-          content {
-            id
-            name
-            type
-            container
-            container_classes
-            control
-            html
-            markdown
-            image {
-              id
-              height
-              width
-              title
-              description
-            }
-          }
-        }
-      }`;
-
-const byUrl = `query findPage($url: String){
-  page: page (
-    filter: {
-      url: {
-          _eq: $url
-      }
-    }
-  ) {
+const byId = `
+  query getPage ($id: ID!) {
+      page: page_by_id(id: $id) {
     id
-    status
-    date_created
-    date_updated
     title
     description
-    url
-    status
-    content {
+    slug
+    in_menu
+    image {
       id
-      name
-      type
-      container
-      container_classes
-      control
-      html
-      markdown
+      height
+      width
+      title
+      description
+    }
+    markdown
+  }
+}`;
+export async function getPageContentById(id: string) {
+  if (cache.has(id)) return cache.get(id)!;
+  return getPageContent(byId, { id });
+}
+
+const byUrl = `
+  query findPage($slug: String) {
+    page: page (
+      filter: {
+        slug: {
+            _eq: $slug
+        }
+      }
+    ) {
+      id
+      title
+      description
+      slug
+      in_menu
       image {
         id
         height
@@ -69,18 +51,13 @@ const byUrl = `query findPage($url: String){
         title
         description
       }
+      markdown
     }
   }
-}
 
 `;
-
-export async function getPageContentById(id: string) {
-  if (cache.has(id)) return cache.get(id)!;
-  return getPageContent(byId, { id });
-}
-export async function getPageContentByUrl(url: string) {
-  return getPageContent(byUrl, { url });
+export async function getPageContentByUrl(slug: string) {
+  return getPageContent(byUrl, { slug });
 }
 
 export async function getPageContent(
@@ -113,10 +90,7 @@ export async function getPageContent(
   return (cache[page.id] = page as SectionPage);
 }
 
-export async function listActivePages(): Promise<Page[]> {
-  const adminClient = await getAdminClient();
-  const results = await adminClient.graphql.items<{ pages: Page[] }>(
-    `{
+const all = `{
       pages: page (
         filter: {
           status: {
@@ -125,15 +99,24 @@ export async function listActivePages(): Promise<Page[]> {
         }
       ) {
         id
-        status
-        date_created
-        date_updated
         title
         description
-        url
+        slug
+        in_menu
+        image {
+          id
+          height
+          width
+          title
+          description
+        }
+        
+        markdown
       }
-    }`
-  );
+    }`;
+export async function getActivePages(): Promise<Page[]> {
+  const adminClient = await getAdminClient();
+  const results = await adminClient.graphql.items<{ pages: Page[] }>(all);
 
   return results.data.pages;
 }

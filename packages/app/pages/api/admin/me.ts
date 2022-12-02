@@ -31,21 +31,19 @@ async function getUserDetails(
     const member = await withAppUser(req, res);
     switch (method) {
       case 'GET':
-        res
-          .status(200)
-          .json(new ApiResponse<Applicant>(null, dressMember(member)));
+        res.status(200).json(ApiResponse(dressMember(member)));
         break;
       case 'POST':
         const userDetails = req.body as Member;
         updateUser(member.id, undressMember(userDetails));
-        res.status(200).json(new ApiResponse());
+        res.status(200).json(ApiResponse(null));
         break;
       default:
         return;
     }
   } catch (e) {
     console.error(e);
-    res.status(500).json(new ApiResponse(e.message || e));
+    res.status(500).json(ApiResponse(null, e.message || e));
   }
 }
 

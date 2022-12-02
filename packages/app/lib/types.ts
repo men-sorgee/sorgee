@@ -14,29 +14,23 @@ export interface Props {
   children?: React.ReactNode | React.ReactNode[];
 }
 
-export interface IApiResponse<T = never | any> {
-  ok: boolean;
-  error?: { message: string };
-  errors?: Array<{
-    extensions: {
-      field: keyof T & string;
-    };
+export interface ApiResponse<T = never | any> {
+  error?: {
+    field: string;
     message: string;
-  }>;
+  };
   data?: T;
 }
 
-export class ApiResponse<T = never | any>
-  implements IApiResponse, IApiResponse<T>
-{
-  public ok: boolean = true;
-  public error?: { message: string };
-  constructor(error?: string, public data?: T) {
-    if (error) {
-      this.ok = false;
-      this.error = { message: error };
-    }
-  }
+export function ApiResponse<T = never | any>(
+  data: T,
+  error?: string,
+  field?: string
+): ApiResponse<T> {
+  return {
+    data,
+    error: error ? { message: error, field } : undefined
+  };
 }
 
 export type SubscriptionData = {

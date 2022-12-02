@@ -10,13 +10,13 @@
   }
 
   h1 {
-    @apply my-4 font-serif text-4xl font-extrabold text-primary-500 lg:text-5xl;
+    @apply my-4 font-serif text-3xl font-extrabold text-primary-500 lg:text-3xl;
   }
   h2 {
-    @apply my-4 font-sans text-3xl font-extrabold text-secondary-500 lg:text-4xl;
+    @apply my-4 font-sans text-xl font-extrabold text-secondary-500 lg:text-2xl;
   }
   h3 {
-    @apply my-4 font-serif text-3xl font-bold text-primary-400 lg:text-3xl;
+    @apply my-4 font-serif text-lg font-bold text-primary-400 lg:text-xl;
   }
   h4 {
     @apply my-4 font-serif text-xl font-bold text-secondary-400 lg:text-2xl;

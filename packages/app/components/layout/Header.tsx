@@ -33,7 +33,7 @@ export default function Header({ path }: { path: string }) {
                 </Link>
               </Menu.Item>
             )}
-            {pages?.map((page, i) => (
+            {[]?.map((page, i) => (
               <Menu.Item>
                 <Link href={page.path} className="" key={i}>
                   <a>{page.title || 'Home'}</a>
@@ -49,16 +49,19 @@ export default function Header({ path }: { path: string }) {
             horizontal="center"
             className="mr-2 bg-black text-gray-500"
           >
-            <Button color="ghost">
-              <Tooltip color="ghost" message={user?.email} position="left">
-                <Avatar
-                  shape="circle"
-                  size={70}
-                  letters={member?.first_name[0] || 'X'}
-                  src={member?.picture || user?.picture}
-                />
-              </Tooltip>
-            </Button>
+            <Tooltip color="ghost" message={user?.email} position="left">
+              <Avatar
+                shape="circle"
+                size={70}
+                letters={member?.first_name[0] || 'X'}
+                className="cursor-pointer"
+                src={
+                  member?.picture
+                    ? `/api/asset/${member.picture}`
+                    : user?.picture
+                }
+              />
+            </Tooltip>
 
             <Dropdown.Menu>
               {member?.application_status == 'approved' && (

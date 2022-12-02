@@ -141,11 +141,9 @@ function Form(props: PageProps) {
     );
 
     if (success) {
-      router.push(`/apply/verify`);
-    } else if (Array.isArray(response.errors)) {
-      response.errors.forEach((e) => {
-        setError(e.extensions.field as any, { message: e.message });
-      });
+      router.push('/apply/verify');
+    } else if (response.error?.field) {
+      setError(response.error!.field as any, response.error.message as any);
     } else {
       setError('form' as any, { message: 'Something went wrong' });
     }

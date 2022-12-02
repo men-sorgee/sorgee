@@ -3,7 +3,7 @@
   "info": {
     "title": "Dynamic API Specification",
     "description": "This is a dynamically generated API specification for all endpoints existing on the current project.",
-    "version": "9.21.0"
+    "version": "9.21.2"
   },
   "servers": [
     {
@@ -8917,13 +8917,59 @@
             "nullable": true,
             "type": "string"
           },
-          "layout": {
+          "slug": {
             "nullable": true,
             "type": "string"
           },
-          "url": {
+          "in_menu": {
+            "nullable": true,
+            "type": "boolean"
+          },
+          "image": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "$ref": "#/components/schemas/Files"
+              }
+            ]
+          },
+          "sort": {
+            "nullable": false,
+            "type": "integer"
+          },
+          "parent": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "$ref": "#/components/schemas/ItemsPage"
+              }
+            ]
+          },
+          "markdown": {
             "nullable": true,
             "type": "string"
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "$ref": "#/components/schemas/ItemsPage"
+                }
+              ]
+            }
           },
           "content": {
             "type": "array",

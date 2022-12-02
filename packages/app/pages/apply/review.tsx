@@ -1,8 +1,6 @@
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useAppUser } from 'lib/hooks/use-member';
-
-import { NextRouter, useRouter } from 'next/router';
-import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import ApplicationSteps from './_steps';
 import Loading from 'components/ui/Loading';

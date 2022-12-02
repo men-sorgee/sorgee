@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState, createContext, useContext } from 'react';
 import getConfig from 'next/config';
 import { MetaProps } from 'lib/types';
-import { getJSON } from '../utils';
+
 import { MenuPage } from '../services/directus';
 
 type Context = MetaProps & {
@@ -14,6 +14,7 @@ type Context = MetaProps & {
   basePath: string;
   path: string;
   pages?: Array<MenuPage>;
+  setPages: (pages: Array<MenuPage>) => void;
 };
 
 export interface Props {
@@ -35,15 +36,6 @@ export function MetaContextProvider(props: Props) {
   const [pages, setPages] =
     useState<Array<{ title: string; path: string }>>(undefined);
 
-  useEffect(() => {
-    if (pages == undefined)
-      getJSON<Array<MenuPage>>('/api/admin/pages')
-        .then(([s, res]) => {
-          setPages(res.data || []);
-        })
-        .catch(console.error);
-  }, [pages, setPages]);
-
   const meta: Context = {
     title,
     description,
@@ -56,7 +48,8 @@ export function MetaContextProvider(props: Props) {
     setMetaBlob,
     image,
     setImage,
-    pages
+    pages,
+    setPages
   };
 
   return (
@@ -74,17 +67,28 @@ export const useMetaContext = () => {
   return context;
 };
 
-export const useMeta = (title: string, description?: string) => {
+export const useMeta = (
+  title: string,
+  description?: string,
+  image?: string,
+  pages?: MenuPage[]
+) => {
   const {
     title: t,
     setTitle,
+    description: d,
     setDescription,
-    description: d
+    image: i,
+    setImage,
+    pages: p,
+    setPages
   } = useMetaContext();
   useEffect(() => {
-    if (title != t) setTitle(title);
-    if (description != d) setDescription(description);
+    if (title && title != t) setTitle(title);
+    if (description && description != d) setDescription(description);
+    if (image && image != i) setImage(image);
+    if (pages && pages != p) setPages(pages);
   }, [title, description, t, d, setTitle, setDescription]);
 
-  return { title: t, description: d };
+  return { title: t, description: d, image: i, pages: p };
 };

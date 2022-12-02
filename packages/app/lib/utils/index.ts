@@ -1,4 +1,4 @@
-import { ApiResponse, IApiResponse } from '../types';
+import { ApiResponse } from '../types';
 
 export function toDateTime(secs: number) {
   var t = new Date('1970-01-01T00:30:00Z'); // Unix epoch start.
@@ -11,23 +11,23 @@ export async function getJSON<T = any>(
   headers: Record<string, string> = {
     'Content-Type': 'application/json'
   }
-): Promise<[T | boolean, IApiResponse<T>]> {
+): Promise<[T | boolean, ApiResponse<T>]> {
   const response = await fetch(url, {
     method: 'GET',
     headers: new Headers(headers)
   });
 
   if (response.body != null) {
-    const body = (await response.json()) as IApiResponse<T>;
+    const body = (await response.json()) as ApiResponse<T>;
     return [body.data || true, body];
   }
-  return [true, new ApiResponse()];
+  return [true, null];
 }
 
 export async function postJSON<T = never | any>(
   url: string,
   data: object
-): Promise<[T | boolean, IApiResponse<T>]> {
+): Promise<[T | boolean, ApiResponse<T>]> {
   const response = await fetch(url, {
     method: 'POST',
     headers: {
@@ -37,10 +37,10 @@ export async function postJSON<T = never | any>(
   });
 
   if (response.bodyUsed) {
-    const body = (await response.json()) as IApiResponse<T>;
+    const body = (await response.json()) as ApiResponse<T>;
     return [body.data || true, body];
   }
-  return [true, new ApiResponse()];
+  return [true, null];
 }
 
 export async function copyTextToClipboard(text: string) {
@@ -58,5 +58,3 @@ export function pruneUndefined(obj: Record<string, any>) {
     )
   );
 }
-
-

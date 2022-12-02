@@ -55,7 +55,7 @@ export async function withAppUser(
       setCookie(res, user.sub, userData.id);
     }
     // update picture id empty
-    if (userData.picture == null && user.picture != null) {
+    if (!userData.picture && user.picture != null) {
       const file = await importFile(
         user.picture,
         UploadFolder.members,

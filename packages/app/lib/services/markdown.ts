@@ -2,7 +2,10 @@ import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkHtml from 'remark-html';
 
+const parser = unified().use(remarkParse).use(remarkHtml);
+
 export async function renderMarkdown(md: string): Promise<string> {
-  const html = await unified().use(remarkParse).use(remarkHtml).process(md);
+  if (!md) return '';
+  const html = await parser.process(md);
   return html.toString();
 }

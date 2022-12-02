@@ -9,7 +9,7 @@ import { getApplicationStatusIndex } from 'lib/services/directus';
 async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
     if (!withMethods(req, ['POST']))
-      return res.status(401).json(new ApiResponse('Unauthorized'));
+      return res.status(401).json(ApiResponse(null, 'Unauthorized'));
 
     const { agree } = req.body as AgreementData;
     const applicant = await withAppUser(req, res);
@@ -36,7 +36,7 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     }
   } catch (e: any) {
     console.error(e);
-    res.status(500).json(new ApiResponse(e?.message || e));
+    res.status(500).json(ApiResponse(null, e?.message || e));
   }
 }
 

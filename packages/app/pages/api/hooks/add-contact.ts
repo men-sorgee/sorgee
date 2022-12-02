@@ -11,8 +11,8 @@ async function AddContact(
   try {
     if (!withMethods(req, ['POST'])) return;
 
-    if (req.headers['x-api-key'] !== process.env.ADMIN_TOKEN)
-      return res.status(401).json(new ApiResponse('Unauthorized'));
+    if (req.query.token !== process.env.ADMIN_TOKEN)
+      return res.status(401).json(ApiResponse(null, 'Unauthorized'));
 
     const { id } = req.body;
 
@@ -25,7 +25,7 @@ async function AddContact(
     res.status(200).end();
   } catch (e: any) {
     console.error(e);
-    res.status(500).json(new ApiResponse(e.message || e));
+    res.status(500).json(ApiResponse(null, e.message || e));
   }
 }
 
