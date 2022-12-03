@@ -7,10 +7,9 @@ import { UserInvite } from 'lib/services/directus';
 import { getFieldOptions } from 'lib/services/directus/server';
 import { FormOptions, InviteLink } from 'lib/types';
 import { Button } from 'react-daisyui';
-import { FieldInput, FieldSelect, FieldText } from 'components/forms';
+import { FieldInput, FieldSelect } from 'components/forms';
 import Page from '../../components/layout/Page';
-import { GetServerSideProps, GetStaticProps } from 'next';
-import { UserType } from '@directus/sdk';
+import { GetServerSideProps } from 'next';
 
 type PageProps = {
   userTypeOptions: FormOptions;

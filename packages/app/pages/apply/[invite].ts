@@ -7,7 +7,7 @@ import {
 } from 'pages/apply';
 
 export async function getServerSideProps(context: NextPageContext) {
-  const { props }: { props: PageProps } = await getProps(context);
+  const { props } = await getProps(context);
 
   try {
     const { invite } = context.query;

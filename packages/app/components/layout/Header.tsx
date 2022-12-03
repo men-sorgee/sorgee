@@ -3,29 +3,25 @@ import { Navbar, Dropdown, Avatar, Button, Menu, Tooltip } from 'react-daisyui';
 import 'react';
 import { Logo } from 'components/icons';
 import { useAppUser } from 'lib/hooks/use-member';
-import { useMetaContext } from '../../lib/hooks/user-meta-context';
+import { useMetaContext } from '../../lib/hooks/use-meta-context';
 
 export default function Header({ path }: { path: string }) {
   const { user, member } = useAppUser();
   const { pages } = useMetaContext();
   return (
     <header className=" sticky top-0 z-40 bg-black transition-all duration-150 ">
-      <Navbar className="mx-auto max-w-4xl justify-between bg-black px-4">
+      <Navbar className="mx-auto max-w-4xl justify-between bg-black py-3 px-4">
         <div className="flex-1">
           <a href="/">
-            <Logo
-              width="70"
-              height="70"
-              className="mr-3 h-6 cursor-pointer sm:h-10 md:h-20"
-            />
+            <Logo width="70" height="70" className="mr-3 cursor-pointer" />
           </a>
-        </div>
-        <div className="my-6 flex-grow self-center whitespace-nowrap text-center text-3xl font-extrabold leading-5 text-primary md:text-left lg:text-4xl">
-          GuysNHeat
+          <div className="bg-gradient-to-r from-pink-500  to-purple-900 bg-clip-text text-left font-serif text-xl font-extrabold leading-5 text-transparent md:text-left lg:text-4xl">
+            GuysNHeat
+          </div>
         </div>
 
-        <div className="flex-none">
-          <Menu horizontal className="p-0">
+        <div className="flex-grow text-right">
+          <Menu horizontal className="gap-2 p-0">
             {!user && (
               <Menu.Item>
                 <Link href="/api/auth/login" className="btn-ghost btn">
@@ -33,11 +29,14 @@ export default function Header({ path }: { path: string }) {
                 </Link>
               </Menu.Item>
             )}
-            {[]?.map((page, i) => (
-              <Menu.Item>
-                <Link href={page.path} className="" key={i}>
-                  <a>{page.title || 'Home'}</a>
-                </Link>
+            {pages?.map((page, i) => (
+              <Menu.Item key={i}>
+                <a
+                  href={page.path}
+                  className={`btn ${path == page.path ? '' : 'btn-ghost'}`}
+                >
+                  {page.title}
+                </a>
               </Menu.Item>
             ))}
           </Menu>
@@ -49,12 +48,12 @@ export default function Header({ path }: { path: string }) {
             horizontal="center"
             className="mr-2 bg-black text-gray-500"
           >
-            <Tooltip color="ghost" message={user?.email} position="left">
+            <Tooltip message={user?.email} position="left">
               <Avatar
+                className="cursor-pointer"
                 shape="circle"
                 size={70}
-                letters={member?.first_name[0] || 'X'}
-                className="cursor-pointer"
+                letters={user?.email}
                 src={
                   member?.picture
                     ? `/api/asset/${member.picture}`

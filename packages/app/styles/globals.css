@@ -6,11 +6,11 @@
   html,
   body,
   iframe {
-    @apply bg-black text-left font-sans text-base text-gray-300 sm:text-lg lg:text-xl;
+    @apply bg-dark text-left font-sans text-base text-gray-300 sm:text-lg lg:text-xl;
   }
 
   h1 {
-    @apply my-4 font-serif text-3xl font-extrabold text-primary-500 lg:text-3xl;
+    @apply my-4 bg-gradient-to-tr from-pink-500 to-blue-500 bg-clip-text font-serif text-3xl font-extrabold text-transparent lg:text-3xl;
   }
   h2 {
     @apply my-4 font-sans text-xl font-extrabold text-secondary-500 lg:text-2xl;
@@ -31,16 +31,12 @@
   p {
     @apply my-4 mx-auto max-w-4xl;
   }
-  ,
-  select {
-    @apply block w-full;
-  }
+  textarea,
+  select,
   input {
-    @apply block w-full;
+    @apply block w-full rounded-md bg-black text-pink-400;
   }
-  textarea {
-    @apply block w-full;
-  }
+
   section {
     @apply md:text-center;
   }
@@ -53,8 +49,11 @@
 }
 
 @layer components {
+  .btn {
+    @apply cursor-pointer whitespace-nowrap rounded py-2 px-4 font-bold;
+  }
   p a:any-link {
-    @apply font-medium text-blue-600 hover:underline dark:text-blue-500;
+    @apply font-medium text-pink-600 hover:underline;
   }
   .select {
     @apply w-full;
@@ -66,10 +65,13 @@
     @apply mx-auto min-h-[calc(100vh-10rem)] max-w-4xl;
   }
   article {
-    @apply min-w-[350px];
+    @apply mx-4 min-w-[350px];
   }
-  section.dark {
-    @apply w-full bg-gray-800 py-8  text-left md:text-center;
+  .gradient {
+    @apply rounded-lg bg-gradient-to-br from-purple-700  to-black !text-white;
+  }
+  .gradient h3 {
+    @apply text-xl text-pink-400;
   }
   footer {
   }

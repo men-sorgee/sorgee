@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { useMetaContext } from '../lib/hooks/user-meta-context';
+import { useMetaContext } from '../lib/hooks/use-meta-context';
 import { ReactNode } from 'react';
 
 export default function Meta({

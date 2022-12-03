@@ -43,7 +43,7 @@ export default function Subscribe() {
     <FormProvider {...methods}>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="mt-8 grid grid-cols-1 gap-4 md:mx-auto md:w-2/3"
+        className="grid grid-cols-1 gap-4 md:mx-auto "
       >
         <FieldInput
           field="email"
@@ -61,11 +61,11 @@ export default function Subscribe() {
           }}
           placeholder="Willy Dicks"
         />
-        <div className="grid grid-cols-3 gap-2 align-top">
-          <Button disabled={member != null} color="primary">
+        <div className="grid grid-cols-3 gap-2  align-middle">
+          <Button type="submit" color="accent">
             Get Notifications
           </Button>
-          <p className="col-span-2 text-xs text-gray-500">
+          <p className="col-span-2 text-xs">
             Only subscribe you agree to our <a href="/terms">Terms </a> and{' '}
             <a href="/privacy">Privacy Policy</a>.
           </p>

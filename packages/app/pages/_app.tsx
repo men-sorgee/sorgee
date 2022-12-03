@@ -3,7 +3,7 @@ import Layout from 'components/layout/index';
 import { AppUserContextProvider } from 'lib/hooks/use-member';
 import { AppProps } from 'next/app';
 import 'styles/globals.css';
-import { MetaContextProvider } from '../lib/hooks/user-meta-context';
+import { MetaContextProvider } from '../lib/hooks/use-meta-context';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

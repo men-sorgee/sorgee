@@ -30,7 +30,14 @@ const getConfig = ( phase ) => {
       ]
     },
     async redirects() {
+
       return [
+        {
+          source: '/:path*',
+          has: [{ type: 'host', value: 'www.guysnheat.com' }],
+          destination: 'https://guysnheat.com/:path*',
+          permanent: true
+        },
         {
           source: '/invite',
           destination: '/member/invite',

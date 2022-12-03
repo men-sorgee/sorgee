@@ -2,7 +2,7 @@ import { DiscordIcon, InstagramIcon, TwitterIcon } from '../icons';
 
 export default function Footer() {
   return (
-    <footer className="w-full ">
+    <footer className="w-full px-4">
       <div className="flex w-full flex-col items-center justify-between py-6 text-xs leading-none text-gray-500 lg:flex-row">
         <div className="flex w-full flex-shrink-0 flex-grow-0 self-start leading-none lg:w-auto">
           <span className="mt-4 inline-flex w-full justify-center space-x-5 sm:ml-auto sm:mt-0">

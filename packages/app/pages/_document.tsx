@@ -10,6 +10,19 @@ class MyDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&family=Roboto+Slab:wght@500&display=swap"
             rel="stylesheet"
           ></link>
+          <Script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-H0VWXREX1C"
+          ></Script>
+          <Script
+            dangerouslySetInnerHTML={{
+              __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-H0VWXREX1C');`
+            }}
+          />
         </Head>
         <body>
           <Main />

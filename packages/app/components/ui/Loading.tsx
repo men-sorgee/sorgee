@@ -11,7 +11,7 @@ const Loading: FC<LoadingProps> = ({ children }) => {
         <div role="status">
           <svg
             aria-hidden="true"
-            className="h-[25%] animate-spin fill-primary-600 text-gray-200 dark:text-gray-600"
+            className="gradient:text-gray-600 h-[25%] animate-spin fill-primary-600 text-gray-200"
             viewBox="0 0 100 101"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"

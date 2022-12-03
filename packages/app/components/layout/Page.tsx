@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { useMeta } from 'lib/hooks/user-meta-context';
+import { useMeta } from '@/lib/hooks/use-meta-context';
 import Loading from 'components/ui/Loading';
 
 interface PageProps {
@@ -16,7 +16,7 @@ const Page: FC<PageProps> = ({
   loading,
   description,
   header,
-  sectionClass = 'dark',
+  sectionClass = 'gradient',
   children
 }) => {
   useMeta(title, description);

@@ -44,7 +44,7 @@ function Account(props: PageProps) {
   const data = { member, ...props };
 
   return (
-    <Page title="Account" loading={loading && !member} sectionClass="dark">
+    <Page title="Account" loading={loading && !member} sectionClass="gradient">
       <Form {...data} />
     </Page>
   );

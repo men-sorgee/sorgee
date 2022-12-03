@@ -11,7 +11,7 @@ export async function getJSON<T = any>(
   headers: Record<string, string> = {
     'Content-Type': 'application/json'
   }
-): Promise<[T | boolean, ApiResponse<T>]> {
+): Promise<[boolean, ApiResponse<T>]> {
   const response = await fetch(url, {
     method: 'GET',
     headers: new Headers(headers)
@@ -19,15 +19,15 @@ export async function getJSON<T = any>(
 
   if (response.body != null) {
     const body = (await response.json()) as ApiResponse<T>;
-    return [body.data || true, body];
+    return [response.ok, body];
   }
-  return [true, null];
+  return [response.ok, null];
 }
 
 export async function postJSON<T = never | any>(
   url: string,
   data: object
-): Promise<[T | boolean, ApiResponse<T>]> {
+): Promise<[boolean, ApiResponse<T>]> {
   const response = await fetch(url, {
     method: 'POST',
     headers: {
@@ -38,9 +38,9 @@ export async function postJSON<T = never | any>(
 
   if (response.bodyUsed) {
     const body = (await response.json()) as ApiResponse<T>;
-    return [body.data || true, body];
+    return [response.ok, body];
   }
-  return [true, null];
+  return [response.ok, null];
 }
 
 export async function copyTextToClipboard(text: string) {

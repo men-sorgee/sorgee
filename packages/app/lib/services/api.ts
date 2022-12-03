@@ -11,10 +11,15 @@ import {
 } from 'lib/services/directus/server';
 import { getCookie, setCookie } from 'lib/services/cookies';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Applicant, Member } from './directus';
+import { Applicant, Member, UserInvite } from './directus';
 import { User } from './directus/types';
 
 export type HttpMethod = (string & 'GET') | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
+
+export function parseInvite(invite: string): UserInvite {
+  const inviteJson = Buffer.from(invite, 'base64').toString('utf-8');
+  return JSON.parse(inviteJson);
+}
 
 export function withMethods(
   req: NextApiRequest,

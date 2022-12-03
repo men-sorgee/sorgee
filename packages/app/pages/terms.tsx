@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Script from 'next/script';
-import { useMeta } from '../lib/hooks/user-meta-context';
+import { useMeta } from '../lib/hooks/use-meta-context';
 
 export default function Learn() {
   useMeta('Terms & Conditions');

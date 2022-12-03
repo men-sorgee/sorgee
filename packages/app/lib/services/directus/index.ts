@@ -102,6 +102,7 @@ export type SectionPage = {
 
 export type Applicant = {
   nickname: User['nickname'];
+
   id: User['id'];
   first_name: User['first_name'];
   last_name: User['last_name'];
@@ -119,13 +120,14 @@ export type Applicant = {
   weight: User['weight'];
   skin_tone: User['skin_tone'];
   my_positions: User['my_positions'];
-  user_type: UserType;
+  user_type: string | UserType;
   invite?: string;
   picture?: string | null;
   status: StatusType;
   application_status: ApplicationStatusType;
   last_login: User['last_login'];
   photo: string | null;
+  in_sendgrid: boolean;
 };
 
 export type CMSPageProps = {

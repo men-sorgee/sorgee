@@ -2,11 +2,6 @@ import { ContentSection, SectionPage } from '.';
 import { getAdminClient } from './client';
 import { Page } from './types';
 
-const cache = new Map<string, SectionPage>();
-export function clearPageContentCache() {
-  cache.clear();
-}
-
 const byId = `
   query getPage ($id: ID!) {
       page: page_by_id(id: $id) {
@@ -26,7 +21,6 @@ const byId = `
   }
 }`;
 export async function getPageContentById(id: string) {
-  if (cache.has(id)) return cache.get(id)!;
   return getPageContent(byId, { id });
 }
 
@@ -87,7 +81,7 @@ export async function getPageContent(
       )
     : [];
   page.content = content;
-  return (cache[page.id] = page as SectionPage);
+  return page as SectionPage;
 }
 
 const all = `{
