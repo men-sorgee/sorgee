@@ -1,3 +1,8 @@
-import { handleAuth } from '@auth0/nextjs-auth0';
+import { handleAuth, handleLogin } from '@auth0/nextjs-auth0';
 
-export default handleAuth();
+export default handleAuth({
+  //login: (req, res) =>
+  //  handleLogin(req, res, {
+  //    returnTo:
+  //  })
+});

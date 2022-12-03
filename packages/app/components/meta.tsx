@@ -2,7 +2,7 @@ import Head from 'next/head';
 import { useMetaContext } from '../lib/hooks/use-meta-context';
 import { ReactNode } from 'react';
 
-export default function Meta({
+export default function AppHead({
   children
 }: {
   children?: ReactNode | ReactNode[];

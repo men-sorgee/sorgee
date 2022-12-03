@@ -4,7 +4,7 @@ import Script from 'next/script';
 class MyDocument extends Document {
   render() {
     return (
-      <Html lang="en" data-theme="night">
+      <Html lang="en" data-theme="dark">
         <Head>
           <link
             href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&family=Roboto+Slab:wght@500&display=swap"

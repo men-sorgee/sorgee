@@ -24,9 +24,9 @@ export default function Header({ path }: { path: string }) {
           <Menu horizontal className="gap-2 p-0">
             {!user && (
               <Menu.Item>
-                <Link href="/api/auth/login" className="btn-ghost btn">
+                <a href="/api/auth/login" className="btn-ghost btn">
                   Login
-                </Link>
+                </a>
               </Menu.Item>
             )}
             {pages?.map((page, i) => (

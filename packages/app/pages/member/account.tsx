@@ -113,8 +113,7 @@ function Form(props: PageProps & { member?: Member }) {
             variant="lifted"
             value={tabValue}
             onChange={setTabValue}
-            className="my-4 w-full"
-            size="lg"
+            className="sm md:lg mb-4 w-full"
           >
             <Tabs.Tab value={0}>Settings</Tabs.Tab>
             <Tabs.Tab value={1}>Profile</Tabs.Tab>
@@ -159,7 +158,7 @@ function Form(props: PageProps & { member?: Member }) {
           )}
           {tabValue == 1 && (
             <>
-              <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="mb-8 grid grid-flow-row grid-cols-1 gap-4 md:grid-cols-2">
                 <FieldInput
                   field="nickname"
                   label="Nickname"
@@ -170,6 +169,7 @@ function Form(props: PageProps & { member?: Member }) {
                 <FieldSelect
                   field="spectrum"
                   label="Orientation"
+                  className=""
                   registerOptions={{ required }}
                   formOptions={spectrumOptions}
                 />
@@ -177,10 +177,11 @@ function Form(props: PageProps & { member?: Member }) {
                 <FieldSelect
                   field="relationship_status"
                   label="Relationship Status"
+                  className=""
                   formOptions={relationshipOptions}
                 />
 
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="grid  grid-cols-1 gap-4 md:grid-cols-2">
                   <FieldInput
                     field="age"
                     label="Age"
@@ -201,14 +202,14 @@ function Form(props: PageProps & { member?: Member }) {
                         id="height_feet"
                         className="input  !rounded-r-none"
                         {...register('height_feet')}
-                        placeholder="feet"
+                        placeholder="'"
                       />
                       <input
                         type="number"
                         id="height_inches"
                         className="input  !rounded-l-none"
                         {...register('height_inches')}
-                        placeholder="inches"
+                        placeholder='"'
                       />
                     </div>
                   </FieldWrapper>

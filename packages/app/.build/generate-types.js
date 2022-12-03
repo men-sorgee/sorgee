@@ -1,5 +1,7 @@
 #!/usr/bin/env node
-require( 'dotenv' ).config()
+require( 'dotenv' ).config( {
+  path: '../.env.local'
+} )
 
 const API_KEY = process.env.ADMIN_TOKEN
 const { writeFileSync } = require( "fs" )
