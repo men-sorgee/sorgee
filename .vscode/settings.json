@@ -17,10 +17,12 @@
     "filesize",
     "flowbit",
     "flowbite",
+    "gtag",
     "guysnheat",
     "headlessui",
     "heroicons",
     "hookform",
+    "jssdk",
     "KHTML",
     "mapbox",
     "nextjs",
@@ -33,7 +35,8 @@
     "sendgrid",
     "supabase",
     "twind",
-    "uuidv"
+    "uuidv",
+    "wellenplan"
   ],
   "editor.suggest.showStatusBar": true,
   "editor.quickSuggestions": {
