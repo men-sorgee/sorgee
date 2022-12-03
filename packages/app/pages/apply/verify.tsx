@@ -8,17 +8,14 @@ import { Button } from 'react-daisyui';
 import Loading from 'components/ui/Loading';
 import { Applicant } from 'lib/services/directus';
 import Page from 'components/layout/Page';
+import FieldCheckbox from '../../components/forms/FieldCheckbox';
+import { FormProvider, useForm } from 'react-hook-form';
+import { ErrorMessage } from '@hookform/error-message';
+import { ApiResponse } from '../../lib/types';
 
 function Verification() {
   const { member, loading } = useAppUser();
   const router = useRouter();
-
-  useEffect(() => {
-    if (!loading && !member) {
-      router.push('/apply');
-      return;
-    }
-  }, [loading, member, router]);
 
   return (
     <Page
@@ -46,38 +43,36 @@ function Form({
   member: Applicant;
   router: NextRouter;
 }) {
-  const [file, setFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(member?.photo);
   const [complete, setComplete] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
 
-  useEffect(() => {
-    if (member && member.photo) {
-      setPreviewUrl(member.photo as string);
-    }
-  }, [member, member.photo, previewUrl, setPreviewUrl]);
+  const methods = useForm<{ file: File; verify: boolean }>({
+    defaultValues: { verify: false },
+    mode: 'onChange'
+  });
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    clearErrors,
+    formState: { errors }
+  } = methods;
 
   const onFileUploadChange = (e: ChangeEvent<HTMLInputElement>) => {
     const fileInput = e.target;
 
-    if (!fileInput.files) {
-      setError('No file was chosen');
+    const file = fileInput.files
+      ? fileInput.files?.length
+        ? fileInput.files[0]
+        : null
+      : null;
+    if (!file || !file.type.startsWith('image')) {
+      setError('file', { message: 'Please select a valid image' });
       return;
     }
-
-    if (!fileInput.files || fileInput.files.length === 0) {
-      setError('Files list is empty');
-      return;
-    }
-
-    const file = fileInput.files[0];
-
-    if (!file.type.startsWith('image')) {
-      setError('Please select a valid image');
-      return;
-    }
-
-    setError(null);
+    clearErrors();
     setFile(file);
     setPreviewUrl(URL.createObjectURL(file));
 
@@ -90,22 +85,18 @@ function Form({
     if (!previewUrl && !file) {
       return;
     }
+    reset({ file: null, verify: false });
+    clearErrors();
     setFile(null);
-    setError(null);
     setPreviewUrl(null);
   };
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
+  function skip() {
+    router.push('/apply/review');
+  }
 
-    if (!file) {
-      if (member.photo) {
-        setComplete(true);
-        router.push('/apply/review');
-      }
-      return;
-    }
+  async function onSubmit({ verify }: { verify: boolean }) {
+    if (!file || !verify) return;
 
     try {
       let formData = new FormData();
@@ -120,19 +111,18 @@ function Form({
         setComplete(true);
         router.push('/apply/review');
         return;
-      }
-
-      const { error } = await res.json();
-
-      if (error) {
-        setError(error.message || 'Sorry! something went wrong.');
-        return;
+      } else {
+        const body = (await res.json()) as ApiResponse;
+        if (body.error?.field) {
+          setError(body.error!.field as any, body.error.message as any);
+        } else {
+          setError('file', { message: 'Something went wrong' });
+        }
       }
     } catch (error) {
-      console.error(error);
-      setError('Sorry! something went wrong.');
+      setError('file', { message: error.message });
     }
-  };
+  }
 
   if (complete)
     return (
@@ -147,59 +137,78 @@ function Form({
     );
 
   return (
-    <form onSubmit={onSubmit}>
-      <p className="text-xl">
-        To verify you are who you say you are, please take a selfie while
-        holding a piece of paper with the following verification-code written on
-        it.
-      </p>
+    <FormProvider {...methods}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <p className="text-xl">
+          To verify you are who you say you are, please take a selfie while
+          holding a piece of paper with the following verification-code written
+          on it.
+        </p>
 
-      <div className="flex flex-col gap-1.5 text-center md:py-4">
-        <h2 className="font-sans text-6xl">{code}</h2>
-        {previewUrl ? (
-          <div className="w-full">
-            <Image
-              alt="file uploader preview"
-              objectFit="cover"
-              src={previewUrl}
-              width={300}
-              height={350}
-              layout="fixed"
-              className="w-full"
+        <div className="flex flex-col gap-1.5 text-center md:py-4">
+          <h2 className="font-sans text-6xl">{code}</h2>
+          {previewUrl ? (
+            <div className="w-full">
+              <Image
+                alt="file uploader preview"
+                objectFit="cover"
+                src={previewUrl}
+                width={300}
+                height={350}
+                layout="fixed"
+                className="w-full"
+              />
+            </div>
+          ) : (
+            <label className="flex h-full cursor-pointer flex-col items-center justify-center py-3 transition-colors duration-150 hover:text-gray-600">
+              <input
+                className="file-input-bordered file-input-primary file-input w-full max-w-xs"
+                onChange={onFileUploadChange}
+                type="file"
+              />
+            </label>
+          )}
+
+          <p className="text-xl">
+            <strong>
+              Be sure your face and code is clearly visible, with no sunglasses
+              or hats.
+            </strong>
+            <br />
+            This photo will not be shared with anyone and will not be used for
+            your profile.
+          </p>
+          <div className="flex justify-center">
+            <FieldCheckbox
+              field="verify"
+              label="I certify that the photo I am submitting is me."
+              registerOptions={{ required: 'Certification is Required' }}
             />
           </div>
-        ) : (
-          <label className="flex h-full cursor-pointer flex-col items-center justify-center py-3 transition-colors duration-150 hover:text-gray-600">
-            <input
-              className="file-input-bordered file-input-primary file-input w-full max-w-xs"
-              name="file"
-              type="file"
-              onChange={onFileUploadChange}
-              required={true}
-            />
-          </label>
-        )}
+          <ErrorMessage
+            render={(m) => <p className="text-red-500">{m.message}</p>}
+            errors={errors}
+            name={'file'}
+          />
 
-        {error && <p className="text-red-500">{error}</p>}
-        <p className="text-xl">
-          <strong>
-            Be sure your face and code is clearly visible, with no sunglasses or
-            hats.
-          </strong>
-          <br />
-          This photo will not be shared with anyone and will not be used for
-          your profile.
-        </p>
-        <div className="mx-auto mt-8 grid max-w-xl grid-cols-2 gap-4">
-          <Button disabled={!previewUrl} onClick={onCancelFile}>
-            Clear
-          </Button>
-          <Button type="submit" disabled={!previewUrl} color="primary">
-            {file && 'Upload &'} Continue
-          </Button>
+          <div className="mx-auto mt-8 flex justify-between gap-4">
+            <Button color="info" disabled={!previewUrl} onClick={onCancelFile}>
+              Clear
+            </Button>
+            {member.photo && (
+              <Button type="submit" onClick={handleSubmit(skip)} color="info">
+                Use Existing
+              </Button>
+            )}
+            {file && (
+              <Button type="submit" disabled={!previewUrl} color="accent">
+                Upload
+              </Button>
+            )}
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </FormProvider>
   );
 }
 

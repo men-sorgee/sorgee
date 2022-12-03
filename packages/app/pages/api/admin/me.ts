@@ -7,7 +7,7 @@ import { ApiResponse } from 'lib/types';
 
 function dressMember(member: Applicant) {
   let { photo, ...rest } = member;
-  photo = `/api/asset/${photo}`;
+  if (photo) photo = `/api/asset/${photo}`;
   return {
     photo,
     ...rest
@@ -16,7 +16,7 @@ function dressMember(member: Applicant) {
 
 function undressMember(member: Member) {
   let { photo, ...rest } = member;
-  photo = photo?.toString().split('/').pop();
+  if (photo) photo = photo?.toString().split('/').pop();
   return {
     photo,
     ...rest
@@ -42,8 +42,7 @@ async function getUserDetails(
         return;
     }
   } catch (e) {
-    console.error(e);
-    res.status(500).json(ApiResponse(null, e.message || e));
+    res.status(403).json(ApiResponse(null, e.message || e));
   }
 }
 

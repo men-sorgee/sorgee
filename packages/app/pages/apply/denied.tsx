@@ -2,7 +2,7 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useAppUser } from 'lib/hooks/use-member';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { useMeta } from 'lib/hooks/user-meta-context';
+import { useMeta } from '@/lib/hooks/use-meta-context';
 import ApplicationSteps from './_steps';
 import Page from 'components/layout/Page';
 

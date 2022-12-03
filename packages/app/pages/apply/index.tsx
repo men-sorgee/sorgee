@@ -19,7 +19,7 @@ import FieldCheckbox from 'components/forms/FieldCheckbox';
 import ApplicationSteps from './_steps';
 import { Applicant } from 'lib/services/directus';
 import { LightBulbIcon, SupportIcon } from '@heroicons/react/solid';
-import { useMeta } from 'lib/hooks/user-meta-context';
+import { useMeta } from '@/lib/hooks/use-meta-context';
 import Page from 'components/layout/Page';
 
 export type PageProps = {
@@ -31,14 +31,15 @@ export type PageProps = {
   positionsOptions: FormOptions;
   skinToneOptions: FormOptions;
   page?: string;
-  setComplete?: (complete: boolean) => void;
+  setComplete: (complete: boolean) => void;
   applicant?: Applicant;
-  router?: NextRouter;
-  user?: UserProfile;
+  router: NextRouter;
+  user: UserProfile;
+  setFormError: (error: string) => void;
 };
 
 export async function getServerSideProps(context: NextPageContext) {
-  const props: PageProps = {
+  const props: Partial<PageProps> = {
     spectrumOptions: await getFieldOptions('spectrum'),
     relationshipOptions: await getFieldOptions('relationship_status'),
     timeOfDayOptions: await getFieldOptions('event_availability'),
@@ -65,7 +66,7 @@ function Apply(props: PageProps) {
     ? 'You&apos;ve been invited to join our community! While your application is pre-approved, we still need to perform a few verification steps.'
     : 'To apply for membership, complete this application. A member of our team will review your application and contact you with next steps.';
 
-  const data = { ...props };
+  const data = { ...props, setFormError };
   return (
     <Page
       title="Registration"
@@ -97,7 +98,8 @@ function Form(props: PageProps) {
     positionsOptions,
     relationshipOptions,
     skinToneOptions,
-    timeOfDayOptions
+    timeOfDayOptions,
+    setFormError
   } = props;
   const { name, email } = user!;
   const methods = useForm({
@@ -135,17 +137,17 @@ function Form(props: PageProps) {
     if (data.height_feet || data.height_inches) {
       data.height = `${data.height_feet} ${data.height_inches}`;
     }
-    const [success, response] = await postJSON(
+    const [ok, response] = await postJSON(
       '/api/admin/apply',
       pruneUndefined(data)
     );
 
-    if (success) {
+    if (ok) {
       router.push('/apply/verify');
     } else if (response.error?.field) {
       setError(response.error!.field as any, response.error.message as any);
     } else {
-      setError('form' as any, { message: 'Something went wrong' });
+      setFormError('Something went wrong');
     }
   }
 

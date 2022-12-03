@@ -1,25 +1,15 @@
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useAppUser } from 'lib/hooks/use-member';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 import ApplicationSteps from './_steps';
 import Loading from 'components/ui/Loading';
-import { useMeta } from 'lib/hooks/user-meta-context';
 import Page from 'components/layout/Page';
 
 function Review() {
-  useMeta('Review');
   const router = useRouter();
   const { loading, member } = useAppUser();
 
-  useEffect(() => {
-    if (!loading && member && member!.application_status !== 'review') {
-      router.push(`/apply/${member.application_status}`);
-      return;
-    }
-  }, [member, loading, router]);
-
-  if (loading)
+  if (loading || member?.application_status !== 'review')
     return (
       <Loading>
         <h3>Loading</h3>
@@ -33,7 +23,7 @@ function Review() {
       header={<ApplicationSteps status={'review'} />}
     >
       <>
-        <h3>Good things cum to those that wait!</h3>
+        <h2>Good things cum to those that wait!</h2>
         <p className="text-center text-xl">
           Thank you for submitting your application and verification photo.
         </p>

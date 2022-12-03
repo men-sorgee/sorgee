@@ -24,7 +24,7 @@ function Agreement() {
     <Page
       title="Agreement"
       loading={loading}
-      sectionClass="dark"
+      sectionClass="gradient"
       header={<ApplicationSteps status={'agreement'} />}
     >
       <Form router={router} />

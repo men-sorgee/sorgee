@@ -23,7 +23,7 @@ function Approved() {
     <Page
       title="Application Approved"
       loading={loading}
-      sectionClass="dark text-center"
+      sectionClass="gradient text-center"
       header={<ApplicationSteps status={'approved'} />}
     >
       <>

@@ -13,10 +13,10 @@ async function Subscribe(
 
     const { name, email } = req.body as SubscriptionData;
 
-    await addSubscriber(name, null, email);
+    const [first, ...last] = name.split(' ');
+    await addSubscriber(first, last.join(' '), email);
 
     const member = await findUser(email);
-
     if (member) {
       await updateUser(member.id, {
         in_sendgrid: true

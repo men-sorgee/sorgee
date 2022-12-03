@@ -16,35 +16,34 @@ export const MemberContext = createContext<Context | undefined>(undefined);
 
 export const AppUserContextProvider = (props: Props) => {
   const { user, isLoading } = useUser();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [member, setMember] = useState<Member>();
+  const [checked, setChecked] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
   const router = useRouter();
 
   function getMember(): Promise<void> {
-    if (!loading) setLoading(true);
     return getJSON<Member>('/api/admin/me')
-      .then(([m]) => {
-        setMember(m as Member);
+      .then(([ok, res]) => {
+        if (ok) setMember(res.data);
+        setChecked(true);
       })
-      .catch((e) => {
-        console.debug(e);
-      })
+      .catch()
       .finally(() => setLoading(false));
   }
 
   useEffect(() => {
-    if (!isLoading && user && !member) {
+    if (!loading && !checked && user && !member) {
+      setLoading(true);
       getMember();
     }
-    if (!subscribed && user && member) {
+    if (!isLoading && !loading && !subscribed && user && checked) {
       router.events.on('routeChangeStart', async () => {
-        await getMember();
-        return true;
+        return getMember();
       });
       setSubscribed(true);
     }
-  }, [user, isLoading, subscribed, loading, member, getMember, router.events]);
+  }, [user, isLoading, subscribed, loading, member, checked]);
 
   const value: Context = {
     user,
