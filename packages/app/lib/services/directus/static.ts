@@ -1,5 +1,5 @@
 import { ContentSection, SectionPage } from '.';
-import { getAdminClient } from './client';
+import { adminDb } from './client';
 import { Page } from './types';
 
 const byId = `
@@ -58,11 +58,7 @@ export async function getPageContent(
   query: string,
   variables: any
 ): Promise<SectionPage> {
-  const adminClient = await getAdminClient();
-  const results = await adminClient.graphql.items<{ page: Page }>(
-    query,
-    variables
-  );
+  const results = await adminDb.graphql.items<{ page: Page }>(query, variables);
 
   let { page } = results.data;
   if (!page) return null;
@@ -109,8 +105,7 @@ const all = `{
       }
     }`;
 export async function getActivePages(): Promise<Page[]> {
-  const adminClient = await getAdminClient();
-  const results = await adminClient.graphql.items<{ pages: Page[] }>(all);
+  const results = await adminDb.graphql.items<{ pages: Page[] }>(all);
 
   return results.data.pages;
 }

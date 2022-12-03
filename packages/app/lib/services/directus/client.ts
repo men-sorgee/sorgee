@@ -4,7 +4,7 @@ import { Collections } from './types';
 export const adminBaseUrl =
   process.env.ADMIN_URL || 'https://admin.guysnheat.com';
 
-const adminDb = new Directus<Collections>(adminBaseUrl);
+export const adminDb = new Directus<Collections>(adminBaseUrl);
 
 export async function getAdminClient(): Promise<Directus<Collections>> {
   if (await adminDb.auth.token) return adminDb;
