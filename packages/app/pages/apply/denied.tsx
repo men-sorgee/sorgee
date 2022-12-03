@@ -11,12 +11,14 @@ function Denied() {
   const router = useRouter();
   const { loading, member } = useAppUser();
 
-  useEffect(() => {
-    if (member && member!.application_status !== 'denied') {
-      router.push(`/apply/${member.application_status}`);
-      return;
-    }
-  }, [member, loading, router]);
+  if (
+    member &&
+    member?.application_status &&
+    member.application_status !== 'denied'
+  ) {
+    router.push('/apply/' + member?.application_status);
+    return null;
+  }
 
   return (
     <Page

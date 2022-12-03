@@ -2,7 +2,6 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useAppUser } from 'lib/hooks/use-member';
 
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 import Link from 'next/link';
 import ApplicationSteps from './_steps';
 import { SparklesIcon } from '@heroicons/react/solid';
@@ -12,12 +11,14 @@ function Approved() {
   const router = useRouter();
   const { loading, member } = useAppUser();
 
-  useEffect(() => {
-    if (member && member!.application_status !== 'approved') {
-      router.push(`/apply/${member.application_status}`);
-      return;
-    }
-  }, [member, loading, router]);
+  if (
+    member &&
+    member?.application_status &&
+    member.application_status !== 'approved'
+  ) {
+    router.push('/apply/' + member?.application_status);
+    return null;
+  }
 
   return (
     <Page
@@ -28,7 +29,7 @@ function Approved() {
     >
       <>
         <h2>Congratulations! Your membership was approved.</h2>
-        <SparklesIcon className="mx-auto my-10 h-[50px] animate-bounce" />
+        <SparklesIcon className="mx-auto my-4 h-[50px] animate-bounce text-white" />
         <p className="text-center">
           You will now get periodic event invites as well as access to our
           member-only content.

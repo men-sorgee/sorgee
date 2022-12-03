@@ -10,7 +10,7 @@ export default function Header({ path }: { path: string }) {
   const { pages } = useMetaContext();
   return (
     <header className=" sticky top-0 z-40 bg-black transition-all duration-150 ">
-      <Navbar className="mx-auto max-w-4xl justify-between bg-black py-3 px-4">
+      <Navbar className="mx-auto max-w-5xl justify-between bg-black py-3 px-4">
         <div className="flex-1">
           <a href="/">
             <Logo width="70" height="70" className="mr-3 cursor-pointer" />

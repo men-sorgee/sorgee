@@ -6,7 +6,7 @@
   html,
   body,
   iframe {
-    @apply bg-dark text-left font-sans text-base text-gray-300 sm:text-lg lg:text-xl;
+    @apply bg-dark text-left font-sans text-base text-white sm:text-lg lg:text-xl;
   }
 
   h1 {
@@ -26,10 +26,10 @@
   }
 
   label {
-    @apply mb-2 block font-extrabold;
+    @apply mb-2 block font-extrabold text-white;
   }
   p {
-    @apply my-4 mx-auto max-w-4xl;
+    @apply my-2 mx-auto max-w-4xl;
   }
   textarea,
   select,
@@ -62,7 +62,7 @@
     @apply p-4 md:p-8;
   }
   main {
-    @apply mx-auto min-h-[calc(100vh-10rem)] max-w-4xl;
+    @apply mx-auto min-h-[calc(100vh-10rem)] max-w-5xl;
   }
   article {
     @apply mx-4 min-w-[350px];

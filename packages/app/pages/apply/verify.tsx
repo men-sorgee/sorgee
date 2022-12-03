@@ -11,40 +11,31 @@ import Page from 'components/layout/Page';
 import FieldCheckbox from '../../components/forms/FieldCheckbox';
 import { FormProvider, useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
-import { ApiResponse } from '../../lib/types';
+import { ApiResponse, Props } from '../../lib/types';
 
 function Verification() {
   const { member, loading } = useAppUser();
+  const [completed, setCompleted] = useState(false);
   const router = useRouter();
 
   return (
     <Page
       title="Identification"
-      loading={loading}
+      loading={loading || completed}
       header={<ApplicationSteps status={'verify'} />}
     >
       {member?.id && (
         <Form
           code={`${member.id.slice(0, 4)} ${member.id.slice(4, 8)}`}
-          member={member}
-          router={router}
+          props={{ member, router, setCompleted }}
         />
       )}
     </Page>
   );
 }
 
-function Form({
-  code,
-  member,
-  router
-}: {
-  code: string;
-  member: Applicant;
-  router: NextRouter;
-}) {
+function Form({ code, member, router, setCompleted }: Props) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(member?.photo);
-  const [complete, setComplete] = useState(false);
   const [file, setFile] = useState<File | null>(null);
 
   const methods = useForm<{ file: File; verify: boolean }>({
@@ -52,7 +43,6 @@ function Form({
     mode: 'onChange'
   });
   const {
-    register,
     handleSubmit,
     reset,
     setError,
@@ -108,7 +98,7 @@ function Form({
       });
 
       if (res.ok) {
-        setComplete(true);
+        setCompleted(true);
         router.push('/apply/review');
         return;
       } else {
@@ -123,18 +113,6 @@ function Form({
       setError('file', { message: error.message });
     }
   }
-
-  if (complete)
-    return (
-      <>
-        <p className="text-center text-xl">
-          Thank you for submitting your application and verification photo.
-        </p>
-        <Loading>
-          <h3>Uploading</h3>
-        </Loading>
-      </>
-    );
 
   return (
     <FormProvider {...methods}>

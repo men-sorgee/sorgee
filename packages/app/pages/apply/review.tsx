@@ -9,12 +9,14 @@ function Review() {
   const router = useRouter();
   const { loading, member } = useAppUser();
 
-  if (loading || member?.application_status !== 'review')
-    return (
-      <Loading>
-        <h3>Loading</h3>
-      </Loading>
-    );
+  if (
+    member &&
+    member?.application_status &&
+    member.application_status !== 'review'
+  ) {
+    router.push('/apply/' + member?.application_status);
+    return null;
+  }
 
   return (
     <Page

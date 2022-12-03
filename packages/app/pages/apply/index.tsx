@@ -19,7 +19,6 @@ import FieldCheckbox from 'components/forms/FieldCheckbox';
 import ApplicationSteps from './_steps';
 import { Applicant } from 'lib/services/directus';
 import { LightBulbIcon, SupportIcon } from '@heroicons/react/solid';
-import { useMeta } from '@/lib/hooks/use-meta-context';
 import Page from 'components/layout/Page';
 
 export type PageProps = {
@@ -50,8 +49,6 @@ export async function getServerSideProps(context: NextPageContext) {
 }
 
 function Apply(props: PageProps) {
-  useMeta('Registration');
-
   const { user, loading } = useAppUser();
   const [formError, setFormError] = useState<string>();
 
@@ -60,6 +57,7 @@ function Apply(props: PageProps) {
       setFormError(
         `You must login using the email address ${props.email} to use this invite.`
       );
+
   }, [user, props.email]);
 
   const intro = props.invite

@@ -10,25 +10,22 @@ export default function ApplicationSteps({
   status?: ApplicationStatusType;
 }) {
   const value = getApplicationStatusIndex(status);
+  const steps = [
+    'Authentication',
+    'Registration',
+    'Identification',
+    'Verification',
+    'Agreement'
+  ];
   return (
     <Steps horizontal className="w-full">
-      <Steps.Step color={'primary'} title="Authentication"></Steps.Step>
-      <Steps.Step
-        color={value >= 0 ? 'primary' : 'ghost'}
-        title="Registration"
-      ></Steps.Step>
-      <Steps.Step
-        color={value >= 1 ? 'primary' : 'ghost'}
-        title="Identification"
-      ></Steps.Step>
-      <Steps.Step
-        color={value >= 2 ? 'primary' : 'ghost'}
-        title="Verification"
-      ></Steps.Step>
-      <Steps.Step
-        color={value >= 3 ? 'primary' : 'ghost'}
-        title="Indemnification"
-      ></Steps.Step>
+      {steps.map((step, index) => (
+        <Steps.Step
+          color={value >= index ? 'primary' : 'ghost'}
+          title={step}
+          key={index}
+        />
+      ))}
     </Steps>
   );
 }
