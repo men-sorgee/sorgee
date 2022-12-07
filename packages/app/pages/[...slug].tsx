@@ -57,7 +57,7 @@ export default function Page({
   pages: MenuPage[];
 }) {
   const { title, description, image, markdown } = page;
-  const img = image ? `/api/asset/${image}` : null;
+  const img = image ? `/api/asset/${image.id}` : null;
   useMeta(title, description, img, pages);
   return (
     <>

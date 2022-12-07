@@ -17,7 +17,7 @@ interface Props {
 
 const Page: NextPage<Props> = ({ page, pages }: Props) => {
   const { title, description, content, markdown, image } = page;
-  const img = image ? `/api/asset/${image}` : null;
+  const img = image ? `/api/asset/${image.id}` : null;
   useMeta(title, description, img, pages);
 
   return (
