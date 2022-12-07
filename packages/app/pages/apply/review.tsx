@@ -22,6 +22,7 @@ function Review() {
     <Page
       title="Verification Review"
       loading={loading}
+      sectionClass="gradient"
       header={<ApplicationSteps status={'review'} />}
     >
       <>

@@ -1,6 +1,5 @@
-import { EventInviteRSVPType } from '..';
+import { EventInvite, EventInviteRSVPType, Invite } from '..';
 import { getAdminClient } from '../client';
-import { EventUser } from '../types'
 
 export async function getEvent(id: string) {
   const client = await getAdminClient();
@@ -8,16 +7,54 @@ export async function getEvent(id: string) {
   return event;
 }
 
-export async function getEventInvite(eventId: string, userId: string) {
+export async function listUpcomingEvents() {
   const client = await getAdminClient();
-  const query = await client.items('event_invites').readByQuery({
+  const events = await client.items('events').readByQuery({
     filter: {
-      event: { _eq: eventId },
-      user: { _eq: userId }
+      datetime: { _gte: new Date().toISOString() }
+    }
+  });
+  return events.data;
+}
+
+export async function findEventInvite(eventId: string, userId: string) {
+  const client = await getAdminClient();
+  const query = await client.items('events_users').readByQuery({
+    filter: {
+      events_id: { _eq: eventId },
+      users_id: { _eq: userId }
     }
   });
 
-  return query.data[0] as EventUser;
+  return query.data[0];
+}
+
+export async function getEventInvite(inviteId: number) {
+  const client = await getAdminClient();
+  const query = await client.items('events_users').readOne(inviteId);
+
+  return query;
+}
+
+export async function listUserInvites(users_id: string): Promise<Invite[]> {
+  const events = await listUpcomingEvents();
+  const eventIds = events.map((event) => event.id);
+  const client = await getAdminClient();
+  const invites = await client.items('events_users').readByQuery({
+    filter: {
+      users_id: { _eq: users_id },
+      events_id: { _in: eventIds }
+    }
+  });
+  return (invites.data?.map((i: EventInvite) => {
+    let event = events.find((e) => e.id === i.events_id);
+    return {
+      id: event.id,
+      name: event.name!,
+      datetime: event.datetime!,
+      ...i
+    };
+  }) || []) as Invite[];
 }
 
 export async function updateEventUserRSVP(
@@ -27,7 +64,7 @@ export async function updateEventUserRSVP(
   reason: string
 ) {
   const client = await getAdminClient();
-  const invite = await getEventInvite(eventId, userId);
+  const invite = await findEventInvite(eventId, userId);
 
   if (!invite) {
     throw new Error('No invite found');
@@ -36,5 +73,7 @@ export async function updateEventUserRSVP(
   invite.rsvp = rsvp;
   invite.reason = reason;
 
-  client.items('event_invites').updateOne(invite.id, invite);
+  client.items('events_users').updateOne(invite.id, invite as any);
+
+  return invite;
 }

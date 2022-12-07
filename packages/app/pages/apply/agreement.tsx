@@ -31,7 +31,7 @@ function Agreement() {
       sectionClass="gradient"
       header={<ApplicationSteps status={'agreement'} />}
     >
-      <Form router={{ router, setCompleted }} />
+      <Form {...{ router, setCompleted }} />
     </Page>
   );
 }

@@ -14,7 +14,7 @@ import {
   FieldText,
   FieldCheckboxes
 } from 'components/forms';
-import { Button, Tabs } from 'react-daisyui';
+import { Button, Tabs, Toast } from 'react-daisyui';
 import Page from 'components/layout/Page';
 import { LightBulbIcon } from '@heroicons/react/solid';
 

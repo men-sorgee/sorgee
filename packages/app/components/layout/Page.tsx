@@ -9,6 +9,7 @@ interface PageProps {
   children: React.ReactNode | React.ReactNode[];
   description?: string;
   sectionClass?: string;
+  titleClass?: string;
 }
 
 const Page: FC<PageProps> = ({
@@ -16,13 +17,14 @@ const Page: FC<PageProps> = ({
   loading,
   description,
   header,
-  sectionClass = 'gradient',
-  children
+  sectionClass = '',
+  children,
+  titleClass
 }) => {
   useMeta(title, description);
   return (
     <>
-      <h1>{title}</h1>
+      <h1 className={titleClass}>{title}</h1>
       <section className={`${sectionClass}`}>
         {header}
         {(loading && (

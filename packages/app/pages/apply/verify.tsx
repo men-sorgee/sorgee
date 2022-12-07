@@ -11,7 +11,7 @@ import Page from 'components/layout/Page';
 import FieldCheckbox from '../../components/forms/FieldCheckbox';
 import { FormProvider, useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
-import { ApiResponse, Props } from '../../lib/types';
+import { ApiResponse } from '../../lib/types';
 
 function Verification() {
   const { member, loading } = useAppUser();
@@ -22,19 +22,20 @@ function Verification() {
     <Page
       title="Identification"
       loading={loading || completed}
+      sectionClass="gradient"
       header={<ApplicationSteps status={'verify'} />}
     >
       {member?.id && (
         <Form
           code={`${member.id.slice(0, 4)} ${member.id.slice(4, 8)}`}
-          props={{ member, router, setCompleted }}
+          {...{ member, router, setCompleted }}
         />
       )}
     </Page>
   );
 }
 
-function Form({ code, member, router, setCompleted }: Props) {
+function Form({ code, member, router, setCompleted }): JSX.Element {
   const [previewUrl, setPreviewUrl] = useState<string | null>(member?.photo);
   const [file, setFile] = useState<File | null>(null);
 
@@ -173,7 +174,7 @@ function Form({ code, member, router, setCompleted }: Props) {
             <Button color="info" disabled={!previewUrl} onClick={onCancelFile}>
               Clear
             </Button>
-            {member.photo && (
+            {member?.photo && (
               <Button type="submit" onClick={handleSubmit(skip)} color="info">
                 Use Existing
               </Button>

@@ -2,15 +2,15 @@ import { getSession, UserProfile } from '@auth0/nextjs-auth0';
 import {
   findUser,
   getUser,
-  recordUserLogin,
   importFile,
   updateUser,
   UploadFolder
 } from 'lib/services/directus/server';
-import { getCookie, setCookie } from 'lib/services/cookies';
+import { getCookie } from 'lib/services/cookies';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Applicant, Member, UserInvite } from './directus';
 import { User } from './directus/types';
+import { IncomingMessage, OutgoingMessage } from 'http';
 
 export type HttpMethod = (string & 'GET') | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
 
@@ -36,6 +36,9 @@ export async function withUser(
   throwError = true
 ): Promise<UserProfile | null> {
   const session = getSession(req, res);
+  if (!session) {
+    return null;
+  }
   const { user } = session!;
   if (user) return user;
   if (throwError) throw new Error('User not found');
@@ -43,9 +46,10 @@ export async function withUser(
 }
 
 export async function withAppUser(
-  req: NextApiRequest,
-  res: NextApiResponse,
-  throwError = true
+  req: NextApiRequest | IncomingMessage | any,
+  res: NextApiResponse | OutgoingMessage | any,
+  throwError = true,
+  onLogin?: (user: UserProfile, member: Member) => Promise<void>
 ): Promise<Applicant | Member | null> {
   const user = await withUser(req, res);
   if (user == null) return null;
@@ -53,10 +57,8 @@ export async function withAppUser(
   const userData = id ? await getUser(id) : await findUser<User>(user.email);
   if (userData) {
     // set cookie if not set & record login
-    if (!id) {
-      recordUserLogin(userData.id);
-      setCookie(res, user.sub, userData.id);
-    }
+    if (!id && onLogin) await onLogin(user, userData as Member);
+
     // update picture id empty
     if (!userData.picture && user.picture != null) {
       const file = await importFile(

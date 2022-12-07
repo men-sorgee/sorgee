@@ -161,6 +161,11 @@ export const memberFields: Array<keyof User> = [
 export type Member = Applicant & {
   nickname: User['nickname'];
   sexual_scenes: User['sexual_scenes'];
+  notifications: {
+    type: 'event' | 'message';
+    message: string;
+    link: string;
+  }[];
 };
 
 export type UserInvite = {
@@ -176,3 +181,22 @@ export enum EventInviteRSVPType {
   Cancelled = 'cancelled',
   Declined = 'declined'
 }
+
+export type Event = {
+  id: string;
+  name: string;
+  datetime: string | Date;
+};
+
+export type Invite = EventInvite & {
+  id: string;
+  name: string;
+  datetime: string | Date;
+};
+
+export type EventInvite = {
+  events_id: string;
+  users_id: string;
+  rsvp: EventInviteRSVPType | string;
+  reason: string;
+};

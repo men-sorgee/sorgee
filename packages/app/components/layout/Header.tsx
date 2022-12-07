@@ -1,13 +1,27 @@
 import Link from 'next/link';
-import { Navbar, Dropdown, Avatar, Button, Menu, Tooltip } from 'react-daisyui';
+import {
+  Navbar,
+  Dropdown,
+  Avatar,
+  Button,
+  Menu,
+  Tooltip,
+  Badge
+} from 'react-daisyui';
 import 'react';
 import { Logo } from 'components/icons';
 import { useAppUser } from 'lib/hooks/use-member';
 import { useMetaContext } from '../../lib/hooks/use-meta-context';
+import { useState } from 'react';
 
 export default function Header({ path }: { path: string }) {
+  const [showNotifications, setShowNotifications] = useState(false);
   const { user, member } = useAppUser();
   const { pages } = useMetaContext();
+  const messages =
+    member?.notifications?.filter((n) => n.type == 'message') || [];
+  const newEvents =
+    member?.notifications?.filter((n) => n.type == 'event') || [];
   return (
     <header className=" sticky top-0 z-40 bg-black transition-all duration-150 ">
       <Navbar className="mx-auto flex max-w-5xl justify-between bg-black py-3 px-4">
@@ -58,7 +72,27 @@ export default function Header({ path }: { path: string }) {
             <Dropdown.Menu>
               {member?.application_status == 'approved' && (
                 <>
+                  <Dropdown.Item href="/member/events">
+                    Events
+                    {newEvents.length > 0 && (
+                      <Badge color="accent">{newEvents.length}</Badge>
+                    )}
+                  </Dropdown.Item>
                   <Dropdown.Item href="/member/account">Account</Dropdown.Item>
+                  <Dropdown.Item
+                    onClick={() => setShowNotifications(!showNotifications)}
+                  >
+                    Notifications
+                    {messages.length > 0 && (
+                      <Badge color="accent">{messages.length}</Badge>
+                    )}
+                  </Dropdown.Item>
+                  {showNotifications &&
+                    messages.map((notification) => (
+                      <Dropdown.Item href={notification.link}>
+                        {notification.message}
+                      </Dropdown.Item>
+                    ))}
                   <Dropdown.Item href="/member/invite">Invite</Dropdown.Item>
                 </>
               )}

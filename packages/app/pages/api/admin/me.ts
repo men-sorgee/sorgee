@@ -1,15 +1,34 @@
 import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Applicant, Member } from 'lib/services/directus';
-import { updateUser } from 'lib/services/directus/server';
+import {
+  listUserInvites,
+  recordUserLogin,
+  updateUser
+} from 'lib/services/directus/server';
 import { withAppUser, withMethods } from 'lib/services/api';
 import { ApiResponse } from 'lib/types';
+import { setCookie } from '../../../lib/services/cookies';
 
-function dressMember(member: Applicant) {
+async function dressMember(member: Applicant) {
   let { photo, ...rest } = member;
   if (photo) photo = `/api/asset/${photo}`;
+  const notifications = [];
+  const invites = await listUserInvites(member.id);
+  if (invites && invites.length > 0) {
+    invites
+      .filter((i) => i.rsvp === 'invited')
+      .forEach((event) => {
+        notifications.push({
+          type: 'event',
+          message: `You have been invited to ${event.name}`,
+          link: `/member/events`
+        });
+      });
+  }
   return {
     photo,
+    notifications,
     ...rest
   };
 }
@@ -28,10 +47,13 @@ async function getUserDetails(
 ) {
   try {
     const method = withMethods(req, ['GET', 'POST']);
-    const member = await withAppUser(req, res);
+    const member = await withAppUser(req, res, true, async (user, member) => {
+      await recordUserLogin(member.id);
+      setCookie(res, user.sub, member.id);
+    });
     switch (method) {
       case 'GET':
-        res.status(200).json(ApiResponse(dressMember(member)));
+        res.status(200).json(ApiResponse(await dressMember(member)));
         break;
       case 'POST':
         const userDetails = req.body as Member;
