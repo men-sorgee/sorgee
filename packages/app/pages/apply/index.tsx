@@ -152,10 +152,7 @@ function Form(props: PageProps) {
   return (
     <>
       <FormProvider {...methods}>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="mx-auto max-w-4xl text-left"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="text-left">
           <h3>Private Information</h3>
           <p>
             We collect this information for verification purposes only. We will

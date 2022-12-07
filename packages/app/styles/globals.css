@@ -7,6 +7,7 @@
   body,
   iframe {
     @apply bg-dark text-left font-sans text-base text-white sm:text-lg lg:text-xl;
+    color-scheme: dark;
   }
 
   h1 {
@@ -16,32 +17,41 @@
     @apply my-4 font-sans text-xl font-extrabold text-secondary-500 lg:text-2xl;
   }
   h3 {
-    @apply my-4 font-serif text-lg font-bold text-primary-400 lg:text-xl;
+    @apply my-4 font-serif text-xl font-extrabold text-primary-400 lg:text-2xl;
   }
   h4 {
     @apply my-4 font-serif text-xl font-bold text-secondary-400 lg:text-2xl;
   }
   h5 {
-    @apply my-4 font-serif text-lg font-bold text-white md:text-xl lg:text-2xl;
+    @apply my-4 font-serif text-lg font-bold text-white md:text-xl;
   }
 
   label {
     @apply mb-2 block font-extrabold text-white;
   }
   p {
-    @apply my-2 mx-auto max-w-4xl;
+    @apply my-4 mx-auto;
   }
   textarea,
   select,
   input {
-    @apply block w-full rounded-md bg-black text-pink-400;
+    @apply block w-full rounded-md bg-black text-white;
   }
 
   section {
     @apply md:text-center;
   }
+  section > h1,
+  section > h2,
+  section > h3,
+  section > h4,
+  section > h5,
+  section > form,
+  section > p {
+    @apply px-4;
+  }
   form {
-    @apply p-4 md:p-8;
+    @apply w-full text-left md:mx-auto;
   }
   img {
     @apply w-full;
@@ -56,20 +66,18 @@
   .select {
     @apply w-full;
   }
-  section > * {
-    @apply p-4 md:p-8;
-  }
+
   main {
     @apply mx-auto min-h-[calc(100vh-10rem)] max-w-5xl;
   }
   article {
-    @apply mx-4 min-w-[350px];
+    @apply mx-4 min-w-[370px];
   }
   .gradient {
-    @apply rounded-lg bg-gradient-to-br from-purple-700  to-black !text-white;
+    @apply rounded-lg bg-gradient-to-br from-primary-400  to-black !text-white;
   }
   .gradient h3 {
-    @apply text-xl text-pink-400;
+    @apply text-xl text-secondary-400;
   }
   footer {
   }

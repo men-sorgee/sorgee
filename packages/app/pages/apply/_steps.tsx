@@ -10,7 +10,7 @@ export default function ApplicationSteps({ status }: { status: string }) {
     'Agreement'
   ];
   return (
-    <Steps horizontal className="w-full">
+    <Steps horizontal className="mt-8 w-full">
       {steps.map((step, index) => (
         <Steps.Step
           color={ApplicationStatus[status] >= index ? 'primary' : 'ghost'}

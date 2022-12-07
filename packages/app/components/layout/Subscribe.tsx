@@ -43,7 +43,7 @@ export default function Subscribe() {
     <FormProvider {...methods}>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="grid grid-cols-1 gap-4 md:mx-auto "
+        className="my-4 grid grid-cols-1 gap-4 md:mx-auto"
       >
         <FieldInput
           field="email"

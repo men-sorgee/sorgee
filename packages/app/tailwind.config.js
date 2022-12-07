@@ -11,7 +11,7 @@ const config = {
     '../../node_modules/react-daisyui/dist/**/*.{js,jsx,ts,tsx}'
   ],
   theme: {
-    //...defaultTheme,
+    ...defaultTheme,
     extend: {
       screens: {
         standalone: { raw: '(display-mode:standalone)' }
@@ -23,19 +23,6 @@ const config = {
       },
       colors: {
         dark: '#000b22',
-        accent: {
-          DEFAULT: '#9B4F96',
-          '50': '#f5edf5',
-          '100': '#ebdcea',
-          '200': '#d7b9d5',
-          '300': '#c395c0',
-          '400': '#af72ab',
-          '500': '#9b4f96',
-          '600': '#7c3f78',
-          '700': '#5d2f5a',
-          '800': '#3e203c',
-          '900': '#1f101e'
-        },
         primary: {
           DEFAULT: '#0038A8',
           '50': '#e6ebf6',
@@ -50,6 +37,19 @@ const config = {
           '900': '#000b22'
         },
         secondary: {
+          DEFAULT: '#9B4F96',
+          '50': '#f5edf5',
+          '100': '#ebdcea',
+          '200': '#d7b9d5',
+          '300': '#c395c0',
+          '400': '#af72ab',
+          '500': '#9b4f96',
+          '600': '#7c3f78',
+          '700': '#5d2f5a',
+          '800': '#3e203c',
+          '900': '#1f101e'
+        },
+        accent: {
           DEFAULT: '#D60270',
           '50': '#fbe6f1',
           '100': '#f7cce2',
@@ -73,13 +73,22 @@ const config = {
   plugins: [require( '@tailwindcss/typography' ), require( 'daisyui' )],
   daisyui: {
     styled: true,
-    themes: true,
-    base: false,
+    themes: false,
+    base: true,
     utils: true,
-    logs: true,
+    logs: false,
     rtl: false,
     prefix: "",
     darkTheme: false,
+    themes: [{
+      dark: {
+        ...require( "daisyui/src/colors/themes" )["[data-theme=dark]"],
+        primary: "#0038A8",
+        secondary: "#9B4F96",
+        accent: "#D60270",
+        neutral: "#000b22"
+      },
+    }],
   }
 }
 

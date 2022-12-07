@@ -32,17 +32,10 @@ export default function Header({ path }: { path: string }) {
                 </a>
               </Menu.Item>
             ))}
-            {!user && (
-              <Menu.Item>
-                <a href="/api/auth/login" className="btn-ghost btn">
-                  Login
-                </a>
-              </Menu.Item>
-            )}
           </Menu>
         </div>
 
-        {user && (
+        {user ? (
           <Dropdown
             vertical="end"
             horizontal="center"
@@ -50,7 +43,7 @@ export default function Header({ path }: { path: string }) {
           >
             <Tooltip message={user?.email} position="left">
               <Avatar
-                className="cursor-pointer"
+                className="cursor-pointer rounded-full ring-2 ring-accent"
                 shape="circle"
                 size={70}
                 letters={user?.email}
@@ -72,6 +65,10 @@ export default function Header({ path }: { path: string }) {
               <Dropdown.Item href="/api/auth/logout">Logout</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
+        ) : (
+          <a href="/api/auth/login" className="btn-ghost btn">
+            Login
+          </a>
         )}
       </Navbar>
     </header>
