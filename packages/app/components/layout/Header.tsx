@@ -12,16 +12,16 @@ import 'react';
 import { Logo } from 'components/icons';
 import { useAppUser } from 'lib/hooks/use-member';
 import { useMetaContext } from '../../lib/hooks/use-meta-context';
-import { useState } from 'react';
+import { MemberLevel } from '../../lib/services/directus';
 
 export default function Header({ path }: { path: string }) {
-  const [showNotifications, setShowNotifications] = useState(false);
-  const { user, member } = useAppUser();
+  const { user, member, loading } = useAppUser();
   const { pages } = useMetaContext();
   const messages =
     member?.notifications?.filter((n) => n.type == 'message') || [];
   const newEvents =
     member?.notifications?.filter((n) => n.type == 'event') || [];
+  if (loading) return null;
   return (
     <header className=" sticky top-0 z-40 bg-black transition-all duration-150 ">
       <Navbar className="mx-auto flex max-w-5xl justify-between bg-black py-3 px-4">
@@ -70,7 +70,7 @@ export default function Header({ path }: { path: string }) {
             </Tooltip>
 
             <Dropdown.Menu>
-              {member?.application_status == 'approved' && (
+              {MemberLevel[member?.user_type || 'subscriber'] > 3 && (
                 <>
                   <Dropdown.Item href="/member/events">
                     Events

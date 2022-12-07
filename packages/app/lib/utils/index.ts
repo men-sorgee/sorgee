@@ -1,3 +1,4 @@
+import { HttpMethod } from '../services/api';
 import { ApiResponse } from '../types';
 
 export function toDateTime(secs: number) {
@@ -7,40 +8,35 @@ export function toDateTime(secs: number) {
 }
 
 export async function getJSON<T = any>(
+  url: string
+): Promise<[boolean, ApiResponse<T>]> {
+  return await fetchJSON(url);
+}
+
+export async function postJSON<T = any>(url: string, data: object) {
+  return await fetchJSON(url, data, 'POST');
+}
+
+export async function fetchJSON<T = never | any>(
   url: string,
+  data?: object,
+  method: HttpMethod = 'GET',
   headers: Record<string, string> = {
     'Content-Type': 'application/json'
   }
 ): Promise<[boolean, ApiResponse<T>]> {
   const response = await fetch(url, {
-    method: 'GET',
-    headers: new Headers(headers)
+    method,
+    headers,
+    body: data ? Buffer.from(JSON.stringify(pruneUndefined(data))) : undefined
   });
 
-  if (response.body != null) {
+  try {
     const body = (await response.json()) as ApiResponse<T>;
     return [response.ok, body];
+  } catch {
+    return [response.ok, { data: null }];
   }
-  return [response.ok, null];
-}
-
-export async function postJSON<T = never | any>(
-  url: string,
-  data: object
-): Promise<[boolean, ApiResponse<T>]> {
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: Buffer.from(JSON.stringify(pruneUndefined(data)))
-  });
-
-  if (response.bodyUsed) {
-    const body = (await response.json()) as ApiResponse<T>;
-    return [response.ok, body];
-  }
-  return [response.ok, null];
 }
 
 export async function copyTextToClipboard(text: string) {

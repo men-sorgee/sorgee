@@ -2,6 +2,7 @@ import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Applicant, Member } from 'lib/services/directus';
 import {
+  deleteNotification,
   listUserInvites,
   recordUserLogin,
   updateUser
@@ -34,22 +35,28 @@ async function getUserDetails(
   res: NextApiResponse<ApiResponse<Applicant> | ApiResponse>
 ) {
   try {
-    const method = withMethods(req, ['GET', 'POST']);
+    const method = withMethods(req, ['GET', 'POST', 'DELETE']);
     const member = await withAppUser(req, res, true, async (user, member) => {
       await recordUserLogin(member.id);
       setCookie(res, user.sub, member.id);
     });
     switch (method) {
+      case 'DELETE':
+        const id = req.body.id;
+        console.dir(req.body);
+        await deleteNotification(id);
+        return res.status(200).end();
+        break;
       case 'GET':
-        res.status(200).json(ApiResponse(dressMember(member)));
+        return res.status(200).json(ApiResponse(dressMember(member)));
         break;
       case 'POST':
         const userDetails = req.body as Member;
         updateUser(member.id, undressMember(userDetails));
-        res.status(200).json(ApiResponse(null));
+        return res.status(200).json(ApiResponse(null));
         break;
       default:
-        return;
+        return res.status(200).end();
     }
   } catch (e) {
     res.status(401).json(ApiResponse(null, e.message || e));

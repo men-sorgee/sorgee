@@ -23,7 +23,7 @@ export function setCookie(
   res.setHeader(
     'Set-Cookie',
     cookie.serialize(name, value, {
-      httpOnly: dev === false,
+      httpOnly: false,
       secure: dev === false,
       sameSite: 'strict',
       maxAge,

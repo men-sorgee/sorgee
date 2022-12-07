@@ -104,7 +104,9 @@ async function getNotifications(member: Member) {
     return {
       id: n.id,
       type: 'message',
-      ...n.notification_id
+      message: n.notification_id.message,
+      link: n.notification_id.link,
+      status: n.status
     };
   });
 
@@ -123,4 +125,9 @@ async function getNotifications(member: Member) {
       });
   }
   return notifications;
+}
+
+export async function deleteNotification(id: number) {
+  const adminClient = await getAdminClient();
+  return await adminClient.items('notifications_users').deleteOne(id);
 }

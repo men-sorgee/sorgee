@@ -2,7 +2,7 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { FormProvider, useForm } from 'react-hook-form';
 import { NextPageContext } from 'next';
 import { Member } from 'lib/services/directus';
-import { postJSON, pruneUndefined } from 'lib/utils';
+import { fetchJSON, postJSON, pruneUndefined } from 'lib/utils';
 import { getFieldOptions } from '@/lib/services/directus/server';
 import { useAppUser } from 'lib/hooks/use-member';
 import { FormOptions } from 'lib/types';
@@ -28,6 +28,7 @@ export type PageProps = {
   skinToneOptions: FormOptions;
   scenesOptions: FormOptions;
   eventOptions: FormOptions;
+  reload?: () => Promise<void>;
 };
 
 export async function getServerSideProps(context: NextPageContext) {
@@ -44,11 +45,11 @@ export async function getServerSideProps(context: NextPageContext) {
 }
 
 function Account(props: PageProps) {
-  const { member, loading } = useAppUser();
-  const data = { member, ...props };
+  const { member, loading, reload } = useAppUser();
+  const data = { member, reload, ...props };
 
   return (
-    <Page title="Account" loading={loading && !member} sectionClass="gradient">
+    <Page title="Account" loading={loading} sectionClass="gradient">
       <Form {...data} />
     </Page>
   );
@@ -64,7 +65,8 @@ function Form(props: PageProps & { member?: Member }) {
     skinToneOptions,
     timeOfDayOptions,
     scenesOptions,
-    eventOptions
+    eventOptions,
+    reload
   } = props;
   const [updated, setUpdated] = useState(false);
   const [tabValue, setTabValue] = useState(Number(router.query.t) || 0);
@@ -84,10 +86,14 @@ function Form(props: PageProps & { member?: Member }) {
 
   useEffect(() => {
     if (updated) {
-      setTimeout(() => setUpdated(false), 3000);
+      reload();
+      setTimeout(() => {
+        setUpdated(false);
+      }, 3000);
     }
-    router.push(`/member/account?t=${tabValue}`);
-  }, [updated, tabValue]);
+    if (tabValue !== Number(router.query.t || 0))
+      router.push(`/member/account?t=${tabValue}`);
+  }, [updated, tabValue, member, reload, setUpdated]);
 
   async function onSubmit(data: any) {
     if (data.height_feet || data.height_inches) {
@@ -104,6 +110,22 @@ function Form(props: PageProps & { member?: Member }) {
       return;
     } else if (response.error?.field) {
       setError(response.error!.field as any, response.error.message as any);
+    } else {
+      setError('form' as any, { message: 'Something went wrong' });
+    }
+  }
+
+  async function deleteNotification(id: string) {
+    const [ok] = await fetchJSON(
+      '/api/admin/me',
+      {
+        id
+      },
+      'DELETE'
+    );
+
+    if (ok) {
+      setUpdated(true);
     } else {
       setError('form' as any, { message: 'Something went wrong' });
     }
@@ -323,13 +345,19 @@ function Form(props: PageProps & { member?: Member }) {
             </>
           )}
           {tabValue == 4 &&
-            member?.notifications.map((n) => (
-              <Alert>
+            member?.notifications.map((n, i) => (
+              <Alert key={i}>
                 <div className="flex-grow">{n.message}</div>
-                <div className="flex-none">
-                  <Button type="button" className="btn-sm btn">
+                <div className="flex-shrink">
+                  <a
+                    className="btn-ghost btn-sm btn"
+                    onClick={async () => {
+                      await deleteNotification(n.id);
+                    }}
+                    data-id={n.id}
+                  >
                     <XIcon className="h-4 w-4 fill-white" />
-                  </Button>
+                  </a>
                 </div>
               </Alert>
             ))}
