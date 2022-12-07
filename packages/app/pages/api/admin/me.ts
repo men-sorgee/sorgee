@@ -64,7 +64,7 @@ async function getUserDetails(
         return;
     }
   } catch (e) {
-    res.status(403).json(ApiResponse(null, e.message || e));
+    res.status(401).json(ApiResponse(null, e.message || e));
   }
 }
 

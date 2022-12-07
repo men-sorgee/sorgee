@@ -21,7 +21,13 @@ export async function getStaticProps({ params }) {
   const pages = await getActivePages();
 
   let { slug: paths } = params as { slug: string[] };
-  const slug = paths.pop();
+
+  const slug = paths?.pop();
+  if (!slug) {
+    return {
+      notFound: true
+    };
+  }
 
   const page = await getPageContentByUrl(slug);
 
