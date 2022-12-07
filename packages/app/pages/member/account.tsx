@@ -14,9 +14,11 @@ import {
   FieldText,
   FieldCheckboxes
 } from 'components/forms';
-import { Button, Tabs, Toast } from 'react-daisyui';
+import { Alert, Button, Tabs, Toast } from 'react-daisyui';
 import Page from 'components/layout/Page';
-import { LightBulbIcon } from '@heroicons/react/solid';
+import { CameraIcon, LightBulbIcon, XIcon } from '@heroicons/react/solid';
+import { useRouter } from 'next/router';
+import FieldCheckbox from '../../components/forms/FieldCheckbox';
 
 export type PageProps = {
   spectrumOptions: FormOptions;
@@ -25,6 +27,7 @@ export type PageProps = {
   positionsOptions: FormOptions;
   skinToneOptions: FormOptions;
   scenesOptions: FormOptions;
+  eventOptions: FormOptions;
 };
 
 export async function getServerSideProps(context: NextPageContext) {
@@ -34,7 +37,8 @@ export async function getServerSideProps(context: NextPageContext) {
     timeOfDayOptions: await getFieldOptions<Member>('event_availability'),
     positionsOptions: await getFieldOptions<Member>('my_positions'),
     skinToneOptions: await getFieldOptions<Member>('skin_tone'),
-    scenesOptions: await getFieldOptions<Member>('sexual_scenes')
+    scenesOptions: await getFieldOptions<Member>('sexual_scenes'),
+    eventOptions: await getFieldOptions<Member>('social_scenes')
   };
   return { props };
 }
@@ -51,6 +55,7 @@ function Account(props: PageProps) {
 }
 
 function Form(props: PageProps & { member?: Member }) {
+  const router = useRouter();
   const {
     member,
     spectrumOptions,
@@ -58,10 +63,11 @@ function Form(props: PageProps & { member?: Member }) {
     relationshipOptions,
     skinToneOptions,
     timeOfDayOptions,
-    scenesOptions
+    scenesOptions,
+    eventOptions
   } = props;
   const [updated, setUpdated] = useState(false);
-  const [tabValue, setTabValue] = useState(0);
+  const [tabValue, setTabValue] = useState(Number(router.query.t) || 0);
   const methods = useForm({
     defaultValues: {
       ...member,
@@ -80,7 +86,8 @@ function Form(props: PageProps & { member?: Member }) {
     if (updated) {
       setTimeout(() => setUpdated(false), 3000);
     }
-  }, [updated]);
+    router.push(`/member/account?t=${tabValue}`);
+  }, [updated, tabValue]);
 
   async function onSubmit(data: any) {
     if (data.height_feet || data.height_inches) {
@@ -110,7 +117,7 @@ function Form(props: PageProps & { member?: Member }) {
           className="mx-auto max-w-3xl text-left"
         >
           <Tabs
-            variant="lifted"
+            variant="bordered"
             value={tabValue}
             onChange={setTabValue}
             className="sm md:lg mb-4 w-full"
@@ -119,6 +126,7 @@ function Form(props: PageProps & { member?: Member }) {
             <Tabs.Tab value={1}>Profile</Tabs.Tab>
             <Tabs.Tab value={2}>Events</Tabs.Tab>
             <Tabs.Tab value={3}>Sex</Tabs.Tab>
+            <Tabs.Tab value={4}>Notifications</Tabs.Tab>
           </Tabs>
           {tabValue == 0 && (
             <>
@@ -154,6 +162,26 @@ function Form(props: PageProps & { member?: Member }) {
                   placeholder="000 456 7890"
                 />
               </div>
+
+              <Alert className="w-full text-xs">
+                <CameraIcon className="h-10 w-10" />
+                Are you an exhibitionist? If so, you can opt-in to be a part of
+                our marketing efforts. We will never share your personal
+                information with anyone.
+                <div className="w-1/2">
+                  <FieldCheckbox
+                    field="photo_consent"
+                    label="Photo Consent"
+                    help="I would be willing to be photographed and featured in our promotional materials."
+                  />
+                  <FieldCheckbox
+                    field="video_consent"
+                    label="Video Consent"
+                    help="I would be willing to filmed for a video testimonial."
+                  />
+                </div>
+              </Alert>
+              <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2"></div>
             </>
           )}
           {tabValue == 1 && (
@@ -238,6 +266,15 @@ function Form(props: PageProps & { member?: Member }) {
             <>
               <div className="mb-8 grid grid-cols-1 gap-4">
                 <FieldCheckboxes
+                  field="social_scenes"
+                  label="Social Activities"
+                  help="We host events to meet the demands of our brothers. Tell us what kind of events you are interested in."
+                  formOptions={eventOptions}
+                />
+              </div>
+
+              <div className="mb-8 grid grid-cols-1 gap-4">
+                <FieldCheckboxes
                   field="event_availability"
                   label="Preferred Event Times"
                   help="We host events to meet the demands of our brothers. Let us know what times work best in general"
@@ -285,12 +322,25 @@ function Form(props: PageProps & { member?: Member }) {
               </div>
             </>
           )}
+          {tabValue == 4 &&
+            member?.notifications.map((n) => (
+              <Alert>
+                <div className="flex-grow">{n.message}</div>
+                <div className="flex-none">
+                  <Button type="button" className="btn-sm btn">
+                    <XIcon className="h-4 w-4 fill-white" />
+                  </Button>
+                </div>
+              </Alert>
+            ))}
           <input type="hidden" {...register('id')} />
-          <div className="mt-2 flex items-center space-x-4 pt-4">
-            <Button type="submit" color="primary" disabled={isSubmitting}>
-              Update Profile
-            </Button>
-          </div>
+          {tabValue <= 3 && (
+            <div className="mt-2 flex items-center space-x-4 pt-4">
+              <Button type="submit" color="primary" disabled={isSubmitting}>
+                Update Profile
+              </Button>
+            </div>
+          )}
           {updated && (
             <div className="toast-center toast-middle toast">
               <div className="alert-ghost alert whitespace-nowrap opacity-75">

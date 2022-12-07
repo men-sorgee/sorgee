@@ -1,6 +1,7 @@
 import { Applicant, applicantFields, Member, memberFields } from '..';
 import { getAdminClient } from '../client';
 import { User } from '../types';
+import { listUserInvites } from './events';
 
 export async function createUser(member: Partial<User>): Promise<any> {
   const adminClient = await getAdminClient();
@@ -29,7 +30,14 @@ export async function recordUserLogin(id: string) {
 export async function getUser(id: string): Promise<User | null> {
   const adminClient = await getAdminClient();
   const user: any = await adminClient.items('users').readOne(id);
-  return user || null;
+  if (!user) return null;
+
+  const notifications = await getNotifications(user);
+
+  return {
+    ...user,
+    notifications
+  };
 }
 
 export async function findUser<T = Applicant>(
@@ -42,7 +50,18 @@ export async function findUser<T = Applicant>(
     fields: [...(fields as any)]
   });
 
-  return existingUserQuery?.data ? existingUserQuery.data[0] : null;
+  const user = existingUserQuery?.data ? existingUserQuery.data[0] : null;
+
+  if (!user) return null;
+
+  const notifications = await getNotifications(user);
+
+  return {
+    ...user,
+    notifications
+  };
+
+  return;
 }
 
 export async function getApplicant(id: string): Promise<Applicant | null> {
@@ -58,5 +77,50 @@ export async function getMember(id: string): Promise<Member | null> {
   const member: Member = await adminClient
     .items('users')
     .readOne(id, { fields: [...memberFields] });
-  return member || null;
+
+  if (!member) return null;
+
+  const notifications = await getNotifications(member);
+
+  return {
+    ...member,
+    notifications
+  } as any;
+}
+
+async function getNotifications(member: Member) {
+  const adminClient = await getAdminClient();
+  const { data: notificationsRaw } = await adminClient
+    .items('notifications_users')
+    .readByQuery({
+      filter: {
+        user_id: { _eq: member.id }
+      },
+      fields: '*,notification_id.*'
+    });
+
+  const notifications = notificationsRaw.map((n) => {
+    delete n.notification_id.users;
+    return {
+      id: n.id,
+      type: 'message',
+      ...n.notification_id
+    };
+  });
+
+  const invites = await listUserInvites(member.id);
+  if (invites && invites.length > 0) {
+    invites
+      .filter((i) => i.rsvp === 'invited')
+      .forEach((event) => {
+        notifications.push({
+          id: null,
+          type: 'event',
+          message: `You have been invited to ${event.name}`,
+          link: `/member/events`,
+          status: 'new'
+        });
+      });
+  }
+  return notifications;
 }

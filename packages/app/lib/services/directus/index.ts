@@ -154,14 +154,22 @@ export type MenuPage = {
 
 export const memberFields: Array<keyof User> = [
   'nickname',
-  ...applicantFields,
-  'sexual_scenes'
+  'sexual_scenes',
+  'social_scenes',
+  'video_consent',
+  'photo_consent',
+  'notifications',
+  ...applicantFields
 ];
 
 export type Member = Applicant & {
   nickname: User['nickname'];
   sexual_scenes: User['sexual_scenes'];
+  social_scenes: User['social_scenes'];
+  video_consent: boolean;
+  photo_consent: boolean;
   notifications: {
+    id: string;
     type: 'event' | 'message';
     message: string;
     link: string;

@@ -66,7 +66,7 @@ export default function Subscribe() {
             Get Notifications
           </Button>
           <p className="col-span-2 text-xs">
-            Only subscribe you agree to our <a href="/terms">Terms </a> and{' '}
+            Subscribe only if you agree to our <a href="/terms">Terms </a> and{' '}
             <a href="/privacy">Privacy Policy</a>.
           </p>
         </div>

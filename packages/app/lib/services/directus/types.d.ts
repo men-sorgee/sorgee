@@ -239,6 +239,64 @@ export interface paths {
      */
     patch: operations["updateSingleItemsLocation"];
   };
+  "/items/notifications": {
+    /**
+     * List Items 
+     * @description List the notifications items.
+     */
+    get: operations["readItemsNotifications"];
+    /**
+     * Create an Item 
+     * @description Create a new notifications item.
+     */
+    post: operations["createItemsNotifications"];
+  };
+  "/items/notifications/{id}": {
+    /**
+     * Retrieve an Item 
+     * @description Retrieve a single notifications item by unique identifier.
+     */
+    get: operations["readSingleItemsNotifications"];
+    /**
+     * Delete an Item 
+     * @description Delete an existing notifications item.
+     */
+    delete: operations["deleteSingleItemsNotifications"];
+    /**
+     * Update an Item 
+     * @description Update an existing notifications item.
+     */
+    patch: operations["updateSingleItemsNotifications"];
+  };
+  "/items/notifications_users": {
+    /**
+     * List Items 
+     * @description List the notifications_users items.
+     */
+    get: operations["readItemsNotificationsUsers"];
+    /**
+     * Create an Item 
+     * @description Create a new notifications_users item.
+     */
+    post: operations["createItemsNotificationsUsers"];
+  };
+  "/items/notifications_users/{id}": {
+    /**
+     * Retrieve an Item 
+     * @description Retrieve a single notifications_users item by unique identifier.
+     */
+    get: operations["readSingleItemsNotificationsUsers"];
+    /**
+     * Delete an Item 
+     * @description Delete an existing notifications_users item.
+     */
+    delete: operations["deleteSingleItemsNotificationsUsers"];
+    /**
+     * Update an Item 
+     * @description Update an existing notifications_users item.
+     */
+    patch: operations["updateSingleItemsNotificationsUsers"];
+  };
   "/items/page": {
     /**
      * List Items 
@@ -994,6 +1052,22 @@ export interface components {
       notes?: string | null;
       amenities?: Record<string, unknown> | null;
     };
+    ItemsNotifications: {
+      /** Format: uuid */
+      id?: string;
+      status?: string;
+      /** Format: timestamp */
+      date_created?: string | null;
+      message?: string | null;
+      link?: string | null;
+      users?: (number | components["schemas"]["ItemsNotificationsUsers"])[];
+    };
+    ItemsNotificationsUsers: {
+      id?: number;
+      notification_id?: string | components["schemas"]["ItemsNotifications"];
+      user_id?: string | components["schemas"]["ItemsUsers"];
+      status?: string | null;
+    };
     ItemsPage: {
       /** Format: uuid */
       id?: string;
@@ -1050,7 +1124,7 @@ export interface components {
       date_created?: string | null;
       /** Format: timestamp */
       date_updated?: string | null;
-      first_name?: string | null;
+      first_name?: string;
       last_name?: string | null;
       user_type?: string;
       phone?: string | null;
@@ -1108,12 +1182,15 @@ export interface components {
       application_status?: string;
       in_sendgrid?: boolean | null;
       picture?: string | components["schemas"]["Files"];
+      video_consent?: boolean | null;
+      photo_consent?: boolean | null;
       events?: (number | components["schemas"]["ItemsEventsUsers"])[];
-      administrative?: string;
       information?: string;
       preferences?: string;
-      images?: (number | components["schemas"]["ItemsUsersFiles"])[];
+      notifications?: (number | components["schemas"]["ItemsNotificationsUsers"])[];
+      administrative?: string;
       my_files?: (number | components["schemas"]["ItemsUsersPhotos"])[];
+      images?: (number | components["schemas"]["ItemsUsersFiles"])[];
       users?: (number | components["schemas"]["ItemsUserRelationships"])[];
       my_sex?: string;
       their_sex?: string;
@@ -2811,6 +2888,228 @@ export interface operations {
         content: {
           "application/json": {
             data?: components["schemas"]["ItemsLocation"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  readItemsNotifications: {
+    /**
+     * List Items 
+     * @description List the notifications items.
+     */
+    responses: {
+      /** @description Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: (components["schemas"]["ItemsNotifications"])[];
+            meta?: components["schemas"]["x-metadata"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+    };
+  };
+  createItemsNotifications: {
+    /**
+     * Create an Item 
+     * @description Create a new notifications item.
+     */
+    requestBody?: {
+      content: {
+        "application/json": (components["schemas"]["ItemsNotifications"])[] | components["schemas"]["ItemsNotifications"];
+      };
+    };
+    responses: {
+      /** @description Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: Record<string, never>;
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+    };
+  };
+  readSingleItemsNotifications: {
+    /**
+     * Retrieve an Item 
+     * @description Retrieve a single notifications item by unique identifier.
+     */
+    parameters: {
+        /** @description Index of the item. */
+      path: {
+        id: number | string;
+      };
+    };
+    responses: {
+      /** @description Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsNotifications"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  deleteSingleItemsNotifications: {
+    /**
+     * Delete an Item 
+     * @description Delete an existing notifications item.
+     */
+    parameters: {
+        /** @description Index of the item. */
+      path: {
+        id: number | string;
+      };
+    };
+    responses: {
+      /** @description Successful request */
+      200: never;
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  updateSingleItemsNotifications: {
+    /**
+     * Update an Item 
+     * @description Update an existing notifications item.
+     */
+    parameters: {
+        /** @description Index of the item. */
+      path: {
+        id: number | string;
+      };
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["ItemsNotifications"];
+      };
+    };
+    responses: {
+      /** @description Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsNotifications"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  readItemsNotificationsUsers: {
+    /**
+     * List Items 
+     * @description List the notifications_users items.
+     */
+    responses: {
+      /** @description Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: (components["schemas"]["ItemsNotificationsUsers"])[];
+            meta?: components["schemas"]["x-metadata"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+    };
+  };
+  createItemsNotificationsUsers: {
+    /**
+     * Create an Item 
+     * @description Create a new notifications_users item.
+     */
+    requestBody?: {
+      content: {
+        "application/json": (components["schemas"]["ItemsNotificationsUsers"])[] | components["schemas"]["ItemsNotificationsUsers"];
+      };
+    };
+    responses: {
+      /** @description Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: Record<string, never>;
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+    };
+  };
+  readSingleItemsNotificationsUsers: {
+    /**
+     * Retrieve an Item 
+     * @description Retrieve a single notifications_users item by unique identifier.
+     */
+    parameters: {
+        /** @description Index of the item. */
+      path: {
+        id: number | string;
+      };
+    };
+    responses: {
+      /** @description Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsNotificationsUsers"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  deleteSingleItemsNotificationsUsers: {
+    /**
+     * Delete an Item 
+     * @description Delete an existing notifications_users item.
+     */
+    parameters: {
+        /** @description Index of the item. */
+      path: {
+        id: number | string;
+      };
+    };
+    responses: {
+      /** @description Successful request */
+      200: never;
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  updateSingleItemsNotificationsUsers: {
+    /**
+     * Update an Item 
+     * @description Update an existing notifications_users item.
+     */
+    parameters: {
+        /** @description Index of the item. */
+      path: {
+        id: number | string;
+      };
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["ItemsNotificationsUsers"];
+      };
+    };
+    responses: {
+      /** @description Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsNotificationsUsers"];
           };
         };
       };
@@ -5951,6 +6250,8 @@ export interface operations {
 export type Event = components["schemas"]["ItemsEvents"];
 export type EventUser = components["schemas"]["ItemsEventsUsers"];
 export type Location = components["schemas"]["ItemsLocation"];
+export type Notification = components["schemas"]["ItemsNotifications"];
+export type NotificationUser = components["schemas"]["ItemsNotificationsUsers"];
 export type Page = components["schemas"]["ItemsPage"];
 export type PageContent = components["schemas"]["ItemsPageContent"];
 export type Site = components["schemas"]["ItemsSite"];
@@ -5962,6 +6263,8 @@ export type Collections = {
   events: Event;
   events_users: EventUser;
   location: Location;
+  notifications: Notification;
+  notifications_users: NotificationUser;
   page: Page;
   page_content: PageContent;
   site: Site;

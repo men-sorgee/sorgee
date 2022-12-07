@@ -9,37 +9,25 @@ import {
 import { withAppUser, withMethods } from 'lib/services/api';
 import { ApiResponse } from 'lib/types';
 import { setCookie } from '../../../lib/services/cookies';
+import { User } from '../../../lib/services/directus/types';
 
-async function dressMember(member: Applicant) {
+function dressMember(member: Applicant) {
   let { photo, ...rest } = member;
   if (photo) photo = `/api/asset/${photo}`;
-  const notifications = [];
-  const invites = await listUserInvites(member.id);
-  if (invites && invites.length > 0) {
-    invites
-      .filter((i) => i.rsvp === 'invited')
-      .forEach((event) => {
-        notifications.push({
-          type: 'event',
-          message: `You have been invited to ${event.name}`,
-          link: `/member/events`
-        });
-      });
-  }
   return {
     photo,
-    notifications,
     ...rest
   };
 }
 
-function undressMember(member: Member) {
+function undressMember(member: Member): Partial<User> {
   let { photo, ...rest } = member;
   if (photo) photo = photo?.toString().split('/').pop();
+  delete rest.notifications;
   return {
     photo,
     ...rest
-  };
+  } as any;
 }
 async function getUserDetails(
   req: NextApiRequest,
@@ -53,7 +41,7 @@ async function getUserDetails(
     });
     switch (method) {
       case 'GET':
-        res.status(200).json(ApiResponse(await dressMember(member)));
+        res.status(200).json(ApiResponse(dressMember(member)));
         break;
       case 'POST':
         const userDetails = req.body as Member;

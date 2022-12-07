@@ -1,6 +1,7 @@
 import { getSession, UserProfile } from '@auth0/nextjs-auth0';
 import {
   findUser,
+  getMember,
   getUser,
   importFile,
   updateUser,
@@ -54,10 +55,10 @@ export async function withAppUser(
   const user = await withUser(req, res);
   if (user == null) return null;
   const id = getCookie(req, user.sub);
-  const userData = id ? await getUser(id) : await findUser<User>(user.email);
+  const userData = id ? await getMember(id) : await findUser<User>(user.email);
   if (userData) {
     // set cookie if not set & record login
-    if (!id && onLogin) await onLogin(user, userData as Member);
+    if (!id && onLogin) await onLogin(user, userData as any);
 
     // update picture id empty
     if (!userData.picture && user.picture != null) {
@@ -70,7 +71,7 @@ export async function withAppUser(
         await updateUser(userData.id, { picture: file.id });
       }
     }
-    if (userData.application_status == 'approved') return userData as Member;
+    if (userData.application_status == 'approved') return userData as any;
     return userData as Applicant;
   }
   if (throwError) throw new Error('Member not found');

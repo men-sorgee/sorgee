@@ -79,20 +79,13 @@ export default function Header({ path }: { path: string }) {
                     )}
                   </Dropdown.Item>
                   <Dropdown.Item href="/member/account">Account</Dropdown.Item>
-                  <Dropdown.Item
-                    onClick={() => setShowNotifications(!showNotifications)}
-                  >
+                  <Dropdown.Item href="/member/account?t=4">
                     Notifications
                     {messages.length > 0 && (
                       <Badge color="accent">{messages.length}</Badge>
                     )}
                   </Dropdown.Item>
-                  {showNotifications &&
-                    messages.map((notification) => (
-                      <Dropdown.Item href={notification.link}>
-                        {notification.message}
-                      </Dropdown.Item>
-                    ))}
+
                   <Dropdown.Item href="/member/invite">Invite</Dropdown.Item>
                 </>
               )}
