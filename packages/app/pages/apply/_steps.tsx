@@ -1,15 +1,7 @@
 import { Steps } from 'react-daisyui';
-import {
-  ApplicationStatusType,
-  getApplicationStatusIndex
-} from 'lib/services/directus';
+import { ApplicationStatus } from 'lib/services/directus';
 
-export default function ApplicationSteps({
-  status
-}: {
-  status?: ApplicationStatusType;
-}) {
-  const value = getApplicationStatusIndex(status);
+export default function ApplicationSteps({ status }: { status: string }) {
   const steps = [
     'Authentication',
     'Registration',
@@ -21,7 +13,7 @@ export default function ApplicationSteps({
     <Steps horizontal className="w-full">
       {steps.map((step, index) => (
         <Steps.Step
-          color={value >= index ? 'primary' : 'ghost'}
+          color={ApplicationStatus[status] >= index ? 'primary' : 'ghost'}
           title={step}
           key={index}
         />

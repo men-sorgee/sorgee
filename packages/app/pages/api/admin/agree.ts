@@ -3,8 +3,11 @@ import { updateUser } from 'lib/services/directus/server';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { AgreementData, ApiResponse } from 'lib/types';
 import { withAppUser, withMethods } from 'lib/services/api';
-import { sendApplicationWorkflowEmail } from 'lib/services/sendgrid/server';
-import { getApplicationStatusIndex } from 'lib/services/directus';
+import {
+  sendApplicationWorkflowEmail,
+  updateSendGrid
+} from 'lib/services/sendgrid/server';
+import { ApplicationStatus, MemberLevel } from '../../../lib/services/directus';
 
 async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
@@ -18,7 +21,7 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
       return res.status(200).end();
 
     if (applicant && applicant.application_status == 'agreement' && agree) {
-      const status = getApplicationStatusIndex(applicant.application_status);
+      const status = ApplicationStatus[applicant.application_status];
       if (status == 3)
         sendApplicationWorkflowEmail(
           applicant.email,
@@ -29,8 +32,17 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
         );
 
       await updateUser(applicant.id, {
-        application_status: 'approved'
+        application_status: ApplicationStatus[ApplicationStatus.approved],
+        user_type: MemberLevel[MemberLevel.member]
       });
+
+      await updateSendGrid(
+        applicant.first_name,
+        applicant.last_name,
+        applicant.email,
+        applicant.id,
+        MemberLevel.member
+      );
 
       return res.status(200).end();
     }

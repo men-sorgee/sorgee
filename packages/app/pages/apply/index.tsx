@@ -1,6 +1,6 @@
 import { UserProfile, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { FormProvider, useForm } from 'react-hook-form';
-import { NextPageContext } from 'next';
+import { GetServerSideProps } from 'next';
 import { postJSON, pruneUndefined } from 'lib/utils';
 import { useEffect, useState } from 'react';
 import { getFieldOptions } from '@/lib/services/directus/server';
@@ -37,7 +37,7 @@ export type PageProps = {
   setFormError: (error: string) => void;
 };
 
-export async function getServerSideProps(context: NextPageContext) {
+export const getServerSideProps = async () => {
   const props: Partial<PageProps> = {
     spectrumOptions: await getFieldOptions('spectrum'),
     relationshipOptions: await getFieldOptions('relationship_status'),
@@ -46,7 +46,7 @@ export async function getServerSideProps(context: NextPageContext) {
     skinToneOptions: await getFieldOptions('skin_tone')
   };
   return { props };
-}
+};
 
 function Apply(props: PageProps) {
   const { user, loading } = useAppUser();
@@ -57,7 +57,6 @@ function Apply(props: PageProps) {
       setFormError(
         `You must login using the email address ${props.email} to use this invite.`
       );
-
   }, [user, props.email]);
 
   const intro = props.invite

@@ -1,4 +1,4 @@
-import { Page, PageContent, User } from './types';
+import { PageContent, User } from './types';
 
 export type SectionContainerType =
   | 'grid-cols-1'
@@ -17,6 +17,13 @@ export type ContentSection = PageContent & {
     title: string;
     description: string;
   };
+};
+
+export type File = {
+  filepath: string;
+  newFilename: string;
+  originalFilename: string;
+  mimetype: string;
 };
 
 export const applicantFields: Array<keyof User> = [
@@ -54,6 +61,7 @@ export type StatusType =
   | 'stale'
   | 'deleted'
   | 'banned';
+
 export type UserType =
   | 'reject'
   | 'subscriber'
@@ -64,22 +72,25 @@ export type UserType =
   | 'big_brother'
   | 'staff';
 
-export type ApplicationStatusType =
-  | 'apply'
-  | 'verify'
-  | 'review'
-  | 'agreement'
-  | 'approved'
-  | 'denied';
-export function getApplicationStatusIndex(status: ApplicationStatusType) {
-  const steps: Array<ApplicationStatusType> = [
-    'apply',
-    'verify',
-    'review',
-    'agreement',
-    'approved'
-  ];
-  return steps.indexOf(status);
+export enum MemberLevel {
+  reject = 0,
+  subscriber = 1,
+  user = 2,
+  pledge = 3,
+  member = 4,
+  brother = 5,
+  big_brother = 6,
+  // -- //
+  staff = 10
+}
+
+export enum ApplicationStatus {
+  apply = 0,
+  verify = 1,
+  review = 2,
+  agreement = 3,
+  approved = 4,
+  denied = -1
 }
 
 export type SectionPage = {
@@ -124,7 +135,7 @@ export type Applicant = {
   invite?: string;
   picture?: string | null;
   status: StatusType;
-  application_status: ApplicationStatusType;
+  application_status: User['application_status'];
   last_login: User['last_login'];
   photo: string | null;
   in_sendgrid: boolean;
@@ -157,3 +168,11 @@ export type UserInvite = {
   t: User['user_type'];
   v: User['id'];
 };
+
+export enum EventInviteRSVPType {
+  Invited = 'invited',
+  Maybe = 'maybe',
+  Confirmed = 'confirmed',
+  Cancelled = 'cancelled',
+  Declined = 'declined'
+}

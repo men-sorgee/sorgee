@@ -11,9 +11,6 @@ import { FieldInput, FieldSelect } from 'components/forms';
 import Page from '../../components/layout/Page';
 import { GetServerSideProps } from 'next';
 
-type PageProps = {
-  userTypeOptions: FormOptions;
-};
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const userTypeOptions = await getFieldOptions('user_type');
   const exclude = ['subscriber', 'user', 'reject', 'staff', 'big_brother'];
@@ -22,6 +19,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       userTypeOptions: userTypeOptions.filter((o) => !exclude.includes(o.value))
     }
   };
+};
+
+type PageProps = {
+  userTypeOptions: FormOptions;
 };
 
 function Invite({ userTypeOptions }: PageProps) {

@@ -1,23 +1,32 @@
 import client from '@sendgrid/client';
 import mail from '@sendgrid/mail';
+import { MemberLevel } from '../directus';
 
-export const lists = {
-  subscribers: 'fdfecde5-2787-499a-a879-955959fc9720'
-};
+export enum SendGridList {
+  Subscribers = 'fdfecde5-2787-499a-a879-955959fc9720',
+  Members = '44971668-1ee8-4f9e-834a-abd5c65a4dfc'
+}
 
-export async function addSubscriber(
+export async function updateSendGrid(
   first_name: string,
   last_name: string,
-  email: string
+  email: string,
+  member_id: string,
+  member_level: MemberLevel,
+  lists: SendGridList[] = [SendGridList.Subscribers]
 ): Promise<string> {
   client.setApiKey(process.env.SENDGRID_API_KEY);
+
+  if (member_level >= MemberLevel.member) {
+    lists.push(SendGridList.Members);
+  }
 
   let [, data] = await client.request({
     url: `/v3/marketing/contacts`,
     method: 'PUT',
     body: {
-      list_ids: [lists.subscribers],
-      contacts: [{ email, first_name, last_name }]
+      list_ids: lists,
+      contacts: [{ email, first_name, last_name, member_id, member_level }]
     }
   });
 

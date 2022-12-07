@@ -10,7 +10,7 @@ export default function Header({ path }: { path: string }) {
   const { pages } = useMetaContext();
   return (
     <header className=" sticky top-0 z-40 bg-black transition-all duration-150 ">
-      <Navbar className="mx-auto max-w-5xl justify-between bg-black py-3 px-4">
+      <Navbar className="mx-auto flex max-w-5xl justify-between bg-black py-3 px-4">
         <div className="flex-1">
           <a href="/">
             <Logo width="70" height="70" className="mr-3 cursor-pointer" />
@@ -20,15 +20,8 @@ export default function Header({ path }: { path: string }) {
           </div>
         </div>
 
-        <div className="flex-grow text-right">
-          <Menu horizontal className="gap-2 p-0">
-            {!user && (
-              <Menu.Item>
-                <a href="/api/auth/login" className="btn-ghost btn">
-                  Login
-                </a>
-              </Menu.Item>
-            )}
+        <div className="flex-grow">
+          <Menu horizontal className="items-end gap-2 p-0">
             {pages?.map((page, i) => (
               <Menu.Item key={i}>
                 <a
@@ -39,6 +32,13 @@ export default function Header({ path }: { path: string }) {
                 </a>
               </Menu.Item>
             ))}
+            {!user && (
+              <Menu.Item>
+                <a href="/api/auth/login" className="btn-ghost btn">
+                  Login
+                </a>
+              </Menu.Item>
+            )}
           </Menu>
         </div>
 

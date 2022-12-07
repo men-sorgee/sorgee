@@ -1,13 +1,9 @@
 import { NextPageContext } from 'next';
 import { UserInvite } from 'lib/services/directus';
-import {
-  default as Apply,
-  getServerSideProps as getProps,
-  PageProps
-} from 'pages/apply';
+import { default as Apply, getServerSideProps as getProps } from './index';
 
 export async function getServerSideProps(context: NextPageContext) {
-  const { props } = await getProps(context);
+  const { props } = await getProps();
 
   try {
     const { invite } = context.query;

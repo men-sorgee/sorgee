@@ -1,21 +1,21 @@
 #!/usr/bin/env node
 require( 'dotenv' ).config( {
-  path: '../.env.local'
+  path: '.env.local'
 } )
 
 const API_KEY = process.env.ADMIN_TOKEN
+const ADMIN_URL = process.env.ADMIN_URL
+
 const { writeFileSync } = require( "fs" )
 const { resolve } = require( "path" )
 
 const { snakeCase, capitalCase } = require( "change-case" )
 const { default: fetch } = require( "node-fetch" )
-
-const host = "https://admin.guysnheat.com"
 const outputDir = resolve( process.cwd(), "./lib/services/directus" )
 
 
 async function main() {
-  const request = await fetch( `${ host }/server/specs/oas?access_token=${ API_KEY }` )
+  const request = await fetch( `${ ADMIN_URL }/server/specs/oas?access_token=${ API_KEY }` )
   const spec = await request.json()
 
   writeFileSync(

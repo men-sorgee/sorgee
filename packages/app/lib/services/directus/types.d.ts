@@ -297,6 +297,35 @@ export interface paths {
      */
     patch: operations["updateSingleItemsPageContent"];
   };
+  "/items/site": {
+    /**
+     * List Items 
+     * @description List the site items.
+     */
+    get: operations["readItemsSite"];
+    /**
+     * Create an Item 
+     * @description Create a new site item.
+     */
+    post: operations["createItemsSite"];
+  };
+  "/items/site/{id}": {
+    /**
+     * Retrieve an Item 
+     * @description Retrieve a single site item by unique identifier.
+     */
+    get: operations["readSingleItemsSite"];
+    /**
+     * Delete an Item 
+     * @description Delete an existing site item.
+     */
+    delete: operations["deleteSingleItemsSite"];
+    /**
+     * Update an Item 
+     * @description Update an existing site item.
+     */
+    patch: operations["updateSingleItemsSite"];
+  };
   "/items/Site": {
     /**
      * List Items 
@@ -943,6 +972,7 @@ export interface components {
       paid?: boolean | null;
       /** @description This is a guest of the hosts. Fee is waived. */
       guest?: boolean | null;
+      reason?: string | null;
       attendance?: string;
     };
     ItemsLocation: {

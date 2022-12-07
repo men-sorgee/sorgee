@@ -1,8 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ApiResponse } from '@/lib/types';
 import { withMethods } from 'lib/services/api';
-import { addSubscriber } from 'lib/services/sendgrid/server';
+import { updateSendGrid } from 'lib/services/sendgrid/server';
 import { getUser, updateUser } from 'lib/services/directus/server';
+import { MemberLevel } from '../../../lib/services/directus';
 
 async function AddContact(
   req: NextApiRequest,
@@ -17,8 +18,14 @@ async function AddContact(
     const { id } = req.body;
 
     const user = await getUser(id);
-    const { first_name, last_name, email } = user;
-    await addSubscriber(first_name, last_name, email);
+    const { first_name, last_name, email, user_type } = user;
+    await updateSendGrid(
+      first_name,
+      last_name,
+      email,
+      id,
+      MemberLevel[user_type]
+    );
     user.in_sendgrid = true;
     await updateUser(id, user);
 

@@ -8,7 +8,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { ApiResponse } from 'lib/types';
 import { withAppUser, withMethods } from 'lib/services/api';
 import { sendApplicationWorkflowEmail } from 'lib/services/sendgrid/server';
-import { getApplicationStatusIndex } from 'lib/services/directus';
+import { ApplicationStatus } from 'lib/services/directus';
 
 export const config = {
   api: {
@@ -29,7 +29,7 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
       `Verification: ${member.id.substring(0, 4)}-${member.id.substring(4, 8)}`
     );
 
-    const status = getApplicationStatusIndex(member.application_status);
+    const status = ApplicationStatus[member.application_status];
     if (status < 2)
       await sendApplicationWorkflowEmail(
         member.email,

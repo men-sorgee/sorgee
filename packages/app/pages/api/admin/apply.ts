@@ -4,10 +4,15 @@ import { createUser, getUser, updateUser } from 'lib/services/directus/server';
 import { parseInvite, withAppUser, withUser } from 'lib/services/api';
 import { ApiResponse } from 'lib/types';
 import {
-  addSubscriber,
-  sendApplicationWorkflowEmail
+  updateSendGrid,
+  sendApplicationWorkflowEmail,
+  SendGridList
 } from 'lib/services/sendgrid/server';
-import { Applicant, getApplicationStatusIndex } from 'lib/services/directus';
+import {
+  Applicant,
+  ApplicationStatus,
+  MemberLevel
+} from 'lib/services/directus';
 
 async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
@@ -15,8 +20,7 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     const existingUser = await withAppUser(req, res, false);
 
     let newUser =
-      !existingUser ||
-      getApplicationStatusIndex(existingUser.application_status) == 0;
+      !existingUser || ApplicationStatus[existingUser.application_status] == 0;
 
     const userDetails = req.body as Applicant;
 
@@ -32,11 +36,7 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
         }
         delete userDetails.invite;
       }
-      await addSubscriber(
-        userDetails.first_name,
-        userDetails.last_name,
-        userDetails.email
-      );
+
       await sendApplicationWorkflowEmail(
         userDetails.email,
         `Application Status`,
@@ -49,13 +49,22 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
       userDetails.application_status = 'verify';
     }
 
-    await (existingUser
+    const applicant = await (existingUser
       ? updateUser(existingUser.id!, userDetails)
       : createUser(userDetails));
+
+    await updateSendGrid(
+      userDetails.first_name,
+      userDetails.last_name,
+      userDetails.email,
+      applicant.id,
+      MemberLevel[userDetails.user_type]
+    );
   } catch (e: any) {
     console.error(e);
     res.status(400).json(ApiResponse(null, e.message || e));
   }
+
   res.status(200).end();
 }
 

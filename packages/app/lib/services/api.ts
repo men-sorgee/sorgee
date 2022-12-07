@@ -2,12 +2,10 @@ import { getSession, UserProfile } from '@auth0/nextjs-auth0';
 import {
   findUser,
   getUser,
-  getMember,
-  getApplicant,
   recordUserLogin,
   importFile,
-  UploadFolder,
-  updateUser
+  updateUser,
+  UploadFolder
 } from 'lib/services/directus/server';
 import { getCookie, setCookie } from 'lib/services/cookies';
 import { NextApiRequest, NextApiResponse } from 'next';

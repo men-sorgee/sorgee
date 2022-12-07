@@ -3,6 +3,7 @@ import { Collections } from './types';
 
 export const adminBaseUrl =
   process.env.ADMIN_URL || 'https://admin.guysnheat.com';
+export const adminToken = process.env.ADMIN_TOKEN;
 
 export const adminDb = new Directus<Collections>(adminBaseUrl);
 
