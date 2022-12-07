@@ -130,7 +130,7 @@ function EventCard({ invite }: { invite: Invite }) {
       : 'You have already RSVPed. Use the form below to update your response.';
   return (
     <>
-      <Card className="gradient mx-auto mb-4 max-w-sm">
+      <Card className="gradient mx-auto mb-4 max-w-md">
         <div>
           <h2>{invite.name}</h2>
 
