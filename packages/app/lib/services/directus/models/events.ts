@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { EventInvite, EventInviteRSVPType, Invite } from '..';
 import { getAdminClient } from '../client';
 
@@ -51,7 +52,8 @@ export async function listUserInvites(users_id: string): Promise<Invite[]> {
     return {
       id: event.id,
       name: event.name!,
-      datetime: event.datetime!,
+      description: event.description,
+      datetime: event.datetime,
       ...i
     };
   }) || []) as Invite[];

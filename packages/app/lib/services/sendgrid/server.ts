@@ -1,5 +1,6 @@
 import client from '@sendgrid/client';
 import mail from '@sendgrid/mail';
+import { sendGridApiKey } from '../../config';
 import { MemberLevel } from '../directus';
 
 export enum SendGridList {
@@ -15,7 +16,7 @@ export async function updateSendGrid(
   member_level: MemberLevel,
   lists: SendGridList[] = [SendGridList.Subscribers]
 ): Promise<string> {
-  client.setApiKey(process.env.SENDGRID_API_KEY);
+  client.setApiKey(sendGridApiKey);
 
   if (member_level >= MemberLevel.member) {
     lists.push(SendGridList.Members);
@@ -34,7 +35,7 @@ export async function updateSendGrid(
 }
 
 export async function sendEmail(to: string, subject: string) {
-  mail.setApiKey(process.env.SENDGRID_API_KEY);
+  mail.setApiKey(sendGridApiKey);
   mail
     .send({
       to,
@@ -58,7 +59,7 @@ export async function sendApplicationWorkflowEmail(
   button_text: string = 'Continue Application',
   button_url: string = ''
 ) {
-  mail.setApiKey(process.env.SENDGRID_API_KEY);
+  mail.setApiKey(sendGridApiKey);
   await mail.send({
     from: 'GuysNHeat <system@guysnheat.com>',
     to,

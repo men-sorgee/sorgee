@@ -3,6 +3,7 @@ import { Applicant } from 'lib/services/directus';
 import { updateEventUserRSVP } from 'lib/services/directus/server';
 import { withMethods } from 'lib/services/api';
 import { ApiResponse } from 'lib/types';
+import { baseUrl } from '../../../lib/constants';
 
 export default async function inviteRSVP(
   req: NextApiRequest,
@@ -20,7 +21,7 @@ export default async function inviteRSVP(
           rsvp as any,
           null
         );
-        return res.redirect(process.env.BASE_URL + '/member/events');
+        return res.redirect(baseUrl + '/member/events');
       }
       case 'POST': {
         const { event_id, user_id, rsvp, reason } = req.body;

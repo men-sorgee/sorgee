@@ -59,7 +59,7 @@ async function getUserDetails(
         return res.status(200).end();
     }
   } catch (e) {
-    res.status(401).json(ApiResponse(null, e.message || e));
+    res.status(200).json(ApiResponse(null, e.message || e));
   }
 }
 

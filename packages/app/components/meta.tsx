@@ -52,6 +52,9 @@ export default function AppHead({
       {image && <meta name="twitter:image" content={image} />}
       <meta name="msapplication-TileColor" content="#00aba9" />
       <meta name="theme-color" content="#000" />
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" />
+
       {children}
     </Head>
   );

@@ -1,13 +1,10 @@
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useAppUser } from 'lib/hooks/use-member';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import { useMeta } from '@/lib/hooks/use-meta-context';
 import ApplicationSteps from './_steps';
 import Page from 'components/layout/Page';
 
 function Denied() {
-  useMeta('Denied');
   const router = useRouter();
   const { loading, member } = useAppUser();
 
@@ -29,9 +26,9 @@ function Denied() {
     >
       <>
         <p>Unfortunately, your application was denied.</p>
+        <p>{member?.photo_denial_reason}</p>
         <p>
-          You should receive an email with more information. To re-apply or
-          appeal, please contact us at{' '}
+          If this was a mistake or you'd like to appeal, please contact us at{' '}
           <a className="link" href="mailto:support@guysnheat.com">
             support
           </a>

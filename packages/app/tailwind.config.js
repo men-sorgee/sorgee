@@ -1,5 +1,8 @@
 const defaultTheme = require( 'tailwindcss/defaultTheme' )
 const colors = require( 'tailwindcss/colors' )
+const YAML = require( 'yamljs' )
+const path = require( 'path' )
+const brandColors = YAML.load( path.resolve( __dirname, './brand.yaml' ) ).colors
 /** @type {import('tailwindcss').Config} */
 const config = {
   content: [
@@ -10,6 +13,9 @@ const config = {
     '../../node_modules/daisyui/dist/**/*.js',
     '../../node_modules/react-daisyui/dist/**/*.{js,jsx,ts,tsx}'
   ],
+  base: {
+
+  },
   theme: {
     ...defaultTheme,
     extend: {
@@ -22,46 +28,7 @@ const config = {
         mono: ['Consolas', ...defaultTheme.fontFamily.mono]
       },
       colors: {
-        dark: '#000b22',
-        primary: {
-          DEFAULT: '#0038A8',
-          '50': '#e6ebf6',
-          '100': '#ccd7ee',
-          '200': '#99afdc',
-          '300': '#6688cb',
-          '400': '#3360b9',
-          '500': '#0038a8',
-          '600': '#002d86',
-          '700': '#002265',
-          '800': '#001643',
-          '900': '#000b22'
-        },
-        secondary: {
-          DEFAULT: '#9B4F96',
-          '50': '#f5edf5',
-          '100': '#ebdcea',
-          '200': '#d7b9d5',
-          '300': '#c395c0',
-          '400': '#af72ab',
-          '500': '#9b4f96',
-          '600': '#7c3f78',
-          '700': '#5d2f5a',
-          '800': '#3e203c',
-          '900': '#1f101e'
-        },
-        accent: {
-          DEFAULT: '#D60270',
-          '50': '#fbe6f1',
-          '100': '#f7cce2',
-          '200': '#ef9ac6',
-          '300': '#e667a9',
-          '400': '#de358d',
-          '500': '#d60270',
-          '600': '#ab025a',
-          '700': '#800143',
-          '800': '#56012d',
-          '900': '#2b0016'
-        },
+        ...brandColors,
         slate: colors.slate,
         info: colors.sky,
         success: colors.emerald,
@@ -83,10 +50,13 @@ const config = {
     themes: [{
       dark: {
         ...require( "daisyui/src/colors/themes" )["[data-theme=dark]"],
-        primary: "#0038A8",
-        secondary: "#9B4F96",
-        accent: "#D60270",
-        neutral: "#000b22"
+        primary: brandColors.primary.DEFAULT,
+        secondary: brandColors.secondary.DEFAULT,
+        accent: brandColors.accent.DEFAULT,
+        neutral: brandColors.dark,
+        content: "#FFFFFF",
+        "base-100": "#000b22",
+        "primary-focus": brandColors.primary.DEFAULT
       },
     }],
   }

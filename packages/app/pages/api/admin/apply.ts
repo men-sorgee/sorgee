@@ -5,14 +5,14 @@ import { parseInvite, withAppUser, withUser } from 'lib/services/api';
 import { ApiResponse } from 'lib/types';
 import {
   updateSendGrid,
-  sendApplicationWorkflowEmail,
-  SendGridList
+  sendApplicationWorkflowEmail
 } from 'lib/services/sendgrid/server';
 import {
   Applicant,
   ApplicationStatus,
   MemberLevel
 } from 'lib/services/directus';
+import { User } from '../../../lib/services/directus/types';
 
 async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
@@ -50,8 +50,8 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     }
 
     const applicant = await (existingUser
-      ? updateUser(existingUser.id!, userDetails)
-      : createUser(userDetails));
+      ? updateUser(existingUser.id!, userDetails as User)
+      : createUser(userDetails as User));
 
     await updateSendGrid(
       userDetails.first_name,

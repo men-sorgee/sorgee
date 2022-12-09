@@ -1,9 +1,9 @@
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
-import { Button, Card } from 'react-daisyui';
+import { Alert, Button, Card } from 'react-daisyui';
 import Page from '../../components/layout/Page';
 import { useAppUser } from '../../lib/hooks/use-member';
 import { listUserInvites } from '../../lib/services/directus/server';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Invite, MemberLevel } from '../../lib/services/directus';
@@ -12,6 +12,9 @@ import { NextPageContext } from 'next';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FieldRadioButtons } from '../../components/forms';
 import { postJSON } from '../../lib/utils';
+import Loading from '../../components/ui/Loading';
+import Markdown from '../../components/layout/Markdown';
+import { ClockIcon } from '@heroicons/react/solid';
 
 export async function getServerSideProps({ req, res }: NextPageContext) {
   const member = await withAppUser(req, res, true);
@@ -87,6 +90,7 @@ function Events({ invites }: { invites: Invite[] }) {
 function EventCard({ invite }: { invite: Invite }) {
   const [confirmed, setConfirmed] = useState(false);
   const [rsvp, setRsvp] = useState(invite.rsvp);
+  const [eventDate] = useState<Moment>(moment(invite.datetime));
   const methods = useForm<InviteRSVP>({
     mode: 'onBlur',
     defaultValues: {
@@ -130,17 +134,29 @@ function EventCard({ invite }: { invite: Invite }) {
       : 'You have already RSVPed. Use the form below to update your response.';
   return (
     <>
-      <Card className="gradient mx-auto mb-4 max-w-md">
-        <div>
-          <h2>{invite.name}</h2>
+      <Card className="gradient mx-auto max-w-md text-center">
+        <div className="flex items-center justify-between self-stretch  align-middle">
+          <h2 className="m-0 w-3/4 text-center">
+            {invite.name}
+            <br />@ {eventDate.format('h:mm A')}
+          </h2>
 
-          <h3 className="border-1 border-solid border-white bg-black p-8">
-            {moment(invite.datetime).format('MMMM Do')}
+          <h3 className="m-0 bg-primary-900 px-8 py-2 text-center">
+            {eventDate.format('MMM')}
+            <br />
+            {eventDate.format('D')}
           </h3>
-
+        </div>
+        <Card.Body className="border-y-2 border-primary-900">
+          <Markdown content={invite.description} />
+          <Alert className="mt-2 text-sm">
+            Location announced on the day of the event and is sent to confirmed
+            attendees only.
+          </Alert>
           <h4>You are {rsvp}!</h4>
           <p>{message}</p>
-
+        </Card.Body>
+        <Card.Actions className="border-t-1 border-primary-700 bg-primary-900">
           <FormProvider {...methods}>
             <form
               onSubmit={methods.handleSubmit(respond)}
@@ -161,19 +177,21 @@ function EventCard({ invite }: { invite: Invite }) {
               </Button>
             </form>
           </FormProvider>
-          {confirmed && (
-            <div className="toast-center toast-middle toast">
-              <div className="alert-ghost alert whitespace-nowrap opacity-75">
-                <div>
-                  <h4>RSVP Updated</h4>
-                </div>
+        </Card.Actions>
+        {confirmed && (
+          <div className="toast-center toast-middle toast">
+            <div className="alert-ghost alert whitespace-nowrap opacity-75">
+              <div>
+                <h4>RSVP Updated</h4>
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </Card>
     </>
   );
 }
 
-export default withPageAuthRequired(Event);
+export default withPageAuthRequired(Events, {
+  onRedirecting: () => <Loading />
+});

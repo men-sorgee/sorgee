@@ -9604,6 +9604,10 @@
               }
             ]
           },
+          "description": {
+            "nullable": true,
+            "type": "string"
+          },
           "users": {
             "type": "array",
             "items": {
@@ -10378,6 +10382,10 @@
             "nullable": true,
             "type": "boolean"
           },
+          "photo_denial_reason": {
+            "nullable": true,
+            "type": "string"
+          },
           "events": {
             "type": "array",
             "items": {
@@ -10391,10 +10399,10 @@
               ]
             }
           },
-          "information": {
+          "administrative": {
             "type": "string"
           },
-          "preferences": {
+          "information": {
             "type": "string"
           },
           "notifications": {
@@ -10410,21 +10418,8 @@
               ]
             }
           },
-          "administrative": {
+          "preferences": {
             "type": "string"
-          },
-          "my_files": {
-            "type": "array",
-            "items": {
-              "oneOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "$ref": "#/components/schemas/ItemsUsersPhotos"
-                }
-              ]
-            }
           },
           "images": {
             "type": "array",
@@ -10435,6 +10430,19 @@
                 },
                 {
                   "$ref": "#/components/schemas/ItemsUsersFiles"
+                }
+              ]
+            }
+          },
+          "my_files": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "$ref": "#/components/schemas/ItemsUsersPhotos"
                 }
               ]
             }

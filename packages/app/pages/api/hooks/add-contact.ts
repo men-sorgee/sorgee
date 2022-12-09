@@ -4,6 +4,7 @@ import { withMethods } from 'lib/services/api';
 import { updateSendGrid } from 'lib/services/sendgrid/server';
 import { getUser, updateUser } from 'lib/services/directus/server';
 import { MemberLevel } from '../../../lib/services/directus';
+import { adminToken } from '../../../lib/config';
 
 async function AddContact(
   req: NextApiRequest,
@@ -12,7 +13,7 @@ async function AddContact(
   try {
     if (!withMethods(req, ['POST'])) return;
 
-    if (req.query.token !== process.env.ADMIN_TOKEN)
+    if (req.query.token !== adminToken)
       return res.status(401).json(ApiResponse(null, 'Unauthorized'));
 
     const { id } = req.body;

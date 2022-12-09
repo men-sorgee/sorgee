@@ -65,17 +65,17 @@ export async function getPageContent(
 
   if (Array.isArray(page)) page = page[0];
 
-  const content = page.content
-    ? await Promise.all(
-        page.content?.map(async (c: ContentSection) => {
+  const content = await Promise.all(
+    page.content && page.content.length
+      ? page.content.map(async (c: ContentSection) => {
           const hash = c.date_updated || c.date_created || null;
           return {
             ...c,
             hash
           };
         })
-      )
-    : [];
+      : []
+  );
   page.content = content;
   return page as SectionPage;
 }
@@ -104,8 +104,8 @@ const all = `{
         markdown
       }
     }`;
-export async function getActivePages(): Promise<Page[]> {
-  const results = await adminDb.graphql.items<{ pages: Page[] }>(all);
+export async function listActivePages(): Promise<SectionPage[]> {
+  const results = await adminDb.graphql.items<{ pages: SectionPage[] }>(all);
 
   return results.data.pages;
 }

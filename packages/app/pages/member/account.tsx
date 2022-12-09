@@ -19,6 +19,7 @@ import Page from 'components/layout/Page';
 import { CameraIcon, LightBulbIcon, XIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
 import FieldCheckbox from '../../components/forms/FieldCheckbox';
+import Loading from '../../components/ui/Loading';
 
 export type PageProps = {
   spectrumOptions: FormOptions;
@@ -134,22 +135,58 @@ function Form(props: PageProps & { member?: Member }) {
   return (
     <>
       <FormProvider {...methods}>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="mx-auto max-w-3xl text-left"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="">
           <Tabs
             variant="bordered"
             value={tabValue}
             onChange={setTabValue}
             className="sm md:lg mb-4 w-full"
           >
-            <Tabs.Tab value={0}>Settings</Tabs.Tab>
-            <Tabs.Tab value={1}>Profile</Tabs.Tab>
-            <Tabs.Tab value={2}>Events</Tabs.Tab>
-            <Tabs.Tab value={3}>Sex</Tabs.Tab>
-            <Tabs.Tab value={4}>Notifications</Tabs.Tab>
+            <Tabs.Tab
+              className="w-1/4 font-bold text-white"
+              activeValue={tabValue}
+              value={0}
+            >
+              Settings
+            </Tabs.Tab>
+            <Tabs.Tab
+              className="w-1/4 font-bold text-white"
+              activeValue={tabValue}
+              value={1}
+            >
+              Profile
+            </Tabs.Tab>
+            <Tabs.Tab
+              className="w-1/4 font-bold text-white"
+              activeValue={tabValue}
+              value={2}
+            >
+              Events
+            </Tabs.Tab>
+            <Tabs.Tab
+              className="w-1/4 font-bold text-white"
+              activeValue={tabValue}
+              value={3}
+            >
+              Sex
+            </Tabs.Tab>
           </Tabs>
+          {member?.notifications.map((n, i) => (
+            <Alert key={i}>
+              <div className="flex-grow">{n.message}</div>
+              <div className="flex-shrink">
+                <a
+                  className="btn-ghost btn-sm btn"
+                  onClick={async () => {
+                    await deleteNotification(n.id);
+                  }}
+                  data-id={n.id}
+                >
+                  <XIcon className="h-4 w-4 fill-white" />
+                </a>
+              </div>
+            </Alert>
+          ))}
           {tabValue == 0 && (
             <>
               <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -185,22 +222,26 @@ function Form(props: PageProps & { member?: Member }) {
                 />
               </div>
 
-              <Alert className="w-full text-xs">
-                <CameraIcon className="h-10 w-10" />
-                Are you an exhibitionist? If so, you can opt-in to be a part of
-                our marketing efforts. We will never share your personal
-                information with anyone.
-                <div className="w-1/2">
-                  <FieldCheckbox
-                    field="photo_consent"
-                    label="Photo Consent"
-                    help="I would be willing to be photographed and featured in our promotional materials."
-                  />
-                  <FieldCheckbox
-                    field="video_consent"
-                    label="Video Consent"
-                    help="I would be willing to filmed for a video testimonial."
-                  />
+              <Alert className="w-full">
+                <CameraIcon className="h-[10%] max-h-[125px] w-auto self-start" />
+                <div>
+                  <p className="mt-0">
+                    Are you an exhibitionist? If so, you can opt-in to be a part
+                    of our marketing efforts. We will never share your personal
+                    information with anyone.
+                  </p>
+                  <div className="flex w-full justify-start gap-4">
+                    <FieldCheckbox
+                      field="photo_consent"
+                      label="Photo Consent"
+                      help="I would be willing to be photographed and featured in our promotional materials."
+                    />
+                    <FieldCheckbox
+                      field="video_consent"
+                      label="Video Consent"
+                      help="I would be willing to filmed for a video testimonial."
+                    />
+                  </div>
                 </div>
               </Alert>
               <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2"></div>
@@ -208,18 +249,18 @@ function Form(props: PageProps & { member?: Member }) {
           )}
           {tabValue == 1 && (
             <>
-              <div className="mb-8 grid grid-flow-row grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
                 <FieldInput
                   field="nickname"
                   label="Nickname"
-                  className="col-span-2"
+                  className="col-span-2 sm:col-span-4"
                   registerOptions={{ required }}
                 />
 
                 <FieldSelect
                   field="spectrum"
                   label="Orientation"
-                  className=""
+                  className="col-span-2"
                   registerOptions={{ required }}
                   formOptions={spectrumOptions}
                 />
@@ -227,54 +268,51 @@ function Form(props: PageProps & { member?: Member }) {
                 <FieldSelect
                   field="relationship_status"
                   label="Relationship Status"
-                  className=""
+                  className="col-span-2"
                   formOptions={relationshipOptions}
                 />
 
-                <div className="grid  grid-cols-1 gap-4 md:grid-cols-2">
-                  <FieldInput
-                    field="age"
-                    label="Age"
-                    help="Must be 21+ to apply. We verify ages at events."
-                    registerOptions={{
-                      required,
-                      min: {
-                        value: 21,
-                        message: 'Must be 21+ to apply.'
-                      }
-                    }}
-                  />
+                <FieldInput
+                  field="age"
+                  label="Age"
+                  help="Must be 21+ to apply. We verify ages at events."
+                  registerOptions={{
+                    required,
+                    min: {
+                      value: 21,
+                      message: 'Must be 21+ to apply.'
+                    }
+                  }}
+                />
 
-                  <FieldWrapper field="height" label="Height">
-                    <div className="flex">
-                      <input
-                        type="number"
-                        id="height_feet"
-                        className="input  !rounded-r-none"
-                        {...register('height_feet')}
-                        placeholder="'"
-                      />
-                      <input
-                        type="number"
-                        id="height_inches"
-                        className="input  !rounded-l-none"
-                        {...register('height_inches')}
-                        placeholder='"'
-                      />
-                    </div>
-                  </FieldWrapper>
-                </div>
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <FieldInput field="weight" label="Weight" type="number" />
+                <FieldWrapper field="height" label="Height">
+                  <div className="flex">
+                    <input
+                      type="number"
+                      id="height_feet"
+                      className="input  !rounded-r-none"
+                      {...register('height_feet')}
+                      placeholder="'"
+                    />
+                    <input
+                      type="number"
+                      id="height_inches"
+                      className="input  !rounded-l-none"
+                      {...register('height_inches')}
+                      placeholder='"'
+                    />
+                  </div>
+                </FieldWrapper>
 
-                  <FieldSelect
-                    field="skin_tone"
-                    label="Skin Tone"
-                    formOptions={skinToneOptions}
-                  />
-                </div>
+                <FieldInput field="weight" label="Weight" type="number" />
+
+                <FieldSelect
+                  field="skin_tone"
+                  label="Skin Tone"
+                  formOptions={skinToneOptions}
+                />
                 <FieldText
-                  className="col-span-2"
+                  className="col-span-2 sm:col-span-4"
                   field="biography"
                   label="Biography"
                   help="Tell us about yourself. What are your interests? What are you looking for?"
@@ -316,7 +354,6 @@ function Form(props: PageProps & { member?: Member }) {
 
           {tabValue == 3 && (
             <>
-              <h3>Preferences</h3>
               <div className="mb-8 grid grid-cols-1 gap-4">
                 <FieldCheckboxes
                   field="my_positions"
@@ -344,23 +381,7 @@ function Form(props: PageProps & { member?: Member }) {
               </div>
             </>
           )}
-          {tabValue == 4 &&
-            member?.notifications.map((n, i) => (
-              <Alert key={i}>
-                <div className="flex-grow">{n.message}</div>
-                <div className="flex-shrink">
-                  <a
-                    className="btn-ghost btn-sm btn"
-                    onClick={async () => {
-                      await deleteNotification(n.id);
-                    }}
-                    data-id={n.id}
-                  >
-                    <XIcon className="h-4 w-4 fill-white" />
-                  </a>
-                </div>
-              </Alert>
-            ))}
+
           <input type="hidden" {...register('id')} />
           {tabValue <= 3 && (
             <div className="mt-2 flex items-center space-x-4 pt-4">
@@ -384,4 +405,6 @@ function Form(props: PageProps & { member?: Member }) {
   );
 }
 
-export default withPageAuthRequired(Account);
+export default withPageAuthRequired(Account, {
+  onRedirecting: () => <Loading />
+});

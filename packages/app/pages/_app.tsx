@@ -9,7 +9,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <MetaContextProvider>
-        <UserProvider>
+        <UserProvider loginUrl="/api/auth/login">
           <AppUserContextProvider>
             <Layout>
               <Component {...pageProps} />
@@ -21,9 +21,6 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
-type globalThis = {
-  gtag: any;
-};
 export function reportWebVitals({ id, label, name, value }) {
   if (typeof window !== 'undefined' && typeof window['gtag'] !== 'undefined')
     // Use `window.gtag` if you initialized Google Analytics as this example:

@@ -1,6 +1,6 @@
 import { User } from './types';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { adminBaseUrl, getAdminClient } from './client';
+import { adminBaseUrl, adminToken, getAdminClient } from './client';
 
 const cache: { [key: string]: any } = {};
 
@@ -25,10 +25,13 @@ export async function getFieldOptions<T = User>(
 
 export async function getAsset(req: NextApiRequest, res: NextApiResponse) {
   const id = req.query.id;
-  const url = `${adminBaseUrl}/assets/${id}?fit=cover&access_token=${process.env.ADMIN_TOKEN}`;
+  const url = `${adminBaseUrl}/assets/${id}?fit=cover&access_token=${adminToken}`;
 
   const response = await fetch(url);
-  return res.status(response.status).send(response.body);
+  return res
+    .setHeader('cache', 'public, max-age=31536000, immutable')
+    .status(response.status)
+    .send(response.body);
 }
 
 export * from './models/events';

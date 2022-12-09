@@ -1,3 +1,4 @@
+import moment, { Moment } from 'moment';
 import { PageContent, User } from './types';
 
 export type SectionContainerType =
@@ -34,6 +35,7 @@ export const applicantFields: Array<keyof User> = [
   'email',
   'email_verified',
   'photo',
+  'photo_denial_reason',
   'phone',
   'phone_verified',
   'biography',
@@ -112,14 +114,14 @@ export type SectionPage = {
 };
 
 export type Applicant = {
-  nickname: User['nickname'];
+  nickname: string;
 
-  id: User['id'];
-  first_name: User['first_name'];
-  last_name: User['last_name'];
-  email: User['email'];
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
   vouched_by: string;
-  email_verified: User['email_verified'];
+  email_verified: boolean;
   phone: User['phone'];
   biography: User['biography'];
   needs_guidance: User['needs_guidance'];
@@ -135,9 +137,10 @@ export type Applicant = {
   invite?: string;
   picture?: string | null;
   status: StatusType;
-  application_status: User['application_status'];
+  application_status: string | ApplicationStatus;
   last_login: User['last_login'];
   photo: string | null;
+  photo_denial_reason: string | null;
   in_sendgrid: boolean;
 };
 
@@ -193,13 +196,15 @@ export enum EventInviteRSVPType {
 export type Event = {
   id: string;
   name: string;
+  description: string;
   datetime: string | Date;
 };
 
 export type Invite = EventInvite & {
   id: string;
   name: string;
-  datetime: string | Date;
+  description: string;
+  datetime: string | Moment;
 };
 
 export type EventInvite = {

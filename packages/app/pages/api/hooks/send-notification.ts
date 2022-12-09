@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { ApiResponse } from 'lib/types';
 import { withMethods } from 'lib/services/api';
 import { sendApplicationWorkflowEmail } from 'lib/services/sendgrid/server';
+import { adminToken } from '../../../lib/config';
 
 async function SendNotification(
   req: NextApiRequest,
@@ -10,7 +11,7 @@ async function SendNotification(
   try {
     if (!withMethods(req, ['POST'])) return;
 
-    if (req.query.token !== process.env.ADMIN_TOKEN)
+    if (req.query.token !== adminToken)
       return res.status(401).json(ApiResponse(null, 'Unauthorized'));
 
     const { email, subject, message, buttonText, buttonLink } = req.body;

@@ -1,24 +1,25 @@
 import Markdown from '../components/layout/Markdown';
+import Section from '../components/layout/Section';
 import { useMeta } from '../lib/hooks/use-meta-context';
 import { MenuPage, SectionPage } from '../lib/services/directus';
 import {
-  getActivePages,
+  listActivePages,
   getPageContentByUrl
 } from '../lib/services/directus/static';
 
 export const getStaticPaths = async () => {
-  const pages = await getActivePages();
+  const pages = await listActivePages();
   const paths = pages.map((page) => ({
     params: { slug: page.slug.split('/') }
   }));
   return {
     paths,
-    fallback: 'blocking'
+    fallback: false
   };
 };
 
 export async function getStaticProps({ params }) {
-  const pages = await getActivePages();
+  const pages = await listActivePages();
 
   let { slug: paths } = params as { slug: string[] };
 
@@ -56,15 +57,20 @@ export default function Page({
   page: SectionPage;
   pages: MenuPage[];
 }) {
-  const { title, description, image, markdown } = page;
+  const { title, description, image, markdown, content } = page;
   const img = image ? `/api/asset/${image.id}` : null;
   useMeta(title, description, img, pages);
   return (
     <>
+      <h1>{title}</h1>
       <section>
         <Markdown content={markdown} />
       </section>
-      {}
+      <>
+        {content.map((s, i) => (
+          <Section key={i} content={s} />
+        ))}
+      </>
     </>
   );
 }

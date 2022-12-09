@@ -1017,6 +1017,7 @@ export interface components {
       datetime?: string | null;
       name?: string | null;
       location?: string | components["schemas"]["ItemsLocation"];
+      description?: string | null;
       users?: (number | components["schemas"]["ItemsEventsUsers"])[];
     };
     ItemsEventsUsers: {
@@ -1184,13 +1185,14 @@ export interface components {
       picture?: string | components["schemas"]["Files"];
       video_consent?: boolean | null;
       photo_consent?: boolean | null;
+      photo_denial_reason?: string | null;
       events?: (number | components["schemas"]["ItemsEventsUsers"])[];
-      information?: string;
-      preferences?: string;
-      notifications?: (number | components["schemas"]["ItemsNotificationsUsers"])[];
       administrative?: string;
-      my_files?: (number | components["schemas"]["ItemsUsersPhotos"])[];
+      information?: string;
+      notifications?: (number | components["schemas"]["ItemsNotificationsUsers"])[];
+      preferences?: string;
       images?: (number | components["schemas"]["ItemsUsersFiles"])[];
+      my_files?: (number | components["schemas"]["ItemsUsersPhotos"])[];
       users?: (number | components["schemas"]["ItemsUserRelationships"])[];
       my_sex?: string;
       their_sex?: string;

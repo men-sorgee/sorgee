@@ -68,7 +68,7 @@ function Apply(props: PageProps) {
     <Page
       title="Registration"
       loading={loading}
-      sectionClass="gradient"
+      sectionClass="gradient [rp"
       header={<ApplicationSteps status={'apply'} />}
     >
       <>

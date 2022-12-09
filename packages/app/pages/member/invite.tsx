@@ -10,6 +10,7 @@ import { Button } from 'react-daisyui';
 import { FieldInput, FieldSelect } from 'components/forms';
 import Page from '../../components/layout/Page';
 import { GetServerSideProps } from 'next';
+import Loading from '../../components/ui/Loading';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const userTypeOptions = await getFieldOptions('user_type');
@@ -28,7 +29,11 @@ type PageProps = {
 function Invite({ userTypeOptions }: PageProps) {
   const { loading } = useAppUser();
   return (
-    <Page title="Invite Someone" loading={loading}>
+    <Page
+      title="Invite Someone"
+      loading={loading}
+      sectionClass="gradient max-w-xl"
+    >
       <Form userTypeOptions={userTypeOptions} />
     </Page>
   );
@@ -109,7 +114,7 @@ function Form({ userTypeOptions }: PageProps) {
   return (
     <>
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="mx-auto max-w-3xl">
+        <form onSubmit={handleSubmit(onSubmit)} className="max-w-xl">
           <p>
             {member?.first_name || 'Brother'}, enter your friend&apos;s email
             address and we will create a special link for you to share.
@@ -197,4 +202,6 @@ function Form({ userTypeOptions }: PageProps) {
   );
 }
 
-export default withPageAuthRequired(Invite);
+export default withPageAuthRequired(Invite, {
+  onRedirecting: () => <Loading />
+});

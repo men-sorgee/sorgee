@@ -40,7 +40,7 @@ export default function RadioButtonsField(props: Props) {
 
   return (
     <FieldWrapper field={field} label={label} help={help} className={className}>
-      <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">
+      <div className="flex justify-evenly">
         {formOptions?.map(({ text, value }, index) => (
           <div key={index.toString()} className="form-control">
             <label
@@ -53,7 +53,7 @@ export default function RadioButtonsField(props: Props) {
                 value={value}
                 {...register(field, registerOptions)}
                 {...inputProps}
-                className={`radio checked:bg-${color}-500 `}
+                className={`radio radio-${color} `}
               />
               <span className="label-text ml-2">{text}</span>
             </label>

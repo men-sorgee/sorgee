@@ -53,7 +53,7 @@ export default function CheckboxesField(props: Props) {
                 className="checkbox"
                 {...inputProps}
               />
-              <span className="label-text ml-2">{text}</span>
+              <span className="label-text ml-2 ">{text}</span>
             </label>
           </div>
         ))}

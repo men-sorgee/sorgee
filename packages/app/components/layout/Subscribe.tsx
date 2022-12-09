@@ -43,8 +43,15 @@ export default function Subscribe() {
     <FormProvider {...methods}>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="my-4 grid grid-cols-1 gap-4 md:mx-auto"
+        className="grid grid-cols-2 gap-2 md:gap-4 "
       >
+        <FieldInput
+          field="name"
+          registerOptions={{
+            required: true
+          }}
+          placeholder="Willy Dicks"
+        />
         <FieldInput
           field="email"
           registerOptions={{
@@ -54,22 +61,14 @@ export default function Subscribe() {
           placeholder="email@gmail.com"
           autoComplete="false"
         />
-        <FieldInput
-          field="name"
-          registerOptions={{
-            required: true
-          }}
-          placeholder="Willy Dicks"
-        />
-        <div className="grid grid-cols-3 gap-2  align-middle">
-          <Button type="submit" color="accent">
-            Get Notifications
-          </Button>
-          <p className="col-span-2 text-xs">
-            Subscribe only if you agree to our <a href="/terms">Terms </a> and{' '}
-            <a href="/privacy">Privacy Policy</a>.
-          </p>
-        </div>
+
+        <p className="p-2 text-xs">
+          Subscribe only if you agree to our <a href="/terms">Terms </a> and{' '}
+          <a href="/privacy">Privacy Policy</a>.
+        </p>
+        <Button type="submit" color="accent">
+          Get Notifications
+        </Button>
       </form>
     </FormProvider>
   );

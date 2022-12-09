@@ -1,15 +1,12 @@
 import { Directus } from '@directus/sdk';
+import { adminToken } from '../../config';
+import { adminBaseUrl } from '../../constants';
 import { Collections } from './types';
 
-export const adminBaseUrl =
-  process.env.ADMIN_URL || 'https://admin.guysnheat.com';
-export const adminToken = process.env.ADMIN_TOKEN;
-
 export const adminDb = new Directus<Collections>(adminBaseUrl);
-
+export { adminToken, adminBaseUrl };
 export async function getAdminClient(): Promise<Directus<Collections>> {
   if (await adminDb.auth.token) return adminDb;
-  const token = process.env.ADMIN_TOKEN as string;
-  await adminDb.auth.static(token);
+  await adminDb.auth.static(adminToken);
   return adminDb;
 }

@@ -1,9 +1,83 @@
+const css = `
 
+.fire {
+  width: fit-content;
+  height: auto;
+  padding-right: 60px;
+}
+.fire svg {
+  width: 100%;
+  height: auto;
+  position: relative;
+}
+.spark {
+  animation-name: spark;
+  animation-duration: 2s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  opacity: 0;
+  transform-origin: 50% 50% 0;
+}
+.spark1 {
+  animation-delay: 1s;
+  animation-duration: 3s;
+}
+.spark2 {
+  animation-duration: 5s;
+  animation-delay: 1s;
+}
 
+.flame {
+  animation-name: flaming;
+  animation-duration: 3s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+.flame1 {
+  animation-duration: 4s;
+  animation-delay: 1s;
+}
+.flame2 {
+  animation-duration: 3s;
+  animation-delay: 2s;
+}
+.flame3 {
+  animation-duration: 2.1s;
+  animation-delay: 3s;
+}
+.flame4 {
+  animation-duration: 3.2s;
+  animation-delay: 4s;
+}
+.flame5 {
+  animation-duration: 2.5s;
+  animation-delay: 5s;
+}
+
+@keyframes flaming {
+  50% {
+    transform: scale(1, 1.2) translate(0, -30px) rotate(-2deg);
+  }
+}
+
+@keyframes spark {
+  0% {
+    transform: translate(0) rotate(180deg);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-20px, -100px) rotate(180deg);
+    opacity: 0;
+  }
+}
+
+`;
 
 export default function FireIcon() {
   return (
-    <div className="fire w-1/3 max-w-sm h-auto my-0 mx-0 md:mx-auto">
+    <div className="fire my-0 mx-0 h-auto w-1/3 max-w-sm md:mx-auto">
       <svg
         version="1.1"
         id="Layer_1"
@@ -12,7 +86,7 @@ export default function FireIcon() {
         height="189.864px"
         viewBox="0 0 125 189.864"
         enableBackground="new 0 0 125 189.864"
-        className="w-full h-auto max-w-sm"
+        className="h-auto w-full max-w-sm"
       >
         <path
           className="flame"
@@ -34,7 +108,7 @@ c20.585,52.899-19.848,61.045-19.643,61.582c0.206,0.537-19.401-0.269-14.835-18.53
 C84.858,184.21,125.705,150.905,81.657,79.192z"
         />
         <path
-         className="flame3"
+          className="flame3"
           fill="#FDBA16"
           d="M99.92,101.754c0,0-23.208,47.027-12.043,80.072c0,0,32.741-16.073,20.108-45.79
 C95.354,106.319,99.92,114.108,99.92,101.754z"
@@ -56,12 +130,12 @@ S134.387,164.603,103.143,105.917z"
           d="M101.011,112.926c0,0,8.973,10.519,4.556,16.543C99.37,129.735,106.752,117.406,101.011,112.926z"
         />
         <path
-         className="spark1"
+          className="spark1"
           fill="#F36E21"
           d="M55.592,126.854c0,0-3.819,13.29,2.699,16.945C64.038,141.48,55.907,132.263,55.592,126.854z"
         />
         <path
-         className="spark2"
+          className="spark2"
           fill="#F36E21"
           d="M54.918,104.595c0,0-3.959,6.109-1.24,8.949C56.93,113.256,52.228,107.329,54.918,104.595z"
         />
