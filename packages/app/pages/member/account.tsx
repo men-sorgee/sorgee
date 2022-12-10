@@ -1,11 +1,11 @@
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { FormProvider, useForm } from 'react-hook-form';
 import { NextPageContext } from 'next';
-import { Member } from 'lib/services/directus';
-import { fetchJSON, postJSON, pruneUndefined } from 'lib/utils';
+import { FormOptions, Member } from 'models';
+import { fetchJSON, postJSON, pruneUndefined } from 'lib/utils/client';
 import { getFieldOptions } from '@/lib/services/directus/server';
-import { useAppUser } from 'lib/hooks/use-member';
-import { FormOptions } from 'lib/types';
+import { useMember } from 'lib/hooks/use-member';
+
 import { useEffect, useState } from 'react';
 import {
   FieldInput,
@@ -18,8 +18,8 @@ import { Alert, Button, Tabs, Toast } from 'react-daisyui';
 import Page from 'components/layout/Page';
 import { CameraIcon, LightBulbIcon, XIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
-import FieldCheckbox from '../../components/forms/FieldCheckbox';
-import Loading from '../../components/ui/Loading';
+import FieldCheckbox from 'components/forms/FieldCheckbox';
+import Loading from 'components/ui/Loading';
 
 export type PageProps = {
   spectrumOptions: FormOptions;
@@ -46,7 +46,7 @@ export async function getServerSideProps(context: NextPageContext) {
 }
 
 function Account(props: PageProps) {
-  const { member, loading, reload } = useAppUser();
+  const { member, loading, reload } = useMember();
   const data = { member, reload, ...props };
 
   return (

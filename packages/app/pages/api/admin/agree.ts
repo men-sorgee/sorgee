@@ -1,13 +1,17 @@
 import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { updateUser } from 'lib/services/directus/server';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { AgreementData, ApiResponse } from 'lib/types';
-import { withAppUser, withMethods } from 'lib/services/api';
+import {
+  AgreementData,
+  ApiResponse,
+  ApplicationStatus,
+  MemberLevel
+} from 'models';
 import {
   sendApplicationWorkflowEmail,
   updateSendGrid
 } from 'lib/services/sendgrid/server';
-import { ApplicationStatus, MemberLevel } from '../../../lib/services/directus';
+import { withApplicant, withMethods } from 'lib/utils/server';
 
 async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
@@ -15,7 +19,7 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
       return res.status(401).json(ApiResponse(null, 'Unauthorized'));
 
     const { agree } = req.body as AgreementData;
-    const applicant = await withAppUser(req, res);
+    const applicant = await withApplicant(req, res);
 
     if (applicant.application_status == 'approved')
       return res.status(200).end();

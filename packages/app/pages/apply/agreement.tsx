@@ -1,18 +1,18 @@
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import ApplicationSteps from './_steps';
-import { useAppUser } from 'lib/hooks/use-member';
+import { useMember } from 'lib/hooks/use-member';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { AgreementData, Props } from 'lib/types';
+import { AgreementData, Props } from 'models';
 import { Button } from 'react-daisyui';
 import FieldCheckbox from 'components/forms/FieldCheckbox';
-import { postJSON } from 'lib/utils';
+import { postJSON } from 'lib/utils/client';
 import Page from 'components/layout/Page';
 
 function Agreement() {
   const router = useRouter();
-  const { loading, member } = useAppUser();
+  const { loading, member } = useMember();
   const [completed, setCompleted] = useState(false);
 
   if (

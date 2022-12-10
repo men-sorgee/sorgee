@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { NextPage } from 'next';
-import { useMeta } from '../lib/hooks/use-meta-context';
+import { useMeta } from 'lib/hooks/use-meta-context';
 import {
   listActivePages,
-  getPageContentById
-} from '../lib/services/directus/static';
-import Section from '../components/layout/Section';
-import { MenuPage, SectionPage } from '../lib/services/directus';
-import Subscribe from '../components/layout/Subscribe';
-import Markdown from '../components/layout/Markdown';
-import { AppUserContextProvider } from '../lib/hooks/use-member';
+  getPageContentById,
+  MenuPage,
+  SectionPage
+} from 'lib/services/directus/static';
+import Markdown from 'components/layout/Markdown';
+import Section from 'components/layout/Section';
+import Subscribe from 'components/layout/Subscribe';
 
 interface Props {
   page: SectionPage;

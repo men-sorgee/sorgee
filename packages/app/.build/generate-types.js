@@ -11,20 +11,12 @@ const { resolve } = require( "path" )
 
 const { snakeCase, capitalCase } = require( "change-case" )
 const { default: fetch } = require( "node-fetch" )
-const outputDir = resolve( process.cwd(), "./lib/services/directus" )
+const outputDir = resolve( process.cwd(), "./lib/services/directus/server" )
 
 
 async function main() {
   const request = await fetch( `${ ADMIN_URL }/server/specs/oas?access_token=${ API_KEY }` )
   const spec = await request.json()
-
-  writeFileSync(
-    `${ outputDir }/api.spec.json`,
-    JSON.stringify( spec, null, 2 ),
-    {
-      encoding: `utf-8`
-    }
-  )
 
   const { default: openApiTs } = await import( "openapi-typescript" )
   const baseSource = await openApiTs( spec, { version: 3 } )

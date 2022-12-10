@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ApiResponse } from 'lib/types';
-import { withMethods } from 'lib/services/api';
+import { ApiResponse } from 'models';
+import { withMethods } from 'lib/utils/server';
 import { sendApplicationWorkflowEmail } from 'lib/services/sendgrid/server';
-import { adminToken } from '../../../lib/config';
+import { adminToken } from 'config/server';
 
 async function SendNotification(
   req: NextApiRequest,

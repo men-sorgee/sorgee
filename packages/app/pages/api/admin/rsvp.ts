@@ -1,9 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Applicant } from 'lib/services/directus';
+import { baseUrl } from 'config/client';
 import { updateEventUserRSVP } from 'lib/services/directus/server';
-import { withMethods } from 'lib/services/api';
-import { ApiResponse } from 'lib/types';
-import { baseUrl } from '../../../lib/constants';
+import { withMethods } from 'lib/utils/server';
+import { ApiResponse, Applicant } from 'models';
 
 export default async function inviteRSVP(
   req: NextApiRequest,

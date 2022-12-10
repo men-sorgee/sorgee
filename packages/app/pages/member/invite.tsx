@@ -1,16 +1,16 @@
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
-import { useAppUser } from 'lib/hooks/use-member';
+import { useMember } from 'lib/hooks/use-member';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
-import { copyTextToClipboard } from 'lib/utils';
-import { UserInvite } from 'lib/services/directus';
+import { copyTextToClipboard } from 'lib/utils/client';
+import { UserInvite } from 'models';
 import { getFieldOptions } from 'lib/services/directus/server';
-import { FormOptions, InviteLink } from 'lib/types';
+import { FormOptions, InviteLink } from 'models';
 import { Button } from 'react-daisyui';
 import { FieldInput, FieldSelect } from 'components/forms';
-import Page from '../../components/layout/Page';
+import Page from 'components/layout/Page';
 import { GetServerSideProps } from 'next';
-import Loading from '../../components/ui/Loading';
+import Loading from 'components/ui/Loading';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const userTypeOptions = await getFieldOptions('user_type');
@@ -27,7 +27,7 @@ type PageProps = {
 };
 
 function Invite({ userTypeOptions }: PageProps) {
-  const { loading } = useAppUser();
+  const { loading } = useMember();
   return (
     <Page
       title="Invite Someone"
@@ -40,7 +40,7 @@ function Invite({ userTypeOptions }: PageProps) {
 }
 
 function Form({ userTypeOptions }: PageProps) {
-  const { member } = useAppUser();
+  const { member } = useMember();
   const [link, setLink] = useState<string>();
   const [sent, setSent] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);

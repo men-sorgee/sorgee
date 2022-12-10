@@ -1,20 +1,18 @@
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
-import { useAppUser } from 'lib/hooks/use-member';
-import { NextRouter, useRouter } from 'next/router';
-import { useState, ChangeEvent, useEffect } from 'react';
+import { useMember } from 'lib/hooks/use-member';
+import { useRouter } from 'next/router';
+import { useState, ChangeEvent } from 'react';
 import Image from 'next/image';
 import ApplicationSteps from './_steps';
 import { Button } from 'react-daisyui';
-import Loading from 'components/ui/Loading';
-import { Applicant } from 'lib/services/directus';
 import Page from 'components/layout/Page';
-import FieldCheckbox from '../../components/forms/FieldCheckbox';
+import FieldCheckbox from 'components/forms/FieldCheckbox';
 import { FormProvider, useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
-import { ApiResponse } from '../../lib/types';
+import { ApiResponse, Applicant } from 'models';
 
 function Verification() {
-  const { member, loading } = useAppUser();
+  const { member, loading } = useMember();
   const [completed, setCompleted] = useState(false);
   const router = useRouter();
 

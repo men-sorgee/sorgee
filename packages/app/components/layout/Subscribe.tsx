@@ -1,14 +1,14 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import { useUser } from '@auth0/nextjs-auth0';
-import { SubscriptionData } from 'lib/types';
-import { useAppUser } from 'lib/hooks/use-member';
+import { SubscriptionData } from 'models';
+import { useMember } from 'lib/hooks/use-member';
 import React, { useEffect } from 'react';
 import { Button } from 'react-daisyui';
 import { FieldInput } from '../forms';
 
 export default function Subscribe() {
   const { user } = useUser();
-  const { member } = useAppUser();
+  const { member } = useMember();
   const [subscribed, setSubscribed] = React.useState(false);
   const methods = useForm<SubscriptionData>({
     defaultValues: {

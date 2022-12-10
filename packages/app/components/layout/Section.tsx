@@ -1,4 +1,4 @@
-import { ContentSection } from 'lib/services/directus';
+import { ContentSection } from 'lib/services/directus/static';
 import Markdown from './Markdown';
 
 export default function Section({ content }: { content: ContentSection }) {

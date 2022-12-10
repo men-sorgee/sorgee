@@ -1,8 +1,8 @@
-import { string } from 'yargs';
-import { Applicant, applicantFields, Member, memberFields } from '..';
-import { getAdminClient } from '../client';
+// Service Calls ------------------------------------
+
+import { getAdminClient, listUserInvites } from '.';
 import { User, UserEmailEvent } from '../types';
-import { listUserInvites } from './events';
+import { Applicant, applicantFields, Member, memberFields } from 'models';
 
 export async function createUser(member: Partial<User>): Promise<any> {
   const adminClient = await getAdminClient();

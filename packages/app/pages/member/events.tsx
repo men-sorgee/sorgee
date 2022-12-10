@@ -1,29 +1,31 @@
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { Alert, Button, Card } from 'react-daisyui';
-import Page from '../../components/layout/Page';
-import { useAppUser } from '../../lib/hooks/use-member';
-import { listUserInvites } from '../../lib/services/directus/server';
+import Page from 'components/layout/Page';
+import { useMember } from 'lib/hooks/use-member';
+import { listUserInvites } from 'lib/services/directus/server';
 import moment, { Moment } from 'moment';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Invite, MemberLevel } from '../../lib/services/directus';
-import { withAppUser } from '../../lib/services/api';
+
+import { withMember } from 'lib/utils/server';
 import { NextPageContext } from 'next';
 import { FormProvider, useForm } from 'react-hook-form';
-import { FieldRadioButtons } from '../../components/forms';
-import { postJSON } from '../../lib/utils';
-import Loading from '../../components/ui/Loading';
-import Markdown from '../../components/layout/Markdown';
-import { ClockIcon } from '@heroicons/react/solid';
+import { FieldRadioButtons } from 'components/forms';
+import { postJSON } from 'lib/utils/client';
+import Loading from 'components/ui/Loading';
+import Markdown from 'components/layout/Markdown';
+import { Invite, MemberLevel } from 'models';
+import { getCookie } from 'cookies-next';
+import { memberCookie } from 'config/client';
 
-export async function getServerSideProps({ req, res }: NextPageContext) {
-  const member = await withAppUser(req, res, true);
-  if (!member) {
+export async function getServerSideProps({ req }: NextPageContext) {
+  const memberId = getCookie(memberCookie, { req }) as string;
+  if (!memberId) {
     return {
       props: {}
     };
   }
-  const invites = await listUserInvites(member.id);
+  const invites = await listUserInvites(memberId);
 
   return {
     props: {
@@ -34,7 +36,7 @@ export async function getServerSideProps({ req, res }: NextPageContext) {
 
 function Event({ invites }: { invites: Invite[] }) {
   const [allowed, setAllowed] = useState(false);
-  const { member, loading } = useAppUser();
+  const { member, loading } = useMember();
   useEffect(() => {
     if (
       !loading &&

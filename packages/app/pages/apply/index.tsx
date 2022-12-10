@@ -1,12 +1,11 @@
 import { UserProfile, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { FormProvider, useForm } from 'react-hook-form';
-import { GetServerSideProps } from 'next';
-import { postJSON, pruneUndefined } from 'lib/utils';
+import { postJSON, pruneUndefined } from 'lib/utils/client';
 import { useEffect, useState } from 'react';
 import { getFieldOptions } from '@/lib/services/directus/server';
-import { useAppUser } from 'lib/hooks/use-member';
+import { useMember } from 'lib/hooks/use-member';
 import { NextRouter, useRouter } from 'next/router';
-import { FormOptions } from 'lib/types';
+import { Applicant, FormOptions } from 'models';
 import {
   FieldInput,
   FieldSelect,
@@ -17,7 +16,6 @@ import {
 import { Button } from 'react-daisyui';
 import FieldCheckbox from 'components/forms/FieldCheckbox';
 import ApplicationSteps from './_steps';
-import { Applicant } from 'lib/services/directus';
 import { LightBulbIcon, SupportIcon } from '@heroicons/react/solid';
 import Page from 'components/layout/Page';
 
@@ -49,7 +47,7 @@ export const getServerSideProps = async () => {
 };
 
 function Apply(props: PageProps) {
-  const { user, loading } = useAppUser();
+  const { user, loading } = useMember();
   const [formError, setFormError] = useState<string>();
 
   useEffect(() => {
@@ -88,7 +86,7 @@ function Apply(props: PageProps) {
 }
 
 function Form(props: PageProps) {
-  const { member: applicant, user } = useAppUser();
+  const { member: applicant, user } = useMember();
   const router = useRouter();
   const {
     invite,

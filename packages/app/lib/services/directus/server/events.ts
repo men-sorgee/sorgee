@@ -1,7 +1,7 @@
-import moment from 'moment';
-import { EventInvite, EventInviteRSVPType, Invite } from '..';
-import { getAdminClient } from '../client';
+// Service Calls ------------------------------------
 
+import { getAdminClient } from '.';
+import { EventInvite, EventInviteRSVPType, Invite } from 'models';
 export async function getEvent(id: string) {
   const client = await getAdminClient();
   const event = await client.items('events').readOne(id);

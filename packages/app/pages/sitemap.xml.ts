@@ -1,6 +1,5 @@
-import { baseUrl } from '../lib/constants';
-import { SectionPage } from '../lib/services/directus';
-import { listActivePages } from '../lib/services/directus/static';
+import { baseUrl } from '../config/client';
+import { listActivePages, SectionPage } from '../lib/services/directus/static';
 
 function generateSiteMap(pages: SectionPage[]) {
   return `<?xml version="1.0" encoding="UTF-8"?>

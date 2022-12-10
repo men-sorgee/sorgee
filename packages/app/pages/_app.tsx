@@ -3,6 +3,7 @@ import Layout from 'components/layout/index';
 import { AppUserContextProvider } from 'lib/hooks/use-member';
 import { AppProps } from 'next/app';
 import 'styles/globals.css';
+import ErrorBoundary from '../lib/hooks/user-error-boundary';
 import { MetaContextProvider } from '../lib/hooks/use-meta-context';
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -12,7 +13,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         <UserProvider loginUrl="/api/auth/login">
           <AppUserContextProvider>
             <Layout>
-              <Component {...pageProps} />
+              <ErrorBoundary>
+                <Component {...pageProps} />
+              </ErrorBoundary>
             </Layout>
           </AppUserContextProvider>
         </UserProvider>

@@ -1,8 +1,10 @@
-import Markdown from '../components/layout/Markdown';
-import Section from '../components/layout/Section';
-import { useMeta } from '../lib/hooks/use-meta-context';
-import { MenuPage, SectionPage } from '../lib/services/directus';
+import { Key } from 'react';
+import Markdown from 'components/layout/Markdown';
+import Section from 'components/layout/Section';
+import { useMeta } from 'lib/hooks/use-meta-context';
 import {
+  MenuPage,
+  SectionPage,
   listActivePages,
   getPageContentByUrl
 } from '../lib/services/directus/static';
@@ -67,7 +69,7 @@ export default function Page({
         <Markdown content={markdown} />
       </section>
       <>
-        {content.map((s, i) => (
+        {content.map((s: any, i: Key) => (
           <Section key={i} content={s} />
         ))}
       </>

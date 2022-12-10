@@ -5,10 +5,9 @@ import {
   UploadFolder
 } from 'lib/services/directus/server';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ApiResponse } from 'lib/types';
-import { withAppUser, withMethods } from 'lib/services/api';
+import { ApiResponse, ApplicationStatus } from 'models';
+import { withMember, withMethods } from 'lib/utils/server';
 import { sendApplicationWorkflowEmail } from 'lib/services/sendgrid/server';
-import { ApplicationStatus } from 'lib/services/directus';
 
 export const config = {
   api: {
@@ -20,7 +19,7 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
     if (!withMethods(req, ['POST'])) return;
 
-    const member = await withAppUser(req, res);
+    const member = await withMember(req, res);
     if (member == null) return;
 
     const file = await uploadFile(

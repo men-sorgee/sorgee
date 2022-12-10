@@ -1,9 +1,8 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState, createContext, useContext } from 'react';
 import getConfig from 'next/config';
-import { MetaProps } from 'lib/types';
-
-import { MenuPage } from '../services/directus';
+import { MetaProps, Props } from 'models';
+import { MenuPage } from '../services/directus/static';
 
 type Context = MetaProps & {
   setTitle: (title: string) => void;
@@ -17,14 +16,8 @@ type Context = MetaProps & {
   setPages: (pages: Array<MenuPage>) => void;
 };
 
-export interface Props {
-  [propName: string]: any;
-}
-
 const { publicRuntimeConfig } = getConfig();
-
 export const MetaContext = createContext<Context | undefined>(undefined);
-
 export function MetaContextProvider(props: Props) {
   const router = useRouter();
   const [title, setTitle] = useState<string>(publicRuntimeConfig.title);

@@ -53,9 +53,9 @@ const config = {
         primary: brandColors.primary.DEFAULT,
         secondary: brandColors.secondary.DEFAULT,
         accent: brandColors.accent.DEFAULT,
-        neutral: brandColors.dark,
-        content: "#FFFFFF",
-        "base-100": "#000b22",
+        neutral: brandColors.gray.DEFAULT,
+        content: brandColors.gray['50'],
+        "base-100": brandColors.gray['400'],
         "primary-focus": brandColors.primary.DEFAULT
       },
     }],

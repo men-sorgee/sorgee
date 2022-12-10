@@ -1,5 +1,5 @@
-import { HttpMethod } from '../services/api';
-import { ApiResponse } from '../types';
+import { HttpMethod } from './server';
+import { ApiResponse } from 'models';
 
 export function toDateTime(secs: number) {
   var t = new Date('1970-01-01T00:30:00Z'); // Unix epoch start.

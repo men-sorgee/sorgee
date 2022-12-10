@@ -1,5 +1,5 @@
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
-import { useAppUser } from 'lib/hooks/use-member';
+import { useMember } from 'lib/hooks/use-member';
 
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -9,7 +9,7 @@ import Page from 'components/layout/Page';
 
 function Approved() {
   const router = useRouter();
-  const { loading, member } = useAppUser();
+  const { loading, member } = useMember();
 
   if (
     member &&

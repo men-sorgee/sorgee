@@ -1,7 +1,7 @@
 import client from '@sendgrid/client';
 import mail from '@sendgrid/mail';
-import { sendGridApiKey } from '../../config';
-import { MemberLevel } from '../directus';
+import { sendGridApiKey } from 'config/server';
+import { MemberLevel } from 'models';
 
 export enum SendGridList {
   Subscribers = 'fdfecde5-2787-499a-a879-955959fc9720',

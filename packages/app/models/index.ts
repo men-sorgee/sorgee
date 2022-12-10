@@ -4,6 +4,14 @@ declare module 'react' {
     name?: string;
   }
 }
+
+export type File = {
+  filepath: string;
+  newFilename: string;
+  originalFilename: string;
+  mimetype: string;
+};
+
 export type FormOptions = Array<{
   text: string;
   value: string;
@@ -54,3 +62,6 @@ export interface MetaProps {
   url?: string;
   image?: string;
 }
+
+export * from './events';
+export * from './users';

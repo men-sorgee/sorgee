@@ -1,5 +1,5 @@
 import Script from 'next/script';
-import { useMeta } from '../lib/hooks/use-meta-context';
+import { useMeta } from 'lib/hooks/use-meta-context';
 export default function Learn() {
   useMeta('Privacy Policy');
   return (

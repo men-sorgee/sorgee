@@ -1,6 +1,56 @@
-import { ContentSection, SectionPage } from '.';
-import { adminDb } from './client';
-import { Page } from './types';
+import { Collections, Page, PageContent } from './types';
+import { adminBaseUrl } from 'config/client';
+import { Directus } from '@directus/sdk';
+
+const directusDB = new Directus<Collections>(adminBaseUrl);
+
+export type SectionContainerType =
+  | 'grid-cols-1'
+  | 'grid-cols-2'
+  | 'grid-cols-3'
+  | 'grid-cols-4';
+
+export type ContentType = 'html' | 'md' | 'image' | 'control';
+
+export type ContentSection = PageContent & {
+  hash: string;
+  image: {
+    id: string;
+    height: number;
+    width: number;
+    title: string;
+    description: string;
+  };
+};
+
+export type SectionPage = {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  markdown: string;
+  status: 'published' | 'draft';
+  in_menu: boolean;
+  image?: {
+    id: string;
+    height: number;
+    width: number;
+    description: string;
+    title: string;
+  };
+  content: ContentSection[];
+};
+
+export type CMSPageProps = {
+  title: string;
+  description: string;
+  content: ContentSection[];
+};
+
+export type MenuPage = {
+  title: string;
+  path: string;
+};
 
 const byId = `
   query getPage ($id: ID!) {
@@ -58,7 +108,10 @@ export async function getPageContent(
   query: string,
   variables: any
 ): Promise<SectionPage> {
-  const results = await adminDb.graphql.items<{ page: Page }>(query, variables);
+  const results = await directusDB.graphql.items<{ page: Page }>(
+    query,
+    variables
+  );
 
   let { page } = results.data;
   if (!page) return null;
@@ -105,7 +158,7 @@ const all = `{
       }
     }`;
 export async function listActivePages(): Promise<SectionPage[]> {
-  const results = await adminDb.graphql.items<{ pages: SectionPage[] }>(all);
+  const results = await directusDB.graphql.items<{ pages: SectionPage[] }>(all);
 
   return results.data.pages;
 }

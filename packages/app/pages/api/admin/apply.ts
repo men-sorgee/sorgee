@@ -1,23 +1,19 @@
 import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createUser, getUser, updateUser } from 'lib/services/directus/server';
-import { parseInvite, withAppUser, withUser } from 'lib/services/api';
-import { ApiResponse } from 'lib/types';
+import { ApiResponse } from 'models';
 import {
   updateSendGrid,
   sendApplicationWorkflowEmail
 } from 'lib/services/sendgrid/server';
-import {
-  Applicant,
-  ApplicationStatus,
-  MemberLevel
-} from 'lib/services/directus';
-import { User } from '../../../lib/services/directus/types';
+import { Applicant, ApplicationStatus, MemberLevel } from 'models';
+import { User } from 'lib/services/directus/types';
+import { withApplicant } from 'lib/utils/server';
+import { parseInvite } from '../../apply/[invite]';
 
 async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
-    const user = await withUser(req, res);
-    const existingUser = await withAppUser(req, res, false);
+    const existingUser = await withApplicant(req, res);
 
     let newUser =
       !existingUser || ApplicationStatus[existingUser.application_status] == 0;
@@ -31,7 +27,7 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
         if (vouchingUser?.status === 'active') {
           userDetails.vouched_by = vid;
           if (vouchingUser.user_type == 'staff') {
-            userDetails.user_type = user_type;
+            userDetails.user_type = user_type as string;
           }
         }
         delete userDetails.invite;
@@ -45,7 +41,7 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
         'https://guysnheat.com/apply'
       );
       userDetails.in_sendgrid = true;
-      userDetails.email = user.email;
+      userDetails.email = existingUser.email;
       userDetails.application_status = 'verify';
     }
 

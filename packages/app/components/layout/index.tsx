@@ -1,15 +1,13 @@
-import Meta from '../meta';
-import Header from './Header';
-import Footer from './Footer';
-import 'react';
-import { useMetaContext } from '@/lib/hooks/use-meta-context';
-import { Props } from 'lib/types';
-import { useAppUser } from '../../lib/hooks/use-member';
-import { Drawer, Link, Menu, Navbar } from 'react-daisyui';
 import { useState } from 'react';
+import { Drawer, Menu, Link, Footer } from 'react-daisyui';
+import { useMetaContext } from 'lib/hooks';
+import { Props } from 'models';
+import Header from './Header';
+import { useMember } from 'lib/hooks/use-member';
+import Meta from '../meta';
 
 export default function Layout({ children }: Props) {
-  const { user, member } = useAppUser();
+  const { user, member } = useMember();
   const { path, pages } = useMetaContext();
   const [visible, setVisible] = useState(false);
   const toggleDrawer = () => {
@@ -18,15 +16,24 @@ export default function Layout({ children }: Props) {
   return (
     <>
       <Meta />
-      <Header {...{ user, member, toggleDrawer, visible, setVisible }} />
+      <Header
+        {...{
+          user,
+          member,
+          toggleDrawer,
+          visible,
+          setVisible,
+          hasPages: pages?.length > 0
+        }}
+      />
       <Drawer
         open={visible}
         onClickOverlay={toggleDrawer}
-        className="sticky top-0 z-10"
+        className="static z-10"
         side={
           <Menu
             vertical
-            className="w-80 overflow-y-auto bg-black p-4 text-white"
+            className="w-fit overflow-y-auto bg-black p-4 text-white"
           >
             {pages?.map((page, i) => (
               <Menu.Item

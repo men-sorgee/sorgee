@@ -1,4 +1,4 @@
-import { useMeta } from '../lib/hooks/use-meta-context';
+import { useMeta } from 'lib/hooks/use-meta-context';
 
 export default function Custom500() {
   useMeta('Server Error');
