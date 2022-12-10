@@ -413,6 +413,35 @@ export interface paths {
      */
     patch: operations["updateSingleItemsSite"];
   };
+  "/items/user_email_events": {
+    /**
+     * List Items 
+     * @description List the user_email_events items.
+     */
+    get: operations["readItemsUserEmailEvents"];
+    /**
+     * Create an Item 
+     * @description Create a new user_email_events item.
+     */
+    post: operations["createItemsUserEmailEvents"];
+  };
+  "/items/user_email_events/{id}": {
+    /**
+     * Retrieve an Item 
+     * @description Retrieve a single user_email_events item by unique identifier.
+     */
+    get: operations["readSingleItemsUserEmailEvents"];
+    /**
+     * Delete an Item 
+     * @description Delete an existing user_email_events item.
+     */
+    delete: operations["deleteSingleItemsUserEmailEvents"];
+    /**
+     * Update an Item 
+     * @description Update an existing user_email_events item.
+     */
+    patch: operations["updateSingleItemsUserEmailEvents"];
+  };
   "/items/user_relationships": {
     /**
      * List Items 
@@ -1112,6 +1141,25 @@ export interface components {
       container_classes?: string | null;
     };
     ItemsSite: Record<string, never>;
+    ItemsUserEmailEvents: {
+      /** Format: uuid */
+      id?: string;
+      /** Format: timestamp */
+      date_created?: string | null;
+      payload?: Record<string, unknown> | null;
+      event?: string | null;
+      marketing_campaign_name?: string | null;
+      marketing_campaign_id?: string | null;
+      email?: string | null;
+      category?: string | null;
+      sg_event_id?: string | null;
+      sg_message_id?: string | null;
+      timestamp?: number | null;
+      response?: string | null;
+      url?: string | null;
+      type?: string | null;
+      user?: string | components["schemas"]["ItemsUsers"];
+    };
     ItemsUserRelationships: {
       id?: number;
       users_id?: string | components["schemas"]["ItemsUsers"];
@@ -1186,12 +1234,14 @@ export interface components {
       video_consent?: boolean | null;
       photo_consent?: boolean | null;
       photo_denial_reason?: string | null;
+      tags?: (string)[] | null;
       events?: (number | components["schemas"]["ItemsEventsUsers"])[];
+      preferences?: string;
       administrative?: string;
       information?: string;
       notifications?: (number | components["schemas"]["ItemsNotificationsUsers"])[];
-      preferences?: string;
       images?: (number | components["schemas"]["ItemsUsersFiles"])[];
+      email_events?: (string | components["schemas"]["ItemsUserEmailEvents"])[];
       my_files?: (number | components["schemas"]["ItemsUsersPhotos"])[];
       users?: (number | components["schemas"]["ItemsUserRelationships"])[];
       my_sex?: string;
@@ -3445,6 +3495,117 @@ export interface operations {
         content: {
           "application/json": {
             data?: components["schemas"]["ItemsSite"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  readItemsUserEmailEvents: {
+    /**
+     * List Items 
+     * @description List the user_email_events items.
+     */
+    responses: {
+      /** @description Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: (components["schemas"]["ItemsUserEmailEvents"])[];
+            meta?: components["schemas"]["x-metadata"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+    };
+  };
+  createItemsUserEmailEvents: {
+    /**
+     * Create an Item 
+     * @description Create a new user_email_events item.
+     */
+    requestBody?: {
+      content: {
+        "application/json": (components["schemas"]["ItemsUserEmailEvents"])[] | components["schemas"]["ItemsUserEmailEvents"];
+      };
+    };
+    responses: {
+      /** @description Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: Record<string, never>;
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+    };
+  };
+  readSingleItemsUserEmailEvents: {
+    /**
+     * Retrieve an Item 
+     * @description Retrieve a single user_email_events item by unique identifier.
+     */
+    parameters: {
+        /** @description Index of the item. */
+      path: {
+        id: number | string;
+      };
+    };
+    responses: {
+      /** @description Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsUserEmailEvents"];
+          };
+        };
+      };
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  deleteSingleItemsUserEmailEvents: {
+    /**
+     * Delete an Item 
+     * @description Delete an existing user_email_events item.
+     */
+    parameters: {
+        /** @description Index of the item. */
+      path: {
+        id: number | string;
+      };
+    };
+    responses: {
+      /** @description Successful request */
+      200: never;
+      401: components["responses"]["UnauthorizedError"];
+      404: components["responses"]["NotFoundError"];
+    };
+  };
+  updateSingleItemsUserEmailEvents: {
+    /**
+     * Update an Item 
+     * @description Update an existing user_email_events item.
+     */
+    parameters: {
+        /** @description Index of the item. */
+      path: {
+        id: number | string;
+      };
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["ItemsUserEmailEvents"];
+      };
+    };
+    responses: {
+      /** @description Successful request */
+      200: {
+        content: {
+          "application/json": {
+            data?: components["schemas"]["ItemsUserEmailEvents"];
           };
         };
       };
@@ -6257,6 +6418,7 @@ export type NotificationUser = components["schemas"]["ItemsNotificationsUsers"];
 export type Page = components["schemas"]["ItemsPage"];
 export type PageContent = components["schemas"]["ItemsPageContent"];
 export type Site = components["schemas"]["ItemsSite"];
+export type UserEmailEvent = components["schemas"]["ItemsUserEmailEvents"];
 export type UserRelationship = components["schemas"]["ItemsUserRelationships"];
 export type User = components["schemas"]["ItemsUsers"];
 export type UserFile = components["schemas"]["ItemsUsersFiles"];
@@ -6270,6 +6432,7 @@ export type Collections = {
   page: Page;
   page_content: PageContent;
   site: Site;
+  user_email_events: UserEmailEvent;
   user_relationships: UserRelationship;
   users: User;
   users_files: UserFile;

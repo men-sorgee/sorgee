@@ -1,6 +1,7 @@
+import { string } from 'yargs';
 import { Applicant, applicantFields, Member, memberFields } from '..';
 import { getAdminClient } from '../client';
-import { User } from '../types';
+import { User, UserEmailEvent } from '../types';
 import { listUserInvites } from './events';
 
 export async function createUser(member: Partial<User>): Promise<any> {
@@ -130,4 +131,28 @@ async function getNotifications(member: Member) {
 export async function deleteNotification(id: number) {
   const adminClient = await getAdminClient();
   return await adminClient.items('notifications_users').deleteOne(id);
+}
+
+const userEmails = new Map<string, string>();
+async function getUserId(email: string) {
+  if (userEmails.has(email)) return userEmails.get(email);
+
+  const adminClient = await getAdminClient();
+  const { data: users } = await adminClient.items('users').readByQuery({
+    filter: { email: { _eq: email } },
+    fields: 'id'
+  });
+
+  if (users && users.length > 0) {
+    userEmails.set(email, users[0].id);
+    return users[0].id;
+  }
+  return null;
+}
+
+export async function storeEmailEvent(event: UserEmailEvent) {
+  const adminClient = await getAdminClient();
+  event.user = (await getUserId(event.email)) || null;
+  event.payload = event;
+  return await adminClient.items('email_events').createOne(event);
 }

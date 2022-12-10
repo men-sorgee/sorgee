@@ -70,6 +70,10 @@
       "x-collection": "Site"
     },
     {
+      "name": "ItemsUserEmailEvents",
+      "x-collection": "user_email_events"
+    },
+    {
       "name": "ItemsUserRelationships",
       "x-collection": "user_relationships"
     },
@@ -3712,6 +3716,303 @@
           "ItemsSite"
         ],
         "operationId": "deleteSingleItemsSite",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "/items/user_email_events": {
+      "post": {
+        "summary": "Create an Item",
+        "description": "Create a new user_email_events item.",
+        "tags": [
+          "Items",
+          "ItemsUserEmailEvents"
+        ],
+        "operationId": "createItemsUserEmailEvents",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ItemsUserEmailEvents"
+                    }
+                  },
+                  {
+                    "$ref": "#/components/schemas/ItemsUserEmailEvents"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "items": {
+                        "$ref": "#/components/schemas/ItemsUserEmailEvents"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "get": {
+        "summary": "List Items",
+        "description": "List the user_email_events items.",
+        "tags": [
+          "Items",
+          "ItemsUserEmailEvents"
+        ],
+        "operationId": "readItemsUserEmailEvents",
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "$ref": "#/components/schemas/ItemsUserEmailEvents"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/x-metadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/items/user_email_events/{id}": {
+      "get": {
+        "summary": "Retrieve an Item",
+        "description": "Retrieve a single user_email_events item by unique identifier.",
+        "tags": [
+          "Items",
+          "ItemsUserEmailEvents"
+        ],
+        "operationId": "readSingleItemsUserEmailEvents",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ItemsUserEmailEvents"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update an Item",
+        "description": "Update an existing user_email_events item.",
+        "tags": [
+          "Items",
+          "ItemsUserEmailEvents"
+        ],
+        "operationId": "updateSingleItemsUserEmailEvents",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/ItemsUserEmailEvents"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ItemsUserEmailEvents"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an Item",
+        "description": "Delete an existing user_email_events item.",
+        "tags": [
+          "Items",
+          "ItemsUserEmailEvents"
+        ],
+        "operationId": "deleteSingleItemsUserEmailEvents",
         "responses": {
           "200": {
             "description": "Successful request"
@@ -10086,6 +10387,80 @@
         "properties": {},
         "x-collection": "Site"
       },
+      "ItemsUserEmailEvents": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "nullable": false,
+            "type": "string",
+            "format": "uuid"
+          },
+          "date_created": {
+            "nullable": true,
+            "type": "string",
+            "format": "timestamp"
+          },
+          "payload": {
+            "nullable": true
+          },
+          "event": {
+            "nullable": true,
+            "type": "string"
+          },
+          "marketing_campaign_name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "marketing_campaign_id": {
+            "nullable": true,
+            "type": "string"
+          },
+          "email": {
+            "nullable": true,
+            "type": "string"
+          },
+          "category": {
+            "nullable": true,
+            "type": "string"
+          },
+          "sg_event_id": {
+            "nullable": true,
+            "type": "string"
+          },
+          "sg_message_id": {
+            "nullable": true,
+            "type": "string"
+          },
+          "timestamp": {
+            "nullable": true,
+            "type": "integer"
+          },
+          "response": {
+            "nullable": true,
+            "type": "string"
+          },
+          "url": {
+            "nullable": true,
+            "type": "string"
+          },
+          "type": {
+            "nullable": true,
+            "type": "string"
+          },
+          "user": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/ItemsUsers"
+              }
+            ]
+          }
+        },
+        "x-collection": "user_email_events"
+      },
       "ItemsUserRelationships": {
         "type": "object",
         "properties": {
@@ -10386,6 +10761,13 @@
             "nullable": true,
             "type": "string"
           },
+          "tags": {
+            "nullable": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "events": {
             "type": "array",
             "items": {
@@ -10398,6 +10780,9 @@
                 }
               ]
             }
+          },
+          "preferences": {
+            "type": "string"
           },
           "administrative": {
             "type": "string"
@@ -10418,9 +10803,6 @@
               ]
             }
           },
-          "preferences": {
-            "type": "string"
-          },
           "images": {
             "type": "array",
             "items": {
@@ -10430,6 +10812,20 @@
                 },
                 {
                   "$ref": "#/components/schemas/ItemsUsersFiles"
+                }
+              ]
+            }
+          },
+          "email_events": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "$ref": "#/components/schemas/ItemsUserEmailEvents"
                 }
               ]
             }

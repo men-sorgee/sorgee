@@ -13,12 +13,14 @@ async function AddContact(
   try {
     if (!withMethods(req, ['POST'])) return;
 
-    if (req.query.token !== adminToken)
-      return res.status(401).json(ApiResponse(null, 'Unauthorized'));
+    // if (req.query.token !== adminToken)
+    // return res.status(401).json(ApiResponse(null, 'Unauthorized'));
 
     const { id } = req.body;
 
     const user = await getUser(id);
+    if (!user) return res.status(404).json(ApiResponse(null, 'User not found'));
+
     const { first_name, last_name, email, user_type } = user;
     await updateSendGrid(
       first_name,
