@@ -60,17 +60,6 @@ export async function withAppUser(
     // set cookie if not set & record login
     if (!id && onLogin) await onLogin(user, userData as any);
 
-    // update picture id empty
-    if (!userData.picture && user.picture != null) {
-      const file = await importFile(
-        user.picture,
-        UploadFolder.members,
-        userData.email
-      );
-      if (file) {
-        await updateUser(userData.id, { picture: file.id });
-      }
-    }
     if (userData.application_status == 'approved') return userData as any;
     return userData as Applicant;
   }
