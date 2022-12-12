@@ -3,6 +3,7 @@
 import { getAdminClient, listUserInvites } from '.';
 import { User, UserEmailEvent } from '../types';
 import { Applicant, applicantFields, Member, memberFields } from 'models';
+import { UserAuthEvent } from './types';
 
 export async function createUser(member: Partial<User>): Promise<any> {
   const adminClient = await getAdminClient();
@@ -151,6 +152,13 @@ async function getUserId(email: string) {
 }
 
 export async function storeEmailEvent(event: UserEmailEvent) {
+  const adminClient = await getAdminClient();
+  event.user = (await getUserId(event.email)) || null;
+  event.payload = event;
+  return await adminClient.items('email_events').createOne(event);
+}
+
+export async function storeAuthEvent(event: UserAuthEvent) {
   const adminClient = await getAdminClient();
   event.user = (await getUserId(event.email)) || null;
   event.payload = event;
