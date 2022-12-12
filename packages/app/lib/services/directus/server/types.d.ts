@@ -1188,6 +1188,8 @@ export interface components {
       strategy?: string | null;
       strategy_type?: string | null;
       mobile?: boolean | null;
+      user?: string | components["schemas"]["ItemsUsers"];
+      payload?: Record<string, unknown> | null;
     };
     ItemsUserEmailEvents: {
       /** Format: uuid */
@@ -1207,6 +1209,7 @@ export interface components {
       url?: string | null;
       type?: string | null;
       user?: string | components["schemas"]["ItemsUsers"];
+      status?: string | null;
     };
     ItemsUserRelationships: {
       id?: number;
@@ -1284,16 +1287,17 @@ export interface components {
       photo_denial_reason?: string | null;
       tags?: (string)[] | null;
       events?: (number | components["schemas"]["ItemsEventsUsers"])[];
-      preferences?: string;
-      administrative?: string;
-      information?: string;
       notifications?: (number | components["schemas"]["ItemsNotificationsUsers"])[];
+      information?: string;
+      administrative?: string;
+      preferences?: string;
       images?: (number | components["schemas"]["ItemsUsersFiles"])[];
       email_events?: (string | components["schemas"]["ItemsUserEmailEvents"])[];
       my_files?: (number | components["schemas"]["ItemsUsersPhotos"])[];
       users?: (number | components["schemas"]["ItemsUserRelationships"])[];
       my_sex?: string;
       their_sex?: string;
+      auth_events?: (string | components["schemas"]["ItemsUserAuthEvents"])[];
     };
     ItemsUsersFiles: {
       id?: number;

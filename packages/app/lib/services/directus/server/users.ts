@@ -154,13 +154,11 @@ async function getUserId(email: string) {
 export async function storeEmailEvent(event: UserEmailEvent) {
   const adminClient = await getAdminClient();
   event.user = (await getUserId(event.email)) || null;
-  event.payload = event;
-  return await adminClient.items('email_events').createOne(event);
+  return await adminClient.items('user_email_events').createOne(event);
 }
 
 export async function storeAuthEvent(event: UserAuthEvent) {
   const adminClient = await getAdminClient();
-  event.user = (await getUserId(event.email)) || null;
-  event.payload = event;
-  return await adminClient.items('email_events').createOne(event);
+  event.user = (await getUserId(event.user_name)) || null;
+  return await adminClient.items('user_auth_events').createOne(event);
 }

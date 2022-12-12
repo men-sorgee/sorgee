@@ -30,7 +30,37 @@ export default async function HandleEvents(
 
     const events: SendGridEvent[] = req.body;
     await Promise.all(
-      events.map((event) => storeEmailEvent(event as UserEmailEvent))
+      events.map((sgEvent) => {
+        const {
+          sg_event_id,
+          sg_message_id,
+          email,
+          event,
+          category,
+          marketing_campaign_id,
+          marketing_campaign_name,
+          url,
+          response,
+          status,
+          type,
+          timestamp
+        } = sgEvent;
+        storeEmailEvent({
+          sg_event_id,
+          sg_message_id,
+          email,
+          event,
+          category: Array.isArray(category) ? category.join(',') : category,
+          marketing_campaign_id,
+          marketing_campaign_name,
+          url,
+          response,
+          status,
+          type,
+          timestamp,
+          payload: sgEvent
+        });
+      })
     );
 
     res.status(200).end();
