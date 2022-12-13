@@ -34,9 +34,6 @@ function Review() {
           Your application is currently being reviewed by our team. You will
           receive an email with our decision within 7 days.
         </p>
-        <Loading>
-          <h3>Under Review</h3>
-        </Loading>
       </>
     </Page>
   );
