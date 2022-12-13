@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Drawer, Menu, Link } from 'react-daisyui';
+import { Drawer, Menu } from 'react-daisyui';
 import { useMetaContext } from 'lib/hooks';
 import { Props } from 'models';
 import Header from './Header';
 import { useMember } from 'lib/hooks/use-member';
 import Meta from '../meta';
 import Footer from './Footer';
+import Link from 'next/link';
 
 export default function Layout({ children }: Props) {
   const { user, member } = useMember();
@@ -29,20 +30,21 @@ export default function Layout({ children }: Props) {
       <Drawer
         open={visible}
         onClickOverlay={toggleDrawer}
-        className="static z-10 !min-h-fit !overflow-hidden"
+        className=""
         side={
           <Menu
             vertical
-            className="w-fit overflow-y-auto bg-black p-4 text-white"
+            className="sticky w-fit overflow-y-auto bg-black p-4 text-white"
           >
             <Menu.Item className={`my-2 ${path === '/' && 'active'}`}>
-              <Link
-                href="/"
-                className={`btn block text-center no-underline ${
-                  path === '/' ? 'btn-primary' : 'btn-ghost'
-                }`}
-              >
-                Home
+              <Link href="/">
+                <a
+                  className={`btn block text-center no-underline ${
+                    path === '/' ? 'btn-primary' : 'btn-ghost'
+                  }`}
+                >
+                  Home
+                </a>
               </Link>
             </Menu.Item>
             {pages?.map((page, i) => (
@@ -50,45 +52,48 @@ export default function Layout({ children }: Props) {
                 key={i}
                 className={`my-2 ${path === page.path && 'active'}`}
               >
-                <Link
-                  href={page.path}
-                  className={`btn block text-center no-underline ${
-                    path === page.path ? 'btn-primary' : 'btn-ghost'
-                  }`}
-                >
-                  {page.title}
+                <Link href={page.path}>
+                  <a
+                    className={`btn block text-center no-underline ${
+                      path === page.path ? 'btn-primary' : 'btn-ghost'
+                    }`}
+                  >
+                    {page.title}
+                  </a>
                 </Link>
               </Menu.Item>
             ))}
-            <hr />
+
             <Menu.Item className={`my-2 ${path === '/privacy' && 'active'}`}>
-              <Link
-                href="/privacy"
-                className={`btn block text-center no-underline ${
-                  path === '/privacy' ? 'btn-primary' : 'btn-ghost'
-                }`}
-              >
-                Privacy Policy
+              <Link href="/privacy">
+                <a
+                  className={`btn-sm btn block text-center no-underline ${
+                    path === '/privacy' ? 'btn-primary' : 'btn-ghost'
+                  }`}
+                >
+                  Privacy Policy
+                </a>
               </Link>
             </Menu.Item>
 
             <Menu.Item className={`my-2 ${path === '/terms' && 'active'}`}>
-              <Link
-                href="/terms"
-                className={`btn block text-center no-underline ${
-                  path === '/terms' ? 'btn-primary' : 'btn-ghost'
-                }`}
-              >
-                Terms of Service
+              <Link href="/terms">
+                <a
+                  className={`btn-sm btn block text-center ${
+                    path === '/terms' ? 'btn-primary' : 'btn-ghost'
+                  }`}
+                >
+                  Terms of Service
+                </a>
               </Link>
             </Menu.Item>
           </Menu>
         }
       >
-        <main>
-          <article>{children}</article>
+        <div className="container">
+          <main>{children}</main>
           <Footer />
-        </main>
+        </div>
       </Drawer>
     </>
   );

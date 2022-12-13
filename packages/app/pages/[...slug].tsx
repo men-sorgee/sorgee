@@ -63,7 +63,7 @@ export default function Page({
   const img = image ? `/api/asset/${image.id}` : null;
   useMeta(title, description, img, pages);
   return (
-    <>
+    <article>
       <h1>{title}</h1>
       <section>
         <Markdown content={markdown} />
@@ -73,6 +73,6 @@ export default function Page({
           <Section key={i} content={s} />
         ))}
       </>
-    </>
+    </article>
   );
 }

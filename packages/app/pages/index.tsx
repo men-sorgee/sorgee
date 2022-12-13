@@ -22,7 +22,7 @@ const Page: NextPage<Props> = ({ page, pages }: Props) => {
   useMeta(title, description, img, pages);
 
   return (
-    <>
+    <article>
       <section>
         <Markdown content={markdown} />
       </section>
@@ -34,7 +34,7 @@ const Page: NextPage<Props> = ({ page, pages }: Props) => {
           <Section key={i} content={s} />
         ))}
       </>
-    </>
+    </article>
   );
 };
 

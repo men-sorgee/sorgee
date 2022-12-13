@@ -23,7 +23,7 @@ const Page: FC<PageProps> = ({
 }) => {
   useMeta(title, description);
   return (
-    <>
+    <article>
       <h1 className={titleClass}>{title}</h1>
       <div className={`w-full ${sectionClass}`}>
         {header}
@@ -34,7 +34,7 @@ const Page: FC<PageProps> = ({
         )) ||
           children}
       </div>
-    </>
+    </article>
   );
 };
 export default Page;

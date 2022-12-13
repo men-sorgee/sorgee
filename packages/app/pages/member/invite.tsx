@@ -27,9 +27,13 @@ type PageProps = {
 };
 
 function Invite({ userTypeOptions }: PageProps) {
-  const { loading } = useMember();
+  const { loading, member } = useMember();
   return (
-    <Page title="Invite Someone" loading={loading} sectionClass="gradient p-4">
+    <Page title="Invite Someone" loading={loading} sectionClass="">
+      <p>
+        {member?.first_name || 'Brother'}, enter your friend&apos;s email
+        address and we will create a special link for you to share.
+      </p>
       <Form userTypeOptions={userTypeOptions} />
     </Page>
   );
@@ -110,11 +114,10 @@ function Form({ userTypeOptions }: PageProps) {
   return (
     <>
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="max-w-xl">
-          <p>
-            {member?.first_name || 'Brother'}, enter your friend&apos;s email
-            address and we will create a special link for you to share.
-          </p>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="gradient max-w-md p-4"
+        >
           <div className="grid grid-cols-1 gap-4 ">
             <FieldInput
               field="email"
