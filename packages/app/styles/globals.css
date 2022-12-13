@@ -6,16 +6,15 @@
   body {
     @apply min-h-screen;
   }
-  header > *,
+  header > div,
+  footer > div,
   main {
-    @apply mx-auto max-w-3xl md:max-w-4xl lg:max-w-5xl;
+    @apply mx-auto max-w-3xl lg:max-w-4xl;
   }
   article {
-    @apply min-h-[70vh] min-w-[370px] px-4 pt-2 md:pt-4;
+    @apply prose-base prose-invert prose min-h-[70vh] min-w-[370px]  !max-w-none px-4 pt-2 md:pt-4 xl:prose-lg;
   }
-  article > * {
-    @apply prose-base prose-invert prose xl:prose-lg;
-  }
+
   html,
   body,
   iframe {
@@ -27,29 +26,23 @@
     @apply !bg-gradient-to-tr from-pink-500 to-blue-500 !bg-clip-text !font-serif !font-extrabold !text-transparent;
   }
   h2 {
-    @apply !font-sans !font-extrabold !text-primary-500;
+    @apply !font-sans !font-extrabold !text-primary-400;
   }
   h3 {
-    @apply !font-serif !font-extrabold !text-secondary-400;
+    @apply !font-serif !font-extrabold !text-accent-400;
   }
   h4 {
-    @apply !font-serif  !font-bold  !text-primary-400;
+    @apply !font-serif !font-extrabold  !text-primary-300;
   }
   h5 {
-    @apply !max-w-none !font-serif !font-bold !text-white;
+    @apply !font-serif !font-bold !text-accent-300;
   }
   p {
-    @apply !w-full !max-w-none;
+    @apply !w-full;
   }
 
   label {
     @apply block font-extrabold;
-  }
-
-  textarea,
-  select,
-  input {
-    @apply block w-full rounded-md border-accent bg-black text-white;
   }
 
   section {
@@ -65,17 +58,19 @@
     @apply text-accent-400;
   }
   .gradient {
-    @apply rounded-lg bg-gradient-to-br from-primary-400  to-black !text-white;
+    @apply rounded-lg bg-gradient-to-br from-primary-400  to-black   !text-white;
+  }
+
+  .textarea,
+  .select,
+  .input {
+    @apply block w-full rounded-md bg-black text-white;
+  }
+  label {
+    @apply block font-extrabold text-white;
   }
 }
 
-section.gradient > * {
-  @apply px-2 md:px-4;
-}
-
-section.gradient {
-  @apply py-4;
-}
 .gradient h3,
 .gradient h2 {
   @apply text-white;

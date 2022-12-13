@@ -29,11 +29,7 @@ type PageProps = {
 function Invite({ userTypeOptions }: PageProps) {
   const { loading } = useMember();
   return (
-    <Page
-      title="Invite Someone"
-      loading={loading}
-      sectionClass="gradient max-w-xl"
-    >
+    <Page title="Invite Someone" loading={loading} sectionClass="gradient p-4">
       <Form userTypeOptions={userTypeOptions} />
     </Page>
   );

@@ -28,7 +28,7 @@ function Agreement() {
     <Page
       title="Agreement"
       loading={loading || completed}
-      sectionClass="gradient"
+      sectionClass="gradient p-4"
       header={<ApplicationSteps status={'agreement'} />}
     >
       <Form {...{ router, setCompleted }} />

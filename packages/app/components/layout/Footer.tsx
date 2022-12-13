@@ -10,7 +10,7 @@ export default function Footer() {
               href="https://www.instagram.com/guysnheat/"
               target={'_blank'}
               rel="noreferrer"
-              className="text-gray-400 hover:text-gray-200"
+              className="text-gray-200 hover:text-gray-100"
             >
               <span className="sr-only">Instagram</span>
               <InstagramIcon className="h-6 w-6" />
@@ -20,7 +20,7 @@ export default function Footer() {
               href="https://twitter.com/guysnheat"
               target={'_blank'}
               rel="noreferrer"
-              className="text-gray-400 hover:text-gray-200"
+              className="text-gray-200 hover:text-gray-100"
             >
               <span className="sr-only">Twitter</span>
               <TwitterIcon className="h-6 w-6" />
@@ -30,7 +30,7 @@ export default function Footer() {
               href="https://discord.gg/zMbwypyKgD"
               target={'_blank'}
               rel="noreferrer"
-              className="text-gray-400 hover:text-gray-200"
+              className="text-gray-200 hover:text-gray-100"
             >
               <span className="sr-only">Discord</span>
               <DiscordIcon className="h-6 w-6" />

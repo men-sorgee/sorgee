@@ -23,10 +23,10 @@ const Page: NextPage<Props> = ({ page, pages }: Props) => {
 
   return (
     <>
-      <section className="prose-lg prose md:mx-auto ">
+      <section>
         <Markdown content={markdown} />
       </section>
-      <section className="gradient mt-8 min-w-fit rounded-xl md:mx-auto md:max-w-md">
+      <section className="gradient mt-8 min-w-fit rounded-xl p-4 md:mx-auto md:max-w-md">
         <Subscribe />
       </section>
       <>

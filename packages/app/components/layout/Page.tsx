@@ -25,7 +25,7 @@ const Page: FC<PageProps> = ({
   return (
     <>
       <h1 className={titleClass}>{title}</h1>
-      <section className={`${sectionClass}`}>
+      <div className={`w-full ${sectionClass}`}>
         {header}
         {(loading && (
           <Loading>
@@ -33,7 +33,7 @@ const Page: FC<PageProps> = ({
           </Loading>
         )) ||
           children}
-      </section>
+      </div>
     </>
   );
 };

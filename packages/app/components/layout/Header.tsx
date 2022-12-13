@@ -1,13 +1,5 @@
 import { UserProfile } from '@auth0/nextjs-auth0';
-import {
-  Navbar,
-  Button,
-  Link,
-  Dropdown,
-  Tooltip,
-  Avatar,
-  Badge
-} from 'react-daisyui';
+import { Navbar, Button, Link, Dropdown, Avatar, Badge } from 'react-daisyui';
 import { Member, MemberLevel } from 'models';
 import { Logo } from '../icons';
 
@@ -16,51 +8,58 @@ export default function Header({
   member,
   toggleDrawer,
   setVisible,
-  visible,
-  hasPages
+  visible
 }: {
   user: UserProfile;
   member: Member;
   toggleDrawer: () => void;
   visible: boolean;
   setVisible: (v: boolean) => void;
-  hasPages: boolean;
 }) {
   const messages =
     member?.notifications?.filter((n) => n.type == 'message') || [];
   const newEvents =
     member?.notifications?.filter((n) => n.type == 'event') || [];
+
+  const photoSrc = member?.picture
+    ? `/api/asset/${member.picture}`
+    : user?.picture || null;
+  const letters = photoSrc
+    ? null
+    : member?.first_name
+    ? member.first_name[0]
+    : user?.nickname
+    ? user.nickname[0]
+    : null;
   return (
     <header className="sticky top-0 z-40 bg-black transition-all duration-150 ">
-      <Navbar className="flex max-w-3xl justify-between bg-black py-3 px-4 ">
-        {hasPages && (
-          <Button
-            className="swap-rotate swap btn-ghost btn fill-white"
-            onClick={toggleDrawer}
-            size="lg"
+      <Navbar className="flex justify-between bg-black py-3 px-1 ">
+        <Button
+          className="swap-rotate swap btn-ghost btn fill-white"
+          onClick={toggleDrawer}
+          size="lg"
+        >
+          <input type="checkbox" defaultChecked={visible} />
+          <svg
+            className="icon-lg fill-white-400 swap-off"
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            viewBox="0 0 512 512"
           >
-            <input type="checkbox" defaultChecked={visible} />
-            <svg
-              className="icon-lg fill-white-400 swap-off"
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 512 512"
-            >
-              <path d="M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z" />
-            </svg>
+            <path d="M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z" />
+          </svg>
 
-            <svg
-              className="swap-on fill-current"
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 512 512"
-            >
-              <polygon points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49" />
-            </svg>
-          </Button>
-        )}
+          <svg
+            className="swap-on fill-current"
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            viewBox="0 0 512 512"
+          >
+            <polygon points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49" />
+          </svg>
+        </Button>
         <div className="flex-grow" onClick={() => setVisible(false)}>
           <Link href="/" className="mx-auto">
             <Logo
@@ -83,20 +82,16 @@ export default function Header({
             horizontal="center"
             className="mr-2 bg-black text-white"
             onClick={() => setVisible(false)}
+            color={'primary'}
           >
-            <Tooltip message={user?.email} position="left">
-              <Avatar
-                className="z-50 cursor-pointer rounded-full ring-2 ring-accent"
-                shape="circle"
-                size={70}
-                letters={user?.email}
-                src={
-                  member?.picture
-                    ? `/api/asset/${member.picture}`
-                    : user?.picture
-                }
-              />
-            </Tooltip>
+            <Avatar
+              className="z-50 cursor-pointer rounded-full ring-2 ring-accent"
+              shape="circle"
+              size={70}
+              letters={letters}
+              src={photoSrc}
+              color={'primary'}
+            />
 
             <Dropdown.Menu>
               {MemberLevel[member?.user_type || 'subscriber'] > 3 && (
@@ -108,12 +103,12 @@ export default function Header({
                     )}
                   </Dropdown.Item>
                   <Dropdown.Item href="/member/account">Account</Dropdown.Item>
-                  <Dropdown.Item href="/member/account?t=4">
-                    Notifications
-                    {messages.length > 0 && (
+                  {messages.length > 0 && (
+                    <Dropdown.Item href="/member/account?t=4">
+                      Notifications
                       <Badge color="accent">{messages.length}</Badge>
-                    )}
-                  </Dropdown.Item>
+                    </Dropdown.Item>
+                  )}
 
                   <Dropdown.Item href="/member/invite">Invite</Dropdown.Item>
                 </>

@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Drawer, Menu, Link, Footer } from 'react-daisyui';
+import { Drawer, Menu, Link } from 'react-daisyui';
 import { useMetaContext } from 'lib/hooks';
 import { Props } from 'models';
 import Header from './Header';
 import { useMember } from 'lib/hooks/use-member';
 import Meta from '../meta';
+import Footer from './Footer';
 
 export default function Layout({ children }: Props) {
   const { user, member } = useMember();
@@ -22,19 +23,28 @@ export default function Layout({ children }: Props) {
           member,
           toggleDrawer,
           visible,
-          setVisible,
-          hasPages: pages?.length > 0
+          setVisible
         }}
       />
       <Drawer
         open={visible}
         onClickOverlay={toggleDrawer}
-        className="static z-10"
+        className="static z-10 !min-h-fit !overflow-hidden"
         side={
           <Menu
             vertical
             className="w-fit overflow-y-auto bg-black p-4 text-white"
           >
+            <Menu.Item className={`my-2 ${path === '/' && 'active'}`}>
+              <Link
+                href="/"
+                className={`btn block text-center no-underline ${
+                  path === '/' ? 'btn-primary' : 'btn-ghost'
+                }`}
+              >
+                Home
+              </Link>
+            </Menu.Item>
             {pages?.map((page, i) => (
               <Menu.Item
                 key={i}
@@ -50,6 +60,28 @@ export default function Layout({ children }: Props) {
                 </Link>
               </Menu.Item>
             ))}
+            <hr />
+            <Menu.Item className={`my-2 ${path === '/privacy' && 'active'}`}>
+              <Link
+                href="/privacy"
+                className={`btn block text-center no-underline ${
+                  path === '/privacy' ? 'btn-primary' : 'btn-ghost'
+                }`}
+              >
+                Privacy Policy
+              </Link>
+            </Menu.Item>
+
+            <Menu.Item className={`my-2 ${path === '/terms' && 'active'}`}>
+              <Link
+                href="/terms"
+                className={`btn block text-center no-underline ${
+                  path === '/terms' ? 'btn-primary' : 'btn-ghost'
+                }`}
+              >
+                Terms of Service
+              </Link>
+            </Menu.Item>
           </Menu>
         }
       >

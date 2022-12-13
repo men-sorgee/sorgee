@@ -20,7 +20,7 @@ function Verification() {
     <Page
       title="Identification"
       loading={loading || completed}
-      sectionClass="gradient"
+      sectionClass="gradient p-4"
       header={<ApplicationSteps status={'verify'} />}
     >
       {member?.id && (

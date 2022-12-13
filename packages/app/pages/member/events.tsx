@@ -6,8 +6,6 @@ import { listUserInvites } from 'lib/services/directus/server';
 import moment, { Moment } from 'moment';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-
-import { withMember } from 'lib/utils/server';
 import { NextPageContext } from 'next';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FieldRadioButtons } from 'components/forms';
@@ -34,7 +32,7 @@ export async function getServerSideProps({ req }: NextPageContext) {
   };
 }
 
-function Event({ invites }: { invites: Invite[] }) {
+function EventPage({ invites }: { invites: Invite[] }) {
   const [allowed, setAllowed] = useState(false);
   const { member, loading } = useMember();
   useEffect(() => {
@@ -58,7 +56,7 @@ function Event({ invites }: { invites: Invite[] }) {
         <Events {...{ invites }} />
       ) : (
         <>
-          <h2>You are no allowed</h2>
+          <h2>No Events</h2>
           <p>
             Please complete your{' '}
             <Link href="/apply">
@@ -136,9 +134,9 @@ function EventCard({ invite }: { invite: Invite }) {
       : 'You have already RSVPed. Use the form below to update your response.';
   return (
     <>
-      <Card className="gradient mx-auto max-w-md text-center">
+      <Card className="gradient not-prose mx-auto max-w-lg text-center">
         <div className="flex items-center justify-between self-stretch  align-middle">
-          <h2 className="m-0 w-3/4 text-center">
+          <h2 className="m-0 w-3/4 text-center text-xl !text-white">
             {invite.name}
             <br />@ {eventDate.format('h:mm A')}
           </h2>
@@ -151,23 +149,25 @@ function EventCard({ invite }: { invite: Invite }) {
         </div>
         <Card.Body className="border-y-2 border-primary-900">
           <Markdown content={invite.description} />
-          <Alert className="mt-2 text-sm">
+          <Alert className="italics mt-2 text-sm">
             Location announced on the day of the event and is sent to confirmed
-            attendees only.
+            attendees only. Events are subject to change or cancellation,
+            depending upon member interest. We will communicate any changes to
+            the event 24 hours in advance.
           </Alert>
-          <h4>You are {rsvp}!</h4>
-          <p>{message}</p>
         </Card.Body>
         <Card.Actions className="border-t-1 border-primary-700 bg-primary-900">
           <FormProvider {...methods}>
             <form
               onSubmit={methods.handleSubmit(respond)}
-              className="my-4 text-center"
+              className="my-4 w-full "
             >
+              <h4 className="py-2 text-lg">You are {rsvp}!</h4>
+              <p className="text-sm">{message}</p>
               <input type="hidden" {...methods.register('event_id')} />
               <input type="hidden" {...methods.register('user_id')} />
               <FieldRadioButtons
-                checked={undefined}
+                className="py-2"
                 field="rsvp"
                 formOptions={responseOptions}
                 registerOptions={{
@@ -194,6 +194,6 @@ function EventCard({ invite }: { invite: Invite }) {
   );
 }
 
-export default withPageAuthRequired(Events, {
+export default withPageAuthRequired(EventPage, {
   onRedirecting: () => <Loading />
 });

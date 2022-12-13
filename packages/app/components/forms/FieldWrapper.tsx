@@ -34,7 +34,7 @@ export default function FieldWrapper(props: Props) {
       )}
       {children}
       <ErrorMessage
-        render={(m) => <p className="text-red-500">{m.message}</p>}
+        render={(m) => <p className="!py-0 text-red-500">{m.message}</p>}
         errors={errors}
         message={error?.message}
         name={field}

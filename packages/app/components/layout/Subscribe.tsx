@@ -48,27 +48,32 @@ export default function Subscribe() {
         <FieldInput
           field="name"
           registerOptions={{
-            required: true
+            required: {
+              value: true,
+              message: 'Please enter your name'
+            }
           }}
           placeholder="Willy Dicks"
         />
         <FieldInput
           field="email"
           registerOptions={{
-            required: true
+            required: {
+              value: true,
+              message: 'Please enter your email address'
+            }
           }}
           type="email"
           placeholder="email@gmail.com"
           autoComplete="false"
         />
-
+        <Button type="submit" color="accent">
+          Get Notifications
+        </Button>
         <p className="p-2 text-xs">
           Subscribe only if you agree to our <a href="/terms">Terms </a> and{' '}
           <a href="/privacy">Privacy Policy</a>.
         </p>
-        <Button type="submit" color="accent">
-          Get Notifications
-        </Button>
       </form>
     </FormProvider>
   );

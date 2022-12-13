@@ -50,7 +50,7 @@ function Account(props: PageProps) {
   const data = { member, reload, ...props };
 
   return (
-    <Page title="Account" loading={loading} sectionClass="gradient">
+    <Page title="Account" loading={loading} sectionClass="gradient p-4">
       <Form {...data} />
     </Page>
   );

@@ -21,7 +21,7 @@ function Denied() {
     <Page
       title="Application Denied"
       loading={loading}
-      sectionClass="gradient"
+      sectionClass="gradient p-4"
       header={<ApplicationSteps status={'denied'} />}
     >
       <>
