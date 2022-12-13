@@ -42,7 +42,7 @@ export default async function HandleEvents(
           client_name,
           ip,
           user_agent,
-          details,
+          details = {},
           user_id,
           user_name,
           strategy,
