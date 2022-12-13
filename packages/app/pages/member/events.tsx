@@ -1,5 +1,5 @@
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
-import { Alert, Button, Card } from 'react-daisyui';
+import { Button } from 'react-daisyui';
 import Page from 'components/layout/Page';
 import { useMember } from 'lib/hooks/use-member';
 import { listUserInvites } from 'lib/services/directus/server';
@@ -10,11 +10,10 @@ import { NextPageContext } from 'next';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FieldRadioButtons } from 'components/forms';
 import { postJSON } from 'lib/utils/client';
-import Loading from 'components/ui/Loading';
-import Markdown from 'components/layout/Markdown';
 import { Invite, MemberLevel } from 'models';
 import { getCookie } from 'cookies-next';
 import { memberCookie } from 'config/client';
+import EventCard from '../../components/EventCard';
 
 export async function getServerSideProps({ req }: NextPageContext) {
   const memberId = getCookie(memberCookie, { req }) as string;
@@ -81,13 +80,13 @@ function Events({ invites }: { invites: Invite[] }) {
   return (
     <>
       {invites.map((invite) => (
-        <EventCard key={invite.id} invite={invite} />
+        <EventInfo key={invite.id} invite={invite} />
       ))}
     </>
   );
 }
 
-function EventCard({ invite }: { invite: Invite }) {
+function EventInfo({ invite }: { invite: Invite }) {
   const [confirmed, setConfirmed] = useState(false);
   const [rsvp, setRsvp] = useState(invite.rsvp);
   const [eventDate] = useState<Moment>(moment(invite.datetime));
@@ -134,66 +133,60 @@ function EventCard({ invite }: { invite: Invite }) {
       : 'You have already RSVPed. Use the form below to update your response.';
   return (
     <>
-      <Card className="gradient not-prose mx-auto max-w-lg text-center">
-        <div className="flex items-center justify-between self-stretch  align-middle">
-          <h2 className="m-0 w-3/4 text-center text-xl !text-white">
-            {invite.name}
-            <br />@ {eventDate.format('h:mm A')}
-          </h2>
-
-          <h3 className="m-0 bg-primary-900 px-8 py-2 text-center">
-            {eventDate.format('MMM')}
-            <br />
-            {eventDate.format('D')}
-          </h3>
-        </div>
-        <Card.Body className="border-y-2 border-primary-900">
-          <Markdown content={invite.description} />
-          <Alert className="italics mt-2 text-sm">
-            Location announced on the day of the event and is sent to confirmed
-            attendees only. Events are subject to change or cancellation,
-            depending upon member interest. We will communicate any changes to
-            the event 24 hours in advance.
-          </Alert>
-        </Card.Body>
-        <Card.Actions className="border-t-1 border-primary-700 bg-primary-900">
+      <EventCard invite={invite}>
+        <>
           <FormProvider {...methods}>
             <form
               onSubmit={methods.handleSubmit(respond)}
               className="my-4 w-full "
             >
-              <h4 className="py-2 text-lg">You are {rsvp}!</h4>
-              <p className="text-sm">{message}</p>
-              <input type="hidden" {...methods.register('event_id')} />
-              <input type="hidden" {...methods.register('user_id')} />
-              <FieldRadioButtons
-                className="py-2"
-                field="rsvp"
-                formOptions={responseOptions}
-                registerOptions={{
-                  required: true
-                }}
-              />
-              <Button color={'primary'} type="submit">
-                Update RSVP
-              </Button>
+              {invite.status == 'scheduled' && (
+                <>
+                  <h4 className="py-2 text-lg">You are {rsvp}!</h4>
+                  <p className="text-sm">{message}</p>
+                  <input type="hidden" {...methods.register('event_id')} />
+                  <input type="hidden" {...methods.register('user_id')} />
+                  <FieldRadioButtons
+                    className="py-2"
+                    field="rsvp"
+                    formOptions={responseOptions}
+                    registerOptions={{
+                      required: true
+                    }}
+                  />
+
+                  <Button color={'primary'} type="submit">
+                    Update RSVP
+                  </Button>
+                </>
+              )}
+              {invite.status == 'occurred' && invite.attended && (
+                <>
+                  <h4 className="py-2 text-lg">You attended.</h4>
+                  <p className="text-sm">Can we get some feedback?</p>
+                  <input type="hidden" {...methods.register('event_id')} />
+                  <input type="hidden" {...methods.register('user_id')} />
+
+                  <Button color={'primary'} type="submit">
+                    Update RSVP
+                  </Button>
+                </>
+              )}
             </form>
           </FormProvider>
-        </Card.Actions>
-        {confirmed && (
-          <div className="toast-center toast-middle toast">
-            <div className="alert-ghost alert whitespace-nowrap opacity-75">
-              <div>
-                <h4>RSVP Updated</h4>
+          {confirmed && (
+            <div className="toast-center toast-middle toast">
+              <div className="alert-ghost alert whitespace-nowrap opacity-75">
+                <div>
+                  <h4>RSVP Updated</h4>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </Card>
+          )}
+        </>
+      </EventCard>
     </>
   );
 }
 
-export default withPageAuthRequired(EventPage, {
-  onRedirecting: () => <Loading />
-});
+export default withPageAuthRequired(EventPage);

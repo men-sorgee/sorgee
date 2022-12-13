@@ -15,11 +15,20 @@ export enum EventInviteRSVPType {
   Declined = 'declined'
 }
 
+export enum EventStatusType {
+  Planned = 'planned',
+  Scheduled = 'scheduled',
+  OnHold = 'onhold',
+  Cancelled = 'cancelled',
+  Occurred = 'occurred'
+}
+
 export type Event = {
   id: string;
   name: string;
   description: string;
   datetime: string | Date;
+  status: string | EventStatusType;
 };
 
 export type Invite = EventInvite & {
@@ -27,6 +36,7 @@ export type Invite = EventInvite & {
   name: string;
   description: string;
   datetime: string | Moment;
+  status: string | EventStatusType;
 };
 
 export type EventInvite = {
@@ -34,4 +44,5 @@ export type EventInvite = {
   users_id: string;
   rsvp: EventInviteRSVPType | string;
   reason: string;
+  attended: boolean;
 };

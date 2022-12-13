@@ -54,6 +54,7 @@ export async function listUserInvites(users_id: string): Promise<Invite[]> {
       name: event.name!,
       description: event.description,
       datetime: event.datetime,
+      status: event.status,
       ...i
     };
   }) || []) as Invite[];
