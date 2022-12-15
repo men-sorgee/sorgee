@@ -10,7 +10,7 @@ export default function AppHead({
   const { title, description, url, image } = useMetaContext();
   return (
     <Head>
-      <title>{title} :: GuysNHeat</title>
+      <title>{title} :: SORGEES</title>
       <link rel="icon" href="/favicon.ico" />
       <meta name="robots" content="follow, index" />
       <link
