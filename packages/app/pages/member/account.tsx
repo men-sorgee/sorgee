@@ -103,7 +103,7 @@ function Form(props: PageProps & { member?: Member }) {
     }
 
     const [success, response] = await postJSON(
-      '/api/admin/me',
+      '/api/member/me',
       pruneUndefined(data)
     );
 
@@ -119,7 +119,7 @@ function Form(props: PageProps & { member?: Member }) {
 
   async function deleteNotification(id: string) {
     const [ok] = await fetchJSON(
-      '/api/admin/me',
+      '/api/member/me',
       {
         id
       },

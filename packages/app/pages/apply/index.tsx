@@ -134,7 +134,7 @@ function Form(props: PageProps) {
       data.height = `${data.height_feet} ${data.height_inches}`;
     }
     const [ok, response] = await postJSON(
-      '/api/admin/apply',
+      '/api/member/apply',
       pruneUndefined(data)
     );
 

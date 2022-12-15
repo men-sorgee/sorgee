@@ -88,7 +88,7 @@ function Form({ userTypeOptions }: PageProps) {
       v: member.id
     });
     setLink(inviteLink);
-    const response = await fetch('/api/admin/invite', {
+    const response = await fetch('/api/member/invite', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

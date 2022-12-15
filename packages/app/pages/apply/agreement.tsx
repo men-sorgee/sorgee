@@ -41,7 +41,7 @@ function Form({ router, setComplete }: Props) {
   const { handleSubmit, setError } = methods;
 
   async function onSubmit(data: AgreementData) {
-    const [success, response] = await postJSON('/api/admin/agree', data);
+    const [success, response] = await postJSON('/api/member/agree', data);
 
     if (success) {
       setComplete(true);

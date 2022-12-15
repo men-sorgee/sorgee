@@ -23,7 +23,7 @@ export const AppUserContextProvider = (props: Props) => {
   const router = useRouter();
 
   function getMember(): Promise<void> {
-    return getJSON<Member>('/api/admin/me')
+    return getJSON<Member>('/api/member/me')
       .then(([ok, res]) => {
         if (ok) setMember(res.data);
         setChecked(true);

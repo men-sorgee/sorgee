@@ -116,7 +116,7 @@ function EventInfo({ invite }: { invite: Invite }) {
   }, [confirmed]);
 
   async function respond(data: InviteRSVP) {
-    const [ok, response] = await postJSON('/api/admin/rsvp', data);
+    const [ok, response] = await postJSON('/api/member/rsvp', data);
     if (ok) {
       setConfirmed(true);
       setRsvp(data.rsvp);

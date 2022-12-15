@@ -18,7 +18,7 @@ export default function Subscribe() {
   });
   const { handleSubmit, setError } = methods;
   const onSubmit = async (data: SubscriptionData) => {
-    const response = await fetch('/api/admin/subscribe', {
+    const response = await fetch('/api/member/subscribe', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

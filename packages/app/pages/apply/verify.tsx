@@ -91,7 +91,7 @@ function Form({ code, member, router, setCompleted }): JSX.Element {
       let formData = new FormData();
       formData.append('media', file);
 
-      const res = await fetch('/api/admin/verify', {
+      const res = await fetch('/api/member/verify', {
         method: 'POST',
         body: formData
       });
