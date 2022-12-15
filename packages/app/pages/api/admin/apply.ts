@@ -4,7 +4,7 @@ import { createUser, getUser, updateUser } from 'lib/services/directus/server';
 import { ApiResponse } from 'models';
 import {
   updateSendGrid,
-  sendApplicationWorkflowEmail
+  sendNotificationEmail
 } from 'lib/services/sendgrid/server';
 import { Applicant, ApplicationStatus, MemberLevel } from 'models';
 import { User } from 'lib/services/directus/types';
@@ -33,7 +33,7 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
         delete userDetails.invite;
       }
 
-      await sendApplicationWorkflowEmail(
+      await sendNotificationEmail(
         userDetails.email,
         `Application Status`,
         'Your membership application has begun!',

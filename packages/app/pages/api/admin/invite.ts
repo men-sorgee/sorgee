@@ -2,7 +2,7 @@ import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ApiResponse, InviteLink } from 'models';
 import { withMember, withMethods } from 'lib/utils/server';
-import { sendApplicationWorkflowEmail } from 'lib/services/sendgrid/server';
+import { sendNotificationEmail } from 'lib/services/sendgrid/server';
 
 async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
@@ -11,7 +11,7 @@ async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     const member = await withMember(req, res);
     const { email, link } = req.body as InviteLink;
 
-    await sendApplicationWorkflowEmail(
+    await sendNotificationEmail(
       email,
       `${member.first_name} ${member.last_name} has invited you to join our community!`,
       `Begin your application, by clicking the button below.`,

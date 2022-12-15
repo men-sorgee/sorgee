@@ -2,6 +2,7 @@ import client from '@sendgrid/client';
 import mail from '@sendgrid/mail';
 import { sendGridApiKey } from 'config/server';
 import { MemberLevel } from 'models';
+import { convertMarkdownToHtml } from '../remark';
 
 export enum SendGridList {
   Subscribers = 'fdfecde5-2787-499a-a879-955959fc9720',
@@ -52,25 +53,31 @@ export async function sendEmail(to: string, subject: string) {
     });
 }
 
-export async function sendApplicationWorkflowEmail(
+export async function sendNotificationEmail(
   to: string,
-  title: string,
-  message: string,
-  button_text: string = 'Continue Application',
-  button_url: string = ''
+  subject: string,
+  messageMd: string,
+  button_text?: string,
+  button_url?: string,
+  templateId: string = 'd-7fe0a94b7c0b40b2a68b5d998ee6f7af',
+  id?: string
 ) {
   mail.setApiKey(sendGridApiKey);
+  const message = convertMarkdownToHtml(messageMd);
   await mail.send({
     from: 'GuysNHeat <system@guysnheat.com>',
     to,
-    subject: title,
+    subject,
     dynamicTemplateData: {
-      subject: title,
-      title,
+      subject,
       message,
       button_text,
       button_url
     },
-    templateId: 'd-7fe0a94b7c0b40b2a68b5d998ee6f7af'
+    templateId,
+    category: 'notification',
+    customArgs: {
+      id
+    }
   });
 }

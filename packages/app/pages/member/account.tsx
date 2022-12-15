@@ -20,6 +20,7 @@ import { CameraIcon, LightBulbIcon, XIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
 import FieldCheckbox from 'components/forms/FieldCheckbox';
 import Loading from 'components/ui/Loading';
+import Markdown from '../../components/layout/Markdown';
 
 export type PageProps = {
   spectrumOptions: FormOptions;
@@ -173,7 +174,9 @@ function Form(props: PageProps & { member?: Member }) {
           </Tabs>
           {member?.notifications.map((n, i) => (
             <Alert key={i}>
-              <div className="flex-grow">{n.message}</div>
+              <div className="flex-grow">
+                <Markdown content={n.message} />
+              </div>
               <div className="flex-shrink">
                 <a
                   className="btn-ghost btn-sm btn"

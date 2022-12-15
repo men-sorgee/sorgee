@@ -7,7 +7,7 @@ import {
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ApiResponse, ApplicationStatus } from 'models';
 import { withMember, withMethods } from 'lib/utils/server';
-import { sendApplicationWorkflowEmail } from 'lib/services/sendgrid/server';
+import { sendNotificationEmail } from 'lib/services/sendgrid/server';
 
 export const config = {
   api: {
@@ -30,7 +30,7 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
 
     const status = ApplicationStatus[member.application_status];
     if (status < 2)
-      await sendApplicationWorkflowEmail(
+      await sendNotificationEmail(
         member.email,
         `Application Status`,
         'Your photo ID was submitted. It may take a few days to review.',

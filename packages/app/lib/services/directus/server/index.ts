@@ -36,3 +36,4 @@ export async function getFieldOptions<T = User>(
 export * from './events';
 export * from './files';
 export * from './users';
+export * from './notifications';

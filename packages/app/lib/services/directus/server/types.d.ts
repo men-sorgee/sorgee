@@ -1117,8 +1117,13 @@ export interface components {
       status?: string;
       /** Format: timestamp */
       date_created?: string | null;
-      message?: string | null;
       link?: string | null;
+      subject?: string | null;
+      send_email?: boolean | null;
+      button_link?: string | null;
+      button_text?: string | null;
+      message?: string | null;
+      Template?: string | null;
       users?: (number | components["schemas"]["ItemsNotificationsUsers"])[];
     };
     ItemsNotificationsUsers: {
@@ -1219,6 +1224,7 @@ export interface components {
     };
     ItemsUsers: {
       id?: string;
+      /** @description The user's activity status, regardless of level. */
       status?: string;
       /** Format: timestamp */
       date_created?: string | null;
@@ -1239,6 +1245,7 @@ export interface components {
       spectrum?: string | null;
       relationship_status?: string | null;
       skin_tone?: string | null;
+      /** @description This is the user's verification photo. */
       photo?: string | components["schemas"]["Files"];
       notes?: string | null;
       flags?: Record<string, unknown> | null;
@@ -1281,6 +1288,7 @@ export interface components {
       approved_by?: string | components["schemas"]["Users"];
       application_status?: string;
       in_sendgrid?: boolean | null;
+      /** @description The user's avatar. Primary picture for admins and other users to see. */
       picture?: string | components["schemas"]["Files"];
       video_consent?: boolean | null;
       photo_consent?: boolean | null;
@@ -1291,9 +1299,9 @@ export interface components {
       information?: string;
       administrative?: string;
       preferences?: string;
-      images?: (number | components["schemas"]["ItemsUsersFiles"])[];
       email_events?: (string | components["schemas"]["ItemsUserEmailEvents"])[];
       my_files?: (number | components["schemas"]["ItemsUsersPhotos"])[];
+      images?: (number | components["schemas"]["ItemsUsersFiles"])[];
       users?: (number | components["schemas"]["ItemsUserRelationships"])[];
       my_sex?: string;
       their_sex?: string;

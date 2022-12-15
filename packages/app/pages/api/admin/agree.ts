@@ -8,7 +8,7 @@ import {
   MemberLevel
 } from 'models';
 import {
-  sendApplicationWorkflowEmail,
+  sendNotificationEmail,
   updateSendGrid
 } from 'lib/services/sendgrid/server';
 import { withApplicant, withMethods } from 'lib/utils/server';
@@ -27,7 +27,7 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     if (applicant && applicant.application_status == 'agreement' && agree) {
       const status = ApplicationStatus[applicant.application_status];
       if (status == 3)
-        sendApplicationWorkflowEmail(
+        sendNotificationEmail(
           applicant.email,
           `Application Status`,
           `Your free membership is now active!`,
