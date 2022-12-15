@@ -1,9 +1,12 @@
 import { ContentSection } from 'lib/services/directus/static';
+import Blocks from 'editorjs-blocks-react-renderer';
 import Markdown from './Markdown';
 
 export default function Section({ content }: { content: ContentSection }) {
   const { container, container_classes, type } = content;
   switch (type) {
+    case 'control':
+      return <Blocks data={(content.control as any) || {}} />;
     case 'image':
       return (
         <img

@@ -68,6 +68,26 @@ const byId = `
       description
     }
     markdown
+    content (
+        filter: { status: { _eq: "published" } }
+      ) {
+      id,
+      name,
+      container,
+      container_classes,
+      type
+      html
+      image {
+        id
+        description
+        height
+        width
+        title
+      }
+      control
+      markdown
+      status
+    }
   }
 }`;
 export async function getPageContentById(id: string) {
@@ -96,6 +116,26 @@ const byUrl = `
         description
       }
       markdown
+      content (
+          filter: { status: { _eq: "published" } }
+        ) {
+        id,
+        name,
+        container,
+        container_classes,
+        type
+        html
+        image {
+          id
+          description
+          height
+          width
+          title
+        }
+        control
+        markdown
+        status
+      }
     }
   }
 
@@ -155,6 +195,26 @@ const all = `{
         }
         
         markdown
+        content (
+          filter: { status: { _eq: "published" } }
+        ) {
+          id,
+          name,
+          container,
+          container_classes,
+          type
+          html
+          image {
+            id
+            description
+            height
+            width
+            title
+          }
+          control
+          markdown
+          status
+        }
       }
     }`;
 export async function listActivePages(): Promise<SectionPage[]> {
