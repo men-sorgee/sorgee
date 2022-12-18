@@ -1,9 +1,8 @@
 export default function DirectoryIcon({ className }: { className?: string }) {
   return (
-    <div className="relative flex items-center group">
+    <div className="group relative flex items-center">
       <svg
         className={className}
-        data-testid="geist-icon"
         fill="none"
         height="24"
         shapeRendering="geometricPrecision"

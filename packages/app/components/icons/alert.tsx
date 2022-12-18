@@ -2,7 +2,6 @@ export default function AlertCircleIcon({ className }: { className?: string }) {
   return (
     <svg
       className={className}
-      data-testid="geist-icon"
       fill="none"
       height="24"
       shapeRendering="geometricPrecision"

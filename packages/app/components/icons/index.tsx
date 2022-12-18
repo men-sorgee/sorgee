@@ -2,7 +2,6 @@ export { default as ExpandingArrow } from './arrow';
 export { default as SearchIcon } from './search';
 export { default as XCircleIcon } from './x-circle';
 export { default as XIcon } from './x';
-export { default as Logo } from './logo';
 export { default as CheckInCircleIcon } from './check-in-circle';
 export { default as CheckIcon } from './check';
 export { default as EditIcon } from './edit';
