@@ -1,30 +1,24 @@
 import { Directus } from '@directus/sdk';
+import { DirectusTypes, User } from 'lib/models';
 
-import { adminToken } from 'config/server';
-import { adminBaseUrl } from 'config/client';
-import { Collections, User } from '../types';
+const adminDb = new Directus<DirectusTypes>(process.env.ADMIN_URL);
 
-const adminDb = new Directus<Collections>(adminBaseUrl);
-
-export async function getAdminClient(): Promise<Directus<Collections>> {
+export async function getAdminClient(): Promise<Directus<DirectusTypes>> {
   if (await adminDb.auth.token) return adminDb;
-  await adminDb.auth.static(adminToken);
+  await adminDb.auth.static(process.env.ADMIN_TOKEN);
   return adminDb;
 }
 
 const cache: { [key: string]: any } = {};
-
 export async function getFieldOptions<T = User>(
   field: keyof T,
   collection: string = 'users'
 ) {
-  const adminClient = await getAdminClient();
-
   const key = `${collection}:${String(field)}`;
   if (cache[key]) {
     return cache[key];
   }
-
+  const adminClient = await getAdminClient();
   const response: any = await adminClient.fields.readOne(
     collection,
     String(field)
@@ -36,4 +30,3 @@ export async function getFieldOptions<T = User>(
 export * from './events';
 export * from './files';
 export * from './users';
-export * from './notifications';

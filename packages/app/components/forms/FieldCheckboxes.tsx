@@ -1,6 +1,6 @@
 import { InputHTMLAttributes } from 'react';
 import { useFormContext, RegisterOptions } from 'react-hook-form';
-import { FormOptions } from 'models';
+import { FormOptions } from 'lib/models';
 import FieldWrapper from './FieldWrapper';
 
 type Props = InputHTMLAttributes<HTMLInputElement> & {
@@ -50,7 +50,7 @@ export default function CheckboxesField(props: Props) {
                 value={value}
                 type="checkbox"
                 {...register(field, registerOptions)}
-                className="checkbox"
+                className="checkbox-accent checkbox bg-accent-600"
                 {...inputProps}
               />
               <span className="label-text ml-2 ">{text}</span>

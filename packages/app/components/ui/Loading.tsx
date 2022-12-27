@@ -1,10 +1,8 @@
-import type { FC } from 'react';
-
-interface LoadingProps {
+interface Props {
   children?: React.ReactNode | React.ReactNode[];
 }
 
-const Loading: FC<LoadingProps> = ({ children }) => {
+const Loading = ({ children }: Props) => {
   return (
     <>
       <div className="flex h-[40vh] w-full items-center justify-center">

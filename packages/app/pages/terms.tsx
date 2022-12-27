@@ -1,8 +1,8 @@
 import Script from 'next/script';
-import { useMeta } from 'lib/hooks/use-meta-context';
+import { setMeta } from 'lib/hooks/use-meta-context';
 
 export default function Learn() {
-  useMeta('Terms & Conditions');
+  setMeta('Terms & Conditions');
   return (
     <>
       <div

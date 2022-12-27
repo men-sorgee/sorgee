@@ -4,11 +4,11 @@ import { useMember } from 'lib/hooks/use-member';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { AgreementData, Props } from 'models';
+import { AgreementData, Props } from 'lib/models';
 import { Button } from 'react-daisyui';
-import FieldCheckbox from 'components/forms/FieldCheckbox';
+import FieldCheckbox from '../components/forms/FieldCheckbox';
 import { postJSON } from 'lib/utils/client';
-import Page from 'components/layout/Page';
+import Page from '../components/layout/Page';
 
 function Agreement() {
   const router = useRouter();

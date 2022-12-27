@@ -1,8 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ApiResponse } from 'models';
+import { ApiResponse } from 'lib/models';
 import { withMethods } from 'lib/utils/server';
 import { sendNotificationEmail } from 'lib/services/sendgrid/server';
-import { adminToken } from 'config/server';
 import { markNotificationSent } from 'lib/services/directus/server';
 
 async function SendNotification(
@@ -12,7 +11,7 @@ async function SendNotification(
   try {
     if (!withMethods(req, ['POST'])) return;
 
-    if (req.headers.authorization !== adminToken)
+    if (req.headers.authorization !== process.env.ADMIN_TOKEN)
       return res.status(401).json(ApiResponse(null, 'Unauthorized'));
 
     const { email, subject, message, button_text, button_link, template, id } =

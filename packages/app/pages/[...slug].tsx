@@ -1,15 +1,15 @@
 import { Key } from 'react';
-import Markdown from 'components/layout/Markdown';
+import Markdown from 'components/ui/Markdown';
 import Section from 'components/layout/Section';
-import { useMeta } from 'lib/hooks/use-meta-context';
+import { setMeta } from 'lib/hooks/use-meta-context';
 import {
-  MenuPage,
-  SectionPage,
   listActivePages,
   getPageContentByUrl
-} from '../lib/services/directus/static';
+} from 'lib/services/directus/static';
+import { Page, PageItem } from 'lib/models';
+import { GetStaticPaths } from 'next';
 
-export const getStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths = async () => {
   const pages = await listActivePages();
   const paths = pages.map((page) => ({
     params: { slug: page.slug.split('/') }
@@ -52,16 +52,16 @@ export async function getStaticProps({ params }) {
   };
 }
 
-export default function Page({
+export default function DynamicPage({
   page,
   pages
 }: {
-  page: SectionPage;
-  pages: MenuPage[];
+  page: Page;
+  pages: PageItem[];
 }) {
   const { title, description, image, markdown, content } = page;
   const img = image ? `/api/asset/${image.id}` : null;
-  useMeta(title, description, img, pages);
+  setMeta(title, description, img, pages);
   return (
     <article>
       <h1>{title}</h1>

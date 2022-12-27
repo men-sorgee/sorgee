@@ -1,8 +1,7 @@
 import { ErrorMessage } from '@hookform/error-message';
-import { Tooltip } from 'react-daisyui';
 import { useFormContext } from 'react-hook-form';
 import { InfoIcon } from '../icons';
-import { ExclamationIcon } from '@heroicons/react/solid';
+
 type Props = {
   field?: string;
   label?: string;
@@ -11,7 +10,7 @@ type Props = {
   children: React.ReactNode | React.ReactNode[];
 };
 
-export default function FieldWrapper(props: Props) {
+const FieldWrapper = (props: Props) => {
   const { field, label, help, className, children } = props;
   const {
     formState: { errors },
@@ -26,19 +25,23 @@ export default function FieldWrapper(props: Props) {
             {label}
           </label>
           {help && (
-            <Tooltip color="ghost" className="cursor-pointer" message={help}>
+            <div className="tooltip-ghost tooltip" data-tip={help}>
               <InfoIcon className="-mt-2 h-3 w-3" />
-            </Tooltip>
+            </div>
           )}
         </div>
       )}
       {children}
       <ErrorMessage
-        render={(m) => <p className="!py-0 text-red-500">{m.message}</p>}
+        as="p"
+        className="!py-0 text-red-500"
+        render={({ message, messages }) => message || messages?.required}
         errors={errors}
         message={error?.message}
         name={field}
       />
     </div>
   );
-}
+};
+
+export default FieldWrapper;

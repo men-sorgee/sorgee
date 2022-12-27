@@ -1,11 +1,10 @@
-import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import {
   updateUser,
   uploadFile,
   UploadFolder
 } from 'lib/services/directus/server';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ApiResponse, ApplicationStatus } from 'models';
+import { ApiResponse, ApplicationStatus } from 'lib/models';
 import { withMember, withMethods } from 'lib/utils/server';
 import { sendNotificationEmail } from 'lib/services/sendgrid/server';
 
@@ -20,7 +19,7 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     if (!withMethods(req, ['POST'])) return;
 
     const member = await withMember(req, res);
-    if (member == null) return;
+    if (!member) return;
 
     const file = await uploadFile(
       req,
@@ -50,4 +49,4 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   }
 }
 
-export default withApiAuthRequired(Verify);
+export default Verify;

@@ -1,9 +1,7 @@
-import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { deleteNotification, updateUser } from 'lib/services/directus/server';
-import { User } from 'lib/services/directus/types';
 import { withMember, withMethods } from 'lib/utils/server';
-import { Applicant, Member, ApiResponse } from 'models';
+import { User, Applicant, Member, ApiResponse } from 'lib/models';
 
 function dressMember(member: Applicant) {
   let { photo, ...rest } = member;
@@ -24,7 +22,7 @@ function undressMember(member: Member): Partial<User> {
   } as any;
 }
 
-async function getUserDetails(
+export default async function getUserDetails(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<Applicant> | ApiResponse>
 ) {
@@ -34,7 +32,6 @@ async function getUserDetails(
     switch (method) {
       case 'DELETE':
         const id = req.body.id;
-        console.dir(req.body);
         await deleteNotification(id);
         return res.status(200).end();
 
@@ -54,4 +51,4 @@ async function getUserDetails(
   }
 }
 
-export default withApiAuthRequired(getUserDetails);
+//export default withApiAuthRequired(getUserDetails);

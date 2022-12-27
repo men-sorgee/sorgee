@@ -2,15 +2,15 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useMember } from 'lib/hooks/use-member';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
-import { copyTextToClipboard } from 'lib/utils/client';
-import { UserInvite } from 'models';
+import { copyTextToClipboard, postJSON } from 'lib/utils/client';
+import { UserInvite } from 'lib/models';
 import { getFieldOptions } from 'lib/services/directus/server';
-import { FormOptions, InviteLink } from 'models';
+import { FormOptions, InviteLink } from 'lib/models';
 import { Button } from 'react-daisyui';
-import { FieldInput, FieldSelect } from 'components/forms';
-import Page from 'components/layout/Page';
+import { FieldInput, FieldSelect } from '../components/forms';
+import Page from '../components/layout/Page';
 import { GetServerSideProps } from 'next';
-import Loading from 'components/ui/Loading';
+import Loading from '../components/ui/Loading';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const userTypeOptions = await getFieldOptions('user_type');
@@ -40,7 +40,7 @@ function Invite({ userTypeOptions }: PageProps) {
 }
 
 function Form({ userTypeOptions }: PageProps) {
-  const { member } = useMember();
+  const { loading, member } = useMember();
   const [link, setLink] = useState<string>();
   const [sent, setSent] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
@@ -62,10 +62,11 @@ function Form({ userTypeOptions }: PageProps) {
         reset();
       }, 5000);
     }
-  });
+  }, [loading, member, sent, copied]);
 
   const getLink = ({ e, t }: UserInvite) => {
-    const data = Buffer.from(JSON.stringify({ e, t, v: member.id })).toString(
+    if (!member) return;
+    const data = Buffer.from(JSON.stringify({ e, t, v: member?.id })).toString(
       'base64'
     );
     const invite = `${location.protocol}//${location.host}/apply/${data}`;
@@ -76,37 +77,33 @@ function Form({ userTypeOptions }: PageProps) {
   const onCopyClick = (e) => {
     e.preventDefault();
     const invite = getLink(e.target.dataset);
+    if (!invite) return;
     copyTextToClipboard(invite);
     setCopied(true);
     setSent(false);
   };
 
   const onSubmit = async (data: InviteLink & { t: string }) => {
+    if (!member) {
+      setError('email', { message: 'Member not found' });
+    }
     const inviteLink = getLink({
       e: data.email,
       t: data.t,
-      v: member.id
+      v: member?.id
     });
     setLink(inviteLink);
-    const response = await fetch('/api/member/invite', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: Buffer.from(
-        JSON.stringify({
-          ...data,
-          inviteLink
-        })
-      )
+    const [ok, response] = await postJSON('/api/member/invite', {
+      ...data,
+      inviteLink
     });
 
-    if (response.ok) {
+    if (ok) {
       setSent(true);
       setCopied(false);
     } else {
-      const { error } = await response.json();
-      setError('email', { message: error });
+      const { error } = response;
+      setError('email', { message: error?.message });
     }
   };
   const email = getFieldState('email', formState);
@@ -145,12 +142,13 @@ function Form({ userTypeOptions }: PageProps) {
               />
             )}
             <input type="hidden" name="link" value={link} />
+            <input type="hidden" name="id" value={member?.id} />
+            <Button color="accent" type="submit" disabled={!member}>
+              Send Invite
+            </Button>
             {email.isTouched && !email.invalid && (
               <Button onClick={onCopyClick}>Copy Link</Button>
             )}
-            <Button color="primary" type="submit">
-              Send Invite
-            </Button>
           </div>
         </form>
       </FormProvider>

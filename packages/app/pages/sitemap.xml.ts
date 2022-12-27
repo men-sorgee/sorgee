@@ -1,7 +1,8 @@
-import { baseUrl } from '../config/client';
-import { listActivePages, SectionPage } from '../lib/services/directus/static';
+import { baseUrl } from 'lib/config/client';
+import { listActivePages } from 'lib/services/directus/static';
+import { Page } from 'lib/models';
 
-function generateSiteMap(pages: SectionPage[]) {
+function generateSiteMap(pages: Page[]) {
   return `<?xml version="1.0" encoding="UTF-8"?>
    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
      <!--We manually set the two URLs we know already-->

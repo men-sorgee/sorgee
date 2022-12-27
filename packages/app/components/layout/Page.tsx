@@ -1,8 +1,7 @@
-import type { FC } from 'react';
-import { useMeta } from '@/lib/hooks/use-meta-context';
+import { setMeta } from '@/lib/hooks/use-meta-context';
 import Loading from 'components/ui/Loading';
 
-interface PageProps {
+interface Props {
   title: string;
   loading?: boolean;
   header?: React.ReactNode;
@@ -12,7 +11,7 @@ interface PageProps {
   titleClass?: string;
 }
 
-const Page: FC<PageProps> = ({
+const Page = ({
   title,
   loading,
   description,
@@ -20,8 +19,8 @@ const Page: FC<PageProps> = ({
   sectionClass = '',
   children,
   titleClass
-}) => {
-  useMeta(title, description);
+}: Props) => {
+  setMeta(title, description);
   return (
     <article>
       <h1 className={titleClass}>{title}</h1>
@@ -37,4 +36,5 @@ const Page: FC<PageProps> = ({
     </article>
   );
 };
+
 export default Page;

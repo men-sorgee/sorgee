@@ -1,21 +1,21 @@
 version: '3'
 
 services:
-  #admin:
-  #  container_name: gnh-admin
-  #  build: 
-  #    context: ./packages/admin
-  #  depends_on:
-  #    - cache
-  #  env_file:
-  #    - ./packages/admin/.env
-  #  volumes:
-  #    - ./packages/admin/extensions:/directus/extensions:rw
-  #  ports:
-  #    - 8055:8055
-  #  environment:
-  #    DB_HOST: 35.223.87.210
-  #    PUBLIC_URL: https:/gnh-admin.local.guysnheat.com
+  admin:
+    container_name: gnh-admin
+    build: 
+      context: ./packages/admin
+    depends_on:
+      - cache
+    env_file:
+      - ./packages/admin/.env
+    volumes:
+      - ./packages/admin/extensions:/directus/extensions:rw
+    ports:
+      - 8055:8055
+    environment:
+      DB_HOST: 35.223.87.210
+      PUBLIC_URL: http://127.0.0.1:8055
   #app:
   #  container_name: gnh-app
   #  build: 
@@ -36,32 +36,32 @@ services:
   #    API_URL: https://admin.local.guysnheat.com/graphql
 
   # Development Tools ------------------------------------------
-  proxy:
-    image: jc21/nginx-proxy-manager:latest
-    container_name: gnh-proxy
-    restart: unless-stopped
-    ports:
-      - '80:80'
-      - '81:81'
-      - '443:443'
-    volumes:
-      - ./packages/proxy/data:/data:rw
-      - ./packages/proxy/certificates:/etc/letsencrypt:rw
+  #proxy:
+  #  image: jc21/nginx-proxy-manager:latest
+  #  container_name: gnh-proxy
+  #  restart: unless-stopped
+  #  ports:
+  #    - '80:80'
+  #    - '81:81'
+  #    - '443:443'
+  #  volumes:
+  #    - ./packages/proxy/data:/data:rw
+  #    - ./packages/proxy/certificates:/etc/letsencrypt:rw
   cache:
     container_name: cache
     image: redis:6
 
-  db:
-    container_name: gnh-db
-    image: dpage/pgadmin4
-    restart: unless-stopped
-    ports:
-      - 8080:80
-    environment:
-      PGADMIN_DEFAULT_EMAIL: jason@thebrotherhoodgroup.org
-      PGADMIN_DEFAULT_PASSWORD: testing
-    volumes:
-      - db_data:/data:rw
+  #db:
+  #  container_name: gnh-db
+  #  image: dpage/pgadmin4
+  #  restart: unless-stopped
+  #  ports:
+  #    - 8080:80
+  #  environment:
+  #    PGADMIN_DEFAULT_EMAIL: jason@thebrotherhoodgroup.org
+  #    PGADMIN_DEFAULT_PASSWORD: testing
+  #  volumes:
+  #    - db_data:/data:rw
 
 volumes:
   db_data:

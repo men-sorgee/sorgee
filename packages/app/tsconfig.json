@@ -16,8 +16,10 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
     "baseUrl": ".",
+    "incremental": true,
+    "jsx": "preserve",
+    "jsxImportSource": "react",
     "plugins": [
       {
         "name": "@twind/typescript-plugin"
@@ -30,25 +32,24 @@
       "@/lib/*": [
         "lib/*"
       ],
-      "@/styles": [
-        "styles/*"
-      ],
       "@/models": [
-        "models/*"
+        "lib/models/*"
       ],
       "@/config": [
-        "config/*"
+        "lib/config/*"
       ],
-    },
-    "incremental": true
+      "@/styles": [
+        "styles/*"
+      ]
+    }
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     "next.config.ts",
-    "next.config.mjs",
     "tailwind.config.js",
+    "middleware.ts"
   ],
   "exclude": [
     "node_modules",

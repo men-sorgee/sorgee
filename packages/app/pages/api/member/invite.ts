@@ -1,6 +1,5 @@
-import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ApiResponse, InviteLink } from 'models';
+import { ApiResponse, InviteLink } from 'lib/models';
 import { withMember, withMethods } from 'lib/utils/server';
 import { sendNotificationEmail } from 'lib/services/sendgrid/server';
 
@@ -9,6 +8,8 @@ async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     if (!withMethods(req, ['POST'])) return;
 
     const member = await withMember(req, res);
+    if (!member) return res.status(401).end();
+
     const { email, link } = req.body as InviteLink;
 
     await sendNotificationEmail(

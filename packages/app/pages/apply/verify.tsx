@@ -5,11 +5,11 @@ import { useState, ChangeEvent } from 'react';
 import Image from 'next/image';
 import ApplicationSteps from './_steps';
 import { Button } from 'react-daisyui';
-import Page from 'components/layout/Page';
-import FieldCheckbox from 'components/forms/FieldCheckbox';
+import Page from '../components/layout/Page';
+import FieldCheckbox from '../components/forms/FieldCheckbox';
 import { FormProvider, useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
-import { ApiResponse, Applicant } from 'models';
+import { ApiResponse, Applicant } from 'lib/models';
 
 function Verification() {
   const { member, loading } = useMember();

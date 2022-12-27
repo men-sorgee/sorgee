@@ -1,6 +1,6 @@
-import { ClassAttributes, ImgHTMLAttributes, useEffect } from 'react';
+import React, { ClassAttributes, ImgHTMLAttributes, useEffect } from 'react';
 import { useRemark } from 'react-remark';
-import Image from 'next/image';
+
 export default function Markdown({ content }: { content: string }) {
   const [reactContent, setMarkdownSource] = useRemark({
     rehypeReactOptions: {
@@ -28,5 +28,5 @@ export default function Markdown({ content }: { content: string }) {
   useEffect(() => {
     setMarkdownSource(content);
   }, []);
-  return reactContent;
+  return reactContent as JSX.Element;
 }

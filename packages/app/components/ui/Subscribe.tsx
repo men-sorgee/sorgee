@@ -1,20 +1,14 @@
 import { FormProvider, useForm } from 'react-hook-form';
-import { useUser } from '@auth0/nextjs-auth0';
-import { SubscriptionData } from 'models';
+import { SubscriptionData } from 'lib/models';
 import { useMember } from 'lib/hooks/use-member';
 import React, { useEffect } from 'react';
 import { Button } from 'react-daisyui';
 import { FieldInput } from '../forms';
 
 export default function Subscribe() {
-  const { user } = useUser();
-  const { member } = useMember();
   const [subscribed, setSubscribed] = React.useState(false);
   const methods = useForm<SubscriptionData>({
-    defaultValues: {
-      email: user?.email,
-      name: user?.name
-    }
+    mode: 'onBlur'
   });
   const { handleSubmit, setError } = methods;
   const onSubmit = async (data: SubscriptionData) => {
@@ -34,11 +28,13 @@ export default function Subscribe() {
     }
   };
 
-  useEffect(() => {
-    if (member && member.user_type != 'user') {
-      setSubscribed(true);
-    }
-  }, [subscribed, member, user]);
+  if (subscribed)
+    return (
+      <>
+        <h1>Thank you!</h1>
+        <p>Please check your spam folder, just in case we land there.</p>
+      </>
+    );
   return (
     <FormProvider {...methods}>
       <form

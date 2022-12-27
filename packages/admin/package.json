@@ -15,7 +15,7 @@
   "dependencies": {
     "@wellenplan/directus-extension-duration-display": "^0.1.16",
     "@wellenplan/directus-extension-duration-interface": "^0.1.14",
-    "directus": "^9.21.2",
+    "directus": "^9.22.1",
     "directus-extension-api-trigger-interface": "^1.0.0",
     "directus-extension-display-link": "^1.6.1",
     "directus-extension-editorjs": "^1.5.0",

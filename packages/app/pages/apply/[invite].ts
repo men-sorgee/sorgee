@@ -1,5 +1,5 @@
 import { NextPageContext } from 'next';
-import { UserInvite } from 'models';
+import { UserInvite } from 'lib/models';
 import { default as Apply, getServerSideProps as getProps } from './index';
 
 export function parseInvite(invite: string): UserInvite {

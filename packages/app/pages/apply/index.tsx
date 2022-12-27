@@ -5,19 +5,19 @@ import { useEffect, useState } from 'react';
 import { getFieldOptions } from '@/lib/services/directus/server';
 import { useMember } from 'lib/hooks/use-member';
 import { NextRouter, useRouter } from 'next/router';
-import { Applicant, FormOptions } from 'models';
+import { Applicant, FormOptions } from 'lib/models';
 import {
   FieldInput,
   FieldSelect,
   FieldWrapper,
   FieldText,
   FieldCheckboxes
-} from 'components/forms';
+} from '../components/forms';
 import { Button } from 'react-daisyui';
-import FieldCheckbox from 'components/forms/FieldCheckbox';
+import FieldCheckbox from '../components/forms/FieldCheckbox';
 import ApplicationSteps from './_steps';
 import { LightBulbIcon, SupportIcon } from '@heroicons/react/solid';
-import Page from 'components/layout/Page';
+import Page from '../components/layout/Page';
 
 export type PageProps = {
   email?: string;

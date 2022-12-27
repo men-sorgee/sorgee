@@ -6,8 +6,8 @@ class ErrorBoundary extends React.Component<{
   children: ReactNode | ReactNode[];
 }> {
   state: { hasError: boolean };
-  constructor(props: { children: ReactNode | ReactNode[] }) {
-    super(props);
+  constructor(public $props: { children: ReactNode | ReactNode[] }) {
+    super($props);
     // Define a state variable to track whether is an error or not
     this.state = { hasError: false };
   }

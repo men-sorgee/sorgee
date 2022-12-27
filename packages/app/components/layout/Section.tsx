@@ -1,8 +1,8 @@
-import { ContentSection } from 'lib/services/directus/static';
 import Blocks from 'editorjs-blocks-react-renderer';
-import Markdown from './Markdown';
+import { PageContent } from 'directus';
+import Markdown from '../ui/Markdown';
 
-export default function Section({ content }: { content: ContentSection }) {
+export default function Section({ content }: { content: PageContent }) {
   const { container, container_classes, type } = content;
   switch (type) {
     case 'control':

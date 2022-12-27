@@ -1,0 +1,35 @@
+query getPage($id: ID!) {
+  page: page_by_id(id: $id) {
+    id
+    title
+    description
+    slug
+    in_menu
+    image {
+      id
+      height
+      width
+      title
+      description
+    }
+    markdown
+    content(filter: { status: { _eq: "published" } }) {
+      id
+      name
+      container
+      container_classes
+      type
+      html
+      image {
+        id
+        description
+        height
+        width
+        title
+      }
+      control
+      markdown
+      status
+    }
+  }
+}

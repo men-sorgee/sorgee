@@ -1,4 +1,5 @@
 import { Moment } from 'moment';
+import { EventUser } from 'directus';
 import { MemberLevel } from './users';
 
 export type UserInvite = {
@@ -23,26 +24,14 @@ export enum EventStatusType {
   Occurred = 'occurred'
 }
 
-export type Event = {
-  id: string;
-  name: string;
-  description: string;
-  datetime: string | Date;
-  status: string | EventStatusType;
-};
-
-export type Invite = EventInvite & {
+export type Invite = EventUser & {
   id: string;
   name: string;
   description: string;
   datetime: string | Moment;
-  status: string | EventStatusType;
+  status: EventStatusType;
 };
 
-export type EventInvite = {
-  events_id: string;
-  users_id: string;
-  rsvp: EventInviteRSVPType | string;
-  reason: string;
-  attended: boolean;
+export type EventInvite = EventUser & {
+  rsvp: EventInviteRSVPType;
 };

@@ -1,6 +1,6 @@
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { Button } from 'react-daisyui';
-import Page from 'components/layout/Page';
+import Page from '../components/layout/Page';
 import { useMember } from 'lib/hooks/use-member';
 import { listUserInvites } from 'lib/services/directus/server';
 import moment, { Moment } from 'moment';
@@ -8,21 +8,29 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { NextPageContext } from 'next';
 import { FormProvider, useForm } from 'react-hook-form';
-import { FieldRadioButtons } from 'components/forms';
+import { FieldRadioButtons } from '../components/forms';
 import { postJSON } from 'lib/utils/client';
-import { Invite, MemberLevel } from 'models';
-import { getCookie } from 'cookies-next';
-import { memberCookie } from 'config/client';
-import EventCard from '../../components/EventCard';
+import { Invite, MemberLevel } from 'lib/models';
+import EventCard from '../../components/ui/EventCard';
+import { authOptions } from '../pages/api/auth/[...nextauth]';
+import { unstable_getServerSession } from 'next-auth/next';
 
-export async function getServerSideProps({ req }: NextPageContext) {
-  const memberId = getCookie(memberCookie, { req }) as string;
-  if (!memberId) {
+export async function getServerSideProps(context) {
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions
+  );
+
+  if (!session) {
     return {
-      props: {}
+      redirect: {
+        destination: '/',
+        permanent: false
+      }
     };
   }
-  const invites = await listUserInvites(memberId);
+  const invites = await listUserInvites(session.user.id);
 
   return {
     props: {
@@ -89,7 +97,7 @@ function Events({ invites }: { invites: Invite[] }) {
 function EventInfo({ invite }: { invite: Invite }) {
   const [confirmed, setConfirmed] = useState(false);
   const [rsvp, setRsvp] = useState(invite.rsvp);
-  const [eventDate] = useState<Moment>(moment(invite.datetime));
+  const [eventDate] = useState<Moment>(moment(invite?.datetime));
   const methods = useForm<InviteRSVP>({
     mode: 'onBlur',
     defaultValues: {

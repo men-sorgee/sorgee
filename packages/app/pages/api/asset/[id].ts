@@ -1,6 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { adminToken } from 'config/server';
-import { adminBaseUrl } from 'config/client';
 
 export async function getAsset(req: NextApiRequest, res: NextApiResponse) {
   const id = req.query.id;
@@ -9,7 +7,7 @@ export async function getAsset(req: NextApiRequest, res: NextApiResponse) {
   //  return res.status(404).end();
 
   // TODO: add content policy protection
-  const url = `${adminBaseUrl}/assets/${id}?fit=cover&access_token=${adminToken}`;
+  const url = `${process.env.ADMIN_URL}/assets/${id}?fit=cover&access_token=${process.env.ADMIN_TOKEN}`;
 
   const response = await fetch(url);
   res.setHeader('cache', 'public, max-age=31536000, immutable');

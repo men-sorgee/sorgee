@@ -1,7 +1,7 @@
-import { useMeta } from 'lib/hooks/use-meta-context';
+import { setMeta } from 'lib/hooks/use-meta-context';
 
 export default function Custom500() {
-  useMeta('Server Error');
+  setMeta('Server Error');
   return (
     <section className="bg-gray-900">
       <div className="mx-auto max-w-screen-xl py-8 px-4 lg:py-16 lg:px-6">

@@ -1,11 +1,9 @@
-import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { FormProvider, useForm } from 'react-hook-form';
 import { NextPageContext } from 'next';
-import { FormOptions, Member } from 'models';
-import { fetchJSON, postJSON, pruneUndefined } from 'lib/utils/client';
-import { getFieldOptions } from '@/lib/services/directus/server';
+import { Applicant, FormOptions, Member, User } from 'lib/models';
+import { fetchJSON, postJSON } from 'lib/utils/client';
+import { getFieldOptions } from 'lib/services/directus/server';
 import { useMember } from 'lib/hooks/use-member';
-
 import { useEffect, useState } from 'react';
 import {
   FieldInput,
@@ -13,14 +11,14 @@ import {
   FieldWrapper,
   FieldText,
   FieldCheckboxes
-} from 'components/forms';
+} from '../components/forms';
 import { Alert, Button, Tabs, Toast } from 'react-daisyui';
-import Page from 'components/layout/Page';
+import Page from '../components/layout/Page';
 import { CameraIcon, LightBulbIcon, XIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
-import FieldCheckbox from 'components/forms/FieldCheckbox';
-import Loading from 'components/ui/Loading';
-import Markdown from '../../components/layout/Markdown';
+import FieldCheckbox from '../components/forms/FieldCheckbox';
+import Markdown from 'components/layout/Markdown';
+import { ErrorMessage } from '@hookform/error-message';
 
 export type PageProps = {
   spectrumOptions: FormOptions;
@@ -28,27 +26,62 @@ export type PageProps = {
   timeOfDayOptions: FormOptions;
   positionsOptions: FormOptions;
   skinToneOptions: FormOptions;
+  hairColorOptions: FormOptions;
+  hairStyleOptions: FormOptions;
+  eyeColorOptions: FormOptions;
+  mannerismsOptions: FormOptions;
+  bodyHairOptions: FormOptions;
+  bodyAttributesOptions: FormOptions;
+  facialHairOptions: FormOptions;
   scenesOptions: FormOptions;
   eventOptions: FormOptions;
+  cockGirthOptions: FormOptions;
+  cockAttributesOptions: FormOptions;
+  ballSizeOptions: FormOptions;
+  ballGravityOptions: FormOptions;
+  cumAttributesOptions: FormOptions;
+  loadPolicyOptions: FormOptions;
+  hivStatusOptions: FormOptions;
+  vaccinationStatusOptions: FormOptions;
   reload?: () => Promise<void>;
 };
 
 export async function getServerSideProps(context: NextPageContext) {
   const props: PageProps = {
-    spectrumOptions: await getFieldOptions<Member>('spectrum'),
-    relationshipOptions: await getFieldOptions<Member>('relationship_status'),
-    timeOfDayOptions: await getFieldOptions<Member>('event_availability'),
-    positionsOptions: await getFieldOptions<Member>('my_positions'),
-    skinToneOptions: await getFieldOptions<Member>('skin_tone'),
-    scenesOptions: await getFieldOptions<Member>('sexual_scenes'),
-    eventOptions: await getFieldOptions<Member>('social_scenes')
+    spectrumOptions: await getFieldOptions<User>('spectrum'),
+    relationshipOptions: await getFieldOptions<User>('relationship_status'),
+    timeOfDayOptions: await getFieldOptions<User>('event_availability'),
+    positionsOptions: await getFieldOptions<User>('my_positions'),
+    skinToneOptions: await getFieldOptions<User>('skin_tone'),
+    hairColorOptions: await getFieldOptions<User>('hair_color'),
+    hairStyleOptions: await getFieldOptions<User>('hair_style'),
+    eyeColorOptions: await getFieldOptions<User>('eye_color'),
+    mannerismsOptions: await getFieldOptions<User>('mannerisms'),
+    bodyHairOptions: await getFieldOptions<User>('body_hair'),
+    bodyAttributesOptions: await getFieldOptions<User>('body_attributes'),
+    facialHairOptions: await getFieldOptions<User>('facial_hair'),
+    scenesOptions: await getFieldOptions<User>('sexual_scenes'),
+    eventOptions: await getFieldOptions<User>('social_scenes'),
+    cockGirthOptions: await getFieldOptions<User>('cock_girth'),
+    cockAttributesOptions: await getFieldOptions<User>('cock_attributes'),
+    ballSizeOptions: await getFieldOptions<User>('ball_size'),
+    ballGravityOptions: await getFieldOptions<User>('ball_gravity'),
+    cumAttributesOptions: await getFieldOptions<User>('cum_attributes'),
+    loadPolicyOptions: await getFieldOptions<User>('load_policy'),
+    hivStatusOptions: await getFieldOptions<User>('hiv_status'),
+    vaccinationStatusOptions: await getFieldOptions<User>('vaccinations')
   };
   return { props };
 }
 
+type MemberFormData = Applicant & {
+  height_feet: string;
+  height_inches: string;
+};
+
 function Account(props: PageProps) {
-  const { member, loading, reload } = useMember();
-  const data = { member, reload, ...props };
+  const { member, loading } = useMember();
+  const data = { member, ...props };
 
   return (
     <Page title="Account" loading={loading} sectionClass="gradient p-4">
@@ -57,7 +90,7 @@ function Account(props: PageProps) {
   );
 }
 
-function Form(props: PageProps & { member?: Member }) {
+function Form(props: PageProps & { member: Member }) {
   const router = useRouter();
   const {
     member,
@@ -65,14 +98,30 @@ function Form(props: PageProps & { member?: Member }) {
     positionsOptions,
     relationshipOptions,
     skinToneOptions,
+    hairColorOptions,
+    hairStyleOptions,
+    eyeColorOptions,
+    mannerismsOptions,
+    bodyHairOptions,
+    bodyAttributesOptions,
+    facialHairOptions,
     timeOfDayOptions,
     scenesOptions,
     eventOptions,
+    cockGirthOptions,
+    cockAttributesOptions,
+    ballSizeOptions,
+    ballGravityOptions,
+    cumAttributesOptions,
+    loadPolicyOptions,
+    hivStatusOptions,
+    vaccinationStatusOptions,
     reload
   } = props;
   const [updated, setUpdated] = useState(false);
   const [tabValue, setTabValue] = useState(Number(router.query.t) || 0);
-  const methods = useForm({
+
+  const methods = useForm<MemberFormData>({
     defaultValues: {
       ...member,
       height_feet: member?.height?.toString().substring(0, 1),
@@ -83,56 +132,41 @@ function Form(props: PageProps & { member?: Member }) {
     register,
     handleSubmit,
     setError,
-    formState: { isSubmitting }
+    formState: { isSubmitting, errors }
   } = methods;
 
   useEffect(() => {
     if (updated) {
-      reload();
-      setTimeout(() => {
-        setUpdated(false);
-      }, 3000);
+      reload()
+        .then(() => {
+          setUpdated(false);
+        })
+        .catch(console.error);
     }
     if (tabValue !== Number(router.query.t || 0))
       router.push(`/member/account?t=${tabValue}`);
+    return () => {};
   }, [updated, tabValue, member, reload, setUpdated]);
 
-  async function onSubmit(data: any) {
+  async function onSubmit(data: MemberFormData) {
     if (data.height_feet || data.height_inches) {
       data.height = `${data.height_feet}' ${data.height_inches}"`;
     }
 
-    const [success, response] = await postJSON(
-      '/api/member/me',
-      pruneUndefined(data)
-    );
-
-    if (success) {
-      setUpdated(true);
-      return;
-    } else if (response.error?.field) {
-      setError(response.error!.field as any, response.error.message as any);
-    } else {
-      setError('form' as any, { message: 'Something went wrong' });
-    }
-  }
-
-  async function deleteNotification(id: string) {
-    const [ok] = await fetchJSON(
-      '/api/member/me',
-      {
-        id
-      },
-      'DELETE'
-    );
+    const [ok, response] = await postJSON<User>('/api/member/me', data);
 
     if (ok) {
       setUpdated(true);
+    } else if (response.error?.field) {
+      // @ts-ignore
+      setError(response.error!.field, response.error.message);
     } else {
       setError('form' as any, { message: 'Something went wrong' });
     }
   }
-  const required = true;
+
+  
+  const required = { value: true, message: 'Required' };
   return (
     <>
       <FormProvider {...methods}>
@@ -172,24 +206,7 @@ function Form(props: PageProps & { member?: Member }) {
               Sex
             </Tabs.Tab>
           </Tabs>
-          {member?.notifications.map((n, i) => (
-            <Alert key={i}>
-              <div className="flex-grow">
-                <Markdown content={n.message} />
-              </div>
-              <div className="flex-shrink">
-                <a
-                  className="btn-ghost btn-sm btn"
-                  onClick={async () => {
-                    await deleteNotification(n.id);
-                  }}
-                  data-id={n.id}
-                >
-                  <XIcon className="h-4 w-4 fill-white" />
-                </a>
-              </div>
-            </Alert>
-          ))}
+
           {tabValue == 0 && (
             <>
               <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -314,15 +331,57 @@ function Form(props: PageProps & { member?: Member }) {
                   label="Skin Tone"
                   formOptions={skinToneOptions}
                 />
-                <FieldText
-                  className="col-span-2 sm:col-span-4"
-                  field="biography"
-                  label="Biography"
-                  help="Tell us about yourself. What are your interests? What are you looking for?"
-                  rows={4}
-                  placeholder="I am a bit shy, but love to get aggressive in bed."
+                <FieldCheckboxes
+                  field="body_attributes"
+                  label="Body Attributes"
+                  formOptions={bodyAttributesOptions}
+                  className="sm:col-span-4"
+                />
+                <FieldSelect
+                  field="hair_color"
+                  label="Hair Color"
+                  className="col-span-2"
+                  formOptions={hairColorOptions}
+                />
+                <FieldSelect
+                  field="hair_style"
+                  label="Hair Style"
+                  className="col-span-2"
+                  formOptions={hairStyleOptions}
+                />
+                <FieldSelect
+                  field="body_hair"
+                  label="Body Hair"
+                  className="col-span-2"
+                  formOptions={bodyHairOptions}
+                />
+                <FieldSelect
+                  field="facial_hair"
+                  label="Facial Hair"
+                  className="col-span-2"
+                  formOptions={facialHairOptions}
+                />
+                <FieldSelect
+                  field="eye_color"
+                  label="Eye Color"
+                  className="col-span-2"
+                  formOptions={eyeColorOptions}
+                />
+                <FieldSelect
+                  field="mannerisms"
+                  label="Mannerisms"
+                  className="col-span-2"
+                  formOptions={mannerismsOptions}
                 />
               </div>
+
+              <FieldText
+                field="biography"
+                label="Biography"
+                help="Tell us about yourself. What are your interests? What are you looking for?"
+                rows={4}
+                placeholder="I am a bit shy, but love to get aggressive in bed."
+              />
             </>
           )}
           {tabValue == 2 && (
@@ -382,6 +441,69 @@ function Form(props: PageProps & { member?: Member }) {
                   all that apply
                 </p>
               </div>
+              <h4>Your Cock</h4>
+              <div className="mb-8 grid gap-4 sm:grid-cols-2">
+                <FieldInput
+                  field="cock_length"
+                  label="Cock Length"
+                  type="number"
+                  registerOptions={{}}
+                />
+                <FieldSelect
+                  field="cock_girth"
+                  label="Cock Girth"
+                  formOptions={cockGirthOptions}
+                />
+              </div>
+              <FieldCheckboxes
+                field="cock_attributes"
+                label=""
+                className="sm:col-span-2"
+                formOptions={cockAttributesOptions}
+              />
+              <h4>Your Balls</h4>
+              <div className="mb-8 grid gap-4 sm:grid-cols-2">
+                <FieldSelect
+                  field="ball_size"
+                  label="Ball Size"
+                  formOptions={ballSizeOptions}
+                />
+                <FieldSelect
+                  field="ball_gravity"
+                  label="Ball Gravity"
+                  formOptions={ballGravityOptions}
+                />
+              </div>
+              <FieldCheckboxes
+                field="cum_attributes"
+                label=""
+                className="sm:col-span-2"
+                formOptions={cumAttributesOptions}
+              />
+              <h4>Your Health</h4>
+              <div className="mb-8 grid gap-4 sm:grid-cols-2">
+                <FieldSelect
+                  field="hiv_status"
+                  label="HIV Status"
+                  formOptions={hivStatusOptions}
+                />
+                <FieldInput
+                  field="last_tested"
+                  label="Last Tested"
+                  type="date"
+                />
+              </div>
+              <FieldCheckboxes
+                field="vaccinations"
+                label="Vax Status"
+                formOptions={vaccinationStatusOptions}
+              />
+              <FieldCheckboxes
+                field="load_policy"
+                label="Load Policy"
+                className="sm:col-span-2"
+                formOptions={loadPolicyOptions}
+              />
             </>
           )}
 
@@ -391,23 +513,60 @@ function Form(props: PageProps & { member?: Member }) {
               <Button type="submit" color="primary" disabled={isSubmitting}>
                 Update Profile
               </Button>
-            </div>
-          )}
-          {updated && (
-            <div className="toast-center toast-middle toast">
-              <div className="alert-ghost alert whitespace-nowrap opacity-75">
-                <div>
-                  <h4>Profile Updated</h4>
-                </div>
-              </div>
+              <ErrorMessage errors={errors} name="form" />
             </div>
           )}
         </form>
       </FormProvider>
+      {updated && (
+        <Toast color="ghost" vertical="middle" horizontal="center">
+          <h4>Profile Updated</h4>
+        </Toast>
+      )}
     </>
   );
 }
 
-export default withPageAuthRequired(Account, {
-  onRedirecting: () => <Loading />
-});
+const NotificationList = ({
+  setUpdated,
+  setError
+}) => {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  async function deleteNotification(id: number) {
+    const [ok] = await fetchJSON(
+      '/api/member/me',
+      {
+        id
+      },
+      'DELETE'
+    );
+
+    if (ok) {
+      setUpdated(true);
+    } else {
+      setError('form' as any, { message: 'Something went wrong' });
+    }
+  }
+  return (
+    {notifications.map((n, i) => (
+            <Alert key={i}>
+              <div className="flex-grow">
+                <Markdown content={n.message} />
+              </div>
+              <div className="flex-shrink">
+                <a
+                  className="btn-ghost btn-sm btn"
+                  onClick={async () => {
+                    await deleteNotification(n.id);
+                  }}
+                  data-id={n.id}
+                >
+                  <XIcon className="h-4 w-4 fill-white" />
+                </a>
+              </div>
+            </Alert>
+          ))}
+  )
+}
+
+export default Account;

@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { useMetaContext } from '../lib/hooks/use-meta-context';
+import { useMetaContext } from 'lib/hooks/use-meta-context';
 import { ReactNode } from 'react';
 
 export default function AppHead({
@@ -10,7 +10,7 @@ export default function AppHead({
   const { title, description, url, image } = useMetaContext();
   return (
     <Head>
-      <title>{title} :: SORGEES</title>
+      <title>{title} :: GuysNHeat</title>
       <link rel="icon" href="/favicon.ico" />
       <meta name="robots" content="follow, index" />
       <link

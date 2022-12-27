@@ -6,20 +6,8 @@ const getConfig = ( phase ) => {
   /**
    * @type {import('next').NextConfig}
    */
-  const nextConfig = withTM( {
-    // Append the default value with md extensions
+  const nextConfig = {
     pageExtensions: ['ts', 'tsx', 'js', 'jsx'],
-    publicRuntimeConfig: {
-      dev,
-      title: 'Guys in Heat',
-      description: "Denver's social events for bi, married and discrete men.",
-      baseUrl: dev ? 'http://localhost:3000' : 'https://guysnheat.com',
-      adminUrl: 'https://admin.guysnheat.com'
-    },
-    serverRuntimeConfig: {
-      adminToken: process.env.ADMIN_TOKEN || '',
-
-    },
     images: {
       domains: [
         'guysnheat.com',
@@ -32,7 +20,6 @@ const getConfig = ( phase ) => {
       ]
     },
     async redirects() {
-
       return [
         {
           source: '/:path*',
@@ -56,10 +43,18 @@ const getConfig = ( phase ) => {
     eslint: {
       // Warning: This allows production builds to successfully complete even if
       // your project has ESLint errors.
-      ignoreDuringBuilds: true,
+      // ignoreDuringBuilds: true,
     },
-  } )
+    //webpack: ( config, { isServer } ) => {
+    //  if ( !isServer ) {
+    //    config.resolve.fallback.fs = false
+    //  }
+    //  config.module.rules.push( { test: /\.ya?ml$/, use: 'yaml-loader' } )
+    //  //config.module.rules.push( { test: /\.gql?$/, loader: 'webpack-graphql-loader' } )
+    //  return config
+    //}
+  }
   return nextConfig
 }
 
-module.exports = getConfig
+module.exports = withTM( getConfig )

@@ -1,8 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState, createContext, useContext } from 'react';
 import getConfig from 'next/config';
-import { MetaProps, Props } from 'models';
-import { MenuPage } from '../services/directus/static';
+import { MetaProps, Props, PageItem } from 'lib/models';
 
 type Context = MetaProps & {
   setTitle: (title: string) => void;
@@ -12,8 +11,6 @@ type Context = MetaProps & {
   setImage: (image: string) => void;
   basePath: string;
   path: string;
-  pages?: Array<MenuPage>;
-  setPages: (pages: Array<MenuPage>) => void;
 };
 
 const { publicRuntimeConfig } = getConfig();
@@ -31,18 +28,16 @@ export function MetaContextProvider(props: Props) {
 
   const meta: Context = {
     title,
+    setTitle,
     description,
+    setDescription,
     basePath: router.basePath,
     url: `${router.basePath}${router.asPath}`,
     path: router.asPath,
-    setTitle,
-    setDescription,
     metaBlob,
     setMetaBlob,
     image,
-    setImage,
-    pages,
-    setPages
+    setImage
   };
 
   return (
@@ -60,11 +55,11 @@ export const useMetaContext = () => {
   return context;
 };
 
-export const useMeta = (
+export const setMeta = (
   title: string,
   description?: string,
   image?: string,
-  pages?: MenuPage[]
+  pages?: PageItem[]
 ) => {
   const {
     title: t,
@@ -72,16 +67,13 @@ export const useMeta = (
     description: d,
     setDescription,
     image: i,
-    setImage,
-    pages: p,
-    setPages
+    setImage
   } = useMetaContext();
   useEffect(() => {
     if (title && title != t) setTitle(title);
     if (description && description != d) setDescription(description);
     if (image && image != i) setImage(image);
-    if (pages && pages != p) setPages(pages);
   }, [title, description, t, d, setTitle, setDescription]);
 
-  return { title: t, description: d, image: i, pages: p };
+  return { title: t, description: d, image: i };
 };

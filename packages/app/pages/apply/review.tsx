@@ -2,8 +2,8 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useMember } from 'lib/hooks/use-member';
 import { useRouter } from 'next/router';
 import ApplicationSteps from './_steps';
-import Loading from 'components/ui/Loading';
-import Page from 'components/layout/Page';
+import Loading from '../components/ui/Loading';
+import Page from '../components/layout/Page';
 
 function Review() {
   const router = useRouter();

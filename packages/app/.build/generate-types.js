@@ -11,7 +11,7 @@ const { resolve } = require( "path" )
 
 const { snakeCase, capitalCase } = require( "change-case" )
 const { default: fetch } = require( "node-fetch" )
-const outputDir = resolve( process.cwd(), "./lib/services/directus/server" )
+const outputDir = resolve( process.cwd(), "./models" )
 
 
 async function main() {
@@ -53,7 +53,7 @@ async function main() {
 
   const source = [baseSource, ...exportTypes, exportSource].join( `\n` )
 
-  writeFileSync( `${ outputDir }/types.d.ts`, source, {
+  writeFileSync( `${ outputDir }/directus.ts`, source, {
     encoding: `utf-8`,
   } )
 }

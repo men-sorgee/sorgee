@@ -1,7 +1,7 @@
-import { getSession } from '@auth0/nextjs-auth0';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Profile, Applicant, Member } from 'models';
-import { getApplicant, getMember } from '../services/directus/server';
+import { Profile, Applicant, Member } from 'lib/models';
+import { getApplicant, getMember } from 'lib/services/directus/server';
+import { getSession } from 'next-auth/react';
 
 export type HttpMethod = (string & 'GET') | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
 
@@ -16,23 +16,22 @@ export function withMethods(
   return method;
 }
 
-export function withProfile(
+export async function withProfile(
   req: NextApiRequest,
   res: NextApiResponse
-): Profile | null {
-  let { user } = getSession(req, res);
-  if (!user) return null;
+): Promise<Profile | null> {
+  let { user } = await getSession({ req });
+  if (!user) throw new Error('Unauthorized');
   return user as Profile;
 }
 
 export async function withApplicant(
   req: NextApiRequest,
   res: NextApiResponse
-): Promise<Applicant | Profile | null> {
-  let user = withProfile(req, res);
-  if (!user) return null;
+): Promise<Applicant | null> {
+  let user = await withProfile(req, res);
+  if (!user) return;
   const applicant = await getApplicant(user.id);
-  if (!applicant) return user;
   return applicant as Applicant;
 }
 
@@ -40,9 +39,9 @@ export async function withMember(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<Member | null> {
-  let user = withProfile(req, res);
-  if (!user) return null;
+  let user = await withProfile(req, res);
+  if (!user) return;
   const member = await getMember(user.id);
-  if (!member) return null;
+  if (!member) return;
   return member as Member;
 }

@@ -2,9 +2,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 import { storeEmailEvent } from 'lib/services/directus/server';
 
-import { UserEmailEvent } from 'lib/services/directus/types';
-import { withMethods } from '../../../lib/utils/server';
-import { ApiResponse } from '../../../models';
+import { withMethods } from 'lib/utils/server';
+import { ApiResponse, UserEmailEvent } from 'lib/models';
 
 type SendGridEvent = {
   sg_event_id: string;
@@ -30,7 +29,7 @@ export default async function HandleEvents(
 
     const events: SendGridEvent[] = req.body;
     await Promise.all(
-      events.map((sgEvent) => {
+      events.map(async (sgEvent) => {
         const {
           sg_event_id,
           sg_message_id,
@@ -45,7 +44,7 @@ export default async function HandleEvents(
           type,
           timestamp
         } = sgEvent;
-        storeEmailEvent({
+        await storeEmailEvent({
           sg_event_id,
           sg_message_id,
           email,

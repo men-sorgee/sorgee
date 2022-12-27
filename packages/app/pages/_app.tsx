@@ -1,24 +1,23 @@
-import { UserProvider } from '@auth0/nextjs-auth0';
+import React from 'react';
+
 import Layout from 'components/layout/index';
-import { AppUserContextProvider } from 'lib/hooks/use-member';
+import ErrorBoundary from 'lib/hooks/user-error-boundary';
 import { AppProps } from 'next/app';
+import { SessionProvider } from 'next-auth/react';
+import { MetaContextProvider } from 'lib/hooks/use-meta-context';
 import 'styles/globals.css';
-import ErrorBoundary from '../lib/hooks/user-error-boundary';
-import { MetaContextProvider } from '../lib/hooks/use-meta-context';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <MetaContextProvider>
-        <UserProvider loginUrl="/api/auth/login">
-          <AppUserContextProvider>
+        <SessionProvider>
+          <ErrorBoundary>
             <Layout>
-              <ErrorBoundary>
-                <Component {...pageProps} />
-              </ErrorBoundary>
+              <Component {...pageProps} />
             </Layout>
-          </AppUserContextProvider>
-        </UserProvider>
+          </ErrorBoundary>
+        </SessionProvider>
       </MetaContextProvider>
     </>
   );

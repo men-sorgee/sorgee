@@ -1,8 +1,8 @@
 import moment, { Moment } from 'moment';
 import { ReactNode, useState } from 'react';
 import { Card, Alert } from 'react-daisyui';
-import Markdown from './layout/Markdown';
-import { Invite } from 'models';
+import Markdown from './Markdown';
+import { Invite } from 'lib/models';
 
 export default function EventCard({
   invite,

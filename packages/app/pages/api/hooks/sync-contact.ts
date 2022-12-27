@@ -3,10 +3,10 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getUser, updateUser } from 'lib/services/directus/server';
 import { updateSendGrid } from 'lib/services/sendgrid/server';
 import { withMethods } from 'lib/utils/server';
-import { ApiResponse, MemberLevel } from 'models';
-import { adminToken } from 'config/server';
+import { ApiResponse, MemberLevel } from 'lib/models';
+import { adminToken } from 'lib/config/server';
 
-async function AddContact(
+async function SyncContact(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse>
 ) {
@@ -39,4 +39,4 @@ async function AddContact(
   }
 }
 
-export default AddContact;
+export default SyncContact;

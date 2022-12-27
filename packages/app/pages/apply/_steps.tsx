@@ -1,5 +1,5 @@
 import { Steps } from 'react-daisyui';
-import { ApplicationStatus } from 'models';
+import { ApplicationStatus } from 'lib/models';
 
 export default function ApplicationSteps({ status }: { status: string }) {
   const steps = [

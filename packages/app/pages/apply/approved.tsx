@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import ApplicationSteps from './_steps';
 import { SparklesIcon } from '@heroicons/react/solid';
-import Page from 'components/layout/Page';
+import Page from '../components/layout/Page';
 
 function Approved() {
   const router = useRouter();

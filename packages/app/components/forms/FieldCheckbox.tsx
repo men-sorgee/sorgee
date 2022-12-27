@@ -1,5 +1,4 @@
-import { InputHTMLAttributes } from 'react';
-import { Tooltip } from 'react-daisyui';
+import React, { InputHTMLAttributes } from 'react';
 import { useFormContext, RegisterOptions } from 'react-hook-form';
 import { InfoIcon } from '../icons';
 import FieldWrapper from './FieldWrapper';
@@ -46,7 +45,7 @@ export default function CheckboxField(props: Props) {
             {...inputProps}
             id={field}
             {...register(field as any, registerOptions)}
-            className="checkbox"
+            className="checkbox-accent checkbox bg-accent-600"
             type="checkbox"
           />
           {label && (
@@ -54,9 +53,9 @@ export default function CheckboxField(props: Props) {
               <span className="ml-2 mr-1">{label}</span>
 
               {help && (
-                <Tooltip color="ghost" message={help}>
+                <div className="tooltip-ghost tooltip" data-tip={help}>
                   <InfoIcon className="-mt-2 h-3 w-3" />
-                </Tooltip>
+                </div>
               )}
             </div>
           )}
