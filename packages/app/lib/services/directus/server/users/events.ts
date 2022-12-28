@@ -1,5 +1,5 @@
 import { getAdminClient } from '../';
-import { Invite, EventInviteRSVPType } from 'lib/models';
+import { Invite, EventInviteRSVPType } from '@/lib/models';
 
 export async function listUpcomingEvents() {
   const client = await getAdminClient();

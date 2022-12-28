@@ -4,7 +4,7 @@ import IncomingForm from 'formidable/Formidable';
 import { NextApiRequest } from 'next';
 import { Writable } from 'node:stream';
 import FormData from 'form-data';
-import { DirectusFile } from 'lib/models';
+import { DirectusFile } from '@/lib/models';
 
 export enum UploadFolder {
   members = '8c3d5472-6b02-4056-affd-ab3d461b273d',

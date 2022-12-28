@@ -19,12 +19,6 @@
     "baseUrl": ".",
     "incremental": true,
     "jsx": "preserve",
-    "jsxImportSource": "react",
-    "plugins": [
-      {
-        "name": "@twind/typescript-plugin"
-      }
-    ],
     "paths": {
       "@/components/*": [
         "components/*"
@@ -32,27 +26,24 @@
       "@/lib/*": [
         "lib/*"
       ],
-      "@/models": [
-        "lib/models/*"
-      ],
-      "@/config": [
-        "lib/config/*"
-      ],
       "@/styles": [
         "styles/*"
       ]
-    }
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     "next.config.ts",
-    "tailwind.config.js",
-    "middleware.ts"
+    ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules",
-    ".idea"
+    ".idea",
   ]
 }

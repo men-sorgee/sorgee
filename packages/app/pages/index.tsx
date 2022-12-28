@@ -1,26 +1,25 @@
-import { NextPage } from 'next';
-import { setMeta } from 'lib/hooks/use-meta-context';
-import { getPageContentById } from 'lib/services/directus/static';
-import { Markdown, Subscribe } from '../components/ui';
-import Section from '../components/layout/Section';
-import { Page } from 'lib/models';
-import { getAssetUrl } from 'lib/utils/client';
-import { PageItem } from 'lib/models';
+import { setMeta } from 'lib/hooks'
+import { getPageContentById } from 'lib/services/directus/static'
+import { Markdown, Subscribe } from 'components/ui'
+import Section from 'components/Section'
+import { Page } from 'lib/models'
+import { getAssetUrl } from '@/lib/utils'
+
 interface Props {
-  page: Page;
+  page: Page
 }
 
-const Page: NextPage<Props> = ({ page }: Props) => {
-  const { title, description, content, markdown, image } = page;
-  const img = image?.id ? getAssetUrl(image.id) : null;
-  setMeta(title, description, img);
+export default function HomePage({ page }: Props) {
+  const { title, description, content, markdown, image } = page
+  const img = image?.id ? getAssetUrl(image.id) : null
+  setMeta(title, description, img)
 
   return (
     <article>
       <section>
         <Markdown content={markdown} />
       </section>
-      <section className="gradient mt-8 min-w-fit rounded-xl p-4 md:mx-auto md:max-w-md">
+      <section className="gradient mt-8  rounded-xl p-4">
         <Subscribe />
       </section>
       <>
@@ -29,15 +28,15 @@ const Page: NextPage<Props> = ({ page }: Props) => {
         ))}
       </>
     </article>
-  );
-};
+  )
+}
 
-Page.getInitialProps = async () => {
-  const page = await getPageContentById('ac330d1b-0340-4a61-9b42-996aa0936d2b');
+export const getStaticProps = async () => {
+  const page = await getPageContentById('ac330d1b-0340-4a61-9b42-996aa0936d2b')
 
   return {
-    page
-  };
-};
-
-export default Page;
+    props: {
+      page,
+    },
+  }
+}

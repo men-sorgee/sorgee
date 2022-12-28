@@ -1,11 +1,9 @@
-import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useMember } from 'lib/hooks/use-member';
-
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import ApplicationSteps from './_steps';
 import { SparklesIcon } from '@heroicons/react/solid';
-import Page from '../components/layout/Page';
+import Page from 'components/Page';
 
 function Approved() {
   const router = useRouter();
@@ -24,6 +22,7 @@ function Approved() {
     <Page
       title="Application Approved"
       loading={loading}
+      requireAuth={true}
       sectionClass="gradient p-4 text-center"
       header={<ApplicationSteps status={'approved'} />}
     >
@@ -47,4 +46,4 @@ function Approved() {
   );
 }
 
-export default withPageAuthRequired(Approved);
+export default Approved;

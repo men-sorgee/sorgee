@@ -1,8 +1,8 @@
-import Link from 'next/link';
-import { setMeta } from 'lib/hooks/use-meta-context';
+import Link from 'next/link'
+import { setMeta } from 'lib/hooks'
 
 export default function Custom404() {
-  setMeta('Not Found');
+  setMeta('Not Found')
   return (
     <section className="bg-gray-900">
       <div className="mx-auto max-w-screen-xl py-8 px-4 lg:py-16 lg:px-6">
@@ -14,16 +14,17 @@ export default function Custom404() {
             Something&rsquo;s missing.
           </p>
           <p className="gradient:text-gray-400 mb-4 text-lg font-light text-gray-500">
-            Sorry, we can&rsquo;t find that page. You&rsquo;ll find lots to
-            explore on the home page.
+            Sorry, we can&rsquo;t find that page. You&rsquo;ll find lots to explore on the home
+            page.
           </p>
-          <Link href="/">
-            <a className="gradient:focus:ring-purple-900 my-4 inline-flex rounded-lg bg-purple-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-purple-800 focus:outline-none focus:ring-4 focus:ring-purple-300">
-              Back to Homepage
-            </a>
+          <Link
+            href="/"
+            className="gradient:focus:ring-purple-900 my-4 inline-flex rounded-lg bg-purple-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-purple-800 focus:outline-none focus:ring-4 focus:ring-purple-300"
+          >
+            Back to Homepage
           </Link>
         </div>
       </div>
     </section>
-  );
+  )
 }

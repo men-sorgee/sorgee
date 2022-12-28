@@ -1,12 +1,11 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import { SubscriptionData } from 'lib/models';
-import { useMember } from 'lib/hooks/use-member';
-import React, { useEffect } from 'react';
 import { Button } from 'react-daisyui';
 import { FieldInput } from '../forms';
+import { useState } from 'react'
 
 export default function Subscribe() {
-  const [subscribed, setSubscribed] = React.useState(false);
+  const [subscribed, setSubscribed] = useState(false);
   const methods = useForm<SubscriptionData>({
     mode: 'onBlur'
   });

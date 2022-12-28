@@ -14,17 +14,15 @@ interface Props {
     | 'success'
     | 'warning'
     | 'error';
-  onClick?: () => void;
+  onClick?: (e: any) => void;
 }
 
 const LinkButton = ({ href, children, className, color, onClick }: Props) => {
   return (
-    <Link href={href}>
-      <a onClick={onClick}>
+    <Link href={href} onClick={onClick}>
         <Button color={color} className={className}>
           {children}
         </Button>
-      </a>
     </Link>
   );
 };

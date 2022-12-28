@@ -1,22 +1,27 @@
-import useSWR from 'swr';
-import { Member } from 'lib/models';
-import { JsonFetcher } from '../services/fetchers';
+'use client'
+import useSWR, { KeyedMutator } from 'swr'
+import { Member } from 'lib/models'
+import { JsonFetcher } from 'lib/services/fetchers'
 
 type MemberResults = {
-  member: Member;
-  error: boolean;
-  loading: boolean;
-};
+  member: Member | null
+  error?: any
+  mutate: KeyedMutator<Member>
+  loading: boolean
+  reload: () => void
+}
 
-export const userMember = (id: string = 'me'): MemberResults => {
-  const { data, error, isValidating } = useSWR<Member>(
-    `/api/member/${id}`,
-    JsonFetcher
-  );
+export const useMember = (): MemberResults => {
+  const key = `/api/member/me`
+  const { data: member, mutate, error, isLoading } = useSWR<Member, Error>(key, JsonFetcher)
 
   return {
-    member: data,
+    member,
     error,
-    loading: isValidating
-  };
-};
+    mutate,
+    loading: isLoading,
+    reload: () => {
+      mutate()
+    },
+  }
+}

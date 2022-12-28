@@ -37,10 +37,10 @@ const config = {
       }
     }
   },
+  // @ts-ignore
   plugins: [require( '@tailwindcss/typography' ), require( 'daisyui' )],
   daisyui: {
     styled: true,
-    themes: false,
     base: true,
     utils: true,
     logs: false,
@@ -49,6 +49,7 @@ const config = {
     darkTheme: false,
     themes: [{
       dark: {
+        // @ts-ignore
         ...require( "daisyui/src/colors/themes" )["[data-theme=dark]"],
         primary: brandColors.primary.DEFAULT,
         secondary: brandColors.secondary.DEFAULT,

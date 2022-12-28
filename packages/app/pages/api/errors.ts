@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { withMethods } from 'lib/utils/server';
-import { ApiResponse } from 'lib/models';
+import { ApiResponse } from '@/lib/models';
 
 export default function LogError(req: NextApiRequest, res: NextApiResponse) {
   try {

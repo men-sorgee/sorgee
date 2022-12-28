@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { Drawer } from 'react-daisyui';
-import { useMetaContext } from 'lib/hooks';
-import { Props } from 'lib/models';
 import Header from './Header';
 import Meta from './Meta';
 import Footer from './Footer';
 import Menu from './Menu';
 
-export default function Layout({ children }: Props) {
+export default function Layout({ children }: { children: React.ReactNode}) {
   const [visible, setVisible] = useState(false);
   const toggleDrawer = () => {
     setVisible(!visible);

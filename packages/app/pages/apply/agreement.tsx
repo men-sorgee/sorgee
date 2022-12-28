@@ -1,64 +1,62 @@
-import { withPageAuthRequired } from '@auth0/nextjs-auth0';
-import ApplicationSteps from './_steps';
-import { useMember } from 'lib/hooks/use-member';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
-import { AgreementData, Props } from 'lib/models';
-import { Button } from 'react-daisyui';
-import FieldCheckbox from '../components/forms/FieldCheckbox';
-import { postJSON } from 'lib/utils/client';
-import Page from '../components/layout/Page';
+import ApplicationSteps from './_steps'
+import { useMember } from 'lib/hooks/use-member'
+import { NextRouter, Router, useRouter } from 'next/router'
+import { Dispatch, SetStateAction, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { AgreementData } from 'lib/models'
+import { Button } from 'react-daisyui'
+import FieldCheckbox from 'components/forms/FieldCheckbox'
+import { postJSON } from '@/lib/utils'
+import Page from 'components/Page'
 
 function Agreement() {
-  const router = useRouter();
-  const { loading, member } = useMember();
-  const [completed, setCompleted] = useState(false);
+  const router = useRouter()
+  const { loading, member } = useMember()
+  const [completed, setCompleted] = useState(false)
 
-  if (
-    member &&
-    member?.application_status &&
-    member.application_status !== 'agreement'
-  ) {
-    router.push('/apply/' + member?.application_status);
-    return null;
+  if (member && member?.application_status && member.application_status !== 'agreement') {
+    router.push('/apply/' + member?.application_status)
+    return null
   }
-
+  let props = { router, setCompleted }
   return (
     <Page
       title="Agreement"
       loading={loading || completed}
+      requireAuth={true}
       sectionClass="gradient p-4"
       header={<ApplicationSteps status={'agreement'} />}
     >
-      <Form {...{ router, setCompleted }} />
+      <Form {...props} />
     </Page>
-  );
+  )
 }
 
-function Form({ router, setComplete }: Props) {
-  const methods = useForm<AgreementData>();
-  const { handleSubmit, setError } = methods;
+type Props = {
+  router: NextRouter
+  setCompleted: Dispatch<SetStateAction<boolean>>
+}
+
+function Form({ router, setCompleted }: Props) {
+  const methods = useForm<AgreementData>()
+  const { handleSubmit, setError } = methods
 
   async function onSubmit(data: AgreementData) {
-    const [success, response] = await postJSON('/api/member/agree', data);
+    const [success, response] = await postJSON('/api/member/agree', data)
 
     if (success) {
-      setComplete(true);
-      router.push('/apply/approved');
+      setCompleted(true)
+      router.push('/apply/approved')
     } else if (response.error?.field) {
-      setError(response.error!.field as any, response.error.message as any);
+      setError(response.error!.field as any, response.error.message as any)
     } else {
-      setError('agree', { message: 'Something went wrong' });
+      setError('agree', { message: 'Something went wrong' })
     }
   }
 
   return (
     <FormProvider {...methods}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="mx-auto max-w-3xl text-center"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} className="mx-auto max-w-3xl text-center">
         <p className="text-center text-xl">
           Please read and agree to our{' '}
           <a href="/terms" target="_blank" className="link">
@@ -74,8 +72,8 @@ function Form({ router, setComplete }: Props) {
             registerOptions={{
               required: {
                 value: true,
-                message: 'You must agree to the terms and conditions'
-              }
+                message: 'You must agree to the terms and conditions',
+              },
             }}
           />
 
@@ -87,7 +85,7 @@ function Form({ router, setComplete }: Props) {
         </div>
       </form>
     </FormProvider>
-  );
+  )
 }
 
-export default withPageAuthRequired(Agreement);
+export default Agreement

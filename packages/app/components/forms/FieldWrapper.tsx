@@ -1,22 +1,22 @@
-import { ErrorMessage } from '@hookform/error-message';
-import { useFormContext } from 'react-hook-form';
-import { InfoIcon } from '../icons';
+import { ErrorMessage } from '@hookform/error-message'
+import { useFormContext } from 'react-hook-form'
+import { InfoIcon } from '../icons'
 
 type Props = {
-  field?: string;
-  label?: string;
-  help?: string;
-  className?: string;
-  children: React.ReactNode | React.ReactNode[];
-};
+  field?: string
+  label?: string
+  help?: string
+  className?: string
+  children: React.ReactNode | React.ReactNode[]
+}
 
 const FieldWrapper = (props: Props) => {
-  const { field, label, help, className, children } = props;
+  const { field, label, help, className, children } = props
   const {
     formState: { errors },
-    getFieldState
-  } = useFormContext();
-  const { error } = getFieldState(field);
+    getFieldState,
+  } = useFormContext()
+  const { error } = getFieldState(field)
   return (
     <div className={` ${className}`}>
       {label && (
@@ -35,13 +35,13 @@ const FieldWrapper = (props: Props) => {
       <ErrorMessage
         as="p"
         className="!py-0 text-red-500"
-        render={({ message, messages }) => message || messages?.required}
+        render={({ message }) => message}
         errors={errors}
         message={error?.message}
         name={field}
       />
     </div>
-  );
-};
+  )
+}
 
-export default FieldWrapper;
+export default FieldWrapper

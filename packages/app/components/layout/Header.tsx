@@ -1,12 +1,12 @@
-import { Navbar, Button } from 'react-daisyui';
-import { Logo } from '../ui';
-import User from './User';
+import { Navbar, Button } from 'react-daisyui'
+import { Logo } from 'components/ui'
+import User from './User'
 
 type Props = {
-  toggleDrawer: () => void;
-  visible: boolean;
-  setVisible: (v: boolean) => void;
-};
+  toggleDrawer: () => void
+  visible: boolean
+  setVisible: (v: boolean) => void
+}
 
 export default function Header({ toggleDrawer, setVisible, visible }: Props) {
   return (
@@ -59,5 +59,5 @@ export default function Header({ toggleDrawer, setVisible, visible }: Props) {
         </>
       </Navbar>
     </header>
-  );
+  )
 }

@@ -42,7 +42,10 @@ export async function deleteAccount(provider: string, id: string) {
 
 export async function createSession(session: UserSession) {
   const adminClient = await getAdminClient();
-  return await adminClient.items('user_session').createOne(session);
+  const { id } = await adminClient.items('user_session').createOne(session);
+  return adminClient.items('user_session').readOne(id, {
+    fields: [ '*', 'user.*' ]
+  });
 }
 
 export async function findSession(token: string): Promise<UserSession> {
@@ -58,8 +61,11 @@ export async function findSession(token: string): Promise<UserSession> {
 
 export async function updateSession(session: UserSession) {
   const adminClient = await getAdminClient();
-  return await adminClient.items('user_session').updateOne(session.id, {
+  const { id } = await adminClient.items('user_session').updateOne(session.id, {
     expires: session.expires
+  });
+  return adminClient.items('user_session').readOne(id, {
+    fields: [ '*', 'user.*' ]
   });
 }
 
