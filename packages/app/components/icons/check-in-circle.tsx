@@ -1,8 +1,4 @@
-export default function CheckInCircleIcon({
-  className
-}: {
-  className?: string;
-}) {
+export default function CheckInCircleIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 20 20" fill="currentColor ">
       <path
@@ -11,5 +7,5 @@ export default function CheckInCircleIcon({
         clipRule="evenodd"
       />
     </svg>
-  );
+  )
 }

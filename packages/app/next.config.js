@@ -1,7 +1,7 @@
-const { PHASE_DEVELOPMENT_SERVER } = require( 'next/constants' )
+const { PHASE_DEVELOPMENT_SERVER } = require( 'next/constants' );
 
 const getConfig = ( phase ) => {
-  const dev = PHASE_DEVELOPMENT_SERVER === phase
+  const dev = PHASE_DEVELOPMENT_SERVER === phase;
   /**
    * @type {import('next').NextConfig}
    */
@@ -36,7 +36,7 @@ const getConfig = ( phase ) => {
           destination: '/api/member/:path',
           permanent: true
         }
-      ]
+      ];
     },
     poweredByHeader: false,
     experimental: {
@@ -51,8 +51,8 @@ const getConfig = ( phase ) => {
     //  //config.module.rules.push( { test: /\.gql?$/, loader: 'webpack-graphql-loader' } )
     //  return config
     //}
-  }
-  return nextConfig
-}
+  };
+  return nextConfig;
+};
 
-module.exports = getConfig
+module.exports = getConfig;

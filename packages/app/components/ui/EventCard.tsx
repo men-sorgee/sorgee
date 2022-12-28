@@ -1,17 +1,17 @@
-import moment, { Moment } from 'moment';
-import { ReactNode, useState } from 'react';
-import { Card, Alert } from 'react-daisyui';
-import Markdown from './Markdown';
-import { Invite } from 'lib/models';
+import moment, { Moment } from 'moment'
+import { ReactNode, useState } from 'react'
+import { Card, Alert } from 'react-daisyui'
+import Markdown from './Markdown'
+import { Invite } from 'lib/models'
 
 export default function EventCard({
   invite,
-  children
+  children,
 }: {
-  invite: Invite;
-  children?: ReactNode | ReactNode[];
+  invite: Invite
+  children?: ReactNode | ReactNode[]
 }) {
-  const [eventDate] = useState<Moment>(moment(invite.datetime));
+  const [eventDate] = useState<Moment>(moment(invite.datetime))
   return (
     <Card className="gradient not-prose mx-auto max-w-lg text-center">
       <div className="flex items-center justify-between self-stretch  align-middle">
@@ -29,10 +29,9 @@ export default function EventCard({
       <Card.Body className="border-y-2 border-primary-900">
         <Markdown content={invite.description} />
         <Alert className="italics mt-2 text-sm">
-          Location announced on the day of the event and is sent to confirmed
-          attendees only. Events are subject to change or cancellation,
-          depending upon member interest. We will communicate any changes to the
-          event 24 hours in advance.
+          Location announced on the day of the event and is sent to confirmed attendees only. Events
+          are subject to change or cancellation, depending upon member interest. We will communicate
+          any changes to the event 24 hours in advance.
         </Alert>
       </Card.Body>
 
@@ -40,5 +39,5 @@ export default function EventCard({
         {children}
       </Card.Actions>
     </Card>
-  );
+  )
 }

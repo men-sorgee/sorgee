@@ -19,4 +19,4 @@ module.exports = {
   },
   inlineCSS: true,
   removeUnusedCSS: true,
-}
+};

@@ -73,7 +73,7 @@ const css = `
   }
 }
 
-`;
+`
 
 export default function FireIcon() {
   return (
@@ -141,5 +141,5 @@ S134.387,164.603,103.143,105.917z"
         />
       </svg>
     </div>
-  );
+  )
 }

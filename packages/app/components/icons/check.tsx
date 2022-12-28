@@ -14,5 +14,5 @@ export default function CheckIcon({ className }: { className?: string }) {
     >
       <path d="M20 6L9 17l-5-5" />
     </svg>
-  );
+  )
 }

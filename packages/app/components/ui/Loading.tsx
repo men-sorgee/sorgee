@@ -1,5 +1,5 @@
 interface Props {
-  children?: React.ReactNode | React.ReactNode[];
+  children?: React.ReactNode | React.ReactNode[]
 }
 
 const Loading = ({ children }: Props) => {
@@ -27,6 +27,6 @@ const Loading = ({ children }: Props) => {
         </div>
       </div>
     </>
-  );
-};
-export default Loading;
+  )
+}
+export default Loading

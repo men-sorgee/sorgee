@@ -1,17 +1,21 @@
-import Blocks from 'editorjs-blocks-react-renderer';
+import Blocks from 'editorjs-blocks-react-renderer'
 import { PageContent } from 'lib/models'
 
-import Markdown from './ui/Markdown';
+import Markdown from './ui/Markdown'
 
 export default function Section({ content }: { content: PageContent }) {
-  const { container, container_classes, type } = content;
+  const { container, container_classes, type } = content
   switch (type) {
     case 'control':
-      return <Blocks data={{
-        blocks: content.control,
-        time: Date.now(),
-        version: '2.18.0'
-      }} />;
+      return (
+        <Blocks
+          data={{
+            blocks: content.control,
+            time: Date.now(),
+            version: '2.18.0',
+          }}
+        />
+      )
     case 'image':
       return (
         <img
@@ -22,14 +26,14 @@ export default function Section({ content }: { content: PageContent }) {
           width={content.image.width}
           title={content.image.title}
         />
-      );
+      )
     case 'html':
       return (
         <section
           className={`grid grid-cols-1 md:${container} ${container_classes} justify-evenly gap-4`}
           dangerouslySetInnerHTML={{ __html: content.html }}
         ></section>
-      );
+      )
     case 'md':
       return (
         <section
@@ -37,6 +41,6 @@ export default function Section({ content }: { content: PageContent }) {
         >
           <Markdown content={content.markdown} />
         </section>
-      );
+      )
   }
 }

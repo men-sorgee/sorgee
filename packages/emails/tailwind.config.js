@@ -1,8 +1,8 @@
 module.exports = {
   theme: {
     screens: {
-      xs: {max: '425px'},
-      sm: {max: '600px'},
+      xs: { max: '425px' },
+      sm: { max: '600px' },
     },
     extend: {
       spacing: {
@@ -123,14 +123,14 @@ module.exports = {
         '8xl': '96px',
         '9xl': '128px',
       },
-      letterSpacing: theme => ({
-        ...theme('spacing'),
-      }),
-      lineHeight: theme => ({
-        ...theme('spacing'),
-      }),
-      maxWidth: theme => ({
-        ...theme('spacing'),
+      letterSpacing: theme => ( {
+        ...theme( 'spacing' ),
+      } ),
+      lineHeight: theme => ( {
+        ...theme( 'spacing' ),
+      } ),
+      maxWidth: theme => ( {
+        ...theme( 'spacing' ),
         xs: '160px',
         sm: '192px',
         md: '224px',
@@ -142,13 +142,13 @@ module.exports = {
         '5xl': '512px',
         '6xl': '576px',
         '7xl': '640px',
-      }),
-      minHeight: theme => ({
-        ...theme('spacing'),
-      }),
-      minWidth: theme => ({
-        ...theme('spacing'),
-      }),
+      } ),
+      minHeight: theme => ( {
+        ...theme( 'spacing' ),
+      } ),
+      minWidth: theme => ( {
+        ...theme( 'spacing' ),
+      } ),
     },
   },
   corePlugins: {
@@ -160,8 +160,8 @@ module.exports = {
     textOpacity: false,
   },
   plugins: [
-    require('tailwindcss-mso'),
-    require('tailwindcss-box-shadow'),
-    require('tailwindcss-email-variants'),
+    require( 'tailwindcss-mso' ),
+    require( 'tailwindcss-box-shadow' ),
+    require( 'tailwindcss-email-variants' ),
   ],
-}
+};

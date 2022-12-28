@@ -25,6 +25,6 @@ const Logo = ({ className = '', ...props }) => (
       </g>
     </g>
   </svg>
-);
+)
 
-export default Logo;
+export default Logo

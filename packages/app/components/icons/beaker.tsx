@@ -16,5 +16,5 @@ export default function BeakerIcon({ className }: { className?: string }) {
         ></path>
       </svg>
     </>
-  );
+  )
 }

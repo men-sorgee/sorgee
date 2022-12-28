@@ -16,5 +16,5 @@ export default function AlertCircleIcon({ className }: { className?: string }) {
       <path d="M12 8v4" stroke="var(--geist-stroke)" />
       <path d="M12 16h.01" stroke="var(--geist-stroke)" />
     </svg>
-  );
+  )
 }

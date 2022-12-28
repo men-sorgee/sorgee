@@ -14,5 +14,5 @@ export default function InstagramIcon({ className }: { className?: string }) {
         clipRule="evenodd"
       ></path>
     </svg>
-  );
+  )
 }

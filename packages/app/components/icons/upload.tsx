@@ -16,5 +16,5 @@ export default function UploadIcon({ className }: { className?: string }) {
       <path d="M17 8l-5-5-5 5" />
       <path d="M12 3v12" />{' '}
     </svg>
-  );
+  )
 }

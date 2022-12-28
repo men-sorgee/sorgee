@@ -1,40 +1,26 @@
-import React, { InputHTMLAttributes } from 'react';
-import { useFormContext, RegisterOptions } from 'react-hook-form';
-import { InfoIcon } from '../icons';
-import FieldWrapper from './FieldWrapper';
+import React, { InputHTMLAttributes } from 'react'
+import { useFormContext, RegisterOptions } from 'react-hook-form'
+import { InfoIcon } from '../icons'
+import FieldWrapper from './FieldWrapper'
 
 type Props = InputHTMLAttributes<HTMLInputElement> & {
-  field: string;
-  label?: string;
-  help?: string;
-  registerOptions?: RegisterOptions;
-  className?: string;
-  children?: React.ReactNode | React.ReactNode[];
-};
+  field: string
+  label?: string
+  help?: string
+  registerOptions?: RegisterOptions
+  className?: string
+  children?: React.ReactNode | React.ReactNode[]
+}
 
 export default function CheckboxField(props: Props) {
-  const {
-    field,
-    label,
-    help,
-    registerOptions = {},
-    className,
-    children
-  } = props;
+  const { field, label, help, registerOptions = {}, className, children } = props
   const inputProps = Object.entries(props)
     .filter(
       ([key]) =>
-        ![
-          'field',
-          'label',
-          'help',
-          'registerOptions',
-          'className',
-          'children'
-        ].includes(key)
+        !['field', 'label', 'help', 'registerOptions', 'className', 'children'].includes(key)
     )
-    .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
-  const { register } = useFormContext();
+    .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+  const { register } = useFormContext()
 
   return (
     <FieldWrapper field={field} className={className}>
@@ -62,5 +48,5 @@ export default function CheckboxField(props: Props) {
         </label>
       </div>
     </FieldWrapper>
-  );
+  )
 }

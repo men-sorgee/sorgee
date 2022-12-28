@@ -1,33 +1,29 @@
-import {
-  updateUser,
-  uploadFile,
-  UploadFolder
-} from 'lib/services/directus/server';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { ApiResponse, ApplicationStatus } from '@/lib/models';
-import { withMember, withMethods } from 'lib/utils/server';
-import { sendNotificationEmail } from 'lib/services/sendgrid/server';
+import { updateUser, uploadFile, UploadFolder } from 'lib/services/directus/server'
+import { NextApiRequest, NextApiResponse } from 'next'
+import { ApiResponse, ApplicationStatus } from '@/lib/models'
+import { withMember, withMethods } from 'lib/utils/server'
+import { sendNotificationEmail } from 'lib/services/sendgrid/server'
 
 export const config = {
   api: {
-    bodyParser: false
-  }
-};
+    bodyParser: false,
+  },
+}
 
 async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
-    if (!withMethods(req, ['POST'])) return;
+    if (!withMethods(req, ['POST'])) return
 
-    const member = await withMember(req, res);
-    if (!member) return;
+    const member = await withMember(req, res)
+    if (!member) return
 
     const file = await uploadFile(
       req,
       UploadFolder.verification,
       `Verification: ${member.id.substring(0, 4)}-${member.id.substring(4, 8)}`
-    );
+    )
 
-    const status = ApplicationStatus[member.application_status];
+    const status = ApplicationStatus[member.application_status]
     if (status < 2)
       await sendNotificationEmail(
         member.email,
@@ -35,18 +31,18 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
         'Your photo ID was submitted. It may take a few days to review.',
         'Check Application Results',
         'https://guysnheat.com/apply/verify'
-      );
+      )
 
     await updateUser(member.id, {
       photo: file.id,
-      application_status: 'review'
-    });
+      application_status: 'review',
+    })
 
-    res.status(200).end();
+    res.status(200).end()
   } catch (e: any) {
-    console.error(e);
-    res.status(500).json(ApiResponse(null, e.message || e));
+    console.error(e)
+    res.status(500).json(ApiResponse(null, e.message || e))
   }
 }
 
-export default Verify;
+export default Verify

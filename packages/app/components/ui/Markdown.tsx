@@ -1,5 +1,5 @@
-import { ClassAttributes, ImgHTMLAttributes, useEffect } from 'react';
-import { useRemark } from 'react-remark';
+import { ClassAttributes, ImgHTMLAttributes, useEffect } from 'react'
+import { useRemark } from 'react-remark'
 export default function Markdown({ content }: { content: string }) {
   const [reactContent, setMarkdownSource] = useRemark({
     rehypeReactOptions: {
@@ -19,13 +19,13 @@ export default function Markdown({ content }: { content: string }) {
               width={width || 500}
               alt={alt || 'guysnheat image'}
             />
-          );
-        }
-      }
-    }
-  });
+          )
+        },
+      },
+    },
+  })
   useEffect(() => {
-    setMarkdownSource(content);
-  }, []);
-  return reactContent;
+    setMarkdownSource(content)
+  }, [])
+  return reactContent
 }

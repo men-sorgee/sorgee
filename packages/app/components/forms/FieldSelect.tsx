@@ -1,42 +1,28 @@
-import { SelectHTMLAttributes } from 'react';
-import { useFormContext, RegisterOptions } from 'react-hook-form';
-import { FormOptions } from 'lib/models';
-import FieldWrapper from './FieldWrapper';
+import { SelectHTMLAttributes } from 'react'
+import { useFormContext, RegisterOptions } from 'react-hook-form'
+import { FormOptions } from 'lib/models'
+import FieldWrapper from './FieldWrapper'
 
 type Props = SelectHTMLAttributes<HTMLInputElement> & {
-  field: string;
-  label?: string;
-  help?: string;
-  formOptions: FormOptions;
-  registerOptions?: RegisterOptions;
-  className?: string;
-};
+  field: string
+  label?: string
+  help?: string
+  formOptions: FormOptions
+  registerOptions?: RegisterOptions
+  className?: string
+}
 
 export default function SelectField(props: Props) {
-  const {
-    field,
-    label,
-    help,
-    registerOptions = {},
-    formOptions,
-    className
-  } = props;
+  const { field, label, help, registerOptions = {}, formOptions, className } = props
   const inputProps = Object.entries(props)
     .filter(
       ([key]) =>
-        ![
-          'field',
-          'label',
-          'help',
-          'registerOptions',
-          'formOptions',
-          'className'
-        ].includes(key)
+        !['field', 'label', 'help', 'registerOptions', 'formOptions', 'className'].includes(key)
     )
-    .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
-  const { register, getFieldState, formState } = useFormContext();
-  const { error } = getFieldState(field, formState);
-  const classes = error ? 'select select-error' : 'select';
+    .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+  const { register, getFieldState, formState } = useFormContext()
+  const { error } = getFieldState(field, formState)
+  const classes = error ? 'select select-error' : 'select'
   return (
     <FieldWrapper field={field} label={label} help={help} className={className}>
       <select
@@ -52,5 +38,5 @@ export default function SelectField(props: Props) {
         ))}
       </select>
     </FieldWrapper>
-  );
+  )
 }

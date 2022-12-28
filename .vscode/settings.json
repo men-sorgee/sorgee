@@ -52,4 +52,10 @@
   "files.autoSave": "onFocusChange", // optional but recommended]
   "editor.suggest.filterGraceful": true,
   "editor.suggest.localityBonus": true,
+  "[dockerfile]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
 }

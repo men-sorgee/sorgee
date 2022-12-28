@@ -1,21 +1,17 @@
-import { useMember } from 'lib/hooks/use-member';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
-import ApplicationSteps from './_steps';
-import { SparklesIcon } from '@heroicons/react/solid';
-import Page from 'components/Page';
+import { useMember } from 'lib/hooks/use-member'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
+import ApplicationSteps from './_steps'
+import { SparklesIcon } from '@heroicons/react/solid'
+import Page from 'components/Page'
 
 function Approved() {
-  const router = useRouter();
-  const { loading, member } = useMember();
+  const router = useRouter()
+  const { loading, member } = useMember()
 
-  if (
-    member &&
-    member?.application_status &&
-    member.application_status !== 'approved'
-  ) {
-    router.push('/apply/' + member?.application_status);
-    return null;
+  if (member && member?.application_status && member.application_status !== 'approved') {
+    router.push('/apply/' + member?.application_status)
+    return null
   }
 
   return (
@@ -30,8 +26,7 @@ function Approved() {
         <h2>Congratulations! Your membership was approved.</h2>
         <SparklesIcon className="mx-auto my-4 h-[50px] animate-bounce text-white" />
         <p className="text-center">
-          You will now get periodic event invites as well as access to our
-          member-only content.
+          You will now get periodic event invites as well as access to our member-only content.
         </p>
         <div className="mt-2 flex flex-row items-center justify-center space-x-4 pt-4">
           <Link href="/member/invite">
@@ -43,7 +38,7 @@ function Approved() {
         </div>
       </>
     </Page>
-  );
+  )
 }
 
-export default Approved;
+export default Approved

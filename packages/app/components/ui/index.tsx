@@ -1,7 +1,7 @@
-export { default as Photo } from './Image';
-export { default as LinkButton } from './LinkButton';
-export { default as Loading } from './Loading';
-export { default as Logo } from './Logo';
-export { default as EventCard } from './EventCard';
-export { default as Markdown } from './Markdown';
-export { default as Subscribe } from './Subscribe';
+export { default as Photo } from './Image'
+export { default as LinkButton } from './LinkButton'
+export { default as Loading } from './Loading'
+export { default as Logo } from './Logo'
+export { default as EventCard } from './EventCard'
+export { default as Markdown } from './Markdown'
+export { default as Subscribe } from './Subscribe'

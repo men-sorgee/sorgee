@@ -16,5 +16,5 @@ export default function XCircleIcon({ className }: { className?: string }) {
       <path d="M15 9l-6 6" />
       <path d="M9 9l6 6" />
     </svg>
-  );
+  )
 }

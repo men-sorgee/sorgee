@@ -1,10 +1,4 @@
-export default function InfoIcon({
-  className,
-  title
-}: {
-  className?: string;
-  title?: string;
-}) {
+export default function InfoIcon({ className, title }: { className?: string; title?: string }) {
   return (
     <span title={title}>
       <svg
@@ -24,5 +18,5 @@ export default function InfoIcon({
         ></path>
       </svg>
     </span>
-  );
+  )
 }

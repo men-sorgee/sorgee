@@ -1,20 +1,15 @@
-
-import { useMember } from 'lib/hooks/use-member';
-import { useRouter } from 'next/router';
-import ApplicationSteps from './_steps';
-import Page from 'components/Page';
+import { useMember } from 'lib/hooks/use-member'
+import { useRouter } from 'next/router'
+import ApplicationSteps from './_steps'
+import Page from 'components/Page'
 
 function Denied() {
-  const router = useRouter();
-  const { loading, member } = useMember();
+  const router = useRouter()
+  const { loading, member } = useMember()
 
-  if (
-    member &&
-    member?.application_status &&
-    member.application_status !== 'denied'
-  ) {
-    router.push('/apply/' + member?.application_status);
-    return null;
+  if (member && member?.application_status && member.application_status !== 'denied') {
+    router.push('/apply/' + member?.application_status)
+    return null
   }
 
   return (
@@ -37,7 +32,7 @@ function Denied() {
         </p>
       </>
     </Page>
-  );
+  )
 }
 
-export default Denied;
+export default Denied

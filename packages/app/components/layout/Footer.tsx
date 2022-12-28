@@ -1,4 +1,4 @@
-import { DiscordIcon, InstagramIcon, TwitterIcon } from '../icons';
+import { DiscordIcon, InstagramIcon, TwitterIcon } from '../icons'
 
 export default function Footer() {
   return (
@@ -59,5 +59,5 @@ export default function Footer() {
         <div>&copy; Guys N Heat 2022. All rights reserved.</div>
       </div>
     </footer>
-  );
+  )
 }
