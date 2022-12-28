@@ -25,3 +25,6 @@ export const useMember = (): MemberResults => {
     },
   }
 }
+function useSession(): { status: any } {
+  throw new Error('Function not implemented.')
+}

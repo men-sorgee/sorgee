@@ -26,9 +26,9 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
       await sendNotificationEmail(
         userDetails.email,
         `Application Status`,
-        'Your membership application has begun!',
+        'Thank you for applying for membership!',
         'Complete Application',
-        'https://guysnheat.com/apply'
+        'https://guysnheat.com/apply/resume'
       )
       userDetails.in_sendgrid = true
 

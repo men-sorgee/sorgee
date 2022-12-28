@@ -95,7 +95,7 @@ export type PageContent = {
   name?: string
   html?: string
   markdown?: string
-  control?: Block[]
+  control?: { time: number; blocks: Block[]; version: string }
   image?: DirectusFile
   type?: string
   page?: Page

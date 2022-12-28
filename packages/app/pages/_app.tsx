@@ -5,6 +5,7 @@ import { AppProps } from 'next/app'
 import { SessionProvider } from 'next-auth/react'
 import { MetaContextProvider } from 'lib/hooks'
 import { Manrope, Roboto } from '@next/font/google'
+import { Head } from 'next/document'
 const manRope = Manrope({ variable: '--font-manrope' })
 const robotoSlab = Roboto({ variable: '--font-roboto', weight: '400' })
 import 'styles/globals.css'
@@ -13,7 +14,12 @@ function MyApp({ Component, pageProps }: AppProps) {
     <>
       <MetaContextProvider>
         <SessionProvider>
-          <Layout className={`${manRope.variable} font-sans ${robotoSlab.variable} font-serif`}>
+          <Layout
+            style={{
+              ...manRope.style,
+              ...robotoSlab.style,
+            }}
+          >
             <ErrorBoundary>
               <Component {...pageProps} />
             </ErrorBoundary>

@@ -17,11 +17,10 @@ function Denied() {
       title="Application Denied"
       loading={loading}
       requireAuth={true}
-      sectionClass="gradient p-4"
-      header={<ApplicationSteps status={'denied'} />}
+      sectionClass="gradient p-4 text-center"
     >
       <>
-        <p>Unfortunately, your application was denied.</p>
+        <h2>Unfortunately, your application was denied.</h2>
         <p>{member?.photo_denial_reason}</p>
         <p>
           If this was a mistake or you'd like to appeal, please contact us at{' '}

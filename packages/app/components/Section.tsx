@@ -7,12 +7,13 @@ export default function Section({ content }: { content: PageContent }) {
   const { container, container_classes, type } = content
   switch (type) {
     case 'control':
+      if (!content?.control?.version) return null
       return (
         <Blocks
           data={{
-            blocks: content.control,
-            time: Date.now(),
-            version: '2.18.0',
+            blocks: content.control.blocks,
+            time: content.control.time,
+            version: content.control.version,
           }}
         />
       )

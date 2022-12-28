@@ -30,7 +30,7 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
         `Application Status`,
         'Your photo ID was submitted. It may take a few days to review.',
         'Check Application Results',
-        'https://guysnheat.com/apply/verify'
+        'https://guysnheat.com/apply/resume'
       )
 
     await updateUser(member.id, {

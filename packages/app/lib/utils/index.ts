@@ -1,4 +1,4 @@
-import { ApiResponse } from 'lib/models'
+import { ApiResponse, ApplicationStatus } from 'lib/models'
 
 export type HttpMethod = (string & 'GET') | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
 

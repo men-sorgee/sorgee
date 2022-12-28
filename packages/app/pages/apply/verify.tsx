@@ -1,14 +1,14 @@
 import { useMember } from 'lib/hooks/use-member'
 import { useRouter } from 'next/router'
 import { useState, ChangeEvent } from 'react'
-import Image from 'next/image'
 import ApplicationSteps from './_steps'
 import { Button } from 'react-daisyui'
 import Page from 'components/Page'
 import FieldCheckbox from 'components/forms/FieldCheckbox'
 import { FormProvider, useForm } from 'react-hook-form'
 import { ErrorMessage } from '@hookform/error-message'
-import { ApiResponse, Applicant } from 'lib/models'
+import { ApiResponse } from 'lib/models'
+import { getAssetUrl } from 'lib/utils'
 
 function Verification() {
   const { member, loading } = useMember()
@@ -35,7 +35,9 @@ function Verification() {
 
 function Form({ code, router, setCompleted }): JSX.Element {
   const { member, reload } = useMember()
-  const [previewUrl, setPreviewUrl] = useState<string | null>(member?.photo)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(
+    member?.photo ? getAssetUrl(member.photo) : null
+  )
   const [file, setFile] = useState<File | null>(null)
 
   const methods = useForm<{ file: File; verify: boolean }>({
@@ -94,10 +96,9 @@ function Form({ code, router, setCompleted }): JSX.Element {
       })
 
       if (res.ok) {
-        setCompleted(true)
         reload()
+        setCompleted(true)
         router.push('/apply/review')
-        return
       } else {
         const body = (await res.json()) as ApiResponse
         if (body.error?.field) {
@@ -140,7 +141,12 @@ function Form({ code, router, setCompleted }): JSX.Element {
               />
             </label>
           )}
-
+          {member?.photo_denial_reason && (
+            <p className="text-lg text-red-500">
+              Your verification photo was denied.
+              {member.photo_denial_reason}
+            </p>
+          )}
           <p className="text-xl">
             <strong>
               Be sure your face and code is clearly visible, with no sunglasses or hats.
@@ -165,7 +171,7 @@ function Form({ code, router, setCompleted }): JSX.Element {
             <Button color="info" disabled={!previewUrl} onClick={onCancelFile}>
               Clear
             </Button>
-            {member?.photo && (
+            {member?.photo && !member?.photo_denial_reason && (
               <Button type="submit" onClick={handleSubmit(skip)} color="info">
                 Use Existing
               </Button>

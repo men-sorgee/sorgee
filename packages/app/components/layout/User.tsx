@@ -27,6 +27,10 @@ const UserAvatar = ({ setVisible }: Props) => {
   const messages = notifications?.filter((n) => n.type == 'message') || []
   const newEvents = notifications?.filter((n) => n.type == 'event') || []
   const [messageCount, eventCount] = notificationCount
+  const {
+    user: { application_status },
+  } = session || { user: {} }
+
   useEffect(() => {
     if (status == 'authenticated' && session.user) {
       setNotificationCount([messageCount, eventCount])
@@ -59,7 +63,7 @@ const UserAvatar = ({ setVisible }: Props) => {
           </Avatar>
 
           <Dropdown.Menu>
-            {member && MemberLevel[member.user_type] >= 3 && (
+            {member && MemberLevel[member.user_type] >= 3 && application_status == 'approved' && (
               <>
                 <Dropdown.Item href="/member/events">
                   Events
@@ -91,7 +95,7 @@ const UserAvatar = ({ setVisible }: Props) => {
           color="ghost"
           onClick={(e) => {
             e.preventDefault()
-            signIn()
+            signIn(null, { callbackUrl: '/apply/resume' })
           }}
         >
           members

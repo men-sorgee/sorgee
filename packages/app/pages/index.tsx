@@ -11,8 +11,7 @@ interface Props {
 
 export default function HomePage({ page }: Props) {
   const { title, description, content, markdown, image } = page
-  const img = image?.id ? getAssetUrl(image.id) : null
-  setMeta(title, description, img)
+  setMeta(title, description, image?.id)
 
   return (
     <article>
@@ -23,7 +22,7 @@ export default function HomePage({ page }: Props) {
         <Subscribe />
       </section>
       <>
-        {content.map((s, i) => (
+        {content?.map((s, i) => (
           <Section key={i} content={s} />
         ))}
       </>

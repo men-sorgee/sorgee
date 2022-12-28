@@ -1,4 +1,4 @@
-import { Key } from 'react'
+import { cache, Key, useMemo } from 'react'
 import Markdown from 'components/ui/Markdown'
 import Section from 'components/Section'
 import { setMeta } from 'lib/hooks'
