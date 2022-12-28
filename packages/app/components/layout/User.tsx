@@ -1,7 +1,7 @@
 import { signIn, useSession, signOut } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import { Dropdown, Avatar, Badge } from 'react-daisyui'
-import { Member, MemberLevel } from 'lib/models'
+import { ApplicationStatus, Member, MemberLevel } from 'lib/models'
 import { LinkButton } from 'components/ui'
 import { useNotifications } from 'lib/hooks'
 import { getAssetUrl } from 'lib/utils'
@@ -43,6 +43,8 @@ const UserAvatar = ({ setVisible }: Props) => {
     }
   }, [letters, photoSrc, session?.user, level, notifications, messageCount, eventCount])
 
+  const isMember = member && level >= 3 && application_status == 'approved'
+  const isApplicant = ApplicationStatus[application_status] < ApplicationStatus['approved']
   return (
     <>
       {member ? (
@@ -63,7 +65,7 @@ const UserAvatar = ({ setVisible }: Props) => {
           </Avatar>
 
           <Dropdown.Menu>
-            {member && MemberLevel[member.user_type] >= 3 && application_status == 'approved' && (
+            {isMember && (
               <>
                 <Dropdown.Item href="/member/events">
                   Events
@@ -80,6 +82,11 @@ const UserAvatar = ({ setVisible }: Props) => {
                 <Dropdown.Item href="/member/invite">Invite</Dropdown.Item>
               </>
             )}
+            {isApplicant && (
+              <>
+                <Dropdown.Item href="/apply/resume">Continue Application</Dropdown.Item>
+              </>
+            )}
             <Dropdown.Item
               onClick={() => {
                 signOut({ callbackUrl: '/' })
@@ -90,15 +97,8 @@ const UserAvatar = ({ setVisible }: Props) => {
           </Dropdown.Menu>
         </Dropdown>
       ) : (
-        <LinkButton
-          href={`/api/auth/signin`}
-          color="ghost"
-          onClick={(e) => {
-            e.preventDefault()
-            signIn(null, { callbackUrl: '/apply/resume' })
-          }}
-        >
-          members
+        <LinkButton href={`/enter`} color="ghost">
+          Enter Site
         </LinkButton>
       )}
     </>

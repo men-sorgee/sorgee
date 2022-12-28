@@ -13,11 +13,12 @@ import {
 } from 'lib/services/sendgrid/server'
 import {
   createAccount,
+  createUser,
   findUser,
   findUserByAccount,
   recordUserLogin,
 } from 'lib/services/directus/server/users'
-import { Member, memberFields, Profile, StatusType } from '@/lib/models'
+import { Member, memberFields, Profile, StatusType, User } from '@/lib/models'
 
 const allowedStatuses: StatusType[] = ['new', 'active', 'inactive', 'stale']
 export const authOptions: AuthOptions = {
@@ -42,11 +43,42 @@ export const authOptions: AuthOptions = {
         const user = await findUser(account.userId)
         return user && allowedStatuses.includes(user.status)
       } else if (profile?.email) {
-        console.debug('creating account')
-        const user = await findUser(profile.email)
-        if (!user) return false
-        const existing = await findUserByAccount(account.provider, account.providerAccountId)
-        if (!existing) {
+        let user: Partial<User> = await findUser(profile.email)
+        if (!user) {
+          console.debug('creating user')
+          user = await createUser({
+            email: profile.email,
+            first_name: profile.name,
+            user_type: 'subscriber',
+            status: 'new',
+            notes: 'Tried to login without an invite',
+          })
+          const {
+            provider,
+            providerAccountId,
+            type,
+            access_token,
+            expires_at,
+            id_token,
+            refresh_token,
+            scope,
+          } = account
+          await createAccount({
+            provider,
+            provider_id: providerAccountId,
+            user: user.id,
+            type,
+            scope,
+            access_token,
+            expires_at,
+            id_token,
+            refresh_token,
+          })
+          return '/limited'
+        }
+        let existingAccount = await findUserByAccount(account.provider, account.providerAccountId)
+        if (!existingAccount) {
+          console.debug('creating user')
           const {
             provider,
             providerAccountId,
