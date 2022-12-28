@@ -1,8 +1,8 @@
-const defaultTheme = require( 'tailwindcss/defaultTheme' )
-const colors = require( 'tailwindcss/colors' )
-const YAML = require( 'yamljs' )
-const path = require( 'path' )
-const brandColors = YAML.load( path.resolve( __dirname, './brand.yaml' ) ).colors
+const defaultTheme = require( 'tailwindcss/defaultTheme' );
+const colors = require( 'tailwindcss/colors' );
+const YAML = require( 'yamljs' );
+const path = require( 'path' );
+const brandColors = YAML.load( path.resolve( __dirname, './brand.yaml' ) ).colors;
 /** @type {import('tailwindcss').Config} */
 const config = {
   content: [
@@ -23,8 +23,8 @@ const config = {
         standalone: { raw: '(display-mode:standalone)' }
       },
       fontFamily: {
-        sans: ['Manrope', ...defaultTheme.fontFamily.sans],
-        serif: ['Roboto Slab', ...defaultTheme.fontFamily.serif],
+        sans: ['var(--font-manrope)', ...defaultTheme.fontFamily.sans],
+        serif: ['var(--font-roboto)', ...defaultTheme.fontFamily.serif],
         mono: ['Consolas', ...defaultTheme.fontFamily.mono]
       },
       colors: {
@@ -37,10 +37,10 @@ const config = {
       }
     }
   },
+  // @ts-ignore
   plugins: [require( '@tailwindcss/typography' ), require( 'daisyui' )],
   daisyui: {
     styled: true,
-    themes: false,
     base: true,
     utils: true,
     logs: false,
@@ -49,6 +49,7 @@ const config = {
     darkTheme: false,
     themes: [{
       dark: {
+        // @ts-ignore
         ...require( "daisyui/src/colors/themes" )["[data-theme=dark]"],
         primary: brandColors.primary.DEFAULT,
         secondary: brandColors.secondary.DEFAULT,
@@ -60,7 +61,7 @@ const config = {
       },
     }],
   }
-}
+};
 
 
-module.exports = config
+module.exports = config;

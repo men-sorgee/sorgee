@@ -1,8 +1,8 @@
-import { withPageAuthRequired } from '@auth0/nextjs-auth0';
+
 import { useMember } from 'lib/hooks/use-member';
 import { useRouter } from 'next/router';
 import ApplicationSteps from './_steps';
-import Page from '../components/layout/Page';
+import Page from 'components/Page';
 
 function Denied() {
   const router = useRouter();
@@ -21,6 +21,7 @@ function Denied() {
     <Page
       title="Application Denied"
       loading={loading}
+      requireAuth={true}
       sectionClass="gradient p-4"
       header={<ApplicationSteps status={'denied'} />}
     >
@@ -39,4 +40,4 @@ function Denied() {
   );
 }
 
-export default withPageAuthRequired(Denied);
+export default Denied;

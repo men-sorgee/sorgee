@@ -1,8 +1,8 @@
-import Script from 'next/script';
-import { setMeta } from 'lib/hooks/use-meta-context';
+import Script from 'next/script'
+import { setMeta } from 'lib/hooks'
 
 export default function Learn() {
-  setMeta('Privacy Policy');
+  setMeta('Privacy Policy')
   return (
     <>
       <div
@@ -17,5 +17,5 @@ export default function Learn() {
         type="text/javascript"
       />
     </>
-  );
+  )
 }

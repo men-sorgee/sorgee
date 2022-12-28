@@ -1,12 +1,17 @@
 import Blocks from 'editorjs-blocks-react-renderer';
-import { PageContent } from 'directus';
-import Markdown from '../ui/Markdown';
+import { PageContent } from 'lib/models'
+
+import Markdown from './ui/Markdown';
 
 export default function Section({ content }: { content: PageContent }) {
   const { container, container_classes, type } = content;
   switch (type) {
     case 'control':
-      return <Blocks data={(content.control as any) || {}} />;
+      return <Blocks data={{
+        blocks: content.control,
+        time: Date.now(),
+        version: '2.18.0'
+      }} />;
     case 'image':
       return (
         <img

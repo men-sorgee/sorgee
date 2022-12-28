@@ -10,13 +10,14 @@ import {
   Applicant,
   applicantFields,
   UserEmailEvent
-} from 'lib/models';
+} from '@/lib/models';
 
-export async function createUser(member: Partial<User>): Promise<any> {
+export async function createUser(member: Partial<User>): Promise<User> {
   const adminClient = await getAdminClient();
-  return adminClient.items('users').createOne(member, {
+  const { id } = await adminClient.items('users').createOne(member, {
     fields: memberFields as any[]
   });
+  return getUser(id);
 }
 
 export async function updateUser(

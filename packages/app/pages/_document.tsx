@@ -1,32 +1,23 @@
-import Document, { Head, Html, Main, NextScript } from 'next/document';
-import Script from 'next/script';
+import Document, { Head, Html, Main, NextScript } from 'next/document'
+import Script from 'next/script'
 
 class MyDocument extends Document {
   render() {
     return (
       <Html lang="en" data-theme="dark">
-        <Head>
-          <link
-            href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&family=Roboto+Slab:wght@500&display=swap"
-            rel="stylesheet"
-          ></link>
-        </Head>
+        <Head />
         <body>
-          <script
-            key="gtag"
-            async
-            src="https://www.googletagmanager.com/gtag/js?id=G-SJX78PVP26"
-          ></script>
-          <script
+          <Script key="gtag" async src="https://www.googletagmanager.com/gtag/js?id=G-SJX78PVP26" />
+          <Script
             key="gtag-init"
             dangerouslySetInnerHTML={{
               __html: `
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-SJX78PVP26');`
+            gtag('config', 'G-SJX78PVP26');`,
             }}
-          ></script>
+          />
           <Main />
           <NextScript />
           <Script
@@ -34,11 +25,11 @@ class MyDocument extends Document {
             src="https://app.termly.io/embed.min.js"
             data-auto-block="on"
             data-website-uuid="8fbb3f3c-9fc6-4256-ad1f-7c061dabb965"
-          ></Script>
+          />
         </body>
       </Html>
-    );
+    )
   }
 }
 
-export default MyDocument;
+export default MyDocument

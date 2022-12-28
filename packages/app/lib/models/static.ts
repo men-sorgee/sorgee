@@ -1,4 +1,4 @@
-import { Path, UnPackAsyncDefaultValues } from 'react-hook-form';
+
 import { PageContent } from './directus';
 
 export type File = {
@@ -13,14 +13,14 @@ export type FormOptions = Array<{
   value: string;
 }>;
 
-export interface Props {
-  [propName: string]: any;
-  children?: React.ReactNode | React.ReactNode[];
-}
+//export type Props = {
+//  [propName: string]: any;
+//  children?: React.ReactNode | React.ReactNode[] | JSX.Element | JSX.Element[] | any;
+//}
 
-export interface ApiResponse<T = (object & never) | any> {
+export type ApiResponse<T = (object & never) | any> = {
   error?: {
-    field: Path<UnPackAsyncDefaultValues<T>>;
+    field: string & keyof T;
     message: string;
   };
   data?: T;
@@ -29,7 +29,7 @@ export interface ApiResponse<T = (object & never) | any> {
 export function ApiResponse<T = (object & never) | any>(
   data: T,
   error?: string,
-  field?: Path<UnPackAsyncDefaultValues<T>>
+  field?: string & keyof T
 ): ApiResponse<T> {
   return {
     data,
@@ -37,7 +37,7 @@ export function ApiResponse<T = (object & never) | any>(
   };
 }
 
-export interface MetaProps {
+export type MetaProps = {
   title: string;
   description?: string;
   basePath?: string;

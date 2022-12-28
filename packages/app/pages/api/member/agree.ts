@@ -1,54 +1,41 @@
-import { updateUser } from 'lib/services/directus/server';
-import { NextApiRequest, NextApiResponse } from 'next';
-import {
-  AgreementData,
-  ApiResponse,
-  ApplicationStatus,
-  MemberLevel
-} from 'lib/models';
-import {
-  sendNotificationEmail,
-  updateSendGrid
-} from 'lib/services/sendgrid/server';
-import { withApplicant, withMethods } from 'lib/utils/server';
+import { updateUser } from 'lib/services/directus/server'
+import { NextApiRequest, NextApiResponse } from 'next'
+import { AgreementData, ApiResponse, ApplicationStatus, MemberLevel } from '@/lib/models'
+import { sendNotificationEmail, updateSendGrid } from 'lib/services/sendgrid/server'
+import { withApplicant, withMethods } from 'lib/utils/server'
 
 async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
-    if (!withMethods(req, ['POST']))
-      return res.status(401).json(ApiResponse(null, 'Unauthorized'));
+    withMethods(req, ['POST'])
 
-    const { agree } = req.body as AgreementData;
-    const applicant = await withApplicant(req, res);
+    const { agree } = req.body as AgreementData
+    const applicant = await withApplicant(req, res)
+    const appStatus = ApplicationStatus[applicant.application_status]
 
-    if (applicant.application_status == ApplicationStatus['approved'])
-      return res.status(200).end();
+    if (appStatus == ApplicationStatus['approved']) return res.status(200).end()
 
-    if (
-      applicant &&
-      applicant.application_status == ApplicationStatus['agreement'] &&
-      agree
-    ) {
+    if (applicant && appStatus == ApplicationStatus['agreement'] && agree) {
       sendNotificationEmail(
         applicant.email,
         `Application Status`,
         `Your free membership is now active!`,
         'Manage Profile',
         'https://guysnheat.com/member/account'
-      );
+      )
 
       await updateUser(applicant.id, {
         application_status: ApplicationStatus[ApplicationStatus.approved],
-        user_type: MemberLevel[MemberLevel.member]
-      });
+        user_type: MemberLevel[MemberLevel.member],
+      })
 
-      await updateSendGrid(applicant);
+      await updateSendGrid(applicant)
 
-      return res.status(200).end();
+      return res.status(200).end()
     }
   } catch (e: any) {
-    console.error(e);
-    res.status(500).json(ApiResponse(null, e?.message || e));
+    console.error(e)
+    res.status(500).json(ApiResponse(null, e?.message || e))
   }
 }
 
-export default Agree;
+export default Agree

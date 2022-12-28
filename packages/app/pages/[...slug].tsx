@@ -1,67 +1,59 @@
-import { Key } from 'react';
-import Markdown from 'components/ui/Markdown';
-import Section from 'components/layout/Section';
-import { setMeta } from 'lib/hooks/use-meta-context';
-import {
-  listActivePages,
-  getPageContentByUrl
-} from 'lib/services/directus/static';
-import { Page, PageItem } from 'lib/models';
-import { GetStaticPaths } from 'next';
+import { Key } from 'react'
+import Markdown from 'components/ui/Markdown'
+import Section from 'components/Section'
+import { setMeta } from 'lib/hooks'
+import { listActivePages } from 'lib/services/directus/static'
+import { Page } from 'lib/models'
+import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next'
+import { ParsedUrlQuery } from 'querystring'
+import { getAssetUrl } from '../lib/utils'
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const pages = await listActivePages();
-  const paths = pages.map((page) => ({
-    params: { slug: page.slug.split('/') }
-  }));
+interface Params extends ParsedUrlQuery {
+  slug: string[]
+}
+
+export const getStaticPaths: GetStaticPaths<Params> = async () => {
+  const pages = await listActivePages()
+  const paths = pages?.map((page) => ({
+    params: { slug: page.slug.split('/') },
+  }))
   return {
     paths,
-    fallback: false
-  };
-};
-
-export async function getStaticProps({ params }) {
-  const pages = await listActivePages();
-
-  let { slug: paths } = params as { slug: string[] };
-
-  const slug = paths?.pop();
-  if (!slug) {
-    return {
-      notFound: true
-    };
+    fallback: 'blocking',
   }
+}
 
-  const page = await getPageContentByUrl(slug);
+interface Props {
+  page: Page
+}
 
+export const getStaticProps: GetStaticProps<Props> = async ({
+  params,
+}: GetStaticPropsContext<Params>) => {
+  const pages = await listActivePages()
+
+  let { slug } = params
+
+  const path = slug.join('/')
+
+  const page = pages.find((p) => p.slug === path)
   if (!page) {
     return {
-      notFound: true
-    };
+      notFound: true,
+    }
   }
 
   return {
     props: {
       page,
-      pages: pages
-        .filter((p) => p.in_menu)
-        .map((p) => {
-          return { title: p.title, path: `/${p.slug}` };
-        })
-    }
-  };
+    },
+  }
 }
 
-export default function DynamicPage({
-  page,
-  pages
-}: {
-  page: Page;
-  pages: PageItem[];
-}) {
-  const { title, description, image, markdown, content } = page;
-  const img = image ? `/api/asset/${image.id}` : null;
-  setMeta(title, description, img, pages);
+export default function DynamicPage({ page }: Props) {
+  const { title, description, image, markdown, content } = page
+  setMeta(title, description, image?.id)
+
   return (
     <article>
       <h1>{title}</h1>
@@ -74,5 +66,5 @@ export default function DynamicPage({
         ))}
       </>
     </article>
-  );
+  )
 }

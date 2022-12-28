@@ -1,6 +1,6 @@
-import { baseUrl } from 'lib/config/client';
-import { listActivePages } from 'lib/services/directus/static';
-import { Page } from 'lib/models';
+import { baseUrl } from 'lib/config'
+import { listActivePages } from 'lib/services/directus/static'
+import { Page } from '@/lib/models'
 
 function generateSiteMap(pages: Page[]) {
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -21,11 +21,11 @@ function generateSiteMap(pages: Page[]) {
        <url>
            <loc>${`${baseUrl}/${page.slug}`}</loc>
        </url>
-     `;
+     `
        })
        .join('')}
    </urlset>
- `;
+ `
 }
 
 function SiteMap() {
@@ -34,19 +34,19 @@ function SiteMap() {
 
 export async function getServerSideProps({ res }) {
   // We make an API call to gather the URLs for our site
-  const pages = await listActivePages();
+  const pages = await listActivePages()
 
   // We generate the XML sitemap with the posts data
-  const sitemap = generateSiteMap(pages);
+  const sitemap = generateSiteMap(pages)
 
-  res.setHeader('Content-Type', 'text/xml');
+  res.setHeader('Content-Type', 'text/xml')
   // we send the XML to the browser
-  res.write(sitemap);
-  res.end();
+  res.write(sitemap)
+  res.end()
 
   return {
-    props: {}
-  };
+    props: {},
+  }
 }
 
-export default SiteMap;
+export default SiteMap

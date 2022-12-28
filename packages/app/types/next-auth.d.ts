@@ -1,6 +1,6 @@
 import NextAuth, { DefaultSession } from 'next-auth';
 import { JWT, DefaultJWT } from 'next-auth/jwt';
-import { Profile } from 'lib/models/users';
+import { Profile } from '@/lib/models/users';
 
 declare module 'next-auth' {
   /**
@@ -17,8 +17,4 @@ declare module 'next-auth/JWT' {
   interface JWT extends DefaultJWT, Profile {}
 }
 
-declare namespace JSX {
-  interface IntrinsicElements {
-    [elemName: string]: any;
-  }
-}
+

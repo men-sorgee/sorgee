@@ -6,8 +6,7 @@
   "author": "Jason <jason@guysnheat.com>",
   "license": "MIT",
   "workspaces": [
-    "packages/*",
-    "packages/admin/packages/modules/*"
+    "packages/app"
   ],
   "scripts": {
     "admin": "yarn workspace admin ",

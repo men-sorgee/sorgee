@@ -1,11 +1,5 @@
 {
   "editor.formatOnSave": true,
-  "[jsonc]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
-  },
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
   "cSpell.words": [
     "authentification",
     "basemaps",
@@ -46,11 +40,16 @@
     "uuidv",
     "wellenplan"
   ],
-  "editor.suggest.showStatusBar": true,
-  "editor.quickSuggestions": {
-    "strings": true
-  },
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "typescript.tsdk": "../../node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnPaste": false, // required
+  "editor.formatOnType": false, // required
+  "editor.formatOnSaveMode": "file", // required to format on save
+  "files.autoSave": "onFocusChange", // optional but recommended]
+  "editor.suggest.filterGraceful": true,
+  "editor.suggest.localityBonus": true,
 }

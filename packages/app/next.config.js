@@ -1,5 +1,4 @@
 const { PHASE_DEVELOPMENT_SERVER } = require( 'next/constants' )
-const withTM = require( 'next-transpile-modules' )( ['react-daisyui'] )
 
 const getConfig = ( phase ) => {
   const dev = PHASE_DEVELOPMENT_SERVER === phase
@@ -7,7 +6,7 @@ const getConfig = ( phase ) => {
    * @type {import('next').NextConfig}
    */
   const nextConfig = {
-    pageExtensions: ['ts', 'tsx', 'js', 'jsx'],
+    pageExtensions: ['ts', 'tsx'],
     images: {
       domains: [
         'guysnheat.com',
@@ -40,11 +39,10 @@ const getConfig = ( phase ) => {
       ]
     },
     poweredByHeader: false,
-    eslint: {
-      // Warning: This allows production builds to successfully complete even if
-      // your project has ESLint errors.
-      // ignoreDuringBuilds: true,
+    experimental: {
+      appDir: false
     },
+
     //webpack: ( config, { isServer } ) => {
     //  if ( !isServer ) {
     //    config.resolve.fallback.fs = false
@@ -57,4 +55,4 @@ const getConfig = ( phase ) => {
   return nextConfig
 }
 
-module.exports = withTM( getConfig )
+module.exports = getConfig
