@@ -51,6 +51,9 @@ export const getStaticProps: GetStaticProps<Props> = async ({
 }
 
 export default function DynamicPage({ page }: Props) {
+  if (!page) {
+    return <div>Page not found</div>
+  }
   const { title, description, image, markdown, content } = page
   setMeta(title, description, image?.id)
 
