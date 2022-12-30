@@ -13,13 +13,13 @@ async function SendNotification(req: NextApiRequest, res: NextApiResponse<ApiRes
 
     const { email, subject, message, button_text, button_link, template, id } = req.body
 
-    await sendNotificationEmail(email, subject, message, button_text, button_link, template, id)
+    await sendNotificationEmail(email, subject, message, button_text, button_link, template)
 
     if (id) {
-      markNotificationSent(id)
+      await markNotificationSent(id)
     }
 
-    res.status(200).end()
+    res.status(200).send(ApiResponse({ success: true }))
   } catch (e: any) {
     console.error(e)
     res.status(500).json(ApiResponse(null, e.message || e))

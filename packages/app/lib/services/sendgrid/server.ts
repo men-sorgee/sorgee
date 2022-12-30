@@ -27,30 +27,38 @@ export async function updateSendGrid(
   lists: SendGridList[] = [SendGridList.Subscribers]
 ): Promise<string> {
   const { first_name, last_name, email, id: member_id, user_type } = user
-  const member_level = MemberLevel[user_type]
+  const member_level = MemberLevel[user_type] as number
   if (member_level >= MemberLevel.member) {
     lists.push(SendGridList.Members)
   }
-  let [, data] = await getClient().request({
-    url: `/v3/marketing/contacts`,
-    method: 'PUT',
-    body: {
-      list_ids: lists,
-      contacts: [{ email, first_name, last_name, member_id, member_level }],
-    },
-  })
-  return data
-}
-
-export async function sendEmail(to: string, subject: string) {
-  await getMailer().send({
-    to,
-    from: 'system@guysnheat.com',
-    subject,
-    text: 'and easy to do anywhere, even with Node.js',
-    html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-  })
-  console.log('Email sent')
+  try {
+    let [response, data] = await getClient().request({
+      url: `/v3/marketing/contacts`,
+      method: 'PUT',
+      body: {
+        contacts: [
+          {
+            email,
+            first_name,
+            last_name,
+            member_id,
+            member_level,
+          },
+        ],
+        list_ids: lists,
+      },
+    })
+    if (response.statusCode > 202) {
+      throw new Error('Sendgrid Error:' + JSON.stringify(data))
+    }
+    console.log('Contact synced: ' + email)
+    return data
+  } catch (error) {
+    console.error(error)
+    if (error.response) {
+      console.error(error.response.body)
+    }
+  }
 }
 
 export async function sendNotificationEmail(
@@ -59,7 +67,6 @@ export async function sendNotificationEmail(
   message: string,
   button_text: string,
   button_url: string,
-  category: string = 'notification',
   templateId: string = SendGridTemplate.AppNotification
 ) {
   if (message.includes('\n')) message = convertMarkdownToHtml(message)
@@ -79,19 +86,23 @@ export async function sendNotificationEmail(
     from: 'GuysNHeat <system@guysnheat.com>',
     subject,
     templateId,
-    category,
+    category: 'notification',
   }
   try {
-    await getMailer().send(email)
-    console.log('Email sent')
+    const [response, data] = await getMailer().send(email, false)
+    if (response.statusCode > 202) {
+      throw new Error('Sendgrid Error:' + JSON.stringify(data))
+    }
+    console.log('Email sent:' + to)
+    return data
   } catch (error) {
-    console.dir({
+    console.log({
       button_text,
       button_url,
     })
     console.error(error)
     if (error.response) {
-      console.error(error.response.body)
+      console.error(error)
     }
   }
 }

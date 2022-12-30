@@ -142,7 +142,7 @@ export type UserVerificationToken = {
 }
 
 export type UserEmailEvent = {
-  id: string
+  id?: string
   date_created?: string
   payload?: Record<string, unknown>
   event?: string
@@ -179,6 +179,7 @@ export type User = {
   phone_verified?: boolean
   email?: string
   email_verified?: boolean
+  contact_preference: string
   weight?: number
   cock_length?: number
   build?: string

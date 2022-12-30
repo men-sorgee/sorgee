@@ -18,9 +18,9 @@ import {
   findUserByAccount,
   recordUserLogin,
 } from 'lib/services/directus/server/users'
-import { Member, memberFields, Profile, StatusType, User } from '@/lib/models'
+import { Member, memberFields, Profile, UserStatusType, User } from '@/lib/models'
 
-const allowedStatuses: StatusType[] = ['new', 'active', 'inactive', 'stale']
+const allowedStatuses: UserStatusType[] = ['new', 'active', 'inactive', 'stale']
 export const authOptions: AuthOptions = {
   adapter: authAdapter,
   secret: process.env.AUTH_SECRET,
