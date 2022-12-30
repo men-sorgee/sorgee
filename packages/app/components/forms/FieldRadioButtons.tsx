@@ -2,18 +2,20 @@ import { InputHTMLAttributes } from 'react'
 import { useFormContext, RegisterOptions } from 'react-hook-form'
 import { FormOptions } from 'lib/models'
 import FieldWrapper from './FieldWrapper'
+import { Radio, RadioGroup, Stack, RadioProps, chakra } from '@chakra-ui/react'
 
-type Props = InputHTMLAttributes<HTMLInputElement> & {
-  field: string
-  label?: string
-  help?: string
-  formOptions: FormOptions
-  registerOptions?: RegisterOptions
-  className?: string
-  color?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info'
-}
+type Props = RadioProps &
+  InputHTMLAttributes<HTMLInputElement> & {
+    field: string
+    label?: string
+    help?: string
+    formOptions: FormOptions
+    registerOptions?: RegisterOptions
+    className?: string
+    color?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info'
+  }
 
-export default function RadioButtonsField(props: Props) {
+function RadioButtonsField(props: Props) {
   const {
     field,
     label,
@@ -22,34 +24,33 @@ export default function RadioButtonsField(props: Props) {
     formOptions,
     className,
     color = 'primary',
+    ...opts
   } = props
-  const inputProps = Object.entries(props)
-    .filter(
-      ([key]) =>
-        !['field', 'label', 'help', 'registerOptions', 'formOptions', 'className'].includes(key)
-    )
-    .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
-  const { register } = useFormContext()
-
+  const { register, getFieldState, formState } = useFormContext()
+  const { error } = getFieldState(field, formState)
+  const classes = error ? 'error' : ''
   return (
     <FieldWrapper field={field} label={label} help={help} className={className}>
-      <div className="flex justify-evenly">
+      <RadioGroup
+        as={Stack}
+        spacing={[1, 4]}
+        direction={{ base: 'column', md: 'row' }}
+        justify={'evenly'}
+      >
         {formOptions?.map(({ text, value }, index) => (
-          <div key={index.toString()} className="form-control">
-            <label htmlFor={value} className="label cursor-pointer justify-start">
-              <input
-                type="radio"
-                id={value}
-                value={value}
-                {...register(field, registerOptions)}
-                {...inputProps}
-                className={`radio radio-${color} `}
-              />
-              <span className="label-text ml-2">{text}</span>
-            </label>
-          </div>
+          <Radio
+            key={index.toString()}
+            className={classes}
+            value={value}
+            {...register(field, registerOptions)}
+            {...opts}
+          >
+            {text}
+          </Radio>
         ))}
-      </div>
+      </RadioGroup>
     </FieldWrapper>
   )
 }
+
+export default chakra(RadioButtonsField)

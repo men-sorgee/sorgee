@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
-import { storeEmailEvent } from 'lib/services/directus/server'
+import { storeEmailEvent } from '@/lib/services/directus/server'
 
 import { withMethods } from 'lib/utils/server'
 import { ApiResponse, UserEmailEvent } from '@/lib/models'

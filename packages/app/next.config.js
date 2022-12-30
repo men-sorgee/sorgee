@@ -40,17 +40,9 @@ const getConfig = ( phase ) => {
     },
     poweredByHeader: false,
     experimental: {
-      appDir: false
+      appDir: false,
+      esmExternals: false,
     },
-
-    //webpack: ( config, { isServer } ) => {
-    //  if ( !isServer ) {
-    //    config.resolve.fallback.fs = false
-    //  }
-    //  config.module.rules.push( { test: /\.ya?ml$/, use: 'yaml-loader' } )
-    //  //config.module.rules.push( { test: /\.gql?$/, loader: 'webpack-graphql-loader' } )
-    //  return config
-    //}
   };
   return nextConfig;
 };

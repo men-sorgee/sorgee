@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { updateUser } from 'lib/services/directus/server'
+import { updateUser } from '@/lib/services/directus/server'
 import { withMethods, withMember } from 'lib/utils/server'
 import { User, Applicant, ApiResponse } from '@/lib/models'
 

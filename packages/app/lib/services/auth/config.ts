@@ -10,13 +10,13 @@ import {
   sendNotificationEmail,
   SendGridTemplate,
   updateSendGrid,
-} from 'lib/services/sendgrid/server'
+} from '@/lib/services/sendgrid/server'
 import {
   createAccount,
   findUser,
   findUserByAccount,
   recordUserLogin,
-} from 'lib/services/directus/server/users'
+} from '@/lib/services/directus/server/users'
 import { Member, memberFields, Profile, StatusType } from '@/lib/models'
 
 const allowedStatuses: StatusType[] = ['new', 'active', 'inactive', 'stale']

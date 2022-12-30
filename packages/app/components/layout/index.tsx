@@ -1,43 +1,50 @@
 import React, { useState } from 'react'
-import { Drawer } from 'react-daisyui'
+import {
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  useDisclosure,
+  Box,
+  IconButton,
+  Container,
+} from '@chakra-ui/react'
 import Header from './Header'
 import Meta from './Meta'
 import Footer from './Footer'
-import Menu from './Menu'
-import Document from 'next/document'
 
-export default function Layout({
+export const constrained = {
+  maxW: { md: '3xl', xl: '4xl' },
+  mx: 'auto',
+  px: {
+    base: 4,
+    xl: 0,
+  },
+  py: 4,
+  minW: '370px',
+}
+
+function Layout({
   children,
-  className = '',
   style = {},
 }: {
   children?: React.ReactNode
   className?: string
   style?: any
 }) {
-  const [visible, setVisible] = useState(false)
-  const toggleDrawer = () => {
-    setVisible(!visible)
-  }
-  const classes = `container ${className}`
   return (
     <>
       <Meta />
-      <div style={style}>
-        <Header
-          {...{
-            toggleDrawer,
-            visible,
-            setVisible,
-          }}
-        />
-        <Drawer open={visible} onClickOverlay={toggleDrawer} side={<Menu />}>
-          <div className={classes}>
-            <main style={style}>{children}</main>
-            <Footer />
-          </div>
-        </Drawer>
-      </div>
+      <Header />
+      <Box h={'max'} __css={constrained}>
+        <main style={style}>{children}</main>
+      </Box>
+      <Footer />
     </>
   )
 }
+
+export default Layout

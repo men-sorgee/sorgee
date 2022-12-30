@@ -1,4 +1,4 @@
-import { useMember } from 'lib/hooks/use-member'
+import { useMember } from 'hooks/use-member'
 import { useRouter } from 'next/router'
 import ApplicationSteps from './_steps'
 import Page from 'components/Page'

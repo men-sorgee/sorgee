@@ -1,7 +1,7 @@
 'use client'
 import useSWR, { KeyedMutator } from 'swr'
 import { AppNotification } from 'lib/models'
-import { JsonFetcher } from 'lib/services/fetchers'
+import { JsonFetcher } from '@/lib/services/fetchers'
 
 type NotificationResult = {
   notifications: AppNotification[]

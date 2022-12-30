@@ -1,7 +1,7 @@
 'use client'
 import useSWR, { KeyedMutator } from 'swr'
 import { Member } from 'lib/models'
-import { JsonFetcher } from 'lib/services/fetchers'
+import { JsonFetcher } from '@/lib/services/fetchers'
 
 type MemberResults = {
   member: Member | null
@@ -24,7 +24,4 @@ export const useMember = (): MemberResults => {
       mutate()
     },
   }
-}
-function useSession(): { status: any } {
-  throw new Error('Function not implemented.')
 }

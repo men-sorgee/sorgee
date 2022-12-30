@@ -1,6 +1,6 @@
 // Service Calls ------------------------------------
 
-import { getAdminClient } from '../'
+import { getAdminClient } from '..'
 import {
   User,
   memberFields,

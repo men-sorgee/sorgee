@@ -1,8 +1,8 @@
-import { updateUser, uploadFile, UploadFolder } from 'lib/services/directus/server'
+import { updateUser, uploadFile, UploadFolder } from '@/lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse, ApplicationStatus } from '@/lib/models'
 import { withMember, withMethods } from 'lib/utils/server'
-import { sendNotificationEmail } from 'lib/services/sendgrid/server'
+import { sendNotificationEmail } from '@/lib/services/sendgrid/server'
 
 export const config = {
   api: {

@@ -1,6 +1,6 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { SubscriptionData } from 'lib/models'
-import { Button } from 'react-daisyui'
+import { Button } from '@chakra-ui/react'
 import { FieldInput } from '../forms'
 import { useState } from 'react'
 

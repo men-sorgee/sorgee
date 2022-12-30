@@ -1,98 +1,103 @@
 import { signIn, useSession, signOut } from 'next-auth/react'
 import { useEffect, useState } from 'react'
-import { Dropdown, Avatar, Badge } from 'react-daisyui'
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  MenuDivider,
+  Avatar,
+  Badge,
+  LinkOverlay,
+} from '@chakra-ui/react'
 import { Member, MemberLevel } from 'lib/models'
 import { LinkButton } from 'components/ui'
-import { useNotifications } from 'lib/hooks'
+import { useNotifications } from 'hooks'
 import { getAssetUrl } from 'lib/utils'
-interface Props {
-  setVisible: (visible: boolean) => void
-}
+import NextLink from 'next/link'
+interface Props {}
 
-function getLetters(name: string) {
-  return name
-    .split(' ')
-    .map((d) => d[0])
-    .join('')
-}
-
-const UserAvatar = ({ setVisible }: Props) => {
+const UserAvatar = (_props: Props) => {
   const [member, setMember] = useState<Member>(null)
   const { data: session, status } = useSession()
   const [photoSrc, setPhotoSrc] = useState<string | null>(null)
-  const [letters, setLetters] = useState<string | null>(null)
+  const [name, setName] = useState<string | null>(null)
   const [level, setLevel] = useState<number>(-1)
-  const [notificationCount, setNotificationCount] = useState<[number, number]>([0, 0])
   const { notifications } = useNotifications(status == 'authenticated')
   const messages = notifications?.filter((n) => n.type == 'message') || []
-  const newEvents = notifications?.filter((n) => n.type == 'event') || []
-  const [messageCount, eventCount] = notificationCount
   const {
     user: { application_status },
   } = session || { user: {} }
 
   useEffect(() => {
     if (status == 'authenticated' && session.user) {
-      setNotificationCount([messageCount, eventCount])
       setMember(session.user as Member)
-      const { picture, name, nickname } = session.user
+      const { picture, first_name, last_name, nickname } = session.user
       if (!photoSrc && picture) setPhotoSrc(getAssetUrl(picture))
-      const initials = name ? getLetters(name) : nickname ? getLetters(nickname) : null
-      if (!letters && initials) setLetters(initials)
+      if (!name) setName(nickname || `${first_name} ${last_name}}`)
       if (level == -1) setLevel(MemberLevel[session.user.user_type || 'subscriber'])
     }
-  }, [letters, photoSrc, session?.user, level, notifications, messageCount, eventCount])
+  }, [name, photoSrc, session?.user, level])
 
   return (
     <>
       {member ? (
-        <Dropdown
-          className="mr-2 bg-black text-white"
-          onClick={() => setVisible(false)}
-          color={'primary'}
-        >
-          <Avatar
-            shape="circle"
-            className="cursor-pointer rounded-full ring-2 ring-accent"
-            color={'primary'}
-            letters={letters}
-            src={photoSrc}
-            size={'sm'}
-          >
-            {letters}
-          </Avatar>
-
-          <Dropdown.Menu>
-            {member && MemberLevel[member.user_type] >= 3 && application_status == 'approved' && (
-              <>
-                <Dropdown.Item href="/member/events">
-                  Events
-                  {newEvents.length > 0 && <Badge color="accent">{newEvents.length}</Badge>}
-                </Dropdown.Item>
-                <Dropdown.Item href="/member/account">Account</Dropdown.Item>
-                {messages.length > 0 && (
-                  <Dropdown.Item href="/member/account">
-                    Notifications
-                    <Badge color="accent">{messages.length}</Badge>
-                  </Dropdown.Item>
-                )}
-
-                <Dropdown.Item href="/member/invite">Invite</Dropdown.Item>
-              </>
-            )}
-            <Dropdown.Item
-              onClick={() => {
-                signOut({ callbackUrl: '/' })
-              }}
-            >
-              Logout
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
+        <>
+          <Menu placement="bottom-start">
+            <MenuButton
+              as={Avatar}
+              className="ring-accent cursor-pointer rounded-full ring-2"
+              name={name}
+              src={photoSrc}
+              size={'lg'}
+            ></MenuButton>{' '}
+            <MenuList>
+              {member && MemberLevel[member.user_type] >= 3 && application_status == 'approved' && (
+                <>
+                  <MenuItem>
+                    <LinkButton href="/member/events">Events</LinkButton>
+                  </MenuItem>
+                  <MenuItem>
+                    <LinkButton href="/member/account">Account</LinkButton>
+                  </MenuItem>
+                  {messages.length > 0 && (
+                    <MenuItem>
+                      <LinkOverlay as={NextLink} href="/member/account">
+                        Notifications
+                        <Badge borderRadius="full" color="accent">
+                          {messages.length}
+                        </Badge>
+                      </LinkOverlay>
+                    </MenuItem>
+                  )}
+                  <MenuItem>
+                    <LinkOverlay as={NextLink} href="/member/invite">
+                      Invite
+                    </LinkOverlay>
+                  </MenuItem>
+                </>
+              )}
+              <MenuDivider />
+              <MenuItem>
+                <LinkOverlay
+                  as={NextLink}
+                  href={`/api/auth/signout`}
+                  onClick={() => {
+                    signOut({ callbackUrl: '/' })
+                  }}
+                >
+                  Logout
+                </LinkOverlay>
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </>
       ) : (
         <LinkButton
           href={`/api/auth/signin`}
-          color="ghost"
+          fontWeight={600}
+          color={'white'}
+          bg={'primary'}
           onClick={(e) => {
             e.preventDefault()
             signIn(null, { callbackUrl: '/apply/resume' })

@@ -1,13 +1,36 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { postJSON, pruneUndefined } from '@/lib/utils'
 import { useEffect, useState } from 'react'
-import { getFieldOptions } from 'lib/services/directus/server'
-import { useMember } from 'lib/hooks/use-member'
+import { getFieldOptions } from '@/lib/services/directus/server'
+import { useMember } from 'hooks/use-member'
 import { NextRouter, useRouter } from 'next/router'
 import { Applicant, FormOptions, Profile } from 'lib/models'
-import { FieldInput, FieldSelect, FieldWrapper, FieldText, FieldCheckboxes } from 'components/forms'
-import { Button } from 'react-daisyui'
-import FieldCheckbox from 'components/forms/FieldCheckbox'
+import {
+  FieldCheckbox,
+  FieldInput,
+  FieldSelect,
+  FieldWrapper,
+  FieldText,
+  FieldCheckboxes,
+  FieldNumber,
+} from 'components/forms'
+import {
+  Button,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+  HStack,
+  SimpleGrid,
+  GridItem,
+  Heading,
+  Text,
+} from '@chakra-ui/react'
 import ApplicationSteps from './_steps'
 import { LightBulbIcon, SupportIcon } from '@heroicons/react/solid'
 import Page from 'components/Page'
@@ -41,13 +64,14 @@ export const getServerSideProps = async () => {
 }
 
 function Apply(props: PageProps) {
-  const { member, loading } = useMember()
+  const { data: session, status } = useSession()
   const [formError, setFormError] = useState<string>()
-
+  const [loading, setLoading] = useState(true)
   useEffect(() => {
-    if (member && props.email && member.email != props.email)
+    if (loading && status !== 'loading') setLoading(false)
+    if (!loading && props.email && session.user.email != props.email)
       setFormError(`You must login using the email address ${props.email} to use this invite.`)
-  }, [member, props.email])
+  }, [session, loading, props.email, status])
 
   const intro = props.invite
     ? 'You&apos;ve been invited to join our community! While your application is pre-approved, we still need to perform a few verification steps.'
@@ -59,18 +83,18 @@ function Apply(props: PageProps) {
       title="Registration"
       loading={loading}
       requireAuth={true}
-      sectionClass="gradient p-4"
+      sectionClass="gradient Text-4"
       header={<ApplicationSteps status={'apply'} />}
     >
       <>
-        {formError && <p className="text-red-700">{formError}</p>}
-        <p className="text-xl">{intro}</p>
-        <p className="text-xl">
+        {formError && <Text color={'red.700'}>{formError}</Text>}
+        <Text fontSize={'xl'}>{intro}</Text>
+        <Text fontSize={'xl'}>
           Membership is free, but not everyone can join. There is a vouching and verification
           process for all new members. We do this to ensure the safety of our members and to weed
           out any liars, spammers, bots, or flakes.
-        </p>
-        {formError && <p className="text-red-700">{formError}</p>}
+        </Text>
+        {formError && <Text color={'red.700'}>{formError}</Text>}
         <Form {...data} />
       </>
     </Page>
@@ -78,9 +102,8 @@ function Apply(props: PageProps) {
 }
 
 function Form(props: PageProps) {
-  const {
-    data: { user },
-  } = useSession()
+  const { data: session } = useSession()
+  const { user } = session || {}
   const { member: applicant } = useMember()
   const router = useRouter()
   const {
@@ -144,12 +167,12 @@ function Form(props: PageProps) {
     <>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="text-left">
-          <h3>Private Information</h3>
-          <p>
+          <Heading as="h3">Private Information</Heading>
+          <Text>
             We collect this information for verification purposes only. We will not share, show or
             sell this information to anyone.
-          </p>
-          <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+          </Text>
+          <SimpleGrid gap={4} py={4} columns={{ base: 1, md: 2 }}>
             <FieldInput field="first_name" label="First Name" registerOptions={{ required }} />
             <FieldInput field="last_name" label="Last Name" registerOptions={{ required }} />
             <FieldInput
@@ -171,20 +194,16 @@ function Form(props: PageProps) {
               }}
               placeholder="000 456 7890"
             />
-          </div>
-          <h3>About You</h3>
-          <p>
+          </SimpleGrid>
+          <Heading as="h3">About You</Heading>
+          <Text>
             <strong>Please be as honest as possible.</strong> Honest answers will help your chances
             of approval and help our AI create the perfect group events!
-          </p>
-          <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FieldInput
-              field="nickname"
-              label="Nickname"
-              className="col-span-2"
-              registerOptions={{ required }}
-            />
-
+          </Text>
+          <SimpleGrid gap={4} py={4} columns={{ base: 1, md: 2 }}>
+            <GridItem colSpan={2}>
+              <FieldInput field="nickname" label="Nickname" registerOptions={{ required }} />
+            </GridItem>
             <FieldSelect
               field="spectrum"
               label="Orientation"
@@ -198,8 +217,8 @@ function Form(props: PageProps) {
               formOptions={relationshipOptions}
             />
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FieldInput
+            <SimpleGrid gap={4} py={4} columns={{ base: 1, md: 2 }}>
+              <FieldNumber
                 field="age"
                 label="Age"
                 type="number"
@@ -215,79 +234,88 @@ function Form(props: PageProps) {
               />
 
               <FieldWrapper field="height" label="Height">
-                <div className="flex">
-                  <input
-                    type="number"
-                    id="height_feet"
-                    className="input  !rounded-r-none"
-                    {...register('height_feet')}
-                    placeholder="feet"
-                  />
-                  <input
-                    type="number"
-                    id="height_inches"
-                    className="input  !rounded-l-none"
-                    {...register('height_inches')}
-                    placeholder="inches"
-                  />
-                </div>
+                <HStack>
+                  <NumberInput>
+                    <NumberInputField
+                      id="height_feet"
+                      className="input  !rounded-r-none"
+                      {...register('height_feet')}
+                      placeholder="feet"
+                    />
+                    <NumberInputStepper>
+                      <NumberIncrementStepper />
+                      <NumberDecrementStepper />
+                    </NumberInputStepper>
+                  </NumberInput>
+                  <NumberInput>
+                    <NumberInputField
+                      id="height_inches"
+                      className="input  !rounded-l-none"
+                      {...register('height_inches')}
+                      placeholder="inches"
+                    />
+                    <NumberInputStepper>
+                      <NumberIncrementStepper />
+                      <NumberDecrementStepper />
+                    </NumberInputStepper>
+                  </NumberInput>
+                </HStack>
               </FieldWrapper>
-            </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            </SimpleGrid>
+            <SimpleGrid gap={4} py={4} columns={{ base: 1, md: 2 }}>
               <FieldInput field="weight" label="Weight" type="number" />
 
               <FieldSelect field="skin_tone" label="Skin Tone" formOptions={skinToneOptions} />
-            </div>
-            <FieldText
-              className="col-span-2"
-              field="biography"
-              label="Biography"
-              help="Tell us about yourself. What are your interests? What are you looking for?"
-              rows={4}
-              placeholder="I am a bit shy, but love to get aggressive in bed."
-            />
-          </div>
-          <h3>Event Preferences</h3>
-          <p>
+            </SimpleGrid>
+            <GridItem colSpan={2}>
+              <FieldText
+                field="biography"
+                label="Biography"
+                help="Tell us about yourself. What are your interests? What are you looking for?"
+                rows={4}
+                placeholder="I am a bit shy, but love to get aggressive in bed."
+              />
+            </GridItem>
+          </SimpleGrid>
+
+          <Heading as="h3">Event Preferences</Heading>
+          <Text>
             We currently coordinate events in Denver, for the following times bi-monthly. We try to
             create events that can include new members, however, we do not guarantee that you will
             be included in every event. As the group grows, so too will the number of events we can
             create.
-          </p>
+          </Text>
 
-          <div className="mb-8 grid grid-cols-1 gap-4">
-            <FieldCheckboxes
-              field="event_availability"
-              label="Preferred Event Times"
-              help="We host events to meet the demands of our brothers. Let us know what times work best in general"
-              formOptions={timeOfDayOptions}
-            />
-          </div>
-          <p className="alert text-xs">
-            <LightBulbIcon className="w-10" />
+          <FieldCheckboxes
+            field="event_availability"
+            label="Preferred Event Times"
+            help="We host events to meet the demands of our brothers. Let us know what times work best in general"
+            formOptions={timeOfDayOptions}
+          />
+          <Alert status="info" variant="left-accent">
+            <AlertIcon as={LightBulbIcon} width="60px" />
             Members who RSVP to events are expected to attend. Members that RSVP to event and do not
             attend, decrease the likelihood of getting invited again. We understand that things come
             up, but please be respectful of your brothers and RSVP accurately and let us know if you
             can&apos;t make it.
-          </p>
-          <h3>Sexual Preferences</h3>
-          <div className="mb-8 grid grid-cols-1 gap-4">
-            <FieldCheckboxes
-              field="my_positions"
-              label="Your Positions"
-              help="What positions or acts are you interested in? We will use this to match you with compatible brothers. Select all that apply"
-              formOptions={positionsOptions}
-            />
+          </Alert>
 
-            <FieldCheckbox field="needs_guidance" label="I'd like some guidance" help="">
-              <p className="align-start alert justify-start text-xs">
-                <SupportIcon className="w-10" />
-                We want you to be comfortable. Check this and we will help guide you along the way.
-                Unsure how to answer the above questions, or just new to this? Just check this box
-                and we will help you out.
-              </p>
-            </FieldCheckbox>
-          </div>
+          <Heading as="h3">Sexual Preferences</Heading>
+
+          <FieldCheckboxes
+            field="my_positions"
+            label="Your Positions"
+            help="What positions or acts are you interested in? We will use this to match you with compatible brothers. Select all that apply"
+            formOptions={positionsOptions}
+          />
+          <Heading as="h4">Assistance</Heading>
+          <FieldCheckbox field="needs_guidance" label="I'd like some guidance" />
+          <Alert status="info" variant="left-accent">
+            <AlertIcon as={LightBulbIcon} width="60px" />
+            We want you to be comfortable. Check this and we will help guide you along the way.
+            Unsure how to answer the above questions, or just new to this? Just check this box and
+            we will help you out.
+          </Alert>
 
           <input type="hidden" {...register('invite')} />
 

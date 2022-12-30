@@ -1,10 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
-import { getUser, updateUser } from 'lib/services/directus/server'
-import { updateSendGrid } from 'lib/services/sendgrid/server'
+import { getUser, updateUser } from '@/lib/services/directus/server'
+import { updateSendGrid } from '@/lib/services/sendgrid/server'
 import { withMethods } from 'lib/utils/server'
 import { ApiResponse, MemberLevel, Profile } from 'lib/models'
-import { adminToken } from 'lib/config/server'
+import { adminToken } from '@/lib/config/server'
 
 async function SyncContact(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {

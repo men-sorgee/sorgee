@@ -1,47 +1,44 @@
-import { ErrorMessage } from '@hookform/error-message'
 import { useFormContext } from 'react-hook-form'
+import { ReactNode, createRef } from 'react'
+import {
+  FormControl,
+  FormControlProps,
+  FormLabel,
+  FormErrorMessage,
+  Tooltip,
+  chakra,
+  HStack,
+  StyleProps,
+} from '@chakra-ui/react'
 import { InfoIcon } from '../icons'
-
-type Props = {
+type Props = FormControlProps & {
   field?: string
   label?: string
   help?: string
   className?: string
-  children: React.ReactNode | React.ReactNode[]
+  children: ReactNode | ReactNode[]
 }
 
 const FieldWrapper = (props: Props) => {
-  const { field, label, help, className, children } = props
-  const {
-    formState: { errors },
-    getFieldState,
-  } = useFormContext()
+  const { field, label, help, className, children, ...opts } = props
+  const { getFieldState } = useFormContext()
   const { error } = getFieldState(field)
+  const InfoTip = () => (
+    <Tooltip hasArrow label={help} aria-label="A tooltip">
+      <InfoIcon title={help} cursor={'help'} />
+    </Tooltip>
+  )
   return (
-    <div className={` ${className}`}>
-      {label && (
-        <div className="mb-1 flex items-start align-middle text-gray-300">
-          <label htmlFor={field} className="mr-1 ">
-            {label}
-          </label>
-          {help && (
-            <div className="tooltip-ghost tooltip" data-tip={help}>
-              <InfoIcon className="-mt-2 h-3 w-3" />
-            </div>
-          )}
-        </div>
-      )}
+    <FormControl isInvalid={!!error} className={className} {...opts}>
+      <HStack spacing={0}>
+        {label && <FormLabel htmlFor={field}>{label}</FormLabel>}
+        {help && <InfoTip />}
+      </HStack>
       {children}
-      <ErrorMessage
-        as="p"
-        className="!py-0 text-red-500"
-        render={({ message }) => message}
-        errors={errors}
-        message={error?.message}
-        name={field}
-      />
-    </div>
+
+      <FormErrorMessage>{error && error.message}</FormErrorMessage>
+    </FormControl>
   )
 }
 
-export default FieldWrapper
+export default chakra(FieldWrapper)

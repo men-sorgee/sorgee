@@ -1,6 +1,13 @@
-export default function InfoIcon({ className, title }: { className?: string; title?: string }) {
+import { Circle, StyleProps } from '@chakra-ui/react'
+import { forwardRef, LegacyRef } from 'react'
+
+type Props = StyleProps & { className?: string; title?: string }
+const InfoIcon = (
+  { className, title, ...props }: Props,
+  ref: LegacyRef<HTMLDivElement & Props>
+) => {
   return (
-    <span title={title}>
+    <Circle title={title} ref={ref} __css={props}>
       <svg
         className={className}
         aria-hidden="true"
@@ -17,6 +24,8 @@ export default function InfoIcon({ className, title }: { className?: string; tit
           clipRule="evenodd"
         ></path>
       </svg>
-    </span>
+    </Circle>
   )
 }
+
+export default forwardRef<HTMLDivElement, Props>(InfoIcon)

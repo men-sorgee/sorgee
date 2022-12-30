@@ -1,4 +1,4 @@
-import { setMeta } from 'lib/hooks'
+import { setMeta } from 'hooks'
 
 export default function Custom500() {
   setMeta('Server Error')

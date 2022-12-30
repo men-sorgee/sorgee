@@ -1,13 +1,15 @@
-import { useMetaContext } from 'lib/hooks'
+import { useMetaContext, useSite } from 'hooks'
 import Head from 'next/head'
 import { getAssetUrl } from '../../lib/utils'
 
 export default function AppHead() {
+  const { site } = useSite()
   const { title, description, url, image } = useMetaContext()
   const img = image ? getAssetUrl(image) : null
+  const pageTitle = `${title} :: ${site?.site_title || 'Guys N Heat'}`
   return (
     <Head>
-      <title>{title} :: GuysNHeat</title>
+      <title key="title">{pageTitle}</title>
       <link rel="icon" href="/favicon.ico" />
       <meta name="robots" content="follow, index" />
       <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -19,7 +21,7 @@ export default function AppHead() {
       <meta charSet="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <meta name="name" content={title} />
-      <meta name="description" content={description} />
+      <meta name="description" content={description || site?.description} />
       {image && <meta name="image" content={img} />}
       <meta name="description" content={description} />
       <meta name="og:title" content={title} />

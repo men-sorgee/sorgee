@@ -1,9 +1,17 @@
-import { Input, InputProps, chakra } from '@chakra-ui/react'
 import { InputHTMLAttributes } from 'react'
 import { useFormContext, RegisterOptions } from 'react-hook-form'
 import FieldWrapper from './FieldWrapper'
+import {
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputProps,
+  NumberInputStepper,
+  chakra,
+} from '@chakra-ui/react'
 
-type Props = InputProps &
+export type Props = NumberInputProps &
   InputHTMLAttributes<HTMLInputElement> & {
     field: string
     label?: string
@@ -20,14 +28,17 @@ const InputField = (props: Props) => {
 
   return (
     <FieldWrapper field={field} label={label} help={help} className={className}>
-      <Input
-        isInvalid={!!error}
-        {...opts}
-        id={field}
-        {...register(field as any, registerOptions)}
-        type="date"
-        className={classes}
-      />
+      <NumberInput {...opts}>
+        <NumberInputField
+          className={classes}
+          id={field}
+          {...register(field as any, registerOptions)}
+        />
+        <NumberInputStepper>
+          <NumberIncrementStepper />
+          <NumberDecrementStepper />
+        </NumberInputStepper>
+      </NumberInput>
     </FieldWrapper>
   )
 }

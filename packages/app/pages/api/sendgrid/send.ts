@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse } from '@/lib/models'
 import { withMethods } from 'lib/utils/server'
-import { sendNotificationEmail } from 'lib/services/sendgrid/server'
-import { markNotificationSent } from 'lib/services/directus/server'
+import { sendNotificationEmail } from '@/lib/services/sendgrid/server'
+import { markNotificationSent } from '@/lib/services/directus/server'
 
 async function SendNotification(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {

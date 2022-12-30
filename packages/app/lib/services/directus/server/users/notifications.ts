@@ -1,4 +1,4 @@
-import { getAdminClient, listUserInvites } from '../'
+import { getAdminClient, listUserInvites } from '..'
 import { UserNotification, Notification, AppNotification } from '@/lib/models'
 
 export async function getNotifications(user_id: string): Promise<AppNotification[]> {

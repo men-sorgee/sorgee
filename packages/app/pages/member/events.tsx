@@ -1,7 +1,7 @@
-import { Button } from 'react-daisyui'
+import { Button } from '@chakra-ui/react'
 import Page from 'components/Page'
-import { useMember } from 'lib/hooks'
-import { listUserInvites } from 'lib/services/directus/server'
+import { useMember } from 'hooks'
+import { listUserInvites } from '@/lib/services/directus/server'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -10,7 +10,7 @@ import { postJSON } from '@/lib/utils'
 import { Invite, MemberLevel } from 'lib/models'
 import EventCard from 'components/ui/EventCard'
 import { unstable_getServerSession } from 'next-auth'
-import { authOptions } from 'lib/services/auth/config'
+import { authOptions } from '@/lib/services/auth/config'
 
 export async function getServerSideProps(context) {
   const session = await unstable_getServerSession(context.req, context.res, authOptions)

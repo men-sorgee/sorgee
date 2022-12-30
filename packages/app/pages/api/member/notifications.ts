@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse, AppNotification } from 'lib/models'
-import { deleteNotification, getNotifications } from 'lib/services/directus/server/users'
+import { deleteNotification, getNotifications } from '@/lib/services/directus/server/users'
 import { withMethods, withMember } from 'lib/utils/server'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<ApiResponse>) => {

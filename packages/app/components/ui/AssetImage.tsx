@@ -1,13 +1,12 @@
-interface Props {
+import { chakra, Image, ImageProps } from '@chakra-ui/react'
+
+interface Props extends ImageProps {
   id: string
-  height: number
-  width: number
-  alt: string
 }
 
-const AssetImage = ({ id, height, width, alt }: Props) => {
+const AssetImage = ({ id, ...props }: Props) => {
   const src = `/pages/api/assets/${id}`
-  return <img src={src} height={height} width={width} alt={alt} />
+  return <Image src={src} {...props} />
 }
 
-export default AssetImage
+export default chakra(AssetImage)

@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse, InviteLink } from '@/lib/models'
 import { withMember, withMethods } from 'lib/utils/server'
-import { sendNotificationEmail } from 'lib/services/sendgrid/server'
+import { sendNotificationEmail } from '@/lib/services/sendgrid/server'
 
 async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {

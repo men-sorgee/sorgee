@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { setMeta } from 'lib/hooks'
+import { setMeta } from 'hooks'
 
 export default function Custom404() {
   setMeta('Not Found')

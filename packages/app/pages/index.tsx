@@ -1,5 +1,5 @@
-import { setMeta } from 'lib/hooks'
-import { getPageContentById } from 'lib/services/directus/static'
+import { setMeta } from 'hooks'
+import { getPageContentById } from '@/lib/services/directus/static'
 import { Markdown, Subscribe } from 'components/ui'
 import Section from 'components/Section'
 import { Page } from 'lib/models'

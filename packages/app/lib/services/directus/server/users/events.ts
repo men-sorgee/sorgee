@@ -1,4 +1,4 @@
-import { getAdminClient } from '../'
+import { getAdminClient } from '..'
 import { Invite, EventInviteRSVPType } from '@/lib/models'
 
 export async function listUpcomingEvents() {

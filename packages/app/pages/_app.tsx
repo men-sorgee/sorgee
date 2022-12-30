@@ -1,29 +1,23 @@
-import React from 'react'
+import { ChakraProvider, cookieStorageManager, localStorageManager } from '@chakra-ui/react'
 import Layout from 'components/layout/index'
 import { ErrorBoundary } from 'components/ErrorBoundary'
 import { AppProps } from 'next/app'
 import { SessionProvider } from 'next-auth/react'
-import { MetaContextProvider } from 'lib/hooks'
-import { Manrope, Roboto } from '@next/font/google'
-import { Head } from 'next/document'
-const manRope = Manrope({ variable: '--font-manrope' })
-const robotoSlab = Roboto({ variable: '--font-roboto', weight: '400' })
-import 'styles/globals.css'
+import { MetaContextProvider } from 'hooks'
+import { theme } from '../theme'
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <MetaContextProvider>
         <SessionProvider>
-          <Layout
-            style={{
-              ...manRope.style,
-              ...robotoSlab.style,
-            }}
-          >
-            <ErrorBoundary>
-              <Component {...pageProps} />
-            </ErrorBoundary>
-          </Layout>
+          <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
+            <Layout>
+              <ErrorBoundary>
+                <Component {...pageProps} />
+              </ErrorBoundary>
+            </Layout>
+          </ChakraProvider>
         </SessionProvider>
       </MetaContextProvider>
     </>

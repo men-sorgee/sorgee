@@ -13,10 +13,11 @@ type Context = MetaProps & {
   path: string
 }
 
-export const MetaContext = createContext<Context | undefined>(undefined)
-export function MetaContextProvider(props: any) {
+export const MetaContext = createContext<Context>(undefined)
+
+export function MetaProvider(props: any) {
   const router = useRouter()
-  const [title, setTitle] = useState<string>()
+  const [title, setTitle] = useState<string>('Loading...')
   const [description, setDescription] = useState<string>()
   const [image, setImage] = useState<string>()
   const [metaBlob, setMetaBlob] = useState<any>()
@@ -38,7 +39,7 @@ export function MetaContextProvider(props: any) {
   return <MetaContext.Provider value={meta}>{props.children}</MetaContext.Provider>
 }
 
-export const useMetaContext = () => {
+export const useMeta = () => {
   const context = useContext(MetaContext)
   if (context === undefined) {
     throw new Error(`useMetaContext must be used within a MetaContextProvider.`)
@@ -47,14 +48,7 @@ export const useMetaContext = () => {
 }
 
 export const setMeta = (title: string, description?: string, image?: string) => {
-  const {
-    title: t,
-    setTitle,
-    description: d,
-    setDescription,
-    image: i,
-    setImage,
-  } = useMetaContext()
+  const { title: t, setTitle, description: d, setDescription, image: i, setImage } = useMeta()
 
   useEffect(() => {
     if (title && title != t) setTitle(title)
