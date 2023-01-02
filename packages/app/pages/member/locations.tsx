@@ -1,7 +1,9 @@
 import { Box, Heading, VStack } from '@chakra-ui/react'
 import LocationCoords from 'components/ui/Location'
-import React from 'react'
 import { useLocation } from 'hooks/use-location'
+
+export function getServerSideProps() {}
+
 function Location() {
   const { users, currentUser } = useLocation()
 
