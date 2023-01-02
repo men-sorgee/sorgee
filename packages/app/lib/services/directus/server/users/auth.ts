@@ -35,9 +35,11 @@ export async function deleteAccount(provider: string, id: string) {
 export async function createSession(session: UserSession) {
   const adminClient = await getAdminClient()
   const { id } = await adminClient.items('user_session').createOne(session)
-  return adminClient.items('user_session').readOne(id, {
+  const newSession = adminClient.items('user_session').readOne(id, {
     fields: ['*', 'user.*'],
   })
+  console.dir(newSession)
+  return newSession
 }
 
 export async function findSession(token: string): Promise<UserSession> {
@@ -53,12 +55,14 @@ export async function findSession(token: string): Promise<UserSession> {
 
 export async function updateSession(session: UserSession) {
   const adminClient = await getAdminClient()
-  const { id } = await adminClient.items('user_session').updateOne(session.id, {
+  const existing = await findSession(session.session_token)
+  if (!existing) return createSession(session)
+  await adminClient.items('user_session').updateOne(existing.id, {
+    session_token: session.session_token,
+    user: session.user,
     expires: session.expires,
   })
-  return adminClient.items('user_session').readOne(id, {
-    fields: ['*', 'user.*'],
-  })
+  return existing
 }
 
 export async function deleteSession(token: string) {

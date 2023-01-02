@@ -115,8 +115,18 @@ export const authOptions: AuthOptions = {
   events: {
     async createUser({ user }) {
       console.log('event:createUser')
-      //console.dir(user)
+      console.dir(user)
       await updateSendGrid(user as Profile)
+      await sendNotificationEmail(
+        user.email,
+        user.name,
+        `Application Status`,
+        'Thank you for applying for membership!',
+        {
+          button_text: 'Complete Application',
+          button_url: 'https://guysnheat.com/apply/resume',
+        }
+      )
     },
     async signIn({ user, account, profile }) {
       console.log('event:signIn')

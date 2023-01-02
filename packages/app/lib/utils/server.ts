@@ -1,7 +1,7 @@
 import { HttpMethod } from '.'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { Applicant, Member, UserInvite, applicantFields, memberFields } from 'lib/models'
-import { findUser } from 'lib/services/directus/server'
+import { Applicant, Member, UserInvite, applicantFields, memberFields, Profile } from 'lib/models'
+import { findUser } from '@/lib/services/directus/server'
 import { unstable_getServerSession } from 'next-auth'
 import { authOptions } from 'lib/services/auth/config'
 import { User } from 'next-auth'
@@ -20,10 +20,10 @@ export function withMethods(
 export async function withAuthUser(
   req: NextApiRequest,
   res: NextApiResponse
-): Promise<User | null> {
+): Promise<Profile | null> {
   const session = await unstable_getServerSession(req, res, authOptions)
   if (!session) throw new Error('Unauthorized')
-  return session.user
+  return session.user as Profile
 }
 
 export async function withApplicant(
