@@ -2,6 +2,7 @@
 import { useRouter } from 'next/router'
 import { MetaProps } from 'lib/models'
 import { createContext, useContext, useEffect, useState } from 'react'
+import { useSite } from './use-site'
 
 type Context = MetaProps & {
   setTitle: (title: string) => void
@@ -16,15 +17,18 @@ type Context = MetaProps & {
 export const MetaContext = createContext<Context>(undefined)
 
 export function MetaProvider(props: any) {
+  const { site, loading } = useSite()
   const router = useRouter()
   const [title, setTitle] = useState<string>('Loading...')
-  const [description, setDescription] = useState<string>()
+  const [description, setDescription] = useState<string>(site?.description)
   const [image, setImage] = useState<string>()
   const [metaBlob, setMetaBlob] = useState<any>()
 
   const meta: Context = {
     title,
-    setTitle,
+    setTitle: (title: string) => {
+      setTitle(`${title} ::  ${site?.site_title || 'GuysNHeat'}`)
+    },
     description,
     setDescription,
     basePath: router.basePath,

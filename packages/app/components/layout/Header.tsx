@@ -20,7 +20,6 @@ import {
   BoxProps,
   HStack,
   StackProps,
-  Show,
 } from '@chakra-ui/react'
 import {
   HamburgerIcon,
@@ -35,12 +34,13 @@ import { useState, useEffect } from 'react'
 import { PageItem } from 'lib/models'
 import NextLink from 'next/link'
 import { listActivePages } from '@/lib/services/directus/static'
-import User from './User'
 import { constrained } from './index'
+import { useSite } from 'hooks'
 export type Props = BoxProps & {
   children?: React.ReactNode | React.ReactNode[]
 }
 function Header({ children, ...props }: Props) {
+  const { site } = useSite()
   const { isOpen, onToggle } = useDisclosure()
   const [pages, setPages] = useState<PageItem[]>()
   const { colorMode, toggleColorMode } = useColorMode()
@@ -66,7 +66,10 @@ function Header({ children, ...props }: Props) {
       }
     }) || []
   const navItems: Array<NavItem> = [
-    ...navPages,
+    {
+      label: 'Home',
+      children: navPages,
+    },
     {
       label: 'Legal',
       children: [
@@ -83,32 +86,27 @@ function Header({ children, ...props }: Props) {
   ]
   return (
     <Box {...props} as="header" color={'white'} bg={'gray.900'}>
-      <HStack minH={'60px'} spacing={4} __css={constrained}>
+      <HStack minH={'60px'} alignItems="middle" spacing={4} __css={constrained}>
         <IconButton
           onClick={onToggle}
           icon={isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />}
           variant={'ghost'}
           aria-label={'Toggle Navigation'}
-          display={{ base: 'flex', md: 'none' }}
         />
-        <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
-          <Logo width={'50px'} />
-          <Show above="md">
-            <DesktopNav marginLeft={10} navItems={navItems} />
-          </Show>
+        <Flex flex={1} justify={'center'}>
+          <Logo width={'20px'} />
         </Flex>
 
-        <Stack flex={{ base: 1, md: 0 }} justify={'flex-end'} direction={'row'} spacing={4}>
-          <Button variant={'ghost'} onClick={toggleColorMode}>
-            {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+        <HStack flex={0} alignItems="middle" justifyItems={'center'}>
+          <Button variant={'ghost'} onClick={toggleColorMode} mt={1}>
+            {colorMode === 'light' ? <MoonIcon fontSize={'3xl'} /> : <SunIcon fontSize={'3xl'} />}
           </Button>
           {children}
-          <User />
-        </Stack>
+        </HStack>
       </HStack>
 
       <Collapse in={isOpen} animateOpacity>
-        <MobileNav navItems={navItems} />
+        <MobileNav navItems={navItems} {...constrained} />
       </Collapse>
     </Box>
   )
@@ -180,7 +178,7 @@ const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
           <Text transition={'all .3s ease'} _groupHover={{ color: 'pink.400' }} fontWeight={500}>
             {label}
           </Text>
-          <Text fontSize={'sm'}>{subLabel}</Text>
+          <Text size={'sm'}>{subLabel}</Text>
         </Box>
         <Flex
           transition={'all .3s ease'}
@@ -200,7 +198,7 @@ const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
 
 const MobileNav = ({ navItems, ...props }: StackProps & { navItems: NavItem[] }) => {
   return (
-    <Stack as="nav" bg={'gray.800'} color={'white'} p={4} display={{ md: 'none' }} __css={props}>
+    <Stack as="nav" bg={'gray.800'} color={'white'} p={4} __css={props}>
       {navItems?.map((navItem) => (
         <MobileNavItem key={navItem.label} {...navItem} />
       ))}
@@ -218,13 +216,12 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
         as={Link}
         href={href ?? '#'}
         justify={'space-between'}
-        color={'white'}
         align={'center'}
         _hover={{
           textDecoration: 'none',
         }}
       >
-        <Text fontWeight={600} color={useColorModeValue('gray.600', 'gray.200')}>
+        <Text fontWeight={600} color={'white'}>
           {label}
         </Text>
         {children && (
@@ -244,7 +241,7 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
           pl={4}
           borderLeft={1}
           borderStyle={'solid'}
-          borderColor={useColorModeValue('gray.200', 'gray.700')}
+          borderColor={'white'}
           align={'start'}
         >
           {children &&

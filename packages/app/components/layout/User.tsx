@@ -56,9 +56,12 @@ const UserAvatar = (_props: Props) => {
           <Menu placement="bottom-start">
             <MenuButton>
               <Avatar
-                className="ring-accent cursor-pointer rounded-full ring-2"
+                ringColor={'accent.500'}
+                size={'sm'}
+                cursor={'pointer'}
                 name={name}
                 src={photoSrc}
+                mt={-1}
               />
             </MenuButton>
             <MenuList>

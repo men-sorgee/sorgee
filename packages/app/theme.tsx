@@ -1,32 +1,7 @@
-import { ChakraTheme, extendTheme, createMultiStyleConfigHelpers } from '@chakra-ui/react'
-import { baseTheme } from '@chakra-ui/theme'
+import { ChakraTheme, extendTheme } from '@chakra-ui/react'
+import { default as defaultTheme } from '@chakra-ui/theme'
 import { StepsStyleConfig as Steps } from 'chakra-ui-steps'
 import { Manrope, Roboto_Slab, Roboto_Mono } from '@next/font/google'
-import { inputAnatomy } from '@chakra-ui/anatomy'
-
-const { definePartsStyle, defineMultiStyleConfig } = createMultiStyleConfigHelpers(
-  inputAnatomy.keys
-)
-
-const baseStyle = definePartsStyle({
-  // define the part you're going to style
-  field: {
-    border: '1px solid',
-    borderColor: 'gray.200',
-    bg: 'gray.500',
-    borderRadius: '5px',
-    fontFamily: 'mono', // change the font family
-    color: 'white', // change the input text color
-  },
-})
-
-export const inputTheme = defineMultiStyleConfig({
-  baseStyle,
-  defaultProps: {
-    size: 'md',
-    variant: 'filled',
-  },
-})
 
 const heading = Roboto_Slab({
   variable: '--font-roboto-slab',
@@ -42,6 +17,7 @@ const mono = Roboto_Mono({
   variable: '--font-roboto-mono',
   fallback: ['Consolas', 'Menlo', 'monospace'],
 })
+
 export const brand = {
   colors: {
     gray: {
@@ -99,107 +75,128 @@ export const brand = {
   },
   logo: 'https://static.guysnheat.com/static/logo.png',
 }
-const { colors, components } = baseTheme
+const { colors } = defaultTheme
 const custom: Partial<ChakraTheme> = {
   config: {
     initialColorMode: 'dark',
     useSystemColorMode: true,
   },
   components: {
-    ...components,
     Steps,
-    Input: inputTheme,
+    Input: {
+      variants: {
+        outlined: {
+          field: {
+            border: '2px solid',
+            borderColor: 'gray.500',
+            bg: 'transparent',
+            // Let's also provide dark mode alternatives
+            _dark: {
+              borderColor: 'white',
+              color: 'white',
+              bg: 'transparent',
+            },
+          },
+          addon: {
+            border: '2px solid',
+            borderColor: 'gray.200',
+            color: 'gray.500',
+            _dark: {
+              borderColor: 'white',
+              color: 'white',
+            },
+          },
+        },
+      },
+    },
   },
   fonts: {
     body: body.style.fontFamily,
-    heading: heading.style.fontFamily,
+    heading: body.style.fontFamily,
     mono: mono.style.fontFamily,
   },
   colors: {
     ...brand.colors,
-    dark: brand.colors.gray[900],
-    info: colors.blue[300],
-    success: colors.green[300],
-    warning: colors.yellow[400],
-    error: colors.red[500],
   },
-  textStyles: {},
-  layerStyles: {
-    base: {
-      bg: 'bg',
-      border: '2px solid',
-      borderColor: 'gray.500',
+  textStyles: {
+    heading: {
+      marginTop: 4,
+      marginBottom: 2,
     },
-    selected: {
-      bg: 'accent.500',
-      color: 'white',
+    body: {
+      marginTop: 4,
+      marginBottom: 2,
     },
+    mono: {},
   },
   semanticTokens: {
     colors: {
       text: {
         default: 'gray.900',
-        _dark: 'gray.50',
+        _dark: 'white',
       },
       bg: {
         default: 'gray.50',
         _dark: 'gray.900',
       },
-      error: 'red.500',
-      success: 'green.500',
-      primary: 'primary.500',
-      secondary: 'red.800',
+      error: {
+        default: 'red.300',
+        _dark: 'red.500',
+      },
+      success: {
+        default: 'green.200',
+        _dark: 'green.300',
+      },
+      primary: {
+        default: 'primary.500',
+        _dark: 'primary.500',
+      },
+      secondary: {
+        default: 'secondary.500',
+        _dark: 'secondary.500',
+      },
     },
   },
   styles: {
-    global: (props) => ({
-      body: {
-        fontSize: 'sm',
-        color: 'text',
-        bg: 'bg',
-        lineHeight: 'tall',
+    global: {
+      'header a:any-link': {
+        color: 'white',
       },
-      a: {
-        color: props.colorMode === 'dark' ? 'teal.300' : 'teal.500',
+      'a:any-link': {
+        color: 'text',
+      },
+      'a:hover,a.active': {
+        color: 'accent.300',
+        _dark: {
+          color: 'accent.500',
+        },
       },
       h1: {
-        // you can also use responsive styles
-        fontSize: '48px',
-        fontFamily: 'heading',
-        fontWeight: 'bold',
-        lineHeight: '110%',
-        letterSpacing: '-2%',
+        fontSize: '4xl',
+        fontWeight: 'extrabold',
         bgGradient: 'linear(to-r, pink.500, blue.500)',
         bgClip: 'text',
-        my: 4,
+        mt: 4,
       },
       h2: {
-        fontSize: '48px',
-        fontWeight: 'semibold',
-        lineHeight: '110%',
-        letterSpacing: '-1%',
+        fontSize: 'xl',
+        fontWeight: 'bold',
         color: 'primary.500',
         my: 3,
       },
       h3: {
-        fontSize: '36px',
+        fontSize: 'xl',
         fontWeight: 'semibold',
-        lineHeight: '110%',
-        letterSpacing: '-1%',
         color: 'secondary.500',
-        my: 2,
       },
       h4: {
-        fontSize: ['36px', '48px'],
-        fontWeight: 'semibold',
-        lineHeight: '110%',
-        letterSpacing: '-1%',
+        fontSize: 'lg',
+        fontWeight: 'bold',
         color: 'accent.500',
-        my: 1,
       },
       h5: {
-        fontSize: ['36px', '48px'],
-        fontWeight: 'bold',
+        fontSize: 'lg',
+        fontWeight: 'semibold',
         lineHeight: '110%',
         my: 1,
       },
@@ -209,18 +206,23 @@ const custom: Partial<ChakraTheme> = {
       p: {
         my: 2,
       },
-      ':root': `{
-        ${heading.variable}
-        ${body.variable}
-        ${mono.variable}
-      }`,
+
       '.gradient': {
         p: 4,
         bgGradient: 'linear(to-br, primary.400, black)',
-        text: 'white',
+        color: 'white',
         borderRadius: '5px',
       },
-    }),
+      '.gradient a:any-link': {
+        color: 'white',
+        textDecoration: 'underline',
+      },
+      '.gradient input': {
+        _placeholder: {
+          color: 'gray.300',
+        },
+      },
+    },
   },
 }
 

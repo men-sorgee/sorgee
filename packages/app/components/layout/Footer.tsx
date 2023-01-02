@@ -1,67 +1,50 @@
-import { Box, Flex, HStack, Link, useColorModeValue, VisuallyHidden, Text } from '@chakra-ui/react'
+import { Box, Stack, HStack, Link, useColorModeValue, VisuallyHidden, Text } from '@chakra-ui/react'
 import { constrained } from '.'
 import { DiscordIcon, InstagramIcon, TwitterIcon } from '../icons'
 
 export default function Footer() {
   return (
     <Box w="full" px={4}>
-      <Flex
-        direction={{ base: 'column', md: 'row' }}
+      <Stack
         alignItems="center"
         justify="space-between"
         __css={constrained}
+        direction={{ base: 'column', lg: 'row' }}
+        borderTop={'1px solid'}
+        borderColor={useColorModeValue('gray.500', 'white')}
       >
         <HStack spacing={5}>
-          <Link
-            href="https://www.instagram.com/guysnheat/"
-            target={'_blank'}
-            rel="noreferrer"
-            className="text-gray-200 hover:text-gray-100"
-          >
+          <Link href="https://www.instagram.com/guysnheat/" target={'_blank'} rel="noreferrer">
             <VisuallyHidden>Instagram</VisuallyHidden>
-            <InstagramIcon className="h-6 w-6" />
+            <InstagramIcon />
           </Link>
 
-          <Link
-            href="https://twitter.com/guysnheat"
-            target={'_blank'}
-            rel="noreferrer"
-            className="text-gray-200 hover:text-gray-100"
-          >
+          <Link href="https://twitter.com/guysnheat" target={'_blank'} rel="noreferrer">
             <VisuallyHidden>Twitter</VisuallyHidden>
-            <TwitterIcon className="h-6 w-6" />
+            <TwitterIcon />
           </Link>
 
-          <Link
-            href="https://discord.gg/zMbwypyKgD"
-            target={'_blank'}
-            rel="noreferrer"
-            className="text-gray-200 hover:text-gray-100"
-          >
+          <Link href="https://discord.gg/zMbwypyKgD" target={'_blank'} rel="noreferrer">
             <VisuallyHidden>Discord</VisuallyHidden>
-            <DiscordIcon className="h-6 w-6" />
+            <DiscordIcon />
           </Link>
         </HStack>
         <HStack my={3} fontSize={'sm'}>
           <Link
             href="/terms"
-            className="mr-5 cursor-pointer border-r border-gray-700  pr-5 text-gray-500 no-underline hover:text-gray-200"
+            pr={5}
+            borderRight={'solid 1px'}
+            borderColor={useColorModeValue('gray.500', 'white')}
           >
             Terms of service
           </Link>
-
-          <Link
-            href="/privacy"
-            className="mr-5 cursor-pointer pr-5 text-gray-500 no-underline  hover:text-gray-200"
-          >
-            Privacy policy
-          </Link>
+          <Link href="/privacy">Privacy policy</Link>
         </HStack>
 
-        <Text color={useColorModeValue('gray.500', 'gray.100')}>
+        <Text size={'xs'} color={useColorModeValue('gray.500', 'gray.100')}>
           &copy; Guys N Heat 2022. All rights reserved.
         </Text>
-      </Flex>
+      </Stack>
     </Box>
   )
 }

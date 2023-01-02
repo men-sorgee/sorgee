@@ -88,8 +88,8 @@ function Apply(props: PageProps) {
     >
       <>
         {formError && <Text color={'red.700'}>{formError}</Text>}
-        <Text fontSize={'xl'}>{intro}</Text>
-        <Text fontSize={'xl'}>
+        <Text size={'xl'}>{intro}</Text>
+        <Text size={'xl'}>
           Membership is free, but not everyone can join. There is a vouching and verification
           process for all new members. We do this to ensure the safety of our members and to weed
           out any liars, spammers, bots, or flakes.

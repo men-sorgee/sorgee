@@ -29,9 +29,13 @@ const FieldWrapper = (props: Props) => {
     </Tooltip>
   )
   return (
-    <FormControl isInvalid={!!error} className={className} {...opts}>
+    <FormControl isInvalid={!!error} className={className} {...opts} py={2}>
       <HStack spacing={0}>
-        {label && <FormLabel htmlFor={field}>{label}</FormLabel>}
+        {label && (
+          <FormLabel fontWeight="bold" htmlFor={field}>
+            {label}
+          </FormLabel>
+        )}
         {help && <InfoTip />}
       </HStack>
       {children}

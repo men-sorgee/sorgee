@@ -18,7 +18,7 @@ export default function HomePage({ page }: Props) {
       <section>
         <Markdown content={markdown} />
       </section>
-      <section className="gradient mt-8  rounded-xl p-4">
+      <section>
         <Subscribe />
       </section>
       <>

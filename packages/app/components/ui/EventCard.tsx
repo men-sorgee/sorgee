@@ -26,26 +26,21 @@ export default function EventCard({
     <Card className="gradient not-prose mx-auto max-w-lg text-center">
       <CardHeader>
         <HStack>
-          <Heading
-            as="h2"
-            size="lg"
-            color="white"
-            className="m-0 w-3/4 text-center text-xl !text-white"
-          >
+          <Heading as="h2" size="xl" color="white" textAlign={'center'} w={'3/4'} m={0}>
             {invite.name}
             <br />@ {eventDate.format('h:mm A')}
           </Heading>
-          <Heading as="h3" className="bg-primary-900 m-0 px-8 py-2 text-center">
+          <Heading as="h3" bg={'primary.900'} m={0} px={8} py={2} textAlign={'center'}>
             {eventDate.format('MMM')}
             <br />
             {eventDate.format('D')}
           </Heading>
         </HStack>
       </CardHeader>
-      <CardBody className="border-primary-900 border-y-2">
+      <CardBody border={'solid 1px primary-900'} borderY={2}>
         <VStack>
           <Markdown content={invite.description} />
-          <Alert className="italics mt-2 text-sm">
+          <Alert size={'sm'}>
             Location announced on the day of the event and is sent to confirmed attendees only.
             Events are subject to change or cancellation, depending upon member interest. We will
             communicate any changes to the event 24 hours in advance.

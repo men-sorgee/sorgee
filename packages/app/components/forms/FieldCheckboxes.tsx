@@ -2,12 +2,12 @@ import { InputHTMLAttributes } from 'react'
 import { useFormContext, RegisterOptions } from 'react-hook-form'
 import { FormOptions } from 'lib/models'
 import FieldWrapper from './FieldWrapper'
-import { Checkbox, CheckboxGroup, Stack, CheckboxProps, chakra, SimpleGrid } from '@chakra-ui/react'
+import { Checkbox, CheckboxGroup, Text, CheckboxProps, chakra, SimpleGrid } from '@chakra-ui/react'
 
 type Props = CheckboxProps &
   InputHTMLAttributes<HTMLInputElement> & {
     field: string
-    label: string
+    label?: string
     help?: string
     formOptions: FormOptions
     registerOptions?: RegisterOptions
@@ -20,9 +20,10 @@ const CheckboxesField = (props: Props) => {
   const { error } = getFieldState(field, formState)
   const classes = error ? 'error' : ''
   return (
-    <FieldWrapper field={field} label={label} help={help} className={className}>
+    <FieldWrapper field={field} label={label} className={className}>
+      {help && <Text>{help}</Text>}
       <CheckboxGroup>
-        <SimpleGrid gap={4} py={4} columns={{ base: 1, md: 2, xl: 4 }}>
+        <SimpleGrid gap={4} py={4} columns={{ base: 1, sm: 2, md: 3, lg: 4 }}>
           {formOptions?.map(({ text, value }, index) => (
             <Checkbox
               {...opts}

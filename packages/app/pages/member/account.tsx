@@ -1,16 +1,35 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
-import { Applicant, FormOptions, User, Notification } from 'lib/models'
+import { Applicant, FormOptions, User } from 'lib/models'
 import { fetchJSON, postJSON } from '@/lib/utils'
 import { getFieldOptions } from '@/lib/services/directus/server'
 import { useMember, useNotifications } from 'hooks'
 import { useEffect, useState } from 'react'
 import { FieldInput, FieldSelect, FieldWrapper, FieldText, FieldCheckboxes } from 'components/forms'
-import { Alert, Button, Tabs, TabList, Tab, TabPanels, TabPanel, Toast } from '@chakra-ui/react'
+import {
+  Alert,
+  Button,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
+  Toast,
+  Stack,
+  HStack,
+  Show,
+  Text,
+  Heading,
+  SimpleGrid,
+  GridItem,
+  Input,
+  InputGroup,
+  InputRightAddon,
+} from '@chakra-ui/react'
 import Page from 'components/Page'
 import { CameraIcon, LightBulbIcon, XIcon } from '@heroicons/react/solid'
 import { useRouter } from 'next/router'
-import FieldCheckbox from 'components/forms/FieldCheckbox'
+import FieldSwitch from 'components/forms/FieldSwitch'
 import Markdown from 'components/ui/Markdown'
 import { ErrorMessage } from '@hookform/error-message'
 
@@ -153,14 +172,15 @@ function Form(props: PageProps) {
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="">
           <Tabs defaultIndex={tabValue} onChange={(index) => setTabValue(index)}>
-            <TabList>
-              <Tab>Settings</Tab>
+            <TabList fontSize={{ base: 'md', md: 'lg' }} fontWeight="bold">
+              <Tab>Private</Tab>
               <Tab>Profile</Tab>
               <Tab>Events</Tab>
-              <Tab>Hookup</Tab>
+              <Tab>Interests</Tab>
+              <Tab>Health</Tab>
             </TabList>
             <TabPanels>
-              <TabPanel>
+              <TabPanel p={0}>
                 <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2">
                   <FieldInput
                     field="first_name"
@@ -189,39 +209,43 @@ function Form(props: PageProps) {
                   />
                 </div>
 
-                <Alert className="w-full">
-                  <CameraIcon className="h-[10%] max-h-[125px] w-auto self-start" />
-                  <div>
-                    <p className="mt-0">
+                <Alert
+                  as={Stack}
+                  direction="row"
+                  color="information"
+                  alignItems={'start'}
+                  my={4}
+                  borderRadius={'lg'}
+                  spacing={4}
+                >
+                  <Stack direction={'column'} spacing={2}>
+                    <Text>
                       Are you an exhibitionist? If so, you can opt-in to be a part of our marketing
                       efforts. We will never share your personal information with anyone.
-                    </p>
-                    <div className="flex w-full justify-start gap-4">
-                      <FieldCheckbox
+                    </Text>
+                    <Stack direction={{ base: 'column', md: 'row' }} spacing={2}>
+                      <FieldSwitch
                         field="photo_consent"
                         label="Photo Consent"
                         help="I would be willing to be photographed and featured in our promotional materials."
                       />
-                      <FieldCheckbox
+                      <FieldSwitch
                         field="video_consent"
                         label="Video Consent"
                         help="I would be willing to filmed for a video testimonial."
                       />
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
                 </Alert>
-                <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2"></div>
               </TabPanel>
-
-              <TabPanel>
-                <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-                  <FieldInput
-                    field="nickname"
-                    label="Nickname"
-                    className="col-span-2 sm:col-span-4"
-                    registerOptions={{ required }}
-                  />
-
+              <TabPanel p={0}>
+                <FieldInput
+                  field="nickname"
+                  label="Nickname"
+                  className="col-span-2 sm:col-span-4"
+                  registerOptions={{ required }}
+                />
+                <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
                   <FieldSelect
                     field="spectrum"
                     label="Orientation"
@@ -229,55 +253,69 @@ function Form(props: PageProps) {
                     registerOptions={{ required }}
                     formOptions={spectrumOptions}
                   />
-
                   <FieldSelect
                     field="relationship_status"
                     label="Relationship Status"
                     className="col-span-2"
                     formOptions={relationshipOptions}
                   />
+                </SimpleGrid>
+                <FieldText
+                  field="biography"
+                  label="Biography"
+                  help="Tell us about yourself. What are your interests? What are you looking for?"
+                  rows={4}
+                  placeholder="I am a bit shy, but love to get aggressive in bed."
+                />
+                <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
+                  <GridItem>
+                    <Stack direction={{ base: 'column', md: 'row' }}>
+                      <FieldWrapper field="height" label="Height">
+                        <InputGroup>
+                          <Input type="number" id="height_feet" {...register('height_feet')} />
+                          <InputRightAddon children="'" mr={2} />
+                          <Input
+                            type="number"
+                            id="height_inches"
+                            className="input  !rounded-l-none"
+                            {...register('height_inches')}
+                          />
+                          <InputRightAddon children={'"'} />
+                        </InputGroup>
+                      </FieldWrapper>
 
-                  <FieldInput
-                    field="age"
-                    label="Age"
-                    help="Must be 21+ to apply. We verify ages at events."
-                    registerOptions={{
-                      required,
-                      min: {
-                        value: 21,
-                        message: 'Must be 21+ to apply.',
-                      },
-                    }}
-                  />
-
-                  <FieldWrapper field="height" label="Height">
-                    <div className="flex">
-                      <input
-                        type="number"
-                        id="height_feet"
-                        className="input  !rounded-r-none"
-                        {...register('height_feet')}
-                        placeholder="'"
+                      <FieldInput field="weight" label="Weight" type="number" />
+                    </Stack>
+                  </GridItem>
+                  <GridItem>
+                    <Stack direction={{ base: 'column', md: 'row' }}>
+                      <FieldInput
+                        field="age"
+                        label="Age"
+                        help="Must be 21+ to apply. We verify ages at events."
+                        registerOptions={{
+                          required,
+                          min: {
+                            value: 21,
+                            message: 'Must be 21+ to apply.',
+                          },
+                        }}
                       />
-                      <input
-                        type="number"
-                        id="height_inches"
-                        className="input  !rounded-l-none"
-                        {...register('height_inches')}
-                        placeholder='"'
+                      <FieldSelect
+                        field="skin_tone"
+                        label="Skin Tone"
+                        formOptions={skinToneOptions}
                       />
-                    </div>
-                  </FieldWrapper>
+                    </Stack>
+                  </GridItem>
 
-                  <FieldInput field="weight" label="Weight" type="number" />
-
-                  <FieldSelect field="skin_tone" label="Skin Tone" formOptions={skinToneOptions} />
-                  <FieldCheckboxes
-                    field="body_attributes"
-                    label="Body Attributes"
-                    formOptions={bodyAttributesOptions}
-                    className="sm:col-span-4"
-                  />
+                  <GridItem colSpan={{ base: 1, md: 2 }}>
+                    <FieldCheckboxes
+                      field="body_attributes"
+                      label="Body Attributes"
+                      formOptions={bodyAttributesOptions}
+                    />
+                  </GridItem>
                   <FieldSelect
                     field="hair_color"
                     label="Hair Color"
@@ -314,68 +352,9 @@ function Form(props: PageProps) {
                     className="col-span-2"
                     formOptions={mannerismsOptions}
                   />
-                </div>
+                </SimpleGrid>
 
-                <FieldText
-                  field="biography"
-                  label="Biography"
-                  help="Tell us about yourself. What are your interests? What are you looking for?"
-                  rows={4}
-                  placeholder="I am a bit shy, but love to get aggressive in bed."
-                />
-              </TabPanel>
-              <TabPanel>
-                <div className="mb-8 grid grid-cols-1 gap-4">
-                  <FieldCheckboxes
-                    field="social_scenes"
-                    label="Social Activities"
-                    help="We host events to meet the demands of our brothers. Tell us what kind of events you are interested in."
-                    formOptions={eventOptions}
-                  />
-                </div>
-
-                <div className="mb-8 grid grid-cols-1 gap-4">
-                  <FieldCheckboxes
-                    field="event_availability"
-                    label="Preferred Event Times"
-                    help="We host events to meet the demands of our brothers. Let us know what times work best in general"
-                    formOptions={timeOfDayOptions}
-                  />
-                </div>
-                <p className="alert text-xs">
-                  <LightBulbIcon className="w-10" />
-                  Members who RSVP to events are expected to attend. Members that RSVP to event and
-                  do not attend, decrease the likelihood of getting invited again. We understand
-                  that things come up, but please be respectful of your brothers and RSVP accurately
-                  and let us know if you can&apos;t make it.
-                </p>
-              </TabPanel>
-              <TabPanel>
-                <div className="mb-8 grid grid-cols-1 gap-4">
-                  <FieldCheckboxes
-                    field="my_positions"
-                    label="Your Positions"
-                    help="What positions or acts are you interested in? "
-                    formOptions={positionsOptions}
-                  />
-                  <p className="alert justify-around text-sm">
-                    <LightBulbIcon className="w-10" />
-                    We will use this to match you with compatible brothers. Select all that apply
-                  </p>
-
-                  <FieldCheckboxes
-                    field="sexual_scenes"
-                    label="Your Scenes"
-                    help="What scenes are you interested in? "
-                    formOptions={scenesOptions}
-                  />
-                  <p className="alert justify-around text-sm">
-                    <LightBulbIcon className="w-10" />
-                    We will use this to match you with compatible events. Select all that apply
-                  </p>
-                </div>
-                <h4>Your Cock</h4>
-                <div className="mb-8 grid gap-4 sm:grid-cols-2">
+                <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
                   <FieldInput
                     field="cock_length"
                     label="Cock Length"
@@ -387,47 +366,92 @@ function Form(props: PageProps) {
                     label="Cock Girth"
                     formOptions={cockGirthOptions}
                   />
-                </div>
+                </SimpleGrid>
                 <FieldCheckboxes
                   field="cock_attributes"
-                  label=""
+                  label="Cock Attributes"
                   className="sm:col-span-2"
                   formOptions={cockAttributesOptions}
                 />
-                <h4>Your Balls</h4>
-                <div className="mb-8 grid gap-4 sm:grid-cols-2">
+                <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
                   <FieldSelect field="ball_size" label="Ball Size" formOptions={ballSizeOptions} />
                   <FieldSelect
                     field="ball_gravity"
                     label="Ball Gravity"
                     formOptions={ballGravityOptions}
                   />
-                </div>
+                </SimpleGrid>
                 <FieldCheckboxes
                   field="cum_attributes"
-                  label=""
+                  label="Cum Attributes"
                   className="sm:col-span-2"
                   formOptions={cumAttributesOptions}
                 />
-                <h4>Your Health</h4>
-                <div className="mb-8 grid gap-4 sm:grid-cols-2">
+              </TabPanel>
+              <TabPanel p={0}>
+                <FieldCheckboxes
+                  field="social_scenes"
+                  label="Social Activities"
+                  help="We host events to meet the demands of our brothers. Tell us what kind of events you are interested in."
+                  formOptions={eventOptions}
+                />
+
+                <FieldCheckboxes
+                  field="event_availability"
+                  label="Preferred Event Times"
+                  help="We host events to meet the demands of our brothers. Let us know what times work best in general"
+                  formOptions={timeOfDayOptions}
+                />
+
+                <Alert
+                  as={HStack}
+                  alignItems={'start'}
+                  color="information"
+                  mb={4}
+                  borderRadius={'lg'}
+                  spacing={2}
+                >
+                  <LightBulbIcon width={'100px'} />
+
+                  <Text>
+                    Members who RSVP to events are expected to attend. Members that RSVP to event
+                    and do not attend, decrease the likelihood of getting invited again. We
+                    understand that things come up, but please be respectful of your brothers and
+                    RSVP accurately and let us know if you can&apos;t make it.
+                  </Text>
+                </Alert>
+              </TabPanel>
+              <TabPanel p={0}>
+                <FieldCheckboxes
+                  field="my_positions"
+                  label="Sexual Positions"
+                  formOptions={positionsOptions}
+                />
+                <FieldCheckboxes
+                  field="sexual_scenes"
+                  label="Sexual Scenes"
+                  formOptions={scenesOptions}
+                />
+              </TabPanel>
+              <TabPanel p={0}>
+                <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
                   <FieldSelect
                     field="hiv_status"
                     label="HIV Status"
                     formOptions={hivStatusOptions}
                   />
                   <FieldInput field="last_tested" label="Last Tested" type="date" />
-                </div>
-                <FieldCheckboxes
-                  field="vaccinations"
-                  label="Vax Status"
-                  formOptions={vaccinationStatusOptions}
-                />
+                </SimpleGrid>
                 <FieldCheckboxes
                   field="load_policy"
                   label="Load Policy"
                   className="sm:col-span-2"
                   formOptions={loadPolicyOptions}
+                />
+                <FieldCheckboxes
+                  field="vaccinations"
+                  label="Vax Status"
+                  formOptions={vaccinationStatusOptions}
                 />
               </TabPanel>
             </TabPanels>
@@ -435,18 +459,18 @@ function Form(props: PageProps) {
 
           <input type="hidden" {...register('id')} />
           {tabValue <= 3 && (
-            <div className="mt-2 flex items-center space-x-4 pt-4">
-              <Button type="submit" color="primary" disabled={isSubmitting}>
+            <Stack mt={10}>
+              <Button type="submit" colorScheme="primary" disabled={isSubmitting}>
                 Update Profile
               </Button>
               <ErrorMessage errors={errors} name="form" />
-            </div>
+            </Stack>
           )}
         </form>
       </FormProvider>
       {updated && (
         <Toast color="ghost">
-          <h4>Profile Updated</h4>
+          <Heading as="h4">Profile Updated</Heading>
         </Toast>
       )}
     </>
