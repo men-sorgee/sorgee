@@ -20,7 +20,6 @@ function Verification() {
       title="Identification"
       loading={loading || completed}
       requireAuth={true}
-      sectionClass="gradient p-4"
       header={<ApplicationSteps status={'verify'} />}
     >
       {member?.id && (

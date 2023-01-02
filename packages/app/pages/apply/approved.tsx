@@ -20,12 +20,12 @@ function Approved() {
       title="Application Approved"
       loading={loading}
       requireAuth={true}
-      sectionClass="gradient p-4 text-center"
+      sectionClass="text-center"
       header={<ApplicationSteps status={'approved'} />}
     >
       <>
         <h2>Congratulations! Your membership was approved.</h2>
-        <SparklesIcon className="mx-auto my-4 h-[50px] animate-bounce text-white" />
+
         <p className="text-center">
           You will now get periodic event invites as well as access to our member-only content.
         </p>

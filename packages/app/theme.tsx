@@ -164,7 +164,7 @@ const custom: Partial<ChakraTheme> = {
       },
       h1: {
         // you can also use responsive styles
-        fontSize: ['48px', '72px'],
+        fontSize: '48px',
         fontFamily: 'heading',
         fontWeight: 'bold',
         lineHeight: '110%',

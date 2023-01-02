@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import { signIn } from 'next-auth/react'
-import { Button } from 'react-daisyui'
+import { Button } from '@chakra-ui/react'
 
 const Enter: NextPage = () => {
   return (

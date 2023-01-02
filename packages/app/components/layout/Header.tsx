@@ -83,7 +83,7 @@ function Header({ children, ...props }: Props) {
   ]
   return (
     <Box {...props} as="header" color={'white'} bg={'gray.900'}>
-      <HStack minH={'60px'}  spacing={4} __css={constrained}>
+      <HStack minH={'60px'} spacing={4} __css={constrained}>
         <IconButton
           onClick={onToggle}
           icon={isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />}
@@ -200,13 +200,7 @@ const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
 
 const MobileNav = ({ navItems, ...props }: StackProps & { navItems: NavItem[] }) => {
   return (
-    <Stack
-      as="nav"
-      bg={useColorModeValue('white', 'gray.800')}
-      p={4}
-      display={{ md: 'none' }}
-      __css={props}
-    >
+    <Stack as="nav" bg={'gray.800'} color={'white'} p={4} display={{ md: 'none' }} __css={props}>
       {navItems?.map((navItem) => (
         <MobileNavItem key={navItem.label} {...navItem} />
       ))}
@@ -224,6 +218,7 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
         as={Link}
         href={href ?? '#'}
         justify={'space-between'}
+        color={'white'}
         align={'center'}
         _hover={{
           textDecoration: 'none',

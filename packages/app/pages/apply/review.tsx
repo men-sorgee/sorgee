@@ -17,7 +17,6 @@ function Review() {
       title="Verification Review"
       loading={loading}
       requireAuth={true}
-      sectionClass="gradient p-4"
       header={<ApplicationSteps status={'review'} />}
     >
       <>

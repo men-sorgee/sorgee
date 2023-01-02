@@ -24,7 +24,6 @@ function Agreement() {
       title="Agreement"
       loading={loading || completed}
       requireAuth={true}
-      sectionClass="gradient p-4"
       header={<ApplicationSteps status={'agreement'} />}
     >
       <Form {...props} />

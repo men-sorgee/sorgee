@@ -9,17 +9,17 @@ import { theme } from '../theme'
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
-      <MetaContextProvider>
-        <SessionProvider>
-          <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
+      <SessionProvider>
+        <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
+          <MetaContextProvider>
             <Layout>
               <ErrorBoundary>
                 <Component {...pageProps} />
               </ErrorBoundary>
             </Layout>
-          </ChakraProvider>
-        </SessionProvider>
-      </MetaContextProvider>
+          </MetaContextProvider>
+        </ChakraProvider>
+      </SessionProvider>
     </>
   )
 }

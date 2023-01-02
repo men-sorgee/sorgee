@@ -1,6 +1,5 @@
 import { signIn, useSession, signOut } from 'next-auth/react'
 import { useEffect, useState } from 'react'
-
 import {
   Menu,
   MenuButton,
@@ -9,11 +8,9 @@ import {
   MenuDivider,
   Avatar,
   Badge,
-  LinkOverlay,
+  Spinner,
 } from '@chakra-ui/react'
-
 import { ApplicationStatus, Member, MemberLevel } from 'lib/models'
-
 import { LinkButton } from 'components/ui'
 import { useNotifications } from 'hooks'
 import { getAssetUrl } from 'lib/utils'
@@ -23,6 +20,7 @@ interface Props {}
 const UserAvatar = (_props: Props) => {
   const [member, setMember] = useState<Member>(null)
   const { data: session, status } = useSession()
+  const [loading, setLoading] = useState<boolean>(true)
   const [photoSrc, setPhotoSrc] = useState<string | null>(null)
   const [name, setName] = useState<string | null>(null)
   const [level, setLevel] = useState<number>(-1)
@@ -33,6 +31,12 @@ const UserAvatar = (_props: Props) => {
   } = session || { user: {} }
 
   useEffect(() => {
+    if (!loading && status == 'loading') {
+      setLoading(true)
+    }
+    if (loading && status != 'loading') {
+      setLoading(false)
+    }
     if (status == 'authenticated' && session.user) {
       setMember(session.user as Member)
       const { picture, first_name, last_name, nickname } = session.user
@@ -40,59 +44,54 @@ const UserAvatar = (_props: Props) => {
       if (!name) setName(nickname || `${first_name} ${last_name}}`)
       if (level == -1) setLevel(MemberLevel[session.user.user_type || 'subscriber'])
     }
-  }, [name, photoSrc, session?.user, level])
+  }, [name, photoSrc, session?.user, level, status, loading, notifications])
 
   const isMember = member && level >= 3 && application_status == 'approved'
   const isApplicant = ApplicationStatus[application_status] < ApplicationStatus['approved']
+  if (loading) return <Spinner />
   return (
     <>
       {member ? (
         <>
           <Menu placement="bottom-start">
-            <MenuButton
-              as={Avatar}
-              className="ring-accent cursor-pointer rounded-full ring-2"
-              name={name}
-              src={photoSrc}
-              size={'lg'}
-            ></MenuButton>{' '}
+            <MenuButton>
+              <Avatar
+                className="ring-accent cursor-pointer rounded-full ring-2"
+                name={name}
+                src={photoSrc}
+              />
+            </MenuButton>
             <MenuList>
-              {member && MemberLevel[member.user_type] >= 3 && application_status == 'approved' && (
+              {isMember && (
                 <>
-                  <MenuItem>
-                    <LinkButton href="/member/events">Events</LinkButton>
+                  <MenuItem as={NextLink} href="/member/events">
+                    Events
                   </MenuItem>
-                  <MenuItem>
-                    <LinkButton href="/member/account">Account</LinkButton>
+                  <MenuItem as={NextLink} href="/member/account">
+                    Account
                   </MenuItem>
                   {messages.length > 0 && (
-                    <MenuItem>
-                      <LinkOverlay as={NextLink} href="/member/account">
-                        Notifications
-                        <Badge borderRadius="full" color="accent">
-                          {messages.length}
-                        </Badge>
-                      </LinkOverlay>
+                    <MenuItem as={NextLink} href="/member/account">
+                      Notifications
+                      <Badge borderRadius="full" color="accent">
+                        {messages.length}
+                      </Badge>
                     </MenuItem>
                   )}
-                  <MenuItem>
-                    <LinkOverlay as={NextLink} href="/member/invite">
-                      Invite
-                    </LinkOverlay>
+                  <MenuItem as={NextLink} href="/member/invite">
+                    Invite
                   </MenuItem>
                 </>
               )}
               <MenuDivider />
-              <MenuItem>
-                <LinkOverlay
-                  as={NextLink}
-                  href={`/api/auth/signout`}
-                  onClick={() => {
-                    signOut({ callbackUrl: '/' })
-                  }}
-                >
-                  Logout
-                </LinkOverlay>
+              <MenuItem
+                as={NextLink}
+                href={`/api/auth/signout`}
+                onClick={() => {
+                  signOut({ callbackUrl: '/' })
+                }}
+              >
+                Logout
               </MenuItem>
             </MenuList>
           </Menu>

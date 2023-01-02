@@ -6,7 +6,7 @@ import { getFieldOptions } from '@/lib/services/directus/server'
 import { useMember, useNotifications } from 'hooks'
 import { useEffect, useState } from 'react'
 import { FieldInput, FieldSelect, FieldWrapper, FieldText, FieldCheckboxes } from 'components/forms'
-import { Alert, Button, Tabs, Toast } from '@chakra-ui/react'
+import { Alert, Button, Tabs, TabList, Tab, TabPanels, TabPanel, Toast } from '@chakra-ui/react'
 import Page from 'components/Page'
 import { CameraIcon, LightBulbIcon, XIcon } from '@heroicons/react/solid'
 import { useRouter } from 'next/router'
@@ -75,7 +75,7 @@ type MemberFormData = Applicant & {
 function Account(props: PageProps) {
   const { loading } = useMember()
   return (
-    <Page title="Account" loading={loading} sectionClass="gradient p-4" requireAuth={true}>
+    <Page title="Account" loading={loading} requireAuth={true}>
       <Form {...props} />
     </Page>
   )
@@ -152,292 +152,286 @@ function Form(props: PageProps) {
     <>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="">
-          <Tabs
-            variant="bordered"
-            value={tabValue}
-            onChange={setTabValue}
-            className="sm md:lg mb-4 w-full"
-          >
-            <Tabs.Tab className="w-1/4 font-bold text-white" activeValue={tabValue} value={0}>
-              Settings
-            </Tabs.Tab>
-            <Tabs.Tab className="w-1/4 font-bold text-white" activeValue={tabValue} value={1}>
-              Profile
-            </Tabs.Tab>
-            <Tabs.Tab className="w-1/4 font-bold text-white" activeValue={tabValue} value={2}>
-              Events
-            </Tabs.Tab>
-            <Tabs.Tab className="w-1/4 font-bold text-white" activeValue={tabValue} value={3}>
-              Sex
-            </Tabs.Tab>
-          </Tabs>
-
-          {tabValue == 0 && (
-            <>
-              <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FieldInput field="first_name" label="First Name" registerOptions={{ required }} />
-                <FieldInput field="last_name" label="Last Name" registerOptions={{ required }} />
-                <FieldInput
-                  field="email"
-                  label="Email"
-                  type="email"
-                  registerOptions={{ required }}
-                  readOnly={true}
-                />
-                <FieldInput
-                  field="phone"
-                  label="Mobile Phone"
-                  help="Must be SMS-enabled. Used for optional verification or optional event reminders. Format: 123 456 7890"
-                  registerOptions={{
-                    pattern: {
-                      value: /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
-                      message: 'US numbers only. Format: 123 456 7890',
-                    },
-                  }}
-                  placeholder="000 456 7890"
-                />
-              </div>
-
-              <Alert className="w-full">
-                <CameraIcon className="h-[10%] max-h-[125px] w-auto self-start" />
-                <div>
-                  <p className="mt-0">
-                    Are you an exhibitionist? If so, you can opt-in to be a part of our marketing
-                    efforts. We will never share your personal information with anyone.
-                  </p>
-                  <div className="flex w-full justify-start gap-4">
-                    <FieldCheckbox
-                      field="photo_consent"
-                      label="Photo Consent"
-                      help="I would be willing to be photographed and featured in our promotional materials."
-                    />
-                    <FieldCheckbox
-                      field="video_consent"
-                      label="Video Consent"
-                      help="I would be willing to filmed for a video testimonial."
-                    />
-                  </div>
+          <Tabs defaultIndex={tabValue} onChange={(index) => setTabValue(index)}>
+            <TabList>
+              <Tab>Settings</Tab>
+              <Tab>Profile</Tab>
+              <Tab>Events</Tab>
+              <Tab>Hookup</Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
+                <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <FieldInput
+                    field="first_name"
+                    label="First Name"
+                    registerOptions={{ required }}
+                  />
+                  <FieldInput field="last_name" label="Last Name" registerOptions={{ required }} />
+                  <FieldInput
+                    field="email"
+                    label="Email"
+                    type="email"
+                    registerOptions={{ required }}
+                    readOnly={true}
+                  />
+                  <FieldInput
+                    field="phone"
+                    label="Mobile Phone"
+                    help="Must be SMS-enabled. Used for optional verification or optional event reminders. Format: 123 456 7890"
+                    registerOptions={{
+                      pattern: {
+                        value: /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
+                        message: 'US numbers only. Format: 123 456 7890',
+                      },
+                    }}
+                    placeholder="000 456 7890"
+                  />
                 </div>
-              </Alert>
-              <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2"></div>
-            </>
-          )}
-          {tabValue == 1 && (
-            <>
-              <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-                <FieldInput
-                  field="nickname"
-                  label="Nickname"
-                  className="col-span-2 sm:col-span-4"
-                  registerOptions={{ required }}
-                />
 
-                <FieldSelect
-                  field="spectrum"
-                  label="Orientation"
-                  className="col-span-2"
-                  registerOptions={{ required }}
-                  formOptions={spectrumOptions}
-                />
-
-                <FieldSelect
-                  field="relationship_status"
-                  label="Relationship Status"
-                  className="col-span-2"
-                  formOptions={relationshipOptions}
-                />
-
-                <FieldInput
-                  field="age"
-                  label="Age"
-                  help="Must be 21+ to apply. We verify ages at events."
-                  registerOptions={{
-                    required,
-                    min: {
-                      value: 21,
-                      message: 'Must be 21+ to apply.',
-                    },
-                  }}
-                />
-
-                <FieldWrapper field="height" label="Height">
-                  <div className="flex">
-                    <input
-                      type="number"
-                      id="height_feet"
-                      className="input  !rounded-r-none"
-                      {...register('height_feet')}
-                      placeholder="'"
-                    />
-                    <input
-                      type="number"
-                      id="height_inches"
-                      className="input  !rounded-l-none"
-                      {...register('height_inches')}
-                      placeholder='"'
-                    />
+                <Alert className="w-full">
+                  <CameraIcon className="h-[10%] max-h-[125px] w-auto self-start" />
+                  <div>
+                    <p className="mt-0">
+                      Are you an exhibitionist? If so, you can opt-in to be a part of our marketing
+                      efforts. We will never share your personal information with anyone.
+                    </p>
+                    <div className="flex w-full justify-start gap-4">
+                      <FieldCheckbox
+                        field="photo_consent"
+                        label="Photo Consent"
+                        help="I would be willing to be photographed and featured in our promotional materials."
+                      />
+                      <FieldCheckbox
+                        field="video_consent"
+                        label="Video Consent"
+                        help="I would be willing to filmed for a video testimonial."
+                      />
+                    </div>
                   </div>
-                </FieldWrapper>
+                </Alert>
+                <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2"></div>
+              </TabPanel>
 
-                <FieldInput field="weight" label="Weight" type="number" />
+              <TabPanel>
+                <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+                  <FieldInput
+                    field="nickname"
+                    label="Nickname"
+                    className="col-span-2 sm:col-span-4"
+                    registerOptions={{ required }}
+                  />
 
-                <FieldSelect field="skin_tone" label="Skin Tone" formOptions={skinToneOptions} />
-                <FieldCheckboxes
-                  field="body_attributes"
-                  label="Body Attributes"
-                  formOptions={bodyAttributesOptions}
-                  className="sm:col-span-4"
-                />
-                <FieldSelect
-                  field="hair_color"
-                  label="Hair Color"
-                  className="col-span-2"
-                  formOptions={hairColorOptions}
-                />
-                <FieldSelect
-                  field="hair_style"
-                  label="Hair Style"
-                  className="col-span-2"
-                  formOptions={hairStyleOptions}
-                />
-                <FieldSelect
-                  field="body_hair"
-                  label="Body Hair"
-                  className="col-span-2"
-                  formOptions={bodyHairOptions}
-                />
-                <FieldSelect
-                  field="facial_hair"
-                  label="Facial Hair"
-                  className="col-span-2"
-                  formOptions={facialHairOptions}
-                />
-                <FieldSelect
-                  field="eye_color"
-                  label="Eye Color"
-                  className="col-span-2"
-                  formOptions={eyeColorOptions}
-                />
-                <FieldSelect
-                  field="mannerisms"
-                  label="Mannerisms"
-                  className="col-span-2"
-                  formOptions={mannerismsOptions}
-                />
-              </div>
+                  <FieldSelect
+                    field="spectrum"
+                    label="Orientation"
+                    className="col-span-2"
+                    registerOptions={{ required }}
+                    formOptions={spectrumOptions}
+                  />
 
-              <FieldText
-                field="biography"
-                label="Biography"
-                help="Tell us about yourself. What are your interests? What are you looking for?"
-                rows={4}
-                placeholder="I am a bit shy, but love to get aggressive in bed."
-              />
-            </>
-          )}
-          {tabValue == 2 && (
-            <>
-              <div className="mb-8 grid grid-cols-1 gap-4">
-                <FieldCheckboxes
-                  field="social_scenes"
-                  label="Social Activities"
-                  help="We host events to meet the demands of our brothers. Tell us what kind of events you are interested in."
-                  formOptions={eventOptions}
-                />
-              </div>
+                  <FieldSelect
+                    field="relationship_status"
+                    label="Relationship Status"
+                    className="col-span-2"
+                    formOptions={relationshipOptions}
+                  />
 
-              <div className="mb-8 grid grid-cols-1 gap-4">
-                <FieldCheckboxes
-                  field="event_availability"
-                  label="Preferred Event Times"
-                  help="We host events to meet the demands of our brothers. Let us know what times work best in general"
-                  formOptions={timeOfDayOptions}
-                />
-              </div>
-              <p className="alert text-xs">
-                <LightBulbIcon className="w-10" />
-                Members who RSVP to events are expected to attend. Members that RSVP to event and do
-                not attend, decrease the likelihood of getting invited again. We understand that
-                things come up, but please be respectful of your brothers and RSVP accurately and
-                let us know if you can&apos;t make it.
-              </p>
-            </>
-          )}
+                  <FieldInput
+                    field="age"
+                    label="Age"
+                    help="Must be 21+ to apply. We verify ages at events."
+                    registerOptions={{
+                      required,
+                      min: {
+                        value: 21,
+                        message: 'Must be 21+ to apply.',
+                      },
+                    }}
+                  />
 
-          {tabValue == 3 && (
-            <>
-              <div className="mb-8 grid grid-cols-1 gap-4">
-                <FieldCheckboxes
-                  field="my_positions"
-                  label="Your Positions"
-                  help="What positions or acts are you interested in? "
-                  formOptions={positionsOptions}
+                  <FieldWrapper field="height" label="Height">
+                    <div className="flex">
+                      <input
+                        type="number"
+                        id="height_feet"
+                        className="input  !rounded-r-none"
+                        {...register('height_feet')}
+                        placeholder="'"
+                      />
+                      <input
+                        type="number"
+                        id="height_inches"
+                        className="input  !rounded-l-none"
+                        {...register('height_inches')}
+                        placeholder='"'
+                      />
+                    </div>
+                  </FieldWrapper>
+
+                  <FieldInput field="weight" label="Weight" type="number" />
+
+                  <FieldSelect field="skin_tone" label="Skin Tone" formOptions={skinToneOptions} />
+                  <FieldCheckboxes
+                    field="body_attributes"
+                    label="Body Attributes"
+                    formOptions={bodyAttributesOptions}
+                    className="sm:col-span-4"
+                  />
+                  <FieldSelect
+                    field="hair_color"
+                    label="Hair Color"
+                    className="col-span-2"
+                    formOptions={hairColorOptions}
+                  />
+                  <FieldSelect
+                    field="hair_style"
+                    label="Hair Style"
+                    className="col-span-2"
+                    formOptions={hairStyleOptions}
+                  />
+                  <FieldSelect
+                    field="body_hair"
+                    label="Body Hair"
+                    className="col-span-2"
+                    formOptions={bodyHairOptions}
+                  />
+                  <FieldSelect
+                    field="facial_hair"
+                    label="Facial Hair"
+                    className="col-span-2"
+                    formOptions={facialHairOptions}
+                  />
+                  <FieldSelect
+                    field="eye_color"
+                    label="Eye Color"
+                    className="col-span-2"
+                    formOptions={eyeColorOptions}
+                  />
+                  <FieldSelect
+                    field="mannerisms"
+                    label="Mannerisms"
+                    className="col-span-2"
+                    formOptions={mannerismsOptions}
+                  />
+                </div>
+
+                <FieldText
+                  field="biography"
+                  label="Biography"
+                  help="Tell us about yourself. What are your interests? What are you looking for?"
+                  rows={4}
+                  placeholder="I am a bit shy, but love to get aggressive in bed."
                 />
-                <p className="alert justify-around text-sm">
+              </TabPanel>
+              <TabPanel>
+                <div className="mb-8 grid grid-cols-1 gap-4">
+                  <FieldCheckboxes
+                    field="social_scenes"
+                    label="Social Activities"
+                    help="We host events to meet the demands of our brothers. Tell us what kind of events you are interested in."
+                    formOptions={eventOptions}
+                  />
+                </div>
+
+                <div className="mb-8 grid grid-cols-1 gap-4">
+                  <FieldCheckboxes
+                    field="event_availability"
+                    label="Preferred Event Times"
+                    help="We host events to meet the demands of our brothers. Let us know what times work best in general"
+                    formOptions={timeOfDayOptions}
+                  />
+                </div>
+                <p className="alert text-xs">
                   <LightBulbIcon className="w-10" />
-                  We will use this to match you with compatible brothers. Select all that apply
+                  Members who RSVP to events are expected to attend. Members that RSVP to event and
+                  do not attend, decrease the likelihood of getting invited again. We understand
+                  that things come up, but please be respectful of your brothers and RSVP accurately
+                  and let us know if you can&apos;t make it.
                 </p>
+              </TabPanel>
+              <TabPanel>
+                <div className="mb-8 grid grid-cols-1 gap-4">
+                  <FieldCheckboxes
+                    field="my_positions"
+                    label="Your Positions"
+                    help="What positions or acts are you interested in? "
+                    formOptions={positionsOptions}
+                  />
+                  <p className="alert justify-around text-sm">
+                    <LightBulbIcon className="w-10" />
+                    We will use this to match you with compatible brothers. Select all that apply
+                  </p>
 
+                  <FieldCheckboxes
+                    field="sexual_scenes"
+                    label="Your Scenes"
+                    help="What scenes are you interested in? "
+                    formOptions={scenesOptions}
+                  />
+                  <p className="alert justify-around text-sm">
+                    <LightBulbIcon className="w-10" />
+                    We will use this to match you with compatible events. Select all that apply
+                  </p>
+                </div>
+                <h4>Your Cock</h4>
+                <div className="mb-8 grid gap-4 sm:grid-cols-2">
+                  <FieldInput
+                    field="cock_length"
+                    label="Cock Length"
+                    type="number"
+                    registerOptions={{}}
+                  />
+                  <FieldSelect
+                    field="cock_girth"
+                    label="Cock Girth"
+                    formOptions={cockGirthOptions}
+                  />
+                </div>
                 <FieldCheckboxes
-                  field="sexual_scenes"
-                  label="Your Scenes"
-                  help="What scenes are you interested in? "
-                  formOptions={scenesOptions}
+                  field="cock_attributes"
+                  label=""
+                  className="sm:col-span-2"
+                  formOptions={cockAttributesOptions}
                 />
-                <p className="alert justify-around text-sm">
-                  <LightBulbIcon className="w-10" />
-                  We will use this to match you with compatible events. Select all that apply
-                </p>
-              </div>
-              <h4>Your Cock</h4>
-              <div className="mb-8 grid gap-4 sm:grid-cols-2">
-                <FieldInput
-                  field="cock_length"
-                  label="Cock Length"
-                  type="number"
-                  registerOptions={{}}
+                <h4>Your Balls</h4>
+                <div className="mb-8 grid gap-4 sm:grid-cols-2">
+                  <FieldSelect field="ball_size" label="Ball Size" formOptions={ballSizeOptions} />
+                  <FieldSelect
+                    field="ball_gravity"
+                    label="Ball Gravity"
+                    formOptions={ballGravityOptions}
+                  />
+                </div>
+                <FieldCheckboxes
+                  field="cum_attributes"
+                  label=""
+                  className="sm:col-span-2"
+                  formOptions={cumAttributesOptions}
                 />
-                <FieldSelect field="cock_girth" label="Cock Girth" formOptions={cockGirthOptions} />
-              </div>
-              <FieldCheckboxes
-                field="cock_attributes"
-                label=""
-                className="sm:col-span-2"
-                formOptions={cockAttributesOptions}
-              />
-              <h4>Your Balls</h4>
-              <div className="mb-8 grid gap-4 sm:grid-cols-2">
-                <FieldSelect field="ball_size" label="Ball Size" formOptions={ballSizeOptions} />
-                <FieldSelect
-                  field="ball_gravity"
-                  label="Ball Gravity"
-                  formOptions={ballGravityOptions}
+                <h4>Your Health</h4>
+                <div className="mb-8 grid gap-4 sm:grid-cols-2">
+                  <FieldSelect
+                    field="hiv_status"
+                    label="HIV Status"
+                    formOptions={hivStatusOptions}
+                  />
+                  <FieldInput field="last_tested" label="Last Tested" type="date" />
+                </div>
+                <FieldCheckboxes
+                  field="vaccinations"
+                  label="Vax Status"
+                  formOptions={vaccinationStatusOptions}
                 />
-              </div>
-              <FieldCheckboxes
-                field="cum_attributes"
-                label=""
-                className="sm:col-span-2"
-                formOptions={cumAttributesOptions}
-              />
-              <h4>Your Health</h4>
-              <div className="mb-8 grid gap-4 sm:grid-cols-2">
-                <FieldSelect field="hiv_status" label="HIV Status" formOptions={hivStatusOptions} />
-                <FieldInput field="last_tested" label="Last Tested" type="date" />
-              </div>
-              <FieldCheckboxes
-                field="vaccinations"
-                label="Vax Status"
-                formOptions={vaccinationStatusOptions}
-              />
-              <FieldCheckboxes
-                field="load_policy"
-                label="Load Policy"
-                className="sm:col-span-2"
-                formOptions={loadPolicyOptions}
-              />
-            </>
-          )}
+                <FieldCheckboxes
+                  field="load_policy"
+                  label="Load Policy"
+                  className="sm:col-span-2"
+                  formOptions={loadPolicyOptions}
+                />
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
 
           <input type="hidden" {...register('id')} />
           {tabValue <= 3 && (
@@ -451,7 +445,7 @@ function Form(props: PageProps) {
         </form>
       </FormProvider>
       {updated && (
-        <Toast color="ghost" vertical="middle" horizontal="center">
+        <Toast color="ghost">
           <h4>Profile Updated</h4>
         </Toast>
       )}
