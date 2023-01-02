@@ -83,13 +83,12 @@ function Apply(props: PageProps) {
       title="Registration"
       loading={loading}
       requireAuth={true}
-      sectionClass="gradient Text-4"
       header={<ApplicationSteps status={'apply'} />}
     >
       <>
         {formError && <Text color={'red.700'}>{formError}</Text>}
-        <Text size={'xl'}>{intro}</Text>
-        <Text size={'xl'}>
+        <Text fontSize={'xl'}>{intro}</Text>
+        <Text fontSize={'xl'}>
           Membership is free, but not everyone can join. There is a vouching and verification
           process for all new members. We do this to ensure the safety of our members and to weed
           out any liars, spammers, bots, or flakes.

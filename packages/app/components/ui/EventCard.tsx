@@ -23,14 +23,31 @@ export default function EventCard({
 }) {
   const [eventDate] = useState<Moment>(moment(invite.datetime))
   return (
-    <Card className="gradient not-prose mx-auto max-w-lg text-center">
-      <CardHeader>
-        <HStack>
-          <Heading as="h2" size="xl" color="white" textAlign={'center'} w={'3/4'} m={0}>
+    <Card p={0} mt={10}>
+      <CardHeader p={0}>
+        <HStack alignItems="stretch" spacing={0}>
+          <Heading
+            bg={'primary.400'}
+            as="h2"
+            size="xl"
+            color="white"
+            textAlign={'center'}
+            w={'75%'}
+            m={0}
+            p={4}
+          >
             {invite.name}
             <br />@ {eventDate.format('h:mm A')}
           </Heading>
-          <Heading as="h3" bg={'primary.900'} m={0} px={8} py={2} textAlign={'center'}>
+          <Heading
+            as="h3"
+            bg={'primary.900'}
+            m={0}
+            w={'25%'}
+            p={4}
+            textAlign={'center'}
+            color={'white'}
+          >
             {eventDate.format('MMM')}
             <br />
             {eventDate.format('D')}
@@ -48,7 +65,7 @@ export default function EventCard({
         </VStack>
       </CardBody>
       <Divider />
-      <CardFooter className="border-t-1 border-primary-700 bg-primary-900">{children}</CardFooter>
+      <CardFooter>{children}</CardFooter>
     </Card>
   )
 }

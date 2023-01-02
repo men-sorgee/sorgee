@@ -36,7 +36,7 @@ const Resume: NextPage = () => {
 
   return (
     <Page loading={status !== 'authenticated'} title="Application" requireAuth={true}>
-      <LinkButton href={page} color="primary" className="w-full">
+      <LinkButton href={page} color="primary">
         Resume Application
       </LinkButton>
     </Page>

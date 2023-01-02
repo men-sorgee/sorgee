@@ -24,7 +24,7 @@ const SwitchField = (props: Props) => {
       <Switch {...opts} {...register(field, registerOptions)} {...opts} className={classes}>
         <span style={{ fontWeight: 'bold' }}>{label}</span>
       </Switch>
-      {help && <Text size={'xs'}>{help}</Text>}
+      {help && <Text fontSize={'xs'}>{help}</Text>}
       {children}
     </FieldWrapper>
   )

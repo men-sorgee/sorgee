@@ -41,7 +41,7 @@ export default function Footer() {
           <Link href="/privacy">Privacy policy</Link>
         </HStack>
 
-        <Text size={'xs'} color={useColorModeValue('gray.500', 'gray.100')}>
+        <Text fontSize={'xs'} color={useColorModeValue('gray.500', 'gray.100')}>
           &copy; Guys N Heat 2022. All rights reserved.
         </Text>
       </Stack>

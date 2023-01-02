@@ -159,6 +159,11 @@ const custom: Partial<ChakraTheme> = {
   },
   styles: {
     global: {
+      'html, body': {
+        fontFamily: 'body',
+        color: 'text',
+        bg: 'bg',
+      },
       'header a:any-link': {
         color: 'white',
       },
@@ -219,7 +224,7 @@ const custom: Partial<ChakraTheme> = {
       },
       '.gradient input': {
         _placeholder: {
-          color: 'gray.300',
+          color: 'gray.50',
         },
       },
     },

@@ -8,12 +8,6 @@ import {
   Collapse,
   Icon,
   Link,
-  LinkBox,
-  LinkOverlay,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  useColorModeValue,
   useDisclosure,
   useColorMode,
   chakra,
@@ -21,14 +15,7 @@ import {
   HStack,
   StackProps,
 } from '@chakra-ui/react'
-import {
-  HamburgerIcon,
-  CloseIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-  MoonIcon,
-  SunIcon,
-} from '@chakra-ui/icons'
+import { HamburgerIcon, CloseIcon, ChevronDownIcon, MoonIcon, SunIcon } from '@chakra-ui/icons'
 import { Logo } from '../ui'
 import { useState, useEffect } from 'react'
 import { PageItem } from 'lib/models'
@@ -109,90 +96,6 @@ function Header({ children, ...props }: Props) {
         <MobileNav navItems={navItems} {...constrained} />
       </Collapse>
     </Box>
-  )
-}
-
-const DesktopNav = ({ navItems, ...props }: StackProps & { navItems: NavItem[] }) => {
-  const linkColor = useColorModeValue('gray.200', 'white')
-  const linkHoverColor = useColorModeValue('white', 'white')
-  const popoverContentBgColor = useColorModeValue('white', 'gray.800')
-
-  return (
-    <HStack as="nav" direction={'row'} spacing={4} __css={props}>
-      {navItems?.map((navItem: NavItem) => (
-        <Box key={navItem.label}>
-          <Popover trigger={'hover'} placement={'bottom-start'}>
-            <PopoverTrigger>
-              <Link
-                p={2}
-                href={navItem.href ?? '#'}
-                fontSize={{
-                  md: 'xl',
-                }}
-                fontWeight={500}
-                color={linkColor}
-                _hover={{
-                  textDecoration: 'none',
-                  color: linkHoverColor,
-                }}
-              >
-                {navItem.label}
-              </Link>
-            </PopoverTrigger>
-
-            {navItem.children && (
-              <PopoverContent
-                border={0}
-                boxShadow={'xl'}
-                bg={popoverContentBgColor}
-                p={4}
-                rounded={'xl'}
-                minW={'sm'}
-              >
-                <Stack>
-                  {navItem.children.map((child) => (
-                    <DesktopSubNav key={child.label} {...child} />
-                  ))}
-                </Stack>
-              </PopoverContent>
-            )}
-          </Popover>
-        </Box>
-      ))}
-    </HStack>
-  )
-}
-
-const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
-  return (
-    <LinkBox
-      role={'group'}
-      display={'block'}
-      p={2}
-      rounded={'md'}
-      _hover={{ bg: useColorModeValue('pink.50', 'gray.900') }}
-    >
-      <LinkOverlay href={href} />
-      <Stack direction={'row'} align={'center'}>
-        <Box>
-          <Text transition={'all .3s ease'} _groupHover={{ color: 'pink.400' }} fontWeight={500}>
-            {label}
-          </Text>
-          <Text size={'sm'}>{subLabel}</Text>
-        </Box>
-        <Flex
-          transition={'all .3s ease'}
-          transform={'translateX(-10px)'}
-          opacity={0}
-          _groupHover={{ opacity: '100%', transform: 'translateX(0)' }}
-          justify={'flex-end'}
-          align={'center'}
-          flex={1}
-        >
-          <Icon color={'pink.400'} w={5} h={5} as={ChevronRightIcon} />
-        </Flex>
-      </Stack>
-    </LinkBox>
   )
 }
 

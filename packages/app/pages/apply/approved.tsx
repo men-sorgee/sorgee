@@ -1,8 +1,7 @@
 import { useMember } from 'hooks/use-member'
 import { useRouter } from 'next/router'
-import Link from 'next/link'
 import ApplicationSteps from './_steps'
-import { SparklesIcon } from '@heroicons/react/solid'
+import { Text, Heading, HStack, VStack } from '@chakra-ui/react'
 import Page from 'components/Page'
 import { LinkButton } from '../../components/ui'
 
@@ -20,23 +19,27 @@ function Approved() {
       title="Application Approved"
       loading={loading}
       requireAuth={true}
-      sectionClass="text-center"
       header={<ApplicationSteps status={'approved'} />}
     >
       <>
-        <h2>Congratulations! Your membership was approved.</h2>
+        <Heading as="h2">
+          Congratulations! <br />
+          Your membership was approved.
+        </Heading>
 
-        <p className="text-center">
-          You will now get periodic event invites as well as access to our member-only content.
-        </p>
-        <div className="mt-2 flex flex-row items-center justify-center space-x-4 pt-4">
-          <LinkButton href="/member/invite" className="btn-primary">
-            Invite a Friend
-          </LinkButton>
-          <LinkButton href="/member/account" className="btn-primary">
-            Manage Full Profile
-          </LinkButton>
-        </div>
+        <VStack alignItems="start" justifyItems="middle">
+          <Text>
+            You will now get periodic event invites as well as access to our member-only content.
+          </Text>
+          <HStack spacing={4} textAlign="center">
+            <LinkButton href="/member/invite" colorScheme="primary">
+              Invite a Friend
+            </LinkButton>
+            <LinkButton href="/member/account" colorScheme="primary">
+              Manage Full Profile
+            </LinkButton>
+          </HStack>
+        </VStack>
       </>
     </Page>
   )

@@ -1,11 +1,11 @@
 import { useMember } from 'hooks/use-member'
 import { FormProvider, useForm } from 'react-hook-form'
-import { MouseEventHandler, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { copyTextToClipboard, postJSON } from '@/lib/utils'
 import { MemberLevel, UserInvite } from 'lib/models'
 import { getFieldOptions } from '@/lib/services/directus/server'
 import { FormOptions, InviteLink } from 'lib/models'
-import { Button } from '@chakra-ui/react'
+import { HStack, Button, Text, VStack, Box, Link, useToast } from '@chakra-ui/react'
 import { FieldInput, FieldSelect } from 'components/forms'
 import Page from 'components/Page'
 import { GetServerSideProps } from 'next'
@@ -28,10 +28,10 @@ function Invite({ userTypeOptions }: PageProps) {
   const { loading, member } = useMember()
   return (
     <Page title="Invite Someone" loading={loading} sectionClass="" requireAuth={true}>
-      <p>
+      <Text mb={10}>
         {member?.first_name || 'Brother'}, enter your friend&apos;s email address and we will create
         a special link for you to share.
-      </p>
+      </Text>
       <Form userTypeOptions={userTypeOptions} />
     </Page>
   )
@@ -39,28 +39,15 @@ function Invite({ userTypeOptions }: PageProps) {
 
 function Form({ userTypeOptions }: PageProps) {
   const { loading, member } = useMember()
+  const toast = useToast()
   const [link, setLink] = useState<string>()
-  const [sent, setSent] = useState<boolean>(false)
-  const [copied, setCopied] = useState<boolean>(false)
   const methods = useForm<InviteLink & { t: MemberLevel }>({
     mode: 'onBlur',
   })
+
   const { handleSubmit, setError, reset, getFieldState, formState } = methods
 
-  useEffect(() => {
-    if (sent) {
-      setTimeout(() => {
-        setSent(false)
-        reset()
-      }, 5000)
-    }
-    if (copied) {
-      setTimeout(() => {
-        setCopied(false)
-        reset()
-      }, 5000)
-    }
-  }, [loading, member, sent, copied])
+  useEffect(() => {}, [loading, member])
 
   const getLink = ({ e, t }: UserInvite) => {
     if (!member) return
@@ -75,8 +62,18 @@ function Form({ userTypeOptions }: PageProps) {
     const invite = getLink(e.target.dataset)
     if (!invite) return
     copyTextToClipboard(invite)
-    setCopied(true)
-    setSent(false)
+    toast({
+      position: 'bottom-left',
+      render: () => (
+        <Box>
+          The invite &nbsp;
+          <Link title={link} target={'_blank'} href={link} className="link" rel="noreferrer">
+            link
+          </Link>
+          &nbsp; has been copied to your clipboard.
+        </Box>
+      ),
+    })
   }
 
   const onSubmit = async (data: InviteLink & { t: MemberLevel }) => {
@@ -95,8 +92,18 @@ function Form({ userTypeOptions }: PageProps) {
     })
 
     if (ok) {
-      setSent(true)
-      setCopied(false)
+      toast({
+        position: 'bottom-left',
+        render: () => (
+          <Box>
+            The invite{' '}
+            <Link title={link} target={'_blank'} href={link} className="link" rel="noreferrer">
+              link
+            </Link>
+            &nbsp; was sent.
+          </Box>
+        ),
+      })
     } else {
       const { error } = response
       setError('email', { message: error?.message })
@@ -107,8 +114,8 @@ function Form({ userTypeOptions }: PageProps) {
   return (
     <>
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="gradient max-w-md p-4">
-          <div className="grid grid-cols-1 gap-4 ">
+        <form onSubmit={handleSubmit(onSubmit)} className="gradient">
+          <VStack spacing={4}>
             <FieldInput
               field="email"
               type="email"
@@ -134,46 +141,17 @@ function Form({ userTypeOptions }: PageProps) {
                 }}
               />
             )}
-            <input type="hidden" name="link" value={link} />
-            <input type="hidden" name="id" value={member?.id} />
-            <Button color="accent" type="submit" disabled={!member}>
+          </VStack>
+          <input type="hidden" name="link" defaultValue={link} />
+          <input type="hidden" name="v" defaultValue={member?.id} />
+          <HStack spacing={4} mt={4}>
+            <Button colorScheme="accent" type="submit" disabled={!member}>
               Send Invite
             </Button>
             {email.isTouched && <Button onClick={onCopyClick}>Copy Link</Button>}
-          </div>
+          </HStack>
         </form>
       </FormProvider>
-
-      {copied && (
-        <div className="toast-center toast-middle toast">
-          <div className="alert-ghost alert whitespace-nowrap opacity-75">
-            <div>
-              <h4>
-                The invite &nbsp;
-                <a title={link} target={'_blank'} href={link} className="link" rel="noreferrer">
-                  link
-                </a>
-                &nbsp; has been copied to your clipboard.
-              </h4>
-            </div>
-          </div>
-        </div>
-      )}
-      {sent && (
-        <div className="toast-center toast-middle toast">
-          <div className="alert-ghost alert whitespace-nowrap opacity-75">
-            <div>
-              <h4>
-                The invite{' '}
-                <a title={link} target={'_blank'} href={link} className="link" rel="noreferrer">
-                  link
-                </a>
-                &nbsp; was sent.
-              </h4>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   )
 }

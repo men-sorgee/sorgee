@@ -1,7 +1,7 @@
 import { useMember } from 'hooks/use-member'
 import { useRouter } from 'next/router'
-import ApplicationSteps from './_steps'
 import Page from 'components/Page'
+import { Text, Heading, Link } from '@chakra-ui/react'
 
 function Denied() {
   const router = useRouter()
@@ -20,15 +20,17 @@ function Denied() {
       sectionClass="gradient p-4 text-center"
     >
       <>
-        <h2>Unfortunately, your application was denied.</h2>
-        <p>{member?.photo_denial_reason}</p>
-        <p>
+        <Heading as="h2" size="xl">
+          Unfortunately, your application was denied.
+        </Heading>
+        <Text fontSize="2xl">{member?.photo_denial_reason}</Text>
+        <Text fontSize="2xl">
           If this was a mistake or you'd like to appeal, please contact us at{' '}
-          <a className="link" href="mailto:support@guysnheat.com">
+          <Link className="link" href="mailto:support@guysnheat.com">
             support
-          </a>
+          </Link>
           .
-        </p>
+        </Text>
       </>
     </Page>
   )

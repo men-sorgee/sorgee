@@ -9,12 +9,12 @@ import {
   Avatar,
   Badge,
   Spinner,
+  Link,
 } from '@chakra-ui/react'
 import { ApplicationStatus, Member, MemberLevel } from 'lib/models'
 import { LinkButton } from 'components/ui'
 import { useNotifications } from 'hooks'
 import { getAssetUrl } from 'lib/utils'
-import NextLink from 'next/link'
 interface Props {}
 
 const UserAvatar = (_props: Props) => {
@@ -55,40 +55,39 @@ const UserAvatar = (_props: Props) => {
         <>
           <Menu placement="bottom-start">
             <MenuButton>
-              <Avatar
-                ringColor={'accent.500'}
-                size={'sm'}
-                cursor={'pointer'}
-                name={name}
-                src={photoSrc}
-                mt={-1}
-              />
+              <Avatar size={'sm'} cursor={'pointer'} name={name} src={photoSrc} />
             </MenuButton>
-            <MenuList>
+            <MenuList bg="black">
+              {isApplicant && (
+                <MenuItem bg="black" as={Link} href="/member/apply/resume">
+                  Application
+                </MenuItem>
+              )}
               {isMember && (
                 <>
-                  <MenuItem as={NextLink} href="/member/events">
+                  <MenuItem bg="black" as={Link} href="/member/events">
                     Events
                   </MenuItem>
-                  <MenuItem as={NextLink} href="/member/account">
+                  <MenuItem bg="black" as={Link} href="/member/account">
                     Account
                   </MenuItem>
                   {messages.length > 0 && (
-                    <MenuItem as={NextLink} href="/member/account">
+                    <MenuItem bg="black" as={Link} href="/member/account">
                       Notifications
                       <Badge borderRadius="full" color="accent">
                         {messages.length}
                       </Badge>
                     </MenuItem>
                   )}
-                  <MenuItem as={NextLink} href="/member/invite">
+                  <MenuItem bg="black" as={Link} href="/member/invite">
                     Invite
                   </MenuItem>
                 </>
               )}
               <MenuDivider />
               <MenuItem
-                as={NextLink}
+                bg="black"
+                as={Link}
                 href={`/api/auth/signout`}
                 onClick={() => {
                   signOut({ callbackUrl: '/' })

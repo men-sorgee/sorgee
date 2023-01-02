@@ -1,10 +1,10 @@
 import ApplicationSteps from './_steps'
 import { useMember } from 'hooks/use-member'
-import { NextRouter, Router, useRouter } from 'next/router'
+import { NextRouter, useRouter } from 'next/router'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { AgreementData } from 'lib/models'
-import { Button } from '@chakra-ui/react'
+import { Button, Text, VStack } from '@chakra-ui/react'
 import FieldCheckbox from 'components/forms/FieldCheckbox'
 import { postJSON } from '@/lib/utils'
 import Page from 'components/Page'
@@ -55,19 +55,19 @@ function Form({ router, setCompleted }: Props) {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} className="mx-auto max-w-3xl text-center">
-        <p className="text-center text-xl">
-          Please read and agree to our{' '}
-          <a href="/terms" target="_blank" className="link">
-            {' '}
-            terms and conditions
-          </a>
-          .
-        </p>
-        <div className="flex-cols-1 mx-auto mt-4 flex max-w-md flex-col text-center">
+      <form onSubmit={handleSubmit(onSubmit)} style={{ maxWidth: 'xl', margin: '0 auto' }}>
+        <VStack alignItems="center" justifyItems="middle">
+          <Text fontSize="xl" maxWidth="50%">
+            Please read and agree to our{' '}
+            <a href="/terms" target="_blank" className="link">
+              {' '}
+              terms and conditions
+            </a>
+          </Text>
           <FieldCheckbox
             field="agree"
             label="I agree to the terms and conditions"
+            maxWidth="fit-content"
             registerOptions={{
               required: {
                 value: true,
@@ -76,12 +76,10 @@ function Form({ router, setCompleted }: Props) {
             }}
           />
 
-          <div className="mt-2 flex space-x-4 pt-4 text-center">
-            <Button color="primary" type="submit">
-              Agree & Continue
-            </Button>
-          </div>
-        </div>
+          <Button colorScheme="primary" type="submit">
+            Agree & Continue
+          </Button>
+        </VStack>
       </form>
     </FormProvider>
   )
