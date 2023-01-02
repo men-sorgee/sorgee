@@ -36,19 +36,7 @@ export type InviteLink = {
   link: string
 }
 
-export type NotificationStatus = 'new' | 'read' | 'deleted'
-
-export type StatusType = 'new' | 'active' | 'inactive' | 'stale' | 'deleted' | 'banned'
-
-export type UserType =
-  | 'reject'
-  | 'subscriber'
-  | 'user'
-  | 'pledge'
-  | 'member'
-  | 'brother'
-  | 'big_brother'
-  | 'staff'
+export type NotificationStatus = 'new' | 'sent' | 'read' | 'deleted'
 
 export enum MemberLevel {
   reject = 0,
@@ -81,6 +69,18 @@ export type AppNotification = Notification & {
   status: NotificationStatus
 }
 
+export type UserStatusType = 'new' | 'active' | 'inactive' | 'stale' | 'deleted' | 'banned'
+
+export type UserType =
+  | 'reject'
+  | 'subscriber'
+  | 'user'
+  | 'pledge'
+  | 'member'
+  | 'brother'
+  | 'big_brother'
+  | 'staff'
+
 export type Profile = {
   id: string
   picture: string
@@ -93,7 +93,7 @@ export type Profile = {
   in_sendgrid: boolean
   user_type: UserType
   application_status: string
-  status: StatusType
+  status: UserStatusType
   accounts: UserAccount[]
 }
 export const profileFields: Array<keyof User> = [
@@ -110,10 +110,14 @@ export const profileFields: Array<keyof User> = [
   'status',
 ]
 
+export type ContactPreferenceType = 'email' | 'phone_text' | 'phone_call'
+
 export type Applicant = Profile & {
   invite?: string
-  vouched_by: string
   phone: string
+  phone_verified: boolean
+  contact_preference: ContactPreferenceType
+  vouched_by: string
   biography: string
   needs_guidance: boolean
   spectrum: string
@@ -133,6 +137,8 @@ export const applicantFields: Array<keyof User> = [
   ...profileFields,
   'vouched_by',
   'phone',
+  'phone_verified',
+  'contact_preference',
   'biography',
   'needs_guidance',
   'spectrum',

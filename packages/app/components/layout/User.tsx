@@ -1,5 +1,6 @@
 import { signIn, useSession, signOut } from 'next-auth/react'
 import { useEffect, useState } from 'react'
+
 import {
   Menu,
   MenuButton,
@@ -10,7 +11,9 @@ import {
   Badge,
   LinkOverlay,
 } from '@chakra-ui/react'
-import { Member, MemberLevel } from 'lib/models'
+
+import { ApplicationStatus, Member, MemberLevel } from 'lib/models'
+
 import { LinkButton } from 'components/ui'
 import { useNotifications } from 'hooks'
 import { getAssetUrl } from 'lib/utils'
@@ -39,6 +42,8 @@ const UserAvatar = (_props: Props) => {
     }
   }, [name, photoSrc, session?.user, level])
 
+  const isMember = member && level >= 3 && application_status == 'approved'
+  const isApplicant = ApplicationStatus[application_status] < ApplicationStatus['approved']
   return (
     <>
       {member ? (

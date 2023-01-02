@@ -27,10 +27,13 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     if (status < 2)
       await sendNotificationEmail(
         member.email,
+        member.nickname || member.first_name + ' ' + member.last_name,
         `Application Status`,
         'Your photo ID was submitted. It may take a few days to review.',
-        'Check Application Results',
-        'https://guysnheat.com/apply/resume'
+        {
+          button_text: 'Check Application Results',
+          button_url: 'https://guysnheat.com/apply/resume',
+        }
       )
 
     await updateUser(member.id, {

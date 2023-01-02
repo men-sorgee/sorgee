@@ -82,3 +82,11 @@
 .gradient h2 {
   @apply text-white;
 }
+
+a,
+a:active,
+a:any-link,
+a:link,
+a:visited {
+  @apply !no-underline;
+}

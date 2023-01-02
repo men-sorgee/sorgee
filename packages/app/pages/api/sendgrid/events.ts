@@ -26,7 +26,7 @@ export default async function HandleEvents(req: NextApiRequest, res: NextApiResp
 
     const events: SendGridEvent[] = req.body
     await Promise.all(
-      events.map(async (sgEvent) => {
+      events.map((sgEvent) => {
         const {
           sg_event_id,
           sg_message_id,
@@ -41,7 +41,7 @@ export default async function HandleEvents(req: NextApiRequest, res: NextApiResp
           type,
           timestamp,
         } = sgEvent
-        await storeEmailEvent({
+        const model: UserEmailEvent = {
           sg_event_id,
           sg_message_id,
           email,
@@ -55,11 +55,12 @@ export default async function HandleEvents(req: NextApiRequest, res: NextApiResp
           type,
           timestamp,
           payload: sgEvent,
-        })
+        }
+        return storeEmailEvent(model)
       })
     )
 
-    res.status(200).end()
+    res.status(200).send(ApiResponse({ success: true }))
   } catch (e: any) {
     console.error(e)
     res.status(500).json(ApiResponse(null, e.message || e))

@@ -91,7 +91,7 @@ function Form({ userTypeOptions }: PageProps) {
     setLink(inviteLink)
     const [ok, response] = await postJSON('/api/member/invite', {
       ...data,
-      inviteLink,
+      link: inviteLink,
     })
 
     if (ok) {

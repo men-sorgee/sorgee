@@ -15,19 +15,18 @@ export default async function inviteRSVP(
       case 'GET': {
         const { event_id, user_id, rsvp } = req.query
         await updateEventUserRSVP(event_id as string, user_id as string, rsvp as any, null)
-        return res.redirect(baseUrl + '/member/events')
+        break
       }
       case 'POST': {
         const { event_id, user_id, rsvp, reason } = req.body
         await updateEventUserRSVP(event_id, user_id, rsvp, reason)
         break
       }
-      default:
-        return
     }
 
-    res.status(200).end()
+    return res.redirect(baseUrl + '/member/events')
   } catch (e) {
-    res.status(403).json(ApiResponse(null, e.message || e))
+    console.error(e)
+    return res.redirect(baseUrl + '/member/events')
   }
 }

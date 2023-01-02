@@ -1,7 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse, InviteLink } from '@/lib/models'
 import { withMember, withMethods } from 'lib/utils/server'
-import { sendNotificationEmail } from '@/lib/services/sendgrid/server'
+import { sendNotificationEmail } from 'lib/services/sendgrid/server'
+import { createUser } from '../../../lib/services/directus/server'
 
 async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
@@ -11,14 +12,25 @@ async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     if (!member) return res.status(401).end()
 
     const { email, link } = req.body as InviteLink
-
     await sendNotificationEmail(
       email,
+      `${member.first_name}'s Friend`,
       `${member.first_name} ${member.last_name} has invited you to join our community!`,
       `Begin your application, by clicking the button below.`,
-      `Accept Invitation`,
-      link
+      {
+        button_text: `Accept Invitation`,
+        button_url: link,
+      }
     )
+    await createUser({
+      email,
+      user_type: 'subscriber',
+      status: 'new',
+      vouched_by: member.id,
+      notes: `Invited by ${member.first_name} ${member.last_name}`,
+      application_status: 'apply',
+      in_sendgrid: true,
+    })
 
     res.status(200).end()
   } catch (e: any) {

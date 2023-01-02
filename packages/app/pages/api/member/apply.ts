@@ -25,10 +25,13 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
 
       await sendNotificationEmail(
         userDetails.email,
+        userDetails.nickname || userDetails.first_name + ' ' + userDetails.last_name,
         `Application Status`,
         'Thank you for applying for membership!',
-        'Complete Application',
-        'https://guysnheat.com/apply/resume'
+        {
+          button_text: 'Complete Application',
+          button_url: 'https://guysnheat.com/apply/resume',
+        }
       )
       userDetails.in_sendgrid = true
 

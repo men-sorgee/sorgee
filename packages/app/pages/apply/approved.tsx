@@ -4,6 +4,7 @@ import Link from 'next/link'
 import ApplicationSteps from './_steps'
 import { SparklesIcon } from '@heroicons/react/solid'
 import Page from 'components/Page'
+import { LinkButton } from '../../components/ui'
 
 function Approved() {
   const router = useRouter()
@@ -29,12 +30,12 @@ function Approved() {
           You will now get periodic event invites as well as access to our member-only content.
         </p>
         <div className="mt-2 flex flex-row items-center justify-center space-x-4 pt-4">
-          <Link href="/member/invite">
-            <a className="btn-primary btn">Invite a Friend</a>
-          </Link>
-          <Link href="/member/account">
-            <a className="btn-primary btn">Manage Full Profile</a>
-          </Link>
+          <LinkButton href="/member/invite" className="btn-primary">
+            Invite a Friend
+          </LinkButton>
+          <LinkButton href="/member/account" className="btn-primary">
+            Manage Full Profile
+          </LinkButton>
         </div>
       </>
     </Page>
