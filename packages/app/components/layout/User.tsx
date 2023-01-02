@@ -24,8 +24,7 @@ const UserAvatar = (_props: Props) => {
   const [photoSrc, setPhotoSrc] = useState<string | null>(null)
   const [name, setName] = useState<string | null>(null)
   const [level, setLevel] = useState<number>(-1)
-  const { notifications } = useNotifications(status == 'authenticated')
-  const messages = notifications?.filter((n) => n.type == 'message') || []
+  const { notifications } = useNotifications(true)
   const {
     user: { application_status },
   } = session || { user: {} }
@@ -59,7 +58,7 @@ const UserAvatar = (_props: Props) => {
             </MenuButton>
             <MenuList bg="black">
               {isApplicant && (
-                <MenuItem bg="black" as={Link} href="/member/apply/resume">
+                <MenuItem bg="black" as={Link} href="/apply/resume">
                   Application
                 </MenuItem>
               )}
@@ -71,11 +70,11 @@ const UserAvatar = (_props: Props) => {
                   <MenuItem bg="black" as={Link} href="/member/account">
                     Account
                   </MenuItem>
-                  {messages.length > 0 && (
+                  {notifications?.length > 0 && (
                     <MenuItem bg="black" as={Link} href="/member/account">
-                      Notifications
-                      <Badge borderRadius="full" color="accent">
-                        {messages.length}
+                      Notifications{' '}
+                      <Badge borderRadius="full" bg="accent.500">
+                        {notifications?.length}
                       </Badge>
                     </MenuItem>
                   )}

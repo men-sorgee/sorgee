@@ -23,11 +23,7 @@ const FieldWrapper = (props: Props) => {
   const { field, label, help, className, children, ...opts } = props
   const { getFieldState } = useFormContext()
   const { error } = getFieldState(field)
-  const InfoTip = () => (
-    <Tooltip hasArrow label={help} aria-label="A tooltip">
-      <InfoIcon title={help} cursor={'help'} />
-    </Tooltip>
-  )
+
   return (
     <FormControl isInvalid={!!error} className={className} {...opts} py={2}>
       <HStack spacing={0}>
@@ -36,7 +32,11 @@ const FieldWrapper = (props: Props) => {
             {label}
           </FormLabel>
         )}
-        {help && <InfoTip />}
+        {help && (
+          <Tooltip hasArrow label={help} aria-label="A tooltip">
+            <InfoIcon title={help} cursor={'help'} />
+          </Tooltip>
+        )}
       </HStack>
       {children}
 
