@@ -1,7 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse } from '@/lib/models'
 import { withMethods } from 'lib/utils/server'
-import { sendNotificationEmail } from 'lib/services/sendgrid/server'
+import {
+  SendGridCategory,
+  SendGridTemplate,
+  sendNotificationEmail,
+} from 'lib/services/sendgrid/server'
 import { markNotificationSent } from '../../../lib/services/directus/server'
 
 async function SendNotification(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
@@ -15,16 +19,17 @@ async function SendNotification(req: NextApiRequest, res: NextApiResponse<ApiRes
       email,
       name,
       subject,
-      message: body,
+      message,
+      body,
       data,
-      template,
-      category,
-      notification_id,
+      template = SendGridTemplate.AppNotification,
+      category = SendGridCategory.Notification,
+      notification_id = null,
     } = req.body
 
-    await sendNotificationEmail(email, name, subject, body, data, template, category)
+    await sendNotificationEmail(email, name, subject, message || body, data, template, category)
 
-    await markNotificationSent(notification_id)
+    if (notification_id) await markNotificationSent(notification_id)
 
     res.status(200).send(ApiResponse({ success: true }))
   } catch (e: any) {
