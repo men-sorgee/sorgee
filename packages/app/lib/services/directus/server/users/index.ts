@@ -95,6 +95,25 @@ export async function storeEmailEvent(event: UserEmailEvent) {
   return await adminClient.items('user_email_events').createOne(event)
 }
 
+export async function listUsersByLevel<T = Member>(
+  type: string,
+  fields = memberFields
+): Promise<T[]> {
+  const adminClient = await getAdminClient()
+  const users = await adminClient.items('users').readByQuery({
+    filter: {
+      user_type: {
+        _eq: type,
+      },
+      status: {
+        _eq: 'active',
+      },
+    },
+    fields: [...fields],
+  })
+  return users.data as T[]
+}
+
 export * from './auth'
 export * from './events'
 export * from './notifications'
