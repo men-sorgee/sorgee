@@ -17,10 +17,13 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     if (applicant && appStatus == ApplicationStatus['agreement'] && agree) {
       sendNotificationEmail(
         applicant.email,
+        applicant.nickname || applicant.first_name + ' ' + applicant.last_name,
         `Application Status`,
         `Your free membership is now active!`,
-        'Manage Profile',
-        'https://guysnheat.com/member/account'
+        {
+          button_text: 'Manage Profile',
+          button_url: 'https://guysnheat.com/member/account',
+        }
       )
 
       await updateUser(applicant.id, {

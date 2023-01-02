@@ -14,10 +14,13 @@ async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     const { email, link } = req.body as InviteLink
     await sendNotificationEmail(
       email,
+      `${member.first_name}'s Friend`,
       `${member.first_name} ${member.last_name} has invited you to join our community!`,
       `Begin your application, by clicking the button below.`,
-      `Accept Invitation`,
-      link
+      {
+        button_text: `Accept Invitation`,
+        button_url: link,
+      }
     )
     await createUser({
       email,

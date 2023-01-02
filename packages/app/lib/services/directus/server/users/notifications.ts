@@ -27,7 +27,7 @@ export async function getNotifications(user_id: string): Promise<AppNotification
 
 export async function markNotificationSent(id: string) {
   const admin = await getAdminClient()
-  admin.items('notifications').updateOne(id, { status: 'sent' })
+  admin.items('notifications_users').updateOne(id, { status: 'sent' })
 }
 
 export async function deleteNotification(id: number) {

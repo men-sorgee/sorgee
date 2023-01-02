@@ -13,6 +13,11 @@ function getMailer() {
   return mail
 }
 
+export enum SendGridCategory {
+  Notification = 'notification',
+  Invitation = 'invitation',
+}
+
 export enum SendGridList {
   Subscribers = 'fdfecde5-2787-499a-a879-955959fc9720',
   Members = '44971668-1ee8-4f9e-834a-abd5c65a4dfc',
@@ -20,6 +25,7 @@ export enum SendGridList {
 
 export enum SendGridTemplate {
   AppNotification = 'd-7fe0a94b7c0b40b2a68b5d998ee6f7af',
+  EventInvitation = 'd-2ddc88724bf2494dab869838dc87cb50',
 }
 
 export async function updateSendGrid(
@@ -55,54 +61,46 @@ export async function updateSendGrid(
     return data
   } catch (error) {
     console.error(error)
-    if (error.response) {
-      console.error(error.response.body)
-    }
   }
 }
 
 export async function sendNotificationEmail(
-  to: string,
+  to_email: string,
+  to_name: string,
   subject: string,
-  message: string,
-  button_text: string,
-  button_url: string,
-  templateId: string = SendGridTemplate.AppNotification
+  body: string,
+  data: Record<string, any>,
+  templateId: SendGridTemplate = SendGridTemplate.AppNotification,
+  category: SendGridCategory = SendGridCategory.Notification
 ) {
-  if (message.includes('\n')) message = convertMarkdownToHtml(message)
+  if (body.includes('\n')) body = convertMarkdownToHtml(body)
 
   const email: MailDataRequired = {
     personalizations: [
       {
-        to: [{ email: to }],
+        to: [{ email: to_email, name: to_name }],
         dynamicTemplateData: {
           subject,
-          message,
-          button_text,
-          button_url,
+          name: to_name,
+          body,
+          message: body,
+          ...data,
         },
       },
     ],
     from: 'GuysNHeat <system@guysnheat.com>',
     subject,
     templateId,
-    category: 'notification',
+    category,
   }
   try {
     const [response, data] = await getMailer().send(email, false)
     if (response.statusCode > 202) {
-      throw new Error('Sendgrid Error:' + JSON.stringify(data))
+      throw new Error(`Sendgrid Email ${category} Error: ${data || response.body}`)
     }
-    console.log('Email sent:' + to)
+    console.log(`SendGrid Email ${category} Sent: ${to_email}`)
     return data
   } catch (error) {
-    console.log({
-      button_text,
-      button_url,
-    })
     console.error(error)
-    if (error.response) {
-      console.error(error)
-    }
   }
 }

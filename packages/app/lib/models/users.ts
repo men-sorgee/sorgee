@@ -36,7 +36,7 @@ export type InviteLink = {
   link: string
 }
 
-export type NotificationStatus = 'new' | 'read' | 'deleted'
+export type NotificationStatus = 'new' | 'sent' | 'read' | 'deleted'
 
 export enum MemberLevel {
   reject = 0,

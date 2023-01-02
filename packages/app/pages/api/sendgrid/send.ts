@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse } from '@/lib/models'
 import { withMethods } from 'lib/utils/server'
 import { sendNotificationEmail } from 'lib/services/sendgrid/server'
-import { markNotificationSent } from 'lib/services/directus/server'
+import { markNotificationSent } from '../../../lib/services/directus/server'
 
 async function SendNotification(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
@@ -11,13 +11,20 @@ async function SendNotification(req: NextApiRequest, res: NextApiResponse<ApiRes
     if (req.headers.authorization !== process.env.ADMIN_TOKEN)
       return res.status(401).json(ApiResponse(null, 'Unauthorized'))
 
-    const { email, subject, message, button_text, button_link, template, id } = req.body
+    const {
+      email,
+      name,
+      subject,
+      message: body,
+      data,
+      template,
+      category,
+      notification_id,
+    } = req.body
 
-    await sendNotificationEmail(email, subject, message, button_text, button_link, template)
+    await sendNotificationEmail(email, name, subject, body, data, template, category)
 
-    if (id) {
-      await markNotificationSent(id)
-    }
+    await markNotificationSent(notification_id)
 
     res.status(200).send(ApiResponse({ success: true }))
   } catch (e: any) {

@@ -115,12 +115,12 @@ export const authOptions: AuthOptions = {
   events: {
     async createUser({ user }) {
       console.log('event:createUser')
-      console.dir(user)
+      //console.dir(user)
       await updateSendGrid(user as Profile)
     },
     async signIn({ user, account, profile }) {
       console.log('event:signIn')
-      console.dir({ user, account, profile })
+      //console.dir({ user, account, profile })
       /* on successful sign in */
       await recordUserLogin(user.id)
     },
@@ -163,11 +163,13 @@ export const authOptions: AuthOptions = {
       async sendVerificationRequest({ identifier: email, url }) {
         await sendNotificationEmail(
           email,
+          'User',
           'Sign in to GuysNHeat',
           'Click the button below to sign in to GuysNHeat',
-          'Sign In',
-          url,
-          SendGridTemplate.AppNotification
+          {
+            button_link: 'Sign In',
+            button_url: url,
+          }
         )
       },
     }),
