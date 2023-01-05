@@ -1,11 +1,11 @@
 import { useMember } from 'hooks/use-member'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
-import { copyTextToClipboard, postJSON } from '@/lib/utils'
+import { copyTextToClipboard, postJSON } from 'lib/utils'
 import { MemberLevel, UserInvite } from 'lib/models'
-import { getFieldOptions } from '@/lib/services/directus/server'
+import { getFieldOptions } from 'lib/services/directus/server'
 import { FormOptions, InviteLink } from 'lib/models'
-import { HStack, Button, Text, VStack, Box, Link, useToast } from '@chakra-ui/react'
+import { HStack, Button, Box, Text, VStack, useColorModeValue, useToast } from '@chakra-ui/react'
 import { FieldInput, FieldSelect } from 'components/forms'
 import Page from 'components/Page'
 import { GetServerSideProps } from 'next'
@@ -63,16 +63,11 @@ function Form({ userTypeOptions }: PageProps) {
     if (!invite) return
     copyTextToClipboard(invite)
     toast({
-      position: 'bottom-left',
-      render: () => (
-        <Box>
-          The invite &nbsp;
-          <Link title={link} target={'_blank'} href={link} className="link" rel="noreferrer">
-            link
-          </Link>
-          &nbsp; has been copied to your clipboard.
-        </Box>
-      ),
+      title: 'Copied!',
+      description: 'The invite link was copied to your clipboard.',
+      status: 'success',
+      duration: 9000,
+      isClosable: true,
     })
   }
 
@@ -93,16 +88,11 @@ function Form({ userTypeOptions }: PageProps) {
 
     if (ok) {
       toast({
-        position: 'bottom-left',
-        render: () => (
-          <Box>
-            The invite{' '}
-            <Link title={link} target={'_blank'} href={link} className="link" rel="noreferrer">
-              link
-            </Link>
-            &nbsp; was sent.
-          </Box>
-        ),
+        title: 'Copied!',
+        description: 'The invite link was sent to ' + data.email,
+        status: 'success',
+        duration: 9000,
+        isClosable: true,
       })
     } else {
       const { error } = response
@@ -113,45 +103,53 @@ function Form({ userTypeOptions }: PageProps) {
 
   return (
     <>
-      <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="gradient">
-          <VStack spacing={4}>
-            <FieldInput
-              field="email"
-              type="email"
-              autoComplete="email"
-              registerOptions={{
-                required: {
-                  value: true,
-                  message: 'Please enter an email address',
-                },
-              }}
-              placeholder="Email address"
-            />
-
-            {member?.user_type == 'staff' && (
-              <FieldSelect
-                field="t"
-                formOptions={userTypeOptions}
+      <Box
+        maxW={'xl'}
+        boxShadow={'2xl'}
+        rounded={'xl'}
+        p={3}
+        bgGradient={useColorModeValue(
+          'linear(to-r, primary.200, primary.400)',
+          'linear(to-r, primary.500, primary.700)'
+        )}
+        color="white"
+      >
+        <FormProvider {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <VStack spacing={4}>
+              <FieldInput
+                field="email"
+                type="email"
+                rounded="md"
+                autoComplete="email"
                 registerOptions={{
                   required: {
                     value: true,
                     message: 'Please enter an email address',
                   },
                 }}
+                placeholder="Email address"
               />
-            )}
-          </VStack>
-          <input type="hidden" name="link" defaultValue={link} />
-          <input type="hidden" name="v" defaultValue={member?.id} />
-          <HStack spacing={4} mt={4}>
-            <Button colorScheme="accent" type="submit" disabled={!member}>
-              Send Invite
-            </Button>
-            {email.isTouched && <Button onClick={onCopyClick}>Copy Link</Button>}
-          </HStack>
-        </form>
-      </FormProvider>
+
+              {member?.user_type == 'staff' && (
+                <FieldSelect bg="primary.50" field="t" formOptions={userTypeOptions} />
+              )}
+            </VStack>
+            <input type="hidden" name="link" defaultValue={link} />
+            <input type="hidden" name="v" defaultValue={member?.id} />
+            <HStack spacing={4} mt={4}>
+              <Button colorScheme="accent" type="submit" disabled={!member}>
+                Send Invite
+              </Button>
+              {email.isTouched && (
+                <Button colorScheme="primary" onClick={onCopyClick}>
+                  Copy Link
+                </Button>
+              )}
+            </HStack>
+          </form>
+        </FormProvider>
+      </Box>
     </>
   )
 }

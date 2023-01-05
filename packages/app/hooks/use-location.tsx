@@ -15,7 +15,7 @@ type Context = {
   users: UserLocation[]
   currentUser: UserLocation
 }
-const LocationContext = createContext<Context>(undefined)
+export const LocationContext = createContext<Context>(undefined)
 export function LocationProvider({ children }) {
   const watchLocation = useRef<number>()
   const [connected, setConnected] = useState(false)

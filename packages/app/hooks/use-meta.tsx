@@ -43,13 +43,7 @@ export function MetaProvider(props: any) {
   return <MetaContext.Provider value={meta}>{props.children}</MetaContext.Provider>
 }
 
-export const useMeta = () => {
-  const context = useContext(MetaContext)
-  if (context === undefined) {
-    throw new Error(`useMetaContext must be used within a MetaContextProvider.`)
-  }
-  return context
-}
+export const useMeta = () => useContext(MetaContext)
 
 export const setMeta = (title: string, description?: string, image?: string) => {
   const { title: t, setTitle, description: d, setDescription, image: i, setImage } = useMeta()

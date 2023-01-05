@@ -101,7 +101,7 @@ const authAdapter: Adapter = {
       console.debug('updateUser', user)
       const updatedUser = await updateUser(user.id, {
         email: user.email,
-        email_verified: true,
+        email_verified: user.emailVerified != null,
         status: 'active',
       })
       return mapUser(updatedUser)

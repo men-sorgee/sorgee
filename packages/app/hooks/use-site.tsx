@@ -12,14 +12,20 @@ type SiteResults = {
 }
 
 export const useSite = (): SiteResults => {
-  const key = `/api/site`
   const {
     data: site,
     mutate,
     error,
     isLoading,
-  } = useSWR<Site, Error>(key, JsonFetcher, {
-    refreshInterval: 1000 * 60 * 60 * 24, // 24 hours
+  } = useSWR<Site, Error>(`/api/site`, JsonFetcher, {
+    refreshInterval: 1000 * 60 * 60 * 24, // 24 hours]
+    refreshWhenHidden: false,
+    refreshWhenOffline: false,
+    fallbackData: {
+      site_title: 'Loading...',
+      description: 'Loading...',
+      invite_only: true,
+    },
   })
 
   return {

@@ -1,6 +1,6 @@
 'use client'
 import useSWR, { KeyedMutator } from 'swr'
-import { Member } from 'lib/models'
+import { Member, MemberLevel } from 'lib/models'
 import { JsonFetcher } from '@/lib/services/fetchers'
 
 type MemberResults = {
@@ -9,12 +9,13 @@ type MemberResults = {
   mutate: KeyedMutator<Member>
   loading: boolean
   reload: () => void
+  level: MemberLevel
 }
 
 export const useMember = (): MemberResults => {
   const key = `/api/member/me`
   const { data: member, mutate, error, isLoading } = useSWR<Member, Error>(key, JsonFetcher)
-
+  const level = MemberLevel[(member?.user_type as string) || 'subscriber']
   return {
     member,
     error,
@@ -23,5 +24,6 @@ export const useMember = (): MemberResults => {
     reload: () => {
       mutate()
     },
+    level,
   }
 }

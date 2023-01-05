@@ -1,4 +1,4 @@
-import { setMeta } from 'hooks'
+import { setMeta } from 'hooks/use-meta'
 import Loading from 'components/ui/Loading'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'

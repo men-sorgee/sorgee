@@ -19,7 +19,8 @@
 			// Add the IDs of extensions you want installed when the container is created.
 			"extensions": [
 				"dbaeumer.vscode-eslint",
-				"lacroixdavid1.vscode-format-context-menu"
+				"lacroixdavid1.vscode-format-context-menu",
+				"Gruntfuggly.todo-tree"
 			]
 		}
 	},

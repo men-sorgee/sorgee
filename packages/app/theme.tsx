@@ -1,22 +1,7 @@
 import { ChakraTheme, extendTheme } from '@chakra-ui/react'
 import { default as defaultTheme } from '@chakra-ui/theme'
 import { StepsStyleConfig as Steps } from 'chakra-ui-steps'
-import { Manrope, Roboto_Slab, Roboto_Mono } from '@next/font/google'
-
-const heading = Roboto_Slab({
-  variable: '--font-roboto-slab',
-  fallback: ['Georgia', 'Times New Roman', 'serif'],
-})
-
-const body = Manrope({
-  variable: '--font-manrope',
-  fallback: ['Helvetica', 'Arial', 'sans-serif'],
-})
-
-const mono = Roboto_Mono({
-  variable: '--font-roboto-mono',
-  fallback: ['Consolas', 'Menlo', 'monospace'],
-})
+import { Manrope, Arvo, Roboto_Mono } from '@next/font/google'
 
 export const brand = {
   colors: {
@@ -75,26 +60,34 @@ export const brand = {
   },
   logo: 'https://static.guysnheat.com/static/logo.png',
 }
-const { colors } = defaultTheme
 const custom: Partial<ChakraTheme> = {
   config: {
-    initialColorMode: 'dark',
+    initialColorMode: 'system',
     useSystemColorMode: true,
   },
   components: {
     Steps,
     Input: {
+      baseStyle: {
+        field: {
+          padding: '0 .5rem',
+          _placeholder: {
+            color: 'gray.50',
+          },
+        },
+      },
       variants: {
         outlined: {
           field: {
             border: '2px solid',
             borderColor: 'gray.500',
-            bg: 'transparent',
+
+            //bg: 'transparent',
             // Let's also provide dark mode alternatives
             _dark: {
               borderColor: 'white',
               color: 'white',
-              bg: 'transparent',
+              //bg: 'transparent',
             },
           },
           addon: {
@@ -110,11 +103,6 @@ const custom: Partial<ChakraTheme> = {
       },
     },
   },
-  fonts: {
-    body: body.style.fontFamily,
-    heading: body.style.fontFamily,
-    mono: mono.style.fontFamily,
-  },
   colors: {
     ...brand.colors,
   },
@@ -122,6 +110,9 @@ const custom: Partial<ChakraTheme> = {
     heading: {
       marginTop: 4,
       marginBottom: 2,
+      fontWeight: '900',
+      leading: '1.2',
+      fontSpacing: '0.05em',
     },
     body: {
       marginTop: 4,
@@ -132,24 +123,24 @@ const custom: Partial<ChakraTheme> = {
   semanticTokens: {
     colors: {
       text: {
-        default: 'gray.900',
+        default: 'gray.700',
         _dark: 'white',
       },
       bg: {
         default: 'gray.50',
-        _dark: 'gray.900',
+        _dark: 'gray.500',
       },
       error: {
-        default: 'red.300',
-        _dark: 'red.500',
+        default: 'red.500',
+        _dark: 'red.300',
       },
       success: {
         default: 'green.200',
         _dark: 'green.300',
       },
       primary: {
-        default: 'primary.500',
-        _dark: 'primary.500',
+        default: 'primary.600',
+        _dark: 'primary.300',
       },
       secondary: {
         default: 'secondary.500',
@@ -187,12 +178,18 @@ const custom: Partial<ChakraTheme> = {
         fontSize: 'xl',
         fontWeight: 'bold',
         color: 'primary.500',
+        _dark: {
+          color: 'primary.300',
+        },
         my: 3,
       },
       h3: {
         fontSize: 'xl',
         fontWeight: 'semibold',
         color: 'secondary.500',
+        _dark: {
+          color: 'secondary.200',
+        },
       },
       h4: {
         fontSize: 'lg',

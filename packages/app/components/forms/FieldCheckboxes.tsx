@@ -23,7 +23,7 @@ const CheckboxesField = (props: Props) => {
     <FieldWrapper field={field} label={label} className={className}>
       {help && <Text>{help}</Text>}
       <CheckboxGroup>
-        <SimpleGrid gap={4} py={4} columns={{ base: 1, sm: 2, md: 3, lg: 4 }}>
+        <SimpleGrid gap={4} columns={{ base: 1, sm: 2, md: 3, lg: 4 }}>
           {formOptions?.map(({ text, value }, index) => (
             <Checkbox
               {...opts}

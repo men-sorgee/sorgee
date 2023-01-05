@@ -49,14 +49,16 @@ export type Location = {
 
 export type Notification = {
   id: string
-  status: string
+  status: 'ready' | 'draft'
   date_created?: string
   link?: string
   subject?: string
   send_email?: boolean
+  app_notification?: boolean
   button_link?: string
   button_text?: string
   message?: string
+  body?: string
   date_sent?: string
   template?: string
   users: string | UserNotification[]
@@ -104,7 +106,7 @@ export type PageContent = {
 }
 
 export type Site = {
-  id: number
+  id?: number
   site_title?: string
   invite_only?: boolean
   description?: string

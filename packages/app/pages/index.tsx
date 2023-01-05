@@ -1,9 +1,9 @@
 import { setMeta } from 'hooks'
-import { getPageContentById } from '@/lib/services/directus/static'
+import { getPageContentById } from 'lib/services/directus/static'
 import { Markdown, Subscribe } from 'components/ui'
 import Section from 'components/Section'
 import { Page } from 'lib/models'
-import { getAssetUrl } from '@/lib/utils'
+import { Stack, Box } from '@chakra-ui/react'
 
 interface Props {
   page: Page
@@ -14,19 +14,23 @@ export default function HomePage({ page }: Props) {
   setMeta(title, description, image?.id)
 
   return (
-    <article>
-      <section>
-        <Markdown content={markdown} />
-      </section>
-      <section>
-        <Subscribe />
-      </section>
-      <>
-        {content?.map((s, i) => (
-          <Section key={i} content={s} />
-        ))}
-      </>
-    </article>
+    <>
+      <article>
+        <Stack direction={{ base: 'column', lg: 'row' }} spacing={4} justify="space-between">
+          <Box as="section" w="auto" maxW={{ base: 'full', sm: '2xl' }}>
+            <Markdown content={markdown} />
+          </Box>
+          <Box as="section" pt={{ base: 0, lg: 20 }}>
+            <Subscribe />
+          </Box>
+        </Stack>
+        <>
+          {content?.map((s, i) => (
+            <Section key={i} content={s} />
+          ))}
+        </>
+      </article>
+    </>
   )
 }
 

@@ -34,8 +34,8 @@ export async function getServerSideProps(context) {
 
 function EventPage({ invites }: { invites: Invite[] }) {
   const [allowed, setAllowed] = useState(false)
-  const { member, loading } = useMember()
-  const level = MemberLevel[(member?.user_type as string) || 'subscriber']
+  const { member, loading, level } = useMember()
+
   useEffect(() => {
     if (!loading && member && !allowed) {
       setAllowed(level > 2)
@@ -98,7 +98,7 @@ function EventInfo({ invite }: { invite: Invite }) {
       user_id: invite.users_id as string,
       event_id: invite.events_id as string,
       reason: invite.reason,
-      rsvp: rsvp,
+      rsvp,
     },
   })
   const { setError } = methods

@@ -6,7 +6,7 @@ import {
   SendGridTemplate,
   sendNotificationEmail,
 } from 'lib/services/sendgrid/server'
-import { markNotificationSent } from '../../../lib/services/directus/server'
+import { markNotification } from '../../../lib/services/directus/server'
 
 async function SendNotification(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
@@ -29,7 +29,7 @@ async function SendNotification(req: NextApiRequest, res: NextApiResponse<ApiRes
 
     await sendNotificationEmail(email, name, subject, message || body, data, template, category)
 
-    if (notification_id) await markNotificationSent(notification_id)
+    if (notification_id) await markNotification(notification_id, 'sent')
 
     res.status(200).send(ApiResponse({ success: true }))
   } catch (e: any) {

@@ -4,14 +4,15 @@ import { DiscordIcon, InstagramIcon, TwitterIcon } from '../icons'
 
 export default function Footer() {
   return (
-    <Box w="full" px={4}>
+    <Box w="full" p={4}>
       <Stack
         alignItems="center"
         justify="space-between"
         __css={constrained}
         direction={{ base: 'column', lg: 'row' }}
         borderTop={'1px solid'}
-        borderColor={useColorModeValue('gray.500', 'white')}
+        borderColor={useColorModeValue('primary.500', 'accent.500')}
+        pt={4}
       >
         <HStack spacing={5}>
           <Link href="https://www.instagram.com/guysnheat/" target={'_blank'} rel="noreferrer">
@@ -32,7 +33,7 @@ export default function Footer() {
         <HStack my={3} fontSize={'sm'}>
           <Link
             href="/terms"
-            pr={5}
+            pr={3}
             borderRight={'solid 1px'}
             borderColor={useColorModeValue('gray.500', 'white')}
           >
@@ -42,7 +43,7 @@ export default function Footer() {
         </HStack>
 
         <Text fontSize={'xs'} color={useColorModeValue('gray.500', 'gray.100')}>
-          &copy; Guys N Heat 2022. All rights reserved.
+          &copy; Guys N Heat 2023. All rights reserved.
         </Text>
       </Stack>
     </Box>

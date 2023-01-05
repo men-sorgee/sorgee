@@ -1,26 +1,55 @@
-import { ChakraProvider, cookieStorageManager, localStorageManager } from '@chakra-ui/react'
-import Layout from 'components/layout/index'
 import { ErrorBoundary } from 'components/ErrorBoundary'
 import { AppProps } from 'next/app'
 import { SessionProvider } from 'next-auth/react'
-import { MetaContextProvider } from 'hooks'
+import { ChakraProvider, cookieStorageManager, extendTheme } from '@chakra-ui/react'
+import Layout from 'components/layout/index'
 import { theme } from '../theme'
+import { LocationProvider } from '../hooks/use-location'
+import { MetaProvider } from '../hooks/use-meta'
+import { SocketProvider } from '../hooks/use-socket'
+import { Manrope, Arvo, Roboto_Mono } from '@next/font/google'
+
+const heading = Arvo({
+  variable: '--heading-font',
+  weight: ['400', '700'],
+})
+
+const body = Manrope({
+  variable: '--body-font',
+  weight: 'variable',
+})
+
+const mono = Roboto_Mono({
+  variable: '--mono-font',
+  weight: 'variable',
+})
+
+extendTheme({
+  ...theme,
+  fonts: {
+    body: body.style.fontFamily,
+    heading: heading.style.fontFamily,
+    mono: mono.style.fontFamily,
+  },
+})
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <>
-      <SessionProvider>
-        <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
-          <MetaContextProvider>
-            <Layout>
-              <ErrorBoundary>
-                <Component {...pageProps} />
-              </ErrorBoundary>
-            </Layout>
-          </MetaContextProvider>
-        </ChakraProvider>
-      </SessionProvider>
-    </>
+    <SessionProvider>
+      <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
+        <MetaProvider>
+          <SocketProvider>
+            <LocationProvider>
+              <Layout fonts={[heading.variable, body.variable, mono.variable]}>
+                <ErrorBoundary>
+                  <Component {...pageProps} />
+                </ErrorBoundary>
+              </Layout>
+            </LocationProvider>
+          </SocketProvider>
+        </MetaProvider>
+      </ChakraProvider>
+    </SessionProvider>
   )
 }
 

@@ -1,4 +1,4 @@
-import { cache, Key, useMemo } from 'react'
+import { Key } from 'react'
 import Markdown from 'components/ui/Markdown'
 import Section from 'components/Section'
 import { setMeta } from 'hooks'
@@ -6,7 +6,6 @@ import { listActivePages } from '@/lib/services/directus/static'
 import { Page } from 'lib/models'
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next'
 import { ParsedUrlQuery } from 'querystring'
-import { getAssetUrl } from '../lib/utils'
 
 interface Params extends ParsedUrlQuery {
   slug: string[]

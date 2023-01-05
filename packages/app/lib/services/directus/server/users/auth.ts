@@ -53,10 +53,12 @@ export async function findSession(token: string): Promise<UserSession> {
 
 export async function updateSession(session: UserSession) {
   const adminClient = await getAdminClient()
-  const { id } = await adminClient.items('user_session').updateOne(session.id, {
+  const existingSession = await findSession(session.session_token)
+  await adminClient.items('user_session').updateOne(existingSession.id, {
     expires: session.expires,
+    session_token: session.session_token,
   })
-  return adminClient.items('user_session').readOne(id, {
+  return adminClient.items('user_session').readOne(existingSession.id, {
     fields: ['*', 'user.*'],
   })
 }

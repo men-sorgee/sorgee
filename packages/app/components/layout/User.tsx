@@ -1,34 +1,49 @@
 import { signIn, useSession, signOut } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import {
+  Badge,
+  Box,
+  Button,
+  Center,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
   MenuDivider,
   Avatar,
-  Badge,
   Spinner,
   Link,
+  Text,
+  AvatarBadge,
 } from '@chakra-ui/react'
 import { ApplicationStatus, Member, MemberLevel } from 'lib/models'
 import { LinkButton } from 'components/ui'
-import { useNotifications } from 'hooks'
+import Notifications from './Notifications'
 import { getAssetUrl } from 'lib/utils'
+import {
+  CalendarIcon,
+  CogIcon,
+  ExternalLinkIcon,
+  UserGroupIcon,
+  LogoutIcon,
+} from '@heroicons/react/outline'
+import { useSite } from 'hooks/use-site'
+import { UserBadge } from 'components/ui'
 interface Props {}
 
 const UserAvatar = (_props: Props) => {
+  const [notificationBadge, setNotificationBadge] = useState<boolean>(false)
   const [member, setMember] = useState<Member>(null)
   const { data: session, status } = useSession()
   const [loading, setLoading] = useState<boolean>(true)
   const [photoSrc, setPhotoSrc] = useState<string | null>(null)
   const [name, setName] = useState<string | null>(null)
   const [level, setLevel] = useState<number>(-1)
-  const { notifications } = useNotifications(true)
+  const { site } = useSite()
   const {
     user: { application_status },
   } = session || { user: {} }
-
+  const showApply = !site?.invite_only
   useEffect(() => {
     if (!loading && status == 'loading') {
       setLoading(true)
@@ -43,7 +58,7 @@ const UserAvatar = (_props: Props) => {
       if (!name) setName(nickname || `${first_name} ${last_name}}`)
       if (level == -1) setLevel(MemberLevel[session.user.user_type || 'subscriber'])
     }
-  }, [name, photoSrc, session?.user, level, status, loading, notifications])
+  }, [notificationBadge, member, name, photoSrc, session?.user, level, status, loading, site])
 
   const isMember = member && level >= 3 && application_status == 'approved'
   const isApplicant = ApplicationStatus[application_status] < ApplicationStatus['approved']
@@ -52,39 +67,71 @@ const UserAvatar = (_props: Props) => {
     <>
       {member ? (
         <>
-          <Menu placement="bottom-start">
-            <MenuButton>
-              <Avatar size={'sm'} cursor={'pointer'} name={name} src={photoSrc} />
+          <Menu placement="bottom">
+            <MenuButton cursor={'pointer'}>
+              <Avatar bg="accent.500" cursor={'pointer'} name={name} src={photoSrc} color="white">
+                {notificationBadge && <AvatarBadge borderWidth="thin" boxSize="1em" bg="red" />}
+              </Avatar>
             </MenuButton>
-            <MenuList bg="black">
+
+            <MenuList bg="black" alignItems={'center'}>
+              <Box p={4} m={2} bgGradient="linear(to-bl, primary.300, accent.300)">
+                <Center>
+                  <Avatar src={photoSrc} color="white" />
+                </Center>
+                <Center>
+                  <Text fontWeight="bold" color="black">
+                    {member?.nickname || member.first_name} <br />
+                  </Text>
+                </Center>
+                <Center>
+                  <UserBadge user_type={member?.user_type} />
+                </Center>
+              </Box>
+              <MenuDivider />
               {isApplicant && (
-                <MenuItem bg="black" as={Link} href="/apply/resume">
-                  Application
+                <MenuItem
+                  icon={<ExternalLinkIcon color={'white'} width={'1.5rem'} />}
+                  bg="black"
+                  as={Link}
+                  href="/apply/resume"
+                >
+                  Continue Application
                 </MenuItem>
               )}
               {isMember && (
                 <>
-                  <MenuItem bg="black" as={Link} href="/member/events">
+                  <Notifications setNotificationBadge={setNotificationBadge} />
+                  <MenuItem
+                    icon={<CalendarIcon color={'white'} width={'1.5rem'} />}
+                    bg="black"
+                    as={Link}
+                    href="/member/events"
+                  >
                     Events
                   </MenuItem>
-                  <MenuItem bg="black" as={Link} href="/member/account">
+                  <MenuItem
+                    icon={<CogIcon color={'white'} width={'1.5rem'} />}
+                    bg="black"
+                    as={Link}
+                    href="/member/account"
+                  >
                     Account
                   </MenuItem>
-                  {notifications?.length > 0 && (
-                    <MenuItem bg="black" as={Link} href="/member/account">
-                      Notifications{' '}
-                      <Badge borderRadius="full" bg="accent.500">
-                        {notifications?.length}
-                      </Badge>
-                    </MenuItem>
-                  )}
-                  <MenuItem bg="black" as={Link} href="/member/invite">
+
+                  <MenuItem
+                    icon={<UserGroupIcon color={'white'} width={'1.5rem'} />}
+                    bg="black"
+                    as={Link}
+                    href="/member/invite"
+                  >
                     Invite
                   </MenuItem>
                 </>
               )}
               <MenuDivider />
               <MenuItem
+                icon={<LogoutIcon color={'white'} width={'1.5rem'} />}
                 bg="black"
                 as={Link}
                 href={`/api/auth/signout`}
@@ -98,18 +145,33 @@ const UserAvatar = (_props: Props) => {
           </Menu>
         </>
       ) : (
-        <LinkButton
-          href={`/api/auth/signin`}
-          fontWeight={600}
-          color={'white'}
-          bg={'primary'}
-          onClick={(e) => {
-            e.preventDefault()
-            signIn(null, { callbackUrl: '/apply/resume' })
-          }}
-        >
-          members
-        </LinkButton>
+        <>
+          <LinkButton
+            href={`/api/auth/signin`}
+            fontWeight={600}
+            color={'white'}
+            bg={'primary'}
+            onClick={(e) => {
+              e.preventDefault()
+              signIn(null, { callbackUrl: '/member/account' })
+            }}
+          >
+            members
+          </LinkButton>
+          {showApply && (
+            <LinkButton
+              href={`/apply`}
+              fontWeight={600}
+              colorScheme={'accent'}
+              onClick={(e) => {
+                e.preventDefault()
+                signIn(null, { callbackUrl: '/apply' })
+              }}
+            >
+              apply
+            </LinkButton>
+          )}
+        </>
       )}
     </>
   )

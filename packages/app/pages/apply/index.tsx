@@ -1,7 +1,7 @@
 import { FormProvider, useForm } from 'react-hook-form'
-import { postJSON, pruneUndefined } from '@/lib/utils'
+import { postJSON, pruneUndefined } from 'lib/utils'
 import { useEffect, useState } from 'react'
-import { getFieldOptions } from '@/lib/services/directus/server'
+import { getFieldOptions } from 'lib/services/directus/server'
 import { useMember } from 'hooks/use-member'
 import { NextRouter, useRouter } from 'next/router'
 import { Applicant, FormOptions, Profile } from 'lib/models'
@@ -23,8 +23,6 @@ import {
   NumberDecrementStepper,
   Alert,
   AlertIcon,
-  AlertTitle,
-  AlertDescription,
   HStack,
   SimpleGrid,
   GridItem,
@@ -89,9 +87,9 @@ function Apply(props: PageProps) {
         {formError && <Text color={'red.700'}>{formError}</Text>}
         <Text fontSize={'xl'}>{intro}</Text>
         <Text fontSize={'xl'}>
-          Membership is free, but not everyone can join. There is a vouching and verification
-          process for all new members. We do this to ensure the safety of our members and to weed
-          out any liars, spammers, bots, or flakes.
+          This is a private group, not open to the public. There is a vouching, vetting and
+          verification process for everyone. We do this to ensure the safety of our group and to
+          filter out liars, spammers, bots, and flakes.
         </Text>
         {formError && <Text color={'red.700'}>{formError}</Text>}
         <Form {...data} />

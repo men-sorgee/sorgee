@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { Box } from '@chakra-ui/react'
+import { useRouter } from 'next/router'
 import Header from './Header'
 import Meta from './Meta'
 import Footer from './Footer'
 import User from './User'
-import { useRouter } from 'next/router'
+import Notifications from './Notifications'
+import { UserShow } from '../ui/UserShow'
 
 export const constrained = {
-  maxW: { md: '3xl', xl: '4xl' },
+  maxW: { base: '90%', md: '4xl', lg: '5xl', xl: '6xl' },
   mx: 'auto',
   px: {
     base: 4,
@@ -20,13 +22,17 @@ export const constrained = {
 function Layout({
   children,
   style = {},
+  fonts: [heading, body, mono],
 }: {
   children?: React.ReactNode
   className?: string
   style?: any
+  fonts: any[]
 }) {
   const router = useRouter()
+
   const [className, setClassName] = useState<string>()
+
   useEffect(() => {
     if (router?.asPath && !className) {
       let path = router.asPath
@@ -39,10 +45,12 @@ function Layout({
   return (
     <>
       <Meta />
-      <Header>
-        <User />
-      </Header>
-      <Box minH={'80vh'} __css={constrained}>
+      <Header />
+      <Box
+        minH={'80vh'}
+        __css={constrained}
+        className={`${className || ''} ${heading} ${body} ${mono}}`}
+      >
         <main style={style} className={className || ''}>
           {children}
         </main>

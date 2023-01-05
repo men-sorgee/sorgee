@@ -1,9 +1,9 @@
-import { useMetaContext } from 'hooks'
+import { useMeta } from 'hooks/use-meta'
 import Head from 'next/head'
-import { getAssetUrl } from '../../lib/utils'
-
-export default function AppHead() {
-  const { title, description, url, image } = useMetaContext()
+import { getAssetUrl } from 'lib/utils'
+interface Props {}
+const Meta = (_props: Props) => {
+  const { title, description, url, image } = useMeta()
   const img = image ? getAssetUrl(image) : null
 
   return (
@@ -39,3 +39,5 @@ export default function AppHead() {
     </Head>
   )
 }
+
+export default Meta

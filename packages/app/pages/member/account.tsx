@@ -1,9 +1,8 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
 import { Applicant, FormOptions, User } from 'lib/models'
-import { fetchJSON, postJSON } from '@/lib/utils'
 import { getFieldOptions } from '@/lib/services/directus/server'
-import { useMember, useNotifications } from 'hooks'
+import { useMember } from 'hooks/use-member'
 import { useEffect, useState } from 'react'
 import { FieldInput, FieldSelect, FieldWrapper, FieldText, FieldCheckboxes } from 'components/forms'
 import {
@@ -27,11 +26,12 @@ import {
   InputRightAddon,
 } from '@chakra-ui/react'
 import Page from 'components/Page'
-import { CameraIcon, LightBulbIcon, XIcon } from '@heroicons/react/solid'
+import { LightBulbIcon } from '@heroicons/react/solid'
 import { useRouter } from 'next/router'
 import FieldSwitch from 'components/forms/FieldSwitch'
-import Markdown from 'components/ui/Markdown'
+import { useToast } from '@chakra-ui/react'
 import { ErrorMessage } from '@hookform/error-message'
+import { postJSON } from '../../lib/utils'
 
 export type PageProps = {
   spectrumOptions: FormOptions
@@ -101,6 +101,7 @@ function Account(props: PageProps) {
 }
 
 function Form(props: PageProps) {
+  const toast = useToast()
   const { member, reload } = useMember()
   const router = useRouter()
   const {
@@ -127,10 +128,10 @@ function Form(props: PageProps) {
     hivStatusOptions,
     vaccinationStatusOptions,
   } = props
-  const [updated, setUpdated] = useState(false)
   const [tabValue, setTabValue] = useState(Number(router.query.t) || 0)
 
   const methods = useForm<MemberFormData>({
+    mode: 'onBlur',
     defaultValues: {
       ...member,
       height_feet: member?.height?.toString().substring(0, 1),
@@ -158,6 +159,13 @@ function Form(props: PageProps) {
 
     if (ok) {
       reload()
+      toast({
+        title: 'Success',
+        description: 'Your account and profile are updated.',
+        status: 'success',
+        duration: 9000,
+        isClosable: true,
+      })
     } else if (response.error?.field) {
       // @ts-ignore
       setError(response.error!.field, response.error.message)
@@ -181,7 +189,7 @@ function Form(props: PageProps) {
             </TabList>
             <TabPanels>
               <TabPanel p={0}>
-                <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+                <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
                   <FieldInput
                     field="first_name"
                     label="First Name"
@@ -207,7 +215,7 @@ function Form(props: PageProps) {
                     }}
                     placeholder="000 456 7890"
                   />
-                </div>
+                </SimpleGrid>
 
                 <Alert
                   as={Stack}
@@ -220,8 +228,9 @@ function Form(props: PageProps) {
                 >
                   <Stack direction={'column'} spacing={2}>
                     <Text>
-                      Are you an exhibitionist? If so, you can opt-in to be a part of our marketing
-                      efforts. We will never share your personal information with anyone.
+                      <strong>Are you an exhibitionist?</strong> If so, you can opt-in to be a part
+                      of our marketing efforts. We will never share your personal information with
+                      anyone.
                     </Text>
                     <Stack direction={{ base: 'column', md: 'row' }} spacing={2}>
                       <FieldSwitch
@@ -267,19 +276,14 @@ function Form(props: PageProps) {
                   rows={4}
                   placeholder="I am a bit shy, but love to get aggressive in bed."
                 />
-                <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
-                  <GridItem>
-                    <Stack direction={{ base: 'column', md: 'row' }}>
+                <SimpleGrid spacing={4} columns={{ base: 1, sm: 2, md: 4 }}>
+                  <GridItem colSpan={{ base: 1, sm: 2 }}>
+                    <Stack direction={{ base: 'column', sm: 'row' }}>
                       <FieldWrapper field="height" label="Height">
                         <InputGroup>
                           <Input type="number" id="height_feet" {...register('height_feet')} />
                           <InputRightAddon children="'" mr={2} />
-                          <Input
-                            type="number"
-                            id="height_inches"
-                            className="input  !rounded-l-none"
-                            {...register('height_inches')}
-                          />
+                          <Input type="number" id="height_inches" {...register('height_inches')} />
                           <InputRightAddon children={'"'} />
                         </InputGroup>
                       </FieldWrapper>
@@ -287,8 +291,8 @@ function Form(props: PageProps) {
                       <FieldInput field="weight" label="Weight" type="number" />
                     </Stack>
                   </GridItem>
-                  <GridItem>
-                    <Stack direction={{ base: 'column', md: 'row' }}>
+                  <GridItem colSpan={{ base: 1, sm: 2 }}>
+                    <Stack direction={{ base: 'column', sm: 'row' }}>
                       <FieldInput
                         field="age"
                         label="Age"
@@ -308,14 +312,14 @@ function Form(props: PageProps) {
                       />
                     </Stack>
                   </GridItem>
-
-                  <GridItem colSpan={{ base: 1, md: 2 }}>
+                  <GridItem colSpan={{ base: 1, sm: 2, md: 4 }}>
                     <FieldCheckboxes
                       field="body_attributes"
                       label="Body Attributes"
                       formOptions={bodyAttributesOptions}
                     />
                   </GridItem>
+
                   <FieldSelect
                     field="hair_color"
                     label="Hair Color"
@@ -352,9 +356,7 @@ function Form(props: PageProps) {
                     className="col-span-2"
                     formOptions={mannerismsOptions}
                   />
-                </SimpleGrid>
 
-                <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
                   <FieldInput
                     field="cock_length"
                     label="Cock Length"
@@ -458,63 +460,17 @@ function Form(props: PageProps) {
           </Tabs>
 
           <input type="hidden" {...register('id')} />
-          {tabValue <= 3 && (
-            <Stack mt={10}>
-              <Button type="submit" colorScheme="primary" disabled={isSubmitting}>
-                Update Profile
-              </Button>
-              <ErrorMessage errors={errors} name="form" />
-            </Stack>
-          )}
+
+          <Stack>
+            <Button mt={10} type="submit" colorScheme="primary" disabled={isSubmitting}>
+              Update Profile
+            </Button>
+            <ErrorMessage errors={errors} name="form" />
+          </Stack>
         </form>
       </FormProvider>
-      {updated && (
-        <Toast color="ghost">
-          <Heading as="h4">Profile Updated</Heading>
-        </Toast>
-      )}
     </>
   )
-}
-
-const NotificationList = ({ setUpdated, setError }) => {
-  const { notifications, loading, reload } = useNotifications()
-  async function deleteNotification(id: string) {
-    const [ok] = await fetchJSON(
-      '/api/member/notifications',
-      {
-        id,
-      },
-      'DELETE'
-    )
-
-    if (ok) {
-      setUpdated(true)
-      reload()
-    } else {
-      setError('form' as any, { message: 'Something went wrong' })
-    }
-  }
-  if (loading) return null
-
-  return notifications.map((n, i) => (
-    <Alert key={i}>
-      <div className="flex-grow">
-        <Markdown content={n.message} />
-      </div>
-      <div className="flex-shrink">
-        <a
-          className="btn-ghost btn-sm btn"
-          onClick={async () => {
-            await deleteNotification(n.id)
-          }}
-          data-id={n.id}
-        >
-          <XIcon className="h-4 w-4 fill-white" />
-        </a>
-      </div>
-    </Alert>
-  ))
 }
 
 export default Account

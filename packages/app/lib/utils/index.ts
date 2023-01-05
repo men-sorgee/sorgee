@@ -16,6 +16,10 @@ export async function postJSON<T = never | any>(url: string, data: object) {
   return await fetchJSON(url, data, 'POST')
 }
 
+export async function putJSON<T = never | any>(url: string, data: object) {
+  return await fetchJSON(url, data, 'PUT')
+}
+
 export async function fetchJSON<T = never | any>(
   url: string,
   data?: object,

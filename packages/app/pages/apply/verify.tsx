@@ -2,7 +2,7 @@ import { useMember } from 'hooks/use-member'
 import { useRouter } from 'next/router'
 import { useState, ChangeEvent } from 'react'
 import ApplicationSteps from './_steps'
-import { Button, Stack, Text, Heading, VStack, HStack } from '@chakra-ui/react'
+import { Button, Stack, Text, Heading, VStack, HStack, Input } from '@chakra-ui/react'
 import Page from 'components/Page'
 import FieldCheckbox from 'components/forms/FieldCheckbox'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -133,7 +133,7 @@ function Form({ code, router, setCompleted }): JSX.Element {
             />
           ) : (
             <label className="flex h-full cursor-pointer flex-col items-center justify-center py-3 transition-colors duration-150 hover:text-gray-600">
-              <input
+              <Input
                 className="file-input-bordered file-input-primary file-input w-full max-w-xs"
                 onChange={onFileUploadChange}
                 type="file"

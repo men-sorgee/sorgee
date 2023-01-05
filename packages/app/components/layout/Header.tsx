@@ -3,7 +3,6 @@ import {
   Flex,
   Text,
   IconButton,
-  Button,
   Stack,
   Collapse,
   Icon,
@@ -14,6 +13,7 @@ import {
   BoxProps,
   HStack,
   StackProps,
+  useColorModeValue,
 } from '@chakra-ui/react'
 import { HamburgerIcon, CloseIcon, ChevronDownIcon, MoonIcon, SunIcon } from '@chakra-ui/icons'
 import { Logo } from '../ui'
@@ -22,12 +22,11 @@ import { PageItem } from 'lib/models'
 import NextLink from 'next/link'
 import { listActivePages } from '@/lib/services/directus/static'
 import { constrained } from './index'
-import { useSite } from 'hooks'
+import User from './User'
 export type Props = BoxProps & {
   children?: React.ReactNode | React.ReactNode[]
 }
 function Header({ children, ...props }: Props) {
-  const { site } = useSite()
   const { isOpen, onToggle } = useDisclosure()
   const [pages, setPages] = useState<PageItem[]>()
   const { colorMode, toggleColorMode } = useColorMode()
@@ -72,11 +71,19 @@ function Header({ children, ...props }: Props) {
     },
   ]
   return (
-    <Box {...props} as="header" color={'white'} bg={'gray.900'}>
-      <HStack minH={'60px'} alignItems="middle" spacing={4} __css={constrained}>
+    <Box {...props} as="header" color={'white'} bg={useColorModeValue('primary.800', 'black')}>
+      <HStack
+        minH={'60px'}
+        alignItems="center"
+        justifyItems="space-between"
+        align="center"
+        spacing={4}
+        __css={constrained}
+      >
         <IconButton
+          size={'lg'}
           onClick={onToggle}
-          icon={isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />}
+          icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
           variant={'ghost'}
           aria-label={'Toggle Navigation'}
         />
@@ -84,11 +91,14 @@ function Header({ children, ...props }: Props) {
           <Logo width={'20px'} />
         </Flex>
 
-        <HStack flex={0} alignItems="middle" justifyItems={'center'}>
-          <Button variant={'ghost'} onClick={toggleColorMode} mt={1}>
-            {colorMode === 'light' ? <MoonIcon fontSize={'3xl'} /> : <SunIcon fontSize={'3xl'} />}
-          </Button>
-          {children}
+        <HStack spacing={2} alignItems="center" justifyItems="middle">
+          <IconButton
+            onClick={toggleColorMode}
+            icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+            variant={'ghost'}
+            aria-label={'Toggle Theme'}
+          />
+          <User />
         </HStack>
       </HStack>
 
