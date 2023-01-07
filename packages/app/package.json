@@ -24,7 +24,7 @@
     "@hookform/error-message": "^2.0.1",
     "@next/font": "^13.1.1",
     "@sendgrid/mail": "^7.7.0",
-    "@tanstack/react-query": "^4.3.8",
+    "@tanstack/react-query": "^4.20.9",
     "change-case": "^4.1.2",
     "cookies-next": "^2.1.1",
     "daisyui": "^2.42.1",
