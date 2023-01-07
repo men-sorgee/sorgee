@@ -66,4 +66,11 @@
   "autoimport.semicolon": false,
   "autoimport.showNotifications": true,
   "autoimport.sourceRoot": "packages/app/",
+  "cloudcode.kubeconfigs": [
+    {
+      "name": "/home/jason/.kube/config",
+      "configPath": "/home/jason/.kube/config"
+    }
+  ],
+  "cloudcode.active-kubeconfig": "/home/jason/.kube/config",
 }

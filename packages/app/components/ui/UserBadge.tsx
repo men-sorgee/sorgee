@@ -2,9 +2,9 @@ import { Badge } from '@chakra-ui/react'
 import { MemberLevel } from 'lib/models'
 interface Props {
   user_type: string
-  size: string
+  size?: string
 }
-const UserBadge = ({ user_type, size }: Props) => {
+const UserBadge = ({ user_type, size = 'md' }: Props) => {
   const colors = [
     ['red.300', 'red.600'],
     ['orange.300', 'orange.600'],
