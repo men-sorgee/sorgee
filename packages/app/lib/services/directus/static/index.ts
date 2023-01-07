@@ -22,7 +22,7 @@ const get_page = `query getPage($id: ID!) {
     content(filter: { status: { _eq: "published" } }) {
       id
       name
-      container
+      columns
       container_classes
       type
       html
@@ -62,7 +62,7 @@ const find_page = `query findPage($slug: String) {
     content(filter: { status: { _eq: "published" } }) {
       id
       name
-      container
+      columns
       container_classes
       type
       html
@@ -116,7 +116,7 @@ const all_pages = `
     content(filter: { status: { _eq: "published" } }) {
       id
       name
-      container
+      columns
       container_classes
       type
       html

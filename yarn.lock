@@ -5555,11 +5555,6 @@ react-clientside-effect@^1.2.6:
   dependencies:
     "@babel/runtime" "^7.12.13"
 
-react-directus@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/react-directus/-/react-directus-0.0.2.tgz#522dad8512b884ed5a97570fcb135b353ebfb5a9"
-  integrity sha512-TAG4V94s2Ia1sMgXGmpvn41CoiUizsS4JneLcZ9/WPk9gaipAF3wpR8U4qCElcEdBxcgJ4Au+pkab1PmQ8uPpg==
-
 react-dom@^18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.2.0.tgz#22aaf38708db2674ed9ada224ca4aa708d821e3d"

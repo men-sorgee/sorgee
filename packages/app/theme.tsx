@@ -1,7 +1,6 @@
 import { ChakraTheme, extendTheme } from '@chakra-ui/react'
 import { default as defaultTheme } from '@chakra-ui/theme'
-import { StepsStyleConfig as Steps } from 'chakra-ui-steps'
-import { Manrope, Arvo, Roboto_Mono } from '@next/font/google'
+import { StepsStyleConfig } from 'chakra-ui-steps'
 
 export const brand = {
   colors: {
@@ -66,7 +65,18 @@ const custom: Partial<ChakraTheme> = {
     useSystemColorMode: true,
   },
   components: {
-    Steps,
+    Steps: {
+      ...StepsStyleConfig,
+      baseStyle: (props) => {
+        return {
+          ...StepsStyleConfig.baseStyle(props),
+          iconLabel: {
+            ...StepsStyleConfig.baseStyle(props).iconLabel,
+            color: 'white',
+          },
+        }
+      },
+    },
     Input: {
       baseStyle: {
         field: {
