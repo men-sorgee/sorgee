@@ -1,6 +1,6 @@
 import { Adapter, AdapterUser, AdapterSession, VerificationToken } from 'next-auth/adapters'
 
-import { DirectusFile, UserVerificationToken, User, UserSession } from '@/lib/models'
+import { DirectusFile, UserVerificationToken, User, UserSession } from 'lib/models'
 import {
   createUser,
   findUser,
@@ -101,7 +101,7 @@ const authAdapter: Adapter = {
       console.debug('updateUser', user)
       const updatedUser = await updateUser(user.id, {
         email: user.email,
-        email_verified: true,
+        email_verified: user.emailVerified != null,
         status: 'active',
       })
       return mapUser(updatedUser)

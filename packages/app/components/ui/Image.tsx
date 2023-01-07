@@ -1,19 +1,23 @@
-import Image, { ImageProps } from 'next/image'
+import { chakra, StyleProps, Image, ImageProps as Props } from '@chakra-ui/react'
+import { ImageProps as NextProps } from 'next/image'
+import NextImage from 'next/image'
 import { useState, useEffect } from 'react'
 
-export default function BlurImage(props: ImageProps) {
+export type ImageProps = Props &
+  NextProps & {
+    src: string
+  }
+
+const BlurImage = ({ src, ...props }: ImageProps) => {
   const [isLoading, setLoading] = useState(true)
-  const [src, setSrc] = useState(props.src)
-  useEffect(() => setSrc(props.src), [props.src]) // update the `src` value when the `prop.src` value changes
 
   return (
     <Image
+      as={NextImage}
       {...props}
       src={src}
       alt={props.alt}
-      className={`${props.className} transition-all ${
-        isLoading ? 'scale-110 blur-2xl grayscale' : 'scale-100 blur-0 grayscale-0'
-      }`}
+      filter={isLoading ? 'blur(20px)' : 'none'}
       placeholder="blur"
       blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQYV2PYsGHDfwAHNAMQumvbogAAAABJRU5ErkJggg=="
       onLoadingComplete={async () => {
@@ -22,3 +26,5 @@ export default function BlurImage(props: ImageProps) {
     />
   )
 }
+
+export default chakra(BlurImage)

@@ -1,32 +1,34 @@
+import { Input, InputProps, chakra } from '@chakra-ui/react'
 import { InputHTMLAttributes } from 'react'
 import { useFormContext, RegisterOptions } from 'react-hook-form'
 import FieldWrapper from './FieldWrapper'
 
-type Props = InputHTMLAttributes<HTMLInputElement> & {
-  field: string
-  label?: string
-  help?: string
-  registerOptions?: RegisterOptions
-  className?: string
-}
+type Props = InputProps &
+  InputHTMLAttributes<HTMLInputElement> & {
+    field: string
+    label?: string
+    help?: string
+    registerOptions?: RegisterOptions
+    className?: string
+  }
 
-export default function InputField(props: Props) {
-  const { field, label, help, registerOptions = {}, className } = props
-  const inputProps = Object.entries(props)
-    .filter(([key]) => !['field', 'label', 'help', 'registerOptions', 'className'].includes(key))
-    .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+const InputField = (props: Props) => {
+  const { field, label, help, registerOptions = {}, className, ...opts } = props
   const { register, getFieldState, formState } = useFormContext()
   const { error } = getFieldState(field, formState)
-  const classes = error ? 'input input-error' : 'input'
+  const classes = error ? 'error' : ''
 
   return (
     <FieldWrapper field={field} label={label} help={help} className={className}>
-      <input
-        {...inputProps}
+      <Input
+        isInvalid={!!error}
+        {...opts}
         id={field}
         {...register(field as any, registerOptions)}
+        type="date"
         className={classes}
       />
     </FieldWrapper>
   )
 }
+export default chakra(InputField)

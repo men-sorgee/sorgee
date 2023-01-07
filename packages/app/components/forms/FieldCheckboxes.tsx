@@ -2,45 +2,43 @@ import { InputHTMLAttributes } from 'react'
 import { useFormContext, RegisterOptions } from 'react-hook-form'
 import { FormOptions } from 'lib/models'
 import FieldWrapper from './FieldWrapper'
+import { Checkbox, CheckboxGroup, Text, CheckboxProps, chakra, SimpleGrid } from '@chakra-ui/react'
 
-type Props = InputHTMLAttributes<HTMLInputElement> & {
-  field: string
-  label: string
-  help?: string
-  formOptions: FormOptions
-  registerOptions?: RegisterOptions
-  className?: string
-}
+type Props = CheckboxProps &
+  InputHTMLAttributes<HTMLInputElement> & {
+    field: string
+    label?: string
+    help?: string
+    formOptions: FormOptions
+    registerOptions?: RegisterOptions
+    className?: string
+  }
 
-export default function CheckboxesField(props: Props) {
-  const { field, label, help, registerOptions = {}, formOptions, className } = props
-  const inputProps = Object.entries(props)
-    .filter(
-      ([key]) =>
-        !['field', 'label', 'help', 'registerOptions', 'formOptions', 'className'].includes(key)
-    )
-    .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
-  const { register } = useFormContext()
-
+const CheckboxesField = (props: Props) => {
+  const { field, label, help, registerOptions = {}, formOptions, className, ...opts } = props
+  const { register, getFieldState, formState } = useFormContext()
+  const { error } = getFieldState(field, formState)
+  const classes = error ? 'error' : ''
   return (
-    <FieldWrapper field={field} label={label} help={help} className={className}>
-      <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">
-        {formOptions?.map(({ text, value }, index) => (
-          <div key={index.toString()} className="form-control">
-            <label htmlFor={value} className="label cursor-pointer justify-start">
-              <input
-                id={value}
-                value={value}
-                type="checkbox"
-                {...register(field, registerOptions)}
-                className="checkbox-accent checkbox bg-accent-600"
-                {...inputProps}
-              />
-              <span className="label-text ml-2 ">{text}</span>
-            </label>
-          </div>
-        ))}
-      </div>
+    <FieldWrapper field={field} help={help} label={label} className={className}>
+      <CheckboxGroup>
+        <SimpleGrid gap={4} columns={{ base: 1, sm: 2, md: 3, lg: 4 }}>
+          {formOptions?.map(({ text, value }, index) => (
+            <Checkbox
+              {...opts}
+              key={index.toString()}
+              id={value}
+              value={value}
+              {...register(field, registerOptions)}
+              className={classes}
+            >
+              {text}
+            </Checkbox>
+          ))}
+        </SimpleGrid>
+      </CheckboxGroup>
     </FieldWrapper>
   )
 }
+
+export default chakra(CheckboxesField)

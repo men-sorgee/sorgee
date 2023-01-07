@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { updateUser } from '@/lib/services/directus/server/users'
+import { updateUser } from 'lib/services/directus/server/users'
 import { withMethods, withMember } from 'lib/utils/server'
-import { User, Applicant, ApiResponse } from '@/lib/models'
+import { User, Applicant, ApiResponse } from 'lib/models'
 
 export default async function getUserDetails(
   req: NextApiRequest,

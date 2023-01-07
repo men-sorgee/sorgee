@@ -1,12 +1,12 @@
-import { Button } from 'react-daisyui'
+import { Button, Heading, Text, VStack } from '@chakra-ui/react'
 import Page from 'components/Page'
-import { useMember } from 'lib/hooks'
+import { useMember } from 'hooks'
 import { listUserInvites } from 'lib/services/directus/server'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { FormProvider, useForm } from 'react-hook-form'
 import { FieldRadioButtons } from 'components/forms'
-import { postJSON } from '@/lib/utils'
+import { postJSON } from 'lib/utils'
 import { Invite, MemberLevel } from 'lib/models'
 import EventCard from 'components/ui/EventCard'
 import { unstable_getServerSession } from 'next-auth'
@@ -34,8 +34,8 @@ export async function getServerSideProps(context) {
 
 function EventPage({ invites }: { invites: Invite[] }) {
   const [allowed, setAllowed] = useState(false)
-  const { member, loading } = useMember()
-  const level = MemberLevel[(member?.user_type as string) || 'subscriber']
+  const { member, loading, level } = useMember()
+
   useEffect(() => {
     if (!loading && member && !allowed) {
       setAllowed(level > 2)
@@ -47,7 +47,6 @@ function EventPage({ invites }: { invites: Invite[] }) {
       loading={loading}
       title="Upcoming Events"
       description="Upcoming events"
-      titleClass="text-center"
       requireAuth={true}
     >
       {allowed ? (
@@ -98,7 +97,7 @@ function EventInfo({ invite }: { invite: Invite }) {
       user_id: invite.users_id as string,
       event_id: invite.events_id as string,
       reason: invite.reason,
-      rsvp: rsvp,
+      rsvp,
     },
   })
   const { setError } = methods
@@ -138,29 +137,37 @@ function EventInfo({ invite }: { invite: Invite }) {
       <EventCard invite={invite}>
         <>
           <FormProvider {...methods}>
-            <form onSubmit={methods.handleSubmit(respond)} className="my-4 w-full ">
+            <form
+              onSubmit={methods.handleSubmit(respond)}
+              style={{ display: 'contents', width: 'full' }}
+            >
               {invite.status == 'scheduled' && (
-                <>
-                  <h4 className="py-2 text-lg">You are {rsvp}!</h4>
-                  <p className="text-sm">{message}</p>
+                <VStack justifyItems="middle" textAlign="center" w={'full'}>
+                  <Heading mx={'auto'} maxWidth={{ base: '100%', md: '75%' }}>
+                    You are {rsvp}!
+                  </Heading>
+                  <Text mx={'auto'} maxWidth={{ base: '100%', md: '75%' }} className="text-sm">
+                    {message}
+                  </Text>
                   <input type="hidden" {...methods.register('event_id')} />
                   <input type="hidden" {...methods.register('user_id')} />
                   <FieldRadioButtons
-                    className="py-2"
                     field="rsvp"
                     formOptions={responseOptions}
                     registerOptions={{
                       required: true,
                     }}
+                    mx={'auto'}
+                    maxWidth={'30%'}
                   />
 
-                  <Button color={'primary'} type="submit">
+                  <Button colorScheme={'primary'} type="submit">
                     Update RSVP
                   </Button>
-                </>
+                </VStack>
               )}
               {invite.status == 'occurred' && invite.attended && (
-                <>
+                <VStack justify="center" align="center" spacing={4}>
                   <h4 className="py-2 text-lg">You attended.</h4>
                   <p className="text-sm">Can we get some feedback?</p>
                   <input type="hidden" {...methods.register('event_id')} />
@@ -169,7 +176,7 @@ function EventInfo({ invite }: { invite: Invite }) {
                   <Button color={'primary'} type="submit">
                     Update RSVP
                   </Button>
-                </>
+                </VStack>
               )}
             </form>
           </FormProvider>

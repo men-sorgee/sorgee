@@ -1,6 +1,9 @@
-export default function InfoIcon({ className, title }: { className?: string; title?: string }) {
+import { Circle, StyleProps } from '@chakra-ui/react'
+
+type Props = StyleProps & { className?: string; title?: string }
+const InfoIcon = ({ className, title, ...props }: Props) => {
   return (
-    <span title={title}>
+    <Circle title={title} __css={props}>
       <svg
         className={className}
         aria-hidden="true"
@@ -17,6 +20,8 @@ export default function InfoIcon({ className, title }: { className?: string; tit
           clipRule="evenodd"
         ></path>
       </svg>
-    </span>
+    </Circle>
   )
 }
+
+export default InfoIcon

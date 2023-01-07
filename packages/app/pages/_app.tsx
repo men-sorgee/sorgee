@@ -1,32 +1,55 @@
-import React from 'react'
-import Layout from 'components/layout/index'
 import { ErrorBoundary } from 'components/ErrorBoundary'
 import { AppProps } from 'next/app'
 import { SessionProvider } from 'next-auth/react'
-import { MetaContextProvider } from 'lib/hooks'
-import { Manrope, Roboto } from '@next/font/google'
-import { Head } from 'next/document'
-const manRope = Manrope({ variable: '--font-manrope' })
-const robotoSlab = Roboto({ variable: '--font-roboto', weight: '400' })
-import 'styles/globals.css'
+import { ChakraProvider, cookieStorageManager, extendTheme } from '@chakra-ui/react'
+import Layout from 'components/layout/index'
+import { theme } from '../theme'
+import { LocationProvider } from '../hooks/use-location'
+import { MetaProvider } from '../hooks/use-meta'
+import { SocketProvider } from '../hooks/use-socket'
+import { Manrope, Arvo, Roboto_Mono } from '@next/font/google'
+
+const heading = Arvo({
+  variable: '--heading-font',
+  weight: ['400', '700'],
+})
+
+const body = Manrope({
+  variable: '--body-font',
+  weight: 'variable',
+})
+
+const mono = Roboto_Mono({
+  variable: '--mono-font',
+  weight: 'variable',
+})
+
+extendTheme({
+  ...theme,
+  fonts: {
+    body: body.style.fontFamily,
+    heading: heading.style.fontFamily,
+    mono: mono.style.fontFamily,
+  },
+})
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <>
-      <MetaContextProvider>
-        <SessionProvider>
-          <Layout
-            style={{
-              ...manRope.style,
-              ...robotoSlab.style,
-            }}
-          >
-            <ErrorBoundary>
-              <Component {...pageProps} />
-            </ErrorBoundary>
-          </Layout>
-        </SessionProvider>
-      </MetaContextProvider>
-    </>
+    <SessionProvider>
+      <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
+        <MetaProvider>
+          <SocketProvider>
+            <LocationProvider>
+              <Layout fonts={[heading.variable, body.variable, mono.variable]}>
+                <ErrorBoundary>
+                  <Component {...pageProps} />
+                </ErrorBoundary>
+              </Layout>
+            </LocationProvider>
+          </SocketProvider>
+        </MetaProvider>
+      </ChakraProvider>
+    </SessionProvider>
   )
 }
 

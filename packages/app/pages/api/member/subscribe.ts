@@ -1,6 +1,6 @@
 import { createUser, findUser, updateUser } from 'lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { ApiResponse, MemberLevel, SubscriptionData } from '@/lib/models'
+import { ApiResponse, MemberLevel, SubscriptionData } from 'lib/models'
 import { withMethods } from 'lib/utils/server'
 import { updateSendGrid } from 'lib/services/sendgrid/server'
 
@@ -21,6 +21,7 @@ async function Subscribe(req: NextApiRequest, res: NextApiResponse<ApiResponse>)
         nickname: member.nickname || name,
         in_sendgrid: true,
       })
+      await updateSendGrid(member)
     } else {
       await createUser({
         first_name: first,
@@ -30,8 +31,8 @@ async function Subscribe(req: NextApiRequest, res: NextApiResponse<ApiResponse>)
         user_type: 'subscriber',
         in_sendgrid: true,
       })
+      await updateSendGrid(member)
     }
-    await updateSendGrid(member)
 
     res.status(200).end()
   } catch (e: any) {

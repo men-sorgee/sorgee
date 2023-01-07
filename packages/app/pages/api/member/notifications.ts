@@ -1,14 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse, AppNotification } from 'lib/models'
 import {
-  deleteNotification,
+  markNotification,
   getNotifications,
 } from 'lib/services/directus/server/users/notifications'
+
 import { withMethods, withMember } from 'lib/utils/server'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<ApiResponse>) => {
   try {
-    const method = withMethods(req, ['GET', 'DELETE'])
+    const method = withMethods(req, ['GET', 'PUT'])
     const member = await withMember(req, res)
     let notifications: AppNotification[] = []
     switch (method) {
@@ -16,10 +17,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ApiResponse>) =
         notifications = await getNotifications(member.id)
         return res.status(200).json(ApiResponse(notifications))
 
-      case 'DELETE':
-        const { id } = req.query
-        if (id) await deleteNotification(Number(id))
-        notifications = await getNotifications(member.id)
+      case 'PUT':
+        const { id, state } = req.body
+        if (id) await markNotification(id, state)
         return res.status(200).json(ApiResponse(null))
 
       default:

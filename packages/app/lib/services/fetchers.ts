@@ -1,6 +1,4 @@
 'use client'
-import { request } from 'graphql-request'
-import { adminBaseUrl } from '../config'
 
 export const JsonFetcher = (url: string) => {
   return url
@@ -9,5 +7,3 @@ export const JsonFetcher = (url: string) => {
         .then((r) => r.data)
     : Promise.reject('No URL')
 }
-
-export const GraphQlFetcher = (query: string) => request(adminBaseUrl + '/graphql', query)

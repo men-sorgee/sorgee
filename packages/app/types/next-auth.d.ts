@@ -1,6 +1,6 @@
 import NextAuth, { DefaultSession } from 'next-auth'
 import { JWT, DefaultJWT } from 'next-auth/jwt'
-import { Profile } from '@/lib/models/users'
+import { Profile } from 'lib/models/users'
 
 declare module 'next-auth' {
   /**

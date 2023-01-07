@@ -1,13 +1,14 @@
-import { useMetaContext } from 'lib/hooks'
+import { useMeta } from 'hooks/use-meta'
 import Head from 'next/head'
-import { getAssetUrl } from '../../lib/utils'
-
-export default function AppHead() {
-  const { title, description, url, image } = useMetaContext()
+import { getAssetUrl } from 'lib/utils'
+interface Props {}
+const Meta = (_props: Props) => {
+  const { title, description, url, image } = useMeta()
   const img = image ? getAssetUrl(image) : null
+
   return (
     <Head>
-      <title>{title} :: GuysNHeat</title>
+      <title key="title">{title}</title>
       <link rel="icon" href="/favicon.ico" />
       <meta name="robots" content="follow, index" />
       <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -38,3 +39,5 @@ export default function AppHead() {
     </Head>
   )
 }
+
+export default Meta

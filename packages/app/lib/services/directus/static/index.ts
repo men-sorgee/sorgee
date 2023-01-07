@@ -22,7 +22,7 @@ const get_page = `query getPage($id: ID!) {
     content(filter: { status: { _eq: "published" } }) {
       id
       name
-      container
+      columns
       container_classes
       type
       html
@@ -37,6 +37,7 @@ const get_page = `query getPage($id: ID!) {
       markdown
       status
     }
+    next
   }
 }
 ` // require('./queries/get_page.gql');
@@ -62,7 +63,7 @@ const find_page = `query findPage($slug: String) {
     content(filter: { status: { _eq: "published" } }) {
       id
       name
-      container
+      columns
       container_classes
       type
       html
@@ -77,6 +78,7 @@ const find_page = `query findPage($slug: String) {
       markdown
       status
     }
+    next
   }
 }
 `
@@ -116,7 +118,7 @@ const all_pages = `
     content(filter: { status: { _eq: "published" } }) {
       id
       name
-      container
+      columns
       container_classes
       type
       html
@@ -130,7 +132,9 @@ const all_pages = `
       control
       markdown
       status
+      
     }
+    next
   }
 }
 `

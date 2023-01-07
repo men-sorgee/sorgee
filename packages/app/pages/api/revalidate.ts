@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { ApiResponse } from '../../lib/models'
-import { withMethods } from '../../lib/utils/server'
+import { ApiResponse } from 'lib/models'
+import { withMethods } from 'lib/utils/server'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {

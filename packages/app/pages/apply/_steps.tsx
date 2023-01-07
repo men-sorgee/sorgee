@@ -1,17 +1,43 @@
-import { Steps } from 'react-daisyui'
+import { Steps, Step, useSteps } from 'chakra-ui-steps'
 import { ApplicationStatus } from 'lib/models'
-
+import { useEffect } from 'react'
+import { Show, Hide } from '@chakra-ui/react'
 export default function ApplicationSteps({ status }: { status: string }) {
-  const steps = ['Authentication', 'Registration', 'Identification', 'Verification', 'Agreement']
+  const steps = ['Registration', 'Identification', 'Verification', 'Agreement']
+  const { activeStep, setStep } = useSteps({
+    initialStep: -1,
+  })
+  useEffect(() => {
+    if (status && activeStep == -1) setStep(ApplicationStatus[status])
+  }, [status])
   return (
-    <Steps horizontal className="mt-8 w-full">
-      {steps.map((step, index) => (
-        <Steps.Step
-          color={ApplicationStatus[status] >= index ? 'primary' : 'ghost'}
-          title={step}
-          key={index}
-        />
-      ))}
-    </Steps>
+    <>
+      <Show above="sm">
+        <Steps
+          activeStep={activeStep}
+          my={8}
+          colorScheme="primary"
+          color="white"
+          responsive={false}
+        >
+          {steps.map((step, index) => (
+            <Step key={index} label={step} color="white" />
+          ))}
+        </Steps>
+      </Show>
+      <Hide above="sm">
+        <Steps
+          activeStep={activeStep}
+          my={8}
+          colorScheme="primary"
+          color="white"
+          responsive={false}
+        >
+          {steps.map((step, index) => (
+            <Step key={index} color="white" title={step} />
+          ))}
+        </Steps>
+      </Hide>
+    </>
   )
 }

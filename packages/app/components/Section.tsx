@@ -1,10 +1,10 @@
 import Blocks from 'editorjs-blocks-react-renderer'
 import { PageContent } from 'lib/models'
-
+import { Image, SimpleGrid } from '@chakra-ui/react'
 import Markdown from './ui/Markdown'
 
 export default function Section({ content }: { content: PageContent }) {
-  const { container, container_classes, type } = content
+  const { columns, container_classes, type } = content
   switch (type) {
     case 'control':
       if (!content?.control?.version) return null
@@ -19,7 +19,7 @@ export default function Section({ content }: { content: PageContent }) {
       )
     case 'image':
       return (
-        <img
+        <Image
           className={`w-full ${container_classes} `}
           src={`/api/asset/${content.image.id}`}
           alt={content.image.description}
@@ -30,18 +30,19 @@ export default function Section({ content }: { content: PageContent }) {
       )
     case 'html':
       return (
-        <section
-          className={`grid grid-cols-1 md:${container} ${container_classes} justify-evenly gap-4`}
+        <SimpleGrid
+          as="section"
+          spacing={4}
+          columns={columns}
+          className={container_classes}
           dangerouslySetInnerHTML={{ __html: content.html }}
-        ></section>
+        ></SimpleGrid>
       )
     case 'md':
       return (
-        <section
-          className={`grid grid-cols-1 md:${container} ${container_classes} justify-evenly gap-4`}
-        >
+        <SimpleGrid as="section" spacing={4} columns={columns} className={container_classes}>
           <Markdown content={content.markdown} />
-        </section>
+        </SimpleGrid>
       )
   }
 }

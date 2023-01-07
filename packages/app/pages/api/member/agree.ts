@@ -1,6 +1,6 @@
 import { updateUser } from 'lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { AgreementData, ApiResponse, ApplicationStatus, MemberLevel } from '@/lib/models'
+import { AgreementData, ApiResponse, ApplicationStatus, MemberLevel } from 'lib/models'
 import { sendNotificationEmail, updateSendGrid } from 'lib/services/sendgrid/server'
 import { withApplicant, withMethods } from 'lib/utils/server'
 

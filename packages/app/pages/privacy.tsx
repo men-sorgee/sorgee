@@ -1,5 +1,5 @@
 import Script from 'next/script'
-import { setMeta } from 'lib/hooks'
+import { setMeta } from 'hooks'
 
 export default function Learn() {
   setMeta('Privacy Policy')

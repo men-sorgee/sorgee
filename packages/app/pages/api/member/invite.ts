@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { ApiResponse, InviteLink } from '@/lib/models'
+import { ApiResponse, InviteLink } from 'lib/models'
 import { withMember, withMethods } from 'lib/utils/server'
 import { sendNotificationEmail } from 'lib/services/sendgrid/server'
-import { createUser } from '../../../lib/services/directus/server'
+import { createUser } from 'lib/services/directus/server'
 
 async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {

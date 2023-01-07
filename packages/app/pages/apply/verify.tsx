@@ -1,8 +1,8 @@
-import { useMember } from 'lib/hooks/use-member'
+import { useMember } from 'hooks/use-member'
 import { useRouter } from 'next/router'
 import { useState, ChangeEvent } from 'react'
 import ApplicationSteps from './_steps'
-import { Button } from 'react-daisyui'
+import { Button, Stack, Text, Heading, VStack, HStack, Input } from '@chakra-ui/react'
 import Page from 'components/Page'
 import FieldCheckbox from 'components/forms/FieldCheckbox'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -20,7 +20,6 @@ function Verification() {
       title="Identification"
       loading={loading || completed}
       requireAuth={true}
-      sectionClass="gradient p-4"
       header={<ApplicationSteps status={'verify'} />}
     >
       {member?.id && (
@@ -115,26 +114,26 @@ function Form({ code, router, setCompleted }): JSX.Element {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <p className="text-xl">
+        <Text fontSize="xl">
           To verify you are who you say you are, please take a selfie while holding a piece of paper
           with the following verification-code written on it.
-        </p>
+        </Text>
 
-        <div className="flex flex-col gap-1.5 text-center md:py-4">
-          <h2 className="my-0 font-sans text-6xl">{code}</h2>
+        <Stack>
+          <Heading as="h2" size="4xl" textAlign="center">
+            {code}
+          </Heading>
           {previewUrl ? (
-            <div className="w-full">
-              <img
-                alt="file uploader preview"
-                src={previewUrl}
-                width={300}
-                height={350}
-                className="mx-auto"
-              />
-            </div>
+            <img
+              alt="file uploader preview"
+              src={previewUrl}
+              width={300}
+              height={350}
+              style={{ margin: '0 auto' }}
+            />
           ) : (
             <label className="flex h-full cursor-pointer flex-col items-center justify-center py-3 transition-colors duration-150 hover:text-gray-600">
-              <input
+              <Input
                 className="file-input-bordered file-input-primary file-input w-full max-w-xs"
                 onChange={onFileUploadChange}
                 type="file"
@@ -142,47 +141,47 @@ function Form({ code, router, setCompleted }): JSX.Element {
             </label>
           )}
           {member?.photo_denial_reason && (
-            <p className="text-lg text-red-500">
+            <Text className="text-lg text-red-500">
               Your verification photo was denied.
               {member.photo_denial_reason}
-            </p>
+            </Text>
           )}
-          <p className="text-xl">
+          <Text fontSize="xl" textAlign="center">
             <strong>
               Be sure your face and code is clearly visible, with no sunglasses or hats.
             </strong>
             <br />
             This photo will not be shared with anyone and will not be used for your profile.
-          </p>
-          <div className="flex justify-center">
+          </Text>
+          <VStack alignItems="center" justify="middle" textAlign="center">
             <FieldCheckbox
               field="verify"
               label="I certify that the photo I am submitting is me."
               registerOptions={{ required: 'Certification is Required' }}
             />
-          </div>
-          <ErrorMessage
-            render={(m) => <p className="text-red-500">{m.message}</p>}
-            errors={errors}
-            name={'file'}
-          />
+            <ErrorMessage
+              render={(m) => <Text className="text-red-500">{m.message}</Text>}
+              errors={errors}
+              name={'file'}
+            />
+          </VStack>
 
-          <div className="mx-auto mt-8 flex justify-between gap-4">
-            <Button color="info" disabled={!previewUrl} onClick={onCancelFile}>
+          <HStack spacing={4} justify="center">
+            <Button color="info" size="lg" disabled={!previewUrl} onClick={onCancelFile}>
               Clear
             </Button>
             {member?.photo && !member?.photo_denial_reason && (
-              <Button type="submit" onClick={handleSubmit(skip)} color="info">
+              <Button type="submit" size="lg" onClick={handleSubmit(skip)} color="primary.500">
                 Use Existing
               </Button>
             )}
             {file && (
-              <Button type="submit" disabled={!previewUrl} color="accent">
+              <Button type="submit" size="lg" disabled={!previewUrl} colorScheme="accent">
                 Upload
               </Button>
             )}
-          </div>
-        </div>
+          </HStack>
+        </Stack>
       </form>
     </FormProvider>
   )

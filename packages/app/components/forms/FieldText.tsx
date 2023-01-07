@@ -1,27 +1,26 @@
+import { chakra } from '@chakra-ui/react'
 import { TextareaHTMLAttributes } from 'react'
 import { useFormContext, RegisterOptions } from 'react-hook-form'
 import FieldWrapper from './FieldWrapper'
+import { Textarea, TextareaProps } from '@chakra-ui/react'
+type Props = TextareaProps &
+  TextareaHTMLAttributes<HTMLInputElement> & {
+    field: string
+    label: string
+    help?: string
+    registerOptions?: RegisterOptions
+    className?: string
+  }
 
-type Props = TextareaHTMLAttributes<HTMLInputElement> & {
-  field: string
-  label: string
-  help?: string
-  registerOptions?: RegisterOptions
-  className?: string
-}
-
-export default function TextField(props: Props) {
-  const { field, label, help, registerOptions = {}, className } = props
-  const inputProps = Object.entries(props)
-    .filter(([key]) => !['field', 'label', 'help', 'registerOptions', 'className'].includes(key))
-    .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+const TextField = (props: Props) => {
+  const { field, label, help, registerOptions = {}, className, ...opts } = props
   const { register, getFieldState, formState } = useFormContext()
   const { error } = getFieldState(field, formState)
-  const classes = error ? 'textarea textarea-error' : 'textarea'
+  const classes = error ? 'error' : ''
   return (
     <FieldWrapper field={field} label={label} help={help} className={className}>
-      <textarea
-        {...inputProps}
+      <Textarea
+        {...opts}
         id={field}
         {...register(field as any, registerOptions)}
         className={classes}
@@ -29,3 +28,5 @@ export default function TextField(props: Props) {
     </FieldWrapper>
   )
 }
+
+export default chakra(TextField)

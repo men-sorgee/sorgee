@@ -1,6 +1,6 @@
 import client from '@sendgrid/client'
 import mail, { MailDataRequired } from '@sendgrid/mail'
-import { MemberLevel, Profile } from '@/lib/models'
+import { MemberLevel, Profile } from 'lib/models'
 import { convertMarkdownToHtml } from '../remark'
 
 function getClient() {

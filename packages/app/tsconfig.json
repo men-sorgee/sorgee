@@ -14,11 +14,13 @@
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "baseUrl": ".",
     "incremental": true,
     "jsx": "preserve",
+    "jsxImportSource": "@emotion/react",
     "paths": {
       "@/components/*": [
         "components/*"
@@ -28,6 +30,9 @@
       ],
       "@/styles": [
         "styles/*"
+      ],
+      "@/hooks/*": [
+        "hooks/*"
       ]
     },
     "plugins": [
@@ -41,10 +46,11 @@
     "**/*.ts",
     "**/*.tsx",
     "next.config.ts",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "theme.tsx"
   ],
   "exclude": [
     ".idea/*",
-    ".next/*",
+    ".next/*"
   ]
 }

@@ -1,6 +1,6 @@
 // Service Calls ------------------------------------
 
-import { getAdminClient } from '../'
+import { getAdminClient } from '..'
 import {
   User,
   memberFields,
@@ -10,7 +10,8 @@ import {
   Applicant,
   applicantFields,
   UserEmailEvent,
-} from '@/lib/models'
+} from 'lib/models'
+import { FieldFilter } from '@directus/sdk'
 
 export async function createUser(member: Partial<User>): Promise<User> {
   const adminClient = await getAdminClient()
@@ -42,6 +43,7 @@ export async function findUser<T = Profile>(
   fields = profileFields
 ): Promise<T | null> {
   const adminClient = await getAdminClient()
+  // @ts-ignore
   const existingUserQuery = await adminClient.items('users').readByQuery({
     filter: {
       email: {
@@ -55,6 +57,18 @@ export async function findUser<T = Profile>(
   const user = existingUserQuery?.data?.length ? existingUserQuery.data[0] : null
 
   return user as T
+}
+
+export async function searchUsers<T = Profile>(
+  filter: FieldFilter<User>,
+  fields = profileFields
+): Promise<T[] | null> {
+  const adminClient = await getAdminClient()
+  const { data: users } = await adminClient.items('users').readByQuery({
+    filter,
+    fields: [...fields],
+  })
+  return users
 }
 
 export async function getApplicant(id: string): Promise<Applicant | null> {
@@ -100,7 +114,7 @@ export async function listUsersByLevel<T = Member>(
   fields = memberFields
 ): Promise<T[]> {
   const adminClient = await getAdminClient()
-  const users = await adminClient.items('users').readByQuery({
+  const { data } = await adminClient.items('users').readByQuery({
     filter: {
       user_type: {
         _eq: type,
@@ -111,7 +125,7 @@ export async function listUsersByLevel<T = Member>(
     },
     fields: [...fields],
   })
-  return users.data as T[]
+  return data as T[]
 }
 
 export * from './auth'

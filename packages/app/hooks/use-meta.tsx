@@ -2,6 +2,7 @@
 import { useRouter } from 'next/router'
 import { MetaProps } from 'lib/models'
 import { createContext, useContext, useEffect, useState } from 'react'
+import { useSite } from './use-site'
 
 type Context = MetaProps & {
   setTitle: (title: string) => void
@@ -13,17 +14,21 @@ type Context = MetaProps & {
   path: string
 }
 
-export const MetaContext = createContext<Context | undefined>(undefined)
-export function MetaContextProvider(props: any) {
+export const MetaContext = createContext<Context>(undefined)
+
+export function MetaProvider(props: any) {
+  const { site, loading } = useSite()
   const router = useRouter()
-  const [title, setTitle] = useState<string>()
-  const [description, setDescription] = useState<string>()
+  const [title, setTitle] = useState<string>('Loading...')
+  const [description, setDescription] = useState<string>(site?.description)
   const [image, setImage] = useState<string>()
   const [metaBlob, setMetaBlob] = useState<any>()
 
   const meta: Context = {
     title,
-    setTitle,
+    setTitle: (title: string) => {
+      setTitle(`${title} ::  ${site?.site_title || 'GuysNHeat'}`)
+    },
     description,
     setDescription,
     basePath: router.basePath,
@@ -38,23 +43,10 @@ export function MetaContextProvider(props: any) {
   return <MetaContext.Provider value={meta}>{props.children}</MetaContext.Provider>
 }
 
-export const useMetaContext = () => {
-  const context = useContext(MetaContext)
-  if (context === undefined) {
-    throw new Error(`useMetaContext must be used within a MetaContextProvider.`)
-  }
-  return context
-}
+export const useMeta = () => useContext(MetaContext)
 
 export const setMeta = (title: string, description?: string, image?: string) => {
-  const {
-    title: t,
-    setTitle,
-    description: d,
-    setDescription,
-    image: i,
-    setImage,
-  } = useMetaContext()
+  const { title: t, setTitle, description: d, setDescription, image: i, setImage } = useMeta()
 
   useEffect(() => {
     if (title && title != t) setTitle(title)

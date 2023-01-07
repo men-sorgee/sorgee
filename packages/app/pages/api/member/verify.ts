@@ -1,6 +1,6 @@
 import { updateUser, uploadFile, UploadFolder } from 'lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { ApiResponse, ApplicationStatus } from '@/lib/models'
+import { ApiResponse, ApplicationStatus } from 'lib/models'
 import { withMember, withMethods } from 'lib/utils/server'
 import { sendNotificationEmail } from 'lib/services/sendgrid/server'
 

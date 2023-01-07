@@ -1,4 +1,4 @@
-import { getAdminClient } from '../'
+import { getAdminClient } from '..'
 import { User, UserAccount, UserSession, UserVerificationToken } from 'lib/models'
 
 export async function recordUserLogin(id: string) {

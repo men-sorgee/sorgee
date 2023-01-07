@@ -1,6 +1,16 @@
 import moment, { Moment } from 'moment'
 import { ReactNode, useState } from 'react'
-import { Card, Alert } from 'react-daisyui'
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Alert,
+  HStack,
+  Heading,
+  VStack,
+  Divider,
+} from '@chakra-ui/react'
 import Markdown from './Markdown'
 import { Invite } from 'lib/models'
 
@@ -13,31 +23,49 @@ export default function EventCard({
 }) {
   const [eventDate] = useState<Moment>(moment(invite.datetime))
   return (
-    <Card className="gradient not-prose mx-auto max-w-lg text-center">
-      <div className="flex items-center justify-between self-stretch  align-middle">
-        <h2 className="m-0 w-3/4 text-center text-xl !text-white">
-          {invite.name}
-          <br />@ {eventDate.format('h:mm A')}
-        </h2>
-
-        <h3 className="m-0 bg-primary-900 px-8 py-2 text-center">
-          {eventDate.format('MMM')}
-          <br />
-          {eventDate.format('D')}
-        </h3>
-      </div>
-      <Card.Body className="border-y-2 border-primary-900">
-        <Markdown content={invite.description} />
-        <Alert className="italics mt-2 text-sm">
-          Location announced on the day of the event and is sent to confirmed attendees only. Events
-          are subject to change or cancellation, depending upon member interest. We will communicate
-          any changes to the event 24 hours in advance.
-        </Alert>
-      </Card.Body>
-
-      <Card.Actions className="border-t-1 border-primary-700 bg-primary-900">
-        {children}
-      </Card.Actions>
+    <Card p={0} mt={10}>
+      <CardHeader p={0}>
+        <HStack alignItems="stretch" spacing={0}>
+          <Heading
+            bg={'primary.400'}
+            as="h2"
+            size="xl"
+            color="white"
+            textAlign={'center'}
+            w={'75%'}
+            m={0}
+            p={4}
+          >
+            {invite.name}
+            <br />@ {eventDate.format('h:mm A')}
+          </Heading>
+          <Heading
+            as="h3"
+            bg={'primary.900'}
+            m={0}
+            w={'25%'}
+            p={4}
+            textAlign={'center'}
+            color={'white'}
+          >
+            {eventDate.format('MMM')}
+            <br />
+            {eventDate.format('D')}
+          </Heading>
+        </HStack>
+      </CardHeader>
+      <CardBody border={'solid 1px primary-900'} borderY={2}>
+        <VStack>
+          <Markdown content={invite.description} />
+          <Alert size={'sm'}>
+            Location announced on the day of the event and is sent to confirmed attendees only.
+            Events are subject to change or cancellation, depending upon member interest. We will
+            communicate any changes to the event 24 hours in advance.
+          </Alert>
+        </VStack>
+      </CardBody>
+      <Divider />
+      <CardFooter>{children}</CardFooter>
     </Card>
   )
 }

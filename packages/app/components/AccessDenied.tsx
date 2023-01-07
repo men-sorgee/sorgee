@@ -1,16 +1,20 @@
 import { signIn, useSession } from 'next-auth/react'
+import { LinkButton } from './ui'
+import { Box, Heading, Text } from '@chakra-ui/react'
 
 const AccessDenied = () => {
   const { status } = useSession()
   return (
     <>
-      <h1>Access Denied</h1>
-      {status === 'authenticated' && <p>You do not have permission to view this page.</p>}
+      <Heading as="h1">Access Denied</Heading>
+      {status === 'authenticated' && (
+        <Heading as="h2">You do not have permission to view this page.</Heading>
+      )}
       {status === 'unauthenticated' && (
-        <div>
-          <p>You must be signed in to view this page.</p>
-          <a
-            className="btn-primary btn-block btn text-blue-500"
+        <Box>
+          <Text>You must be signed in to view this page.</Text>
+          <LinkButton
+            colorScheme="primary"
             href="/api/auth/signin"
             onClick={(e) => {
               e.preventDefault()
@@ -18,8 +22,8 @@ const AccessDenied = () => {
             }}
           >
             Sign in
-          </a>
-        </div>
+          </LinkButton>
+        </Box>
       )}
     </>
   )

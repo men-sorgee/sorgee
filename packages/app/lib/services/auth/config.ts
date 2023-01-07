@@ -6,11 +6,7 @@ import MicrosoftProvider from 'next-auth/providers/azure-ad'
 import YahooProvider from './yahoo'
 import EmailProvider from 'next-auth/providers/email'
 import { authAdapter } from './adapter'
-import {
-  sendNotificationEmail,
-  SendGridTemplate,
-  updateSendGrid,
-} from 'lib/services/sendgrid/server'
+import { sendNotificationEmail, updateSendGrid } from 'lib/services/sendgrid/server'
 import {
   createAccount,
   createUser,
@@ -18,8 +14,7 @@ import {
   findUserByAccount,
   recordUserLogin,
 } from 'lib/services/directus/server/users'
-import { Member, memberFields, Profile, UserStatusType, User } from '@/lib/models'
-
+import { Member, memberFields, Profile, User, UserStatusType } from 'lib/models'
 const allowedStatuses: UserStatusType[] = ['new', 'active', 'inactive', 'stale']
 export const authOptions: AuthOptions = {
   adapter: authAdapter,
@@ -30,7 +25,7 @@ export const authOptions: AuthOptions = {
     updateAge: 1 * 24 * 60 * 60, // 1 day
   },
   theme: {
-    logo: 'https://static.guysnheat.com/static/logo.png',
+    logo: '/logo.svg',
     brandColor: '#0038A8', // brand.colors.primary.DEFAULT,
     colorScheme: 'dark',
   },
@@ -142,6 +137,7 @@ export const authOptions: AuthOptions = {
         '806946159244-d8tvf8n5rcb9hshl4agk2lfgli6vdmhe.apps.googleusercontent.com',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       allowDangerousEmailAccountLinking: true,
+      
     }),
     DiscordProvider({
       clientId: process.env.DISCORD_CLIENT_ID || '1027516437134319648',
@@ -169,7 +165,6 @@ export const authOptions: AuthOptions = {
       allowDangerousEmailAccountLinking: true,
     }),
     EmailProvider({
-      from: 'system@guysnheat.com',
       async sendVerificationRequest({ identifier: email, url }) {
         await sendNotificationEmail(
           email,

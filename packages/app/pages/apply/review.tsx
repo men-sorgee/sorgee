@@ -1,7 +1,8 @@
-import { useMember } from 'lib/hooks/use-member'
+import { useMember } from 'hooks/use-member'
 import { useRouter } from 'next/router'
 import ApplicationSteps from './_steps'
 import Page from 'components/Page'
+import { Text, Heading } from '@chakra-ui/react'
 
 function Review() {
   const router = useRouter()
@@ -17,18 +18,19 @@ function Review() {
       title="Verification Review"
       loading={loading}
       requireAuth={true}
-      sectionClass="gradient p-4"
       header={<ApplicationSteps status={'review'} />}
     >
       <>
-        <h2 className="text-center">Good things cum to those that wait!</h2>
-        <p className="text-center text-xl">
+        <Heading as="h2" size="xl">
+          Good things cum to those that wait!
+        </Heading>
+        <Text fontSize="2xl">
           Thank you for submitting your application and verification photo.
-        </p>
-        <p className="text-center">
+        </Text>
+        <Text fontSize="2xl">
           Your application is currently being reviewed by our team. You will receive an email with
           our decision within 7 days.
-        </p>
+        </Text>
       </>
     </Page>
   )

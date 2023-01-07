@@ -1,4 +1,4 @@
-import { User, UserAccount, Notification } from './directus'
+import { User, UserAccount, Notification, UserNotification } from './directus'
 
 type Color = {
   DEFAULT: string
@@ -59,14 +59,15 @@ export enum ApplicationStatus {
   denied = -1,
 }
 
-export type NotificationType = 'event' | 'message'
-
-export type AppNotification = Notification & {
-  id: string
-  type: NotificationType
-  message: string
-  link: string
+export type AppNotification = {
+  id: number
   status: NotificationStatus
+  link?: string
+  subject?: string
+  message?: string
+  body?: string
+  date_sent?: string
+  date_created?: string
 }
 
 export type UserStatusType = 'new' | 'active' | 'inactive' | 'stale' | 'deleted' | 'banned'

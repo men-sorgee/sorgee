@@ -1,6 +1,6 @@
 import { baseUrl } from 'lib/config'
 import { listActivePages } from 'lib/services/directus/static'
-import { Page } from '@/lib/models'
+import { Page } from 'lib/models'
 import { cache } from 'react'
 
 function generateSiteMap(pages: Page[]) {

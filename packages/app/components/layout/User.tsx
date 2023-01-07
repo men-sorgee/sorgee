@@ -1,105 +1,177 @@
 import { signIn, useSession, signOut } from 'next-auth/react'
 import { useEffect, useState } from 'react'
-import { Dropdown, Avatar, Badge } from 'react-daisyui'
+import {
+  Badge,
+  Box,
+  Button,
+  Center,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  MenuDivider,
+  Avatar,
+  Spinner,
+  Link,
+  Text,
+  AvatarBadge,
+} from '@chakra-ui/react'
 import { ApplicationStatus, Member, MemberLevel } from 'lib/models'
 import { LinkButton } from 'components/ui'
-import { useNotifications } from 'lib/hooks'
+import Notifications from './Notifications'
 import { getAssetUrl } from 'lib/utils'
-interface Props {
-  setVisible: (visible: boolean) => void
-}
+import {
+  CalendarIcon,
+  CogIcon,
+  ExternalLinkIcon,
+  UserGroupIcon,
+  LogoutIcon,
+} from '@heroicons/react/outline'
+import { useSite } from 'hooks/use-site'
+import { UserBadge } from 'components/ui'
+interface Props {}
 
-function getLetters(name: string) {
-  return name
-    .split(' ')
-    .map((d) => d[0])
-    .join('')
-}
-
-const UserAvatar = ({ setVisible }: Props) => {
+const UserAvatar = (_props: Props) => {
+  const [notificationBadge, setNotificationBadge] = useState<boolean>(false)
   const [member, setMember] = useState<Member>(null)
   const { data: session, status } = useSession()
+  const [loading, setLoading] = useState<boolean>(true)
   const [photoSrc, setPhotoSrc] = useState<string | null>(null)
-  const [letters, setLetters] = useState<string | null>(null)
+  const [name, setName] = useState<string | null>(null)
   const [level, setLevel] = useState<number>(-1)
-  const [notificationCount, setNotificationCount] = useState<[number, number]>([0, 0])
-  const { notifications } = useNotifications(status == 'authenticated')
-  const messages = notifications?.filter((n) => n.type == 'message') || []
-  const newEvents = notifications?.filter((n) => n.type == 'event') || []
-  const [messageCount, eventCount] = notificationCount
+  const { site } = useSite()
   const {
     user: { application_status },
   } = session || { user: {} }
-
+  const showApply = !site?.invite_only
   useEffect(() => {
+    if (!loading && status == 'loading') {
+      setLoading(true)
+    }
+    if (loading && status != 'loading') {
+      setLoading(false)
+    }
     if (status == 'authenticated' && session.user) {
-      setNotificationCount([messageCount, eventCount])
       setMember(session.user as Member)
-      const { picture, name, nickname } = session.user
+      const { picture, first_name, last_name, nickname } = session.user
       if (!photoSrc && picture) setPhotoSrc(getAssetUrl(picture))
-      const initials = name ? getLetters(name) : nickname ? getLetters(nickname) : null
-      if (!letters && initials) setLetters(initials)
+      if (!name) setName(nickname || `${first_name} ${last_name}}`)
       if (level == -1) setLevel(MemberLevel[session.user.user_type || 'subscriber'])
     }
-  }, [letters, photoSrc, session?.user, level, notifications, messageCount, eventCount])
+  }, [notificationBadge, member, name, photoSrc, session?.user, level, status, loading, site])
 
   const isMember = member && level >= 3 && application_status == 'approved'
   const isApplicant = ApplicationStatus[application_status] < ApplicationStatus['approved']
+  if (loading) return <Spinner />
   return (
     <>
       {member ? (
-        <Dropdown
-          className="mr-2 bg-black text-white"
-          onClick={() => setVisible(false)}
-          color={'primary'}
-        >
-          <Avatar
-            shape="circle"
-            className="cursor-pointer rounded-full ring-2 ring-accent"
-            color={'primary'}
-            letters={letters}
-            src={photoSrc}
-            size={'sm'}
+        <>
+          <Menu placement="bottom">
+            <MenuButton cursor={'pointer'}>
+              <Avatar bg="accent.500" cursor={'pointer'} name={name} src={photoSrc} color="white">
+                {notificationBadge && <AvatarBadge borderWidth="thin" boxSize="1em" bg="red" />}
+              </Avatar>
+            </MenuButton>
+
+            <MenuList bg="black" alignItems={'center'}>
+              <Box p={4} m={2} bgGradient="linear(to-bl, primary.300, accent.300)">
+                <Center>
+                  <Avatar src={photoSrc} color="white" bg="primary.500" />
+                </Center>
+                <Center>
+                  <Text fontWeight="bold" color="black">
+                    {member?.nickname || member.first_name} <br />
+                  </Text>
+                </Center>
+                <Center>
+                  <UserBadge user_type={member?.user_type} />
+                </Center>
+              </Box>
+              <MenuDivider />
+              {isApplicant && (
+                <MenuItem
+                  icon={<ExternalLinkIcon color={'white'} width={'1.5rem'} />}
+                  bg="black"
+                  as={Link}
+                  href="/apply/resume"
+                >
+                  Continue Application
+                </MenuItem>
+              )}
+              {isMember && (
+                <>
+                  <Notifications setNotificationBadge={setNotificationBadge} />
+                  <MenuItem
+                    icon={<CalendarIcon color={'white'} width={'1.5rem'} />}
+                    bg="black"
+                    as={Link}
+                    href="/member/events"
+                  >
+                    Events
+                  </MenuItem>
+                  <MenuItem
+                    icon={<CogIcon color={'white'} width={'1.5rem'} />}
+                    bg="black"
+                    as={Link}
+                    href="/member/account"
+                  >
+                    Account
+                  </MenuItem>
+
+                  <MenuItem
+                    icon={<UserGroupIcon color={'white'} width={'1.5rem'} />}
+                    bg="black"
+                    as={Link}
+                    href="/member/invite"
+                  >
+                    Invite
+                  </MenuItem>
+                </>
+              )}
+              <MenuDivider />
+              <MenuItem
+                icon={<LogoutIcon color={'white'} width={'1.5rem'} />}
+                bg="black"
+                as={Link}
+                href={`/api/auth/signout`}
+                onClick={() => {
+                  signOut({ callbackUrl: '/' })
+                }}
+              >
+                Logout
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </>
+      ) : (
+        <>
+          <LinkButton
+            href={`/api/auth/signin`}
+            fontWeight={600}
+            color={'white'}
+            bg={'primary'}
+            onClick={(e) => {
+              e.preventDefault()
+              signIn(null, { callbackUrl: '/member/account' })
+            }}
           >
-            {letters}
-          </Avatar>
-
-          <Dropdown.Menu>
-            {isMember && (
-              <>
-                <Dropdown.Item href="/member/events">
-                  Events
-                  {newEvents.length > 0 && <Badge color="accent">{newEvents.length}</Badge>}
-                </Dropdown.Item>
-                <Dropdown.Item href="/member/account">Account</Dropdown.Item>
-                {messages.length > 0 && (
-                  <Dropdown.Item href="/member/account">
-                    Notifications
-                    <Badge color="accent">{messages.length}</Badge>
-                  </Dropdown.Item>
-                )}
-
-                <Dropdown.Item href="/member/invite">Invite</Dropdown.Item>
-              </>
-            )}
-            {isApplicant && (
-              <>
-                <Dropdown.Item href="/apply/resume">Continue Application</Dropdown.Item>
-              </>
-            )}
-            <Dropdown.Item
-              onClick={() => {
-                signOut({ callbackUrl: '/' })
+            members
+          </LinkButton>
+          {showApply && (
+            <LinkButton
+              href={`/apply`}
+              fontWeight={600}
+              colorScheme={'accent'}
+              onClick={(e) => {
+                e.preventDefault()
+                signIn(null, { callbackUrl: '/apply' })
               }}
             >
-              Logout
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      ) : (
-        <LinkButton href={`/enter`} color="ghost">
-          Enter Site
-        </LinkButton>
+              apply
+            </LinkButton>
+          )}
+        </>
       )}
     </>
   )
