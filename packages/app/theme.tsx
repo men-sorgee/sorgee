@@ -143,12 +143,12 @@ const custom: Partial<ChakraTheme> = {
         _dark: 'green.300',
       },
       primary: {
-        default: 'primary.600',
-        _dark: 'primary.300',
+        default: 'primary.500',
+        _dark: 'primary.700',
       },
       secondary: {
         default: 'secondary.500',
-        _dark: 'secondary.500',
+        _dark: 'secondary.700',
       },
     },
   },

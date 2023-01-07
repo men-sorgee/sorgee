@@ -6,13 +6,10 @@ import { updateSendGrid } from 'lib/services/sendgrid/server'
 
 async function Subscribe(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
-    if (!withMethods(req, ['POST'])) return
+    withMethods(req, ['POST'])
 
     const { name, email } = req.body as SubscriptionData
-
-    const [first, ...remaining] = name.split(' ')
-    const last = remaining?.join(' ') || null
-
+    let [first, last] = name?.split(' ') || ['Prospective', 'Brother']
     let member = await findUser(email)
     if (member) {
       await updateUser(member.id, {

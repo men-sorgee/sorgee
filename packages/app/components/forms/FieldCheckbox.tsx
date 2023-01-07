@@ -20,10 +20,9 @@ const CheckboxField = (props: Props) => {
   const classes = error ? 'error' : ''
 
   return (
-    <FieldWrapper field={field} help={help} className={className}>
-      {children}
+    <FieldWrapper field={field} label={label} help={help} className={className}>
       <Checkbox {...opts} {...register(field, registerOptions)} {...opts} className={classes}>
-        {label}
+        {children || label}
       </Checkbox>
     </FieldWrapper>
   )

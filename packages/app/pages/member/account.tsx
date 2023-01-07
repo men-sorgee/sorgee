@@ -1,10 +1,18 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
-import { Applicant, FormOptions, User } from 'lib/models'
+import { Applicant, FormOptions, User, MemberLevel } from 'lib/models'
 import { getFieldOptions } from 'lib/services/directus/server'
 import { useMember } from 'hooks/use-member'
 import { useEffect, useState } from 'react'
-import { FieldInput, FieldSelect, FieldWrapper, FieldText, FieldCheckboxes } from 'components/forms'
+import {
+  FieldInput,
+  FieldSelect,
+  FieldWrapper,
+  FieldRadioButtons,
+  FieldText,
+  FieldCheckboxes,
+  FieldCheckbox,
+} from 'components/forms'
 import {
   Alert,
   Button,
@@ -13,25 +21,27 @@ import {
   Tab,
   TabPanels,
   TabPanel,
-  Toast,
   Stack,
-  HStack,
-  Show,
   Text,
-  Heading,
   SimpleGrid,
   GridItem,
   Input,
   InputGroup,
   InputRightAddon,
+  Box,
+  Avatar,
+  VStack,
+  Center,
+  Badge,
 } from '@chakra-ui/react'
 import Page from 'components/Page'
-import { LightBulbIcon } from '@heroicons/react/solid'
 import { useRouter } from 'next/router'
 import FieldSwitch from 'components/forms/FieldSwitch'
 import { useToast } from '@chakra-ui/react'
 import { ErrorMessage } from '@hookform/error-message'
-import { postJSON } from 'lib/utils'
+import { getAssetUrl, postJSON } from 'lib/utils'
+import { useSite } from '../../hooks/use-site'
+import { UserBadge } from '../../components/ui'
 
 export type PageProps = {
   spectrumOptions: FormOptions
@@ -56,6 +66,9 @@ export type PageProps = {
   loadPolicyOptions: FormOptions
   hivStatusOptions: FormOptions
   vaccinationStatusOptions: FormOptions
+  contactPreferenceOptions: FormOptions
+  myRolesOptions: FormOptions
+  hostEventOptions: FormOptions
 }
 
 export async function getServerSideProps(_context: NextPageContext) {
@@ -82,6 +95,9 @@ export async function getServerSideProps(_context: NextPageContext) {
     loadPolicyOptions: await getFieldOptions<User>('load_policy'),
     hivStatusOptions: await getFieldOptions<User>('hiv_status'),
     vaccinationStatusOptions: await getFieldOptions<User>('vaccinations'),
+    contactPreferenceOptions: await getFieldOptions<User>('contact_preference'),
+    myRolesOptions: await getFieldOptions<User>('my_roles'),
+    hostEventOptions: await getFieldOptions<User>('can_host_events'),
   }
   return { props }
 }
@@ -127,6 +143,9 @@ function Form(props: PageProps) {
     loadPolicyOptions,
     hivStatusOptions,
     vaccinationStatusOptions,
+    contactPreferenceOptions,
+    myRolesOptions,
+    hostEventOptions,
   } = props
   const [tabValue, setTabValue] = useState(Number(router.query.t) || 0)
 
@@ -144,11 +163,18 @@ function Form(props: PageProps) {
     setError,
     formState: { isSubmitting, errors },
   } = methods
+  const [photoSrc, setPhotoSrc] = useState<string | null>()
+  const [level, setLevel] = useState<number>(-1)
+  const { site } = useSite()
 
   useEffect(() => {
     if (tabValue !== Number(router.query.t || 0)) router.push(`/member/account?t=${tabValue}`)
-    return () => {}
-  }, [tabValue])
+    if (member) {
+      const { picture, first_name, last_name, nickname } = member
+      if (!photoSrc && picture) setPhotoSrc(getAssetUrl(picture))
+      if (level == -1) setLevel(MemberLevel[member?.user_type || 'subscriber'])
+    }
+  }, [tabValue, member, name, photoSrc, level, status])
 
   async function onSubmit(data: MemberFormData) {
     if (data.height_feet || data.height_inches) {
@@ -177,18 +203,42 @@ function Form(props: PageProps) {
   const required = { value: true, message: 'Required' }
   return (
     <>
+      <Stack spacing={3}>
+        <Avatar src={photoSrc} color="white" bg="primary.500" />
+        <UserBadge size="lg" user_type={member?.user_type} />
+      </Stack>
+
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="">
-          <Tabs defaultIndex={tabValue} onChange={(index) => setTabValue(index)}>
+          <Tabs
+            isFitted
+            align="center"
+            defaultIndex={tabValue}
+            onChange={(index) => setTabValue(index)}
+          >
             <TabList fontSize={{ base: 'md', md: 'lg' }} fontWeight="bold">
               <Tab>Private</Tab>
-              <Tab>Profile</Tab>
               <Tab>Events</Tab>
+              <Tab>Profile</Tab>
               <Tab>Interests</Tab>
+              <Tab>Attractions</Tab>
               <Tab>Health</Tab>
             </TabList>
             <TabPanels>
               <TabPanel p={0}>
+                <Alert
+                  bg={['primary.200', 'primary.700']}
+                  flexDirection="column"
+                  my={4}
+                  p={4}
+                  borderRadius="md"
+                  shadow="md"
+                >
+                  <Text w={['full']}>
+                    This information is private and can not be seen by any other member. It is used
+                    only for administrative purposes.
+                  </Text>
+                </Alert>
                 <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
                   <FieldInput
                     field="first_name"
@@ -206,7 +256,6 @@ function Form(props: PageProps) {
                   <FieldInput
                     field="phone"
                     label="Mobile Phone"
-                    help="Must be SMS-enabled. Used for optional verification or optional event reminders. Format: 123 456 7890"
                     registerOptions={{
                       pattern: {
                         value: /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
@@ -215,17 +264,27 @@ function Form(props: PageProps) {
                     }}
                     placeholder="000 456 7890"
                   />
+
+                  <FieldInput field="city" label="City" />
+                  <FieldInput field="state" label="State" value="Colorado" readOnly />
+
+                  <FieldRadioButtons
+                    w="full"
+                    field="contact_preference"
+                    label="Contact Preference"
+                    help="How would you like to be contacted?"
+                    formOptions={contactPreferenceOptions}
+                  />
+                  <FieldCheckbox
+                    field="needs_guidance"
+                    help="Our staff will reach out to you to help guide you along the way."
+                    label="Request Guidance"
+                  >
+                    Yes
+                  </FieldCheckbox>
                 </SimpleGrid>
 
-                <Alert
-                  as={Stack}
-                  direction="row"
-                  color="information"
-                  alignItems={'start'}
-                  my={4}
-                  borderRadius={'lg'}
-                  spacing={4}
-                >
+                <Alert bg="secondary" my={4} borderRadius="md" shadow="md">
                   <Stack direction={'column'} spacing={2}>
                     <Text>
                       <strong>Are you an exhibitionist?</strong> If so, you can opt-in to be a part
@@ -248,24 +307,100 @@ function Form(props: PageProps) {
                 </Alert>
               </TabPanel>
               <TabPanel p={0}>
-                <FieldInput
-                  field="nickname"
-                  label="Nickname"
-                  className="col-span-2 sm:col-span-4"
-                  registerOptions={{ required }}
-                />
+                <Alert
+                  bg={['primary.200', 'primary.700']}
+                  flexDirection="column"
+                  my={4}
+                  p={4}
+                  borderRadius="md"
+                  shadow="md"
+                >
+                  <Text>
+                    These settings let us know which events you are interested in attending. our
+                    system will auto-match you with events that meet your interests. You can also
+                    manually RSVP to events that interest you.
+                  </Text>
+                  <FieldSwitch
+                    field="event_invites"
+                    label="Get Invites to Events"
+                    help="Turn this on, if you want to be invited to events that meet your interests."
+                  />
+                </Alert>
+                <SimpleGrid spacing={4}>
+                  <FieldCheckboxes
+                    field="social_scenes"
+                    label="Social Activities"
+                    help="We host events to meet the demands of our brothers. Tell us what kind of events you are interested in."
+                    formOptions={eventOptions}
+                  />
+
+                  <FieldCheckboxes
+                    field="event_availability"
+                    label="Preferred Event Times"
+                    help="We host events to meet the demands of our brothers. Let us know what times work best in general"
+                    formOptions={timeOfDayOptions}
+                  />
+                </SimpleGrid>
+                <Text>
+                  Members who RSVP to events are expected to attend. Members that RSVP to event and
+                  do not attend, decrease the likelihood of getting invited again. We understand
+                  that things come up, but please be respectful of your brothers and RSVP accurately
+                  and let us know if you can&apos;t make it.
+                </Text>
+                <Alert bg="secondary" my={4} borderRadius="md" shadow="md">
+                  <Stack direction={'column'} spacing={2}>
+                    <Text>
+                      <strong>Are you interested in hosting?</strong> If so, let us know by checking
+                      the box below. We are always looking for new hosts.
+                    </Text>
+                    <Stack direction="column" spacing={2}>
+                      <FieldSwitch field="can_host" label="Can Host Events" />
+                      <FieldCheckboxes
+                        field="can_host_events"
+                        label="Events"
+                        formOptions={hostEventOptions}
+                      />
+                    </Stack>
+                  </Stack>
+                </Alert>
+              </TabPanel>
+              <TabPanel p={0}>
+                <Alert
+                  bg={['primary.200', 'primary.700']}
+                  flexDirection="column"
+                  my={4}
+                  p={4}
+                  borderRadius="md"
+                  shadow="md"
+                >
+                  <Text w={['full']}>
+                    This is your profile. Other verified members are able to see this information.
+                    You can also choose to make your profile private.
+                  </Text>
+                  <FieldSwitch
+                    field="show_profile"
+                    label="Show Profile"
+                    help="Turn this on, if you are okay showing this information to other verified members."
+                  />
+                </Alert>
                 <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
+                  <GridItem colSpan={{ base: 1, sm: 2 }}>
+                    <FieldInput
+                      field="nickname"
+                      label="Nickname"
+                      className="col-span-2 sm:col-span-4"
+                      registerOptions={{ required }}
+                    />
+                  </GridItem>
                   <FieldSelect
                     field="spectrum"
                     label="Orientation"
-                    className="col-span-2"
                     registerOptions={{ required }}
                     formOptions={spectrumOptions}
                   />
                   <FieldSelect
                     field="relationship_status"
                     label="Relationship Status"
-                    className="col-span-2"
                     formOptions={relationshipOptions}
                   />
                 </SimpleGrid>
@@ -323,37 +458,23 @@ function Form(props: PageProps) {
                   <FieldSelect
                     field="hair_color"
                     label="Hair Color"
-                    className="col-span-2"
                     formOptions={hairColorOptions}
                   />
                   <FieldSelect
                     field="hair_style"
                     label="Hair Style"
-                    className="col-span-2"
                     formOptions={hairStyleOptions}
                   />
-                  <FieldSelect
-                    field="body_hair"
-                    label="Body Hair"
-                    className="col-span-2"
-                    formOptions={bodyHairOptions}
-                  />
+                  <FieldSelect field="body_hair" label="Body Hair" formOptions={bodyHairOptions} />
                   <FieldSelect
                     field="facial_hair"
                     label="Facial Hair"
-                    className="col-span-2"
                     formOptions={facialHairOptions}
                   />
-                  <FieldSelect
-                    field="eye_color"
-                    label="Eye Color"
-                    className="col-span-2"
-                    formOptions={eyeColorOptions}
-                  />
+                  <FieldSelect field="eye_color" label="Eye Color" formOptions={eyeColorOptions} />
                   <FieldSelect
                     field="mannerisms"
                     label="Mannerisms"
-                    className="col-span-2"
                     formOptions={mannerismsOptions}
                   />
 
@@ -390,52 +511,107 @@ function Form(props: PageProps) {
                   formOptions={cumAttributesOptions}
                 />
               </TabPanel>
+
               <TabPanel p={0}>
-                <FieldCheckboxes
-                  field="social_scenes"
-                  label="Social Activities"
-                  help="We host events to meet the demands of our brothers. Tell us what kind of events you are interested in."
-                  formOptions={eventOptions}
-                />
-
-                <FieldCheckboxes
-                  field="event_availability"
-                  label="Preferred Event Times"
-                  help="We host events to meet the demands of our brothers. Let us know what times work best in general"
-                  formOptions={timeOfDayOptions}
-                />
-
                 <Alert
-                  as={HStack}
-                  alignItems={'start'}
-                  color="information"
-                  mb={4}
-                  borderRadius={'lg'}
-                  spacing={2}
+                  bg={['primary.200', 'primary.700']}
+                  flexDirection="column"
+                  my={4}
+                  p={4}
+                  borderRadius="md"
+                  shadow="md"
                 >
-                  <LightBulbIcon width={'100px'} />
-
                   <Text>
-                    Members who RSVP to events are expected to attend. Members that RSVP to event
-                    and do not attend, decrease the likelihood of getting invited again. We
-                    understand that things come up, but please be respectful of your brothers and
-                    RSVP accurately and let us know if you can&apos;t make it.
+                    Your sexual interests help us match you with other members and is visible with
+                    your profile. Members can search for other members based on these attributes.
+                  </Text>
+                  <FieldSwitch
+                    field="show_interests"
+                    label="Show Interests "
+                    help="Turn this on, if you are okay showing this information to other verified members."
+                  />
+                </Alert>
+                <SimpleGrid spacing={4}>
+                  <FieldCheckboxes
+                    field="my_positions"
+                    label="My Sexual Positions"
+                    formOptions={positionsOptions}
+                  />
+                  <FieldCheckboxes
+                    field="my_roles"
+                    label="My Sexual Roles"
+                    formOptions={myRolesOptions}
+                  />
+                  <FieldCheckboxes
+                    field="sexual_scenes"
+                    label="Sexual Scenes"
+                    formOptions={scenesOptions}
+                  />
+                </SimpleGrid>
+              </TabPanel>
+              <TabPanel p={0}>
+                <Alert
+                  bg={['primary.200', 'primary.700']}
+                  flexDirection="column"
+                  my={4}
+                  p={4}
+                  borderRadius="md"
+                  shadow="md"
+                >
+                  <Text>
+                    What are you attracted to and/or compatible with? We will use this information
+                    to optimize compatibilty for events. Other members will not see this
+                    information.
                   </Text>
                 </Alert>
+                <SimpleGrid spacing={4} columns={{ base: 1, sm: 2 }}>
+                  <FieldSelect
+                    field="their_spectrum"
+                    label="Their Orientation"
+                    registerOptions={{ required }}
+                    formOptions={spectrumOptions}
+                  />
+                  <FieldSelect
+                    field="their_relationship_status"
+                    label="Their Relationship Status"
+                    formOptions={relationshipOptions}
+                  />
+                  <GridItem colSpan={{ base: 1, sm: 2 }}>
+                    <FieldCheckboxes
+                      field="their_positions"
+                      label="Their Sexual Positions"
+                      formOptions={positionsOptions}
+                    />
+                  </GridItem>
+                  <GridItem colSpan={{ base: 1, sm: 2 }}>
+                    <FieldCheckboxes
+                      field="their_roles"
+                      label="Their Sexual Roles"
+                      formOptions={myRolesOptions}
+                    />
+                  </GridItem>
+                </SimpleGrid>
               </TabPanel>
               <TabPanel p={0}>
-                <FieldCheckboxes
-                  field="my_positions"
-                  label="Sexual Positions"
-                  formOptions={positionsOptions}
-                />
-                <FieldCheckboxes
-                  field="sexual_scenes"
-                  label="Sexual Scenes"
-                  formOptions={scenesOptions}
-                />
-              </TabPanel>
-              <TabPanel p={0}>
+                <Alert
+                  bg={['primary.200', 'primary.700']}
+                  flexDirection="column"
+                  my={4}
+                  p={4}
+                  borderRadius="md"
+                  shadow="md"
+                >
+                  <Text>
+                    This is your health information. Other verified members are able to see this
+                    information if you choose to show it. If you are not comfortable sharing this
+                    information, you can choose to hide it.
+                  </Text>
+                  <FieldSwitch
+                    field="show_health"
+                    label="Show Health Information"
+                    help="Turn this on, if you are okay showing this information to other verified members."
+                  />
+                </Alert>
                 <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
                   <FieldSelect
                     field="hiv_status"
@@ -444,29 +620,30 @@ function Form(props: PageProps) {
                   />
                   <FieldInput field="last_tested" label="Last Tested" type="date" />
                 </SimpleGrid>
-                <FieldCheckboxes
-                  field="load_policy"
-                  label="Load Policy"
-                  className="sm:col-span-2"
-                  formOptions={loadPolicyOptions}
-                />
-                <FieldCheckboxes
-                  field="vaccinations"
-                  label="Vax Status"
-                  formOptions={vaccinationStatusOptions}
-                />
+                <SimpleGrid spacing={4}>
+                  <FieldCheckboxes
+                    field="load_policy"
+                    label="Load Policy"
+                    formOptions={loadPolicyOptions}
+                  />
+                  <FieldCheckboxes
+                    field="vaccinations"
+                    label="Vax Status"
+                    formOptions={vaccinationStatusOptions}
+                  />
+                </SimpleGrid>
               </TabPanel>
             </TabPanels>
           </Tabs>
 
           <input type="hidden" {...register('id')} />
 
-          <Stack>
-            <Button mt={10} type="submit" colorScheme="primary" disabled={isSubmitting}>
+          <VStack>
+            <Button mt={10} size="lg" type="submit" bg="primary" disabled={isSubmitting}>
               Update Profile
             </Button>
             <ErrorMessage errors={errors} name="form" />
-          </Stack>
+          </VStack>
         </form>
       </FormProvider>
     </>

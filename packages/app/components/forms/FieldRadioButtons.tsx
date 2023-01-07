@@ -32,6 +32,7 @@ function RadioButtonsField(props: Props) {
   return (
     <FieldWrapper field={field} label={label} help={help} className={className}>
       <RadioGroup
+        w="full"
         as={Stack}
         spacing={[1, 4]}
         direction={{ base: 'column', md: 'row' }}

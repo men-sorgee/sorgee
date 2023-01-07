@@ -2,18 +2,8 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { SubscriptionData } from 'lib/models'
 import { FieldInput } from '../forms'
 import { useState } from 'react'
-import {
-  Flex,
-  Stack,
-  Heading,
-  Link,
-  Text,
-  Input,
-  Button,
-  Icon,
-  useColorModeValue,
-  createIcon,
-} from '@chakra-ui/react'
+import { Stack, Heading, Text, Button, Icon, useColorModeValue, createIcon } from '@chakra-ui/react'
+import { postJSON } from '../../lib/utils'
 
 export default function SubscribeBox() {
   const [subscribed, setSubscribed] = useState(false)
@@ -22,19 +12,13 @@ export default function SubscribeBox() {
   })
   const { handleSubmit, setError } = methods
   const onSubmit = async (data: SubscriptionData) => {
-    const response = await fetch('/api/member/subscribe', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: Buffer.from(JSON.stringify(data)),
-    })
+    const [ok, response] = await postJSON('/api/member/subscribe', data)
 
-    if (response.ok) {
+    if (ok) {
       setSubscribed(true)
     } else {
-      const { error } = await response.json()
-      setError('email', { message: error })
+      const { error } = response
+      setError('email', error)
     }
   }
 
@@ -76,9 +60,9 @@ export default function SubscribeBox() {
                       message: 'Please enter your name',
                     },
                   }}
-                  placeholder={'cool name'}
-                  _placeholder={{ color: 'white' }}
+                  placeholder={' name'}
                   autoComplete="full-name"
+                  pattern="^[a-zA-Z]{1,}\w+?$"
                 />
                 <FieldInput
                   field="email"
@@ -89,7 +73,7 @@ export default function SubscribeBox() {
                     },
                   }}
                   type="email"
-                  placeholder={'we@email.you'}
+                  placeholder={'email'}
                   autoComplete="email"
                 />
               </Stack>

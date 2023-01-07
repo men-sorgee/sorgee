@@ -206,16 +206,18 @@ export type User = {
   event_availability?: string[]
   sexual_scenes?: string[]
   my_positions?: string[]
-  their_positions?: string[]
   my_roles?: string[]
+  their_spectrum?: string[]
   their_roles?: string[]
+  their_relationship_status: string[]
+  their_positions?: string[]
   body_hair?: string
   facial_hair?: string
   social_scenes?: string[]
   hair_color?: string
   hair_style?: string
   body_attributes?: string[]
-  their_spectrum?: string[]
+
   eye_color?: string
   ball_size?: string
   ball_gravity?: string
@@ -248,6 +250,11 @@ export type User = {
   my_sex: string
   their_sex: string
   accounts: string | UserAccount[]
+  show_profile: boolean
+  show_interests: boolean
+  show_health: boolean
+  event_invites: boolean
+  can_host_events: string[]
 }
 
 export type UserFile = {
