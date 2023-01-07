@@ -49,7 +49,7 @@ export type PageProps = {
   setFormError: (error: string) => void
 }
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   const props: Partial<PageProps> = {
     spectrumOptions: await getFieldOptions('spectrum'),
     relationshipOptions: await getFieldOptions('relationship_status'),

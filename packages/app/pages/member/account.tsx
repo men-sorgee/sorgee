@@ -58,7 +58,7 @@ export type PageProps = {
   vaccinationStatusOptions: FormOptions
 }
 
-export async function getStaticProps(_context: NextPageContext) {
+export async function getServerSideProps(_context: NextPageContext) {
   const props: PageProps = {
     spectrumOptions: await getFieldOptions<User>('spectrum'),
     relationshipOptions: await getFieldOptions<User>('relationship_status'),
