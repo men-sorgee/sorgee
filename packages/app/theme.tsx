@@ -74,9 +74,6 @@ const custom: Partial<ChakraTheme> = {
           iconLabel: {
             ...StepsStyleConfig.baseStyle(props).iconLabel,
             color: 'white',
-            _dark: {
-              bg: 'primary.500',
-            },
           },
         }
       },
