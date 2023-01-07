@@ -30,7 +30,6 @@ import {
   Text,
 } from '@chakra-ui/react'
 import ApplicationSteps from './_steps'
-import { LightBulbIcon, SupportIcon } from '@heroicons/react/solid'
 import Page from 'components/Page'
 import { useSession } from 'next-auth/react'
 
@@ -50,7 +49,7 @@ export type PageProps = {
   setFormError: (error: string) => void
 }
 
-export const getServerSideProps = async () => {
+export const getStaticProps = async () => {
   const props: Partial<PageProps> = {
     spectrumOptions: await getFieldOptions('spectrum'),
     relationshipOptions: await getFieldOptions('relationship_status'),

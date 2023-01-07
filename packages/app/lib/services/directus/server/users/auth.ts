@@ -61,7 +61,6 @@ export async function updateSession(session: UserSession) {
     session_token: session.session_token,
     user: session.user,
     expires: session.expires,
-    session_token: session.session_token,
   })
   return existing
 }

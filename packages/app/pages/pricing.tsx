@@ -1,200 +1,225 @@
 import { ReactNode } from 'react'
+import { setMeta } from 'hooks/use-meta'
 import {
   Box,
-  Stack,
-  HStack,
+  useColorModeValue,
+  Show,
   Heading,
   Text,
+  Icon,
   VStack,
-  useColorModeValue,
-  List,
-  ListItem,
-  ListIcon,
-  Button,
+  Hide,
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
 } from '@chakra-ui/react'
 import { CheckCircleIcon } from '@heroicons/react/solid'
-
-function PriceWrapper({ children }: { children: ReactNode }) {
-  return (
-    <Box
-      mb={4}
-      shadow="base"
-      borderWidth="1px"
-      alignSelf={{ base: 'center', lg: 'flex-start' }}
-      borderColor={useColorModeValue('gray.500', 'white')}
-      borderRadius={'xl'}
-    >
-      {children}
-    </Box>
-  )
-}
+import Page from 'components/Page'
+const Check = ({ available = false }) => (
+  <Icon
+    as={CheckCircleIcon}
+    boxSize={6}
+    color={available ? 'green.500' : useColorModeValue('gray.500', 'gray.300')}
+  />
+)
 
 export default function ThreeTierPricing() {
   return (
-    <Box py={12}>
-      <VStack spacing={2} textAlign="center">
-        <Heading as="h1" fontSize="4xl">
-          Plans that fit your need
-        </Heading>
-        <Text fontSize="lg" color={'gray.500'}>
-          Start with 14-day free trial. No credit card needed. Cancel at anytime.
-        </Text>
-      </VStack>
-      <Stack
-        direction={{ base: 'column', md: 'row' }}
-        textAlign="center"
-        justify="center"
-        spacing={{ base: 4, lg: 10 }}
-        py={10}
-      >
-        <PriceWrapper>
-          <Box py={4} px={12}>
-            <Text fontWeight="500" fontSize="2xl">
-              Hobby
-            </Text>
-            <HStack justifyContent="center">
-              <Text fontSize="3xl" fontWeight="600">
-                $
-              </Text>
-              <Text fontSize="5xl" fontWeight="900">
-                79
-              </Text>
-              <Text fontSize="3xl" color="gray.500">
-                /month
-              </Text>
-            </HStack>
-          </Box>
-          <VStack bg={useColorModeValue('gray.50', 'gray.700')} py={4} borderBottomRadius={'xl'}>
-            <List spacing={3} textAlign="start" px={12}>
-              <ListItem>
-                <ListIcon as={CheckCircleIcon} color="green.500" />
-                unlimited build minutes
-              </ListItem>
-              <ListItem>
-                <ListIcon as={CheckCircleIcon} color="green.500" />
-                Lorem, ipsum dolor.
-              </ListItem>
-              <ListItem>
-                <ListIcon as={CheckCircleIcon} color="green.500" />
-                5TB Lorem, ipsum dolor.
-              </ListItem>
-            </List>
-            <Box w="80%" pt={7}>
-              <Button w="full" colorScheme="primary" variant="outline">
-                Start trial
-              </Button>
-            </Box>
-          </VStack>
-        </PriceWrapper>
+    <Page title="Pricing" description="Membership due pricing for varying levels.">
+      <Heading as="h2" size={['lg', 'xl']}>
+        Membership dues that fit your hunger
+      </Heading>
+      <Text fontSize="lg">
+        Start with 30-day free trial. No credit card needed. Cancel at anytime.
+      </Text>
 
-        <PriceWrapper>
-          <Box position="relative">
-            <Box
-              position="absolute"
-              top="-16px"
-              left="50%"
-              style={{ transform: 'translate(-50%)' }}
-            >
-              <Text
-                textTransform="uppercase"
-                bg="accent.300"
-                px={3}
-                py={1}
-                color={useColorModeValue('gray.900', 'gray.300')}
-                fontSize="sm"
-                fontWeight="600"
-                rounded="xl"
-              >
-                Most Popular
-              </Text>
-            </Box>
-            <Box py={4} px={12}>
-              <Text fontWeight="500" fontSize="2xl">
-                Growth
-              </Text>
-              <HStack justifyContent="center">
-                <Text fontSize="3xl" fontWeight="600">
-                  $
+      <TableContainer>
+        <Table variant={['unstyled', 'simple']} size={{ base: 'sm', md: 'md', lg: 'lg' }}>
+          <Thead>
+            <Tr>
+              <Th></Th>
+              <Th>
+                <Text
+                  fontSize={{ base: 'md', sm: 'lg', md: '3xl' }}
+                  color={useColorModeValue('primary.300', 'white')}
+                >
+                  Basic
                 </Text>
-                <Text fontSize="5xl" fontWeight="900">
-                  149
+              </Th>
+              <Th>
+                <Text
+                  fontSize={{ base: 'md', sm: 'lg', md: '3xl' }}
+                  color={useColorModeValue('primary.400', 'white')}
+                >
+                  Plus
                 </Text>
-                <Text fontSize="3xl" color="gray.500">
-                  /month
+              </Th>
+              <Th>
+                <Text
+                  fontSize={{ base: 'md', sm: 'lg', md: '3xl' }}
+                  color={useColorModeValue('primary.500', 'white')}
+                >
+                  Pro
                 </Text>
-              </HStack>
-            </Box>
-            <VStack bg={useColorModeValue('gray.50', 'gray.700')} py={4} borderBottomRadius={'xl'}>
-              <List spacing={3} textAlign="start" px={12}>
-                <ListItem>
-                  <ListIcon as={CheckCircleIcon} color="green.500" />
-                  unlimited build minutes
-                </ListItem>
-                <ListItem>
-                  <ListIcon as={CheckCircleIcon} color="green.500" />
-                  Lorem, ipsum dolor.
-                </ListItem>
-                <ListItem>
-                  <ListIcon as={CheckCircleIcon} color="green.500" />
-                  5TB Lorem, ipsum dolor.
-                </ListItem>
-                <ListItem>
-                  <ListIcon as={CheckCircleIcon} color="green.500" />
-                  5TB Lorem, ipsum dolor.
-                </ListItem>
-                <ListItem>
-                  <ListIcon as={CheckCircleIcon} color="green.500" />
-                  5TB Lorem, ipsum dolor.
-                </ListItem>
-              </List>
-              <Box w="80%" pt={7}>
-                <Button w="full" colorScheme="primary">
-                  Start trial
-                </Button>
-              </Box>
-            </VStack>
-          </Box>
-        </PriceWrapper>
-        <PriceWrapper>
-          <Box py={4} px={12}>
-            <Text fontWeight="500" fontSize="2xl">
-              Scale
-            </Text>
-            <HStack justifyContent="center">
-              <Text fontSize="3xl" fontWeight="600">
-                $
-              </Text>
-              <Text fontSize="5xl" fontWeight="900">
-                349
-              </Text>
-              <Text fontSize="3xl" color="gray.500">
-                /month
-              </Text>
-            </HStack>
-          </Box>
-          <VStack bg={useColorModeValue('gray.50', 'gray.700')} py={4} borderBottomRadius={'xl'}>
-            <List spacing={3} textAlign="start" px={12}>
-              <ListItem>
-                <ListIcon as={CheckCircleIcon} color="green.500" />
-                unlimited build minutes
-              </ListItem>
-              <ListItem>
-                <ListIcon as={CheckCircleIcon} color="green.500" />
-                Lorem, ipsum dolor.
-              </ListItem>
-              <ListItem>
-                <ListIcon as={CheckCircleIcon} color="green.500" />
-                5TB Lorem, ipsum dolor.
-              </ListItem>
-            </List>
-            <Box w="80%" pt={7}>
-              <Button w="full" colorScheme="primary" variant="outline">
-                Start trial
-              </Button>
-            </Box>
-          </VStack>
-        </PriceWrapper>
-      </Stack>
-    </Box>
+              </Th>
+            </Tr>
+            <Tr>
+              <Td>
+                <Hide above="md">
+                  <em color={useColorModeValue('gray.300', 'white')}>Per month:</em>
+                </Hide>
+              </Td>
+              <Th>
+                <Text
+                  fontSize={{ base: 'lg', md: 'xl' }}
+                  color={useColorModeValue('gray.500', 'gray.200')}
+                >
+                  $3
+                </Text>
+                <Show above="md">
+                  <Text color={useColorModeValue('gray.500', 'gray.200')}>
+                    <em>/ month</em>
+                  </Text>
+                </Show>
+              </Th>
+              <Th>
+                <Text
+                  fontSize={{ base: 'lg', md: 'xl' }}
+                  color={useColorModeValue('gray.500', 'gray.200')}
+                >
+                  $9
+                </Text>
+                <Show above="md">
+                  <Text color={useColorModeValue('gray.500', 'gray.200')}>
+                    <em>/ month</em>
+                  </Text>
+                </Show>
+              </Th>
+              <Th>
+                <Text
+                  fontSize={{ base: 'lg', md: 'xl' }}
+                  color={useColorModeValue('gray.500', 'gray.200')}
+                >
+                  $19
+                </Text>
+                <Show above="md">
+                  <Text color={useColorModeValue('gray.500', 'gray.200')}>
+                    <em>/ month</em>
+                  </Text>
+                </Show>
+              </Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            <Tr>
+              <Th>
+                <Text as="strong" color={useColorModeValue('gray.500', 'gray.200')}>
+                  Event Invites
+                </Text>
+              </Th>
+              <Td>
+                <Check available />
+              </Td>
+              <Td>
+                <Check available />
+              </Td>
+              <Td>
+                <Check available />
+              </Td>
+            </Tr>
+
+            <Tr>
+              <Th color="gray.200">
+                <em>Search *</em>
+              </Th>
+              <Td>
+                <Check />
+              </Td>
+              <Td>
+                <Check />
+              </Td>
+              <Td>
+                <Check />
+              </Td>
+            </Tr>
+            <Tr>
+              <Th color={useColorModeValue('gray.500', 'gray.200')}>
+                <em>Messaging *</em>
+              </Th>
+              <Td>
+                <Check />
+              </Td>
+              <Td>
+                <Check />
+              </Td>
+              <Td>
+                <Check />
+              </Td>
+            </Tr>
+            <Tr>
+              <Th color={useColorModeValue('gray.500', 'gray.200')}>
+                <em>Live Location *</em>
+              </Th>
+              <Td></Td>
+              <Td>
+                <Check />
+              </Td>
+              <Td>
+                <Check />
+              </Td>
+            </Tr>
+            <Tr>
+              <Th color={useColorModeValue('gray.500', 'gray.200')}>
+                <em>Live Chat *</em>
+              </Th>
+              <Td></Td>
+              <Td>
+                <Check />
+              </Td>
+              <Td>
+                <Check />
+              </Td>
+            </Tr>
+            <Tr>
+              <Th color={useColorModeValue('gray.500', 'gray.200')}>
+                <em>Create Groups *</em>
+              </Th>
+              <Td></Td>
+              <Td></Td>
+              <Td>
+                <Check />
+              </Td>
+            </Tr>
+            <Tr>
+              <Th color={useColorModeValue('gray.500', 'gray.200')}>
+                <em>Host Events *</em>
+              </Th>
+              <Td></Td>
+              <Td></Td>
+              <Td>
+                <Check />
+              </Td>
+            </Tr>
+          </Tbody>
+          <Tfoot>
+            <Tr>
+              <Th>
+                <Text as="em" color="gray.200">
+                  * coming soon
+                </Text>
+              </Th>
+              <Th></Th>
+              <Th></Th>
+              <Th></Th>
+            </Tr>
+          </Tfoot>
+        </Table>
+      </TableContainer>
+    </Page>
   )
 }

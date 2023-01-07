@@ -37,6 +37,7 @@ const get_page = `query getPage($id: ID!) {
       markdown
       status
     }
+    next
   }
 }
 ` // require('./queries/get_page.gql');
@@ -77,6 +78,7 @@ const find_page = `query findPage($slug: String) {
       markdown
       status
     }
+    next
   }
 }
 `
@@ -130,7 +132,9 @@ const all_pages = `
       control
       markdown
       status
+      
     }
+    next
   }
 }
 `

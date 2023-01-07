@@ -39,10 +39,6 @@ const getConfig = ( phase ) => {
       ];
     },
     poweredByHeader: false,
-    experimental: {
-      appDir: false,
-      esmExternals: false,
-    },
   };
   return nextConfig;
 };

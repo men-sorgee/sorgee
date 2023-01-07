@@ -3,16 +3,17 @@ import Loading from 'components/ui/Loading'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import AccessDenied from './AccessDenied'
-import { Box, Heading } from '@chakra-ui/react'
+import { VStack, Heading } from '@chakra-ui/react'
+import { DirectusFile } from 'lib/models'
 
 interface Props {
   title: string
   loading?: boolean
+  image?: string
   header?: React.ReactNode
   children: React.ReactNode | React.ReactNode[]
   description?: string
   sectionClass?: string
-  titleClass?: string
   requireAuth?: boolean
 }
 
@@ -21,12 +22,12 @@ const Page = ({
   loading,
   description,
   header,
+  image,
   sectionClass = '',
   children,
-  titleClass,
   requireAuth = false,
 }: Props) => {
-  setMeta(title, description)
+  setMeta(title, description, image)
   const { status } = useSession()
   const [denied, setDenied] = useState(false)
 
@@ -41,20 +42,17 @@ const Page = ({
   }
 
   return (
-    <Box className={sectionClass} as="article">
-      <Heading as="h1" size={'2xl'} className={titleClass}>
-        {title}
-      </Heading>
-      <Box>
-        {header}
-        {(loading && (
-          <Loading size="xl">
-            <Heading as="h2">hold up</Heading>
-          </Loading>
-        )) ||
-          children}
-      </Box>
-    </Box>
+    <VStack spacing={2} className={sectionClass} as="article" align={['start', 'center']}>
+      <Heading as="h1">{title}</Heading>
+
+      {header}
+      {(loading && (
+        <Loading size="xl">
+          <Heading as="h2">hold up</Heading>
+        </Loading>
+      )) ||
+        children}
+    </VStack>
   )
 }
 

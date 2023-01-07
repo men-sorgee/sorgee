@@ -54,7 +54,13 @@ function Header({ children, ...props }: Props) {
   const navItems: Array<NavItem> = [
     {
       label: 'Home',
-      children: navPages,
+      children: [
+        ...navPages,
+        {
+          label: 'Pricing',
+          href: '/pricing',
+        },
+      ],
     },
     {
       label: 'Legal',
@@ -62,10 +68,12 @@ function Header({ children, ...props }: Props) {
         {
           label: 'Privacy Policy',
           href: '/privacy',
+          reload: true,
         },
         {
           label: 'Terms of Service',
           href: '/terms',
+          reload: true,
         },
       ],
     },
@@ -158,11 +166,18 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
           align={'start'}
         >
           {children &&
-            children.map((child) => (
-              <Link as={NextLink} key={child.label} py={2} href={child.href}>
-                {child.label}
-              </Link>
-            ))}
+            children.map(
+              (child) =>
+                (child.reload && (
+                  <a key={child.label} style={{ paddingTop: 2 }} href={child.href}>
+                    {child.label}
+                  </a>
+                )) || (
+                  <Link as={NextLink} key={child.label} py={2} href={child.href}>
+                    {child.label}
+                  </Link>
+                )
+            )}
         </Stack>
       </Collapse>
     </Stack>
@@ -174,6 +189,7 @@ interface NavItem {
   subLabel?: string
   children?: Array<NavItem>
   href?: string
+  reload?: boolean
 }
 
 export default chakra(Header)

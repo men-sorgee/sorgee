@@ -1,6 +1,6 @@
 import { HttpMethod } from '.'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { Applicant, Member, UserInvite, applicantFields, memberFields } from 'lib/models'
+import { Applicant, Member, UserInvite, applicantFields, memberFields, Profile } from 'lib/models'
 
 import { findUser } from 'lib/services/directus/server'
 import { unstable_getServerSession } from 'next-auth'
@@ -21,10 +21,10 @@ export function withMethods(
 export async function withAuthUser(
   req: NextApiRequest,
   res: NextApiResponse
-): Promise<Profile | null> {
+): Promise<User | null> {
   const session = await unstable_getServerSession(req, res, authOptions)
   if (!session) throw new Error('Unauthorized')
-  return session.user as Profile
+  return session.user as User
 }
 
 export async function withApplicant(

@@ -88,6 +88,7 @@ export type Page = {
   markdown?: string
   children: Page[]
   content: PageContent[]
+  next?: string
 }
 
 export type PageContent = {

@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse, AppNotification } from 'lib/models'
 import {
-  deleteNotification,
+  markNotification,
   getNotifications,
 } from 'lib/services/directus/server/users/notifications'
 

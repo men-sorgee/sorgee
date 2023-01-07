@@ -47,7 +47,6 @@ function EventPage({ invites }: { invites: Invite[] }) {
       loading={loading}
       title="Upcoming Events"
       description="Upcoming events"
-      titleClass="text-center"
       requireAuth={true}
     >
       {allowed ? (

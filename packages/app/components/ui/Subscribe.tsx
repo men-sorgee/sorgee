@@ -110,11 +110,7 @@ export default function SubscribeBox() {
                   Subscribe
                 </Button>
                 <Text fontSize="xs" fontStyle={'italic'} color={'white'}>
-                  Subscribe only if you agree to our{' '}
-                  <Link color={'white'} href="/terms">
-                    Terms
-                  </Link>{' '}
-                  and <Link href="/privacy">Privacy Policy</Link>.
+                  Subscribe only if you agree to our Terms of Service and Privacy Policy .
                 </Text>
               </Stack>
             </form>

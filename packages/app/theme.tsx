@@ -60,7 +60,6 @@ export const brand = {
   logo: 'https://static.guysnheat.com/static/logo.png',
 }
 const custom: Partial<ChakraTheme> = {
-  ...defaultTheme,
   config: {
     initialColorMode: 'system',
     useSystemColorMode: true,
@@ -119,16 +118,10 @@ const custom: Partial<ChakraTheme> = {
   },
   textStyles: {
     heading: {
-      marginTop: 4,
-      marginBottom: 2,
       fontWeight: '900',
-      leading: '1.2',
       fontSpacing: '0.05em',
     },
-    body: {
-      marginTop: 4,
-      marginBottom: 2,
-    },
+    body: {},
     mono: {},
   },
   semanticTokens: {
@@ -179,15 +172,17 @@ const custom: Partial<ChakraTheme> = {
         },
       },
       h1: {
-        fontSize: '4xl',
+        fontSize: ['2xl', '4xl'],
+        lineHeight: ['2rem', '4rem', '6rem'],
         fontWeight: 'extrabold',
         bgGradient: 'linear(to-r, pink.500, blue.500)',
         bgClip: 'text',
-        lineHeight: '1.2em',
-        mt: 4,
+        my: 2,
+        overflow: 'visible',
       },
       h2: {
-        fontSize: 'xl',
+        fontSize: ['xl', '2xl'],
+        lineHeight: ['1rem', '2rem'],
         fontWeight: 'bold',
         color: 'primary.500',
         _dark: {
@@ -196,7 +191,7 @@ const custom: Partial<ChakraTheme> = {
         my: 3,
       },
       h3: {
-        fontSize: 'lg',
+        fontSize: ['lg', 'xl'],
         fontWeight: 'extrabold',
         color: 'secondary.500',
         _dark: {
