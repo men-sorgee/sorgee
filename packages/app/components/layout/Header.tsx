@@ -20,7 +20,7 @@ import { Logo } from '../ui'
 import { useState, useEffect } from 'react'
 import { PageItem } from 'lib/models'
 import NextLink from 'next/link'
-import { listActivePages } from '@/lib/services/directus/static'
+import { listActivePages } from 'lib/services/directus/static'
 import { constrained } from './index'
 import User from './User'
 export type Props = BoxProps & {

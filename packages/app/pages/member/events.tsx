@@ -10,7 +10,7 @@ import { postJSON } from 'lib/utils'
 import { Invite, MemberLevel } from 'lib/models'
 import EventCard from 'components/ui/EventCard'
 import { unstable_getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/services/auth/config'
+import { authOptions } from 'lib/services/auth/config'
 
 export async function getServerSideProps(context) {
   const session = await unstable_getServerSession(context.req, context.res, authOptions)

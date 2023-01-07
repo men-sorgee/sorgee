@@ -1,5 +1,5 @@
 import { DirectusTypes, Page } from 'lib/models'
-import { adminBaseUrl } from '@/lib/config'
+import { adminBaseUrl } from 'lib/config'
 import { Directus } from '@directus/sdk'
 
 const directusDB = new Directus<DirectusTypes>(adminBaseUrl)

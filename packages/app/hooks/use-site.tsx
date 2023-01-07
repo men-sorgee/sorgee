@@ -1,7 +1,7 @@
 'use client'
 import useSWR, { KeyedMutator } from 'swr'
 import { Site } from 'lib/models'
-import { JsonFetcher } from '@/lib/services/fetchers'
+import { JsonFetcher } from 'lib/services/fetchers'
 
 type SiteResults = {
   site: Site | null

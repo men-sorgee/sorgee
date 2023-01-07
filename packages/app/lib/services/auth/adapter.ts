@@ -1,6 +1,6 @@
 import { Adapter, AdapterUser, AdapterSession, VerificationToken } from 'next-auth/adapters'
 
-import { DirectusFile, UserVerificationToken, User, UserSession } from '@/lib/models'
+import { DirectusFile, UserVerificationToken, User, UserSession } from 'lib/models'
 import {
   createUser,
   findUser,

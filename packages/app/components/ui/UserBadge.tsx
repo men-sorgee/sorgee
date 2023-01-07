@@ -1,5 +1,5 @@
 import { Badge } from '@chakra-ui/react'
-import { Member, MemberLevel } from '../../lib/models'
+import { Member, MemberLevel } from 'lib/models'
 const UserBadge = ({ user_type }: { user_type: string }) => {
   const colors = [
     'red.300',

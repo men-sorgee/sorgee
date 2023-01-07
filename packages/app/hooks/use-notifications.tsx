@@ -2,7 +2,7 @@
 import useSWR from 'swr'
 import { AppNotification, NotificationStatus } from 'lib/models'
 import { JsonFetcher } from 'lib/services/fetchers'
-import { putJSON } from '../lib/utils'
+import { putJSON } from 'lib/utils'
 import { useState, useEffect, createContext } from 'react'
 
 interface NotificationResult {

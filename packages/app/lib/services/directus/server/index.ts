@@ -1,5 +1,5 @@
 import { Directus } from '@directus/sdk'
-import { DirectusTypes, User } from '@/lib/models'
+import { DirectusTypes, User } from 'lib/models'
 
 const adminDb = new Directus<DirectusTypes>(process.env.ADMIN_URL)
 

@@ -6,15 +6,15 @@ import MicrosoftProvider from 'next-auth/providers/azure-ad'
 import YahooProvider from './yahoo'
 import EmailProvider from 'next-auth/providers/email'
 import { authAdapter } from './adapter'
-import { sendNotificationEmail, updateSendGrid } from '@/lib/services/sendgrid/server'
+import { sendNotificationEmail, updateSendGrid } from 'lib/services/sendgrid/server'
 import {
   createAccount,
   createUser,
   findUser,
   findUserByAccount,
   recordUserLogin,
-} from '@/lib/services/directus/server/users'
-import { Member, memberFields, Profile, User, UserStatusType } from '@/lib/models'
+} from 'lib/services/directus/server/users'
+import { Member, memberFields, Profile, User, UserStatusType } from 'lib/models'
 import { sendNotification } from '../twilio/server'
 
 const allowedStatuses: UserStatusType[] = ['new', 'active', 'inactive', 'stale']

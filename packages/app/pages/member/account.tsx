@@ -1,7 +1,7 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
 import { Applicant, FormOptions, User } from 'lib/models'
-import { getFieldOptions } from '@/lib/services/directus/server'
+import { getFieldOptions } from 'lib/services/directus/server'
 import { useMember } from 'hooks/use-member'
 import { useEffect, useState } from 'react'
 import { FieldInput, FieldSelect, FieldWrapper, FieldText, FieldCheckboxes } from 'components/forms'
@@ -31,7 +31,7 @@ import { useRouter } from 'next/router'
 import FieldSwitch from 'components/forms/FieldSwitch'
 import { useToast } from '@chakra-ui/react'
 import { ErrorMessage } from '@hookform/error-message'
-import { postJSON } from '../../lib/utils'
+import { postJSON } from 'lib/utils'
 
 export type PageProps = {
   spectrumOptions: FormOptions

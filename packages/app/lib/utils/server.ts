@@ -2,9 +2,9 @@ import { HttpMethod } from '.'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { Applicant, Member, UserInvite, applicantFields, memberFields } from 'lib/models'
 
-import { findUser } from '@/lib/services/directus/server'
+import { findUser } from 'lib/services/directus/server'
 import { unstable_getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/services/auth/config'
+import { authOptions } from 'lib/services/auth/config'
 import { User } from 'next-auth'
 
 export function withMethods(

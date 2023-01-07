@@ -10,7 +10,7 @@ import {
   Applicant,
   applicantFields,
   UserEmailEvent,
-} from '@/lib/models'
+} from 'lib/models'
 import { FieldFilter } from '@directus/sdk'
 
 export async function createUser(member: Partial<User>): Promise<User> {

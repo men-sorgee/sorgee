@@ -1,9 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { createUser, getUser, updateUser } from '@/lib/services/directus/server'
-import { ApiResponse, User, Applicant, ApplicationStatus, MemberLevel, Profile } from '@/lib/models'
-import { updateSendGrid, sendNotificationEmail } from '@/lib/services/sendgrid/server'
+import { createUser, getUser, updateUser } from 'lib/services/directus/server'
+import { ApiResponse, User, Applicant, ApplicationStatus, MemberLevel, Profile } from 'lib/models'
+import { updateSendGrid, sendNotificationEmail } from 'lib/services/sendgrid/server'
 import { parseInvite, withApplicant } from 'lib/utils/server'
-
 
 async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {

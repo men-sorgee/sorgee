@@ -1,8 +1,7 @@
 import React, { ReactNode } from 'react'
 import { Button } from '@ chakra-ui/react'
-import { postJSON } from '@/lib/utils'
 import { postJSON } from 'lib/utils'
-
+import { postJSON } from 'lib/utils'
 
 export class ErrorBoundary extends React.Component<{
   children: ReactNode | ReactNode[]

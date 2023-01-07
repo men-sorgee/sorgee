@@ -6,7 +6,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { AgreementData } from 'lib/models'
 import { Button, Text, VStack } from '@chakra-ui/react'
 import FieldCheckbox from 'components/forms/FieldCheckbox'
-import { postJSON } from '@/lib/utils'
+import { postJSON } from 'lib/utils'
 import Page from 'components/Page'
 
 function Agreement() {

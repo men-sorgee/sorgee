@@ -1,11 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse } from 'lib/models'
 import { withMethods } from 'lib/utils/server'
-import {
-  SendGridCategory,
-  SendGridTemplate,
-  sendNotificationEmail,
-} from 'lib/services/sendgrid/server'
+import { sendNotification } from 'lib/services/twilio/server'
 import { markNotification } from 'lib/services/directus/server'
 
 async function SendNotification(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
@@ -15,19 +11,9 @@ async function SendNotification(req: NextApiRequest, res: NextApiResponse<ApiRes
     if (req.headers.authorization !== process.env.ADMIN_TOKEN)
       return res.status(401).json(ApiResponse(null, 'Unauthorized'))
 
-    const {
-      email,
-      name,
-      subject,
-      message,
-      body,
-      data,
-      template = SendGridTemplate.AppNotification,
-      category = SendGridCategory.Notification,
-      notification_id = null,
-    } = req.body
+    const { phone, message, notification_id = null } = req.body
 
-    await sendNotificationEmail(email, name, subject, message || body, data, template, category)
+    await sendNotification(phone, message)
 
     if (notification_id) await markNotification(notification_id, 'sent')
 
