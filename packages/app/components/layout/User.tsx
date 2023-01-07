@@ -77,7 +77,7 @@ const UserAvatar = (_props: Props) => {
             <MenuList bg="black" alignItems={'center'}>
               <Box p={4} m={2} bgGradient="linear(to-bl, primary.300, accent.300)">
                 <Center>
-                  <Avatar src={photoSrc} color="white" />
+                  <Avatar src={photoSrc} color="white" bg="primary.500" />
                 </Center>
                 <Center>
                   <Text fontWeight="bold" color="black">

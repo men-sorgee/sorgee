@@ -3,7 +3,7 @@ import Loading from 'components/ui/Loading'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import AccessDenied from './AccessDenied'
-import { Heading, Spinner } from '@chakra-ui/react'
+import { Box, Heading } from '@chakra-ui/react'
 
 interface Props {
   title: string
@@ -41,21 +41,20 @@ const Page = ({
   }
 
   return (
-    <article>
+    <Box className={sectionClass} as="article">
       <Heading as="h1" size={'2xl'} className={titleClass}>
         {title}
       </Heading>
-      <div className={`w-full ${sectionClass}`}>
+      <Box>
         {header}
         {(loading && (
-          <Loading>
-            <Spinner size="6xl" />
-            <h3>Loading</h3>
+          <Loading size="xl">
+            <Heading as="h2">hold up</Heading>
           </Loading>
         )) ||
           children}
-      </div>
-    </article>
+      </Box>
+    </Box>
   )
 }
 

@@ -1,7 +1,6 @@
 import { ChakraTheme, extendTheme } from '@chakra-ui/react'
 import { default as defaultTheme } from '@chakra-ui/theme'
-import { StepsStyleConfig as Steps } from 'chakra-ui-steps'
-import { Manrope, Arvo, Roboto_Mono } from '@next/font/google'
+import { StepsStyleConfig } from 'chakra-ui-steps'
 
 export const brand = {
   colors: {
@@ -61,12 +60,27 @@ export const brand = {
   logo: 'https://static.guysnheat.com/static/logo.png',
 }
 const custom: Partial<ChakraTheme> = {
+  ...defaultTheme,
   config: {
     initialColorMode: 'system',
     useSystemColorMode: true,
   },
   components: {
-    Steps,
+    Steps: {
+      ...StepsStyleConfig,
+      baseStyle: (props) => {
+        return {
+          ...StepsStyleConfig.baseStyle(props),
+          iconLabel: {
+            ...StepsStyleConfig.baseStyle(props).iconLabel,
+            color: 'white',
+            _dark: {
+              bg: 'primary.500',
+            },
+          },
+        }
+      },
+    },
     Input: {
       baseStyle: {
         field: {
@@ -172,6 +186,7 @@ const custom: Partial<ChakraTheme> = {
         fontWeight: 'extrabold',
         bgGradient: 'linear(to-r, pink.500, blue.500)',
         bgClip: 'text',
+        lineHeight: '1.2em',
         mt: 4,
       },
       h2: {
@@ -184,8 +199,8 @@ const custom: Partial<ChakraTheme> = {
         my: 3,
       },
       h3: {
-        fontSize: 'xl',
-        fontWeight: 'semibold',
+        fontSize: 'lg',
+        fontWeight: 'extrabold',
         color: 'secondary.500',
         _dark: {
           color: 'secondary.200',

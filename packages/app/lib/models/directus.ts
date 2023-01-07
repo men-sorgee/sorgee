@@ -101,6 +101,7 @@ export type PageContent = {
   image?: DirectusFile
   type?: string
   page?: Page
+  columns: number
   container?: string
   container_classes?: string
 }

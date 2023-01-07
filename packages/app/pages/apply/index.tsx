@@ -15,13 +15,13 @@ import {
   FieldNumber,
 } from 'components/forms'
 import {
+  Alert,
   Button,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
-  Alert,
   AlertIcon,
   HStack,
   SimpleGrid,
@@ -64,15 +64,21 @@ export const getServerSideProps = async () => {
 function Apply(props: PageProps) {
   const { data: session, status } = useSession()
   const [formError, setFormError] = useState<string>()
-  const [loading, setLoading] = useState(true)
+  const [loading] = useState(status !== 'loading')
+  const router = useRouter()
   useEffect(() => {
-    if (loading && status !== 'loading') setLoading(false)
-    if (!loading && props.email && session.user.email != props.email)
-      setFormError(`You must login using the email address ${props.email} to use this invite.`)
-  }, [session, loading, props.email, status])
+    if (!loading) {
+      if (status === 'unauthenticated') {
+        setFormError(`You must login before you can register.`)
+      } else if (props.email && session.user.email != props.email)
+        setFormError(
+          `You must login using the email address ${props.email} to use this invite. Please logout and try again.`
+        )
+    }
+  }, [session, status])
 
   const intro = props.invite
-    ? 'You&apos;ve been invited to join our community! While your application is pre-approved, we still need to perform a few verification steps.'
+    ? `You've been invited to join our community! While your application is pre-approved, we still need to perform a few verification steps.`
     : 'To apply for membership, complete this application. A member of our team will review your application and contact you with next steps.'
 
   const data = { ...props, setFormError }
@@ -84,15 +90,19 @@ function Apply(props: PageProps) {
       header={<ApplicationSteps status={'apply'} />}
     >
       <>
-        {formError && <Text color={'red.700'}>{formError}</Text>}
         <Text fontSize={'xl'}>{intro}</Text>
-        <Text fontSize={'xl'}>
+        <Text fontSize={'xl'} pb={4}>
           This is a private group, not open to the public. There is a vouching, vetting and
           verification process for everyone. We do this to ensure the safety of our group and to
           filter out liars, spammers, bots, and flakes.
         </Text>
-        {formError && <Text color={'red.700'}>{formError}</Text>}
-        <Form {...data} />
+        {(formError && (
+          <Alert status="error">
+            <AlertIcon />
+            {formError}
+          </Alert>
+        )) ||
+          (session && <Form {...data} />)}
       </>
     </Page>
   )
@@ -125,8 +135,8 @@ function Form(props: PageProps) {
       phone: applicant?.phone || '',
       biography: applicant?.biography || null,
       needs_guidance: applicant?.needs_guidance || false,
-      spectrum: applicant?.spectrum || null,
-      relationship_status: applicant?.relationship_status || null,
+      spectrum: applicant?.spectrum || 'bisexual',
+      relationship_status: applicant?.relationship_status || 'single',
       event_availability: [],
       age: applicant?.age || null,
       height_feet: applicant?.height?.toString().substring(0, 1),
@@ -171,7 +181,7 @@ function Form(props: PageProps) {
           </Text>
           <SimpleGrid gap={4} py={4} columns={{ base: 1, md: 2 }}>
             <FieldInput field="first_name" label="First Name" registerOptions={{ required }} />
-            <FieldInput field="last_name" label="Last Name" registerOptions={{ required }} />
+            <FieldInput field="last_name" label="Last Name" />
             <FieldInput
               field="email"
               label="Email"
@@ -270,7 +280,6 @@ function Form(props: PageProps) {
                 label="Biography"
                 help="Tell us about yourself. What are your interests? What are you looking for?"
                 rows={4}
-                placeholder="I am a bit shy, but love to get aggressive in bed."
               />
             </GridItem>
           </SimpleGrid>
@@ -282,41 +291,32 @@ function Form(props: PageProps) {
             be included in every event. As the group grows, so too will the number of events we can
             create.
           </Text>
+          <SimpleGrid gap={4} py={4} columns={1}>
+            <FieldCheckboxes
+              field="event_availability"
+              label="Preferred Event Times"
+              help="We host events to meet the demands of our brothers. Let us know what times work best in general"
+              formOptions={timeOfDayOptions}
+            />
 
-          <FieldCheckboxes
-            field="event_availability"
-            label="Preferred Event Times"
-            help="We host events to meet the demands of our brothers. Let us know what times work best in general"
-            formOptions={timeOfDayOptions}
-          />
-          <Alert status="info" variant="left-accent">
-            <AlertIcon as={LightBulbIcon} width="60px" />
-            Members who RSVP to events are expected to attend. Members that RSVP to event and do not
-            attend, decrease the likelihood of getting invited again. We understand that things come
-            up, but please be respectful of your brothers and RSVP accurately and let us know if you
-            can&apos;t make it.
-          </Alert>
+            <Heading as="h3">Sexual Preferences</Heading>
 
-          <Heading as="h3">Sexual Preferences</Heading>
-
-          <FieldCheckboxes
-            field="my_positions"
-            label="Your Positions"
-            help="What positions or acts are you interested in? We will use this to match you with compatible brothers. Select all that apply"
-            formOptions={positionsOptions}
-          />
-          <Heading as="h4">Assistance</Heading>
-          <FieldCheckbox field="needs_guidance" label="I'd like some guidance" />
-          <Alert status="info" variant="left-accent">
-            <AlertIcon as={LightBulbIcon} width="60px" />
-            We want you to be comfortable. Check this and we will help guide you along the way.
-            Unsure how to answer the above questions, or just new to this? Just check this box and
-            we will help you out.
-          </Alert>
-
-          <input type="hidden" {...register('invite')} />
-
-          <Button type="submit" className="mt-2" color={'primary'} disabled={isSubmitting}>
+            <FieldCheckboxes
+              field="my_positions"
+              label="Your Positions"
+              help="What positions or acts are you interested in? We will use this to match you with compatible brothers. Select all that apply"
+              formOptions={positionsOptions}
+            />
+            <Heading as="h3">Assistance</Heading>
+            <Text>
+              We want you to be comfortable. Check this and we will help guide you along the way.
+              Unsure how to answer the above questions, or just new to this? Just check this box and
+              we will help you out.
+            </Text>
+            <FieldCheckbox field="needs_guidance" label="I'd like some guidance" />
+            <input type="hidden" {...register('invite')} />
+          </SimpleGrid>
+          <Button type="submit" mt={4} colorScheme={'primary'} disabled={isSubmitting}>
             Save & Continue
           </Button>
         </form>

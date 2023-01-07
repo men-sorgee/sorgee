@@ -1,11 +1,11 @@
 import { useFormContext } from 'react-hook-form'
-import { ReactNode, createRef } from 'react'
+import { ReactNode } from 'react'
 import {
+  FormHelperText,
   FormControl,
   FormControlProps,
   FormLabel,
   FormErrorMessage,
-  Tooltip,
   chakra,
   HStack,
   StyleProps,
@@ -22,8 +22,7 @@ type Props = FormControlProps & {
 const FieldWrapper = (props: Props) => {
   const { field, label, help, className, children, ...opts } = props
   const { getFieldState } = useFormContext()
-  const { error } = getFieldState(field)
-
+  const { error, isDirty } = getFieldState(field)
   return (
     <FormControl isInvalid={!!error} className={className} {...opts} py={2}>
       <HStack spacing={0}>
@@ -32,15 +31,10 @@ const FieldWrapper = (props: Props) => {
             {label}
           </FormLabel>
         )}
-        {help && (
-          <Tooltip hasArrow label={help} aria-label="A tooltip">
-            <InfoIcon title={help} cursor={'help'} />
-          </Tooltip>
-        )}
       </HStack>
       {children}
-
-      <FormErrorMessage>{error && error.message}</FormErrorMessage>
+      {!isDirty && help && <FormHelperText cursor={'help'}>{help}</FormHelperText>}
+      {error && <FormErrorMessage>{error.message}</FormErrorMessage>}
     </FormControl>
   )
 }

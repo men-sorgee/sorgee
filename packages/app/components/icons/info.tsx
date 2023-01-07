@@ -1,13 +1,9 @@
 import { Circle, StyleProps } from '@chakra-ui/react'
-import { forwardRef, LegacyRef } from 'react'
 
 type Props = StyleProps & { className?: string; title?: string }
-const InfoIcon = (
-  { className, title, ...props }: Props,
-  ref: LegacyRef<HTMLDivElement & Props>
-) => {
+const InfoIcon = ({ className, title, ...props }: Props) => {
   return (
-    <Circle title={title} ref={ref} __css={props}>
+    <Circle title={title} __css={props}>
       <svg
         className={className}
         aria-hidden="true"
@@ -28,4 +24,4 @@ const InfoIcon = (
   )
 }
 
-export default forwardRef<HTMLDivElement, Props>(InfoIcon)
+export default InfoIcon
