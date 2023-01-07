@@ -25,7 +25,7 @@ export type ApiResponse<T = (object & never) | any> = {
   data?: T
 }
 
-export function ApiResponse<T = (object & never) | any>(
+export function ApiResponse<T = any | any>(
   data: T,
   error?: string,
   field?: string & keyof T

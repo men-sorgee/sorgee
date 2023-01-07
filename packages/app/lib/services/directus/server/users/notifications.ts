@@ -1,6 +1,7 @@
 import { getAdminClient } from '..'
 import { UserNotification, Notification, AppNotification, NotificationStatus } from '@/lib/models'
 
+
 export async function getNotifications(user_id: string): Promise<AppNotification[]> {
   const adminClient = await getAdminClient()
   const { data: notificationsRaw } = await adminClient.items('notifications_users').readByQuery({

@@ -1,6 +1,8 @@
 import React, { ReactNode } from 'react'
-import { Button } from '@chakra-ui/react'
+import { Button } from '@ chakra-ui/react'
 import { postJSON } from '@/lib/utils'
+import { postJSON } from 'lib/utils'
+
 
 export class ErrorBoundary extends React.Component<{
   children: ReactNode | ReactNode[]
@@ -29,9 +31,9 @@ export class ErrorBoundary extends React.Component<{
         <section>
           <h2>Oops, there was an error!</h2>
           <p>This error was reported to the develop for proper punishment.</p>
-          <Button type="button" onClick={() => this.setState({ hasError: false })}>
+          <button type="button" onClick={() => this.setState({ hasError: false })}>
             Try again?
-          </Button>
+          </button>
         </section>
       )
     }
