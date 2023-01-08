@@ -2,7 +2,7 @@ import { InputHTMLAttributes } from 'react'
 import { useFormContext, RegisterOptions } from 'react-hook-form'
 import { FormOptions } from 'lib/models'
 import FieldWrapper from './FieldWrapper'
-import { Radio, RadioGroup, Stack, RadioProps, chakra } from '@chakra-ui/react'
+import { Radio, RadioGroup, Stack, RadioProps, chakra, SimpleGrid } from '@chakra-ui/react'
 
 type Props = RadioProps &
   InputHTMLAttributes<HTMLInputElement> & {
@@ -26,29 +26,34 @@ function RadioButtonsField(props: Props) {
     color = 'primary',
     ...opts
   } = props
-  const { register, getFieldState, formState } = useFormContext()
+  const { register, setValue, watch, getFieldState, formState } = useFormContext()
   const { error } = getFieldState(field, formState)
   const classes = error ? 'error' : ''
+  const fieldValue = watch(field)
   return (
     <FieldWrapper field={field} label={label} help={help} className={className}>
       <RadioGroup
+        onChange={(v) => {
+          setValue(field, v)
+        }}
+        value={fieldValue}
         w="full"
         as={Stack}
-        spacing={[1, 4]}
-        direction={{ base: 'column', md: 'row' }}
-        justify={'evenly'}
       >
-        {formOptions?.map(({ text, value }, index) => (
-          <Radio
-            key={index.toString()}
-            className={classes}
-            value={value}
-            {...register(field, registerOptions)}
-            {...opts}
-          >
-            {text}
-          </Radio>
-        ))}
+        <Stack id={field} spacing={4} w="full" direction={{ base: 'column', md: 'row' }}>
+          {formOptions?.map(({ text, value }, index) => (
+            <Radio
+              {...opts}
+              {...register(field, registerOptions)}
+              key={index.toString()}
+              defaultChecked={index === 0}
+              className={classes}
+              value={value}
+            >
+              {text}
+            </Radio>
+          ))}
+        </Stack>
       </RadioGroup>
     </FieldWrapper>
   )

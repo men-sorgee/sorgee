@@ -37,13 +37,13 @@ export function useNotifications(): NotificationResult {
     refreshInterval: 1000 * 30, // 30 seconds
     fallbackData: [],
   })
-  let hasNotifications = notifications.length > 0
-  let newNotifications = notifications.filter((n) => n.status === 'new')
-  let hasNewNotifications = !isLoading && newNotifications.length > 0
+  let hasNotifications = notifications?.length > 0
+  let newNotifications = notifications?.filter((n) => n.status === 'new')
+  let hasNewNotifications = !isLoading && newNotifications?.length > 0
   useEffect(() => {
-    hasNotifications = notifications.length > 0
-    newNotifications = notifications.filter((n) => n.status === 'new') || []
-    hasNewNotifications = !isLoading && newNotifications.length > 0
+    hasNotifications = notifications?.length > 0
+    newNotifications = notifications?.filter((n) => n.status === 'new') || []
+    hasNewNotifications = !isLoading && newNotifications?.length > 0
   }, [notifications, isLoading])
 
   return {

@@ -17,22 +17,21 @@ import {
   Alert,
   Button,
   Tabs,
+  Heading,
   TabList,
   Tab,
   TabPanels,
   TabPanel,
   Stack,
   Text,
+  HStack,
   SimpleGrid,
   GridItem,
   Input,
   InputGroup,
   InputRightAddon,
-  Box,
   Avatar,
   VStack,
-  Center,
-  Badge,
 } from '@chakra-ui/react'
 import Page from 'components/Page'
 import { useRouter } from 'next/router'
@@ -40,8 +39,8 @@ import FieldSwitch from 'components/forms/FieldSwitch'
 import { useToast } from '@chakra-ui/react'
 import { ErrorMessage } from '@hookform/error-message'
 import { getAssetUrl, postJSON } from 'lib/utils'
-import { useSite } from '../../hooks/use-site'
-import { UserBadge } from '../../components/ui'
+
+import { UserBadge } from 'components/ui'
 
 export type PageProps = {
   spectrumOptions: FormOptions
@@ -68,6 +67,9 @@ export type PageProps = {
   vaccinationStatusOptions: FormOptions
   contactPreferenceOptions: FormOptions
   myRolesOptions: FormOptions
+  theirRolesOptions: FormOptions
+  theirSpectrumOptions: FormOptions
+  theirPositionsOptions: FormOptions
   hostEventOptions: FormOptions
 }
 
@@ -98,27 +100,30 @@ export async function getServerSideProps(_context: NextPageContext) {
     contactPreferenceOptions: await getFieldOptions<User>('contact_preference'),
     myRolesOptions: await getFieldOptions<User>('my_roles'),
     hostEventOptions: await getFieldOptions<User>('can_host_events'),
+    theirRolesOptions: await getFieldOptions<User>('their_roles'),
+    theirSpectrumOptions: await getFieldOptions<User>('their_spectrum'),
+    theirPositionsOptions: await getFieldOptions<User>('their_positions'),
   }
   return { props }
 }
 
-type MemberFormData = Applicant & {
+type MemberFormData = User & {
   height_feet: string
   height_inches: string
 }
 
 function Account(props: PageProps) {
-  const { loading } = useMember()
+  const { member, loading } = useMember()
   return (
     <Page title="Account" loading={loading} requireAuth={true}>
-      <Form {...props} />
+      {member && <Form {...props} />}
     </Page>
   )
 }
 
 function Form(props: PageProps) {
   const toast = useToast()
-  const { member, reload } = useMember()
+  const { member, reload, loading } = useMember()
   const router = useRouter()
   const {
     spectrumOptions,
@@ -146,15 +151,27 @@ function Form(props: PageProps) {
     contactPreferenceOptions,
     myRolesOptions,
     hostEventOptions,
+    theirRolesOptions,
+    theirSpectrumOptions,
+    theirPositionsOptions,
   } = props
   const [tabValue, setTabValue] = useState(Number(router.query.t) || 0)
+  const [height_feet, setHeightFeet] = useState<string | null>()
+  const [height_inches, setHeightInches] = useState<string | null>()
+
+  useEffect(() => {
+    if (!loading && member && !height_feet && !height_inches) {
+      setHeightFeet(member?.height?.toString().substring(0, 1) || '')
+      setHeightInches(member?.height?.toString().substring(2) || '')
+    }
+  }, [loading, member, height_feet, height_inches])
 
   const methods = useForm<MemberFormData>({
     mode: 'onBlur',
     defaultValues: {
       ...member,
-      height_feet: member?.height?.toString().substring(0, 1),
-      height_inches: member?.height?.toString().substring(2),
+      height_feet,
+      height_inches,
     },
   })
   const {
@@ -164,27 +181,23 @@ function Form(props: PageProps) {
     formState: { isSubmitting, errors },
   } = methods
   const [photoSrc, setPhotoSrc] = useState<string | null>()
-  const [level, setLevel] = useState<number>(-1)
-  const { site } = useSite()
 
   useEffect(() => {
     if (tabValue !== Number(router.query.t || 0)) router.push(`/member/account?t=${tabValue}`)
-    if (member) {
-      const { picture, first_name, last_name, nickname } = member
-      if (!photoSrc && picture) setPhotoSrc(getAssetUrl(picture))
-      if (level == -1) setLevel(MemberLevel[member?.user_type || 'subscriber'])
+    if (!loading && member) {
+      const { picture, photo } = member
+      if ((!photoSrc && picture) || photo) setPhotoSrc(getAssetUrl(picture || photo))
     }
-  }, [tabValue, member, name, photoSrc, level, status])
+  }, [tabValue, member, photoSrc, status])
 
   async function onSubmit(data: MemberFormData) {
     if (data.height_feet || data.height_inches) {
-      data.height = `${data.height_feet}' ${data.height_inches}"`
+      data.height = `${data.height_feet} ${data.height_inches}`
     }
 
     const [ok, response] = await postJSON<User>('/api/member/me', data)
 
     if (ok) {
-      reload()
       toast({
         title: 'Success',
         description: 'Your account and profile are updated.',
@@ -192,6 +205,7 @@ function Form(props: PageProps) {
         duration: 9000,
         isClosable: true,
       })
+      reload()
     } else if (response.error?.field) {
       // @ts-ignore
       setError(response.error!.field, response.error.message)
@@ -203,19 +217,17 @@ function Form(props: PageProps) {
   const required = { value: true, message: 'Required' }
   return (
     <>
-      <Stack spacing={3}>
-        <Avatar src={photoSrc} color="white" bg="primary.500" />
-        <UserBadge size="lg" user_type={member?.user_type} />
-      </Stack>
+      <HStack spacing={3} alignItems="middle">
+        <Avatar src={photoSrc} size="lg" color="white" bg="primary.500" />
+        <VStack spacing={0} align="flex-start">
+          <Heading size="md">{member?.nickname}</Heading>
+          <UserBadge size="lg" user_type={member?.user_type} />
+        </VStack>
+      </HStack>
 
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="">
-          <Tabs
-            isFitted
-            align="center"
-            defaultIndex={tabValue}
-            onChange={(index) => setTabValue(index)}
-          >
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Tabs isFitted defaultIndex={tabValue} onChange={(index) => setTabValue(index)}>
             <TabList fontSize={{ base: 'md', md: 'lg' }} fontWeight="bold">
               <Tab>Private</Tab>
               <Tab>Events</Tab>
@@ -228,6 +240,7 @@ function Form(props: PageProps) {
               <TabPanel p={0}>
                 <Alert
                   bg={['primary.200', 'primary.700']}
+                  color="white"
                   flexDirection="column"
                   my={4}
                   p={4}
@@ -284,7 +297,7 @@ function Form(props: PageProps) {
                   </FieldCheckbox>
                 </SimpleGrid>
 
-                <Alert bg="secondary" my={4} borderRadius="md" shadow="md">
+                <Alert bg="secondary" color="white" my={4} borderRadius="md" shadow="md">
                   <Stack direction={'column'} spacing={2}>
                     <Text>
                       <strong>Are you an exhibitionist?</strong> If so, you can opt-in to be a part
@@ -309,6 +322,7 @@ function Form(props: PageProps) {
               <TabPanel p={0}>
                 <Alert
                   bg={['primary.200', 'primary.700']}
+                  color="white"
                   flexDirection="column"
                   my={4}
                   p={4}
@@ -347,7 +361,7 @@ function Form(props: PageProps) {
                   that things come up, but please be respectful of your brothers and RSVP accurately
                   and let us know if you can&apos;t make it.
                 </Text>
-                <Alert bg="secondary" my={4} borderRadius="md" shadow="md">
+                <Alert bg="secondary" color="white" my={4} borderRadius="md" shadow="md">
                   <Stack direction={'column'} spacing={2}>
                     <Text>
                       <strong>Are you interested in hosting?</strong> If so, let us know by checking
@@ -367,6 +381,7 @@ function Form(props: PageProps) {
               <TabPanel p={0}>
                 <Alert
                   bg={['primary.200', 'primary.700']}
+                  color="white"
                   flexDirection="column"
                   my={4}
                   p={4}
@@ -389,15 +404,9 @@ function Form(props: PageProps) {
                       field="nickname"
                       label="Nickname"
                       className="col-span-2 sm:col-span-4"
-                      registerOptions={{ required }}
                     />
                   </GridItem>
-                  <FieldSelect
-                    field="spectrum"
-                    label="Orientation"
-                    registerOptions={{ required }}
-                    formOptions={spectrumOptions}
-                  />
+                  <FieldSelect field="spectrum" label="Orientation" formOptions={spectrumOptions} />
                   <FieldSelect
                     field="relationship_status"
                     label="Relationship Status"
@@ -515,6 +524,7 @@ function Form(props: PageProps) {
               <TabPanel p={0}>
                 <Alert
                   bg={['primary.200', 'primary.700']}
+                  color="white"
                   flexDirection="column"
                   my={4}
                   p={4}
@@ -552,6 +562,7 @@ function Form(props: PageProps) {
               <TabPanel p={0}>
                 <Alert
                   bg={['primary.200', 'primary.700']}
+                  color="white"
                   flexDirection="column"
                   my={4}
                   p={4}
@@ -564,37 +575,35 @@ function Form(props: PageProps) {
                     information.
                   </Text>
                 </Alert>
-                <SimpleGrid spacing={4} columns={{ base: 1, sm: 2 }}>
-                  <FieldSelect
+                <SimpleGrid spacing={4}>
+                  <FieldCheckboxes
                     field="their_spectrum"
                     label="Their Orientation"
-                    registerOptions={{ required }}
-                    formOptions={spectrumOptions}
+                    formOptions={theirSpectrumOptions}
                   />
-                  <FieldSelect
+                  <FieldCheckboxes
                     field="their_relationship_status"
                     label="Their Relationship Status"
                     formOptions={relationshipOptions}
                   />
-                  <GridItem colSpan={{ base: 1, sm: 2 }}>
-                    <FieldCheckboxes
-                      field="their_positions"
-                      label="Their Sexual Positions"
-                      formOptions={positionsOptions}
-                    />
-                  </GridItem>
-                  <GridItem colSpan={{ base: 1, sm: 2 }}>
-                    <FieldCheckboxes
-                      field="their_roles"
-                      label="Their Sexual Roles"
-                      formOptions={myRolesOptions}
-                    />
-                  </GridItem>
+
+                  <FieldCheckboxes
+                    field="their_positions"
+                    label="Their Sexual Positions"
+                    formOptions={theirPositionsOptions}
+                  />
+
+                  <FieldCheckboxes
+                    field="their_roles"
+                    label="Their Sexual Roles"
+                    formOptions={theirRolesOptions}
+                  />
                 </SimpleGrid>
               </TabPanel>
               <TabPanel p={0}>
                 <Alert
                   bg={['primary.200', 'primary.700']}
+                  color="white"
                   flexDirection="column"
                   my={4}
                   p={4}
@@ -639,7 +648,14 @@ function Form(props: PageProps) {
           <input type="hidden" {...register('id')} />
 
           <VStack>
-            <Button mt={10} size="lg" type="submit" bg="primary" disabled={isSubmitting}>
+            <Button
+              mt={10}
+              size="lg"
+              type="submit"
+              bg="primary"
+              color="white"
+              disabled={isSubmitting}
+            >
               Update Profile
             </Button>
             <ErrorMessage errors={errors} name="form" />

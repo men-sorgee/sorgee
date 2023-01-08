@@ -17,6 +17,7 @@ const heading = Arvo({
 const body = Manrope({
   variable: '--body-font',
   weight: 'variable',
+  subsets: ['latin'],
 })
 
 const mono = Roboto_Mono({

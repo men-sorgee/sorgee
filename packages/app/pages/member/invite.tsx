@@ -28,11 +28,7 @@ function Invite({ userTypeOptions }: PageProps) {
   const { loading, member } = useMember()
   return (
     <Page title="Invite Someone" loading={loading} sectionClass="" requireAuth={true}>
-      <Text mb={10}>
-        {member?.first_name || 'Brother'}, enter your friend&apos;s email address and we will create
-        a special link for you to share.
-      </Text>
-      <Form userTypeOptions={userTypeOptions} />
+      {member && <Form userTypeOptions={userTypeOptions} />}
     </Page>
   )
 }
@@ -103,6 +99,10 @@ function Form({ userTypeOptions }: PageProps) {
 
   return (
     <>
+      <Text mb={10}>
+        {member?.first_name || 'Brother'}, enter your friend&apos;s email address and we will create
+        a special link for you to share.
+      </Text>
       <Box
         maxW={'xl'}
         boxShadow={'2xl'}

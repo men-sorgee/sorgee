@@ -149,8 +149,7 @@ const UserAvatar = (_props: Props) => {
           <LinkButton
             href={`/api/auth/signin`}
             fontWeight={600}
-            color={'white'}
-            bg={'primary'}
+            variant="ghost"
             onClick={(e) => {
               e.preventDefault()
               signIn(null, { callbackUrl: '/member/account' })

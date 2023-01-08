@@ -255,6 +255,7 @@ export type User = {
   show_health: boolean
   event_invites: boolean
   can_host_events: string[]
+  state: string
 }
 
 export type UserFile = {

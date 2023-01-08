@@ -21,7 +21,7 @@ const CheckboxField = (props: Props) => {
 
   return (
     <FieldWrapper field={field} label={label} help={help} className={className}>
-      <Checkbox {...opts} {...register(field, registerOptions)} {...opts} className={classes}>
+      <Checkbox {...opts} {...register(field, registerOptions)}>
         {children || label}
       </Checkbox>
     </FieldWrapper>

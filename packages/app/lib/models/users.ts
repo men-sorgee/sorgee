@@ -1,4 +1,4 @@
-import { User, UserAccount, Notification, UserNotification } from './directus'
+import { User, UserAccount } from './directus'
 
 type Color = {
   DEFAULT: string
@@ -162,36 +162,48 @@ export type Member = Applicant & {
   photo_consent: boolean
   notifications: AppNotification[]
   location?: string
+  city?: string
+  state?: string
+  // preferences
   can_host?: boolean
+  can_host_events: string[]
+  show_location?: boolean
+  show_profile?: boolean
+  show_interests?: boolean
+  show_health?: boolean
+  event_invites?: boolean
   //-profile
   body_hair?: string
   facial_hair?: string
   hair_color?: string
   hair_style?: string
-  body_attributes?: unknown
+  body_attributes?: string[]
   eye_color?: string
   mannerisms?: string
   //-new
   cock_length?: number
   cock_girth?: string
-  cock_attributes?: unknown
+  cock_attributes?: string[]
   ball_size?: string
   ball_gravity?: string
-  cum_attributes?: unknown
-  load_policy?: unknown
+  cum_attributes?: string[]
+  load_policy?: string[]
 
   //-health
   hiv_status?: string
   last_tested?: string
-  vaccinations?: unknown
+  vaccinations?: string[]
   //-them
-  their_positions?: unknown
-  their_roles?: unknown
-  their_spectrum?: unknown
+  their_positions?: string[]
+  their_roles?: string[]
+  their_spectrum?: OrientationType[]
+  their_relationship_status?: string[]
 }
 export const memberFields: Array<keyof User> = [
   ...applicantFields,
   'nickname',
+  'city',
+  'state',
   'video_consent',
   'photo_consent',
   'notifications',
@@ -215,4 +227,12 @@ export const memberFields: Array<keyof User> = [
   'their_positions',
   'their_roles',
   'their_spectrum',
+  'their_relationship_status',
+  'can_host',
+  'can_host_events',
+  //'show_location',
+  'show_profile',
+  'show_interests',
+  'show_health',
+  'event_invites',
 ]

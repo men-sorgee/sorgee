@@ -21,6 +21,7 @@ import { XCircleIcon } from '@heroicons/react/outline'
 import { useState } from 'react'
 import { AppNotification } from 'lib/models'
 import Markdown from './Markdown'
+import LinkButton from './LinkButton'
 
 function NotificationCard({ notification }: { notification: AppNotification }) {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -43,7 +44,6 @@ function NotificationCard({ notification }: { notification: AppNotification }) {
         cursor="pointer"
         border={'1px solid'}
         borderColor="text"
-        color={isNew ? 'white' : 'purple'}
         colorScheme={isNew ? 'purple' : 'white'}
         onClick={openMessage}
         borderRadius={'5px'}
@@ -63,6 +63,11 @@ function NotificationCard({ notification }: { notification: AppNotification }) {
           <ModalBody>{notification?.body && <Markdown content={notification?.body} />}</ModalBody>
           <ModalFooter>
             <HStack spacing={2} align="right">
+              {notification?.link && (
+                <LinkButton onClick={onClose} href={notification?.link} colorScheme="purple">
+                  Go!
+                </LinkButton>
+              )}
               <Button onClick={markAsDeleted} colorScheme="red">
                 Delete
               </Button>

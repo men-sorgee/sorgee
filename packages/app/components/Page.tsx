@@ -43,7 +43,9 @@ const Page = ({
 
   return (
     <VStack spacing={2} className={sectionClass} as="article" align={['start', 'center']}>
-      <Heading as="h1">{title}</Heading>
+      <Heading as="h1" fontSize={{ base: '2xl', sm: '4xl', md: '6xl' }}>
+        {title}
+      </Heading>
 
       {header}
       {(loading && (

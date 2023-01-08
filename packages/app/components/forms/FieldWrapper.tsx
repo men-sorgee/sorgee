@@ -24,14 +24,12 @@ const FieldWrapper = (props: Props) => {
   const { getFieldState } = useFormContext()
   const { error, isDirty } = getFieldState(field)
   return (
-    <FormControl isInvalid={!!error} className={className} {...opts} py={2}>
-      <HStack spacing={0}>
-        {label && (
-          <FormLabel fontWeight="bold" htmlFor={field}>
-            {label}
-          </FormLabel>
-        )}
-      </HStack>
+    <FormControl isInvalid={!!error} textAlign="left" className={className} {...opts} py={2}>
+      {label && (
+        <FormLabel fontWeight="bold" htmlFor={field}>
+          {label}
+        </FormLabel>
+      )}
       {children}
       {!isDirty && help && <FormHelperText cursor={'help'}>{help}</FormHelperText>}
       {error && <FormErrorMessage>{error.message}</FormErrorMessage>}
