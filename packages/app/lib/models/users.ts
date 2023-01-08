@@ -129,6 +129,7 @@ export type Applicant = Profile & {
   weight: number
   skin_tone: User['skin_tone']
   my_positions: User['my_positions']
+  my_roles: User['my_roles']
   sexual_scenes: User['sexual_scenes']
   social_scenes: User['social_scenes']
   photo: string | null
@@ -150,6 +151,7 @@ export const applicantFields: Array<keyof User> = [
   'weight',
   'skin_tone',
   'my_positions',
+  'my_roles',
   'sexual_scenes',
   'social_scenes',
   'photo',
