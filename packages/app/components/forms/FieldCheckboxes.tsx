@@ -2,7 +2,14 @@ import { InputHTMLAttributes } from 'react'
 import { useFormContext, RegisterOptions } from 'react-hook-form'
 import { FormOptions } from 'lib/models'
 import FieldWrapper from './FieldWrapper'
-import { Checkbox, CheckboxGroup, Text, CheckboxProps, chakra, SimpleGrid } from '@chakra-ui/react'
+import {
+  Checkbox,
+  CheckboxGroup,
+  useCheckboxGroup,
+  CheckboxProps,
+  chakra,
+  SimpleGrid,
+} from '@chakra-ui/react'
 
 type Props = CheckboxProps &
   InputHTMLAttributes<HTMLInputElement> & {
@@ -16,19 +23,29 @@ type Props = CheckboxProps &
 
 const CheckboxesField = (props: Props) => {
   const { field, label, help, registerOptions = {}, formOptions, className, ...opts } = props
-  const { register, watch } = useFormContext()
-  const fieldValue = watch(field, [])
+  const { register, watch, setValue, getValues } = useFormContext()
+
   return (
     <FieldWrapper field={field} help={help} label={label} className={className}>
-      <CheckboxGroup defaultValue={fieldValue}>
-        <SimpleGrid gap={4} columns={{ base: 1, sm: 2, md: 3, lg: 4 }}>
+      <SimpleGrid gap={4} columns={{ base: 1, sm: 2, md: 3, lg: 4 }}>
+        <CheckboxGroup
+          onChange={(value) => {
+            setValue(field, value)
+          }}
+          defaultValue={getValues(field)}
+        >
           {formOptions?.map(({ text, value }, index) => (
-            <Checkbox key={index.toString()} value={value} {...register(field, registerOptions)}>
+            <Checkbox
+              {...opts}
+              key={index.toString()}
+              value={value}
+              {...register(field, registerOptions)}
+            >
               {text}
             </Checkbox>
           ))}
-        </SimpleGrid>
-      </CheckboxGroup>
+        </CheckboxGroup>
+      </SimpleGrid>
     </FieldWrapper>
   )
 }
