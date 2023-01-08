@@ -20,15 +20,10 @@ const CheckboxesField = (props: Props) => {
   const fieldValue = watch(field, [])
   return (
     <FieldWrapper field={field} help={help} label={label} className={className}>
-      <CheckboxGroup>
+      <CheckboxGroup defaultValue={fieldValue}>
         <SimpleGrid gap={4} columns={{ base: 1, sm: 2, md: 3, lg: 4 }}>
           {formOptions?.map(({ text, value }, index) => (
-            <Checkbox
-              key={index.toString()}
-              value={value}
-              {...register(field, registerOptions)}
-              defaultChecked={true}
-            >
+            <Checkbox key={index.toString()} value={value} {...register(field, registerOptions)}>
               {text}
             </Checkbox>
           ))}
