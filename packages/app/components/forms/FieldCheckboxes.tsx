@@ -16,22 +16,14 @@ type Props = CheckboxProps &
 
 const CheckboxesField = (props: Props) => {
   const { field, label, help, registerOptions = {}, formOptions, className, ...opts } = props
-  const { register, getFieldState, formState } = useFormContext()
-  const { error } = getFieldState(field, formState)
-  const classes = error ? 'error' : ''
+  const { register, watch } = useFormContext()
+  const fieldValue = watch(field, [])
   return (
     <FieldWrapper field={field} help={help} label={label} className={className}>
-      <CheckboxGroup>
+      <CheckboxGroup defaultValue={fieldValue}>
         <SimpleGrid gap={4} columns={{ base: 1, sm: 2, md: 3, lg: 4 }}>
           {formOptions?.map(({ text, value }, index) => (
-            <Checkbox
-              {...opts}
-              key={index.toString()}
-              id={value}
-              value={value}
-              {...register(field, registerOptions)}
-              className={classes}
-            >
+            <Checkbox key={index.toString()} value={value} {...register(field, registerOptions)}>
               {text}
             </Checkbox>
           ))}
