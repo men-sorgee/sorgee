@@ -8,7 +8,7 @@ import { LocationProvider } from '../hooks/use-location'
 import { MetaProvider } from '../hooks/use-meta'
 import { SocketProvider } from '../hooks/use-socket'
 import { Manrope, Arvo, Roboto_Mono } from '@next/font/google'
-
+import { useRouter } from 'next/router'
 const heading = Arvo({
   variable: '--heading-font',
   weight: ['400', '700'],
@@ -37,6 +37,7 @@ extendTheme({
 })
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter()
   return (
     <SessionProvider>
       <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
@@ -45,7 +46,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             <LocationProvider>
               <Layout fonts={[heading.variable, body.variable, mono.variable]}>
                 <ErrorBoundary>
-                  <Component {...pageProps} />
+                  <Component key={router.asPath} {...pageProps} />
                 </ErrorBoundary>
               </Layout>
             </LocationProvider>

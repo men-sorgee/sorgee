@@ -25,3 +25,5 @@ export const config = {
     clientSecret: process.env.YAHOO_CLIENT_SECRET,
   },
 }
+
+export default config

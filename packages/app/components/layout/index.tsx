@@ -4,9 +4,6 @@ import { useRouter } from 'next/router'
 import Header from './Header'
 import Meta from './Meta'
 import Footer from './Footer'
-import User from './User'
-import Notifications from './Notifications'
-import { UserShow } from '../ui/UserShow'
 
 export const constrained = {
   maxW: { base: '90%', md: '4xl', lg: '5xl', xl: '6xl' },

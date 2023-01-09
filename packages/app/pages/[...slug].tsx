@@ -54,7 +54,7 @@ export default function DynamicPage({ page }: Props) {
   const [nextText, setNextText] = useState<string>(null)
   const [nextUrl, setNextUrl] = useState<string>('')
 
-  const { title, description, image, markdown, content, next, next_page } = page
+  const { title, id, description, image, markdown, content, next, next_page } = page
 
   useEffect(() => {
     if (!loading && next_page) {
@@ -72,7 +72,7 @@ export default function DynamicPage({ page }: Props) {
     return <NotFound />
   }
   return (
-    <Page title={title} description={description} image={image?.id}>
+    <Page id={id} title={title} description={description} image={image?.id}>
       <Stack as="section" spacing={4} maxW="lg">
         <Markdown content={markdown} />
       </Stack>

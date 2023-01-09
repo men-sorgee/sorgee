@@ -1,4 +1,3 @@
-import { NextPage } from 'next'
 import { useSession, signIn } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { ApplicationStatus } from 'lib/models'
@@ -17,7 +16,7 @@ function getMemberPage(status?: string) {
   }
 }
 
-const Resume: NextPage = () => {
+function Resume(_props) {
   const { data: session, status } = useSession()
   const [page, setPage] = useState('/apply')
   const { user } = session || {}
