@@ -62,7 +62,7 @@ const UserAvatar = (_props: Props) => {
 
   const isMember = member && level >= 3 && application_status == 'approved'
   const isApplicant = ApplicationStatus[application_status] < ApplicationStatus['approved']
-  if (loading) return <Spinner />
+
   return (
     <>
       {member ? (
@@ -93,6 +93,7 @@ const UserAvatar = (_props: Props) => {
                 <MenuItem
                   icon={<ExternalLinkIcon color={'white'} width={'1.5rem'} />}
                   bg="black"
+                  _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                   as={Link}
                   href="/apply/resume"
                 >
@@ -105,6 +106,7 @@ const UserAvatar = (_props: Props) => {
                   <MenuItem
                     icon={<CalendarIcon color={'white'} width={'1.5rem'} />}
                     bg="black"
+                    _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                     as={Link}
                     href="/member/events"
                   >
@@ -113,6 +115,7 @@ const UserAvatar = (_props: Props) => {
                   <MenuItem
                     icon={<CogIcon color={'white'} width={'1.5rem'} />}
                     bg="black"
+                    _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                     as={Link}
                     href="/member/account"
                   >
@@ -122,6 +125,7 @@ const UserAvatar = (_props: Props) => {
                   <MenuItem
                     icon={<UserGroupIcon color={'white'} width={'1.5rem'} />}
                     bg="black"
+                    _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                     as={Link}
                     href="/member/invite"
                   >
@@ -133,6 +137,7 @@ const UserAvatar = (_props: Props) => {
               <MenuItem
                 icon={<LogoutIcon color={'white'} width={'1.5rem'} />}
                 bg="black"
+                _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                 as={Link}
                 href={`/api/auth/signout`}
                 onClick={() => {
@@ -145,32 +150,36 @@ const UserAvatar = (_props: Props) => {
           </Menu>
         </>
       ) : (
-        <>
-          <LinkButton
-            href={`/api/auth/signin`}
-            fontWeight={600}
-            variant="ghost"
-            onClick={(e) => {
-              e.preventDefault()
-              signIn(null, { callbackUrl: '/member/account' })
-            }}
-          >
-            members
-          </LinkButton>
-          {showApply && (
+        !loading && (
+          <>
             <LinkButton
-              href={`/apply`}
+              href={`/api/auth/signin`}
               fontWeight={600}
-              colorScheme={'accent'}
+              variant="ghost"
+              _hover={{ textDecoration: 'none' }}
               onClick={(e) => {
                 e.preventDefault()
-                signIn(null, { callbackUrl: '/apply' })
+                signIn(null, { callbackUrl: '/member/account' })
               }}
             >
-              apply
+              members
             </LinkButton>
-          )}
-        </>
+            {showApply && (
+              <LinkButton
+                href={`/apply`}
+                _hover={{ textDecoration: 'none' }}
+                fontWeight={600}
+                colorScheme={'accent'}
+                onClick={(e) => {
+                  e.preventDefault()
+                  signIn(null, { callbackUrl: '/apply/resumse' })
+                }}
+              >
+                apply
+              </LinkButton>
+            )}
+          </>
+        )
       )}
     </>
   )

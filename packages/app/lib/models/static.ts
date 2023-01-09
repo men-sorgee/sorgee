@@ -53,12 +53,6 @@ export type SectionContainerType = 'grid-cols-1' | 'grid-cols-2' | 'grid-cols-3'
 
 export type ContentType = 'html' | 'md' | 'image' | 'control'
 
-export type CMSPageProps = {
-  title: string
-  description: string
-  content: PageContent[]
-}
-
 export type PageItem = {
   title: string
   path: string

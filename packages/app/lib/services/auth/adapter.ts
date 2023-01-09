@@ -51,7 +51,7 @@ function mapToken(token: UserVerificationToken): VerificationToken {
 const authAdapter: Adapter = {
   async createUser(user: AdapterUser) {
     try {
-      console.debug('createUser', user)
+      //console.debug('createUser', user)
       let image: DirectusFile = null
       if (user.image) {
         image = await importFile(user.image, UploadFolder.members, `avatar-${user.email}`)
@@ -78,8 +78,8 @@ const authAdapter: Adapter = {
   },
   async getUserByEmail(email) {
     try {
-      console.log('getUserByEmail', email)
-      const user = await findUser<User>(email)
+      console.debug('getUserByEmail', email)
+      const user = await findUser<User>(email, '*.*')
       if (!user) return null
       return mapUser(user)
     } catch (e) {

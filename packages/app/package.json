@@ -16,7 +16,8 @@
     "deploy": "gcloud run services replace service.yaml",
     "gql": "graphql-codegen --config codegen.ts",
     "pre-start": "yarn generate",
-    "pre-dev": "yarn generate"
+    "pre-dev": "yarn generate",
+    "kill": "npx -y kill-port 3000"
   },
   "dependencies": {
     "@chakra-ui/icon": "^3.0.14",

@@ -1,10 +1,10 @@
 import { AuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import DiscordProvider from 'next-auth/providers/discord'
-import { TwitterLegacy } from 'next-auth/providers/twitter'
 import MicrosoftProvider from 'next-auth/providers/azure-ad'
 import YahooProvider from './yahoo'
 import EmailProvider from 'next-auth/providers/email'
+import { TwitterLegacy } from 'next-auth/providers/twitter'
 import { authAdapter } from './adapter'
 import { sendNotificationEmail, updateSendGrid } from 'lib/services/sendgrid/server'
 import {
@@ -13,8 +13,11 @@ import {
   findUser,
   findUserByAccount,
   recordUserLogin,
+  // recordUserLogout,
 } from 'lib/services/directus/server/users'
 import { Member, memberFields, Profile, User, UserStatusType } from 'lib/models'
+import config from 'lib/config/server'
+const { google, discord, twitter, yahoo, microsoft } = config
 const allowedStatuses: UserStatusType[] = ['new', 'active', 'inactive', 'stale']
 export const authOptions: AuthOptions = {
   adapter: authAdapter,
@@ -123,47 +126,43 @@ export const authOptions: AuthOptions = {
         }
       )
     },
-    async signIn({ user, account, profile }) {
+    async signIn({ user }) {
       console.log('event:signIn')
-      //console.dir({ user, account, profile })
-      /* on successful sign in */
       await recordUserLogin(user.id)
+    },
+    async signOut(props) {
+      console.log('event:signOut')
+      //await recordUserLogout(user.id)
     },
   },
   providers: [
     GoogleProvider({
-      clientId:
-        process.env.GOOGLE_CLIENT_ID ||
-        '806946159244-d8tvf8n5rcb9hshl4agk2lfgli6vdmhe.apps.googleusercontent.com',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: google.clientId,
+      clientSecret: google.clientSecret,
       allowDangerousEmailAccountLinking: true,
-      
     }),
     DiscordProvider({
-      clientId: process.env.DISCORD_CLIENT_ID || '1027516437134319648',
-      clientSecret: process.env.DISCORD_CLIENT_SECRET,
+      clientId: discord.clientId,
+      clientSecret: discord.clientSecret,
       allowDangerousEmailAccountLinking: true,
     }),
     TwitterLegacy({
       name: 'Twitter',
-      clientId: process.env.TWITTER_CLIENT_ID || 'LigZOUxGK6JVIUXRURIKKukYu',
-      clientSecret: process.env.TWITTER_CLIENT_SECRET,
+      clientId: twitter.clientId,
+      clientSecret: twitter.clientSecret,
       allowDangerousEmailAccountLinking: true,
     }),
     MicrosoftProvider({
-      id: 'microsoft',
       name: 'Microsoft',
-      clientId: process.env.MICROSOFT_CLIENT_ID || 'bcb07c66-6c9b-422a-b6a1-29966b392849',
-      clientSecret: process.env.MICROSOFT_CLIENT_SECRET,
+      clientId: microsoft.clientId,
+      clientSecret: microsoft.clientSecret,
       allowDangerousEmailAccountLinking: true,
     }),
     YahooProvider({
-      clientId:
-        process.env.YAHOO_CLIENT_ID ||
-        'dj0yJmk9SlNWNlB3UDlqaGluJmQ9WVdrOWNsVmFlbmh6ZFcwbWNHbzlNQT09JnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PTA1',
-      clientSecret: process.env.YAHOO_CLIENT_SECRET,
+      clientId: yahoo.clientId,
+      clientSecret: yahoo.clientSecret,
       allowDangerousEmailAccountLinking: true,
-    }),
+    } as any),
     EmailProvider({
       async sendVerificationRequest({ identifier: email, url }) {
         await sendNotificationEmail(

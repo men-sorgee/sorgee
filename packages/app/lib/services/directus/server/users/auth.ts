@@ -4,7 +4,15 @@ import { User, UserAccount, UserSession, UserVerificationToken } from 'lib/model
 export async function recordUserLogin(id: string) {
   const adminClient = await getAdminClient()
   return await adminClient.items('users').updateOne(id, {
+    presence: 'online',
     last_login: new Date().toISOString(),
+  })
+}
+
+export async function recordUserLogout(id: string) {
+  const adminClient = await getAdminClient()
+  return await adminClient.items('users').updateOne(id, {
+    presence: 'offline',
   })
 }
 

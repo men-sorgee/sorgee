@@ -38,6 +38,7 @@ const Notifications = ({ setNotificationBadge }: Props) => {
           )
         }
         bg="black"
+        _hover={{ bg: 'gray.400' }}
         onClick={onOpen}
       >
         Notifications{' '}

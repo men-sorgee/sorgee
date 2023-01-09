@@ -1,5 +1,4 @@
-import { ReactNode } from 'react'
-import { setMeta } from 'hooks/use-meta'
+import { css } from '@emotion/react'
 import {
   Box,
   useColorModeValue,
@@ -20,6 +19,8 @@ import {
 } from '@chakra-ui/react'
 import { CheckCircleIcon } from '@heroicons/react/solid'
 import Page from 'components/Page'
+import { useSite } from '../hooks/use-site'
+import { LinkButton } from '../components/ui'
 const Check = ({ available = false }) => (
   <Icon
     as={CheckCircleIcon}
@@ -29,6 +30,7 @@ const Check = ({ available = false }) => (
 )
 
 export default function ThreeTierPricing() {
+  const { site, loading } = useSite()
   return (
     <Page title="Pricing" description="Membership due pricing for varying levels.">
       <Heading as="h2" size={['lg', 'xl']}>
@@ -39,7 +41,13 @@ export default function ThreeTierPricing() {
       </Text>
 
       <TableContainer>
-        <Table variant={['unstyled', 'simple']} size={{ base: 'sm', md: 'md', lg: 'lg' }}>
+        <Table
+          css={css`
+            --chakra-space-4: 0.75em;
+          `}
+          variant={['unstyled', 'simple']}
+          size={{ base: 'sm', md: 'md', lg: 'lg' }}
+        >
           <Thead>
             <Tr>
               <Th></Th>
@@ -220,6 +228,15 @@ export default function ThreeTierPricing() {
           </Tfoot>
         </Table>
       </TableContainer>
+      {(!site.invite_only && (
+        <LinkButton my={8} colorScheme="accent" size="lg" href="/apply">
+          Get Started
+        </LinkButton>
+      )) || (
+        <LinkButton my={8} colorScheme="accent" size="lg" href="/limited">
+          Get Started
+        </LinkButton>
+      )}
     </Page>
   )
 }

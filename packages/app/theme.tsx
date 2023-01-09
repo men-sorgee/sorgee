@@ -210,8 +210,12 @@ const custom: Partial<ChakraTheme> = {
         my: 1,
       },
       ul: {
-        my: 2,
+        margin: '0 auto',
+        width: 'fit-content',
+        listStylePosition: 'inside',
+        padding: '0',
       },
+      li: { textAlign: 'left' },
       p: {
         my: 2,
       },

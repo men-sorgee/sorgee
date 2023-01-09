@@ -89,6 +89,7 @@ export type Page = {
   children: Page[]
   content: PageContent[]
   next?: string
+  next_page?: Page
 }
 
 export type PageContent = {
@@ -173,6 +174,7 @@ export type UserRelationship = {
 
 export type User = {
   id: string
+  presence?: string
   status: string
   date_created?: string
   date_updated?: string
@@ -217,7 +219,6 @@ export type User = {
   hair_color?: string
   hair_style?: string
   body_attributes?: string[]
-
   eye_color?: string
   ball_size?: string
   ball_gravity?: string

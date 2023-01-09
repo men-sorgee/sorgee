@@ -97,7 +97,7 @@ export type Profile = {
   status: UserStatusType
   accounts: UserAccount[]
 }
-export const profileFields: Array<keyof User> = [
+export const profileFields: Array<keyof Profile> = [
   'id',
   'picture',
   'nickname',
@@ -135,7 +135,7 @@ export type Applicant = Profile & {
   photo: string | null
   photo_denial_reason: string | null
 }
-export const applicantFields: Array<keyof User> = [
+export const applicantFields: Array<keyof Applicant> = [
   ...profileFields,
   'vouched_by',
   'phone',
@@ -159,6 +159,7 @@ export const applicantFields: Array<keyof User> = [
 ]
 
 export type Member = Applicant & {
+  presence: 'offline' | 'online' | 'away'
   nickname: User['nickname']
   video_consent: boolean
   photo_consent: boolean
@@ -201,7 +202,7 @@ export type Member = Applicant & {
   their_spectrum?: OrientationType[]
   their_relationship_status?: string[]
 }
-export const memberFields: Array<keyof User> = [
+export const memberFields: Array<keyof Member> = [
   ...applicantFields,
   'nickname',
   'city',

@@ -40,7 +40,7 @@ import { useToast } from '@chakra-ui/react'
 import { ErrorMessage } from '@hookform/error-message'
 import { getAssetUrl, postJSON } from 'lib/utils'
 
-import { UserBadge } from 'components/ui'
+import { UserCard } from 'components/ui'
 
 export type PageProps = {
   spectrumOptions: FormOptions
@@ -115,7 +115,7 @@ type MemberFormData = User & {
 function Account(props: PageProps) {
   const { member, loading } = useMember()
   return (
-    <Page title="Account" loading={loading} requireAuth={true}>
+    <Page title="Account" loading={loading} requireAuth={true} header={<UserCard />}>
       {member && <Form {...props} />}
     </Page>
   )
@@ -180,15 +180,10 @@ function Form(props: PageProps) {
     setError,
     formState: { isSubmitting, errors },
   } = methods
-  const [photoSrc, setPhotoSrc] = useState<string | null>()
 
   useEffect(() => {
     if (tabValue !== Number(router.query.t || 0)) router.push(`/member/account?t=${tabValue}`)
-    if (!loading && member) {
-      const { picture, photo } = member
-      if ((!photoSrc && picture) || photo) setPhotoSrc(getAssetUrl(picture || photo))
-    }
-  }, [tabValue, member, photoSrc, status])
+  }, [tabValue])
 
   async function onSubmit(data: MemberFormData) {
     if (data.height_feet || data.height_inches) {
@@ -217,26 +212,20 @@ function Form(props: PageProps) {
   const required = { value: true, message: 'Required' }
   return (
     <>
-      <HStack spacing={3} alignItems="middle">
-        <Avatar src={photoSrc} size="lg" color="white" bg="primary.500" />
-        <VStack spacing={0} align="flex-start">
-          <Heading size="md" textTransform="uppercase">
-            {member?.nickname}
-          </Heading>
-          <UserBadge size="lg" user_type={member?.user_type} />
-        </VStack>
-      </HStack>
-
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Tabs isFitted defaultIndex={tabValue} onChange={(index) => setTabValue(index)}>
             <TabList fontSize={{ base: 'md', md: 'lg' }} fontWeight="bold">
-              <Tab>Private</Tab>
-              <Tab>Events</Tab>
-              <Tab>Profile</Tab>
-              <Tab display={{ base: 'none', md: 'inherit' }}>Interests</Tab>
-              <Tab display={{ base: 'none', md: 'inherit' }}>Attractions</Tab>
-              <Tab>Health</Tab>
+              <Tab fontWeight="bold">Private</Tab>
+              <Tab fontWeight="bold">Events</Tab>
+              <Tab fontWeight="bold">Profile</Tab>
+              <Tab fontWeight="bold" display={{ base: 'none', md: 'inherit' }}>
+                Interests
+              </Tab>
+              <Tab fontWeight="bold" display={{ base: 'none', md: 'inherit' }}>
+                Attractions
+              </Tab>
+              <Tab fontWeight="bold">Health</Tab>
             </TabList>
             <TabPanels>
               <TabPanel p={0}>

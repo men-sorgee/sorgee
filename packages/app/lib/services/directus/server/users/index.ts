@@ -27,9 +27,10 @@ export async function updateUser(id: string, member: Partial<User>): Promise<Use
   return user as User
 }
 
+type UserFields = (string | keyof User)[] | '*' | '*.*' | any
 export async function getUser<T = User>(
   id: string,
-  fields: (string | keyof User)[] = memberFields
+  fields: UserFields = memberFields
 ): Promise<T | null> {
   const adminClient = await getAdminClient()
   const user: any = await adminClient.items('users').readOne(id, {
@@ -40,7 +41,7 @@ export async function getUser<T = User>(
 
 export async function findUser<T = Profile>(
   email: string,
-  fields = profileFields
+  fields: UserFields = profileFields
 ): Promise<T | null> {
   const adminClient = await getAdminClient()
   // @ts-ignore
@@ -60,15 +61,15 @@ export async function findUser<T = Profile>(
 }
 
 export async function searchUsers<T = Profile>(
-  filter: FieldFilter<User>,
-  fields = profileFields
+  filter: FieldFilter<T>,
+  fields: UserFields = profileFields
 ): Promise<T[] | null> {
   const adminClient = await getAdminClient()
   const { data: users } = await adminClient.items('users').readByQuery({
     filter,
     fields: [...fields],
   })
-  return users
+  return users as T[]
 }
 
 export async function getApplicant(id: string): Promise<Applicant | null> {
@@ -111,7 +112,7 @@ export async function storeEmailEvent(event: UserEmailEvent) {
 
 export async function listUsersByLevel<T = Member>(
   type: string,
-  fields = memberFields
+  fields: UserFields = memberFields
 ): Promise<T[]> {
   const adminClient = await getAdminClient()
   const { data } = await adminClient.items('users').readByQuery({

@@ -4,7 +4,7 @@ interface Props {
   user_type: string
   size?: string
 }
-const UserBadge = ({ user_type, size = 'md' }: Props) => {
+const UserBadge = ({ user_type = 'subscriber', size = 'md' }: Props) => {
   const colors = [
     ['red.300', 'red.600'],
     ['orange.300', 'orange.600'],
@@ -14,13 +14,12 @@ const UserBadge = ({ user_type, size = 'md' }: Props) => {
     ['purple.300', 'purple.600'],
     ['pink.300', 'pink.600'],
   ]
-  const levelValue = MemberLevel[user_type || 'subscriber']
+  const levelValue = MemberLevel[user_type]
   const levelColor = colors[levelValue]
-  let level = MemberLevel[levelValue]
-  if (level == 'member') level = 'brother'
+  const levelName = (user_type == 'member' ? 'brother' : user_type).split('_').join(' ')
   return (
-    <Badge size={size} textTransform={'uppercase'} bg={levelColor} color="white">
-      {level}
+    <Badge rounded="md" size={size} textTransform={'uppercase'} bg={levelColor} color="white">
+      {levelName}
     </Badge>
   )
 }

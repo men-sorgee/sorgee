@@ -53,8 +53,12 @@ function Header({ children, ...props }: Props) {
     }) || []
   const navItems: Array<NavItem> = [
     {
-      label: 'Home',
+      label: 'INFORMATION',
       children: [
+        {
+          label: 'Home',
+          href: '/',
+        },
         ...navPages,
         {
           label: 'Pricing',
@@ -63,7 +67,7 @@ function Header({ children, ...props }: Props) {
       ],
     },
     {
-      label: 'Legal',
+      label: 'LEGAL',
       children: [
         {
           label: 'Privacy Policy',
@@ -120,7 +124,7 @@ function Header({ children, ...props }: Props) {
 
 const MobileNav = ({ navItems, ...props }: StackProps & { navItems: NavItem[] }) => {
   return (
-    <Stack as="nav" color={'white'} p={4} __css={props}>
+    <Stack as="nav" color={'white'} __css={props} mb={4}>
       {navItems?.map((navItem) => (
         <MobileNavItem key={navItem.label} {...navItem} />
       ))}
@@ -132,9 +136,9 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
   const { isOpen, onToggle } = useDisclosure()
 
   return (
-    <Stack spacing={4} onClick={children && onToggle}>
+    <Stack onClick={children && onToggle}>
       <Flex
-        py={2}
+        py={4}
         as={Link}
         href={href ?? '#'}
         justify={'space-between'}
@@ -143,7 +147,7 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
           textDecoration: 'none',
         }}
       >
-        <Text fontWeight={600} color={'white'}>
+        <Text fontWeight={600} color={'white'} textTransform="uppercase">
           {label}
         </Text>
         {children && (
@@ -157,9 +161,9 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
         )}
       </Flex>
 
-      <Collapse in={isOpen} animateOpacity style={{ marginTop: '0!important' }}>
+      <Collapse in={isOpen} animateOpacity>
         <Stack
-          mt={2}
+          spacing={2}
           pl={4}
           borderLeft={1}
           borderStyle={'solid'}
@@ -167,22 +171,25 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
           align={'start'}
         >
           {children &&
-            children.map(
-              (child) =>
-                (child.reload && (
-                  <a
-                    key={child.label}
-                    style={{ paddingTop: 2, paddingBottom: 2 }}
-                    href={child.href}
-                  >
+            children.map((child, i) => (
+              <Box key={i} w="full" _hover={{ bg: 'primary.400' }} py={1} px={2}>
+                {(child.reload && (
+                  <a style={{ display: 'block' }} href={child.href}>
                     {child.label}
                   </a>
                 )) || (
-                  <Link as={NextLink} key={child.label} py={2} href={child.href}>
+                  <Link
+                    display="block"
+                    _hover={{ textDecoration: 'none' }}
+                    as={NextLink}
+                    py={2}
+                    href={child.href}
+                  >
                     {child.label}
                   </Link>
-                )
-            )}
+                )}
+              </Box>
+            ))}
         </Stack>
       </Collapse>
     </Stack>
