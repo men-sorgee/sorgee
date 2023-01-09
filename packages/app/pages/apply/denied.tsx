@@ -13,17 +13,14 @@ function Denied() {
   }
 
   return (
-    <Page
-      title="Application Denied"
-      loading={loading}
-      requireAuth={true}
-      sectionClass="gradient p-4 text-center"
-    >
+    <Page title="Application Denied" loading={loading} requireAuth={true}>
       <>
-        <Heading as="h2" size="xl">
+        <Heading as="h2" size="xl" pt={10}>
           Unfortunately, your application was denied.
         </Heading>
-        <Text fontSize="2xl">{member?.photo_denial_reason}</Text>
+        <Text pt={10} fontSize="2xl">
+          {member?.photo_denial_reason}
+        </Text>
         <Text fontSize="2xl">
           If this was a mistake or you'd like to appeal, please contact us at{' '}
           <Link className="link" href="mailto:support@guysnheat.com">

@@ -19,7 +19,7 @@ const UserBadge = ({ user_type, size = 'md' }: Props) => {
   let level = MemberLevel[levelValue]
   if (level == 'member') level = 'brother'
   return (
-    <Badge size={size} textTransform={'capitalize'} bg={levelColor} color="white">
+    <Badge size={size} textTransform={'uppercase'} bg={levelColor} color="white">
       {level}
     </Badge>
   )

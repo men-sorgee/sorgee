@@ -15,7 +15,9 @@ const getConfig = ( phase ) => {
         'lh3.googleusercontent.com',
         'cdn.discordapp.com',
         's.gravatar.com',
-        'static.guysnheat.com'
+        'static.guysnheat.com',
+        'raw.githubusercontent.com'
+
       ]
     },
     async redirects() {

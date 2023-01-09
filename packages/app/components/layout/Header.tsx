@@ -79,47 +79,48 @@ function Header({ children, ...props }: Props) {
     },
   ]
   return (
-    <Box {...props} as="header" color={'white'} bg={useColorModeValue('primary.800', 'black')}>
-      <HStack
-        minH={'60px'}
-        alignItems="center"
-        justifyItems="space-between"
-        align="center"
-        spacing={4}
-        __css={constrained}
-      >
-        <IconButton
-          size={'lg'}
-          onClick={onToggle}
-          icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-          variant={'ghost'}
-          aria-label={'Toggle Navigation'}
-        />
-        <Flex flex={1} justify={'center'}>
-          <Logo width={'20px'} />
-        </Flex>
-
-        <HStack spacing={2} alignItems="center" justifyItems="middle">
+    <>
+      <Box {...props} as="header" color={'white'} bg={useColorModeValue('primary.800', 'black')}>
+        <HStack
+          minH={'60px'}
+          alignItems="center"
+          justifyItems="space-between"
+          align="center"
+          spacing={4}
+          __css={constrained}
+        >
           <IconButton
-            onClick={toggleColorMode}
-            icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+            size={'lg'}
+            onClick={onToggle}
+            icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
             variant={'ghost'}
-            aria-label={'Toggle Theme'}
+            aria-label={'Toggle Navigation'}
           />
-          <User />
-        </HStack>
-      </HStack>
+          <Flex flex={1} justify={'center'}>
+            <Logo width={'20px'} />
+          </Flex>
 
-      <Collapse in={isOpen} animateOpacity>
-        <MobileNav navItems={navItems} {...constrained} />
-      </Collapse>
-    </Box>
+          <HStack spacing={2} alignItems="center" justifyItems="middle">
+            <IconButton
+              onClick={toggleColorMode}
+              icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+              variant={'ghost'}
+              aria-label={'Toggle Theme'}
+            />
+            <User />
+          </HStack>
+        </HStack>
+        <Collapse in={isOpen} animateOpacity>
+          <MobileNav navItems={navItems} {...constrained} />
+        </Collapse>
+      </Box>
+    </>
   )
 }
 
 const MobileNav = ({ navItems, ...props }: StackProps & { navItems: NavItem[] }) => {
   return (
-    <Stack as="nav" bg={'gray.800'} color={'white'} p={4} __css={props}>
+    <Stack as="nav" color={'white'} p={4} __css={props}>
       {navItems?.map((navItem) => (
         <MobileNavItem key={navItem.label} {...navItem} />
       ))}
@@ -169,7 +170,11 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
             children.map(
               (child) =>
                 (child.reload && (
-                  <a key={child.label} style={{ paddingTop: 2 }} href={child.href}>
+                  <a
+                    key={child.label}
+                    style={{ paddingTop: 2, paddingBottom: 2 }}
+                    href={child.href}
+                  >
                     {child.label}
                   </a>
                 )) || (

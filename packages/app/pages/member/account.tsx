@@ -220,7 +220,9 @@ function Form(props: PageProps) {
       <HStack spacing={3} alignItems="middle">
         <Avatar src={photoSrc} size="lg" color="white" bg="primary.500" />
         <VStack spacing={0} align="flex-start">
-          <Heading size="md">{member?.nickname}</Heading>
+          <Heading size="md" textTransform="uppercase">
+            {member?.nickname}
+          </Heading>
           <UserBadge size="lg" user_type={member?.user_type} />
         </VStack>
       </HStack>
@@ -232,8 +234,8 @@ function Form(props: PageProps) {
               <Tab>Private</Tab>
               <Tab>Events</Tab>
               <Tab>Profile</Tab>
-              <Tab>Interests</Tab>
-              <Tab>Attractions</Tab>
+              <Tab display={{ base: 'none', md: 'inherit' }}>Interests</Tab>
+              <Tab display={{ base: 'none', md: 'inherit' }}>Attractions</Tab>
               <Tab>Health</Tab>
             </TabList>
             <TabPanels>

@@ -15,9 +15,7 @@ type Props = CheckboxProps &
 
 const CheckboxField = (props: Props) => {
   const { field, label, help, registerOptions = {}, children, className, ...opts } = props
-  const { register, getFieldState, formState } = useFormContext()
-  const { error } = getFieldState(field, formState)
-  const classes = error ? 'error' : ''
+  const { register } = useFormContext()
 
   return (
     <FieldWrapper field={field} label={label} help={help} className={className}>

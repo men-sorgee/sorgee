@@ -32,8 +32,8 @@ export default function Yahoo<P extends YahooProfile>(options: OAuthUserConfig<P
       }
     },
     style: {
-      logo: '/images/yahoo.svg',
-      logoDark: '/images/yahoo.svg',
+      logo: `https://guysnheat.com/images/yahoo.svg`,
+      logoDark: `https://guysnheat.com/images/yahoo.svg`,
       bgDark: '#6001D1',
       bg: '#6001D1',
       text: '#FFF',

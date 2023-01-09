@@ -2,7 +2,18 @@ import { useMember } from 'hooks/use-member'
 import { useRouter } from 'next/router'
 import { useState, ChangeEvent } from 'react'
 import ApplicationSteps from './_steps'
-import { Button, Stack, Text, Heading, VStack, HStack, Input } from '@chakra-ui/react'
+import {
+  Button,
+  Center,
+  Stack,
+  Text,
+  Heading,
+  VStack,
+  HStack,
+  Input,
+  Alert,
+  AlertIcon,
+} from '@chakra-ui/react'
 import Page from 'components/Page'
 import FieldCheckbox from 'components/forms/FieldCheckbox'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -119,7 +130,7 @@ function Form({ code, router, setCompleted }): JSX.Element {
           with the following verification-code written on it.
         </Text>
 
-        <Stack>
+        <Stack alignItems="center">
           <Heading as="h2" size="4xl" textAlign="center">
             {code}
           </Heading>
@@ -132,19 +143,29 @@ function Form({ code, router, setCompleted }): JSX.Element {
               style={{ margin: '0 auto' }}
             />
           ) : (
-            <label className="flex h-full cursor-pointer flex-col items-center justify-center py-3 transition-colors duration-150 hover:text-gray-600">
-              <Input
-                className="file-input-bordered file-input-primary file-input w-full max-w-xs"
-                onChange={onFileUploadChange}
-                type="file"
-              />
-            </label>
+            <Center
+              as="label"
+              py={3}
+              px={100}
+              border={'1px dashed'}
+              borderColor="primary"
+              minH={350}
+            >
+              <Input hidden onChange={onFileUploadChange} type="file" />
+              <Text fontSize="xl" textAlign="center">
+                Drop Image Here
+              </Text>
+            </Center>
           )}
           {member?.photo_denial_reason && (
-            <Text className="text-lg text-red-500">
-              Your verification photo was denied.
-              {member.photo_denial_reason}
-            </Text>
+            <Alert status="error" bg="red.200" size="lg" maxW="lg" mx="auto">
+              <AlertIcon />
+              <Text>
+                Your verification photo was denied.
+                <br />
+                {member.photo_denial_reason}
+              </Text>
+            </Alert>
           )}
           <Text fontSize="xl" textAlign="center">
             <strong>
@@ -153,8 +174,9 @@ function Form({ code, router, setCompleted }): JSX.Element {
             <br />
             This photo will not be shared with anyone and will not be used for your profile.
           </Text>
-          <VStack alignItems="center" justify="middle" textAlign="center">
+          <VStack alignItems="center" align="center" justify="middle" textAlign="center">
             <FieldCheckbox
+              w="fit-content"
               field="verify"
               label="I certify that the photo I am submitting is me."
               registerOptions={{ required: 'Certification is Required' }}
