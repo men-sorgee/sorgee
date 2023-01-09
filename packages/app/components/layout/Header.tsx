@@ -17,20 +17,29 @@ import {
 } from '@chakra-ui/react'
 import { HamburgerIcon, CloseIcon, ChevronDownIcon, MoonIcon, SunIcon } from '@chakra-ui/icons'
 import { Logo } from '../ui'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { PageItem } from 'lib/models'
 import NextLink from 'next/link'
 import { listActivePages } from 'lib/services/directus/static'
 import { constrained } from './index'
 import User from './User'
+import { useRouter } from 'next/router'
 export type Props = BoxProps & {
   children?: React.ReactNode | React.ReactNode[]
 }
 function Header({ children, ...props }: Props) {
-  const { isOpen, onToggle } = useDisclosure()
+  const router = useRouter()
+  const { isOpen, onToggle, onClose } = useDisclosure()
   const [pages, setPages] = useState<PageItem[]>()
   const { colorMode, toggleColorMode } = useColorMode()
+
+  const routeStart = useCallback(() => {
+    onClose()
+  }, [onClose])
+
   useEffect(() => {
+    router.events.on('routeChangeStart', routeStart)
+
     if (!pages) {
       listActivePages().then((pages) => {
         setPages(
@@ -42,7 +51,10 @@ function Header({ children, ...props }: Props) {
         )
       })
     }
-  }, [setPages, pages])
+    return () => {
+      router.events.off('routeChangeStart', routeStart)
+    }
+  }, [setPages, pages, router.events, routeStart])
 
   const navPages =
     pages?.map((p) => {

@@ -27,7 +27,6 @@ function Layout({
   fonts: any[]
 }) {
   const router = useRouter()
-
   const [className, setClassName] = useState<string>()
 
   useEffect(() => {

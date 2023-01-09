@@ -64,7 +64,7 @@ function Apply(props: PageProps) {
   const { data: session, status } = useSession()
   const [formError, setFormError] = useState<string>()
   const [loading] = useState(status !== 'loading')
-  const router = useRouter()
+
   useEffect(() => {
     if (!loading) {
       if (status === 'unauthenticated') {

@@ -1,7 +1,7 @@
 import { setMeta } from 'hooks/use-meta'
 import Loading from 'components/ui/Loading'
 import { useSession } from 'next-auth/react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import AccessDenied from './AccessDenied'
 import { VStack, Heading } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
@@ -35,12 +35,18 @@ const Page = ({
   const { status } = useSession()
   const [denied, setDenied] = useState(false)
 
-  const routeStart = () => {
-    setRouteChanging(true)
-  }
-  const routeComplete = () => {
-    setRouteChanging(false)
-  }
+  const routeStart = useCallback(
+    (url: string) => {
+      const incoming = url.split('?')[0]
+      const path = router.asPath.split('?')[0]
+      if (incoming !== path) setRouteChanging(true)
+    },
+    [router.asPath]
+  )
+
+  const routeComplete = useCallback(() => {
+    if (routeChanging) setRouteChanging(false)
+  }, [routeChanging])
 
   useEffect(() => {
     if (status != 'loading' && requireAuth && status !== 'authenticated') {
@@ -52,7 +58,7 @@ const Page = ({
       router.events.off('routeChangeStart', routeStart)
       router.events.off('routeChangeComplete', routeComplete)
     }
-  }, [requireAuth, router.events, status])
+  }, [requireAuth, routeComplete, routeStart, router.events, status])
 
   if (routeChanging) {
     return <Loading size="xl" />

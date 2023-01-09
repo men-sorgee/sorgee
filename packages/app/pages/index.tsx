@@ -10,7 +10,7 @@ interface Props {
   page: Page
 }
 
-export const getServerSideProps = async () => {
+export const getStaticProps = async () => {
   const page = await getPageContentById('ac330d1b-0340-4a61-9b42-996aa0936d2b')
 
   return {
@@ -43,7 +43,7 @@ export default function HomePage({ page }: Props) {
           mx="auto"
           textAlign="justify"
         >
-          A hot new fraternity, known internally as &quote;The Brotherhood&quote;, this group is for
+          A hot new fraternity, known internally as &quot;The Brotherhood&quot;, this group is for
           bisexual single and married men who value discretion.
         </Text>
         {next && (
