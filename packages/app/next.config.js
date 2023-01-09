@@ -18,7 +18,8 @@ const getConfig = ( phase ) => {
         'static.guysnheat.com',
         'raw.githubusercontent.com'
 
-      ]
+      ],
+
     },
     async redirects() {
       return [
