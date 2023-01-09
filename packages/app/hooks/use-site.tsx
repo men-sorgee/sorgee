@@ -22,8 +22,9 @@ export const useSite = (): SiteResults => {
     refreshWhenHidden: false,
     refreshWhenOffline: false,
     fallbackData: {
-      site_title: 'Loading...',
-      description: 'Loading...',
+      site_title: 'GuysNHeat',
+      description:
+        'A fraternity of bisexual men that provides safe environments for discrete encounters for men to explore and express in a safe manor. We host curated sex parties with vetted men in the Denver area.',
       invite_only: true,
     },
   })

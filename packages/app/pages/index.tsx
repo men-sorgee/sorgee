@@ -1,4 +1,4 @@
-import { setMeta } from 'hooks'
+import { useMeta } from 'hooks/use-meta'
 import { getPageContentById } from 'lib/services/directus/static'
 import { Markdown, Subscribe } from 'components/ui'
 import Section from 'components/Section'
@@ -21,6 +21,7 @@ export const getStaticProps = async () => {
 }
 
 export default function HomePage({ page }: Props) {
+  const { setMeta } = useMeta()
   const { title, description, content, markdown, image, next } = page
   setMeta(title, description, image?.id)
 

@@ -4,7 +4,7 @@ import { getAssetUrl } from 'lib/utils'
 interface Props {}
 const Meta = (_props: Props) => {
   const { title, description, url, image } = useMeta()
-  const img = image ? getAssetUrl(image) : null
+  const img = image && !image.includes('/') ? getAssetUrl(image) : image
 
   return (
     <Head>

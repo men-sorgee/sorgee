@@ -1,7 +1,8 @@
 import Script from 'next/script'
-import { setMeta } from 'hooks'
+import { useMeta } from 'hooks/use-meta'
 
-export default function Learn() {
+export default function Terms() {
+  const { setMeta } = useMeta()
   setMeta('Terms & Conditions')
   return (
     <>

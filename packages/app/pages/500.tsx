@@ -1,6 +1,7 @@
-import { setMeta } from 'hooks'
+import { useMeta } from 'hooks/use-meta'
 
 export default function Custom500() {
+  const { setMeta } = useMeta()
   setMeta('Server Error')
   return (
     <section className="bg-gray-900">

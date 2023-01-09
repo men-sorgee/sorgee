@@ -1,4 +1,4 @@
-import { setMeta } from 'hooks/use-meta'
+import { useMeta } from 'hooks/use-meta'
 import Loading from 'components/ui/Loading'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState, useCallback } from 'react'
@@ -29,6 +29,7 @@ const Page = ({
   children,
   requireAuth = false,
 }: Props) => {
+  const { setMeta } = useMeta()
   setMeta(title, description, image)
   const [routeChanging, setRouteChanging] = useState(false)
   const router = useRouter()

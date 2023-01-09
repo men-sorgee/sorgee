@@ -1,8 +1,9 @@
 import { Box, Heading, Text } from '@chakra-ui/react'
-import { setMeta } from 'hooks'
+import { useMeta } from 'hooks/use-meta'
 import { LinkButton } from '../components/ui'
 
 export default function NotFound() {
+  const { setMeta } = useMeta()
   setMeta('Not Found')
   return (
     <Box textAlign="center" py={10} px={6}>
