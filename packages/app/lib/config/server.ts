@@ -1,4 +1,4 @@
-export default {
+export const config = {
   adminToken: process.env.ADMIN_TOKEN,
   google: {
     clientId:

@@ -21,13 +21,10 @@ import { CheckCircleIcon } from '@heroicons/react/solid'
 import Page from 'components/Page'
 import { useSite } from '../hooks/use-site'
 import { LinkButton } from '../components/ui'
-const Check = ({ available = false }) => (
-  <Icon
-    as={CheckCircleIcon}
-    boxSize={6}
-    color={available ? 'green.500' : useColorModeValue('gray.500', 'gray.300')}
-  />
-)
+const Check = ({ available = false }) => {
+  const style = useColorModeValue('gray.500', 'gray.300')
+  return <Icon as={CheckCircleIcon} boxSize={6} color={available ? 'green.500' : style} />
+}
 
 export default function ThreeTierPricing() {
   const { site, loading } = useSite()

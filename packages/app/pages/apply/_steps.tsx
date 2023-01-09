@@ -9,7 +9,7 @@ export default function ApplicationSteps({ status }: { status: string }) {
   })
   useEffect(() => {
     if (status && activeStep == -1) setStep(ApplicationStatus[status])
-  }, [status])
+  }, [activeStep, setStep, status])
   return (
     <>
       <Show above="sm">

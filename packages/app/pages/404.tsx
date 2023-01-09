@@ -1,4 +1,4 @@
-import { Box, Heading, Text, Button } from '@chakra-ui/react'
+import { Box, Heading, Text } from '@chakra-ui/react'
 import { setMeta } from 'hooks'
 import { LinkButton } from '../components/ui'
 
@@ -19,7 +19,7 @@ export default function NotFound() {
         Page Not Found
       </Text>
       <Text color={'gray.500'} mb={6}>
-        The page you're looking for does not seem to exist
+        This page does not seem to exist.
       </Text>
 
       <LinkButton

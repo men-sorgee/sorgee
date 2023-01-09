@@ -25,7 +25,7 @@ const Notifications = ({ setNotificationBadge }: Props) => {
 
   useEffect(() => {
     setNotificationBadge(hasNewNotifications)
-  }, [notifications])
+  }, [hasNewNotifications, notifications, setNotificationBadge])
 
   return (
     <>

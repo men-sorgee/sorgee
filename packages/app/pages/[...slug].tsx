@@ -53,9 +53,7 @@ export default function DynamicPage({ page }: Props) {
   const { site, loading } = useSite()
   const [nextText, setNextText] = useState<string>(null)
   const [nextUrl, setNextUrl] = useState<string>('')
-  if (!page) {
-    return <NotFound />
-  }
+
   const { title, description, image, markdown, content, next, next_page } = page
 
   useEffect(() => {
@@ -69,8 +67,10 @@ export default function DynamicPage({ page }: Props) {
       setNextText(sentenceCase(next.split('/').join(' ').trim()))
       setNextUrl(next[0] === '/' ? next : `/${next}`)
     }
-  }, [nextText, site, loading])
-
+  }, [nextText, site, loading, next_page, next])
+  if (!page) {
+    return <NotFound />
+  }
   return (
     <Page title={title} description={description} image={image?.id}>
       <Stack as="section" spacing={4} maxW="lg">

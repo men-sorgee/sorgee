@@ -135,6 +135,7 @@ function Form({ code, router, setCompleted }): JSX.Element {
             {code}
           </Heading>
           {previewUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               alt="file uploader preview"
               src={previewUrl}

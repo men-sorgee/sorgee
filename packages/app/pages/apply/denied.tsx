@@ -22,7 +22,8 @@ function Denied() {
           {member?.photo_denial_reason}
         </Text>
         <Text fontSize="2xl">
-          If this was a mistake or you'd like to appeal, please contact us at{' '}
+          The more the merrier with us, but some aspect of your application did not add up. Mistakes
+          happen, and if you believe a mistake was made and you want to try again, please contact
           <Link className="link" href="mailto:support@guysnheat.com">
             support
           </Link>

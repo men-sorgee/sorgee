@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import { useMember } from 'hooks/use-member'
 import { UserBadge } from './UserBadge'
 import { getAssetUrl } from '../../lib/utils'
-
-export default function (_props) {
+interface Props {}
+export default function UserCard(_props: Props) {
   const { member, loading } = useMember()
   const [photoSrc, setPhotoSrc] = useState<string | null>()
   useEffect(() => {

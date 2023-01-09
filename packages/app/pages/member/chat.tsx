@@ -15,7 +15,7 @@ export default function Home() {
 
   useEffect(() => {
     subscribe()
-  }, [])
+  })
 
   const subscribe = async () => {
     // We just call it because we don't need anything else out of it

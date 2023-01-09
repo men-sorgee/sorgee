@@ -3,7 +3,7 @@ import { SubscriptionData } from 'lib/models'
 import { FieldInput } from '../forms'
 import { useState } from 'react'
 import { Stack, Heading, Text, Button, Icon, useColorModeValue, createIcon } from '@chakra-ui/react'
-import { postJSON } from '../../lib/utils'
+import { postJSON } from 'lib/utils'
 
 export default function SubscribeBox() {
   const [subscribed, setSubscribed] = useState(false)
@@ -13,7 +13,6 @@ export default function SubscribeBox() {
   const { handleSubmit, setError } = methods
   const onSubmit = async (data: SubscriptionData) => {
     const [ok, response] = await postJSON('/api/member/subscribe', data)
-
     if (ok) {
       setSubscribed(true)
     } else {
@@ -21,6 +20,11 @@ export default function SubscribeBox() {
       setError('email', error)
     }
   }
+
+  const bg = useColorModeValue(
+    'linear(to-r, primary.200, primary.400)',
+    'linear(to-r, primary.500, primary.700)'
+  )
 
   if (subscribed)
     return (
@@ -31,6 +35,7 @@ export default function SubscribeBox() {
         <Text>Please check your spam folder, just in case we land there.</Text>
       </>
     )
+
   return (
     <>
       <Stack
@@ -38,10 +43,7 @@ export default function SubscribeBox() {
         boxShadow={'2xl'}
         rounded={'xl'}
         p={3}
-        bgGradient={useColorModeValue(
-          'linear(to-r, primary.200, primary.400)',
-          'linear(to-r, primary.500, primary.700)'
-        )}
+        bgGradient={bg}
         color="white"
         align="center"
       >

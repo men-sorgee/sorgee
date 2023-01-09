@@ -1,6 +1,6 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
-import { Applicant, FormOptions, User, MemberLevel } from 'lib/models'
+import { FormOptions, User } from 'lib/models'
 import { getFieldOptions } from 'lib/services/directus/server'
 import { useMember } from 'hooks/use-member'
 import { useEffect, useState } from 'react'
@@ -183,7 +183,7 @@ function Form(props: PageProps) {
 
   useEffect(() => {
     if (tabValue !== Number(router.query.t || 0)) router.push(`/member/account?t=${tabValue}`)
-  }, [tabValue])
+  }, [router, tabValue])
 
   async function onSubmit(data: MemberFormData) {
     if (data.height_feet || data.height_inches) {
@@ -417,9 +417,9 @@ function Form(props: PageProps) {
                       <FieldWrapper field="height" label="Height">
                         <InputGroup>
                           <Input type="number" id="height_feet" {...register('height_feet')} />
-                          <InputRightAddon children="'" mr={2} />
+                          <InputRightAddon mr={2}>&apos;</InputRightAddon>
                           <Input type="number" id="height_inches" {...register('height_inches')} />
-                          <InputRightAddon children={'"'} />
+                          <InputRightAddon>&quote;</InputRightAddon>
                         </InputGroup>
                       </FieldWrapper>
 

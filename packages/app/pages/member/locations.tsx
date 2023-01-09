@@ -1,11 +1,9 @@
 import { Avatar, Box, Heading, VStack } from '@chakra-ui/react'
-import LocationCoords from 'components/ui/Location'
-import { useLocation } from 'hooks/use-location'
 import { Map, Marker } from 'pigeon-maps'
 import { useMember } from 'hooks/use-member'
 import { useSocket } from 'hooks/use-socket'
 import { useToast } from '@chakra-ui/react'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 type ChatStatus = 'online' | 'offline' | 'away'
 type UserMarker = {
@@ -25,6 +23,78 @@ function Location() {
   const [currentUser, setCurrentUser] = useState<UserMarker>()
   const [hasAccessLocation, setHasAccessLocation] = useState(false)
   const toast = useToast()
+
+  const locationResolveSuccessfully: PositionCallback = useCallback(
+    (data) => {
+      setHasAccessLocation(true)
+      const latitude = data.coords.latitude
+      const longitude = data.coords.longitude
+      socket.emit('join', {
+        socketId: socket.id,
+        userId: member?.id,
+        coords: [latitude, longitude],
+        status: 'online',
+      })
+      toast({
+        title: 'Location',
+        description: 'Location fetched successfully',
+        status: 'success',
+        duration: 4000,
+        isClosable: true,
+      })
+    },
+    [member?.id, socket, toast]
+  )
+
+  const locationResolveError: PositionErrorCallback = useCallback(
+    (error) => {
+      let errorType = ''
+      if (error.code === 1) {
+        errorType = 'Permission Denied'
+      } else if (error.code === 2) {
+        errorType = 'Position Unavailable'
+      } else if (error.code === 3) {
+        errorType = 'Timeout'
+      }
+      toast({
+        title: errorType,
+        description: error.message,
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      })
+    },
+    [toast]
+  )
+
+  const positionChange = useCallback(
+    (data: { coords: { latitude: any; longitude: any } }) => {
+      const latitude = data.coords.latitude
+      const longitude = data.coords.longitude
+
+      socket.emit('position-change', {
+        socketId: socket.id,
+        userId: member?.id,
+        coords: [latitude, longitude],
+        status: 'online',
+      })
+    },
+    [member?.id, socket]
+  )
+
+  const initUserLocation = useCallback(() => {
+    if (!navigator.geolocation) {
+      toast({
+        title: 'Geolocation Unsupported',
+        description: 'Your system does not support Geolocation',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      })
+      return
+    }
+    navigator.geolocation.getCurrentPosition(locationResolveSuccessfully, locationResolveError)
+  }, [locationResolveError, locationResolveSuccessfully, toast])
 
   useEffect(() => {
     if (!loading && member && !initialized) {
@@ -73,70 +143,20 @@ function Location() {
       navigator.geolocation.clearWatch(watchLocation.current)
       //disconnect()
     }
-  }, [member, loading, initialized, hasAccessLocation, currentUser])
-
-  function positionChange(data: { coords: { latitude: any; longitude: any } }) {
-    const latitude = data.coords.latitude
-    const longitude = data.coords.longitude
-
-    socket.emit('position-change', {
-      socketId: socket.id,
-      userId: member?.id,
-      coords: [latitude, longitude],
-      status: 'online',
-    })
-  }
-
-  function initUserLocation() {
-    if (!navigator.geolocation) {
-      toast({
-        title: 'Geolocation Unsupported',
-        description: 'Your system does not support Geolocation',
-        status: 'error',
-        duration: 4000,
-        isClosable: true,
-      })
-      return
-    }
-    navigator.geolocation.getCurrentPosition(locationResolveSuccessfully, locationResolveError)
-  }
-
-  const locationResolveSuccessfully: PositionCallback = (data) => {
-    setHasAccessLocation(true)
-    const latitude = data.coords.latitude
-    const longitude = data.coords.longitude
-    socket.emit('join', {
-      socketId: socket.id,
-      userId: member?.id,
-      coords: [latitude, longitude],
-      status: 'online',
-    })
-    toast({
-      title: 'Location',
-      description: 'Location fetched successfully',
-      status: 'success',
-      duration: 4000,
-      isClosable: true,
-    })
-  }
-
-  const locationResolveError: PositionErrorCallback = (error) => {
-    let errorType = ''
-    if (error.code === 1) {
-      errorType = 'Permission Denied'
-    } else if (error.code === 2) {
-      errorType = 'Position Unavailable'
-    } else if (error.code === 3) {
-      errorType = 'Timeout'
-    }
-    toast({
-      title: errorType,
-      description: error.message,
-      status: 'error',
-      duration: 4000,
-      isClosable: true,
-    })
-  }
+  }, [
+    member,
+    loading,
+    initialized,
+    hasAccessLocation,
+    currentUser,
+    connect,
+    socket,
+    connected,
+    users,
+    initUserLocation,
+    positionChange,
+    locationResolveError,
+  ])
 
   return (
     <Box>

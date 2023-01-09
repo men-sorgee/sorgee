@@ -74,7 +74,7 @@ function Apply(props: PageProps) {
           `You must login using the email address ${props.email} to use this invite. Please logout and try again.`
         )
     }
-  }, [session, status])
+  }, [loading, props.email, session, status])
 
   const intro = props.invite
     ? `You've been invited to join our community! While your application is pre-approved, we still need to perform a few verification steps.`

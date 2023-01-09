@@ -6,9 +6,9 @@ class MyDocument extends Document {
       <Html lang="en" data-theme="dark">
         <Head />
         <body>
-          <Script key="gtag" async src="https://www.googletagmanager.com/gtag/js?id=G-SJX78PVP26" />
+          <Script id="gtag" async src="https://www.googletagmanager.com/gtag/js?id=G-SJX78PVP26" />
           <Script
-            key="gtag-init"
+            id="gtag-init"
             dangerouslySetInnerHTML={{
               __html: `
             window.dataLayer = window.dataLayer || [];
@@ -20,6 +20,9 @@ class MyDocument extends Document {
           <Main />
           <NextScript />
           <Script
+            id="termly"
+            strategy="lazyOnload"
+            async
             defer
             src="https://app.termly.io/embed.min.js"
             data-auto-block="on"

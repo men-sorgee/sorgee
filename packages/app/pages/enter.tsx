@@ -1,22 +1,23 @@
 import type { NextPage } from 'next'
 import { signIn } from 'next-auth/react'
-import { Button } from '@chakra-ui/react'
+import { Button, Text, Heading } from '@chakra-ui/react'
+import Page from '../components/Page'
 
 const Enter: NextPage = () => {
   return (
-    <section>
-      <h1>Welcome!</h1>
-      <p className="my-4 text-lg">
+    <Page title="Welcome">
+      <Heading size="lg">
         Access to this site is restricted to members of the community and those that they invite.
-      </p>
-      <p className="my-4 text-lg">New users must register with the email address in your invite.</p>
-      <p className="my-4 text-lg">
-        Not sure if you were invited? Try signing in -- if it works, you're in!{' '}
-      </p>
+      </Heading>
+      <Text size="lg">New users must register with the email address in your invite.</Text>
+      <Text size="lg">
+        Not sure if you were invited? Try signing in -- if it works you were part of our initial
+        list.
+      </Text>
 
       <Button
         color="accent"
-        className="mt-4 "
+        mt={4}
         onClick={(e) => {
           e.preventDefault()
           signIn(null, { callbackUrl: '/apply/resume' })
@@ -24,7 +25,7 @@ const Enter: NextPage = () => {
       >
         Sign In / Sign Up
       </Button>
-    </section>
+    </Page>
   )
 }
 

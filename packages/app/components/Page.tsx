@@ -4,7 +4,6 @@ import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import AccessDenied from './AccessDenied'
 import { VStack, Heading } from '@chakra-ui/react'
-import { DirectusFile } from 'lib/models'
 
 interface Props {
   title: string
@@ -35,7 +34,7 @@ const Page = ({
     if (status != 'loading' && requireAuth && status !== 'authenticated') {
       setDenied(true)
     }
-  }, [status])
+  }, [requireAuth, status])
 
   if (denied) {
     return <AccessDenied />

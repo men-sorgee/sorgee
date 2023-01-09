@@ -1,4 +1,4 @@
-import { ClassAttributes, ImgHTMLAttributes, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useRemark } from 'react-remark'
 import { Heading, Image, ListItem, OrderedList, Text, UnorderedList } from '@chakra-ui/react'
 export default function Markdown({ content }: { content: string }) {
@@ -51,6 +51,6 @@ export default function Markdown({ content }: { content: string }) {
   })
   useEffect(() => {
     setMarkdownSource(content)
-  }, [])
+  }, [content, setMarkdownSource])
   return reactContent
 }

@@ -14,11 +14,6 @@ function Review() {
   const [complete, setComplete] = useState<boolean>(false)
   const { loading, member } = useMember()
 
-  if (member && member?.application_status && member.application_status !== 'review') {
-    router.push('/apply/' + member?.application_status)
-    return null
-  }
-
   const methods = useForm<{ contact_preference: string }>({
     mode: 'onBlur',
     defaultValues: {
@@ -42,6 +37,11 @@ function Review() {
     } else if (response.error?.field) {
       setError(response.error!.field as any, response.error.message as any)
     }
+  }
+
+  if (member && member?.application_status && member.application_status !== 'review') {
+    router.push('/apply/' + member?.application_status)
+    return null
   }
 
   return (

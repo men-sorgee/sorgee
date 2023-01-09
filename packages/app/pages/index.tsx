@@ -41,8 +41,8 @@ export default function HomePage({ page }: Props) {
           mx="auto"
           textAlign="justify"
         >
-          A hot new fraternity, known internally as "The Brotherhood", this group is for bisexual
-          single and married men who value discretion.
+          A hot new fraternity, known internally as &quote;The Brotherhood&quote;, this group is for
+          bisexual single and married men who value discretion.
         </Text>
         {next && (
           <Center mb={8}>
