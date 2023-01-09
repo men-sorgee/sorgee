@@ -12,6 +12,7 @@ import { Manrope, Arvo, Roboto_Mono } from '@next/font/google'
 const heading = Arvo({
   variable: '--heading-font',
   weight: ['400', '700'],
+  subsets: ['latin'],
 })
 
 const body = Manrope({
@@ -23,6 +24,7 @@ const body = Manrope({
 const mono = Roboto_Mono({
   variable: '--mono-font',
   weight: 'variable',
+  subsets: ['latin'],
 })
 
 extendTheme({

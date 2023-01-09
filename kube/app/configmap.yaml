@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: entrypoint
+  labels:
+    app: default-init
+data:
+  entrypoint.sh: |
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo $(gcloud secrets versions access ${SECRET_VERSION} --project=${PROJECT_ID} --secret=${SECRET_NAME}) >> $SECRET_PATH

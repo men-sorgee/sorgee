@@ -4,13 +4,13 @@ import { getUser, updateUser } from 'lib/services/directus/server'
 import { updateSendGrid } from 'lib/services/sendgrid/server'
 import { withMethods } from 'lib/utils/server'
 import { ApiResponse, MemberLevel, Profile } from 'lib/models'
-import { adminToken } from 'lib/config/server'
+import config from 'lib/config/server'
 
 async function SyncContact(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
     if (!withMethods(req, ['POST'])) return
 
-    if (req.headers.authorization !== adminToken)
+    if (req.headers.authorization !== config.adminToken)
       return res.status(401).json(ApiResponse(null, 'Unauthorized'))
 
     const { id } = req.body
