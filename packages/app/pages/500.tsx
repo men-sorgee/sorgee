@@ -1,8 +1,12 @@
 import { useMeta } from 'hooks/use-meta'
+import { useEffect } from 'react'
 
 export default function Custom500() {
   const { setMeta } = useMeta()
-  setMeta('Server Error')
+
+  useEffect(() => {
+    setMeta('Server Error')
+  })
   return (
     <section className="bg-gray-900">
       <div className="mx-auto max-w-screen-xl py-8 px-4 lg:py-16 lg:px-6">

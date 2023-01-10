@@ -73,7 +73,7 @@ export default function DynamicPage({ page }: Props) {
   }
   return (
     <Page id={id} title={title} description={description} image={image?.id}>
-      <Stack as="section" spacing={4} maxW="lg">
+      <Stack as="section" spacing={4} maxW="lg" w="full">
         <Markdown content={markdown} />
       </Stack>
       <HStack>

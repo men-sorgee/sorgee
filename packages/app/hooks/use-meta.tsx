@@ -5,6 +5,7 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 import { useSite } from './use-site'
 
 type Context = MetaProps & {
+  siteTitle: string
   setMeta: (title: string, description?: string, image?: string) => void
   metaBlob?: any
   setMetaBlob: (metaBlob: any) => void
@@ -15,12 +16,15 @@ type Context = MetaProps & {
 export const MetaContext = createContext<Context>(undefined)
 
 export function MetaProvider(props: any) {
-  const { site } = useSite()
+  const { site, loading } = useSite()
   const router = useRouter()
-  const [t, setTitle] = useState<string>(site?.site_title)
-  const [d, setDescription] = useState<string>(site?.description + ' (Photo by Matheus Ferrero)')
-  const [i, setImage] = useState<string>('/images/home-bg.jpg')
-  const [m, setMetaBlob] = useState<any>()
+  const [siteTitle, setSiteTitle] = useState<string>(site?.site_title)
+  const [title, setTitle] = useState<string>('')
+  const [description, setDescription] = useState<string>(
+    site?.description + ' (Photo by Matheus Ferrero)'
+  )
+  const [image, setImage] = useState<string>('/images/home-bg.jpg')
+  const [metaBlob, setMetaBlob] = useState<any>()
 
   const setMeta = useCallback((t: string, d?: string, i?: string) => {
     if (t) setTitle(t)
@@ -28,14 +32,21 @@ export function MetaProvider(props: any) {
     if (i) setImage(i)
   }, [])
 
+  useEffect(() => {
+    if (!loading && site?.site_title) {
+      setSiteTitle(site.site_title)
+    }
+  }, [site?.site_title, title, loading])
+
   const meta: Context = {
-    title: t,
-    description: d,
+    siteTitle,
+    title: `${title} :: ${siteTitle}`,
+    description,
     basePath: router.basePath,
     url: `${router.basePath}${router.asPath}`,
     path: router.asPath,
-    metaBlob: m,
-    image: i,
+    metaBlob,
+    image,
     setMeta,
     setMetaBlob,
   }

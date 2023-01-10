@@ -39,21 +39,21 @@ extendTheme({
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
   return (
-    <SessionProvider>
-      <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
-        <MetaProvider>
-          <SocketProvider>
-            <LocationProvider>
+    <MetaProvider>
+      <SessionProvider>
+        <SocketProvider>
+          <LocationProvider>
+            <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
               <Layout fonts={[heading.variable, body.variable, mono.variable]}>
                 <ErrorBoundary>
                   <Component key={router.asPath} {...pageProps} />
                 </ErrorBoundary>
               </Layout>
-            </LocationProvider>
-          </SocketProvider>
-        </MetaProvider>
-      </ChakraProvider>
-    </SessionProvider>
+            </ChakraProvider>
+          </LocationProvider>
+        </SocketProvider>
+      </SessionProvider>
+    </MetaProvider>
   )
 }
 

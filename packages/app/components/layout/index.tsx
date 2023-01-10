@@ -6,24 +6,17 @@ import Meta from './Meta'
 import Footer from './Footer'
 
 export const constrained = {
-  maxW: { base: '90%', md: '4xl', lg: '5xl', xl: '6xl' },
+  maxW: ['full', '4xl', '5xl', '6xl'],
   mx: 'auto',
-  px: {
-    base: 4,
-    xl: 0,
-  },
-  py: 4,
-  minW: '370px',
+  p: 4,
 }
 
 function Layout({
   children,
-  style = {},
   fonts: [heading, body, mono],
 }: {
   children?: React.ReactNode
   className?: string
-  style?: any
   fonts: any[]
 }) {
   const router = useRouter()
@@ -42,14 +35,10 @@ function Layout({
     <>
       <Meta />
       <Header />
-      <Box
-        minH={'80vh'}
-        __css={constrained}
-        className={`${className || ''} ${heading} ${body} ${mono}}`}
-      >
-        <main style={style} className={className || ''}>
+      <Box minH={'80vh'} className={`${className || ''} ${heading} ${body} ${mono}}`}>
+        <Box as="main" {...constrained} mx={['1', '2', 'auto']}>
           {children}
-        </main>
+        </Box>
       </Box>
       <Footer />
     </>

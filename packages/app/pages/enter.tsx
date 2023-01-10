@@ -3,7 +3,7 @@ import { signIn } from 'next-auth/react'
 import { Button, Text, Heading } from '@chakra-ui/react'
 import Page from '../components/Page'
 
-const Enter: NextPage = () => {
+export default function Enter() {
   return (
     <Page title="Welcome">
       <Heading size="lg">
@@ -28,5 +28,3 @@ const Enter: NextPage = () => {
     </Page>
   )
 }
-
-export default Enter

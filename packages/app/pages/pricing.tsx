@@ -27,7 +27,7 @@ const Check = ({ available = false }) => {
 }
 
 export default function ThreeTierPricing() {
-  const { site, loading } = useSite()
+  const { site } = useSite()
   return (
     <Page title="Pricing" description="Membership due pricing for varying levels.">
       <Heading as="h2" size={['lg', 'xl']}>

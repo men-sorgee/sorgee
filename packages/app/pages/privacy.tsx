@@ -1,9 +1,12 @@
 import Script from 'next/script'
 import { useMeta } from 'hooks/use-meta'
+import { useEffect } from 'react'
 
 export default function Privacy() {
   const { setMeta } = useMeta()
-  setMeta('Privacy Policy')
+  useEffect(() => {
+    setMeta('Privacy Policy')
+  })
   return (
     <>
       <div

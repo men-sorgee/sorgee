@@ -30,7 +30,7 @@ const Page = ({
   requireAuth = false,
 }: Props) => {
   const { setMeta } = useMeta()
-  setMeta(title, description, image)
+
   const [routeChanging, setRouteChanging] = useState(false)
   const router = useRouter()
   const { status } = useSession()
@@ -50,6 +50,7 @@ const Page = ({
   }, [routeChanging])
 
   useEffect(() => {
+    setMeta(title, description, image)
     if (status != 'loading' && requireAuth && status !== 'authenticated') {
       setDenied(true)
     }
@@ -59,7 +60,17 @@ const Page = ({
       router.events.off('routeChangeStart', routeStart)
       router.events.off('routeChangeComplete', routeComplete)
     }
-  }, [requireAuth, routeComplete, routeStart, router.events, status])
+  }, [
+    description,
+    image,
+    requireAuth,
+    routeComplete,
+    routeStart,
+    router.events,
+    setMeta,
+    status,
+    title,
+  ])
 
   if (routeChanging) {
     return <Loading size="xl" />
@@ -71,7 +82,7 @@ const Page = ({
 
   return (
     <VStack id={id} spacing={2} className={sectionClass} as="article" align={['start', 'center']}>
-      <Heading as="h1" fontSize={{ base: '2xl', sm: '4xl', md: '6xl' }}>
+      <Heading as="h1" size={['2xl', '4xl']} lineHeight={['3rem', '6rem']} w="full">
         {title}
       </Heading>
 

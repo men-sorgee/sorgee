@@ -1,5 +1,3 @@
-import { PageContent } from './directus'
-
 export type File = {
   filepath: string
   newFilename: string
@@ -11,11 +9,6 @@ export type FormOptions = Array<{
   text: string
   value: string
 }>
-
-//export type Props = {
-//  [propName: string]: any;
-//  children?: React.ReactNode | React.ReactNode[] | JSX.Element | JSX.Element[] | any;
-//}
 
 export type ApiResponse<T = (object & never) | any> = {
   error?: {
@@ -48,9 +41,6 @@ export enum ContentStatusType {
   Published = 'published',
   Draft = 'draft',
 }
-
-export type SectionContainerType = 'grid-cols-1' | 'grid-cols-2' | 'grid-cols-3' | 'grid-cols-4'
-
 export type ContentType = 'html' | 'md' | 'image' | 'control'
 
 export type PageItem = {

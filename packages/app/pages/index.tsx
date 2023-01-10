@@ -5,6 +5,7 @@ import Section from 'components/Section'
 import { Page } from 'lib/models'
 import { Box, Heading, Text, Center, Stack } from '@chakra-ui/react'
 import { LinkButton } from 'components/ui'
+import { useEffect } from 'react'
 
 interface Props {
   page: Page
@@ -23,26 +24,25 @@ export const getStaticProps = async () => {
 export default function HomePage({ page }: Props) {
   const { setMeta } = useMeta()
   const { title, description, content, markdown, image, next } = page
-  setMeta(title, description, image?.id)
+
+  useEffect(() => {
+    setMeta(title, description, image?.id)
+  })
 
   return (
     <>
       <article>
-        <Heading
-          textAlign={['left', 'center']}
-          as="h1"
-          fontSize={{ base: '2xl', sm: '4xl', md: '6xl' }}
-        >
-          Sexual/Social Group Events
+        <Heading textAlign={['left', 'center']} as="h1" size={['2xl', '3xl']} my={8}>
+          Group Events for <abbr title="men who have sex with men">MSM</abbr>
           <Text as={'div'} color={'accent.400'}>
-            made easy for <abbr title="men who have sex with men">MSM</abbr>
+            made easy
           </Text>
         </Heading>
         <Text
           fontSize={['lg', 'xl', '2xl']}
           maxW={['lg', 'xl', '2xl']}
           mx="auto"
-          textAlign="justify"
+          textAlign={['justify', 'center']}
         >
           A hot new fraternity, known internally as &quot;The Brotherhood&quot;, this group is for
           bisexual single and married men who value discretion.
