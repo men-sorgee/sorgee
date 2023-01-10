@@ -17,7 +17,6 @@ import {
   ModalCloseButton,
   useDisclosure,
 } from '@chakra-ui/react'
-import { XCircleIcon } from '@heroicons/react/outline'
 import { useState } from 'react'
 import { AppNotification } from 'lib/models'
 import Markdown from './Markdown'

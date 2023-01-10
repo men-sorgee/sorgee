@@ -5,21 +5,30 @@ import { UserBadge } from './UserBadge'
 import { getAssetUrl } from '../../lib/utils'
 interface Props {}
 export default function UserCard(_props: Props) {
-  const { member, loading } = useMember()
+  const [loaded, setLoaded] = useState(false)
+  const { member } = useMember()
   const [photoSrc, setPhotoSrc] = useState<string | null>()
   useEffect(() => {
-    if (!loading && member) {
+    if (!loaded && member) {
       const { picture } = member
       if (!photoSrc && picture) setPhotoSrc(getAssetUrl(picture))
+      setLoaded(true)
     }
-  }, [member, photoSrc, loading])
+  }, [member, photoSrc, loaded])
 
-  if (loading || !member) return null
+  //if (!member) return null
 
   return (
     <>
       <HStack spacing={3} alignItems="center">
-        <Avatar src={photoSrc} size="lg" color="white" bg="primary.300" title={member?.biography} />
+        <Avatar
+          id={member?.id}
+          src={photoSrc}
+          size="lg"
+          color="white"
+          bg="primary.300"
+          title={member?.biography}
+        />
         <VStack spacing={0} align="flex-start">
           <Heading size="md" textTransform="uppercase" m={0}>
             {member?.nickname}

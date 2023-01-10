@@ -24,9 +24,8 @@ export async function findEventInvite(eventId: string, userId: string) {
 }
 
 export async function listUserInvites(users_id: string): Promise<Invite[]> {
-  const events = await listUpcomingEvents()
-  const eventIds = events.map((event) => event.id)
   const client = await getAdminClient()
+  const events = await listUpcomingEvents()
   const invites = await client.items('events_users').readByQuery({
     filter: {
       users_id: { _eq: users_id },
@@ -68,4 +67,17 @@ export async function updateEventUserRSVP(
   client.items('events_users').updateOne(invite.id, invite as any)
 
   return invite
+}
+
+export async function getEvent(id: string) {
+  const client = await getAdminClient()
+  const event = await client.items('events').readOne(id)
+  return event
+}
+
+export async function getEventInvite(inviteId: number) {
+  const client = await getAdminClient()
+  const query = await client.items('events_users').readOne(inviteId)
+
+  return query
 }

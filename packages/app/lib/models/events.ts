@@ -1,4 +1,3 @@
-import { Moment } from 'moment'
 import { EventUser } from './directus'
 import { MemberLevel } from './users'
 
@@ -28,7 +27,7 @@ export type Invite = EventUser & {
   id: string
   name: string
   description: string
-  datetime: Moment
+  datetime: string
   status: EventStatusType
 }
 

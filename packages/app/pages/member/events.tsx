@@ -1,8 +1,8 @@
-import { Button, Heading, Text, VStack } from '@chakra-ui/react'
+import { Button, Heading, Text, VStack, useToast } from '@chakra-ui/react'
 import Page from 'components/Page'
 import { useMember } from 'hooks'
 import { listUserInvites } from 'lib/services/directus/server'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { FormProvider, useForm } from 'react-hook-form'
 import { FieldRadioButtons } from 'components/forms'
@@ -89,7 +89,8 @@ function Events({ invites }: { invites: Invite[] }) {
 }
 
 function EventInfo({ invite }: { invite: Invite }) {
-  const [confirmed, setConfirmed] = useState(false)
+  const [working, setWorking] = useState(false)
+  const toast = useToast()
   const [rsvp, setRsvp] = useState(invite.rsvp)
   const methods = useForm<InviteRSVP>({
     mode: 'onBlur',
@@ -108,26 +109,36 @@ function EventInfo({ invite }: { invite: Invite }) {
     { text: 'Declined', value: 'declined' },
   ]
 
-  useEffect(() => {
-    if (confirmed) {
-      setTimeout(() => {
-        setConfirmed(false)
-      }, 3000)
-    }
-  }, [confirmed, rsvp])
-
-  async function respond(data: InviteRSVP) {
-    const [ok, response] = await postJSON('/api/member/rsvp', data)
-    if (ok) {
-      setConfirmed(true)
-      setRsvp(data.rsvp)
-      return
-    } else if (response.error?.field) {
-      setError(response.error!.field as any, response.error.message as any)
-    } else {
-      setError('form' as any, { message: 'Something went wrong' })
-    }
-  }
+  const respond = useCallback(
+    async (data: InviteRSVP) => {
+      setWorking(true)
+      const [ok, response] = await postJSON('/api/member/rsvp', data)
+      if (ok) {
+        setRsvp(data.rsvp)
+        toast({
+          title: 'RSVP Updated',
+          position: 'bottom',
+          description: 'Your RSVP has been updated.',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        })
+      } else if (response.error?.field) {
+        setError(response.error!.field as any, response.error.message as any)
+      } else {
+        toast({
+          title: 'Something went wrong.',
+          position: 'bottom',
+          description: 'Please try again later.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        })
+      }
+      setWorking(false)
+    },
+    [setError, toast]
+  )
   const message =
     rsvp === 'invited'
       ? 'Please let us know if you can make it!'
@@ -143,10 +154,15 @@ function EventInfo({ invite }: { invite: Invite }) {
             >
               {invite.status == 'scheduled' && (
                 <VStack justifyItems="middle" textAlign="center" w={'full'}>
-                  <Heading mx={'auto'} maxWidth={{ base: '100%', md: '75%' }}>
+                  <Heading mx={'auto'} maxWidth={{ base: '100%', md: '75%' }} color="white">
                     You are {rsvp}!
                   </Heading>
-                  <Text mx={'auto'} maxWidth={{ base: '100%', md: '75%' }} className="text-sm">
+                  <Text
+                    mx={'auto'}
+                    maxWidth={{ base: '100%', md: '75%' }}
+                    color="white"
+                    className="text-sm"
+                  >
                     {message}
                   </Text>
                   <input type="hidden" {...methods.register('event_id')} />
@@ -161,15 +177,17 @@ function EventInfo({ invite }: { invite: Invite }) {
                     maxWidth={'30%'}
                   />
 
-                  <Button colorScheme={'primary'} type="submit">
+                  <Button colorScheme={'primary'} type="submit" disabled={working}>
                     Update RSVP
                   </Button>
                 </VStack>
               )}
               {invite.status == 'occurred' && invite.attended && (
                 <VStack justify="center" align="center" spacing={4}>
-                  <h4 className="py-2 text-lg">You attended.</h4>
-                  <p className="text-sm">Can we get some feedback?</p>
+                  <Heading as="h4" py={2} size={'lg'}>
+                    You attended.
+                  </Heading>
+                  <Text>Can we get some feedback?</Text>
                   <input type="hidden" {...methods.register('event_id')} />
                   <input type="hidden" {...methods.register('user_id')} />
 
@@ -180,15 +198,6 @@ function EventInfo({ invite }: { invite: Invite }) {
               )}
             </form>
           </FormProvider>
-          {confirmed && (
-            <div className="toast-center toast-middle toast">
-              <div className="alert-ghost alert whitespace-nowrap opacity-75">
-                <div>
-                  <h4>RSVP Updated</h4>
-                </div>
-              </div>
-            </div>
-          )}
         </>
       </EventCard>
     </>

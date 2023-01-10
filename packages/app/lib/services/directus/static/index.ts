@@ -1,8 +1,5 @@
 import { DirectusTypes, Page } from 'lib/models'
 import { adminBaseUrl } from 'lib/config'
-import { Directus } from '@directus/sdk'
-
-const directusDB = new Directus<DirectusTypes>(adminBaseUrl)
 
 const get_page = `query getPage($id: ID!) {
   page: page_by_id(id: $id) {
@@ -96,6 +93,8 @@ export async function getPageContentByUrl(slug: string) {
 }
 
 export async function getPageContent(query: string, variables: any): Promise<Page> {
+  const { Directus } = await import('@directus/sdk')
+  const directusDB = new Directus<DirectusTypes>(adminBaseUrl)
   const results = await directusDB.graphql.items<{ page: Page }>(query, variables)
 
   let { page } = results.data
@@ -153,6 +152,8 @@ const all_pages = `
 `
 // require('./queries/all_pages.gql');
 export async function listActivePages(): Promise<Page[]> {
+  const { Directus } = await import('@directus/sdk')
+  const directusDB = new Directus<DirectusTypes>(adminBaseUrl)
   const results = await directusDB.graphql.items<{ pages: Page[] }>(all_pages)
 
   return results.data.pages

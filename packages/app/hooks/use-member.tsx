@@ -13,8 +13,12 @@ type MemberResults = {
 }
 
 export const useMember = (): MemberResults => {
-  const key = `/api/member/me`
-  const { data: member, mutate, error, isLoading } = useSWR<Member, Error>(key, JsonFetcher)
+  const {
+    data: member,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR<Member, Error>(`/api/member/me`, JsonFetcher)
   const level = MemberLevel[(member?.user_type as string) || 'subscriber']
   return {
     member,

@@ -1,5 +1,4 @@
-import moment, { Moment } from 'moment'
-import { ReactNode, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import {
   Card,
   CardHeader,
@@ -10,6 +9,7 @@ import {
   Heading,
   VStack,
   Divider,
+  Text,
 } from '@chakra-ui/react'
 import Markdown from './Markdown'
 import { Invite } from 'lib/models'
@@ -21,36 +21,56 @@ export default function EventCard({
   invite: Invite
   children?: ReactNode | ReactNode[]
 }) {
-  const [eventDate] = useState<Moment>(moment(invite.datetime))
+  const [eventDate, setEventDate] = useState({
+    day: '',
+    short: '',
+    month: '',
+    date: '',
+    time: '',
+  })
+
+  useEffect(() => {
+    import('moment').then(({ default: moment }) => {
+      const date = moment(invite.datetime)
+      setEventDate({
+        day: date.format('dddd'),
+        short: date.format('MMM D'),
+        month: date.format('MMM'),
+        date: date.format('D'),
+        time: date.format('h:mm A'),
+      })
+    })
+  }, [invite.datetime])
   return (
     <Card p={0} mt={10}>
       <CardHeader p={0}>
         <HStack alignItems="stretch" spacing={0}>
           <Heading
-            bg={'primary.400'}
+            bg="primary.400"
             as="h2"
             size="xl"
-            color="white"
-            textAlign={'center'}
-            w={'75%'}
+            color="white!important"
+            textAlign="center"
+            w="75%"
             m={0}
             p={4}
           >
             {invite.name}
-            <br />@ {eventDate.format('h:mm A')}
+            <br />@ {eventDate.time}
           </Heading>
           <Heading
             as="h3"
-            bg={'primary.900'}
+            bg="primary.700"
             m={0}
-            w={'25%'}
+            w="25%"
             p={4}
-            textAlign={'center'}
-            color={'white'}
+            textAlign="center"
+            justifyContent="middle"
+            color="white!important"
           >
-            {eventDate.format('MMM')}
+            {eventDate.month}
             <br />
-            {eventDate.format('D')}
+            <Text size="3xl"> {eventDate.date}</Text>
           </Heading>
         </HStack>
       </CardHeader>

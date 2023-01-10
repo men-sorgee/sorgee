@@ -1,7 +1,6 @@
 import client from '@sendgrid/client'
 import mail, { MailDataRequired } from '@sendgrid/mail'
 import { MemberLevel, Profile } from 'lib/models'
-import { convertMarkdownToHtml } from '../remark'
 
 function getClient() {
   client.setApiKey(process.env.SENDGRID_API_KEY)
@@ -64,6 +63,12 @@ export async function updateSendGrid(
   }
 }
 
+async function convertMarkdownToHtml(markdown: string) {
+  const { remark } = await import('remark')
+  const { default: html } = await import('remark-html')
+  return remark().use(html).processSync(markdown).toString()
+}
+
 export async function sendNotificationEmail(
   to_email: string,
   to_name: string,
@@ -73,7 +78,7 @@ export async function sendNotificationEmail(
   templateId: SendGridTemplate = SendGridTemplate.AppNotification,
   category: SendGridCategory = SendGridCategory.Notification
 ) {
-  if (body?.includes('\n')) body = convertMarkdownToHtml(body)
+  if (body?.includes('\n')) body = await convertMarkdownToHtml(body)
 
   const email: MailDataRequired = {
     personalizations: [

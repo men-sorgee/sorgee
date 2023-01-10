@@ -20,9 +20,7 @@ export function MetaProvider(props: any) {
   const router = useRouter()
   const [siteTitle, setSiteTitle] = useState<string>(site?.site_title)
   const [title, setTitle] = useState<string>('')
-  const [description, setDescription] = useState<string>(
-    site?.description + ' (Photo by Matheus Ferrero)'
-  )
+  const [description, setDescription] = useState<string>(site?.description)
   const [image, setImage] = useState<string>('/images/home-bg.jpg')
   const [metaBlob, setMetaBlob] = useState<any>()
 

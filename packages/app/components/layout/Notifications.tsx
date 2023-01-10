@@ -28,44 +28,46 @@ const Notifications = ({ setNotificationBadge }: Props) => {
   }, [hasNewNotifications, notifications, setNotificationBadge])
 
   return (
-    <>
-      <MenuItem
-        icon={
-          hasNewNotifications ? (
-            <NotificationsOnIcon color={'white'} width={'1.5rem'} />
-          ) : (
-            <NotificationsOffIcon color={'white'} width={'1.5rem'} />
-          )
-        }
-        bg="black"
-        _hover={{ bg: 'gray.400' }}
-        onClick={onOpen}
-      >
-        Notifications{' '}
-        {hasNewNotifications && (
-          <Badge bg="red" color="white">
-            {newNotificationCount}
-          </Badge>
-        )}
-      </MenuItem>
+    hasNewNotifications && (
+      <>
+        <MenuItem
+          icon={
+            hasNewNotifications ? (
+              <NotificationsOnIcon color={'white'} width={'1.5rem'} />
+            ) : (
+              <NotificationsOffIcon color={'white'} width={'1.5rem'} />
+            )
+          }
+          bg="black"
+          _hover={{ bg: 'gray.400' }}
+          onClick={onOpen}
+        >
+          Notifications{' '}
+          {hasNewNotifications && (
+            <Badge bg="red" color="white">
+              {newNotificationCount}
+            </Badge>
+          )}
+        </MenuItem>
 
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader bg="primary.800" color="white" m={0} p={2}>
-            Notifications
-          </DrawerHeader>
-          <DrawerBody p={4}>
-            <>
-              {notifications?.map((notification) => (
-                <Notification key={notification.id} notification={notification} />
-              ))}
-            </>
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
-    </>
+        <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+          <DrawerOverlay />
+          <DrawerContent>
+            <DrawerCloseButton />
+            <DrawerHeader bg="primary.800" color="white" m={0} p={2}>
+              Notifications
+            </DrawerHeader>
+            <DrawerBody p={4}>
+              <>
+                {notifications?.map((notification) => (
+                  <Notification key={notification.id} notification={notification} />
+                ))}
+              </>
+            </DrawerBody>
+          </DrawerContent>
+        </Drawer>
+      </>
+    )
   )
 }
 

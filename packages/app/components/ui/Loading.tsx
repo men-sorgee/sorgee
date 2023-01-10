@@ -14,8 +14,8 @@ const Loading = ({
 }: Props) => {
   return (
     <>
-      <Square size="lg" centerContent={centerContent} mx={'auto'}>
-        <VStack spacing={4}>
+      <Square centerContent={centerContent} mx={'auto'}>
+        <VStack spacing={4} mt={40}>
           <Spinner
             color="accent.500"
             emptyColor="gray.200"

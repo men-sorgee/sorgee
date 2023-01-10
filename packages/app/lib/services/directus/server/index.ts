@@ -21,6 +21,5 @@ export async function getFieldOptions<T = User>(field: keyof T, collection: stri
   return response ? (cache[key] = response!.meta!.options.choices) : []
 }
 
-export * from './events'
 export * from './files'
 export * from './users'
