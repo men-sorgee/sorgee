@@ -1,4 +1,4 @@
-import { Button, Heading, Text, VStack, useToast } from '@chakra-ui/react'
+import { Button, Heading, Text, VStack, useToast, Center } from '@chakra-ui/react'
 import Page from 'components/Page'
 import { useMember } from 'hooks'
 import { listUserInvites } from 'lib/services/directus/server'
@@ -53,10 +53,10 @@ function EventPage({ invites }: { invites: Invite[] }) {
         <Events {...{ invites }} />
       ) : (
         <>
-          <h2>No Events</h2>
-          <p>
+          <Heading>No Events</Heading>
+          <Text>
             Please complete your <Link href="/apply">membership application</Link>.
-          </p>
+          </Text>
         </>
       )}
     </Page>
@@ -73,10 +73,10 @@ type InviteRSVP = {
 function Events({ invites }: { invites: Invite[] }) {
   if (invites.length === 0) {
     return (
-      <section className="text-center">
-        <h2>No Events</h2>
-        <p>Check back later for upcoming events.</p>
-      </section>
+      <Center>
+        <Heading>No Events</Heading>
+        <Text>Check back later for upcoming events.</Text>
+      </Center>
     )
   }
   return (
@@ -154,15 +154,10 @@ function EventInfo({ invite }: { invite: Invite }) {
             >
               {invite.status == 'scheduled' && (
                 <VStack justifyItems="middle" textAlign="center" w={'full'}>
-                  <Heading mx={'auto'} maxWidth={{ base: '100%', md: '75%' }} color="white">
+                  <Heading mx={'auto'} maxWidth={{ base: '100%', md: '75%' }} color="text">
                     You are {rsvp}!
                   </Heading>
-                  <Text
-                    mx={'auto'}
-                    maxWidth={{ base: '100%', md: '75%' }}
-                    color="white"
-                    className="text-sm"
-                  >
+                  <Text mx={'auto'} maxWidth={{ base: '100%', md: '75%' }} color="text" size="sm">
                     {message}
                   </Text>
                   <input type="hidden" {...methods.register('event_id')} />

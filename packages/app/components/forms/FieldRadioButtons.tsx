@@ -49,6 +49,7 @@ function RadioButtonsField(props: Props) {
               defaultChecked={index === 0}
               className={classes}
               value={value}
+              color="text"
             >
               {text}
             </Radio>

@@ -1,6 +1,11 @@
 import { ChakraTheme, extendTheme } from '@chakra-ui/react'
 import { default as defaultTheme } from '@chakra-ui/theme'
 import { StepsStyleConfig } from 'chakra-ui-steps'
+import { radioAnatomy } from '@chakra-ui/anatomy'
+import { createMultiStyleConfigHelpers } from '@chakra-ui/react'
+const { definePartsStyle, defineMultiStyleConfig } = createMultiStyleConfigHelpers(
+  radioAnatomy.keys
+)
 
 export const brand = {
   colors: {
@@ -65,6 +70,15 @@ const custom: Partial<ChakraTheme> = {
     useSystemColorMode: true,
   },
   components: {
+    Radio: {
+      baseStyle: {
+        // define the part you're going to style
+        control: {
+          borderRadius: '12px', // change the border radius
+          borderColor: 'accent.500', // change the border color
+        },
+      },
+    },
     Steps: {
       ...StepsStyleConfig,
       baseStyle: (props) => {
@@ -118,8 +132,11 @@ const custom: Partial<ChakraTheme> = {
   },
   textStyles: {
     heading: {
-      fontWeight: '900',
-      fontSpacing: '0.05em',
+      baseStyle: {
+        fontWeight: '900',
+        fontSpacing: '0.05em',
+      },
+      variants: {},
     },
     body: {},
     mono: {},

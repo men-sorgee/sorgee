@@ -82,7 +82,13 @@ const Page = ({
 
   return (
     <VStack id={id} spacing={2} className={sectionClass} as="article" align={['start', 'center']}>
-      <Heading as="h1" size={['2xl', '4xl']} lineHeight={['3rem', '6rem']} w="full">
+      <Heading
+        as="h1"
+        textAlign={['left', 'center']}
+        size={['2xl', '4xl']}
+        lineHeight={['3rem', '6rem']}
+        w="full"
+      >
         {title}
       </Heading>
 

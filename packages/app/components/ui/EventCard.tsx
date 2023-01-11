@@ -5,11 +5,13 @@ import {
   CardBody,
   CardFooter,
   Alert,
+  AlertIcon,
   HStack,
   Heading,
   VStack,
   Divider,
   Text,
+  Box,
 } from '@chakra-ui/react'
 import Markdown from './Markdown'
 import { Invite } from 'lib/models'
@@ -76,8 +78,12 @@ export default function EventCard({
       </CardHeader>
       <CardBody border={'solid 1px primary-900'} borderY={2}>
         <VStack>
-          <Markdown content={invite.description} />
-          <Alert size={'sm'}>
+          <Box mb={4}>
+            <Markdown content={invite.description} />
+          </Box>
+
+          <Alert size="sm" maxW="md" mt="4rem" w="full" status="info">
+            <AlertIcon />
             Location announced on the day of the event and is sent to confirmed attendees only.
             Events are subject to change or cancellation, depending upon member interest. We will
             communicate any changes to the event 24 hours in advance.

@@ -21,7 +21,7 @@ export function MetaProvider(props: any) {
   const [siteTitle, setSiteTitle] = useState<string>(site?.site_title)
   const [title, setTitle] = useState<string>('')
   const [description, setDescription] = useState<string>(site?.description)
-  const [image, setImage] = useState<string>('/images/home-bg.jpg')
+  const [image, setImage] = useState<string>('/images/guys-mountain.jpg')
   const [metaBlob, setMetaBlob] = useState<any>()
 
   const setMeta = useCallback((t: string, d?: string, i?: string) => {
@@ -34,7 +34,7 @@ export function MetaProvider(props: any) {
     if (!loading && site?.site_title) {
       setSiteTitle(site.site_title)
     }
-  }, [site?.site_title, title, loading])
+  }, [site.site_title, title, loading, router])
 
   const meta: Context = {
     siteTitle,
