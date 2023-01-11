@@ -89,7 +89,7 @@ export default function InviteAdmin({ invite, user, event }: Props) {
           position: 'bottom',
           description: 'The user is checked in.',
           status: 'success',
-          duration: 5000,
+          duration: 3000,
           isClosable: true,
           onCloseComplete: () => {
             router.push('/event/' + event.id)
@@ -151,37 +151,44 @@ export default function InviteAdmin({ invite, user, event }: Props) {
                   <AlertIcon />
                   <Heading size="lg">Already checked in</Heading>
                 </Alert>
-              )) || (
-                <>
-                  <Flex
-                    direction={['row', 'row', 'column']}
-                    alignContent="right"
-                    justifyContent="stretch"
-                  >
-                    {invite.guest == false && (
+              )) ||
+                (!working && (
+                  <>
+                    <Flex
+                      direction={['row', 'row', 'column']}
+                      alignContent="right"
+                      justifyContent="stretch"
+                    >
+                      {invite.guest == false && (
+                        <FieldSwitch
+                          field="paid"
+                          label="Paid"
+                          registerOptions={{
+                            required: 'Member must pay',
+                          }}
+                        />
+                      )}
                       <FieldSwitch
-                        field="paid"
-                        label="Paid"
+                        field="signed_waiver"
+                        label="Signed"
                         registerOptions={{
-                          required: 'Member must pay',
+                          required: 'Waiver must be signed',
                         }}
                       />
+                    </Flex>
+                    {!working && (
+                      <Button
+                        colorScheme={'accent'}
+                        p={8}
+                        size="xl"
+                        type="submit"
+                        disabled={working}
+                      >
+                        Check In
+                      </Button>
                     )}
-                    <FieldSwitch
-                      field="signed_waiver"
-                      label="Signed"
-                      registerOptions={{
-                        required: 'Waiver must be signed',
-                      }}
-                    />
-                  </Flex>
-                  {!working && (
-                    <Button colorScheme={'accent'} p={8} size="xl" type="submit" disabled={working}>
-                      Check In
-                    </Button>
-                  )}
-                </>
-              )}
+                  </>
+                ))}
             </SimpleGrid>
             <HStack spacing={4}>
               <LinkButton colorScheme="primary" href="/member/scan" my={4}>
