@@ -1,31 +1,31 @@
-version: '3'
+version: "3"
 
 services:
-  admin:
-    container_name: gnh-admin
-    build: 
-      context: ./packages/admin
-    depends_on:
-      - cache
-    env_file:
-      - ./packages/admin/.env
-    volumes:
-      - ./packages/admin/extensions:/directus/extensions:rw
-    ports:
-      - 8055:8055
-    environment:
-      DB_HOST: 35.223.87.210
-      PUBLIC_URL: http://127.0.0.1:8055
+  #admin:
+  #  container_name: gnh-admin
+  #  build:
+  #    context: ./packages/admin
+  #  depends_on:
+  #    - cache
+  #  env_file:
+  #    - ./packages/admin/.env
+  #  volumes:
+  #    - ./packages/admin/extensions:/directus/extensions:rw
+  #  ports:
+  #    - 8055:8055
+  #  environment:
+  #    DB_HOST: 35.223.87.210
+  #    PUBLIC_URL: http://127.0.0.1:8055
   #app:
   #  container_name: gnh-app
-  #  build: 
+  #  build:
   #    context: ./packages/app
   #  ports:
   #    - 3000:3000
   #  env_file:
   #    - ./packages/app/.env.local
   #    - ./packages/app/.env.production.local
-  #      
+  #
   #  environment:
   #    AUTH0_SECRET: 9253b625557725fe9a22b89b0e9d3cd3665221bb51116a7decef241826ab4ad4
   #    AUTH0_BASE_URL: https://app.local.guysnheat.com
@@ -47,21 +47,21 @@ services:
   #  volumes:
   #    - ./packages/proxy/data:/data:rw
   #    - ./packages/proxy/certificates:/etc/letsencrypt:rw
-  cache:
-    container_name: cache
-    image: redis:6
+  #cache:
+  #  container_name: cache
+  #  image: redis:6
 
-  #db:
-  #  container_name: gnh-db
-  #  image: dpage/pgadmin4
-  #  restart: unless-stopped
-  #  ports:
-  #    - 8080:80
-  #  environment:
-  #    PGADMIN_DEFAULT_EMAIL: jason@thebrotherhoodgroup.org
-  #    PGADMIN_DEFAULT_PASSWORD: testing
-  #  volumes:
-  #    - db_data:/data:rw
+  db:
+    container_name: gnh-db
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    ports:
+      - 8080:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: jason@thebrotherhoodgroup.org
+      PGADMIN_DEFAULT_PASSWORD: testing
+    volumes:
+      - db_data:/data:rw
 
 volumes:
   db_data:

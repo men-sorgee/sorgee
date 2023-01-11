@@ -31,6 +31,9 @@ function Layout({
     }
   }, [router, router?.pathname, className])
 
+  if (router?.pathname.startsWith('/code')) {
+    return <>{children}</>
+  }
   return (
     <>
       <Meta />

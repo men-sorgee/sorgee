@@ -12,6 +12,7 @@ import {
   FieldText,
   FieldCheckboxes,
   FieldCheckbox,
+  FieldSwitch,
 } from 'components/forms'
 import {
   Alert,
@@ -35,10 +36,9 @@ import {
 } from '@chakra-ui/react'
 import Page from 'components/Page'
 import { useRouter } from 'next/router'
-import FieldSwitch from 'components/forms/FieldSwitch'
 import { useToast } from '@chakra-ui/react'
 import { ErrorMessage } from '@hookform/error-message'
-import { getAssetUrl, postJSON } from 'lib/utils'
+import { postJSON } from 'lib/utils'
 
 import { UserCard } from 'components/ui'
 

@@ -1,9 +1,7 @@
 import { signIn, useSession, signOut } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import {
-  Badge,
   Box,
-  Button,
   Center,
   Menu,
   MenuButton,
@@ -26,6 +24,7 @@ import {
   ExternalLinkIcon,
   UserGroupIcon,
   LogoutIcon,
+  QrcodeIcon,
 } from '@heroicons/react/outline'
 import { useSite } from 'hooks/use-site'
 import { UserBadge } from 'components/ui'
@@ -131,6 +130,17 @@ const UserAvatar = (_props: Props) => {
                   >
                     Invite
                   </MenuItem>
+                  {member.user_type == MemberLevel[MemberLevel.staff] && (
+                    <MenuItem
+                      icon={<QrcodeIcon color={'white'} width={'1.5rem'} />}
+                      bg="black"
+                      _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                      as={Link}
+                      href="/member/scan"
+                    >
+                      Scan
+                    </MenuItem>
+                  )}
                 </>
               )}
               <MenuDivider />
