@@ -2,7 +2,16 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { SubscriptionData } from 'lib/models'
 import { FieldInput } from '../forms'
 import { useState } from 'react'
-import { Stack, Heading, Text, Button, Icon, useColorModeValue, createIcon } from '@chakra-ui/react'
+import {
+  Stack,
+  Heading,
+  Text,
+  Flex,
+  Button,
+  Icon,
+  useColorModeValue,
+  createIcon,
+} from '@chakra-ui/react'
 import { postJSON } from 'lib/utils'
 
 export default function SubscribeBox() {
@@ -47,13 +56,13 @@ export default function SubscribeBox() {
         color="white"
         align="center"
       >
-        <Stack align="center" spacing={2} px={10}>
+        <Flex align="center" gap={2} px={10}>
           <Icon as={NotificationIcon} w={24} h={24} />
-        </Stack>
-        <Stack align="center">
+        </Flex>
+        <Flex align="center">
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <Stack direction="column" spacing="0" w="100%" justifyItems="stretch">
+              <Flex direction="column" w="100%" justifyItems="stretch">
                 <FieldInput
                   field="name"
                   registerOptions={{
@@ -78,19 +87,20 @@ export default function SubscribeBox() {
                   placeholder={'email'}
                   autoComplete="email"
                 />
-              </Stack>
-              <Stack
+              </Flex>
+              <Flex
                 direction={{ base: 'column', md: 'row', lg: 'column' }}
                 mt={4}
                 alignItems="center"
-                justify="middle"
+                justify={['stretch', 'middle']}
                 w="full"
+                gap={4}
               >
                 <Button
                   type="submit"
                   size={'md'}
-                  w={{ base: 'full', sm: '50%', lg: 'full' }}
-                  bg="accent.500"
+                  w={['full', 'full', '50%', 'full']}
+                  colorScheme="accent"
                   color={'white'}
                 >
                   Subscribe
@@ -98,10 +108,10 @@ export default function SubscribeBox() {
                 <Text fontSize="xs" fontStyle={'italic'} color={'white'}>
                   Subscribe only if you agree to our Terms of Service and Privacy Policy .
                 </Text>
-              </Stack>
+              </Flex>
             </form>
           </FormProvider>
-        </Stack>
+        </Flex>
       </Stack>
     </>
   )

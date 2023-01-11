@@ -15,6 +15,7 @@ function getMailer() {
 export enum SendGridCategory {
   Notification = 'notification',
   Invitation = 'invitation',
+  Confirmation = 'confirmation',
 }
 
 export enum SendGridList {
@@ -25,6 +26,7 @@ export enum SendGridList {
 export enum SendGridTemplate {
   AppNotification = 'd-7fe0a94b7c0b40b2a68b5d998ee6f7af',
   EventInvitation = 'd-2ddc88724bf2494dab869838dc87cb50',
+  EventConfirmation = 'd-a06f70ac86cd4d69b6c43cb2621d1e9f',
 }
 
 export async function updateSendGrid(

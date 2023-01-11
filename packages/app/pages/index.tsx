@@ -3,7 +3,7 @@ import { getPageContentById } from 'lib/services/directus/static'
 import { Markdown, Subscribe } from 'components/ui'
 import Section from 'components/Section'
 import { Page } from 'lib/models'
-import { Box, Heading, Text, Center, Stack } from '@chakra-ui/react'
+import { Box, Heading, Text, Center, Flex } from '@chakra-ui/react'
 import { LinkButton } from 'components/ui'
 import { useEffect } from 'react'
 
@@ -23,7 +23,7 @@ export const getStaticProps = async () => {
 
 export default function HomePage({ page }: Props) {
   const { setMeta } = useMeta()
-  const { title, description, content, markdown, image, next } = page
+  const { title, description, content, markdown, image, next, next_page } = page
 
   useEffect(() => {
     setMeta(title, description, image?.id)
@@ -40,25 +40,25 @@ export default function HomePage({ page }: Props) {
         </Heading>
         <Text
           fontSize={['lg', 'xl', '2xl']}
-          maxW={['lg', 'xl', '2xl']}
+          maxW={['lg', 'xl', '2xl', '3xl']}
           mx="auto"
-          textAlign={['justify', 'center']}
+          textAlign={['left', 'center']}
         >
           A hot new fraternity, known internally as &quot;The Brotherhood&quot;, this group is for
           bisexual single and married men who value discretion.
         </Text>
-        {next && (
-          <Center mb={8}>
-            <LinkButton colorScheme="accent" size="lg" fontSize="3xl" href="/learn">
+        {next_page && (
+          <Center my={8}>
+            <LinkButton colorScheme="accent" py={8} size="lg" fontSize="3xl" href={next_page.slug}>
               Learn More
             </LinkButton>
           </Center>
         )}
-        <Stack
+        <Flex
           m="auto"
-          maxW={{ base: 'full', sm: 'lg' }}
+          maxW={['full', 'lg', '3xl']}
           direction={{ base: 'column', lg: 'row' }}
-          spacing={8}
+          gap={8}
           justify="space-between"
         >
           <Box as="section" textAlign={['left', 'center']}>
@@ -67,7 +67,7 @@ export default function HomePage({ page }: Props) {
           <Box as="section" pt={{ base: 0, lg: 4 }}>
             <Subscribe />
           </Box>
-        </Stack>
+        </Flex>
         <>
           {content?.map((s, i) => (
             <Section key={i} content={s} />
