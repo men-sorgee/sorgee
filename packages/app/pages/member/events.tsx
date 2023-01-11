@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { FormProvider, useForm } from 'react-hook-form'
 import { FieldRadioButtons } from 'components/forms'
 import { postJSON } from 'lib/utils'
-import { Invite } from 'lib/models'
+import { Invite, Member, MemberLevel } from 'lib/models'
 import EventCard from 'components/ui/EventCard'
 import { unstable_getServerSession } from 'next-auth'
 import { authOptions } from 'lib/services/auth/config'
@@ -50,7 +50,7 @@ function EventPage({ invites }: { invites: Invite[] }) {
       requireAuth={true}
     >
       {allowed ? (
-        <Events {...{ invites }} />
+        <Events {...{ invites, member }} />
       ) : (
         <>
           <Heading>No Events</Heading>
@@ -70,7 +70,7 @@ type InviteRSVP = {
   rsvp?: string
 }
 
-function Events({ invites }: { invites: Invite[] }) {
+function Events({ invites, member }: { invites: Invite[]; member: Member }) {
   if (invites.length === 0) {
     return (
       <Center>
@@ -81,14 +81,13 @@ function Events({ invites }: { invites: Invite[] }) {
   }
   return (
     <>
-      {invites.map((invite) => (
-        <EventInfo key={invite.id} invite={invite} />
-      ))}
+      {member &&
+        invites.map((invite) => <EventInfo key={invite.id} invite={invite} member={member} />)}
     </>
   )
 }
 
-function EventInfo({ invite }: { invite: Invite }) {
+function EventInfo({ invite, member }: { invite: Invite; member: Member }) {
   const [working, setWorking] = useState(false)
   const toast = useToast()
   const [rsvp, setRsvp] = useState(invite.rsvp)
@@ -145,7 +144,7 @@ function EventInfo({ invite }: { invite: Invite }) {
       : 'You have already RSVPed. Use the form below to update your response.'
   return (
     <>
-      <EventCard invite={invite}>
+      <EventCard event={invite} level={MemberLevel[member.user_type]}>
         <>
           <FormProvider {...methods}>
             <form

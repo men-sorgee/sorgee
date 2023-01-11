@@ -69,7 +69,7 @@ function Apply(props: PageProps) {
     if (!loading) {
       if (status === 'unauthenticated') {
         setFormError(`You must login before you can register.`)
-      } else if (props.email && session.user.email != props.email)
+      } else if (props.email && session?.user?.email != props.email)
         setFormError(
           `You must login using the email address ${props.email} to use this invite. Please logout and try again.`
         )

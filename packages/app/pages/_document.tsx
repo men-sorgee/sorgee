@@ -12,9 +12,14 @@ class MyDocument extends Document {
             data-auto-block="on"
             data-website-uuid="8fbb3f3c-9fc6-4256-ad1f-7c061dabb965"
           />
-          <Script id="gtag" src="https://www.googletagmanager.com/gtag/js?id=G-SJX78PVP26" />
+          <Script
+            id="gtag"
+            strategy="afterInteractive"
+            src="https://www.googletagmanager.com/gtag/js?id=G-SJX78PVP26"
+          />
           <Script
             id="gtag-init"
+            strategy="afterInteractive"
             dangerouslySetInnerHTML={{
               __html: `
             window.dataLayer = window.dataLayer || [];

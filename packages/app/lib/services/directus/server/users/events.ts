@@ -1,5 +1,5 @@
 import { getAdminClient } from '..'
-import { Invite, EventInviteRSVPType } from 'lib/models'
+import { Invite, InviteRSVPType, EventUser } from 'lib/models'
 
 export async function listUpcomingEvents() {
   const client = await getAdminClient()
@@ -11,7 +11,16 @@ export async function listUpcomingEvents() {
   return events.data
 }
 
-export async function findEventInvite(eventId: string, userId: string) {
+export async function getInvite(inviteId: number): Promise<EventUser | null> {
+  const client = await getAdminClient()
+  const query = await client.items('events_users').readOne(inviteId, {
+    fields: ['*.*'],
+  })
+
+  return query as Invite
+}
+
+export async function findInvite(eventId: string, userId: string): Promise<EventUser | null> {
   const client = await getAdminClient()
   const query = await client.items('events_users').readByQuery({
     filter: {
@@ -20,7 +29,7 @@ export async function findEventInvite(eventId: string, userId: string) {
     },
   })
 
-  return query.data[0]
+  return query.data[0] as EventUser
 }
 
 export async function listUserInvites(users_id: string): Promise<Invite[]> {
@@ -48,23 +57,32 @@ export async function listUserInvites(users_id: string): Promise<Invite[]> {
   }) || []) as Invite[]
 }
 
-export async function updateEventUserRSVP(
-  eventId: string,
-  userId: string,
-  rsvp: EventInviteRSVPType,
-  reason: string
+export async function updateInvite(
+  inviteId: number,
+  data: Partial<{
+    rsvp?: InviteRSVPType
+    reason?: string
+    attended?: boolean
+    paid?: boolean
+  }>
 ) {
   const client = await getAdminClient()
-  const invite = await findEventInvite(eventId, userId)
+  const invite = await getInvite(inviteId)
 
   if (!invite) {
     throw new Error('No invite found')
   }
 
-  invite.rsvp = rsvp
-  invite.reason = reason
+  const { rsvp, attended, reason, paid } = data
 
-  client.items('events_users').updateOne(invite.id, invite as any)
+  if (rsvp) invite.rsvp = rsvp
+  if (reason) invite.reason = reason
+  if (attended !== undefined) invite.attended = attended
+  if (paid !== undefined) invite.paid = paid
+  delete invite.users_id
+  delete invite.events_id
+
+  await client.items('events_users').updateOne(inviteId, invite as any)
 
   return invite
 }
@@ -73,11 +91,4 @@ export async function getEvent(id: string) {
   const client = await getAdminClient()
   const event = await client.items('events').readOne(id)
   return event
-}
-
-export async function getEventInvite(inviteId: number) {
-  const client = await getAdminClient()
-  const query = await client.items('events_users').readOne(inviteId)
-
-  return query
 }

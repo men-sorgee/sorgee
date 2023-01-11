@@ -164,6 +164,7 @@ export type Member = Applicant & {
   video_consent: boolean
   photo_consent: boolean
   notifications: AppNotification[]
+  signed_waiver: boolean
   location?: string
   city?: string
   state?: string
@@ -209,7 +210,7 @@ export const memberFields: Array<keyof Member> = [
   'state',
   'video_consent',
   'photo_consent',
-  'notifications',
+  'signed_waiver',
   'body_hair',
   'facial_hair',
   'hair_color',

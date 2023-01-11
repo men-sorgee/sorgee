@@ -38,6 +38,9 @@ extendTheme({
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
+  if (router?.pathname.startsWith('/qr')) {
+    return <Component key={router.asPath} {...pageProps} />
+  }
   return (
     <MetaProvider>
       <SessionProvider>

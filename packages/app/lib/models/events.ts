@@ -7,7 +7,7 @@ export type UserInvite = {
   v: string
 }
 
-export enum EventInviteRSVPType {
+export enum InviteRSVPType {
   Invited = 'invited',
   Maybe = 'maybe',
   Confirmed = 'confirmed',
@@ -32,5 +32,5 @@ export type Invite = EventUser & {
 }
 
 export type EventInvite = EventUser & {
-  rsvp: EventInviteRSVPType
+  rsvp: InviteRSVPType
 }

@@ -204,6 +204,7 @@ export type User = {
   last_login?: string
   vouched_by?: string | User
   needs_guidance?: boolean
+  signed_waiver?: boolean
   biography?: string
   event_availability?: string[]
   sexual_scenes?: string[]
