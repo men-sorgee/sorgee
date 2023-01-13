@@ -243,7 +243,7 @@ export default function InviteAdmin(_props: Props) {
             )) || <Loading />}
             {camera && (
               <Box display={visible(camera)} w="full">
-                <TakePhoto onAccept={takePhoto} />
+                <TakePhoto onAccept={takePhoto} facingMode="environment" />
               </Box>
             )}
             <HStack spacing={4}>

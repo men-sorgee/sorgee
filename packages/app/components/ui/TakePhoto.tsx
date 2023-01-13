@@ -24,10 +24,11 @@ import { Camera } from 'react-camera-pro'
 type Props = StackProps & {
   onAccept: (base64Image: string) => void
   children?: React.ReactNode | React.ReactNode[]
+  facingMode?: 'user' | 'environment'
 }
 const visible = (show: boolean) => (show ? 'inherit' : 'none')
 
-function TakePhoto({ children, onAccept, ...props }: Props) {
+function TakePhoto({ children, onAccept, facingMode, ...props }: Props) {
   const [image, setImage] = useState<string>(undefined)
   const camera = useRef(null)
 
@@ -69,6 +70,7 @@ function TakePhoto({ children, onAccept, ...props }: Props) {
               {...props}
               ref={camera}
               aspectRatio={1}
+              facingMode={facingMode}
               errorMessages={{
                 noCameraAccessible:
                   'No camera device accessible. Please connect your camera or try a different browser.',
