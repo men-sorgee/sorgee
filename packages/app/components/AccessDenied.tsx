@@ -6,7 +6,7 @@ const AccessDenied = () => {
   const { status } = useSession()
   return (
     <>
-      <Heading as="h1">Access Denied</Heading>
+      <Heading as="h1">Please Authenticate</Heading>
       {status === 'authenticated' && (
         <Heading as="h2">You do not have permission to view this page.</Heading>
       )}

@@ -86,7 +86,8 @@ function Review() {
         {complete && (
           <>
             <Alert as="h3" my={8} status="success" justifyContent="center" py={8}>
-              This is not an error. Actual humans are invoved, so have patience.
+              This is not an error. Actual humans are invoved! With interest spiking it can take a
+              few days to follow up. Please have patience with us.
             </Alert>
             <Text fontSize="2xl" maxW="2xl" mx="auto" w="full">
               Your application is currently being reviewed by our team. You will receive an email

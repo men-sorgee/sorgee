@@ -32,6 +32,8 @@ export async function getServerSideProps(
 
 export default function EventAdmin({ event, error }: { event: Event; error: string }) {
   const { member, loading } = useMember()
+  // todo: move to client side call
+  // todo: add event metrics (invites, attendees, etc)
   return (
     <Page title="Event" loading={loading}>
       {member && (
