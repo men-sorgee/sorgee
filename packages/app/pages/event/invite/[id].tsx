@@ -209,30 +209,31 @@ export default function InviteAdmin(_props: Props) {
                     }}
                   />
                 </Flex>
-                {(picture && (
-                  <Button
-                    type="submit"
-                    hidden={invite?.attended}
-                    colorScheme={'accent'}
-                    p={8}
-                    size="xl"
-                    disabled={working}
-                  >
-                    Check In
-                  </Button>
-                )) || (
-                  <Button
-                    colorScheme={'accent'}
-                    p={8}
-                    hidden={invite?.attended}
-                    size="xl"
-                    onClick={() => {
-                      setCamera(true)
-                    }}
-                  >
-                    Take Picture
-                  </Button>
-                )}
+                {picture ||
+                  (image && (
+                    <Button
+                      type="submit"
+                      hidden={invite?.attended}
+                      colorScheme={'accent'}
+                      p={8}
+                      size="xl"
+                      disabled={working}
+                    >
+                      Check In
+                    </Button>
+                  )) || (
+                    <Button
+                      colorScheme={'accent'}
+                      p={8}
+                      hidden={invite?.attended}
+                      size="xl"
+                      onClick={() => {
+                        setCamera(true)
+                      }}
+                    >
+                      Take Picture
+                    </Button>
+                  )}
                 {invite?.attended && (
                   <Alert size="xl" status="warning" justifyContent="center">
                     <AlertIcon />
