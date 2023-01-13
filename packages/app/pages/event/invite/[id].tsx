@@ -184,7 +184,12 @@ export default function InviteAdmin(_props: Props) {
                   </Box>
                 </Flex>
 
-                <Flex direction="row" w={['70%', '50%', '30%']} mx="auto">
+                <Flex
+                  direction="row"
+                  w={['100%', '50%', '30%']}
+                  justifyItems="space-between"
+                  mx="auto"
+                >
                   {invite?.guest == false && (
                     <FieldSwitch
                       field="paid"

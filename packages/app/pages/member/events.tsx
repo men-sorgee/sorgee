@@ -1,4 +1,4 @@
-import { Button, Heading, Text, VStack, useToast, Center } from '@chakra-ui/react'
+import { Button, Heading, Text, VStack, Flex, useToast, Center } from '@chakra-ui/react'
 import Page from 'components/Page'
 import { useMember } from 'hooks'
 import { listUserInvites } from 'lib/services/directus/server'
@@ -71,7 +71,7 @@ type InviteRSVP = {
 }
 
 function Events({ invites, member }: { invites: Invite[]; member: Member }) {
-  if (invites.length === 0) {
+  if (invites?.length === 0) {
     return (
       <Center>
         <Heading>No Events</Heading>
@@ -82,7 +82,7 @@ function Events({ invites, member }: { invites: Invite[]; member: Member }) {
   return (
     <>
       {member &&
-        invites.map((invite) => <EventInfo key={invite.id} invite={invite} member={member} />)}
+        invites?.map((invite) => <EventInfo key={invite.id} invite={invite} member={member} />)}
     </>
   )
 }
@@ -152,7 +152,13 @@ function EventInfo({ invite, member }: { invite: Invite; member: Member }) {
               style={{ display: 'contents', width: 'full' }}
             >
               {invite.status == 'scheduled' && (
-                <VStack justifyItems="middle" textAlign="center" w={'full'}>
+                <Flex
+                  direction="column"
+                  justifyItems="center"
+                  alignItems="center"
+                  mx={'auto'}
+                  width={['100%', '50%']}
+                >
                   <Heading mx={'auto'} maxWidth={{ base: '100%', md: '75%' }} color="text">
                     You are {rsvp}!
                   </Heading>
@@ -168,13 +174,12 @@ function EventInfo({ invite, member }: { invite: Invite; member: Member }) {
                       required: true,
                     }}
                     mx={'auto'}
-                    maxWidth={'30%'}
                   />
 
                   <Button colorScheme={'primary'} type="submit" disabled={working}>
                     Update RSVP
                   </Button>
-                </VStack>
+                </Flex>
               )}
               {invite.status == 'occurred' && invite.attended && (
                 <VStack justify="center" align="center" spacing={4}>

@@ -24,7 +24,7 @@ const FieldWrapper = (props: Props) => {
   const { getFieldState } = useFormContext()
   const { error, isDirty } = getFieldState(field)
   return (
-    <FormControl size={size} align={align} isInvalid={!!error} {...opts} py={2}>
+    <FormControl size={size} align={align} isInvalid={!!error} {...opts} p={2}>
       {label && (
         <FormLabel size={size} fontWeight="bold" htmlFor={field}>
           {label}

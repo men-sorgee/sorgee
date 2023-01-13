@@ -272,13 +272,6 @@ function Form(props: PageProps) {
                   <FieldInput field="city" label="City" />
                   <FieldInput field="state" label="State" value="Colorado" readOnly />
 
-                  <FieldRadioButtons
-                    w="full"
-                    field="contact_preference"
-                    label="Contact Preference"
-                    help="How would you like to be contacted?"
-                    formOptions={contactPreferenceOptions}
-                  />
                   <FieldCheckbox
                     field="needs_guidance"
                     help="Our staff will reach out to you to help guide you along the way."
@@ -286,6 +279,12 @@ function Form(props: PageProps) {
                   >
                     Yes
                   </FieldCheckbox>
+                  <FieldSelect
+                    w="full"
+                    field="contact_preference"
+                    label="Contact Preference"
+                    formOptions={contactPreferenceOptions}
+                  />
                 </SimpleGrid>
 
                 <Alert bg="secondary" color="white" my={4} borderRadius="md" shadow="md">

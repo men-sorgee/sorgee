@@ -5,7 +5,7 @@ export async function listUpcomingEvents() {
   const client = await getAdminClient()
   const events = await client.items('events').readByQuery({
     filter: {
-      datetime: { _gte: new Date().toISOString() },
+      status: { _eq: 'scheduled' },
     },
   })
   return events.data
@@ -32,12 +32,12 @@ export async function findInvite(eventId: string, userId: string): Promise<Event
   return query.data[0] as EventUser
 }
 
-export async function listUserInvites(users_id: string): Promise<Invite[]> {
+export async function listUserInvites(user_id: string): Promise<Invite[]> {
   const client = await getAdminClient()
   const events = await listUpcomingEvents()
   const invites = await client.items('events_users').readByQuery({
     filter: {
-      users_id: { _eq: users_id },
+      users_id: { _eq: user_id },
       events_id: {
         status: { _eq: 'scheduled' },
       },

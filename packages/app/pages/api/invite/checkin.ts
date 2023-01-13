@@ -19,8 +19,6 @@ export default async function checkIn(
       return res.redirect(baseUrl + `/event/${event_id}?error=No+invite+found&user_id=${user_id}`)
     }
 
-    await updateInvite(invite.id, { attended: true })
-
     return res.redirect(baseUrl + '/event/invite/' + invite.id)
   } catch (e) {
     console.error(e)

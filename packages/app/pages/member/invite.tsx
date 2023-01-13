@@ -90,6 +90,7 @@ function Form({ userTypeOptions }: PageProps) {
         duration: 9000,
         isClosable: true,
       })
+      reset()
     } else {
       const { error } = response
       setError('email', { message: error?.message })

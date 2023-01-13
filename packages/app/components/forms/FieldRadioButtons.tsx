@@ -2,7 +2,7 @@ import { InputHTMLAttributes } from 'react'
 import { useFormContext, RegisterOptions } from 'react-hook-form'
 import { FormOptions } from 'lib/models'
 import FieldWrapper from './FieldWrapper'
-import { Radio, RadioGroup, Stack, RadioProps, chakra, SimpleGrid } from '@chakra-ui/react'
+import { Radio, RadioGroup, Flex, RadioProps, chakra, SimpleGrid } from '@chakra-ui/react'
 
 type Props = RadioProps &
   InputHTMLAttributes<HTMLInputElement> & {
@@ -25,6 +25,7 @@ function RadioButtonsField(props: Props) {
     className,
     color = 'primary',
     size,
+    justifyContent = 'space-between',
     ...opts
   } = props
   const { register, setValue, watch, getFieldState, formState } = useFormContext()
@@ -38,24 +39,22 @@ function RadioButtonsField(props: Props) {
           setValue(field, v)
         }}
         value={fieldValue}
-        w="full"
-        as={Stack}
+        as={Flex}
+        justifyContent={justifyContent}
       >
-        <Stack id={field} spacing={4} direction="row">
-          {formOptions?.map(({ text, value }, index) => (
-            <Radio
-              {...opts}
-              {...register(field, registerOptions)}
-              key={index.toString()}
-              defaultChecked={index === 0}
-              className={classes}
-              value={value}
-              color="text"
-            >
-              {text}
-            </Radio>
-          ))}
-        </Stack>
+        {formOptions?.map(({ text, value }, index) => (
+          <Radio
+            {...opts}
+            {...register(field, registerOptions)}
+            key={index.toString()}
+            defaultChecked={index === 0}
+            className={classes}
+            value={value}
+            color="text"
+          >
+            {text}
+          </Radio>
+        ))}
       </RadioGroup>
     </FieldWrapper>
   )
