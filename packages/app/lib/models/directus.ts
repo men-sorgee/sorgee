@@ -15,6 +15,7 @@ export type Event = {
   description?: string
   users: string | EventUser[]
 }
+export type UserFields = (string | keyof User)[] | '*' | '*.*' | any
 
 export type EventUser = {
   id: number

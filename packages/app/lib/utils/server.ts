@@ -1,6 +1,6 @@
 import { HttpMethod } from '.'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { Applicant, Member, UserInvite, applicantFields, memberFields, Profile } from 'lib/models'
+import { Applicant, Member, UserInvite, applicantFields, memberFields } from 'lib/models'
 
 import { findUser } from 'lib/services/directus/server'
 import { unstable_getServerSession } from 'next-auth'

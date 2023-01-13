@@ -41,7 +41,8 @@ const getConfig = ( phase ) => {
         }
       ];
     },
-    poweredByHeader: false,
+    poweredByHeader: false
+
   };
   return nextConfig;
 };

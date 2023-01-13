@@ -47,32 +47,114 @@ const fileConsumer = <T = unknown>(acc: T[]) => {
   return writable
 }
 
-export async function parseForm(req: NextApiRequest) {
-  const chunks: never[] = []
-  const { files: raw, form } = await formidablePromise(req, {
-    ...formidableConfig,
-    fileWriteStreamHandler: () => fileConsumer(chunks),
-  })
-
-  const fileInfo: File = raw.media as File
-  const fileData = Buffer.concat(chunks)
-
-  return { fileInfo, fileData, form }
+export type FileInfo = {
+  mimetype: string
+  originalFilename: string
+  filepath: string
+  data: Buffer
 }
+
+export async function getFileInfo(req: NextApiRequest): Promise<FileInfo & { form: IncomingForm }> {
+  const chunks: never[] = []
+  try {
+    const { files: raw, form } = await formidablePromise(req, {
+      ...formidableConfig,
+      fileWriteStreamHandler: () => fileConsumer(chunks),
+    })
+    const fileInfo: File = raw.media as File
+    const data = Buffer.concat(chunks)
+    const { mimetype, originalFilename, filepath } = fileInfo
+    return { mimetype, originalFilename, filepath, data, form }
+  } catch (er) {
+    console.error(er)
+    throw new Error('No available file to in request')
+  }
+}
+
+async function decodeBase64Image(dataString: string) {
+  const matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/m)
+
+  if (!matches || matches.length !== 3) {
+    throw new Error('Invalid input string')
+  }
+
+  const type = matches[1]
+  const extension = type.split('/')[1]
+  //const blob = await (await fetch(dataString)).blob()
+  const data = Buffer.from(matches[2], 'base64') // base64toBytes(matches[2])
+  const size = data.length
+  return {
+    extension,
+    type,
+    data,
+    size,
+    //blob,
+  }
+}
+
+//function base64toBytes(base64Data) {
+//  const sliceSize = 1024
+//  const byteCharacters = Buffer.from(base64Data, 'base64')
+//  const bytesLength = byteCharacters.length
+//  var slicesCount = Math.ceil(bytesLength / sliceSize)
+//  var byteArrays = new Array(slicesCount)
+//
+//  for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+//    var begin = sliceIndex * sliceSize
+//    var end = Math.min(begin + sliceSize, bytesLength)
+//
+//    var bytes = new Array(end - begin)
+//    for (var offset = begin, i = 0; offset < end; ++i, ++offset) {
+//bytes[i] = byteCharacters[offset].charCodeAt(0)
+//    }
+//    byteArrays[sliceIndex] = new Uint8Array(bytes)
+//  }
+//  return Buffer.from(byteArrays)
+//}
+
 // Service Calls ------------------------------------
 
-export async function uploadFile(req: NextApiRequest, folder: UploadFolder, title: string) {
+export async function uploadFile(fileInfo: FileInfo, folder: UploadFolder, title: string) {
   const adminClient = await getAdminClient()
-  const { fileInfo, fileData } = await parseForm(req)
-  const { mimetype, originalFilename, filepath } = fileInfo
+  const { mimetype: type, originalFilename: name, filepath: path, data } = fileInfo
   const formData = new FormData()
   formData.append('folder', folder)
   formData.append('title', title)
-  formData.append('filename', originalFilename)
-  formData.append('mimetype', mimetype)
-  formData.append('file', fileData, {
-    filename: originalFilename,
-    filepath,
+  formData.append('filename', name)
+  formData.append('mimetype', type)
+  formData.append('file', data, {
+    filename: name,
+    filepath: path,
+    contentType: type,
+  })
+  const file = adminClient.files.createOne(
+    formData,
+    {},
+    {
+      requestOptions: {
+        headers: {
+          ...formData.getHeaders(),
+        },
+      },
+    }
+  )
+  return file
+}
+
+export async function uploadBase64Image(image: string, folder: UploadFolder, title: string) {
+  const { type, data, extension } = await decodeBase64Image(image)
+  const adminClient = await getAdminClient()
+  // const { type, name } = blob
+  const formData = new FormData()
+  formData.append('folder', folder)
+  formData.append('title', title)
+  formData.append('filename', title + '.' + extension)
+  formData.append('mimetype', type)
+  formData.append('file', data, {
+    filename: title + '.' + extension,
+    filepath: '',
+    contentType: type,
+    knownLength: data.length,
   })
   const file = adminClient.files.createOne(
     formData,

@@ -1,4 +1,4 @@
-import { updateUser, uploadFile, UploadFolder } from 'lib/services/directus/server'
+import { getFileInfo, updateUser, uploadFile, UploadFolder } from 'lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse, ApplicationStatus } from 'lib/models'
 import { withMember, withMethods } from 'lib/utils/server'
@@ -18,10 +18,15 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     if (!member) return
 
     const file = await uploadFile(
-      req,
+      await getFileInfo(req),
       UploadFolder.verification,
       `Verification: ${member.id.substring(0, 4)}-${member.id.substring(4, 8)}`
     )
+
+    await updateUser(member.id, {
+      photo: file.id,
+      application_status: 'review',
+    })
 
     const status = ApplicationStatus[member.application_status]
     if (status < 2)
@@ -35,11 +40,6 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
           button_url: 'https://guysnheat.com/apply/resume',
         }
       )
-
-    await updateUser(member.id, {
-      photo: file.id,
-      application_status: 'review',
-    })
 
     res.status(200).end()
   } catch (e: any) {

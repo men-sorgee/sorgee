@@ -35,7 +35,7 @@ const UserAvatar = (_props: Props) => {
   const [member, setMember] = useState<Member>(null)
   const { data: session, status } = useSession()
   const [loading, setLoading] = useState<boolean>(true)
-  const [photoSrc, setPhotoSrc] = useState<string | null>(null)
+  const [pictureSrc, setPictureSrc] = useState<string | null>(null)
   const [name, setName] = useState<string | null>(null)
   const [level, setLevel] = useState<number>(-1)
   const { site } = useSite()
@@ -53,11 +53,11 @@ const UserAvatar = (_props: Props) => {
     if (status == 'authenticated' && session.user) {
       setMember(session.user as Member)
       const { picture, first_name, last_name, nickname } = session.user
-      if (!photoSrc && picture) setPhotoSrc(getAssetUrl(picture))
+      if (!pictureSrc && picture) setPictureSrc(getAssetUrl(picture))
       if (!name) setName(nickname || `${first_name} ${last_name}}`)
       if (level == -1) setLevel(MemberLevel[session.user.user_type || 'subscriber'])
     }
-  }, [notificationBadge, member, name, photoSrc, session?.user, level, status, loading, site])
+  }, [notificationBadge, member, name, pictureSrc, session?.user, level, status, loading, site])
 
   const isMember = member && level >= 3 && application_status == 'approved'
   const isApplicant = ApplicationStatus[application_status] < ApplicationStatus['approved']
@@ -68,7 +68,7 @@ const UserAvatar = (_props: Props) => {
         <>
           <Menu placement="bottom">
             <MenuButton cursor={'pointer'}>
-              <Avatar bg="accent.500" cursor={'pointer'} name={name} src={photoSrc} color="white">
+              <Avatar bg="accent.500" cursor={'pointer'} name={name} src={pictureSrc} color="white">
                 {notificationBadge && <AvatarBadge borderWidth="thin" boxSize="1em" bg="red" />}
               </Avatar>
             </MenuButton>
@@ -76,7 +76,7 @@ const UserAvatar = (_props: Props) => {
             <MenuList bg="black" alignItems={'center'}>
               <Box p={4} m={2} bgGradient="linear(to-bl, primary.300, accent.300)">
                 <Center>
-                  <Avatar src={photoSrc} color="white" bg="primary.500" />
+                  <Avatar src={pictureSrc} color="white" bg="primary.500" />
                 </Center>
                 <Center>
                   <Text fontWeight="bold" color="black">

@@ -5,6 +5,7 @@ import { LightningBoltIcon as LightningBoltIconSolid } from '@heroicons/react/so
 import { useMember } from 'hooks'
 import Page from 'components/Page'
 import dynamic from 'next/dynamic'
+
 const BarcodeScannerComponent = dynamic(() => import('react-qr-barcode-scanner'), { ssr: false })
 
 export default function Scanner() {

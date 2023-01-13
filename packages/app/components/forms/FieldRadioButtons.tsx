@@ -24,6 +24,7 @@ function RadioButtonsField(props: Props) {
     formOptions,
     className,
     color = 'primary',
+    size,
     ...opts
   } = props
   const { register, setValue, watch, getFieldState, formState } = useFormContext()
@@ -40,7 +41,7 @@ function RadioButtonsField(props: Props) {
         w="full"
         as={Stack}
       >
-        <Stack id={field} spacing={4} w="full" direction={{ base: 'column', md: 'row' }}>
+        <Stack id={field} spacing={4} direction="row">
           {formOptions?.map(({ text, value }, index) => (
             <Radio
               {...opts}

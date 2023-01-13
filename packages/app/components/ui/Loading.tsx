@@ -1,4 +1,4 @@
-import { Square, SquareProps, chakra, VStack, Spinner, SpinnerProps } from '@chakra-ui/react'
+import { Square, SquareProps, chakra, Flex, Spinner, SpinnerProps } from '@chakra-ui/react'
 
 type Props = SpinnerProps &
   SquareProps & {
@@ -14,17 +14,16 @@ const Loading = ({
 }: Props) => {
   return (
     <>
-      <Square centerContent={centerContent} mx={'auto'}>
-        <VStack spacing={4} mt={40}>
-          <Spinner
-            color="accent.500"
-            emptyColor="gray.200"
-            thickness="6px"
-            size={size}
-            {...props}
-          />
-          {children}
-        </VStack>
+      <Square centerContent={centerContent}>
+        <Spinner
+          maxW="20%"
+          color="accent.500"
+          emptyColor="gray.200"
+          thickness="6px"
+          size={size}
+          {...props}
+        />
+        {children}
       </Square>
     </>
   )

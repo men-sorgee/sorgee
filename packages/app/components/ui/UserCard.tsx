@@ -7,14 +7,14 @@ interface Props {}
 export default function UserCard(_props: Props) {
   const [loaded, setLoaded] = useState(false)
   const { member } = useMember()
-  const [photoSrc, setPhotoSrc] = useState<string | null>()
+  const [pictureSrc, setPictureSrc] = useState<string | null>()
   useEffect(() => {
     if (!loaded && member) {
       const { picture } = member
-      if (!photoSrc && picture) setPhotoSrc(getAssetUrl(picture))
+      if (!pictureSrc && picture) setPictureSrc(getAssetUrl(picture))
       setLoaded(true)
     }
-  }, [member, photoSrc, loaded])
+  }, [member, pictureSrc, loaded])
 
   //if (!member) return null
 
@@ -23,7 +23,7 @@ export default function UserCard(_props: Props) {
       <HStack spacing={3} alignItems="center">
         <Avatar
           id={member?.id}
-          src={photoSrc}
+          src={pictureSrc}
           size="lg"
           color="white"
           bg="primary.300"

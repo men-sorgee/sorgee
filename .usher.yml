@@ -1,0 +1,46 @@
+version: "2"
+vars:
+  registry: gcr.io/tbg-gnh
+  app:
+    - admin
+    - app
+  hosts:
+    - admin.guysnheat.com
+    - guysnheat.com
+
+tasks:
+  init:
+    description: Deploy DB
+    do: series
+    actions:
+      - do: shell
+        command: kubectl apply -k .kube/postgres
+
+  build:
+    description: Build the docker image and push it to the registry
+    args:
+      app:
+        required: yes
+        type: string
+    do: sequence
+    actions:
+      - do: shell
+        command: docker build --force-rm -t <%=registry%>/gnh-<%=app%> packages/<%=app%>
+      - do: shell
+        command: docker push <%=registry%>/gnh-<%=app%>
+
+  deploy:
+    description: Deploy
+    args:
+      app:
+        required: yes
+        type: string
+    do: shell
+    command: kubectl apply -k .kube/<%=app%>
+
+  deploy_all:
+    description: Deploy All
+    do: for
+    every: host
+    in: <%=hosts%>
+    exec: deploy

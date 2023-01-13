@@ -99,7 +99,11 @@ function Form({ code, router, setCompleted }): JSX.Element {
     try {
       let formData = new FormData()
       formData.append('media', file)
-
+      formData.append('image_field', 'photo')
+      formData.append(
+        'image_name',
+        `Verification: ${member.id.substring(0, 4)}-${member.id.substring(4, 8)}`
+      )
       const res = await fetch('/api/member/verify', {
         method: 'POST',
         body: formData,

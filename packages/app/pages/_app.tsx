@@ -4,9 +4,7 @@ import { SessionProvider } from 'next-auth/react'
 import { ChakraProvider, cookieStorageManager, extendTheme } from '@chakra-ui/react'
 import Layout from 'components/layout/index'
 import { theme } from '../theme'
-import { LocationProvider } from '../hooks/use-location'
 import { MetaProvider } from '../hooks/use-meta'
-import { SocketProvider } from '../hooks/use-socket'
 import { Manrope, Arvo, Roboto_Mono } from '@next/font/google'
 import { useRouter } from 'next/router'
 const heading = Arvo({
@@ -44,17 +42,13 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <MetaProvider>
       <SessionProvider>
-        <SocketProvider>
-          <LocationProvider>
-            <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
-              <Layout fonts={[heading.variable, body.variable, mono.variable]}>
-                <ErrorBoundary>
-                  <Component key={router.asPath} {...pageProps} />
-                </ErrorBoundary>
-              </Layout>
-            </ChakraProvider>
-          </LocationProvider>
-        </SocketProvider>
+        <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
+          <Layout fonts={[heading.variable, body.variable, mono.variable]}>
+            <ErrorBoundary>
+              <Component key={router.asPath} {...pageProps} />
+            </ErrorBoundary>
+          </Layout>
+        </ChakraProvider>
       </SessionProvider>
     </MetaProvider>
   )

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { baseUrl } from 'lib/config'
-import { findInvite, getEvent } from 'lib/services/directus/server'
+import { findInvite, getEvent, updateInvite } from 'lib/services/directus/server'
 import { ApiResponse, Applicant } from 'lib/models'
 
 export default async function checkIn(
@@ -18,6 +18,8 @@ export default async function checkIn(
     if (!invite) {
       return res.redirect(baseUrl + `/event/${event_id}?error=No+invite+found&user_id=${user_id}`)
     }
+
+    await updateInvite(invite.id, { attended: true })
 
     return res.redirect(baseUrl + '/event/invite/' + invite.id)
   } catch (e) {

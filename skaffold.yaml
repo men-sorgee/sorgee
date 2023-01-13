@@ -1,0 +1,16 @@
+apiVersion: skaffold/v4beta1
+kind: Config
+metadata:
+  name: guys-n-heat
+build:
+  artifacts:
+  - image: gcr.io/google.com/cloudsdktool/cloud-sdk
+    context: packages/admin
+    docker:
+      dockerfile: Dockerfile
+manifests:
+  rawYaml:
+  - kube/app/certificate.yaml
+  - kube/app/configmap.yaml
+  - kube/app/deployment.yaml
+  - kube/app/ingress.yaml

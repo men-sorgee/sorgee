@@ -2,7 +2,7 @@ import { useMember } from 'hooks/use-member'
 import { useRouter } from 'next/router'
 import ApplicationSteps from './_steps'
 import Page from 'components/Page'
-import { Text, Heading, VStack } from '@chakra-ui/react'
+import { Text, Heading, VStack, Button, Box, Alert } from '@chakra-ui/react'
 import { FieldRadioButtons } from 'components/forms'
 import { useForm, FormProvider } from 'react-hook-form'
 import { postJSON } from 'lib/utils'
@@ -51,36 +51,51 @@ function Review() {
       requireAuth={true}
       header={<ApplicationSteps status={'review'} />}
     >
-      <>
+      <Box>
         <Heading as="h2" size="xl" pt={16}>
-          One of our brothers will be in touch with you.
+          One of our brothers will be in touch with you for final verification.{' '}
         </Heading>
-        <Text fontSize="2xl" pt={16}>
-          How would you like to be contacted?
-        </Text>
-        <VStack alignItems="center" align="center" justify="middle" textAlign="center" mt={8}>
-          <FormProvider {...methods}>
-            <form onSubmit={methods.handleSubmit(onSubmit)}>
-              <FieldRadioButtons
-                w="fit-content"
-                field="contact_preference"
-                registerOptions={{ required: 'Certification is Required' }}
-                formOptions={[
-                  { text: 'Email', value: 'email' },
-                  { text: 'Phone', value: 'phone_call' },
-                  { text: 'Text', value: 'phone_text' },
-                ]}
-              />
-            </form>
-          </FormProvider>
-        </VStack>
-        {complete && (
-          <Text fontSize="2xl" maxW="2xl">
-            Your application is currently being reviewed by our team. You will receive an email with
-            our decision within 7 days.
-          </Text>
+
+        {!complete && (
+          <>
+            <Text fontSize="2xl" pt={16} mx="auto" w="full">
+              How would you like to be contacted?
+            </Text>
+
+            <VStack alignItems="center" align="center" justify="middle" textAlign="center" mt={8}>
+              <FormProvider {...methods}>
+                <form onSubmit={methods.handleSubmit(onSubmit)}>
+                  <FieldRadioButtons
+                    w="fit-content"
+                    field="contact_preference"
+                    registerOptions={{ required: 'Certification is Required' }}
+                    formOptions={[
+                      { text: 'Email', value: 'email' },
+                      { text: 'Phone', value: 'phone_call' },
+                      { text: 'Text', value: 'phone_text' },
+                    ]}
+                  />
+                  <Button type="submit" mt={8} size="lg" bgColor="accent.500">
+                    Contact Me
+                  </Button>
+                </form>
+              </FormProvider>
+            </VStack>
+          </>
         )}
-      </>
+        {complete && (
+          <>
+            <Alert as="h3" my={8} status="success" justifyContent="center" py={8}>
+              This is not an error. Actual humans are invoved, so have patience.
+            </Alert>
+            <Text fontSize="2xl" maxW="2xl" mx="auto" w="full">
+              Your application is currently being reviewed by our team. You will receive an email
+              with our decision within 7 days. <br />
+              Thank you for your interest in our fraternity.
+            </Text>
+          </>
+        )}
+      </Box>
     </Page>
   )
 }

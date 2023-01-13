@@ -10,6 +10,7 @@ import {
   Applicant,
   applicantFields,
   UserEmailEvent,
+  UserFields,
 } from 'lib/models'
 import { FieldFilter } from '@directus/sdk'
 
@@ -27,7 +28,6 @@ export async function updateUser(id: string, member: Partial<User>): Promise<Use
   return user as User
 }
 
-type UserFields = (string | keyof User)[] | '*' | '*.*' | any
 export async function getUser<T = User>(
   id: string,
   fields: UserFields = memberFields
@@ -35,6 +35,11 @@ export async function getUser<T = User>(
   const adminClient = await getAdminClient()
   const user: any = await adminClient.items('users').readOne(id, {
     fields: fields as any,
+    filter: {
+      status: {
+        _nin: ['deleted', 'banned'],
+      },
+    },
   })
   return (user as T) || null
 }
@@ -86,11 +91,7 @@ export async function getMember(id: string): Promise<Member | null> {
   return (member as unknown as Member) || null
 }
 
-const userEmails = new Map<string, string>()
-
 export async function getUserId(email: string) {
-  if (userEmails.has(email)) return userEmails.get(email)
-
   const adminClient = await getAdminClient()
   const { data } = await adminClient.items('users').readByQuery({
     filter: { email: { _eq: email } },
@@ -98,7 +99,6 @@ export async function getUserId(email: string) {
   })
 
   if (data && data?.length) {
-    userEmails.set(email, data[0].id)
     return data[0].id
   }
   return null

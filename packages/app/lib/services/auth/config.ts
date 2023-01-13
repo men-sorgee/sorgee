@@ -35,7 +35,7 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async signIn({ email, profile, account }) {
-      console.debug('callback:signIn')
+      //console.debug('callback:signIn')
 
       if (email?.verificationRequest) {
         const user = await findUser(account.userId)
@@ -104,7 +104,7 @@ export const authOptions: AuthOptions = {
       return true
     },
     async session({ session, user }) {
-      console.debug('callback:session')
+      //console.debug('callback:session')
       const fullUser = await findUser<Member>(user.email, memberFields)
       session.user = fullUser
       return session
@@ -112,8 +112,8 @@ export const authOptions: AuthOptions = {
   },
   events: {
     async createUser({ user }) {
-      console.log('event:createUser')
-      console.dir(user)
+      //console.log('event:createUser')
+      //console.dir(user)
       await updateSendGrid(user as Profile)
       await sendNotificationEmail(
         user.email,
@@ -127,11 +127,11 @@ export const authOptions: AuthOptions = {
       )
     },
     async signIn({ user }) {
-      console.log('event:signIn')
+      //console.log('event:signIn')
       await recordUserLogin(user.id)
     },
     async signOut(props) {
-      console.log('event:signOut')
+      //console.log('event:signOut')
       //await recordUserLogout(user.id)
     },
   },
@@ -171,7 +171,7 @@ export const authOptions: AuthOptions = {
           'Sign in to GuysNHeat',
           'Click the button below to sign in to GuysNHeat',
           {
-            button_link: 'Sign In',
+            button_text: 'Sign In',
             button_url: url,
           }
         )

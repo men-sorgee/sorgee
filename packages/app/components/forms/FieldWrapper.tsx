@@ -15,18 +15,18 @@ type Props = FormControlProps & {
   field?: string
   label?: string
   help?: string
-  className?: string
+  align?: 'left' | 'right | center'
   children: ReactNode | ReactNode[]
 }
 
 const FieldWrapper = (props: Props) => {
-  const { field, label, help, className, children, ...opts } = props
+  const { field, label, help, className, children, size, align = 'left', ...opts } = props
   const { getFieldState } = useFormContext()
   const { error, isDirty } = getFieldState(field)
   return (
-    <FormControl isInvalid={!!error} textAlign="left" className={className} {...opts} py={2}>
+    <FormControl size={size} align={align} isInvalid={!!error} {...opts} py={2}>
       {label && (
-        <FormLabel fontWeight="bold" htmlFor={field}>
+        <FormLabel size={size} fontWeight="bold" htmlFor={field}>
           {label}
         </FormLabel>
       )}
