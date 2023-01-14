@@ -194,6 +194,7 @@ const custom: Partial<ChakraTheme> = {
         fontWeight: 'extrabold',
         bgGradient: 'linear(to-r, pink.500, blue.500)',
         bgClip: 'text',
+
         my: 2,
         overflow: 'visible',
       },
@@ -202,6 +203,8 @@ const custom: Partial<ChakraTheme> = {
         lineHeight: ['1rem', '2rem'],
         fontWeight: 'bold',
         color: 'primary.500',
+        width: 'fit-content',
+        mx: 'auto',
         _dark: {
           color: 'primary.300',
         },
@@ -211,6 +214,7 @@ const custom: Partial<ChakraTheme> = {
         fontSize: ['lg', 'xl'],
         fontWeight: 'extrabold',
         color: 'secondary.500',
+
         _dark: {
           color: 'secondary.200',
         },
