@@ -12,7 +12,7 @@ export default function ApplicationSteps({ status }: { status: string }) {
   }, [activeStep, setStep, status])
   return (
     <>
-      <Show above="sm">
+      <Show above="md">
         <Steps
           activeStep={activeStep}
           my={8}
@@ -25,7 +25,7 @@ export default function ApplicationSteps({ status }: { status: string }) {
           ))}
         </Steps>
       </Show>
-      <Hide above="sm">
+      <Hide above="md">
         <Steps
           activeStep={activeStep}
           my={8}

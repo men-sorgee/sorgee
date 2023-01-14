@@ -16,7 +16,7 @@ function getMemberPage(status?: string) {
   }
 }
 
-function Resume(_props) {
+export default function Resume({}) {
   const { data: session, status } = useSession()
   const [page, setPage] = useState('/apply')
   const { user } = session || {}
@@ -41,5 +41,3 @@ function Resume(_props) {
     </Page>
   )
 }
-
-export default Resume

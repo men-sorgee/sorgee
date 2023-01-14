@@ -1,4 +1,4 @@
-import { Square, SquareProps, chakra, Flex, Spinner, SpinnerProps } from '@chakra-ui/react'
+import { Square, SquareProps, chakra, Spinner, SpinnerProps, Heading } from '@chakra-ui/react'
 
 type Props = SpinnerProps &
   SquareProps & {
@@ -23,7 +23,6 @@ const Loading = ({
           size={size}
           {...props}
         />
-        {children}
       </Square>
     </>
   )

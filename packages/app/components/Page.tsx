@@ -3,7 +3,7 @@ import Loading from 'components/ui/Loading'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState, useCallback } from 'react'
 import AccessDenied from './AccessDenied'
-import { Box, Heading } from '@chakra-ui/react'
+import { Flex, Heading } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 
 interface Props {
@@ -81,7 +81,13 @@ const Page = ({
   }
 
   return (
-    <Box id={id} className={sectionClass} as="article" textAlign={['left', 'center']}>
+    <Flex
+      id={id}
+      direction="column"
+      as="article"
+      alignItems={['left', 'center']}
+      justifyItems="center"
+    >
       <Heading
         as="h1"
         textAlign={['left', 'center']}
@@ -99,7 +105,7 @@ const Page = ({
         </Loading>
       )) ||
         children}
-    </Box>
+    </Flex>
   )
 }
 

@@ -49,7 +49,7 @@ export const authOptions: AuthOptions = {
             first_name: profile.name,
             user_type: 'subscriber',
             status: 'new',
-            notes: 'Tried to login without an invite',
+            notes: 'Authenticated without an invite',
           })
           const {
             provider,
@@ -72,7 +72,7 @@ export const authOptions: AuthOptions = {
             id_token,
             refresh_token,
           })
-          return '/limited'
+          return '/apply'
         }
         let existingAccount = await findUserByAccount(account.provider, account.providerAccountId)
         if (!existingAccount) {

@@ -28,10 +28,15 @@ import {
   GridItem,
   Heading,
   Text,
+  Input,
+  InputGroup,
+  InputRightAddon,
+  Stack,
 } from '@chakra-ui/react'
 import ApplicationSteps from './_steps'
 import Page from 'components/Page'
 import { useSession } from 'next-auth/react'
+import { useSite } from '../../hooks/use-site'
 
 export type PageProps = {
   email?: string
@@ -47,15 +52,18 @@ export type PageProps = {
   router: NextRouter
   member: Profile
   setFormError: (error: string) => void
+  promo?: string
 }
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async (context) => {
+  const { promo } = context.query
   const props: Partial<PageProps> = {
     spectrumOptions: await getFieldOptions('spectrum'),
     relationshipOptions: await getFieldOptions('relationship_status'),
     timeOfDayOptions: await getFieldOptions('event_availability'),
     positionsOptions: await getFieldOptions('my_positions'),
     skinToneOptions: await getFieldOptions('skin_tone'),
+    promo,
   }
   return { props }
 }
@@ -64,6 +72,8 @@ function Apply(props: PageProps) {
   const { data: session, status } = useSession()
   const [formError, setFormError] = useState<string>()
   const [loading] = useState(status !== 'loading')
+  const router = useRouter()
+  const { site } = useSite()
 
   useEffect(() => {
     if (!loading) {
@@ -73,8 +83,12 @@ function Apply(props: PageProps) {
         setFormError(
           `You must login using the email address ${props.email} to use this invite. Please logout and try again.`
         )
+      if (site && !props.invite && !props.applicant && site.invite_only) {
+        router.push('/limited')
+      }
+      //todo: no invites, mean NO apply - UNLESS there is a valid promo
     }
-  }, [loading, props.email, session, status])
+  }, [loading, props.applicant, props.email, props.invite, router, session, site, status])
 
   const intro = props.invite
     ? `You've been invited to join our community! While your application is pre-approved, we still need to perform a few verification steps.`
@@ -206,73 +220,58 @@ function Form(props: PageProps) {
             <strong>Please be as honest as possible.</strong> Honest answers will help your chances
             of approval and help our AI create the perfect group events!
           </Text>
-          <SimpleGrid gap={4} py={4} columns={{ base: 1, md: 2 }}>
-            <GridItem colSpan={2}>
-              <FieldInput field="nickname" label="Nickname" registerOptions={{ required }} />
+          <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
+            <GridItem colSpan={{ base: 1, sm: 2 }}>
+              <FieldInput field="nickname" label="Nickname" className="col-span-2 sm:col-span-4" />
             </GridItem>
-            <FieldSelect
-              field="spectrum"
-              label="Orientation"
-              registerOptions={{ required }}
-              formOptions={spectrumOptions}
-            />
-
+            <FieldSelect field="spectrum" label="Orientation" formOptions={spectrumOptions} />
             <FieldSelect
               field="relationship_status"
               label="Relationship Status"
               formOptions={relationshipOptions}
             />
+          </SimpleGrid>
+          <FieldText
+            field="biography"
+            label="Biography"
+            help="Tell us about yourself. What are your interests? What are you looking for?"
+            rows={4}
+            placeholder="I am a bit shy, but love to get aggressive in bed."
+          />
+          <SimpleGrid spacing={4} columns={{ base: 1, sm: 2, md: 4 }}>
+            <GridItem colSpan={{ base: 1, sm: 2 }}>
+              <Stack direction={{ base: 'column', sm: 'row' }}>
+                <FieldInput
+                  field="age"
+                  label="Age"
+                  help="Must be 21+ to apply. We verify ages at events."
+                  registerOptions={{
+                    required,
+                    min: {
+                      value: 21,
+                      message: 'Must be 21+ to apply.',
+                    },
+                  }}
+                />
+                <FieldWrapper field="weight" label="Weight">
+                  <InputGroup>
+                    <Input type="number" {...register('weight')} />
+                    <InputRightAddon mr={2}>#</InputRightAddon>
+                  </InputGroup>
+                </FieldWrapper>
 
-            <SimpleGrid gap={4} py={4} columns={{ base: 1, md: 2 }}>
-              <FieldNumber
-                field="age"
-                label="Age"
-                type="number"
-                help="Must be 21+ to apply. We verify ages at events."
-                registerOptions={{
-                  required,
-                  min: {
-                    value: 21,
-                    message: 'Must be 21+ to apply.',
-                  },
-                }}
-                min={21}
-              />
-
-              <FieldWrapper field="height" label="Height">
-                <HStack>
-                  <NumberInput>
-                    <NumberInputField
-                      id="height_feet"
-                      className="input  !rounded-r-none"
-                      {...register('height_feet')}
-                      placeholder="feet"
-                    />
-                    <NumberInputStepper>
-                      <NumberIncrementStepper />
-                      <NumberDecrementStepper />
-                    </NumberInputStepper>
-                  </NumberInput>
-                  <NumberInput>
-                    <NumberInputField
-                      id="height_inches"
-                      className="input  !rounded-l-none"
-                      {...register('height_inches')}
-                      placeholder="inches"
-                    />
-                    <NumberInputStepper>
-                      <NumberIncrementStepper />
-                      <NumberDecrementStepper />
-                    </NumberInputStepper>
-                  </NumberInput>
-                </HStack>
-              </FieldWrapper>
-            </SimpleGrid>
-            <SimpleGrid gap={4} py={4} columns={{ base: 1, md: 2 }}>
-              <FieldInput field="weight" label="Weight" type="number" />
-
-              <FieldSelect field="skin_tone" label="Skin Tone" formOptions={skinToneOptions} />
-            </SimpleGrid>
+                <FieldWrapper field="height" label="Height">
+                  <InputGroup>
+                    <Input type="number" id="height_feet" {...register('height_feet')} />
+                    <InputRightAddon mr={2}>&apos;</InputRightAddon>
+                    <Input type="number" id="height_inches" {...register('height_inches')} />
+                    <InputRightAddon>&quot;</InputRightAddon>
+                  </InputGroup>
+                </FieldWrapper>
+              </Stack>
+            </GridItem>
+          </SimpleGrid>
+          <SimpleGrid gap={4} py={4} columns={{ base: 1, md: 2 }}>
             <GridItem colSpan={2}>
               <FieldText
                 field="biography"
@@ -290,16 +289,16 @@ function Form(props: PageProps) {
             be included in every event. As the group grows, so too will the number of events we can
             create.
           </Text>
+
+          <FieldCheckboxes
+            field="event_availability"
+            label="Preferred Event Times"
+            help="We host events to meet the demands of our brothers. Let us know what times work best in general"
+            formOptions={timeOfDayOptions}
+          />
+
+          <Heading as="h3">Sexual Preferences</Heading>
           <SimpleGrid gap={4} py={4} columns={1}>
-            <FieldCheckboxes
-              field="event_availability"
-              label="Preferred Event Times"
-              help="We host events to meet the demands of our brothers. Let us know what times work best in general"
-              formOptions={timeOfDayOptions}
-            />
-
-            <Heading as="h3">Sexual Preferences</Heading>
-
             <FieldCheckboxes
               field="my_positions"
               label="Your Positions"
