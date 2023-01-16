@@ -46,7 +46,7 @@
     "react": "^18.2.0",
     "react-camera-pro": "^1.2.1",
     "react-dom": "^18.2.0",
-    "react-hook-form": "^7.41.5",
+    "react-hook-form": "^7.42.1",
     "react-qr-barcode-scanner": "^1.0.6",
     "react-qrcode-svg": "^0.1.0",
     "react-remark": "^2.1.0",
