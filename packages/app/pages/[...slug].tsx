@@ -60,8 +60,8 @@ export default function DynamicPage({ page }: Props) {
     if (!loading && next_page) {
       const { title: t, slug: s } = next_page
       setNextText(t)
-      if (s === 'home') setNextUrl('/')
-      else setNextUrl(`/${next_page.slug}`)
+      if (s === 'index') setNextUrl('/')
+      else setNextUrl(next_page.slug[0] == '/' ? next_page.slug : `/${next_page.slug}`)
     }
     if (!loading && next) {
       setNextText(sentenceCase(next.split('/').join(' ').trim()).toUpperCase())

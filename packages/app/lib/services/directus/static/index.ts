@@ -107,7 +107,7 @@ export async function getPageContent(query: string, variables: any): Promise<Pag
 
 const all_pages = `
 {
-  pages: page(filter: { status: { _eq: "published" } }) {
+  pages: page(filter: { status: { _eq: "published" }, static: { _eq: false } }) {
     id
     title
     description

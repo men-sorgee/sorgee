@@ -147,6 +147,7 @@ export const authOptions: AuthOptions = {
       allowDangerousEmailAccountLinking: true,
     }),
     TwitterLegacy({
+      id: 'twitter',
       name: 'Twitter',
       clientId: twitter.clientId,
       clientSecret: twitter.clientSecret,
@@ -154,11 +155,13 @@ export const authOptions: AuthOptions = {
     }),
     MicrosoftProvider({
       name: 'Microsoft',
+      id: 'microsoft',
       clientId: microsoft.clientId,
       clientSecret: microsoft.clientSecret,
       allowDangerousEmailAccountLinking: true,
     }),
     YahooProvider({
+      id: 'yahoo',
       clientId: yahoo.clientId,
       clientSecret: yahoo.clientSecret,
       allowDangerousEmailAccountLinking: true,

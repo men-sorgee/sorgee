@@ -131,7 +131,6 @@ function Form(props: PageProps) {
     spectrumOptions,
     positionsOptions,
     relationshipOptions,
-    skinToneOptions,
     timeOfDayOptions,
     setFormError,
   } = props
@@ -217,12 +216,12 @@ function Form(props: PageProps) {
           </SimpleGrid>
           <Heading as="h3">About You</Heading>
           <Text>
-            <strong>Please be as honest as possible.</strong> Honest answers will help your chances
-            of approval and help our AI create the perfect group events!
+            <strong>Be as honest as possible.</strong> Honest answers will help your chances of
+            approval and help our AI create the perfect group events!
           </Text>
           <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
             <GridItem colSpan={{ base: 1, sm: 2 }}>
-              <FieldInput field="nickname" label="Nickname" className="col-span-2 sm:col-span-4" />
+              <FieldInput field="nickname" label="Nickname" />
             </GridItem>
             <FieldSelect field="spectrum" label="Orientation" formOptions={spectrumOptions} />
             <FieldSelect
@@ -241,7 +240,7 @@ function Form(props: PageProps) {
           <SimpleGrid spacing={4} columns={{ base: 1, sm: 2, md: 4 }}>
             <GridItem colSpan={{ base: 1, sm: 2 }}>
               <Stack direction={{ base: 'column', sm: 'row' }}>
-                <FieldInput
+                <FieldNumber
                   field="age"
                   label="Age"
                   help="Must be 21+ to apply. We verify ages at events."
