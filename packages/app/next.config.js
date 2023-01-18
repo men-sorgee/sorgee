@@ -7,6 +7,7 @@ const getConfig = ( phase ) => {
    */
   const nextConfig = {
     pageExtensions: ['ts', 'tsx'],
+    build: process.env.BUILD || '.next',
     images: {
       domains: [
         'guysnheat.com',

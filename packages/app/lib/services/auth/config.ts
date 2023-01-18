@@ -165,7 +165,7 @@ export const authOptions: AuthOptions = {
       clientId: yahoo.clientId,
       clientSecret: yahoo.clientSecret,
       allowDangerousEmailAccountLinking: true,
-    } as any),
+    }),
     EmailProvider({
       async sendVerificationRequest({ identifier: email, url }) {
         await sendNotificationEmail(

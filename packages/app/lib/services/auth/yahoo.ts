@@ -21,6 +21,10 @@ export default function Yahoo<P extends YahooProfile>(options: OAuthUserConfig<P
     wellKnown: 'https://api.login.yahoo.com/.well-known/openid-configuration',
     authorization: { params: { scope: 'openid email profile' } },
     idToken: true,
+    client: {
+      authorization_signed_response_alg: 'ES256',
+      id_token_signed_response_alg: 'ES256',
+    },
     checks: ['pkce', 'state'],
     clientId: process.env.YAHOO_CLIENT_ID,
     clientSecret: process.env.YAHOO_CLIENT_SECRET,
