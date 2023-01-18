@@ -26,6 +26,7 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     await updateUser(member.id, {
       photo: file.id,
       application_status: 'review',
+      user_type: 'pledge',
     })
 
     const status = ApplicationStatus[member.application_status]

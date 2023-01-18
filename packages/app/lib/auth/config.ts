@@ -126,6 +126,7 @@ export const authOptions: AuthOptions = {
     //  allowDangerousEmailAccountLinking: true,
     //}),
     EmailProvider({
+      maxAge: 24 * 60 * 60 * 2, // 24 hours
       async sendVerificationRequest({ identifier: email, url }) {
         const user = await findUser(email)
         if (user && user.status !== 'banned') {

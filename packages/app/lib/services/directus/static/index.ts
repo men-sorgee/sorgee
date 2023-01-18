@@ -39,6 +39,7 @@ const get_page = `query getPage($id: ID!) {
       slug
       title
     }
+    next_page_params
   }
 }
 ` // require('./queries/get_page.gql');
@@ -84,6 +85,7 @@ const find_page = `query findPage($slug: String) {
       slug
       title
     }
+    next_page_params
   }
 }
 `
@@ -147,6 +149,7 @@ const all_pages = `
       slug
       title
     }
+    next_page_params
   }
 }
 `

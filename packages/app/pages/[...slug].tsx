@@ -54,7 +54,7 @@ export default function DynamicPage({ page }: Props) {
   const [nextText, setNextText] = useState<string>(null)
   const [nextUrl, setNextUrl] = useState<string>('')
 
-  const { title, id, description, image, markdown, content, next, next_page } = page
+  const { title, id, description, image, markdown, content, next_page, next_page_params } = page
 
   useEffect(() => {
     if (!loading && next_page) {
@@ -63,11 +63,12 @@ export default function DynamicPage({ page }: Props) {
       if (s === 'index') setNextUrl('/')
       else setNextUrl(next_page.slug[0] == '/' ? next_page.slug : `/${next_page.slug}`)
     }
-    if (!loading && next) {
-      setNextText(sentenceCase(next.split('/').join(' ').trim()).toUpperCase())
-      setNextUrl(next[0] === '/' ? next : `/${next}`)
+    if (!loading && next_page) {
+      const { title, slug } = next_page
+      setNextText(title)
+      setNextUrl(slug[0] === '/' ? slug : `/${slug}` + (next_page_params || ''))
     }
-  }, [nextText, site, loading, next_page, next])
+  }, [nextText, site, loading, next_page, next_page_params])
   if (!page) {
     return <NotFound />
   }

@@ -97,6 +97,7 @@ export type Page = {
   content: PageContent[]
   next?: string
   next_page?: Page
+  next_page_params?: string
 }
 
 export type Promo = {
