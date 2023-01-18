@@ -1,5 +1,5 @@
 import { getAdminClient } from '..'
-import { UserNotification, Notification, AppNotification, NotificationStatus } from 'lib/models'
+import { UserNotification, Notification, AppNotification, NotificationStatusType } from 'lib/models'
 
 export async function getNotifications(user_id: string): Promise<AppNotification[]> {
   const adminClient = await getAdminClient()
@@ -43,7 +43,7 @@ export async function getNotifications(user_id: string): Promise<AppNotification
   return notifications
 }
 
-export async function markNotification(id: string, status: NotificationStatus) {
+export async function markNotification(id: string, status: NotificationStatusType) {
   const admin = await getAdminClient()
   admin.items('notifications_users').updateOne(id, { status })
 }

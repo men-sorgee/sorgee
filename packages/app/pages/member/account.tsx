@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import {
   FieldInput,
   FieldSelect,
+  FieldNumber,
   FieldWrapper,
   FieldText,
   FieldCheckboxes,
@@ -24,7 +25,7 @@ import {
   TabPanel,
   Stack,
   Text,
-  HStack,
+  Select,
   SimpleGrid,
   GridItem,
   Input,
@@ -70,6 +71,7 @@ export type PageProps = {
   theirSpectrumOptions: FormOptions
   theirPositionsOptions: FormOptions
   hostEventOptions: FormOptions
+  birthMonthOptions: FormOptions
 }
 
 export async function getServerSideProps(_context: NextPageContext) {
@@ -102,11 +104,12 @@ export async function getServerSideProps(_context: NextPageContext) {
     theirRolesOptions: await getFieldOptions<User>('their_roles'),
     theirSpectrumOptions: await getFieldOptions<User>('their_spectrum'),
     theirPositionsOptions: await getFieldOptions<User>('their_positions'),
+    birthMonthOptions: await getFieldOptions<User>('birth_month'),
   }
   return { props }
 }
 
-type MemberFormData = User & {
+type MemberFormData = Partial<User> & {
   height_feet: string
   height_inches: string
 }
@@ -153,6 +156,7 @@ function Form(props: PageProps) {
     theirRolesOptions,
     theirSpectrumOptions,
     theirPositionsOptions,
+    birthMonthOptions,
   } = props
   const [tabValue, setTabValue] = useState(Number(router.query.t) || 0)
   const [height_feet, setHeightFeet] = useState<string | null>()
@@ -209,6 +213,8 @@ function Form(props: PageProps) {
   }
 
   const required = { value: true, message: 'Required' }
+  const minYear = new Date().getFullYear() - 100
+  const maxYear = new Date().getFullYear() - 21
   return (
     <>
       <FormProvider {...methods}>
@@ -242,7 +248,7 @@ function Form(props: PageProps) {
                     only for administrative purposes.
                   </Text>
                 </Alert>
-                <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
+                <SimpleGrid spacing={4} columns={{ base: 1, md: 2, lg: 4 }}>
                   <FieldInput
                     field="first_name"
                     label="First Name"
@@ -271,6 +277,38 @@ function Form(props: PageProps) {
                   <FieldInput field="city" label="City" />
                   <FieldInput field="state" label="State" value="Colorado" readOnly />
 
+                  <FieldWrapper field="height" label="Birth Month/Year">
+                    <InputGroup>
+                      <Select
+                        mr={2}
+                        {...register('birth_month', {
+                          required: 'You must provide your month of birth',
+                        })}
+                      >
+                        {birthMonthOptions.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.text}
+                          </option>
+                        ))}
+                      </Select>
+                      <Input
+                        type="number"
+                        min={minYear}
+                        max={maxYear}
+                        step={1}
+                        {...register('birth_year', {
+                          required: 'You must provide your year of birth',
+                        })}
+                      />
+                    </InputGroup>
+                  </FieldWrapper>
+
+                  <FieldSelect
+                    w="full"
+                    field="contact_preference"
+                    label="Contact Preference"
+                    formOptions={contactPreferenceOptions}
+                  />
                   <FieldCheckbox
                     field="needs_guidance"
                     help="Our staff will reach out to you to help guide you along the way."
@@ -278,12 +316,6 @@ function Form(props: PageProps) {
                   >
                     Yes
                   </FieldCheckbox>
-                  <FieldSelect
-                    w="full"
-                    field="contact_preference"
-                    label="Contact Preference"
-                    formOptions={contactPreferenceOptions}
-                  />
                 </SimpleGrid>
 
                 <Alert bg="secondary" color="white" my={4} borderRadius="md" shadow="md">
@@ -410,49 +442,26 @@ function Form(props: PageProps) {
                   placeholder="I am a bit shy, but love to get aggressive in bed."
                 />
                 <SimpleGrid spacing={4} columns={{ base: 1, sm: 2, md: 4 }}>
-                  <GridItem colSpan={{ base: 1, sm: 2 }}>
-                    <Stack direction={{ base: 'column', sm: 'row' }}>
-                      <FieldWrapper field="height" label="Height">
-                        <InputGroup>
-                          <Input type="number" id="height_feet" {...register('height_feet')} />
-                          <InputRightAddon mr={2}>&apos;</InputRightAddon>
-                          <Input type="number" id="height_inches" {...register('height_inches')} />
-                          <InputRightAddon>&quote;</InputRightAddon>
-                        </InputGroup>
-                      </FieldWrapper>
+                  <FieldWrapper field="height" label="Height">
+                    <InputGroup>
+                      <Input type="number" id="height_feet" {...register('height_feet')} />
+                      <InputRightAddon mr={2}>&apos;</InputRightAddon>
+                      <Input type="number" id="height_inches" {...register('height_inches')} />
+                      <InputRightAddon>&quot;</InputRightAddon>
+                    </InputGroup>
+                  </FieldWrapper>
 
-                      <FieldInput field="weight" label="Weight" type="number" />
-                    </Stack>
-                  </GridItem>
-                  <GridItem colSpan={{ base: 1, sm: 2 }}>
-                    <Stack direction={{ base: 'column', sm: 'row' }}>
-                      <FieldInput
-                        field="age"
-                        label="Age"
-                        help="Must be 21+ to apply. We verify ages at events."
-                        registerOptions={{
-                          required,
-                          min: {
-                            value: 21,
-                            message: 'Must be 21+ to apply.',
-                          },
-                        }}
-                      />
-                      <FieldSelect
-                        field="skin_tone"
-                        label="Skin Tone"
-                        formOptions={skinToneOptions}
-                      />
-                    </Stack>
-                  </GridItem>
-                  <GridItem colSpan={{ base: 1, sm: 2, md: 4 }}>
+                  <FieldNumber field="weight" label="Weight" rightAddon="#" />
+                  <FieldInput type="number" field="age" label="Age" min={21} />
+                  <FieldSelect field="skin_tone" label="Skin Tone" formOptions={skinToneOptions} />
+
+                  <GridItem colSpan={[1, 2, 4]}>
                     <FieldCheckboxes
                       field="body_attributes"
                       label="Body Attributes"
                       formOptions={bodyAttributesOptions}
                     />
                   </GridItem>
-
                   <FieldSelect
                     field="hair_color"
                     label="Hair Color"

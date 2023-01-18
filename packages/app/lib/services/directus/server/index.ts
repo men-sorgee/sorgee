@@ -9,13 +9,14 @@ export async function getAdminClient(): Promise<Directus<DirectusTypes>> {
   return adminDb
 }
 
-export async function findPromo(promo: string): Promise<Promo | null> {
+export async function findPromo(code: string): Promise<Promo | null> {
   const adminClient = await getAdminClient()
   const { data } = await adminClient.items('promos').readByQuery({
     filter: {
-      code: { _eq: promo },
+      code: { _eq: code },
     },
   })
+  console.dir(data)
   return data?.length ? (data[0] as Promo) : null
 }
 

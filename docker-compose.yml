@@ -32,7 +32,7 @@ services:
     ports:
       - 3001:3000
     env_file:
-      - ./packages/app/.env.docker
+      - ./packages/app/.env.dc
 
   # Development Tools ------------------------------------------
   proxy:

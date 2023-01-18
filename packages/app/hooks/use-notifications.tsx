@@ -1,8 +1,7 @@
 'use client'
 import useSWR from 'swr'
-import { AppNotification, NotificationStatus } from 'lib/models'
-import { JsonFetcher } from 'lib/services/fetchers'
-import { putJSON } from 'lib/utils'
+import { AppNotification, NotificationStatusType } from 'lib/models'
+import { putJSON, JsonFetcher } from 'lib/utils'
 import { useState, useEffect, createContext } from 'react'
 
 interface NotificationResult {
@@ -12,7 +11,7 @@ interface NotificationResult {
   hasNewNotifications: boolean
   newNotificationCount: number
   error?: any
-  mark: (id: number, state: NotificationStatus) => Promise<void>
+  mark: (id: number, state: NotificationStatusType) => Promise<void>
   loading: boolean
   reload: () => void
 }
@@ -37,14 +36,14 @@ export function useNotifications(): NotificationResult {
     refreshInterval: 1000 * 30, // 30 seconds
     fallbackData: [],
   })
-  let hasNotifications = notifications?.length > 0
-  let newNotifications = notifications?.filter((n) => n.status === 'new')
-  let hasNewNotifications = !isLoading && newNotifications?.length > 0
+  const [hasNotifications, setHasNotifications] = useState(false)
+  const [newNotifications, setNewNotifications] = useState<AppNotification[]>([])
+  const [hasNewNotifications, setHasNewNotifications] = useState(false)
   useEffect(() => {
-    hasNotifications = notifications?.length > 0
-    newNotifications = notifications?.filter((n) => n.status === 'new') || []
-    hasNewNotifications = !isLoading && newNotifications?.length > 0
-  }, [notifications, isLoading])
+    setHasNotifications(notifications?.length > 0)
+    setNewNotifications(notifications?.filter((n) => n.status === 'new') || [])
+    setHasNewNotifications(newNotifications?.length > 0)
+  }, [notifications, isLoading, newNotifications?.length])
 
   return {
     notifications,
@@ -53,7 +52,7 @@ export function useNotifications(): NotificationResult {
     hasNewNotifications,
     newNotificationCount: newNotifications?.length || 0,
     error,
-    mark: async (id: number, state: NotificationStatus) => {
+    mark: async (id: number, state: NotificationStatusType) => {
       const [ok, data] = await putJSON(`/api/member/notifications`, {
         id,
         state,

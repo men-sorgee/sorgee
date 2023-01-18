@@ -43,7 +43,7 @@ function Form({ router, setCompleted }: Props) {
   const { handleSubmit, setError, watch } = methods
 
   async function onSubmit(data: AgreementData) {
-    const [success, response] = await postJSON('/api/member/agree', data)
+    const [success, response] = await postJSON('/api/apply/agree', data)
 
     if (success) {
       setCompleted(true)

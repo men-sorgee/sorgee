@@ -9,7 +9,7 @@ import {
   updateUser,
   deleteAccount,
   createAccount,
-} from '../directus/server/users'
+} from '../services/directus/server/users'
 import {
   createSession,
   deleteSession,
@@ -18,9 +18,9 @@ import {
   addVerificationToken,
   deleteVerificationToken,
   findVerificationToken,
-} from '../directus/server/users/auth'
-import { importFile, UploadFolder } from '../directus/server/files'
-import { getAssetUrl } from '../../utils'
+} from '../services/directus/server/users/auth'
+import { importFile, UploadFolder } from '../services/directus/server/files'
+import { getAssetUrl } from '../utils'
 
 function mapUser(user: User): AdapterUser {
   return {
@@ -48,10 +48,14 @@ function mapToken(token: UserVerificationToken): VerificationToken {
   }
 }
 
+function log(...args) {
+  // console.debug(...args)
+}
+
 const authAdapter: Adapter = {
   async createUser(user: AdapterUser) {
     try {
-      //console.debug('createUser', user)
+      log('createUser', user)
       let image: DirectusFile = null
       if (user.image) {
         image = await importFile(user.image, UploadFolder.members, `avatar-${user.email}`)
@@ -70,7 +74,7 @@ const authAdapter: Adapter = {
   },
   async getUser(id) {
     try {
-      console.debug('getUser', id)
+      log('getUser', id)
       const user = await getUser(id)
       return mapUser(user)
     } catch (e) {
@@ -79,7 +83,7 @@ const authAdapter: Adapter = {
   },
   async getUserByEmail(email) {
     try {
-      console.debug('getUserByEmail', email)
+      log('getUserByEmail', email)
       const user = await findUser<User>(email, '*.*')
       if (!user) return null
       return mapUser(user)
@@ -89,7 +93,7 @@ const authAdapter: Adapter = {
   },
   async getUserByAccount({ providerAccountId, provider }) {
     try {
-      console.debug('getUserByAccount', providerAccountId, provider)
+      log('getUserByAccount', providerAccountId, provider)
       const user = await findUserByAccount(provider, providerAccountId)
       if (!user) return null
       return mapUser(user)
@@ -99,9 +103,8 @@ const authAdapter: Adapter = {
   },
   async updateUser(user) {
     try {
-      console.debug('updateUser', user)
+      log('updateUser', user)
       const updatedUser = await updateUser(user.id, {
-        email: user.email,
         email_verified: user.emailVerified != null,
         status: 'active',
       })
@@ -112,7 +115,7 @@ const authAdapter: Adapter = {
   },
   async linkAccount(account) {
     try {
-      console.debug('linkAccount', account)
+      log('linkAccount', account)
 
       const {
         provider,
@@ -142,7 +145,7 @@ const authAdapter: Adapter = {
   },
   async unlinkAccount({ providerAccountId, provider }) {
     try {
-      console.debug('unlinkAccount', providerAccountId, provider)
+      log('unlinkAccount', providerAccountId, provider)
       await deleteAccount(provider, providerAccountId)
     } catch (e) {
       console.error(e.response?.body?.errors[0].message || e)
@@ -150,7 +153,7 @@ const authAdapter: Adapter = {
   },
   async createSession(sessionData) {
     try {
-      console.debug('createSession', sessionData)
+      log('createSession', sessionData)
       const session = await createSession({
         session_token: sessionData.sessionToken,
         user: sessionData.userId,
@@ -163,7 +166,7 @@ const authAdapter: Adapter = {
   },
   async getSessionAndUser(sessionToken) {
     try {
-      console.debug('getSessionAndUser', sessionToken)
+      log('getSessionAndUser', sessionToken)
       const session = await findSession(sessionToken)
       return {
         user: mapUser(session.user as User),
@@ -175,7 +178,7 @@ const authAdapter: Adapter = {
   },
   async updateSession(session) {
     try {
-      console.debug('updateSession', session)
+      log('updateSession', session)
       const updatedSession = await updateSession({
         session_token: session.sessionToken,
         expires: session.expires.toISOString(),
@@ -187,7 +190,7 @@ const authAdapter: Adapter = {
   },
   async deleteSession(sessionToken) {
     try {
-      console.debug('deleteSession', sessionToken)
+      log('deleteSession', sessionToken)
       await deleteSession(sessionToken)
     } catch (e) {
       console.error(e.response?.body?.errors[0].message || e)
@@ -207,7 +210,7 @@ const authAdapter: Adapter = {
   },
   async useVerificationToken({ identifier, token }) {
     try {
-      console.debug('useVerificationToken', identifier, token)
+      log('useVerificationToken', identifier, token)
       const verificationToken = await findVerificationToken(identifier)
       if (!verificationToken) return null
       if (verificationToken.token !== token) return null

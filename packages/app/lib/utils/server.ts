@@ -4,7 +4,7 @@ import { Applicant, Member, UserInvite, applicantFields, memberFields } from 'li
 
 import { findUser } from 'lib/services/directus/server'
 import { unstable_getServerSession } from 'next-auth'
-import { authOptions } from 'lib/services/auth/config'
+import { authOptions } from '@/lib/auth/config'
 import { User } from 'next-auth'
 
 export function withMethods(

@@ -94,7 +94,7 @@ const UserAvatar = (_props: Props) => {
                   bg="black"
                   _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                   as={Link}
-                  href="/apply/resume"
+                  href="/apply"
                 >
                   Continue Application
                 </MenuItem>
@@ -169,7 +169,7 @@ const UserAvatar = (_props: Props) => {
               _hover={{ textDecoration: 'none' }}
               onClick={(e) => {
                 e.preventDefault()
-                signIn(null, { callbackUrl: '/apply/resume' })
+                signIn()
               }}
             >
               members
@@ -182,7 +182,7 @@ const UserAvatar = (_props: Props) => {
                 colorScheme={'accent'}
                 onClick={(e) => {
                   e.preventDefault()
-                  signIn(null, { callbackUrl: '/apply/resume' })
+                  signIn(null, { callbackUrl: '/apply' })
                 }}
               >
                 apply

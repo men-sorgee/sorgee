@@ -1,6 +1,12 @@
+import { UserStatusType } from 'lib/models'
 import { Block } from 'editorjs-blocks-react-renderer'
 import { ProviderType } from 'next-auth/providers'
-import { NotificationStatus } from './users'
+import {
+  ApplicationStatusType,
+  ContactPreferenceType,
+  NotificationStatusType,
+  UserType,
+} from './users'
 
 export type Event = {
   id: string
@@ -69,7 +75,7 @@ export type UserNotification = {
   id: number
   notification_id?: string | Notification
   user_id?: string | User
-  status: NotificationStatus
+  status: NotificationStatusType
 }
 
 export type Page = {
@@ -95,13 +101,18 @@ export type Page = {
 
 export type Promo = {
   id: number
+  name: string
+  description: string
   user_created?: string | DirectusUser
   date_created?: string
   user_updated?: string | DirectusUser
   date_updated?: string
   code: string
   expires?: string
-  override?: unknown
+  override?: {
+    site?: Partial<Site>
+  }
+  vouching_user?: string | User
 }
 
 export type PageContent = {
@@ -187,17 +198,17 @@ export type UserRelationship = {
 export type User = {
   id: string
   presence?: string
-  status: string
+  status: string | UserStatusType
   date_created?: string
   date_updated?: string
   first_name: string
   last_name?: string
-  user_type: string
+  user_type: string | UserType
   phone?: string
   phone_verified?: boolean
   email?: string
   email_verified?: boolean
-  contact_preference: string
+  contact_preference: string | ContactPreferenceType
   weight?: number
   cock_length?: number
   build?: string
@@ -244,7 +255,7 @@ export type User = {
   last_tested?: string
   vaccinations?: unknown
   approved_by?: string | DirectusUser
-  application_status: string
+  application_status: string | ApplicationStatusType
   in_sendgrid?: boolean
   picture?: string | DirectusFile
   video_consent?: boolean
@@ -252,26 +263,20 @@ export type User = {
   photo_denial_reason?: string
   tags?: string[]
   location?: string
-  can_host?: boolean
+  state: string
   events: string | EventUser[]
-  administrative: string
-  information: string
-  notifications: string | UserNotification[]
-  audit_logs: string
-  preferences: string
   my_files: string | UserPhoto[]
   email_events: string | UserEmailEvent[]
   images: string | UserFile[]
   users: string | UserRelationship[]
-  my_sex: string
-  their_sex: string
   accounts: string | UserAccount[]
   show_profile: boolean
   show_interests: boolean
   show_health: boolean
   event_invites: boolean
-  can_host_events: string[]
-  state: string
+  can_host?: boolean
+  can_host_events: string[] | ('sex' | 'social' | 'individual')[]
+  promo: number | Promo
 }
 
 export type UserFile = {

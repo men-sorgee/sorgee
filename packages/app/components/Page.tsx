@@ -38,6 +38,7 @@ const Page = ({
 
   const routeStart = useCallback(
     (url: string) => {
+      console.log('route start', url, router.asPath)
       const incoming = url.split('?')[0]
       const path = router.asPath.split('?')[0]
       if (incoming !== path) setRouteChanging(true)

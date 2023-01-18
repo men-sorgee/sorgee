@@ -48,8 +48,8 @@
   "typescript.tsdk": "./node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": false,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnPaste": false, // required
-  "editor.formatOnType": false, // required
+  "editor.formatOnPaste": true, // required
+  "editor.formatOnType": true, // required
   "editor.formatOnSaveMode": "file", // required to format on save
   "files.autoSave": "onFocusChange", // optional but recommended]
   "editor.suggest.filterGraceful": true,

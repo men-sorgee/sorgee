@@ -1,3 +1,4 @@
+import { Profile } from 'lib/models/users'
 import { updateUser } from 'lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { AgreementData, ApiResponse, ApplicationStatus, MemberLevel } from 'lib/models'
@@ -12,9 +13,9 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     const applicant = await withApplicant(req, res)
     const appStatus = ApplicationStatus[applicant.application_status]
 
-    if (appStatus == ApplicationStatus['approved']) return res.status(200).end()
+    if (applicant.application_status == 'approved') return res.status(200).end()
 
-    if (applicant && appStatus == ApplicationStatus['agreement'] && agree) {
+    if (applicant && appStatus == 'agreement' && agree) {
       sendNotificationEmail(
         applicant.email,
         applicant.nickname || applicant.first_name + ' ' + applicant.last_name,
@@ -26,12 +27,12 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
         }
       )
 
-      await updateUser(applicant.id, {
-        application_status: ApplicationStatus[ApplicationStatus.approved],
-        user_type: MemberLevel[MemberLevel.member],
+      const user = await updateUser(applicant.id, {
+        application_status: 'approved',
+        user_type: 'pledge',
       })
 
-      await updateSendGrid(applicant)
+      await updateSendGrid(user as Profile)
 
       return res.status(200).end()
     }

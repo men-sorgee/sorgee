@@ -1,4 +1,5 @@
-import { ApiResponse, ApplicationStatus } from 'lib/models'
+'use client'
+import { ApiResponse } from 'lib/models'
 
 export type HttpMethod = (string & 'GET') | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
 
@@ -59,3 +60,5 @@ export function pruneUndefined(obj: Record<string, any>) {
 export function getAssetUrl(assetId: string) {
   return `/api/asset/${assetId}`
 }
+
+export * from './fetchers'

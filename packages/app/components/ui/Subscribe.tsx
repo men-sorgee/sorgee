@@ -21,7 +21,7 @@ export default function SubscribeBox() {
   })
   const { handleSubmit, setError } = methods
   const onSubmit = async (data: SubscriptionData) => {
-    const [ok, response] = await postJSON('/api/member/subscribe', data)
+    const [ok, response] = await postJSON('/api/subscribe', data)
     if (ok) {
       setSubscribed(true)
     } else {

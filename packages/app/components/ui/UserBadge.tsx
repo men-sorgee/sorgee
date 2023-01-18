@@ -16,7 +16,7 @@ const UserBadge = ({ user_type = 'subscriber', size = 'md' }: Props) => {
   ]
   const levelValue = MemberLevel[user_type]
   const levelColor = colors[levelValue]
-  const levelName = (user_type == 'member' ? 'brother' : user_type).split('_').join(' ')
+  const levelName = (user_type == 'user' ? 'applicant' : user_type).split('_').join(' ')
   return (
     <Badge rounded="md" size={size} textTransform={'uppercase'} bg={levelColor} color="white">
       {levelName}

@@ -36,7 +36,17 @@ export type InviteLink = {
   link: string
 }
 
-export type NotificationStatus = 'new' | 'sent' | 'read' | 'deleted'
+export type NotificationStatusType = 'new' | 'sent' | 'read' | 'deleted'
+
+export type UserType =
+  | 'reject'
+  | 'subscriber'
+  | 'user'
+  | 'pledge'
+  | 'member'
+  | 'brother'
+  | 'big_brother'
+  | 'staff'
 
 export enum MemberLevel {
   reject = 0,
@@ -50,6 +60,14 @@ export enum MemberLevel {
   staff = 10,
 }
 
+export type ApplicationStatusType =
+  | 'apply'
+  | 'verify'
+  | 'review'
+  | 'agreement'
+  | 'approved'
+  | 'denied'
+
 export enum ApplicationStatus {
   apply = 0,
   verify = 1,
@@ -61,7 +79,7 @@ export enum ApplicationStatus {
 
 export type AppNotification = {
   id: number
-  status: NotificationStatus
+  status: string | NotificationStatusType
   link?: string
   subject?: string
   message?: string
@@ -71,16 +89,6 @@ export type AppNotification = {
 }
 
 export type UserStatusType = 'new' | 'active' | 'inactive' | 'stale' | 'deleted' | 'banned'
-
-export type UserType =
-  | 'reject'
-  | 'subscriber'
-  | 'user'
-  | 'pledge'
-  | 'member'
-  | 'brother'
-  | 'big_brother'
-  | 'staff'
 
 export type Profile = {
   id: string

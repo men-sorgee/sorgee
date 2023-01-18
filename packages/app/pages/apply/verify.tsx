@@ -104,7 +104,7 @@ function Form({ code, router, setCompleted }): JSX.Element {
         'image_name',
         `Verification: ${member.id.substring(0, 4)}-${member.id.substring(4, 8)}`
       )
-      const res = await fetch('/api/member/verify', {
+      const res = await fetch('/api/apply/verify', {
         method: 'POST',
         body: formData,
       })

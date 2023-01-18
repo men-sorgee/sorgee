@@ -96,7 +96,16 @@ function Header({ children, ...props }: Props) {
   ]
   return (
     <>
-      <Box {...props} as="header" color={'white'} bg={useColorModeValue('primary.800', 'black')}>
+      <Box
+        {...props}
+        as="header"
+        color={'white'}
+        position="sticky"
+        top={0}
+        zIndex={100}
+        shadow="xl"
+        bg={useColorModeValue('primary.800', 'black')}
+      >
         <HStack
           minH={'60px'}
           alignItems="center"
