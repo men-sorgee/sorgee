@@ -2,9 +2,8 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { postJSON, pruneUndefined } from 'lib/utils'
 import { useEffect, useState } from 'react'
 import { getFieldOptions } from 'lib/services/directus/server'
-import { useMember } from 'hooks/use-member'
 import { NextRouter, useRouter } from 'next/router'
-import { Applicant, FormOptions, Profile } from 'lib/models'
+import { Applicant, FormOptions, MemberLevel, Profile, Promo, UserInvite } from 'lib/models'
 import {
   FieldCheckbox,
   FieldInput,
@@ -39,8 +38,7 @@ import { useSession } from 'next-auth/react'
 import { useSite } from '../../hooks/use-site'
 
 export type PageProps = {
-  email?: string
-  invite?: string
+  invite?: UserInvite
   spectrumOptions: FormOptions
   relationshipOptions: FormOptions
   timeOfDayOptions: FormOptions
@@ -48,53 +46,62 @@ export type PageProps = {
   skinToneOptions: FormOptions
   page?: string
   setComplete: (complete: boolean) => void
-  applicant?: Applicant
   router: NextRouter
   member: Profile
   setFormError: (error: string) => void
-  promo?: string
+  promo?: Promo
 }
 
 export const getServerSideProps = async (context) => {
-  const { promo } = context.query
   const props: Partial<PageProps> = {
     spectrumOptions: await getFieldOptions('spectrum'),
     relationshipOptions: await getFieldOptions('relationship_status'),
     timeOfDayOptions: await getFieldOptions('event_availability'),
     positionsOptions: await getFieldOptions('my_positions'),
     skinToneOptions: await getFieldOptions('skin_tone'),
-    promo,
   }
   return { props }
 }
 
-function Apply(props: PageProps) {
+function Apply({ promo, invite, ...props }: PageProps) {
   const { data: session, status } = useSession()
+  const [user, setUser] = useState<Applicant>()
   const [formError, setFormError] = useState<string>()
-  const [loading] = useState(status !== 'loading')
+  const [loading, setLoading] = useState(true)
   const router = useRouter()
   const { site } = useSite()
 
   useEffect(() => {
-    if (!loading) {
-      if (status === 'unauthenticated') {
-        setFormError(`You must login before you can register.`)
-      } else if (props.email && session?.user?.email != props.email)
-        setFormError(
-          `You must login using the email address ${props.email} to use this invite. Please logout and try again.`
-        )
-      if (site && !props.invite && !props.applicant && site.invite_only) {
-        router.push('/limited')
-      }
-      //todo: no invites, mean NO apply - UNLESS there is a valid promo
+    if (status != 'loading') {
+      setLoading(false)
+      setUser(session?.user as Applicant)
     }
-  }, [loading, props.applicant, props.email, props.invite, router, session, site, status])
+    if (status === 'unauthenticated') {
+      setFormError(`You must login before you can register.`)
+    } else if (status === 'authenticated' && session?.user) {
+      const { email, user_type } = session.user
+      if (invite && invite.e && invite.e.toLowerCase() != email.toLowerCase()) {
+        setFormError(
+          `You must login using the email address ${invite.e} to use this invite, not ${email}. Please logout and try again.`
+        )
+      } else {
+        if (
+          site?.invite_only &&
+          MemberLevel[user_type] < MemberLevel['user'] &&
+          !invite &&
+          !promo
+        ) {
+          router.push('/limited')
+        }
+      }
+    }
+  }, [invite, loading, promo, user, router, session, site, status])
 
-  const intro = props.invite
+  const intro = invite
     ? `You've been invited to join our community! While your application is pre-approved, we still need to perform a few verification steps.`
     : 'To apply for membership, complete this application. A member of our team will review your application and contact you with next steps.'
 
-  const data = { ...props, setFormError }
+  const data: PageProps = { invite, promo, ...props, setFormError }
   return (
     <Page
       title="Registration"
@@ -115,16 +122,13 @@ function Apply(props: PageProps) {
             {formError}
           </Alert>
         )) ||
-          (session && <Form {...data} />)}
+          (session && <Form {...data} user={user} />)}
       </>
     </Page>
   )
 }
 
-function Form(props: PageProps) {
-  const { data: session } = useSession()
-  const { user } = session || {}
-  const { member: applicant } = useMember()
+function Form({ user, ...props }: PageProps & { user: Applicant }) {
   const router = useRouter()
   const {
     invite,
@@ -134,28 +138,29 @@ function Form(props: PageProps) {
     timeOfDayOptions,
     setFormError,
   } = props
-  const { name, email } = user!
+
   const methods = useForm({
     mode: 'onBlur',
     reValidateMode: 'onChange',
     defaultValues: {
-      nickname: applicant?.nickname || name,
-      first_name: applicant?.first_name || name?.split(' ')[0] || name,
-      last_name: applicant?.last_name || name?.split(' ')[1] || '',
-      email,
+      nickname: user?.nickname || user.first_name || '',
+      first_name: user?.first_name || '',
+      last_name: user?.last_name || '',
+      email: user?.email || '',
       email_verified: user?.email_verified || false,
-      phone: applicant?.phone || '',
-      biography: applicant?.biography || null,
-      needs_guidance: applicant?.needs_guidance || false,
-      spectrum: applicant?.spectrum || 'bisexual',
-      relationship_status: applicant?.relationship_status || 'single',
+      phone: user?.phone || '',
+      biography: user?.biography || null,
+      needs_guidance: user?.needs_guidance || false,
+      spectrum: user?.spectrum || 'bisexual',
+      relationship_status: user?.relationship_status || 'single',
       event_availability: [],
-      age: applicant?.age || null,
-      height_feet: applicant?.height?.toString().substring(0, 1),
-      height_inches: applicant?.height?.toString().substring(2),
-      weight: applicant?.weight || null,
-      skin_tone: applicant?.skin_tone || null,
-      my_positions: applicant?.my_positions || [],
+      birth_month: user?.birth_month || null,
+      birth_year: user?.birth_year || null,
+      height_feet: user?.height?.toString().substring(0, 1),
+      height_inches: user?.height?.toString().substring(2),
+      weight: user?.weight || null,
+      skin_tone: user?.skin_tone || null,
+      my_positions: user?.my_positions || [],
       invite,
     },
   })
@@ -180,7 +185,8 @@ function Form(props: PageProps) {
       setFormError('Something went wrong')
     }
   }
-
+  const minYear = new Date().getFullYear() - 100
+  const maxYear = new Date().getFullYear() - 21
   const required = { value: true, message: 'This field is required' }
   return (
     <>
@@ -238,37 +244,40 @@ function Form(props: PageProps) {
             placeholder="I am a bit shy, but love to get aggressive in bed."
           />
           <SimpleGrid spacing={4} columns={{ base: 1, sm: 2, md: 4 }}>
-            <GridItem colSpan={{ base: 1, sm: 2 }}>
-              <Stack direction={{ base: 'column', sm: 'row' }}>
-                <FieldNumber
-                  field="age"
-                  label="Age"
-                  help="Must be 21+ to apply. We verify ages at events."
-                  registerOptions={{
-                    required,
-                    min: {
-                      value: 21,
-                      message: 'Must be 21+ to apply.',
-                    },
-                  }}
-                />
-                <FieldWrapper field="weight" label="Weight">
-                  <InputGroup>
-                    <Input type="number" {...register('weight')} />
-                    <InputRightAddon mr={2}>#</InputRightAddon>
-                  </InputGroup>
-                </FieldWrapper>
+            <FieldNumber
+              field="birth_month"
+              label="Birth Month"
+              min={0}
+              max={12}
+              registerOptions={{
+                required: 'You must provide your month of birth',
+              }}
+            />
+            <FieldNumber
+              label="Birth Year"
+              field="birth_year"
+              min={minYear}
+              max={maxYear}
+              defaultValue={maxYear - 10}
+              registerOptions={{
+                required: 'You must provide your year of birth',
+              }}
+            />
+            <FieldWrapper field="weight" label="Weight">
+              <InputGroup>
+                <Input type="number" {...register('weight')} />
+                <InputRightAddon mr={2}>#</InputRightAddon>
+              </InputGroup>
+            </FieldWrapper>
 
-                <FieldWrapper field="height" label="Height">
-                  <InputGroup>
-                    <Input type="number" id="height_feet" {...register('height_feet')} />
-                    <InputRightAddon mr={2}>&apos;</InputRightAddon>
-                    <Input type="number" id="height_inches" {...register('height_inches')} />
-                    <InputRightAddon>&quot;</InputRightAddon>
-                  </InputGroup>
-                </FieldWrapper>
-              </Stack>
-            </GridItem>
+            <FieldWrapper field="height" label="Height">
+              <InputGroup>
+                <Input type="number" id="height_feet" {...register('height_feet')} />
+                <InputRightAddon mr={2}>&apos;</InputRightAddon>
+                <Input type="number" id="height_inches" {...register('height_inches')} />
+                <InputRightAddon>&quot;</InputRightAddon>
+              </InputGroup>
+            </FieldWrapper>
           </SimpleGrid>
           <SimpleGrid gap={4} py={4} columns={{ base: 1, md: 2 }}>
             <GridItem colSpan={2}>

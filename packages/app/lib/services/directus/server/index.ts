@@ -1,5 +1,5 @@
 import { Directus } from '@directus/sdk'
-import { DirectusTypes, User } from 'lib/models'
+import { DirectusTypes, Promo, User } from 'lib/models'
 
 const adminDb = new Directus<DirectusTypes>(process.env.ADMIN_URL)
 
@@ -7,6 +7,16 @@ export async function getAdminClient(): Promise<Directus<DirectusTypes>> {
   if (await adminDb.auth.token) return adminDb
   await adminDb.auth.static(process.env.ADMIN_TOKEN)
   return adminDb
+}
+
+export async function findPromo(promo: string): Promise<Promo | null> {
+  const adminClient = await getAdminClient()
+  const { data } = await adminClient.items('promos').readByQuery({
+    filter: {
+      code: { _eq: promo },
+    },
+  })
+  return data?.length ? (data[0] as Promo) : null
 }
 
 const cache: { [key: string]: any } = {}

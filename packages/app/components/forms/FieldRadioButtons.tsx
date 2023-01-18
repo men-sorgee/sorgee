@@ -51,6 +51,7 @@ function RadioButtonsField(props: Props) {
             className={classes}
             value={value}
             color="text"
+            mr={4}
           >
             {text}
           </Radio>

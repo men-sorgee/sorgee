@@ -37,8 +37,10 @@ type Props = {
 }
 
 function Form({ router, setCompleted }: Props) {
-  const methods = useForm<AgreementData>()
-  const { handleSubmit, setError } = methods
+  const methods = useForm<AgreementData>({
+    mode: 'onBlur',
+  })
+  const { handleSubmit, setError, watch } = methods
 
   async function onSubmit(data: AgreementData) {
     const [success, response] = await postJSON('/api/member/agree', data)
@@ -52,34 +54,37 @@ function Form({ router, setCompleted }: Props) {
       setError('agree', { message: 'Something went wrong' })
     }
   }
-
+  const agree = watch('agree')
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} style={{ maxWidth: 'xl', margin: '0 auto' }}>
-        <VStack alignItems="center" justifyItems="middle">
-          <Text fontSize="xl" maxWidth="50%">
-            Please read and agree to our{' '}
-            <a href="/terms" target="_blank" className="link">
-              {' '}
-              terms and conditions
-            </a>
-          </Text>
-          <FieldCheckbox
-            field="agree"
-            label="I agree to the terms and conditions"
-            maxWidth="fit-content"
-            registerOptions={{
-              required: {
-                value: true,
-                message: 'You must agree to the terms and conditions',
-              },
-            }}
-          />
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        style={{ maxWidth: 'xl', margin: '0 auto', textAlign: 'center' }}
+      >
+        <Text fontSize="xl">
+          Please read and agree to our{' '}
+          <a href="/terms" target="_blank" style={{ textDecoration: 'underline' }} className="link">
+            terms
+          </a>{' '}
+          and{' '}
+          <a href="/terms" target="_blank" style={{ textDecoration: 'underline' }} className="link">
+            privacy policy
+          </a>
+        </Text>
+        <FieldCheckbox
+          textAlign="center"
+          field="agree"
+          maxWidth="fit-content"
+          registerOptions={{
+            required: 'You must agree to the terms and conditions',
+          }}
+        >
+          I agree
+        </FieldCheckbox>
 
-          <Button colorScheme="primary" type="submit">
-            Agree & Continue
-          </Button>
-        </VStack>
+        <Button colorScheme="primary" type="submit" mt={8} disabled={agree != true}>
+          Agree & Continue
+        </Button>
       </form>
     </FormProvider>
   )

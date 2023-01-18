@@ -59,6 +59,7 @@ const authAdapter: Adapter = {
       const newUser = await createUser({
         email: user.email,
         email_verified: user.emailVerified != null,
+        nickname: user.name,
         first_name: user.name,
         picture: image,
       })
@@ -69,7 +70,7 @@ const authAdapter: Adapter = {
   },
   async getUser(id) {
     try {
-      //console.debug('getUser', id)
+      console.debug('getUser', id)
       const user = await getUser(id)
       return mapUser(user)
     } catch (e) {
@@ -78,7 +79,7 @@ const authAdapter: Adapter = {
   },
   async getUserByEmail(email) {
     try {
-      //console.debug('getUserByEmail', email)
+      console.debug('getUserByEmail', email)
       const user = await findUser<User>(email, '*.*')
       if (!user) return null
       return mapUser(user)
@@ -88,7 +89,7 @@ const authAdapter: Adapter = {
   },
   async getUserByAccount({ providerAccountId, provider }) {
     try {
-      //console.debug('getUserByAccount', providerAccountId, provider)
+      console.debug('getUserByAccount', providerAccountId, provider)
       const user = await findUserByAccount(provider, providerAccountId)
       if (!user) return null
       return mapUser(user)
@@ -98,7 +99,7 @@ const authAdapter: Adapter = {
   },
   async updateUser(user) {
     try {
-      //console.debug('updateUser', user)
+      console.debug('updateUser', user)
       const updatedUser = await updateUser(user.id, {
         email: user.email,
         email_verified: user.emailVerified != null,
@@ -111,7 +112,7 @@ const authAdapter: Adapter = {
   },
   async linkAccount(account) {
     try {
-      //console.debug('linkAccount', account)
+      console.debug('linkAccount', account)
 
       const {
         provider,
@@ -141,7 +142,7 @@ const authAdapter: Adapter = {
   },
   async unlinkAccount({ providerAccountId, provider }) {
     try {
-      //console.debug('unlinkAccount', providerAccountId, provider)
+      console.debug('unlinkAccount', providerAccountId, provider)
       await deleteAccount(provider, providerAccountId)
     } catch (e) {
       console.error(e.response?.body?.errors[0].message || e)
@@ -149,7 +150,7 @@ const authAdapter: Adapter = {
   },
   async createSession(sessionData) {
     try {
-      //console.debug('createSession', sessionData)
+      console.debug('createSession', sessionData)
       const session = await createSession({
         session_token: sessionData.sessionToken,
         user: sessionData.userId,
@@ -162,7 +163,7 @@ const authAdapter: Adapter = {
   },
   async getSessionAndUser(sessionToken) {
     try {
-      //console.debug('getSessionAndUser', sessionToken)
+      console.debug('getSessionAndUser', sessionToken)
       const session = await findSession(sessionToken)
       return {
         user: mapUser(session.user as User),
@@ -174,11 +175,11 @@ const authAdapter: Adapter = {
   },
   async updateSession(session) {
     try {
-      //console.debug('updateSession', session)
+      console.debug('updateSession', session)
       const updatedSession = await updateSession({
         session_token: session.sessionToken,
         expires: session.expires.toISOString(),
-      } as any)
+      })
       return mapSession(updatedSession as UserSession)
     } catch (e) {
       console.error(e.response?.body?.errors[0].message || e)
@@ -186,7 +187,7 @@ const authAdapter: Adapter = {
   },
   async deleteSession(sessionToken) {
     try {
-      //console.debug('deleteSession', sessionToken)
+      console.debug('deleteSession', sessionToken)
       await deleteSession(sessionToken)
     } catch (e) {
       console.error(e.response?.body?.errors[0].message || e)
@@ -206,7 +207,7 @@ const authAdapter: Adapter = {
   },
   async useVerificationToken({ identifier, token }) {
     try {
-      //console.debug('useVerificationToken', identifier, token)
+      console.debug('useVerificationToken', identifier, token)
       const verificationToken = await findVerificationToken(identifier)
       if (!verificationToken) return null
       if (verificationToken.token !== token) return null

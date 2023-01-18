@@ -97,7 +97,6 @@ export default function InviteAdmin(_props: Props) {
       setWorking(true)
       if (picture) {
         const media = await fetch(picture!).then((res) => res.blob())
-        console.log(media)
         let formData = new FormData()
         formData.append('media', media)
         await fetch(`/api/member/${user.id}/image/picture?name=${user.email}-face`, {

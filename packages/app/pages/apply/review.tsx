@@ -52,6 +52,7 @@ function Review() {
       header={<ApplicationSteps status={'review'} />}
     >
       <Box>
+        <Heading as="h1">Watch your inbox!</Heading>
         <Heading as="h2" size="xl" pt={16}>
           One of our brothers will be in touch with you for final verification.{' '}
         </Heading>
@@ -89,7 +90,7 @@ function Review() {
               This is not an error. Actual humans are invoved! With interest spiking it can take a
               few days to follow up. Please have patience with us.
             </Alert>
-            <Text fontSize="2xl" maxW="2xl" mx="auto" w="full">
+            <Text fontSize="2xl">
               Your application is currently being reviewed by our team. You will receive an email
               with our decision within 7 days. <br />
               Thank you for your interest in our fraternity.

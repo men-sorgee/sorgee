@@ -1,9 +1,17 @@
 import { signIn, useSession } from 'next-auth/react'
 import { LinkButton } from './ui'
 import { Box, Heading, Text } from '@chakra-ui/react'
-
+import { useEffect } from 'react'
 const AccessDenied = () => {
   const { status } = useSession()
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      setTimeout(() => {
+        signIn()
+      }, 1000)
+    }
+  })
   return (
     <>
       <Heading as="h1">Please Authenticate</Heading>
@@ -16,9 +24,9 @@ const AccessDenied = () => {
           <LinkButton
             colorScheme="primary"
             href="/api/auth/signin"
-            onClick={(e) => {
+            onClick={async (e) => {
               e.preventDefault()
-              signIn()
+              await signIn()
             }}
           >
             Sign in

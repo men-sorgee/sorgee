@@ -124,7 +124,8 @@ export type Applicant = Profile & {
   spectrum: string
   relationship_status: string
   event_availability: User['event_availability']
-  age: number
+  birth_month: number
+  birth_year: number
   height: string
   weight: number
   skin_tone: User['skin_tone']
@@ -146,7 +147,8 @@ export const applicantFields: Array<keyof Applicant> = [
   'spectrum',
   'relationship_status',
   'event_availability',
-  'age',
+  'birth_month',
+  'birth_year',
   'height',
   'weight',
   'skin_tone',

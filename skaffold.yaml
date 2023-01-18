@@ -4,13 +4,21 @@ metadata:
   name: guys-n-heat
 build:
   artifacts:
-  - image: gcr.io/google.com/cloudsdktool/cloud-sdk
-    context: packages/admin
-    docker:
-      dockerfile: Dockerfile
+    - image: gcr.io/tbh-gnh/gnh-admin
+      context: packages/admin
+      docker:
+        dockerfile: Dockerfile
+    #- image: gcr.io/tbh-gnh/gnh-chat
+    #  context: packages/chat
+    #  docker:
+    #    dockerfile: Dockerfile
+    - image: gcr.io/tbh-gnh/gnh-app
+      context: packages/app
+      docker:
+        dockerfile: Dockerfile
 manifests:
   rawYaml:
-  - kube/app/certificate.yaml
-  - kube/app/configmap.yaml
-  - kube/app/deployment.yaml
-  - kube/app/ingress.yaml
+    - kube/app/certificate.yaml
+    - kube/app/configmap.yaml
+    - kube/app/deployment.yaml
+    - kube/app/ingress.yaml

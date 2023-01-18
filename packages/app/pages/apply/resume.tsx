@@ -29,7 +29,7 @@ export default function Resume({}) {
     }
     if (application_status) {
       setPage(getMemberPage(application_status))
-      router.push(page)
+      router.push(getMemberPage(application_status))
     }
   }, [application_status, status, page, router])
 

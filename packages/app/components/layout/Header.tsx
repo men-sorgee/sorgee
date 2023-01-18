@@ -137,15 +137,17 @@ function Header({ children, ...props }: Props) {
 const MobileNav = ({ navItems, ...props }: StackProps & { navItems: NavItem[] }) => {
   return (
     <Stack as="nav" color={'white'} __css={props} mb={4}>
-      {navItems?.map((navItem) => (
-        <MobileNavItem key={navItem.label} {...navItem} />
+      {navItems?.map((navItem, index) => (
+        <MobileNavItem key={navItem.label} {...navItem} childrenOpen={index == 0} />
       ))}
     </Stack>
   )
 }
 
-const MobileNavItem = ({ label, children, href }: NavItem) => {
-  const { isOpen, onToggle } = useDisclosure()
+const MobileNavItem = ({ label, children, href, childrenOpen = false }: NavItem) => {
+  const { isOpen, onToggle } = useDisclosure({
+    defaultIsOpen: childrenOpen,
+  })
 
   return (
     <Stack onClick={children && onToggle}>
@@ -212,6 +214,7 @@ interface NavItem {
   label: string
   subLabel?: string
   children?: Array<NavItem>
+  childrenOpen?: boolean
   href?: string
   reload?: boolean
 }

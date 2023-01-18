@@ -93,6 +93,17 @@ export type Page = {
   next_page?: Page
 }
 
+export type Promo = {
+  id: number
+  user_created?: string | DirectusUser
+  date_created?: string
+  user_updated?: string | DirectusUser
+  date_updated?: string
+  code: string
+  expires?: string
+  override?: unknown
+}
+
 export type PageContent = {
   id: string
   status: string
@@ -135,7 +146,7 @@ export type UserAccount = {
 
 export type UserSession = {
   id: string
-  expires?: number
+  expires?: string
   session_token?: string
   user?: string | User
 }
@@ -198,6 +209,8 @@ export type User = {
   photo?: string | DirectusFile
   notes?: string
   flags?: string[]
+  birth_month: number
+  birth_year: number
   age?: number
   mannerisms?: string
   height?: string
@@ -377,6 +390,7 @@ export type DirectusTypes = {
   notifications: Notification
   notifications_users: UserNotification
   page: Page
+  promos: Promo
   page_content: PageContent
   site: Site
   user_account: UserAccount

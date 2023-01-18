@@ -169,7 +169,7 @@ const UserAvatar = (_props: Props) => {
               _hover={{ textDecoration: 'none' }}
               onClick={(e) => {
                 e.preventDefault()
-                signIn(null, { callbackUrl: '/member/account' })
+                signIn(null, { callbackUrl: '/apply/resume' })
               }}
             >
               members
@@ -182,7 +182,7 @@ const UserAvatar = (_props: Props) => {
                 colorScheme={'accent'}
                 onClick={(e) => {
                   e.preventDefault()
-                  signIn(null, { callbackUrl: '/apply/resumse' })
+                  signIn(null, { callbackUrl: '/apply/resume' })
                 }}
               >
                 apply

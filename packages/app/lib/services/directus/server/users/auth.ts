@@ -40,13 +40,12 @@ export async function deleteAccount(provider: string, id: string) {
   return await adminClient.items('user_account').deleteOne(user?.id)
 }
 
-export async function createSession(session: UserSession) {
+export async function createSession(session: Omit<UserSession, 'id'>) {
   const adminClient = await getAdminClient()
   const { id } = await adminClient.items('user_session').createOne(session)
-  const newSession = adminClient.items('user_session').readOne(id, {
+  const newSession = await adminClient.items('user_session').readOne(id, {
     fields: ['*', 'user.*'],
   })
-  console.dir(newSession)
   return newSession
 }
 
@@ -61,7 +60,7 @@ export async function findSession(token: string): Promise<UserSession> {
   return sessions?.data?.length ? (sessions.data[0] as UserSession) : null
 }
 
-export async function updateSession(session: UserSession) {
+export async function updateSession(session: Omit<UserSession, 'id'>) {
   const adminClient = await getAdminClient()
   const existing = await findSession(session.session_token)
   if (!existing) return createSession(session)
@@ -74,9 +73,10 @@ export async function updateSession(session: UserSession) {
 }
 
 export async function deleteSession(token: string) {
+  console.log('deleteSession', token)
   const adminClient = await getAdminClient()
   const session = await findSession(token)
-  return await adminClient.items('user_session').deleteOne(session.id)
+  if (session) await adminClient.items('user_session').deleteOne(session.id)
 }
 
 export async function addVerificationToken(

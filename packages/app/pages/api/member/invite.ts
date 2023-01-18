@@ -24,12 +24,11 @@ async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     )
     await createUser({
       email,
-      user_type: 'subscriber',
+      user_type: 'user',
       status: 'new',
       vouched_by: member.id,
       notes: `Invited by ${member.first_name} ${member.last_name}`,
       application_status: 'apply',
-      in_sendgrid: true,
     })
 
     res.status(200).end()
