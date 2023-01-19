@@ -88,6 +88,8 @@ const Page = ({
       as="article"
       alignItems={['left', 'center']}
       justifyItems="center"
+      mx="auto"
+      maxW={['md', 'lg', 'xl', '2xl', '3xl']}
     >
       <Heading
         as="h1"

@@ -1,5 +1,6 @@
-import { ChakraTheme, extendTheme } from '@chakra-ui/react'
+import { ChakraTheme, extendTheme, StyleFunctionProps } from '@chakra-ui/react'
 import { default as defaultTheme } from '@chakra-ui/theme'
+import { mode } from '@chakra-ui/theme-tools'
 import { StepsStyleConfig } from 'chakra-ui-steps'
 import { radioAnatomy } from '@chakra-ui/anatomy'
 import { createMultiStyleConfigHelpers } from '@chakra-ui/react'
@@ -91,6 +92,11 @@ const custom: Partial<ChakraTheme> = {
         }
       },
     },
+    Heading: {
+      ...defaultTheme.components.Heading,
+      baseStyle: {},
+      variants: {},
+    },
     Input: {
       baseStyle: {
         field: {
@@ -136,7 +142,6 @@ const custom: Partial<ChakraTheme> = {
         fontWeight: '900',
         fontSpacing: '0.05em',
       },
-      variants: {},
     },
     body: {},
     mono: {},
@@ -160,8 +165,8 @@ const custom: Partial<ChakraTheme> = {
         _dark: 'green.300',
       },
       primary: {
-        default: 'primary.500',
-        _dark: 'primary.700',
+        default: 'primary.700',
+        _dark: 'primary.500',
       },
       secondary: {
         default: 'secondary.500',
@@ -170,92 +175,81 @@ const custom: Partial<ChakraTheme> = {
     },
   },
   styles: {
-    global: {
-      'html, body': {
-        fontFamily: 'body',
-        color: 'text',
-        bg: 'bg',
-      },
-      'header a:any-link': {
-        color: 'white',
-      },
-      'a:any-link': {
-        color: 'text',
-      },
-      'a:hover,a.active': {
-        color: 'accent.300',
-        _dark: {
+    global: (props: StyleFunctionProps) => {
+      return {
+        body: {
+          fontFamily: 'body',
+          color: 'text',
+          bg: 'bg',
+        },
+        header: {
+          a: {
+            color: 'gray.100',
+            fontWeight: 'bold',
+            _hover: {
+              color: 'white',
+            },
+          },
+        },
+        a: {
+          color: mode('primary.500', 'accent.300')(props),
+          _hover: {
+            color: mode('accent.500', 'accent.300')(props),
+          },
+        },
+        h1: {
+          fontSize: ['4xl', '5xl', '6xl'],
+          lineHeight: ['3rem', '4rem', '6rem'],
+          fontWeight: 'extrabold',
+          leading: 'tight',
+          bgGradient: 'linear(to-r, pink.500, blue.500)',
+          bgClip: 'text',
+          my: 2,
+          overflow: 'visible',
+        },
+        h2: {
+          fontSize: ['3xl', '4xl'],
+          lineHeight: ['1rem', '2rem'],
+          fontWeight: 'bold',
+          color: mode('primary.500', 'primary.300')(props),
+          //width: 'fit-content',
+          //mx: 'auto',
+          my: 3,
+        },
+        h3: {
+          fontSize: ['2xl', '3xl'],
+          fontWeight: 'extrabold',
+          color: mode('secondary.500', 'secondary.200')(props),
+        },
+        h4: {
+          fontSize: ['xl', '2xl'],
+          fontWeight: 'bold',
           color: 'accent.500',
         },
-      },
-      h1: {
-        fontSize: ['2xl', '4xl'],
-        lineHeight: ['2rem', '4rem', '6rem'],
-        fontWeight: 'extrabold',
-        bgGradient: 'linear(to-r, pink.500, blue.500)',
-        bgClip: 'text',
-
-        my: 2,
-        overflow: 'visible',
-      },
-      h2: {
-        fontSize: ['xl', '2xl'],
-        lineHeight: ['1rem', '2rem'],
-        fontWeight: 'bold',
-        color: 'primary.500',
-        width: 'fit-content',
-        mx: 'auto',
-        _dark: {
-          color: 'primary.300',
+        h5: {
+          fontSize: 'md',
+          fontWeight: 'semibold',
+          lineHeight: '110%',
+          color: mode('primary.400', 'primary.200')(props),
+          my: 1,
         },
-        my: 3,
-      },
-      h3: {
-        fontSize: ['lg', 'xl'],
-        fontWeight: 'extrabold',
-        color: 'secondary.500',
-
-        _dark: {
-          color: 'secondary.200',
+        h6: {
+          fontSize: 'md',
+          lineHeight: '110%',
+          color: mode('primary.400', 'primary.200')(props),
+          my: 1,
         },
-      },
-      h4: {
-        fontSize: 'lg',
-        fontWeight: 'bold',
-        color: 'accent.500',
-      },
-      h5: {
-        fontSize: 'lg',
-        fontWeight: 'semibold',
-        lineHeight: '110%',
-        my: 1,
-      },
-      ul: {
-        margin: '0 auto',
-        width: 'fit-content',
-        listStylePosition: 'inside',
-        padding: '0',
-      },
-      li: { textAlign: 'left' },
-      p: {
-        my: 2,
-      },
-
-      '.gradient': {
-        p: 4,
-        bgGradient: 'linear(to-br, primary.400, black)',
-        color: 'white',
-        borderRadius: '5px',
-      },
-      '.gradient a:any-link': {
-        color: 'white',
-        textDecoration: 'underline',
-      },
-      '.gradient input': {
-        _placeholder: {
-          color: 'gray.50',
+        ul: {
+          //margin: '0 auto',
+          //width: 'fit-content',
+          listStylePosition: 'inside',
+          padding: '0',
         },
-      },
+        li: { textAlign: 'left' },
+        p: {
+          my: 2,
+        },
+      }
     },
   },
 }

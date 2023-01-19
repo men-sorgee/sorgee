@@ -95,7 +95,6 @@ export type Page = {
   markdown?: string
   children: Page[]
   content: PageContent[]
-  next?: string
   next_page?: Page
   next_page_params?: string
 }

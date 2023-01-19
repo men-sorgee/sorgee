@@ -23,7 +23,7 @@ export const getStaticProps = async () => {
 
 export default function HomePage({ page }: Props) {
   const { setMeta } = useMeta()
-  const { title, description, content, markdown, image, next, next_page } = page
+  const { title, description, content, markdown, image, next_page, next_page_params } = page
 
   useEffect(() => {
     setMeta(title, description, image?.id)
@@ -50,7 +50,7 @@ export default function HomePage({ page }: Props) {
         {next_page && (
           <Center my={8}>
             <LinkButton colorScheme="accent" py={8} size="lg" fontSize="3xl" href={next_page.slug}>
-              Learn More
+              {next_page.title}
             </LinkButton>
           </Center>
         )}

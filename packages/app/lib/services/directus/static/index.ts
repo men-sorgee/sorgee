@@ -143,7 +143,6 @@ const all_pages = `
       status
       
     }
-    next
     next_page {
       id
       slug
