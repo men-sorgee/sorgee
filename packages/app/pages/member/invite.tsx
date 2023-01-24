@@ -3,14 +3,14 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
 import { copyTextToClipboard, postJSON } from 'lib/utils'
 import { MemberLevel, UserInvite } from 'lib/models'
-import { getFieldOptions } from 'lib/services/directus/server'
 import { FormOptions, InviteLink } from 'lib/models'
 import { HStack, Button, Box, Text, VStack, useColorModeValue, useToast } from '@chakra-ui/react'
 import { FieldInput, FieldSelect } from 'components/forms'
 import Page from 'components/Page'
 import { GetServerSideProps } from 'next'
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (_context) => {
+  const { getFieldOptions } = await import('lib/services/directus/server')
   const userTypeOptions = await getFieldOptions('user_type')
   const exclude = ['subscriber', 'user', 'reject', 'staff', 'big_brother']
   return {

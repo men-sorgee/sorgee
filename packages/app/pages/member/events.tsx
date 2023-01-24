@@ -1,7 +1,6 @@
 import { Button, Heading, Text, VStack, Flex, useToast, Center } from '@chakra-ui/react'
 import Page from 'components/Page'
 import { useMember } from 'hooks'
-import { listUserInvites } from 'lib/services/directus/server'
 import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -13,6 +12,8 @@ import { unstable_getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth/config'
 
 export async function getServerSideProps(context) {
+  const { listUserInvites } = await import('lib/services/directus/server')
+
   const session = await unstable_getServerSession(context.req, context.res, authOptions)
 
   if (!session) {

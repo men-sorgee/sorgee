@@ -1,7 +1,6 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
 import { FormOptions, User } from 'lib/models'
-import { getFieldOptions } from 'lib/services/directus/server'
 import { useMember } from 'hooks/use-member'
 import { useEffect, useState } from 'react'
 import {
@@ -75,6 +74,7 @@ export type PageProps = {
 }
 
 export async function getServerSideProps(_context: NextPageContext) {
+  const { getFieldOptions } = await import('lib/services/directus/server')
   const props: PageProps = {
     spectrumOptions: await getFieldOptions<User>('spectrum'),
     relationshipOptions: await getFieldOptions<User>('relationship_status'),
