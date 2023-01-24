@@ -134,6 +134,7 @@ export type Applicant = Profile & {
   event_availability: User['event_availability']
   birth_month: number
   birth_year: number
+  age: number
   height: string
   weight: number
   skin_tone: User['skin_tone']
@@ -157,6 +158,7 @@ export const applicantFields: Array<keyof Applicant> = [
   'event_availability',
   'birth_month',
   'birth_year',
+  'age',
   'height',
   'weight',
   'skin_tone',
@@ -194,6 +196,7 @@ export type Member = Applicant & {
   body_attributes?: string[]
   eye_color?: string
   mannerisms?: string
+  build?: string
   //-new
   cock_length?: number
   cock_girth?: string
@@ -226,6 +229,7 @@ export const memberFields: Array<keyof Member> = [
   'hair_color',
   'hair_style',
   'body_attributes',
+  'build',
   'eye_color',
   'ball_size',
   'ball_gravity',

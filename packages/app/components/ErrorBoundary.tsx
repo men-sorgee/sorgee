@@ -18,10 +18,10 @@ export class ErrorBoundary extends React.Component<{
   }
   componentDidCatch(error: any, errorInfo: any) {
     // You can use your own error logging service here
-    postJSON('/api/errors', { error, errorInfo })
-      .then((res) => {})
-      .catch((err) => {})
-    console.log({ error, errorInfo })
+    // postJSON('/api/errors', { error, errorInfo })
+    //   .then((res) => {})
+    //   .catch((err) => {})
+    // console.log({ error, errorInfo })
   }
   render() {
     // Check if the error is thrown
@@ -29,8 +29,7 @@ export class ErrorBoundary extends React.Component<{
       // You can render any custom fallback UI
       return (
         <section>
-          <h2>Oops, there was an error!</h2>
-          <p>This error was reported to the develop for proper punishment.</p>
+          <h2>Something went wrong!</h2>
           <Button type="button" onClick={() => this.setState({ hasError: false })}>
             Try again?
           </Button>

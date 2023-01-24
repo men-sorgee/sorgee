@@ -1,22 +1,24 @@
 import { HStack, Avatar, VStack, Heading, Text } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useMember } from 'hooks/use-member'
-import { UserBadge } from './UserBadge'
-import { getAssetUrl } from '../../lib/utils'
+import { UserBadge } from './'
+import { getAssetUrl } from 'lib/utils'
 interface Props {}
+
 export default function UserCard(_props: Props) {
   const [loaded, setLoaded] = useState(false)
-  const { member } = useMember()
+  const { member, loading } = useMember()
   const [pictureSrc, setPictureSrc] = useState<string | null>()
+
   useEffect(() => {
-    if (!loaded && member) {
+    if (!loaded && !loading && member) {
       const { picture } = member
       if (!pictureSrc && picture) setPictureSrc(getAssetUrl(picture))
       setLoaded(true)
     }
-  }, [member, pictureSrc, loaded])
+  }, [member, pictureSrc, loaded, loading])
 
-  //if (!member) return null
+  if (!member) return null
 
   return (
     <>

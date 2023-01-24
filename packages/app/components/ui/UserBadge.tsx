@@ -4,7 +4,9 @@ interface Props {
   user_type: string
   size?: string
 }
-const UserBadge = ({ user_type = 'subscriber', size = 'md' }: Props) => {
+
+export default function UserBadge({ user_type, size = 'md' }: Props) {
+  if (!user_type) return null
   const colors = [
     ['red.300', 'red.600'],
     ['orange.300', 'orange.600'],
@@ -18,10 +20,8 @@ const UserBadge = ({ user_type = 'subscriber', size = 'md' }: Props) => {
   const levelColor = colors[levelValue]
   const levelName = (user_type == 'user' ? 'applicant' : user_type).split('_').join(' ')
   return (
-    <Badge rounded="md" size={size} textTransform={'uppercase'} bg={levelColor} color="white">
+    <Badge rounded={size} size={size} textTransform={'uppercase'} bg={levelColor} color="white">
       {levelName}
     </Badge>
   )
 }
-
-export { UserBadge }

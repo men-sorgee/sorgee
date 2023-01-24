@@ -36,6 +36,7 @@ export default function EventAdmin({ event, error }: { event: EventDetail; error
   const { member, loading } = useMember()
   const [fees] = useState(event.cost * event.paid_count)
   const isStaff = member && MemberLevel[member.user_type] >= MemberLevel.staff
+  const isScheduled = event.status === 'scheduled'
   return (
     <Page title="Event" loading={loading}>
       {member && (
@@ -80,7 +81,10 @@ export default function EventAdmin({ event, error }: { event: EventDetail; error
               )}
             </HStack>
             <HStack spacing={4}>
-              {isStaff && (
+              <LinkButton colorScheme="secondary" href="/events" my={4}>
+                Back to Events
+              </LinkButton>
+              {isStaff && isScheduled && (
                 <LinkButton colorScheme="primary" href="/member/scan" my={4}>
                   Scan Invite
                 </LinkButton>

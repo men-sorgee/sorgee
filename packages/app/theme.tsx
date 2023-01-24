@@ -2,11 +2,6 @@ import { ChakraTheme, extendTheme, StyleFunctionProps } from '@chakra-ui/react'
 import { default as defaultTheme } from '@chakra-ui/theme'
 import { mode } from '@chakra-ui/theme-tools'
 import { StepsStyleConfig } from 'chakra-ui-steps'
-import { radioAnatomy } from '@chakra-ui/anatomy'
-import { createMultiStyleConfigHelpers } from '@chakra-ui/react'
-const { definePartsStyle, defineMultiStyleConfig } = createMultiStyleConfigHelpers(
-  radioAnatomy.keys
-)
 
 export const brand = {
   colors: {
@@ -163,6 +158,10 @@ const custom: Partial<ChakraTheme> = {
       success: {
         default: 'green.200',
         _dark: 'green.300',
+      },
+      info: {
+        default: 'primary.700',
+        _dark: 'primary.500',
       },
       primary: {
         default: 'primary.700',
