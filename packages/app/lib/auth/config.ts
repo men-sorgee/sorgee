@@ -35,32 +35,27 @@ export const authOptions: AuthOptions = {
   },
 
   callbacks: {
-    async signIn(props) {
-      return true
-      //console.debug('callback:signIn')
-      //console.dir(props)
-      //const { user, email, profile, account } = props
-      //if (email?.verificationRequest) {
-      //  let found = (await getUser(user.id)) || (await findUser(account.userId))
-      //  return found != null
-      //}
-      //if (profile?.email) {
-      //  let user = await findUser(profile.email)
-      //  return user && allowedStatuses.includes(user.status as UserStatusType)
-      //}
-      //return false
-      //if (!user && account) {
-      //  user = await findUserByAccount(account.provider, account.providerAccountId)
-      //}
-      //
-      //if (user && allowedStatuses.includes(user.status as UserStatusType)) {
-      //  //let path = '/apply/resume'
-      //  if (user.status === 'active' && user.application_status == 'approved') {
-      //    //path = '/member/account'
-      //  }
-      //  return true
-      //}
-      //return user != null
+    async signIn({ user, email, profile, account }) {
+      //return true
+      console.debug('callback:signIn')
+
+      if (email?.verificationRequest) {
+        let found = (await getUser(user.id)) || (await findUser(account.userId))
+        return found != null
+      }
+      if (user?.id) {
+        let found = await getUser(user.id)
+        return found != null
+      }
+      if (profile?.email) {
+        let user = await findUser(profile.email)
+        return user && allowedStatuses.includes(user.status as UserStatusType)
+      }
+      if (account?.providerAccountId) {
+        let user = await findUserByAccount(account.provider, account.providerAccountId)
+        return user && allowedStatuses.includes(user.status as UserStatusType)
+      }
+      return false
     },
     async session({ session, user }) {
       console.debug('callback:session')
@@ -100,31 +95,31 @@ export const authOptions: AuthOptions = {
       clientSecret: google.clientSecret,
       allowDangerousEmailAccountLinking: true,
     }),
-    //DiscordProvider({
-    //  clientId: discord.clientId,
-    //  clientSecret: discord.clientSecret,
-    //  allowDangerousEmailAccountLinking: true,
-    //}),
-    //TwitterLegacy({
-    //  id: 'twitter',
-    //  name: 'Twitter',
-    //  clientId: twitter.clientId,
-    //  clientSecret: twitter.clientSecret,
-    //  allowDangerousEmailAccountLinking: true,
-    //}),
-    //MicrosoftProvider({
-    //  name: 'Microsoft',
-    //  id: 'microsoft',
-    //  clientId: microsoft.clientId,
-    //  clientSecret: microsoft.clientSecret,
-    //  allowDangerousEmailAccountLinking: true,
-    //}),
-    //YahooProvider({
-    //  id: 'yahoo',
-    //  clientId: yahoo.clientId,
-    //  clientSecret: yahoo.clientSecret,
-    //  allowDangerousEmailAccountLinking: true,
-    //}),
+    DiscordProvider({
+      clientId: discord.clientId,
+      clientSecret: discord.clientSecret,
+      allowDangerousEmailAccountLinking: true,
+    }),
+    TwitterLegacy({
+      id: 'twitter',
+      name: 'Twitter',
+      clientId: twitter.clientId,
+      clientSecret: twitter.clientSecret,
+      allowDangerousEmailAccountLinking: true,
+    }),
+    MicrosoftProvider({
+      name: 'Microsoft',
+      id: 'microsoft',
+      clientId: microsoft.clientId,
+      clientSecret: microsoft.clientSecret,
+      allowDangerousEmailAccountLinking: true,
+    }),
+    YahooProvider({
+      id: 'yahoo',
+      clientId: yahoo.clientId,
+      clientSecret: yahoo.clientSecret,
+      allowDangerousEmailAccountLinking: true,
+    }),
     EmailProvider({
       maxAge: 24 * 60 * 60 * 2, // 24 hours
       async sendVerificationRequest({ identifier: email, url }) {
