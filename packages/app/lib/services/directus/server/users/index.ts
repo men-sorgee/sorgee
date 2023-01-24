@@ -130,5 +130,5 @@ export async function listUsersByLevel<T = Member>(
 }
 
 export * from './auth'
-export * from './events'
+export * from './invites'
 export * from './notifications'

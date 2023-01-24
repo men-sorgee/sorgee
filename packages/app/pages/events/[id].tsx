@@ -14,7 +14,8 @@ type Props = {
 export async function getServerSideProps(
   context: NextPageContext
 ): Promise<GetServerSidePropsResult<Props>> {
-  const { getEvent, getUser } = await import('lib/services/directus/server/users')
+  const { getEvent } = await import('lib/services/directus/server/events')
+  const { getUser } = await import('lib/services/directus/server/users')
   const { id, user_id, error } = context.query
 
   let user = null
@@ -33,9 +34,7 @@ export async function getServerSideProps(
 
 export default function EventAdmin({ event, error }: { event: EventDetail; error: string }) {
   const { member, loading } = useMember()
-  const [fees] = useState(event.cost * event.attended_count)
-  // todo: move to client side call
-  // todo: add event metrics (invites, attendees, etc)
+  const [fees] = useState(event.cost * event.paid_count)
   const isStaff = member && MemberLevel[member.user_type] >= MemberLevel.staff
   return (
     <Page title="Event" loading={loading}>
@@ -68,6 +67,10 @@ export default function EventAdmin({ event, error }: { event: EventDetail; error
                   <Stat>
                     <StatLabel>Attended</StatLabel>
                     <StatNumber>{event.attended_count}</StatNumber>
+                  </Stat>
+                  <Stat>
+                    <StatLabel>Paid</StatLabel>
+                    <StatNumber>{event.paid_count}</StatNumber>
                   </Stat>
                   <Stat>
                     <StatLabel>Collected</StatLabel>

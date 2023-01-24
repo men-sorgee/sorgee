@@ -38,7 +38,7 @@ export async function getServerSideProps(
       },
     }
   }
-  const { listUserInvites } = await import('lib/services/directus/server/users')
+  const { listInvites: listUserInvites } = await import('lib/services/directus/server/users')
   const invites = await listUserInvites(session.user.id)
 
   return {

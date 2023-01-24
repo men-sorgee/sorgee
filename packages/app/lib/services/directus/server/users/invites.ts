@@ -22,7 +22,7 @@ export async function findInvite(eventId: string, userId: string): Promise<Event
   return query.data[0] as EventUser
 }
 
-export async function listUserInvites(user_id: string): Promise<Invite[]> {
+export async function listInvites(user_id: string): Promise<Invite[]> {
   const client = await getAdminClient()
   const invites = await client.items('events_users').readByQuery({
     filter: {
@@ -71,20 +71,4 @@ export async function updateInvite(
   await client.items('events_users').updateOne(inviteId, invite as any)
 
   return invite
-}
-
-export async function getEvent(id: string): Promise<EventDetail> {
-  const client = await getAdminClient()
-  const event: Event = await client.items('events').readOne(id, { fields: ['*', 'users.*' as any] })
-  const { users: eventUsers, ...eventData } = event
-  const users = (eventUsers as EventUser[]) || []
-  return {
-    ...eventData,
-    users,
-    invited_count: users.length,
-    confirmed_count: users.filter((u) => u.rsvp === 'confirmed').length,
-    maybe_count: users.filter((u) => u.rsvp === 'maybe').length,
-    attended_count: users.filter((u) => u.attended).length,
-    paid_count: users.filter((u) => u.paid).length,
-  }
 }
