@@ -20,7 +20,9 @@ export type Event = {
   location?: string | Location
   description?: string
   users: string | EventUser[]
+  cost: number
 }
+
 export type UserFields = (string | keyof User)[] | '*' | '*.*' | any
 
 export type EventUser = {

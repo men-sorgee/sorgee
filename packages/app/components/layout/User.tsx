@@ -101,6 +101,15 @@ const UserAvatar = (_props: Props) => {
               )}
               {isMember && (
                 <>
+                  <MenuItem
+                    icon={<CogIcon color={'white'} width={'1.5rem'} />}
+                    bg="black"
+                    _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                    as={Link}
+                    href="/member/account"
+                  >
+                    Account / Profile
+                  </MenuItem>
                   <Notifications setNotificationBadge={setNotificationBadge} />
                   <MenuItem
                     icon={<CalendarIcon color={'white'} width={'1.5rem'} />}
@@ -109,18 +118,8 @@ const UserAvatar = (_props: Props) => {
                     as={Link}
                     href="/member/events"
                   >
-                    Events
+                    Event Invites
                   </MenuItem>
-                  <MenuItem
-                    icon={<CogIcon color={'white'} width={'1.5rem'} />}
-                    bg="black"
-                    _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                    as={Link}
-                    href="/member/account"
-                  >
-                    Account
-                  </MenuItem>
-
                   <MenuItem
                     icon={<UserGroupIcon color={'white'} width={'1.5rem'} />}
                     bg="black"
@@ -128,7 +127,7 @@ const UserAvatar = (_props: Props) => {
                     as={Link}
                     href="/member/invite"
                   >
-                    Invite
+                    Invite Friend
                   </MenuItem>
                   {member.user_type == MemberLevel[MemberLevel.staff] && (
                     <MenuItem

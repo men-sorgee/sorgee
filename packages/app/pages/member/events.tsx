@@ -1,4 +1,14 @@
-import { Button, Heading, Text, VStack, Flex, useToast, Center } from '@chakra-ui/react'
+import {
+  Button,
+  Heading,
+  Text,
+  VStack,
+  Flex,
+  useToast,
+  Center,
+  AlertIcon,
+  Alert,
+} from '@chakra-ui/react'
 import Page from 'components/Page'
 import { useMember } from 'hooks'
 import { useCallback, useEffect, useState } from 'react'
@@ -10,11 +20,17 @@ import { Invite, Member, MemberLevel } from 'lib/models'
 import EventCard from 'components/ui/EventCard'
 import { unstable_getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth/config'
+import { NextPageContext, GetServerSidePropsResult } from 'next'
 
-export async function getServerSideProps(context) {
-  const { listUserInvites } = await import('lib/services/directus/server')
-
-  const session = await unstable_getServerSession(context.req, context.res, authOptions)
+type Props = {
+  invites: Invite[]
+}
+export async function getServerSideProps(
+  context: NextPageContext
+): Promise<GetServerSidePropsResult<Props>> {
+  const { listUserInvites } = await import('lib/services/directus/server/users')
+  const { req, res } = context
+  const session = await unstable_getServerSession(req as any, res, authOptions)
 
   if (!session) {
     return {
@@ -33,7 +49,7 @@ export async function getServerSideProps(context) {
   }
 }
 
-function EventPage({ invites }: { invites: Invite[] }) {
+function EventPage({ invites }: Props) {
   const [allowed, setAllowed] = useState(false)
   const { member, loading, level } = useMember()
 
@@ -46,19 +62,31 @@ function EventPage({ invites }: { invites: Invite[] }) {
   return (
     <Page
       loading={loading}
-      title="Upcoming Events"
-      description="Upcoming events"
+      title="Event Invitations"
+      description="Upcoming event invitations."
       requireAuth={true}
     >
       {allowed ? (
-        <Events {...{ invites, member }} />
-      ) : (
         <>
-          <Heading>No Events</Heading>
+          <Text>
+            Please only RSVP to events you are sure you can attend! We have to make sure that we
+            have enough space for everyone who wants to attend. Hosts also count on confirmed
+            attendees to help cover the cost of the event.
+          </Text>
+          <Text>
+            If you confirm attendance to an event and then do not show up, you may be removed from
+            future invite lists. If you stop getting invites and think this might have happened, you
+            can contact the event organizers to appeal your removal.
+          </Text>
+          <Events {...{ invites, member }} />
+        </>
+      ) : (
+        <Flex direction="column">
+          <Heading>No Invites</Heading>
           <Text>
             Please complete your <Link href="/apply">membership application</Link>.
           </Text>
-        </>
+        </Flex>
       )}
     </Page>
   )
@@ -74,17 +102,53 @@ type InviteRSVP = {
 function Events({ invites, member }: { invites: Invite[]; member: Member }) {
   if (invites?.length === 0) {
     return (
-      <Center>
-        <Heading>No Events</Heading>
-        <Text>Check back later for upcoming events.</Text>
-      </Center>
+      <Flex direction="column">
+        <Heading>No Invites</Heading>
+        <Text>
+          Check back later for upcoming events. If you never see invitations, make sure your account
+          is set to recieve invites and that you never no-show to an event.
+        </Text>
+      </Flex>
     )
   }
+  const upcoming = invites?.filter((i) => i.status == 'scheduled')
+  const past = invites?.filter((i) => i.status !== 'scheduled')
   return (
     <>
       {member &&
-        invites?.map((invite) => <EventInfo key={invite.id} invite={invite} member={member} />)}
+        upcoming?.map((invite) => <EventInfo key={invite.id} invite={invite} member={member} />)}
+
+      {past && past.length > 0 && <h2>Past Invites</h2>}
+      {past?.map((invite) => (
+        <PastEventInfo key={invite.id} invite={invite} />
+      ))}
     </>
+  )
+}
+
+function PastEventInfo({ invite }: { invite: Invite }) {
+  const date = new Date(invite.datetime)
+  return (
+    <Flex direction="column" justify="start" align="left" gap={4} w="full" mb={8}>
+      <h3>
+        {invite.name} - {date.toLocaleDateString()}
+      </h3>
+      <h5>
+        RSVP: {invite.rsvp.toUpperCase()} | {invite.attended ? 'You attended!' : 'Did not attend'}
+      </h5>
+      {!invite.attended && invite.rsvp == 'confirmed' && (
+        <Alert status="warning">
+          <AlertIcon />
+          You did not show up, despite being confirmed.
+        </Alert>
+      )}
+      {invite.attended && invite.rsvp == 'invited' && (
+        <Alert status="warning">
+          <AlertIcon />
+          You showed up, but did not RSVP.
+        </Alert>
+      )}
+    </Flex>
   )
 }
 
@@ -152,50 +216,34 @@ function EventInfo({ invite, member }: { invite: Invite; member: Member }) {
               onSubmit={methods.handleSubmit(respond)}
               style={{ display: 'contents', width: 'full' }}
             >
-              {invite.status == 'scheduled' && (
-                <Flex
-                  direction="column"
-                  justifyItems="center"
-                  alignItems="center"
+              <Flex
+                direction="column"
+                justifyItems="center"
+                alignItems="center"
+                mx={'auto'}
+                width={['100%', '50%']}
+              >
+                <Heading mx={'auto'} maxWidth={{ base: '100%', md: '75%' }} color="text">
+                  You are {rsvp}!
+                </Heading>
+                <Text mx={'auto'} maxWidth={{ base: '100%', md: '75%' }} color="text" size="sm">
+                  {message}
+                </Text>
+                <input type="hidden" {...methods.register('event_id')} />
+                <input type="hidden" {...methods.register('user_id')} />
+                <FieldRadioButtons
+                  field="rsvp"
+                  formOptions={responseOptions}
+                  registerOptions={{
+                    required: true,
+                  }}
                   mx={'auto'}
-                  width={['100%', '50%']}
-                >
-                  <Heading mx={'auto'} maxWidth={{ base: '100%', md: '75%' }} color="text">
-                    You are {rsvp}!
-                  </Heading>
-                  <Text mx={'auto'} maxWidth={{ base: '100%', md: '75%' }} color="text" size="sm">
-                    {message}
-                  </Text>
-                  <input type="hidden" {...methods.register('event_id')} />
-                  <input type="hidden" {...methods.register('user_id')} />
-                  <FieldRadioButtons
-                    field="rsvp"
-                    formOptions={responseOptions}
-                    registerOptions={{
-                      required: true,
-                    }}
-                    mx={'auto'}
-                  />
+                />
 
-                  <Button colorScheme={'primary'} type="submit" disabled={working}>
-                    Update RSVP
-                  </Button>
-                </Flex>
-              )}
-              {invite.status == 'occurred' && invite.attended && (
-                <VStack justify="center" align="center" spacing={4}>
-                  <Heading as="h4" py={2} size={'lg'}>
-                    You attended.
-                  </Heading>
-                  <Text>Can we get some feedback?</Text>
-                  <input type="hidden" {...methods.register('event_id')} />
-                  <input type="hidden" {...methods.register('user_id')} />
-
-                  <Button color={'primary'} type="submit">
-                    Update RSVP
-                  </Button>
-                </VStack>
-              )}
+                <Button colorScheme={'primary'} type="submit" disabled={working}>
+                  Update RSVP
+                </Button>
+              </Flex>
             </form>
           </FormProvider>
         </>

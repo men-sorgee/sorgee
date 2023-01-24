@@ -27,6 +27,7 @@ const Notifications = ({ setNotificationBadge }: Props) => {
     setNotificationBadge(hasNewNotifications)
   }, [hasNewNotifications, notifications, setNotificationBadge])
 
+  if (!notifications || notifications.length == 0) return null
   return (
     <>
       <MenuItem

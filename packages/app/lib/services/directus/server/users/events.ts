@@ -1,5 +1,5 @@
 import { getAdminClient } from '..'
-import { Invite, InviteRSVPType, EventUser } from 'lib/models'
+import { Invite, InviteRSVPType, EventUser, Event, EventDetail } from 'lib/models'
 
 export async function listUpcomingEvents() {
   const client = await getAdminClient()
@@ -34,18 +34,14 @@ export async function findInvite(eventId: string, userId: string): Promise<Event
 
 export async function listUserInvites(user_id: string): Promise<Invite[]> {
   const client = await getAdminClient()
-  const events = await listUpcomingEvents()
   const invites = await client.items('events_users').readByQuery({
     filter: {
       users_id: { _eq: user_id },
-      events_id: {
-        status: { _eq: 'scheduled' },
-      },
     },
+    fields: ['*', 'events_id.*' as any],
   })
   return (invites.data?.map((i: any) => {
-    let event = events.find((e) => e.id === i.events_id)
-    if (!event) return null
+    const event = i.events_id
     return {
       id: event.id,
       name: event.name!,
@@ -87,8 +83,18 @@ export async function updateInvite(
   return invite
 }
 
-export async function getEvent(id: string) {
+export async function getEvent(id: string): Promise<EventDetail> {
   const client = await getAdminClient()
-  const event = await client.items('events').readOne(id)
-  return event
+  const event: Event = await client.items('events').readOne(id, { fields: ['*', 'users.*' as any] })
+  const { users: eventUsers, ...eventData } = event
+  const users = (eventUsers as EventUser[]) || []
+  return {
+    ...eventData,
+    users,
+    invited_count: users.length,
+    confirmed_count: users.filter((u) => u.rsvp === 'confirmed').length,
+    maybe_count: users.filter((u) => u.rsvp === 'maybe').length,
+    attended_count: users.filter((u) => u.attended).length,
+    paid_count: users.filter((u) => u.paid).length,
+  }
 }

@@ -1,11 +1,21 @@
-import { Alert, HStack, Flex, AlertIcon } from '@chakra-ui/react'
+import {
+  Alert,
+  HStack,
+  Flex,
+  AlertIcon,
+  Stat,
+  StatHelpText,
+  StatLabel,
+  StatNumber,
+} from '@chakra-ui/react'
 import { EventCard, LinkButton } from 'components/ui'
-import { MemberLevel, Event, User } from 'lib/models'
+import { MemberLevel, Event, User, EventDetail } from 'lib/models'
 import { GetServerSidePropsResult, NextPageContext } from 'next'
 import { useMember } from 'hooks/use-member'
 import Page from 'components/Page'
+import { useState } from 'react'
 type Props = {
-  event: Event
+  event: EventDetail
   user?: User
   error?: string
 }
@@ -17,7 +27,7 @@ export async function getServerSideProps(
   const { event_id, user_id, error } = context.query
 
   let user = null
-  const event = (await getEvent(event_id as string)) as Event
+  const event = (await getEvent(event_id as string)) as EventDetail
 
   if (event && user_id) user = await getUser(user_id as string)
 
@@ -30,10 +40,12 @@ export async function getServerSideProps(
   return { props: { event, user } }
 }
 
-export default function EventAdmin({ event, error }: { event: Event; error: string }) {
+export default function EventAdmin({ event, error }: { event: EventDetail; error: string }) {
   const { member, loading } = useMember()
+  const [fees] = useState(event.cost * event.attended_count)
   // todo: move to client side call
   // todo: add event metrics (invites, attendees, etc)
+  const isStaff = member && MemberLevel[member.user_type] >= MemberLevel.staff
   return (
     <Page title="Event" loading={loading}>
       {member && (
@@ -46,12 +58,39 @@ export default function EventAdmin({ event, error }: { event: Event; error: stri
               </Alert>
             )}
             <HStack spacing={4}>
-              <LinkButton colorScheme="primary" href="/member/scan" my={4}>
-                Scan Another
-              </LinkButton>
-              <LinkButton colorScheme="gray" href={'/event/' + event.id} my={4}>
-                Return to Event
-              </LinkButton>
+              {isStaff && (
+                <Stat>
+                  <StatLabel>Invited</StatLabel>
+                  <StatNumber>{event.invited_count}</StatNumber>
+                </Stat>
+              )}
+              <Stat>
+                <StatLabel>Confirmed</StatLabel>
+                <StatNumber>{event.confirmed_count}</StatNumber>
+              </Stat>
+              <Stat>
+                <StatLabel>Maybe</StatLabel>
+                <StatNumber>{event.maybe_count}</StatNumber>
+              </Stat>
+              {isStaff && (
+                <>
+                  <Stat>
+                    <StatLabel>Attended</StatLabel>
+                    <StatNumber>{event.attended_count}</StatNumber>
+                  </Stat>
+                  <Stat>
+                    <StatLabel>Collected</StatLabel>
+                    <StatNumber>${fees}</StatNumber>
+                  </Stat>
+                </>
+              )}
+            </HStack>
+            <HStack spacing={4}>
+              {isStaff && (
+                <LinkButton colorScheme="primary" href="/member/scan" my={4}>
+                  Scan Invite
+                </LinkButton>
+              )}
             </HStack>
           </Flex>
         </EventCard>
