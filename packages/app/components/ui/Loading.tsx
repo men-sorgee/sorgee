@@ -14,15 +14,8 @@ const Loading = ({
 }: Props) => {
   return (
     <>
-      <Square centerContent={centerContent}>
-        <Spinner
-          maxW="20%"
-          color="accent.500"
-          emptyColor="gray.200"
-          thickness="6px"
-          size={size}
-          {...props}
-        />
+      <Square centerContent={centerContent} p={10}>
+        <Spinner color="accent.500" emptyColor="gray.200" thickness="6px" size={size} />
       </Square>
     </>
   )

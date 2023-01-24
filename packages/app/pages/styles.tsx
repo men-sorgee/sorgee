@@ -29,7 +29,7 @@ import {
 } from '../components/forms'
 import FieldRange from '../components/forms/FieldRange'
 import Page from '../components/Page'
-import { LinkButton } from '../components/ui'
+import { LinkButton, Loading } from '../components/ui'
 
 const Form = () => {
   const methods = useForm()
@@ -74,20 +74,20 @@ const Form = () => {
   )
 }
 export default function Styles() {
-  const lorum = 'lorum ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.'
-  const getLorum = (n = 1) => {
-    let lorum = ''
+  const text = 'lorum ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.'
+  const getText = (n = 1) => {
+    let l = text
     for (let i = 0; i < n; i++) {
-      lorum += 'lorum ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. '
+      l += ' ' + text
     }
-    return lorum
+    return l
   }
 
   return (
     <Page title="Heading 1">
       <h1>Heading 1</h1>
       <h2>Heading 2</h2>
-      <Text size="lg">Text LG {getLorum(2)}</Text>
+      <Text size="lg">Text LG {getText(2)}</Text>
       <h6>Ordered List</h6>
       <OrderedList>
         <ListItem>Item 1</ListItem>
@@ -95,9 +95,9 @@ export default function Styles() {
         <ListItem>Item 3</ListItem>
       </OrderedList>
       <h3>Heading 3</h3>
-      <Text>Text {getLorum(5)}</Text>
+      <Text>Text {getText(5)}</Text>
       <h4>Heading 4</h4>
-      <Text size="md">Text MD {getLorum(5)}</Text>
+      <Text size="md">Text MD {getText(5)}</Text>
       <h5>Unordered List</h5>
       <UnorderedList>
         <ListItem>Item 1</ListItem>
@@ -105,19 +105,19 @@ export default function Styles() {
         <ListItem>Item 3</ListItem>
       </UnorderedList>
       <h5>Heading 5</h5>
-      <Text size="xl">Text XL {getLorum(3)}</Text>
+      <Text size="xl">Text XL {getText(3)}</Text>
       <h6>List</h6>
       <List>
         <ListItem>Item 1</ListItem>
         <ListItem>Item 2</ListItem>
         <ListItem>Item 3</ListItem>
       </List>
-      <Card maxW={['md', 'lg', 'xl', '3xl']}>
+      <Card>
         <CardHeader>
           <h2>Card Heading</h2>
         </CardHeader>
         <CardBody>
-          <Text>{lorum}</Text>
+          <Text>{text}</Text>
           <Form />
 
           <Link>Some Links</Link>
@@ -158,6 +158,7 @@ export default function Styles() {
           </Button>
         </Box>
       </Box>
+      <Loading />
     </Page>
   )
 }

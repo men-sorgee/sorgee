@@ -64,6 +64,7 @@ function EventPage({ invites }: Props) {
       title="Event Invitations"
       description="Upcoming event invitations."
       requireAuth={true}
+      maxW={['md', 'xl', '2xl']}
     >
       {allowed ? (
         <>
