@@ -1,16 +1,6 @@
 import { getAdminClient } from '..'
 import { Invite, InviteRSVPType, EventUser, Event, EventDetail } from 'lib/models'
 
-export async function listUpcomingEvents() {
-  const client = await getAdminClient()
-  const events = await client.items('events').readByQuery({
-    filter: {
-      status: { _eq: 'scheduled' },
-    },
-  })
-  return events.data
-}
-
 export async function getInvite(inviteId: number): Promise<EventUser | null> {
   const client = await getAdminClient()
   const query = await client.items('events_users').readOne(inviteId, {

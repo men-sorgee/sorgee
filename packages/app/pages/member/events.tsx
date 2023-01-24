@@ -19,7 +19,6 @@ import { postJSON } from 'lib/utils'
 import { Invite, Member, MemberLevel } from 'lib/models'
 import EventCard from 'components/ui/EventCard'
 import { unstable_getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth/config'
 import { NextPageContext, GetServerSidePropsResult } from 'next'
 
 type Props = {
@@ -28,10 +27,9 @@ type Props = {
 export async function getServerSideProps(
   context: NextPageContext
 ): Promise<GetServerSidePropsResult<Props>> {
-  const { listUserInvites } = await import('lib/services/directus/server/users')
+  const { authOptions } = await import('lib/auth/config')
   const { req, res } = context
   const session = await unstable_getServerSession(req as any, res, authOptions)
-
   if (!session) {
     return {
       redirect: {
@@ -40,6 +38,7 @@ export async function getServerSideProps(
       },
     }
   }
+  const { listUserInvites } = await import('lib/services/directus/server/users')
   const invites = await listUserInvites(session.user.id)
 
   return {

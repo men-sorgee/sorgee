@@ -129,16 +129,28 @@ const UserAvatar = (_props: Props) => {
                   >
                     Invite Friend
                   </MenuItem>
-                  {member.user_type == MemberLevel[MemberLevel.staff] && (
-                    <MenuItem
-                      icon={<QrcodeIcon color={'white'} width={'1.5rem'} />}
-                      bg="black"
-                      _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                      as={Link}
-                      href="/member/scan"
-                    >
-                      Scan
-                    </MenuItem>
+                  {MemberLevel[member.user_type] >= MemberLevel.staff && (
+                    <>
+                      <MenuDivider />
+                      <MenuItem
+                        icon={<CalendarIcon color={'white'} width={'1.5rem'} />}
+                        bg="black"
+                        _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                        as={Link}
+                        href="/events"
+                      >
+                        All Events
+                      </MenuItem>
+                      <MenuItem
+                        icon={<QrcodeIcon color={'white'} width={'1.5rem'} />}
+                        bg="black"
+                        _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                        as={Link}
+                        href="/member/scan"
+                      >
+                        Scan
+                      </MenuItem>
+                    </>
                   )}
                 </>
               )}

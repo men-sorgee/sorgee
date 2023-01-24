@@ -1,15 +1,6 @@
-import {
-  Alert,
-  HStack,
-  Flex,
-  AlertIcon,
-  Stat,
-  StatHelpText,
-  StatLabel,
-  StatNumber,
-} from '@chakra-ui/react'
+import { Alert, HStack, Flex, AlertIcon, Stat, StatLabel, StatNumber } from '@chakra-ui/react'
 import { EventCard, LinkButton } from 'components/ui'
-import { MemberLevel, Event, User, EventDetail } from 'lib/models'
+import { MemberLevel, User, EventDetail } from 'lib/models'
 import { GetServerSidePropsResult, NextPageContext } from 'next'
 import { useMember } from 'hooks/use-member'
 import Page from 'components/Page'
@@ -24,10 +15,10 @@ export async function getServerSideProps(
   context: NextPageContext
 ): Promise<GetServerSidePropsResult<Props>> {
   const { getEvent, getUser } = await import('lib/services/directus/server/users')
-  const { event_id, user_id, error } = context.query
+  const { id, user_id, error } = context.query
 
   let user = null
-  const event = (await getEvent(event_id as string)) as EventDetail
+  const event = (await getEvent(id as string)) as EventDetail
 
   if (event && user_id) user = await getUser(user_id as string)
 
