@@ -39,6 +39,20 @@ export type EventUser = {
   attendance: string
 }
 
+export type Promos = {
+  id: number
+  user_created?: string | DirectusUser
+  date_created?: string
+  user_updated?: string | DirectusUser
+  date_updated?: string
+  code: string
+  expires?: string
+  override?: unknown
+  vouching_user?: string | User
+  description?: string
+  name?: string
+}
+
 export type Location = {
   id: string
   user_created?: string | DirectusUser
@@ -388,6 +402,56 @@ export type DirectusUser = {
   external_identifier?: string
   auth_data?: unknown
   email_notifications?: boolean
+}
+
+export type SurveyAnswer = {
+  id: string
+  user?: string | User
+  survey?: string | Survey
+  question?: string | SurveyQuestion
+  answer_text?: string
+  answer_number?: number
+  answer_boolean?: boolean
+  answer_context?: string
+}
+
+export type SurveyAnswerUser = {
+  id: number
+  survey_answers_id?: string
+  users_id?: string
+}
+
+export type SurveyQuestion = {
+  id: string
+  user_created?: string | DirectusUser
+  date_created?: string
+  user_updated?: string | DirectusUser
+  date_updated?: string
+  answer_type?: string
+  question?: string
+  context?: string
+  options?: unknown
+}
+
+export type Survey = {
+  id: string
+  status: string
+  user_created?: string | DirectusUser
+  date_created?: string
+  user_updated?: string | DirectusUser
+  date_updated?: string
+  name?: string
+  title?: string
+  category?: unknown
+  notification?: string | Notification
+  questions: string | SurveySurveyQuestion[]
+}
+
+export type SurveySurveyQuestion = {
+  id: number
+  surveys_id?: string | Survey
+  survey_questions_id?: string | SurveyQuestion
+  sort?: number
 }
 
 export type DirectusTypes = {
