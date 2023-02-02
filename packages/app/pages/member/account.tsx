@@ -1,6 +1,6 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
-import { FormOptions, User } from 'lib/models'
+import { FormOptions, Member, User } from 'lib/models'
 import { useMember } from 'hooks/use-member'
 import { useState } from 'react'
 import {
@@ -26,7 +26,6 @@ import {
   Input,
   InputGroup,
   VStack,
-  useColorMode,
 } from '@chakra-ui/react'
 import Page from 'components/Page'
 import { useToast } from '@chakra-ui/react'
@@ -54,7 +53,7 @@ export async function getServerSideProps(_context: NextPageContext) {
   return { props }
 }
 
-type MemberFormData = Partial<User>
+type MemberFormData = Partial<Member>
 
 function Account(props: PageProps) {
   const { member, loading } = useMember()
@@ -313,7 +312,6 @@ function Form(props: PageProps) {
             >
               Update Account
             </Button>
-            <ErrorMessage errors={errors} name="form" />
           </VStack>
         </form>
       </FormProvider>
