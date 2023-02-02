@@ -89,7 +89,6 @@ const Page = ({
       alignItems={['left', 'center']}
       justifyItems="center"
       mx="auto"
-      maxW={['lg', 'xl', '2xl']}
       {...props}
     >
       <Heading
