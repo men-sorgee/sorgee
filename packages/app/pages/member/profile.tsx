@@ -433,7 +433,6 @@ function Form(props: PageProps) {
             >
               Update Profile
             </Button>
-            <ErrorMessage errors={errors} name="form" />
           </VStack>
         </form>
       </FormProvider>
