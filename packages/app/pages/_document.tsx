@@ -5,7 +5,7 @@ class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head />
-        <body style={{ minWidth: '370px' }}>
+        <body style={{ minWidth: '370px', height: '100vh', position: 'relative' }}>
           <Script
             id="termly"
             src="https://app.termly.io/embed.min.js"

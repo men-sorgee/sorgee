@@ -105,9 +105,9 @@ function Header({ children, ...props }: Props) {
         zIndex={100}
         shadow="xl"
         bg={useColorModeValue('primary.800', 'black')}
+        minH={'60px'}
       >
         <HStack
-          minH={'60px'}
           alignItems="center"
           justifyItems="space-between"
           align="center"
