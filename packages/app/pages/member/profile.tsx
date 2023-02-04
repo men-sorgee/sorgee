@@ -207,7 +207,8 @@ function Form(props: PageProps) {
                   <GridItem colSpan={{ base: 1, sm: 3 }}>
                     <FieldInput
                       field="nickname"
-                      label="Nickname"
+                      label="Username"
+                      help="This is the name that will be displayed on your profile."
                       className="col-span-2 sm:col-span-4"
                     />
                   </GridItem>
@@ -235,11 +236,7 @@ function Form(props: PageProps) {
                   <FieldNumber field="weight" label="Weight" placeholder="185" />
                   <FieldSelect field="build" label="Build" formOptions={buildOptions} />
                 </SimpleGrid>
-                <FieldCheckboxes
-                  field="body_attributes"
-                  label="Body Attributes"
-                  formOptions={bodyAttributesOptions}
-                />
+
                 <SimpleGrid spacing={2} columns={[1, 3]}>
                   <FieldSelect field="skin_tone" label="Skin Tone" formOptions={skinToneOptions} />
                   <FieldSelect
@@ -260,6 +257,11 @@ function Form(props: PageProps) {
                   />
                   <FieldSelect field="eye_color" label="Eye Color" formOptions={eyeColorOptions} />
                 </SimpleGrid>
+                <FieldCheckboxes
+                  field="body_attributes"
+                  label="Other Attributes"
+                  formOptions={bodyAttributesOptions}
+                />
                 <Divider mt={4} mb={2} />
                 <SimpleGrid spacing={2} columns={{ base: 1, md: 2 }}>
                   <FieldInput

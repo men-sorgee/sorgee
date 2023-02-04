@@ -30,6 +30,12 @@ class MyDocument extends Document {
           />
           <Main />
           <NextScript />
+
+          <Script
+            async
+            src="https://api.buglog.io/website/80W58ZYWE9/code"
+            strategy="afterInteractive"
+          />
         </body>
       </Html>
     )

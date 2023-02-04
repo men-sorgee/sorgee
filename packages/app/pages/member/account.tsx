@@ -29,7 +29,6 @@ import {
 } from '@chakra-ui/react'
 import Page from 'components/Page'
 import { useToast } from '@chakra-ui/react'
-import { ErrorMessage } from '@hookform/error-message'
 import { postJSON } from 'lib/utils'
 import { UserCard } from 'components/ui'
 
@@ -39,6 +38,7 @@ type PageProps = {
   contactPreferenceOptions: FormOptions
   hostEventOptions: FormOptions
   birthMonthOptions: FormOptions
+  stateOptions: FormOptions
 }
 
 export async function getServerSideProps(_context: NextPageContext) {
@@ -49,6 +49,7 @@ export async function getServerSideProps(_context: NextPageContext) {
     contactPreferenceOptions: await getFieldOptions<User>('contact_preference'),
     hostEventOptions: await getFieldOptions<User>('can_host_events'),
     birthMonthOptions: await getFieldOptions<User>('birth_month'),
+    stateOptions: await getFieldOptions<User>('state'),
   }
   return { props }
 }
@@ -73,6 +74,7 @@ function Form(props: PageProps) {
     contactPreferenceOptions,
     hostEventOptions,
     birthMonthOptions,
+    stateOptions,
   } = props
   const [tabValue, setTabValue] = useState(0)
 
@@ -171,7 +173,7 @@ function Form(props: PageProps) {
                   />
 
                   <FieldInput field="city" label="City" />
-                  <FieldInput field="state" label="State" value="Colorado" readOnly />
+                  <FieldSelect field="state" label="State" formOptions={stateOptions} />
 
                   <FieldWrapper field="height" label="Birth Month/Year">
                     <InputGroup>
