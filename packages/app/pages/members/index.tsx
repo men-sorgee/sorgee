@@ -75,7 +75,7 @@ export default function MemberListPage({ page = 1, size = 20, ...filters }: Prop
 
   const [pageIndex, setPageIndex] = useState(page - 1)
   const [pageSize, setPageSize] = useState(size)
-  const [query, setQuery] = useState<string>()
+  const [query, setQuery] = useState<string>(getQuery(page, size, ''))
 
   const gotoPage = useCallback(
     (index: number) => {

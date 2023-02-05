@@ -10,7 +10,7 @@ import { markNotification } from 'lib/services/directus/server'
 
 async function SendNotification(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
-    if (!withMethods(req, ['POST'])) return
+    withMethods(req, ['POST'])
 
     if (req.headers.authorization !== process.env.ADMIN_TOKEN)
       return res.status(401).json(ApiResponse(null, 'Unauthorized'))

@@ -87,6 +87,7 @@ export async function sendNotificationEmail(
       {
         to: [{ email: to_email, name: to_name }],
         dynamicTemplateData: {
+          email: to_email,
           subject,
           name: to_name,
           body,
