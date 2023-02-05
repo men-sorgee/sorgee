@@ -22,7 +22,7 @@ export async function createUser(member: Partial<User>): Promise<User> {
   return getUser(id)
 }
 
-export async function updateUser(id: string, member: Partial<User>): Promise<User> {
+export async function updateUser(id: string, member: Partial<User>) {
   const adminClient = await getAdminClient()
   const user = await adminClient.items('users').updateOne(id!, member)
   return user as User
@@ -69,7 +69,8 @@ export async function searchUsers<T = Member>(
   filter: FieldFilter<T>,
   fields: UserFields = memberFields,
   limit: number = 20,
-  offset: number = 0
+  offset: number = 0,
+  sort: any
 ) {
   const adminClient = await getAdminClient()
   const results = await adminClient.items('users').readByQuery({
@@ -78,6 +79,7 @@ export async function searchUsers<T = Member>(
     limit,
     offset,
     meta: '*',
+    sort,
   })
   return results
 }

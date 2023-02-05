@@ -1,4 +1,4 @@
-import { UserInvite } from 'lib/models'
+import { RatingRated, UserInvite } from 'lib/models'
 import { User, UserAccount } from './directus'
 
 type Color = {
@@ -218,6 +218,8 @@ export type Member = Applicant & {
   their_roles?: string[]
   their_spectrum?: OrientationType[]
   their_relationship_status?: string[]
+
+  rating: number
 }
 
 export const memberFields: Array<keyof Member> = [
@@ -257,6 +259,7 @@ export const memberFields: Array<keyof Member> = [
   'show_interests',
   'show_health',
   'event_invites',
+  'rating',
 ]
 
 export type SearchableMember = Omit<
@@ -290,6 +293,7 @@ export type SearchableMember = Omit<
   | 'their_relationship_status'
   | 'can_host'
   | 'can_host_events'
+  | 'ratings'
 >
 export const searchableMemberFields: Array<keyof SearchableMember> = [
   'user_type',
@@ -326,4 +330,5 @@ export const searchableMemberFields: Array<keyof SearchableMember> = [
   'cock_length',
   'cock_girth',
   'cock_attributes',
+  'rating',
 ]

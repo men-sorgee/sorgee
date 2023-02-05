@@ -30,86 +30,83 @@ import {
   Card,
   Link,
   useColorModeValue,
+  Badge,
+  Wrap,
 } from '@chakra-ui/react'
-import { SearchableMember, searchableMemberFields } from '../../lib/models'
+import { SearchableMember, searchableMemberFields } from 'lib/models'
 import { NextPageContext } from 'next'
 import { useRouter } from 'next/router'
+import { Rating } from 'components/ui'
 
 type Props = Record<keyof SearchableMember, any> & {
   page: number
   size: number
+  sort_by: 'nickname' | 'last_login' | 'user_type' | 'rating'
+  sort_dir: 'asc' | 'desc'
 }
 
-export function getServerSideProps(context: NextPageContext) {
-  const { page: rawPage, size: rawSize, ...filter } = context.query
-  const page = Number(rawPage) > 0 ? rawPage : 1
-  const size = Number(rawSize) || 20
-
-  return {
-    props: {
-      page,
-      size,
-      ...filter,
-    },
-  }
+const getSearch = (params: Record<string, any>) => {
+  return Object.keys(params)
+    .filter((k) => searchableMemberFields.includes(k as any))
+    .reduce((acc, key) => {
+      return `${acc}&${key}=${params[key]}`
+    }, '')
 }
 
-export default function MemberListPage({ page = 1, size = 20, ...filters }: Props) {
-  const { member, loading } = useMember()
+export default function MemberListPage({}: Props) {
   const router = useRouter()
-  const [filter, setFilter] = useState<string>()
-  const getQuery = (page: number, size: number, filter: string) => {
-    return `/members?page=${page + 1}&size=${size}${filter}`
-  }
+  const { page = 1, size = 20, sort_by = 'presence', sort_dir = 'desc', ...filters } = router.query
+  const { member, loading } = useMember()
+  const [filter, setFilter] = useState<string>(getSearch(filters))
+  const [direction, setDirection] = useState<'asc' | 'desc'>(sort_dir as 'asc' | 'desc')
+  const [sort, setSort] = useState<string>(sort_by as string)
+  const [pageIndex, setPageIndex] = useState(Number(page) - 1)
+  const [pageSize, setPageSize] = useState(Number(size))
+  const [pageUrl, setPageUrl] = useState<string>()
+  const [sortExpression, setSortExpression] = useState<string>(
+    direction == 'desc' ? `-${sort}` : sort
+  )
+
   useEffect(() => {
-    if (filters) {
-      setFilter(
-        Object.keys(filters)
-          .filter((k) => searchableMemberFields.includes(k as any))
-          .reduce((acc, key) => {
-            return `${acc}&${key}=${filters[key]}`
-          }, '')
-      )
+    if (pageUrl != router.asPath) {
+      let url =
+        `/members?page=${pageIndex + 1}` +
+        `&size=${pageSize}&sort_by=${sort}&sort_dir=${direction}${filter}`
+      if (!pageUrl || pageUrl != url) {
+        setPageUrl(url)
+      }
     }
-  }, [filter, filters])
-
-  const [pageIndex, setPageIndex] = useState(page - 1)
-  const [pageSize, setPageSize] = useState(size)
-  const [query, setQuery] = useState<string>(getQuery(page, size, ''))
-
-  const gotoPage = useCallback(
-    (index: number) => {
-      setPageIndex(index)
-      setQuery(getQuery(index, pageSize, filter || ''))
-      router.replace(query).then(() => {
-        window.scrollTo(0, 0)
-      })
-    },
-    [pageSize, router, query, filter]
-  )
-
-  const showItems = useCallback(
-    (size: number) => {
-      setPageSize(size)
-      setQuery(getQuery(pageIndex, size, filter || ''))
-      router.replace(query).then(() => {
-        window.scrollTo(0, 0)
-      })
-    },
-    [pageSize, pageIndex, filter, router, query]
-  )
+  }, [
+    sort_by,
+    sort_dir,
+    sort,
+    direction,
+    pageIndex,
+    pageSize,
+    filter,
+    filters,
+    pageUrl,
+    router.asPath,
+  ])
 
   const { data: response, error } = useSWR<ManyItems<Partial<Profile>>>(
-    `/api/members?limit=${pageSize}&offset=${pageSize * pageIndex}${filter || ''}`,
+    `/api/members?limit=${pageSize}&offset=${pageSize * pageIndex}&sort=${sortExpression}${filter}`,
     JsonFetcher
   )
 
   const [pageCount, setPageCount] = useState(0)
   const [members, setMembers] = useState<SearchableMember[]>()
   const [meta, setMeta] = useState<{ total: number; filtered: number }>({ total: 0, filtered: 0 })
+
   useEffect(() => {
-    const { data: members, meta } = response || {}
-    setMembers(members || [])
+    const { data, meta } = response || {}
+    if (data) {
+      setMembers(data)
+      window.scrollTo(0, 0)
+    } else {
+      setMembers([])
+    }
+
     if (meta) {
       setMeta({
         total: meta.total_count,
@@ -123,23 +120,23 @@ export default function MemberListPage({ page = 1, size = 20, ...filters }: Prop
         filtered: 0,
       })
     }
-  }, [response, pageCount, pageSize, pageIndex, meta])
+  }, [router, pageCount, pageSize, meta, response])
+
+  const handlePageChange = useCallback(() => {
+    router.replace(pageUrl)
+  }, [pageUrl, router])
 
   const cardBg = useColorModeValue('white', 'black')
 
   return (
     <Page title="Members" loading={loading} w="full">
       {meta && (
-        <StatGroup as={HStack} spacing={20}>
-          <Stat>
-            <StatLabel>Total</StatLabel>
-            <StatNumber>{meta.total}</StatNumber>
-          </Stat>
+        <Flex gap={2} align="center" justify="space-between" my={2}>
           <Select
             w={32}
             value={pageSize}
             onChange={(e) => {
-              showItems(Number(e.target.value))
+              setPageSize(Number(e.target.value))
             }}
           >
             {[10, 20, 30, 40, 50].map((pageSize) => (
@@ -148,11 +145,30 @@ export default function MemberListPage({ page = 1, size = 20, ...filters }: Prop
               </option>
             ))}
           </Select>
-          <Stat>
-            <StatLabel>Filtered</StatLabel>
-            <StatNumber>{meta.filtered}</StatNumber>
-          </Stat>
-        </StatGroup>
+          <Select
+            w={32}
+            value={sort}
+            onChange={(e) => {
+              setSort(e.target.value)
+            }}
+          >
+            <option value="last_login">Last Login</option>
+            <option value="presence">Online</option>
+            <option value="nickname">Name</option>
+            <option value="user_type">Level</option>
+            <option value="rating">Rating</option>
+          </Select>
+          <Select
+            w={32}
+            value={direction}
+            onChange={(e) => {
+              setDirection(e.target.value as 'asc' | 'desc')
+            }}
+          >
+            <option value="asc">Asc</option>
+            <option value="desc">Desc</option>
+          </Select>
+        </Flex>
       )}
       <Accordion allowToggle w="full">
         <AccordionItem>
@@ -164,20 +180,31 @@ export default function MemberListPage({ page = 1, size = 20, ...filters }: Prop
               <AccordionIcon />
             </AccordionButton>
           </h2>
-          <AccordionPanel>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-          </AccordionPanel>
+          <AccordionPanel></AccordionPanel>
         </AccordionItem>
       </Accordion>
-      <SimpleGrid my={5} columns={[1, 2, 3, 4]} spacing={4} w="full" justifyItems="stretch">
+      <StatGroup as={HStack} spacing={4}>
+        <Stat>
+          <StatLabel>Total</StatLabel>
+          <StatNumber>{meta.total}</StatNumber>
+        </Stat>
+        <Stat>
+          <StatLabel>Filtered</StatLabel>
+          <StatNumber>{meta.filtered}</StatNumber>
+        </Stat>
+      </StatGroup>
+      <SimpleGrid my={5} columns={[1, 1, 2]} spacing={4} w="full" justifyItems="stretch">
         {member &&
           members &&
-          members.map((member: any) => {
+          members.map((member: SearchableMember) => {
             return (
               <Link key={member.id} _hover={{ textDecoration: 'none' }}>
                 <Card
+                  as={Flex}
+                  direction="row"
+                  justify="stretch"
+                  gap={2}
+                  justifyContent="space-between"
                   w="full"
                   h="full"
                   bg={cardBg}
@@ -185,7 +212,30 @@ export default function MemberListPage({ page = 1, size = 20, ...filters }: Prop
                   border="1px solid transparent"
                   _hover={{ shadow: 'xl', borderColor: 'accent.500' }}
                 >
-                  <UserCard user={member} />
+                  <Flex direction="column" align="start" justify="space-between">
+                    <UserCard user={member} />
+                    <Rating
+                      value={member.rating || 0}
+                      mt={2}
+                      aria-label="User Rating"
+                      size="xxs"
+                      simple
+                    />
+                  </Flex>
+                  <Flex
+                    direction="column"
+                    align="end"
+                    justify="space-between"
+                    alignItems="flex-end"
+                  >
+                    <Flex wrap="wrap" gap={2} align="end" justify="end" direction="row-reverse">
+                      {member?.my_positions?.map((position, i) => (
+                        <Badge key={i} colorScheme="secondary">
+                          {position}
+                        </Badge>
+                      ))}
+                    </Flex>
+                  </Flex>
                 </Card>
               </Link>
             )
@@ -195,7 +245,7 @@ export default function MemberListPage({ page = 1, size = 20, ...filters }: Prop
         <Flex>
           <Tooltip label="First Page">
             <IconButton
-              onClick={() => gotoPage(0)}
+              onClick={() => setPageIndex(0)}
               isDisabled={pageIndex == 0}
               icon={<ArrowLeftIcon h={3} w={3} />}
               mr={4}
@@ -204,7 +254,7 @@ export default function MemberListPage({ page = 1, size = 20, ...filters }: Prop
           </Tooltip>
           <Tooltip label="Previous Page">
             <IconButton
-              onClick={() => gotoPage(pageIndex - 1)}
+              onClick={() => setPageIndex(pageIndex - 1)}
               isDisabled={pageIndex == 0}
               icon={<ChevronLeftIcon h={6} w={6} />}
               aria-label="Previous Page"
@@ -226,7 +276,7 @@ export default function MemberListPage({ page = 1, size = 20, ...filters }: Prop
 
           <Tooltip label="Next Page">
             <IconButton
-              onClick={() => gotoPage(pageIndex + 1)}
+              onClick={() => setPageIndex(pageIndex + 1)}
               isDisabled={pageCount == 0 || pageIndex + 1 >= pageCount}
               icon={<ChevronRightIcon h={6} w={6} />}
               aria-label="Next Page"
@@ -234,7 +284,7 @@ export default function MemberListPage({ page = 1, size = 20, ...filters }: Prop
           </Tooltip>
           <Tooltip label="Last Page">
             <IconButton
-              onClick={() => gotoPage(pageCount - 1)}
+              onClick={() => setPageIndex(pageCount - 1)}
               isDisabled={pageCount == 0 || pageIndex + 1 >= pageCount}
               icon={<ArrowRightIcon h={3} w={3} />}
               ml={4}

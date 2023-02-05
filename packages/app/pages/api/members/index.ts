@@ -13,6 +13,7 @@ import { ManyItems } from '@directus/sdk'
 type MemberSearch = SearchableMember & {
   offset?: number
   limit?: number
+  sort: string
 }
 
 export default async function FindMembers(
@@ -26,7 +27,7 @@ export default async function FindMembers(
     }
 
     const level = MemberLevel[member.user_type]
-    const { offset = 0, limit = 20, ...props } = req.query as Record<keyof MemberSearch, any>
+    const { offset = 0, limit = 20, sort, ...props } = req.query as Record<keyof MemberSearch, any>
 
     const searchParams = Object.keys(props)
       .filter((key: string) => searchableMemberFields.includes(key as any))
@@ -78,7 +79,7 @@ export default async function FindMembers(
       _in: searchLevels,
     }
 
-    console.dir(searchParams)
+    //console.dir(searchParams)
 
     const results = await searchUsers<Partial<User>>(
       {
@@ -94,13 +95,19 @@ export default async function FindMembers(
         'show_health',
         'show_interests',
         'presence',
-        'last_login',
         'location',
         'city',
         'state',
+        'rating',
+        'spectrum',
+        'my_positions',
+        'relationship_status',
+        'last_login',
+        'date_created',
       ],
       limit,
-      offset
+      offset,
+      sort
     )
 
     return res.status(200).json(ApiResponse(results))

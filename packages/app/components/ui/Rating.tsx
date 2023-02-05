@@ -1,15 +1,39 @@
-import { useState, forwardRef } from 'react'
-import { Box, Icon, IconButton, Stack, Text, IconButtonProps } from '@chakra-ui/react'
+import { useState, forwardRef, useEffect } from 'react'
+import { StarIcon } from '@chakra-ui/icons'
+import { Box, Icon, IconButton, Stack, Text, IconButtonProps, Tooltip } from '@chakra-ui/react'
 type Props = IconButtonProps & {
-  readonly: boolean
-  scale: number
-  fillColor: string
-  strokeColor: string
+  value?: number
+  readonly?: boolean
+  scale?: number
+  fillColor?: string
+  strokeColor?: string
+  simple?: boolean
 }
-const Rating = forwardRef<HTMLInputElement>(
-  ({ readonly, size, icon, scale, fillColor, strokeColor }: Props, ref) => {
-    const [rating, setRating] = useState(0)
+const rating = forwardRef<HTMLInputElement, Props>(
+  (
+    {
+      value,
+      readonly = true,
+      size = 'xs',
+      icon = <StarIcon />,
+      scale = 5,
+      fillColor = 'yellow.100',
+      strokeColor = 'gray.200',
+      simple = false,
+      mt,
+    }: Props,
+    ref
+  ) => {
+    const [rating, setRating] = useState(value || 0)
+    const [tooltip, setTooltip] = useState('')
     const buttons = []
+
+    useEffect(() => {
+      if (!tooltip) {
+        if (rating == 0) setTooltip('No rating')
+        else setTooltip(`${rating} / ${scale}`)
+      }
+    }, [rating, tooltip, scale])
 
     const onClick = (index: number) => {
       if (readonly) return
@@ -28,8 +52,6 @@ const Rating = forwardRef<HTMLInputElement>(
         <IconButton
           as={Icon}
           aria-label={`Rate ${index}`}
-          height={`${size}px`}
-          width={`${size}px`}
           variant="ghost"
           mx={1}
           onClick={() => onClick(index)}
@@ -48,23 +70,33 @@ const Rating = forwardRef<HTMLInputElement>(
       buttons.push(<RatingButton key={i} index={i} fill={i <= rating} />)
     }
 
+    const help =
+      'Ratings are based on the number of stars a member has received from other members and event hosts. ' +
+      'No-shows automatically receive 2-star ratings by the event. ' +
+      'Members must have an average of 4-stars to be eligible for events. '
     return (
-      <Stack isInline mt={8} justify="center">
-        {!readonly && <input name="rating" type="hidden" value={rating} ref={ref} />}
-        {buttons}
-        <Box textAlign="center">
-          <Text fontSize="sm" textTransform="uppercase">
-            Rating
-          </Text>
-          <Text fontSize="2xl" fontWeight="semibold" lineHeight="1.2em">
-            {rating}
-          </Text>
-        </Box>
-      </Stack>
+      <Tooltip label={tooltip} aria-label={tooltip}>
+        <Stack isInline mt={mt} justify="center">
+          {!readonly && <input name="rating" type="hidden" value={rating} ref={ref} />}
+          {buttons}
+          {!simple && (
+            <Box textAlign="center">
+              <Tooltip label={help} aria-label={help}>
+                <Text fontSize="sm" textTransform="uppercase">
+                  Rating
+                </Text>
+                <Text fontSize="2xl" fontWeight="semibold" lineHeight="1.2em">
+                  {rating}
+                </Text>
+              </Tooltip>
+            </Box>
+          )}
+        </Stack>
+      </Tooltip>
     )
   }
 )
 
-Rating.displayName = 'Rating'
+rating.displayName = 'rating'
 
-export default Rating
+export default rating

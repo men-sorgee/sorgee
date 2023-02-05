@@ -293,6 +293,23 @@ export type User = {
   can_host?: boolean
   can_host_events: string[] | ('sex' | 'social' | 'individual')[]
   promo: number | Promo
+  rating: number
+  ratings: (string | number)[] | Rating[]
+}
+
+export type Rating = {
+  id: string
+  date_created?: string
+  date_updated?: string
+  user?: string | User
+  rated: number
+}
+
+export type RatingRated = {
+  id: number
+  rating_id?: string
+  item: string
+  collection: string
 }
 
 export type UserFile = {
