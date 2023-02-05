@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getUser, updateUser } from 'lib/services/directus/server'
 import { ApiResponse, User, Applicant } from 'lib/models'
-import { parseInvite, withAuthUser, withMethods } from 'lib/utils/server'
+import { withAuthUser, withMethods } from 'lib/utils/server'
 
 async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {

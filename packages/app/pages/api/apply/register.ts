@@ -35,6 +35,8 @@ export default async function getUserDetails(
         birth_year,
         vouched_by: promo ? promo.vouching_user : null,
         promo: promo ? promo.id : null,
+        status: 'active',
+        user_type: 'applicant',
       })
       return res.status(200).json(ApiResponse(updatedUser))
     } else {
@@ -46,7 +48,7 @@ export default async function getUserDetails(
         email,
         notes: 'registered via app',
         status: 'active',
-        user_type: 'user',
+        user_type: 'applicant',
         vouched_by: promo ? promo.vouching_user : null,
         promo: promo ? promo.id : null,
       })
