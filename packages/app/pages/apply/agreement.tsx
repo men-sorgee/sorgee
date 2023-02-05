@@ -1,7 +1,7 @@
 import ApplicationSteps from './_steps'
 import { useMember } from 'hooks/use-member'
 import { NextRouter, useRouter } from 'next/router'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { AgreementData } from 'lib/models'
 import { Button, Text, VStack } from '@chakra-ui/react'
@@ -12,31 +12,30 @@ import Page from 'components/Page'
 function Agreement() {
   const router = useRouter()
   const { loading, member } = useMember()
-  const [completed, setCompleted] = useState(false)
 
   if (member && member?.application_status && member.application_status !== 'agreement') {
     router.push('/apply/' + member?.application_status)
     return null
   }
-  let props = { router, setCompleted }
+
   return (
     <Page
       title="Agreement"
-      loading={loading || completed}
+      loading={loading}
       requireAuth={true}
       header={<ApplicationSteps status={'agreement'} />}
     >
-      <Form {...props} />
+      <Form router={router} />
     </Page>
   )
 }
 
 type Props = {
   router: NextRouter
-  setCompleted: Dispatch<SetStateAction<boolean>>
 }
 
-function Form({ router, setCompleted }: Props) {
+function Form({ router }: Props) {
+  const [completed, setCompleted] = useState(false)
   const methods = useForm<AgreementData>({
     mode: 'onBlur',
   })
@@ -56,37 +55,49 @@ function Form({ router, setCompleted }: Props) {
   }
   const agree = watch('agree')
   return (
-    <FormProvider {...methods}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        style={{ maxWidth: 'xl', margin: '0 auto', textAlign: 'center' }}
-      >
-        <Text fontSize="xl">
-          Please read and agree to our{' '}
-          <a href="/terms" target="_blank" style={{ textDecoration: 'underline' }} className="link">
-            terms
-          </a>{' '}
-          and{' '}
-          <a href="/terms" target="_blank" style={{ textDecoration: 'underline' }} className="link">
-            privacy policy
-          </a>
-        </Text>
-        <FieldCheckbox
-          textAlign="center"
-          field="agree"
-          maxWidth="fit-content"
-          registerOptions={{
-            required: 'You must agree to the terms and conditions',
-          }}
+    !completed && (
+      <FormProvider {...methods}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          style={{ maxWidth: 'xl', margin: '0 auto', textAlign: 'center' }}
         >
-          I agree
-        </FieldCheckbox>
+          <Text fontSize="xl">
+            Please read and agree to our{' '}
+            <a
+              href="/terms"
+              target="_blank"
+              style={{ textDecoration: 'underline' }}
+              className="link"
+            >
+              terms
+            </a>{' '}
+            and{' '}
+            <a
+              href="/terms"
+              target="_blank"
+              style={{ textDecoration: 'underline' }}
+              className="link"
+            >
+              privacy policy
+            </a>
+          </Text>
+          <FieldCheckbox
+            textAlign="center"
+            field="agree"
+            maxWidth="fit-content"
+            registerOptions={{
+              required: 'You must agree to the terms and conditions',
+            }}
+          >
+            I agree
+          </FieldCheckbox>
 
-        <Button colorScheme="primary" type="submit" mt={8} disabled={agree != true}>
-          Agree & Continue
-        </Button>
-      </form>
-    </FormProvider>
+          <Button colorScheme="primary" type="submit" mt={8} disabled={agree != true}>
+            Agree & Continue
+          </Button>
+        </form>
+      </FormProvider>
+    )
   )
 }
 
