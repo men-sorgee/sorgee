@@ -33,7 +33,9 @@ export const authOptions: AuthOptions = {
   },
 
   callbacks: {
-    async signIn({ user, email, profile, account }) {
+    async signIn(data) {
+      console.dir(data)
+      const { user, email, profile, account } = data
       //return true
       console.debug('callback:signIn')
 
@@ -41,17 +43,22 @@ export const authOptions: AuthOptions = {
         let found = (await getUser(user.id)) || (await findUser(account.userId))
         return found != null
       }
-      if (user?.id) {
-        let found = await getUser(user.id)
-        return found != null
-      }
-      if (profile?.email) {
-        let user = await findUser(profile.email)
+
+      let findEmail: string =
+        profile?.email ||
+        user?.email ||
+        ((account?.user || account?.sub || account?.userId || account?.email) as string)
+      if (findEmail) {
+        let user = await findUser(findEmail)
         return user && allowedStatuses.includes(user.status as UserStatusType)
       }
       if (account?.providerAccountId) {
         let user = await findUserByAccount(account.provider, account.providerAccountId)
         return user && allowedStatuses.includes(user.status as UserStatusType)
+      }
+      if (user?.id) {
+        let found = await getUser(user.id)
+        return found != null
       }
       return false
     },
