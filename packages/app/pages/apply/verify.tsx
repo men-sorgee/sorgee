@@ -110,9 +110,8 @@ function Form({ code, router, setCompleted }): JSX.Element {
       })
 
       if (res.ok) {
-        reload()
         setCompleted(true)
-        router.push('/apply/review')
+        window.location.href = '/apply/review'
       } else {
         const body = (await res.json()) as ApiResponse
         if (body.error?.field) {
