@@ -36,7 +36,13 @@ function Approved() {
               Invite a Friend
             </LinkButton>
             <LinkButton href="/member/account" colorScheme="primary">
+              Manage Account
+            </LinkButton>
+            <LinkButton href="/member/profile" colorScheme="primary">
               Manage Full Profile
+            </LinkButton>
+            <LinkButton href="/member/events" colorScheme="primary">
+              View Event Invites
             </LinkButton>
           </HStack>
         </VStack>

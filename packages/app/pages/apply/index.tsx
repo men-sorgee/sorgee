@@ -16,7 +16,12 @@ export default function Index({}) {
   useEffect(() => {
     if (status !== 'loading' && user) {
       const { application_status } = user || {}
-      router.push('/apply/' + application_status)
+      if (application_status === 'approved') {
+        // TODO: move this the main members page once it's in place
+        router.push('/apply/approved')
+      } else {
+        router.push('/apply/' + application_status)
+      }
     }
   }, [status, router, user])
 
