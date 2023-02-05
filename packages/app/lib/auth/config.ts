@@ -34,7 +34,7 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async signIn(data) {
-      console.dir(data)
+      //console.dir(data)
       const { user, email, profile, account } = data
       //return true
       console.debug('callback:signIn')
@@ -81,7 +81,7 @@ export const authOptions: AuthOptions = {
         'Thank you for applying for membership!',
         {
           button_text: 'Complete Application',
-          button_url: 'https://guysnheat.com/apply/resume',
+          button_url: 'https://guysnheat.com/apply',
         }
       )
     },
