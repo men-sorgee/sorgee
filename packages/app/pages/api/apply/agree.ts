@@ -18,11 +18,12 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
       sendNotificationEmail(
         applicant.email,
         applicant.nickname || applicant.first_name + ' ' + applicant.last_name,
-        `Application Status`,
-        `Your free membership is now active!`,
+        `Application Approved`,
+        `Your application is approved. Congratulations, you are now an official pledge of Guys'n Heat! ` +
+          `A brother will be reaching out to finalize your onboarding process and if all goes well, invite you to the next event.`,
         {
-          button_text: 'Manage Profile',
-          button_url: 'https://guysnheat.com/member/account',
+          button_text: 'Complete Profile',
+          button_url: 'https://guysnheat.com/member/profile',
         }
       )
 

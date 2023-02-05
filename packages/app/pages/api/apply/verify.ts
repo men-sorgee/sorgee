@@ -1,7 +1,7 @@
 import { getFileInfo, updateUser, uploadFile, UploadFolder } from 'lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse, ApplicationStatus } from 'lib/models'
-import { withMember, withMethods } from 'lib/utils/server'
+import { withApplicant, withMethods } from 'lib/utils/server'
 import { sendNotificationEmail } from 'lib/services/sendgrid/server'
 
 export const config = {
@@ -14,8 +14,7 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
     if (!withMethods(req, ['POST'])) return
 
-    const member = await withMember(req, res)
-    if (!member) return
+    const member = await withApplicant(req, res)
 
     const file = await uploadFile(
       await getFileInfo(req),

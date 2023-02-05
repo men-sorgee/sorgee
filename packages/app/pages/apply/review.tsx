@@ -6,13 +6,17 @@ import { Text, Heading, VStack, Button, Box, Alert } from '@chakra-ui/react'
 import { FieldRadioButtons } from 'components/forms'
 import { useForm, FormProvider } from 'react-hook-form'
 import { postJSON } from 'lib/utils'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useToast } from '@chakra-ui/react'
 
 function Review() {
   const router = useRouter()
   const [complete, setComplete] = useState<boolean>(false)
-  const { loading, member } = useMember()
+  const { loading, member, reload } = useMember()
+
+  useEffect(() => {
+    reload()
+  })
 
   const methods = useForm<{ contact_preference: string }>({
     mode: 'onBlur',
