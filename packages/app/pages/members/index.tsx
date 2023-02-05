@@ -57,8 +57,10 @@ export function getServerSideProps(context: NextPageContext) {
 export default function MemberListPage({ page = 1, size = 20, ...filters }: Props) {
   const { member, loading } = useMember()
   const router = useRouter()
-
   const [filter, setFilter] = useState<string>()
+  const getQuery = (page: number, size: number, filter: string) => {
+    return `/members?page=${page + 1}&size=${size}${filter}`
+  }
   useEffect(() => {
     if (filters) {
       setFilter(
@@ -72,25 +74,29 @@ export default function MemberListPage({ page = 1, size = 20, ...filters }: Prop
   }, [filter, filters])
 
   const [pageIndex, setPageIndex] = useState(page - 1)
+  const [pageSize, setPageSize] = useState(size)
+  const [query, setQuery] = useState<string>()
+
   const gotoPage = useCallback(
     (index: number) => {
-      router.replace(`/members?page=${index + 1}&size=${pageSize}`).then(() => {
-        setPageIndex(index)
+      setPageIndex(index)
+      setQuery(getQuery(index, pageSize, filter || ''))
+      router.replace(query).then(() => {
         window.scrollTo(0, 0)
       })
     },
-    [pageIndex]
+    [pageSize, router, query, filter]
   )
 
-  const [pageSize, setPageSize] = useState(size)
   const showItems = useCallback(
     (size: number) => {
-      router.replace(`/members?page=${page}&size=${size}`).then(() => {
-        setPageSize(size)
+      setPageSize(size)
+      setQuery(getQuery(pageIndex, size, filter || ''))
+      router.replace(query).then(() => {
         window.scrollTo(0, 0)
       })
     },
-    [pageSize]
+    [pageSize, pageIndex, filter, router, query]
   )
 
   const { data: response, error } = useSWR<ManyItems<Partial<Profile>>>(
@@ -117,14 +123,9 @@ export default function MemberListPage({ page = 1, size = 20, ...filters }: Prop
         filtered: 0,
       })
     }
-  }, [response, pageCount])
+  }, [response, pageCount, pageSize, pageIndex, meta])
 
-  const gotoNextPage = () => {
-    gotoPage(pageIndex + 1)
-  }
-  const gotoPrevPage = () => {
-    gotoPage(pageIndex - 1)
-  }
+  const cardBg = useColorModeValue('white', 'black')
 
   return (
     <Page title="Members" loading={loading} w="full">
@@ -179,7 +180,7 @@ export default function MemberListPage({ page = 1, size = 20, ...filters }: Prop
                 <Card
                   w="full"
                   h="full"
-                  bg={useColorModeValue('white', 'black')}
+                  bg={cardBg}
                   p={4}
                   border="1px solid transparent"
                   _hover={{ shadow: 'xl', borderColor: 'accent.500' }}
@@ -203,7 +204,7 @@ export default function MemberListPage({ page = 1, size = 20, ...filters }: Prop
           </Tooltip>
           <Tooltip label="Previous Page">
             <IconButton
-              onClick={gotoPrevPage}
+              onClick={() => gotoPage(pageIndex - 1)}
               isDisabled={pageIndex == 0}
               icon={<ChevronLeftIcon h={6} w={6} />}
               aria-label="Previous Page"
@@ -225,7 +226,7 @@ export default function MemberListPage({ page = 1, size = 20, ...filters }: Prop
 
           <Tooltip label="Next Page">
             <IconButton
-              onClick={gotoNextPage}
+              onClick={() => gotoPage(pageIndex + 1)}
               isDisabled={pageCount == 0 || pageIndex + 1 >= pageCount}
               icon={<ChevronRightIcon h={6} w={6} />}
               aria-label="Next Page"

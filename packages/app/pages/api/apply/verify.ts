@@ -15,7 +15,6 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     if (!withMethods(req, ['POST'])) return
 
     const applicant = await withApplicant(req, res)
-    if (!applicant) return
 
     const file = await uploadFile(
       await getFileInfo(req),
