@@ -14,6 +14,7 @@ type MemberSearch = SearchableMember & {
   offset?: number
   limit?: number
   sort: string
+  photos: boolean
 }
 
 export default async function FindMembers(
@@ -45,12 +46,6 @@ export default async function FindMembers(
           return acc
         },
         {
-          status: {
-            _eq: 'active',
-          },
-          application_status: {
-            _eq: 'approved',
-          },
           show_profile: {
             _eq: true,
           },
@@ -63,7 +58,7 @@ export default async function FindMembers(
     let allowedLevels = ['brother', 'big_brother', 'staff', 'admin']
     if (level >= MemberLevel.brother) allowedLevels = [...allowedLevels, 'inductee']
     if (level >= MemberLevel.big_brother) allowedLevels = [...allowedLevels, 'pledge']
-    if (level >= MemberLevel.staff) allowedLevels = [...allowedLevels, 'applicant']
+    if (level >= MemberLevel.staff) allowedLevels = [...allowedLevels, 'applicant', 'subscriber']
 
     const { user_type } = props
     let searchLevels = allowedLevels
@@ -74,6 +69,10 @@ export default async function FindMembers(
         searchLevels = [user_type]
       }
     }
+    if (level < MemberLevel.staff) {
+      searchParams['status'] = { _eq: 'active' }
+      searchParams['application_status'] = { _eq: 'approved' }
+    }
 
     searchParams['user_type'] = {
       _in: searchLevels,
@@ -82,11 +81,10 @@ export default async function FindMembers(
     //console.dir(searchParams)
 
     const results = await searchUsers<Partial<User>>(
-      {
-        ...searchParams,
-      },
+      searchParams,
       [
         'id',
+        'status',
         'nick_name',
         'biography',
         'first_name',

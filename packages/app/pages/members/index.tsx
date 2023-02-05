@@ -1,8 +1,7 @@
 import { ManyItems } from '@directus/sdk'
 import Page from 'components/Page'
 import { useMember } from 'hooks/use-member'
-import { JsonFetcher } from 'lib/utils/fetchers'
-import { Profile } from 'next-auth'
+import { JsonFetcher, getSearchParams } from 'lib/utils'
 import { useCallback, useEffect, useState } from 'react'
 import useSWR from 'swr'
 import { UserCard } from 'components/ui'
@@ -32,101 +31,149 @@ import {
   useColorModeValue,
   Badge,
   Wrap,
+  CardFooter,
 } from '@chakra-ui/react'
-import { SearchableMember, searchableMemberFields } from 'lib/models'
-import { NextPageContext } from 'next'
+import { User, FormOptions, SearchableMember, searchableMemberFields } from 'lib/models'
 import { useRouter } from 'next/router'
 import { Rating } from 'components/ui'
+import useMemberSearch from 'hooks/use-members'
+import { FormProvider, useForm } from 'react-hook-form'
+import { NextPageContext } from 'next'
+import { FieldCheckboxes } from '../../components/forms'
 
-type Props = Record<keyof SearchableMember, any> & {
-  page: number
-  size: number
-  sort_by: 'nickname' | 'last_login' | 'user_type' | 'rating'
-  sort_dir: 'asc' | 'desc'
+type PageProps = {
+  spectrumOptions: FormOptions
+  relationshipOptions: FormOptions
+  positionsOptions: FormOptions
+  skinToneOptions: FormOptions
+  hairColorOptions: FormOptions
+  hairStyleOptions: FormOptions
+  eyeColorOptions: FormOptions
+  mannerismsOptions: FormOptions
+  bodyHairOptions: FormOptions
+  bodyAttributesOptions: FormOptions
+  facialHairOptions: FormOptions
+  scenesOptions: FormOptions
+  cockGirthOptions: FormOptions
+  cockAttributesOptions: FormOptions
+  ballSizeOptions: FormOptions
+  ballGravityOptions: FormOptions
+  cumAttributesOptions: FormOptions
+  loadPolicyOptions: FormOptions
+  hivStatusOptions: FormOptions
+  vaccinationStatusOptions: FormOptions
+  myRolesOptions: FormOptions
+  theirRolesOptions: FormOptions
+  theirSpectrumOptions: FormOptions
+  theirPositionsOptions: FormOptions
+  buildOptions: FormOptions
 }
 
-const getSearch = (params: Record<string, any>) => {
-  return Object.keys(params)
-    .filter((k) => searchableMemberFields.includes(k as any))
-    .reduce((acc, key) => {
-      return `${acc}&${key}=${params[key]}`
-    }, '')
+/*
+export async function getServerSideProps(context: NextPageContext) {
+  const { getFieldOptions } = await import('lib/services/directus/server')
+  const props: PageProps = {
+    spectrumOptions: await getFieldOptions<User>('spectrum'),
+    relationshipOptions: await getFieldOptions<User>('relationship_status'),
+    positionsOptions: await getFieldOptions<User>('my_positions'),
+    skinToneOptions: await getFieldOptions<User>('skin_tone'),
+    hairColorOptions: await getFieldOptions<User>('hair_color'),
+    hairStyleOptions: await getFieldOptions<User>('hair_style'),
+    eyeColorOptions: await getFieldOptions<User>('eye_color'),
+    mannerismsOptions: await getFieldOptions<User>('mannerisms'),
+    bodyHairOptions: await getFieldOptions<User>('body_hair'),
+    bodyAttributesOptions: await getFieldOptions<User>('body_attributes'),
+    facialHairOptions: await getFieldOptions<User>('facial_hair'),
+    scenesOptions: await getFieldOptions<User>('sexual_scenes'),
+    cockGirthOptions: await getFieldOptions<User>('cock_girth'),
+    cockAttributesOptions: await getFieldOptions<User>('cock_attributes'),
+    ballSizeOptions: await getFieldOptions<User>('ball_size'),
+    ballGravityOptions: await getFieldOptions<User>('ball_gravity'),
+    cumAttributesOptions: await getFieldOptions<User>('cum_attributes'),
+    loadPolicyOptions: await getFieldOptions<User>('load_policy'),
+    hivStatusOptions: await getFieldOptions<User>('hiv_status'),
+    vaccinationStatusOptions: await getFieldOptions<User>('vaccinations'),
+    myRolesOptions: await getFieldOptions<User>('my_roles'),
+    theirRolesOptions: await getFieldOptions<User>('their_roles'),
+    theirSpectrumOptions: await getFieldOptions<User>('their_spectrum'),
+    theirPositionsOptions: await getFieldOptions<User>('their_positions'),
+    buildOptions: await getFieldOptions<User>('build'),
+  }
+  return { props }
 }
+*/
 
-export default function MemberListPage({}: Props) {
+export default function MemberListPage(props: PageProps) {
+  /*const {
+    spectrumOptions,
+    positionsOptions,
+    relationshipOptions,
+    skinToneOptions,
+    hairColorOptions,
+    hairStyleOptions,
+    eyeColorOptions,
+    mannerismsOptions,
+    bodyHairOptions,
+    bodyAttributesOptions,
+    facialHairOptions,
+    scenesOptions,
+    cockGirthOptions,
+    cockAttributesOptions,
+    ballSizeOptions,
+    ballGravityOptions,
+    cumAttributesOptions,
+    loadPolicyOptions,
+    hivStatusOptions,
+    vaccinationStatusOptions,
+    myRolesOptions,
+    theirRolesOptions,
+    theirSpectrumOptions,
+    theirPositionsOptions,
+    buildOptions,
+  } = props*/
+
+  const [init, setInit] = useState<boolean>(false)
+  const [sort, setSort] = useState<string>('-presence')
+  const [page, setPage] = useState<number>(1)
+  const [size, setSize] = useState<number>(10)
+  const [filters, setFilters] = useState<Partial<SearchableMember>>(undefined)
+  const cardBg = useColorModeValue('white', 'black')
   const router = useRouter()
-  const { page = 1, size = 20, sort_by = 'presence', sort_dir = 'desc', ...filters } = router.query
+  const { page: rawPage, size: rawSize, sort: rawSort, ...rawFilters } = router.query
   const { member, loading } = useMember()
-  const [filter, setFilter] = useState<string>(getSearch(filters))
-  const [direction, setDirection] = useState<'asc' | 'desc'>(sort_dir as 'asc' | 'desc')
-  const [sort, setSort] = useState<string>(sort_by as string)
-  const [pageIndex, setPageIndex] = useState(Number(page) - 1)
-  const [pageSize, setPageSize] = useState(Number(size))
-  const [pageUrl, setPageUrl] = useState<string>()
-  const [sortExpression, setSortExpression] = useState<string>(
-    direction == 'desc' ? `-${sort}` : sort
-  )
 
   useEffect(() => {
-    if (pageUrl != router.asPath) {
+    if (!loading && member && !init) {
+      if (rawPage) {
+        setPage(Number(rawPage))
+      }
+      if (rawSize) {
+        setSize(Number(rawSize))
+      }
+      if (rawSort) {
+        setSort(rawSort as string)
+      }
+      if (rawFilters) {
+        setFilters(rawFilters as any)
+      }
+      setInit(true)
+    } else {
       let url =
-        `/members?page=${pageIndex + 1}` +
-        `&size=${pageSize}&sort_by=${sort}&sort_dir=${direction}${filter}`
-      if (!pageUrl || pageUrl != url) {
-        setPageUrl(url)
+        `/members?page=${page}` + `&size=${size}&sort=${sort}` + `${getSearchParams(filters)}`
+      if (url != router.asPath) {
+        router.push(url)
       }
     }
-  }, [
-    sort_by,
-    sort_dir,
-    sort,
-    direction,
-    pageIndex,
-    pageSize,
-    filter,
-    filters,
-    pageUrl,
-    router.asPath,
-  ])
+  }, [loading, member, rawPage, rawSize, rawSort, init, filters])
 
-  const { data: response, error } = useSWR<ManyItems<Partial<Profile>>>(
-    `/api/members?limit=${pageSize}&offset=${pageSize * pageIndex}&sort=${sortExpression}${filter}`,
-    JsonFetcher
-  )
+  const { members, meta, pageCount, error } = useMemberSearch(page - 1, size, sort, filters)
 
-  const [pageCount, setPageCount] = useState(0)
-  const [members, setMembers] = useState<SearchableMember[]>()
-  const [meta, setMeta] = useState<{ total: number; filtered: number }>({ total: 0, filtered: 0 })
+  const methods = useForm<SearchableMember>({
+    mode: 'onBlur',
+    defaultValues: filters as any,
+  })
 
-  useEffect(() => {
-    const { data, meta } = response || {}
-    if (data) {
-      setMembers(data)
-      window.scrollTo(0, 0)
-    } else {
-      setMembers([])
-    }
-
-    if (meta) {
-      setMeta({
-        total: meta.total_count,
-        filtered: meta.filter_count,
-      })
-      setPageCount(Math.ceil(meta.filter_count / pageSize))
-    } else {
-      setPageCount(0)
-      setMeta({
-        total: 0,
-        filtered: 0,
-      })
-    }
-  }, [router, pageCount, pageSize, meta, response])
-
-  const handlePageChange = useCallback(() => {
-    router.replace(pageUrl)
-  }, [pageUrl, router])
-
-  const cardBg = useColorModeValue('white', 'black')
+  const { handleSubmit } = methods
 
   return (
     <Page title="Members" loading={loading} w="full">
@@ -134,9 +181,9 @@ export default function MemberListPage({}: Props) {
         <Flex gap={2} align="center" justify="space-between" my={2}>
           <Select
             w={32}
-            value={pageSize}
+            value={size}
             onChange={(e) => {
-              setPageSize(Number(e.target.value))
+              setSize(Number(e.target.value))
             }}
           >
             {[10, 20, 30, 40, 50].map((pageSize) => (
@@ -146,31 +193,22 @@ export default function MemberListPage({}: Props) {
             ))}
           </Select>
           <Select
-            w={32}
+            w={40}
             value={sort}
             onChange={(e) => {
-              setSort(e.target.value)
+              setSort(e.target.value as any)
             }}
           >
-            <option value="last_login">Last Login</option>
-            <option value="presence">Online</option>
-            <option value="nickname">Name</option>
-            <option value="user_type">Level</option>
-            <option value="rating">Rating</option>
-          </Select>
-          <Select
-            w={32}
-            value={direction}
-            onChange={(e) => {
-              setDirection(e.target.value as 'asc' | 'desc')
-            }}
-          >
-            <option value="asc">Asc</option>
-            <option value="desc">Desc</option>
+            <option value="-presence">Online</option>
+            <option value="-last_login">Recently Online</option>
+
+            <option value="nickname">By Username</option>
+            <option value="-user_type">By Level</option>
+            <option value="-rating">Highest Rated</option>
           </Select>
         </Flex>
       )}
-      <Accordion allowToggle w="full">
+      {/**<Accordion allowToggle w="full">
         <AccordionItem>
           <h2>
             <AccordionButton>
@@ -180,9 +218,99 @@ export default function MemberListPage({}: Props) {
               <AccordionIcon />
             </AccordionButton>
           </h2>
-          <AccordionPanel></AccordionPanel>
+          
+          <AccordionPanel>
+            <FormProvider {...methods}>
+              <form
+                onSubmit={handleSubmit((data) => {
+                  setFilters(data)
+                })}
+              >
+                <FieldCheckboxes
+                  field="spectrum"
+                  label="Orientation"
+                  formOptions={spectrumOptions}
+                />
+                <FieldCheckboxes
+                  field="mannerisms"
+                  label="Mannerisms"
+                  formOptions={mannerismsOptions}
+                />
+                <FieldCheckboxes
+                  field="relationship_status"
+                  label="Relationship Status"
+                  formOptions={relationshipOptions}
+                />
+                <FieldCheckboxes
+                  field="skin_tone"
+                  label="Skin Tone"
+                  formOptions={skinToneOptions}
+                />
+                <FieldCheckboxes
+                  field="hair_color"
+                  label="Hair Color"
+                  formOptions={hairColorOptions}
+                />
+                <FieldCheckboxes
+                  field="hair_style"
+                  label="Hair Style"
+                  formOptions={hairStyleOptions}
+                />
+                <FieldCheckboxes
+                  field="body_hair"
+                  label="Body Hair"
+                  formOptions={bodyHairOptions}
+                />
+                <FieldCheckboxes
+                  field="facial_hair"
+                  label="Facial Hair"
+                  formOptions={facialHairOptions}
+                />
+                <FieldCheckboxes
+                  field="eye_color"
+                  label="Eye Color"
+                  formOptions={eyeColorOptions}
+                />
+
+                <FieldCheckboxes
+                  field="body_attributes"
+                  label="Other Attributes"
+                  formOptions={bodyAttributesOptions}
+                />
+
+                <FieldCheckboxes
+                  field="cock_girth"
+                  label="Cock Girth"
+                  formOptions={cockGirthOptions}
+                />
+                <FieldCheckboxes
+                  field="cock_attributes"
+                  label="Cock Attributes"
+                  className="sm:col-span-2"
+                  formOptions={cockAttributesOptions}
+                />
+                <FieldCheckboxes
+                  field="ball_size"
+                  label="Ball Size"
+                  formOptions={ballSizeOptions}
+                />
+                <FieldCheckboxes
+                  field="ball_gravity"
+                  label="Ball Sack"
+                  formOptions={ballGravityOptions}
+                />
+                <FieldCheckboxes
+                  field="cum_attributes"
+                  label="Cum Attributes"
+                  className="sm:col-span-2"
+                  formOptions={cumAttributesOptions}
+                />
+              </form>
+            </FormProvider>
+          </AccordionPanel>
         </AccordionItem>
       </Accordion>
+              **/}
       <StatGroup as={HStack} spacing={4}>
         <Stat>
           <StatLabel>Total</StatLabel>
@@ -194,17 +322,11 @@ export default function MemberListPage({}: Props) {
         </Stat>
       </StatGroup>
       <SimpleGrid my={5} columns={[1, 1, 2]} spacing={4} w="full" justifyItems="stretch">
-        {member &&
-          members &&
+        {members &&
           members.map((member: SearchableMember) => {
             return (
               <Link key={member.id} _hover={{ textDecoration: 'none' }}>
                 <Card
-                  as={Flex}
-                  direction="row"
-                  justify="stretch"
-                  gap={2}
-                  justifyContent="space-between"
                   w="full"
                   h="full"
                   bg={cardBg}
@@ -212,28 +334,38 @@ export default function MemberListPage({}: Props) {
                   border="1px solid transparent"
                   _hover={{ shadow: 'xl', borderColor: 'accent.500' }}
                 >
-                  <Flex direction="column" align="start" justify="space-between">
-                    <UserCard user={member} />
-                    <Rating
-                      value={member.rating || 0}
-                      mt={2}
-                      aria-label="User Rating"
-                      size="xxs"
-                      simple
-                    />
-                  </Flex>
-                  <Flex
-                    direction="column"
-                    align="end"
-                    justify="space-between"
-                    alignItems="flex-end"
-                  >
-                    <Flex wrap="wrap" gap={2} align="end" justify="end" direction="row-reverse">
-                      {member?.my_positions?.map((position, i) => (
-                        <Badge key={i} colorScheme="secondary">
-                          {position}
-                        </Badge>
-                      ))}
+                  <Flex direction="row" justify="stretch" gap={2} justifyContent="space-between">
+                    <Flex direction="column" align="start" justify="space-between">
+                      <UserCard user={member} />
+                      <Rating
+                        value={member.rating || 0}
+                        mt={2}
+                        aria-label="User Rating"
+                        size="xxs"
+                        simple
+                      />
+                    </Flex>
+                    <Flex
+                      direction="column"
+                      align="end"
+                      justify="space-between"
+                      alignItems="flex-end"
+                    >
+                      <Flex mb={2} align="flex-end" justify="space-between" gap={2}>
+                        {member?.spectrum && (
+                          <Badge colorScheme="primary">{member?.spectrum}</Badge>
+                        )}
+                        {member?.relationship_status && (
+                          <Badge colorScheme="accent">{member?.relationship_status}</Badge>
+                        )}
+                      </Flex>
+                      <Flex wrap="wrap" gap={2} align="end" justify="end" direction="row-reverse">
+                        {member?.my_positions?.map((position, i) => (
+                          <Badge key={i} colorScheme="secondary">
+                            {position}
+                          </Badge>
+                        ))}
+                      </Flex>
                     </Flex>
                   </Flex>
                 </Card>
@@ -245,8 +377,8 @@ export default function MemberListPage({}: Props) {
         <Flex>
           <Tooltip label="First Page">
             <IconButton
-              onClick={() => setPageIndex(0)}
-              isDisabled={pageIndex == 0}
+              onClick={() => setPage(1)}
+              isDisabled={page == 1}
               icon={<ArrowLeftIcon h={3} w={3} />}
               mr={4}
               aria-label="First Page"
@@ -254,8 +386,8 @@ export default function MemberListPage({}: Props) {
           </Tooltip>
           <Tooltip label="Previous Page">
             <IconButton
-              onClick={() => setPageIndex(pageIndex - 1)}
-              isDisabled={pageIndex == 0}
+              onClick={() => setPage(page - 1)}
+              isDisabled={page == 1}
               icon={<ChevronLeftIcon h={6} w={6} />}
               aria-label="Previous Page"
             />
@@ -266,7 +398,7 @@ export default function MemberListPage({}: Props) {
           <Text flexShrink="0" mx={8}>
             Page{' '}
             <Text fontWeight="bold" as="span">
-              {pageIndex + 1}
+              {page}
             </Text>{' '}
             of{' '}
             <Text fontWeight="bold" as="span">
@@ -276,16 +408,16 @@ export default function MemberListPage({}: Props) {
 
           <Tooltip label="Next Page">
             <IconButton
-              onClick={() => setPageIndex(pageIndex + 1)}
-              isDisabled={pageCount == 0 || pageIndex + 1 >= pageCount}
+              onClick={() => setPage(page + 1)}
+              isDisabled={pageCount == 0 || page + 1 >= pageCount}
               icon={<ChevronRightIcon h={6} w={6} />}
               aria-label="Next Page"
             />
           </Tooltip>
           <Tooltip label="Last Page">
             <IconButton
-              onClick={() => setPageIndex(pageCount - 1)}
-              isDisabled={pageCount == 0 || pageIndex + 1 >= pageCount}
+              onClick={() => setPage(pageCount)}
+              isDisabled={page >= pageCount}
               icon={<ArrowRightIcon h={3} w={3} />}
               ml={4}
               aria-label="Last Page"

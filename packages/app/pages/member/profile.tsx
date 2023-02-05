@@ -110,8 +110,7 @@ function Account(props: PageProps) {
 
 function Form(props: PageProps) {
   const toast = useToast()
-  const { member, reload, loading } = useMember()
-  const router = useRouter()
+  const { member, reload } = useMember()
   const {
     spectrumOptions,
     positionsOptions,
