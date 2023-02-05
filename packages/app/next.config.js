@@ -6,6 +6,9 @@ const getConfig = ( phase ) => {
    * @type {import('next').NextConfig}
    */
   const nextConfig = {
+    runtimeConfig: {
+      dev
+    },
     pageExtensions: ['ts', 'tsx'],
     images: {
       domains: [

@@ -8,11 +8,11 @@ export default function Footer() {
       <Stack
         alignItems="center"
         justify="space-between"
-        __css={constrained}
-        direction={{ base: 'column', lg: 'row' }}
+        direction={['column', 'column', 'row']}
         borderTop={'1px solid'}
         borderColor={useColorModeValue('primary.500', 'accent.500')}
         pt={4}
+        __css={constrained}
       >
         <HStack spacing={5}>
           <Link href="https://www.instagram.com/guysnheat/" target={'_blank'} rel="noreferrer">
@@ -30,7 +30,7 @@ export default function Footer() {
             <DiscordIcon />
           </Link>
         </HStack>
-        <HStack my={3} fontSize={'sm'}>
+        <HStack my={3} fontSize={'sm'} fontWeight="semibold" textTransform="uppercase">
           <Link
             href="/terms"
             pr={3}
@@ -42,7 +42,11 @@ export default function Footer() {
           <Link href="/privacy">Privacy policy</Link>
         </HStack>
 
-        <Text fontSize={'xs'} color={useColorModeValue('gray.500', 'gray.100')}>
+        <Text
+          fontSize={'sm'}
+          fontWeight="semibold"
+          color={useColorModeValue('gray.500', 'gray.100')}
+        >
           &copy; Guys N Heat 2023. All rights reserved.
         </Text>
       </Stack>

@@ -250,6 +250,9 @@ const custom: Partial<ChakraTheme> = {
         p: {
           my: 2,
         },
+        img: {
+          width: '100%',
+        },
       }
     },
   },

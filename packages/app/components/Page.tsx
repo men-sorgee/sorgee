@@ -88,18 +88,11 @@ const Page = ({
       as="article"
       alignItems={['left', 'center']}
       justifyItems="center"
-      mx="auto"
+      w="full"
+      flex="1"
       {...props}
     >
-      <Heading
-        as="h1"
-        textAlign={['left', 'center']}
-        size={['2xl', '4xl']}
-        lineHeight={['3rem', '6rem']}
-        w="full"
-      >
-        {title}
-      </Heading>
+      <h1>{title}</h1>
 
       {header}
       {(loading && (

@@ -13,30 +13,12 @@ import {
   QrcodeIcon,
   UserIcon,
 } from '@heroicons/react/outline'
-import { useSite } from 'hooks/use-site'
+import { useAuth } from 'hooks'
 
 interface Props {}
 
 export default function UserMenu(_props: Props) {
-  const { data: session } = useSession()
-  const { site, loading } = useSite()
-  const { user } = session || {}
-  const { application_status, user_type } = user || {}
-  const [level, setLevel] = useState<number>(-1)
-  const [approved, setApproved] = useState<boolean>(false)
-
-  useEffect(() => {
-    if (!loading && application_status && level == -1) {
-      setLevel(MemberLevel[user_type])
-      setApproved(ApplicationStatus[application_status] >= ApplicationStatus.approved)
-    }
-  }, [level, loading, application_status, user_type, approved])
-
-  const isMember = approved && level >= MemberLevel.pledge
-  const isStaff = isMember && level >= MemberLevel.staff
-  const isApplicant = !approved
-  const showApply = !site?.invite_only
-
+  const { user, isApplicant, isMember, isStaff, showApply } = useAuth()
   return (
     <>
       {user ? (

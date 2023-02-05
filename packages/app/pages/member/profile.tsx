@@ -193,7 +193,7 @@ function Form(props: PageProps) {
                   borderRadius="md"
                   shadow="md"
                 >
-                  <Text w={['full']}>
+                  <Text>
                     This is your profile. Other verified members are able to see this information.
                     You can also choose to make your profile private.
                   </Text>
@@ -203,8 +203,8 @@ function Form(props: PageProps) {
                     help="Turn this on, if you are okay showing this information to other verified members."
                   />
                 </Alert>
-                <SimpleGrid spacing={2} columns={{ base: 1, md: 3 }}>
-                  <GridItem colSpan={{ base: 1, sm: 3 }}>
+                <SimpleGrid spacing={2} columns={[1, 1, 3]}>
+                  <GridItem colSpan={[1, 1, 3]}>
                     <FieldInput
                       field="nickname"
                       label="Username"

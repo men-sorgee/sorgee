@@ -15,7 +15,8 @@ import {
   StackProps,
   useColorModeValue,
 } from '@chakra-ui/react'
-import { HamburgerIcon, CloseIcon, ChevronDownIcon, MoonIcon, SunIcon } from '@chakra-ui/icons'
+import { CloseIcon, ChevronDownIcon } from '@chakra-ui/icons'
+import { MoonIcon, SunIcon, MenuIcon } from '@heroicons/react/solid'
 import { Logo } from '../ui'
 import { useState, useEffect, useCallback } from 'react'
 import { PageItem } from 'lib/models'
@@ -99,13 +100,11 @@ function Header({ children, ...props }: Props) {
       <Box
         {...props}
         as="header"
-        color={'white'}
+        color="white"
         position="sticky"
-        top={0}
-        zIndex={100}
         shadow="xl"
         bg={useColorModeValue('primary.800', 'black')}
-        minH={'60px'}
+        minH="60px"
       >
         <HStack
           alignItems="center"
@@ -115,24 +114,26 @@ function Header({ children, ...props }: Props) {
           __css={constrained}
         >
           <IconButton
-            size={'lg'}
+            size="lg"
             onClick={onToggle}
-            icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-            variant={'ghost'}
-            aria-label={'Toggle Navigation'}
+            icon={isOpen ? <CloseIcon /> : <MenuIcon />}
+            variant="primary"
+            aria-label="Toggle Navigation"
           />
-          <Flex flex={1} justify={'center'}>
-            <Logo width={'20px'} />
+          <Flex flex={1} justify="center" ml={12}>
+            <Logo width="20px" />
           </Flex>
 
           <HStack spacing={2} alignItems="center" justifyItems="middle">
+            <User />
+
             <IconButton
+              size="lg"
               onClick={toggleColorMode}
               icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-              variant={'ghost'}
-              aria-label={'Toggle Theme'}
+              variant="primary"
+              aria-label="Toggle Theme"
             />
-            <User />
           </HStack>
         </HStack>
         <Collapse in={isOpen} animateOpacity>
