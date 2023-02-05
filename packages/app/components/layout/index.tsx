@@ -43,7 +43,13 @@ function Layout({
       <Meta />
       <Flex direction="column" flex="1" overflowX="clip">
         <Header />
-        <Box maxH={`calc(100vh - ${height})`} overflowY="auto">
+        <Flex
+          flex="1"
+          direction="column"
+          minH="70vh"
+          maxH={`calc(100vh - ${height})`}
+          overflowY="auto"
+        >
           <Box
             flex="1"
             {...constrained}
@@ -53,7 +59,7 @@ function Layout({
           </Box>
           <Spacer />
           <Footer />
-        </Box>
+        </Flex>
         {isMember && <Actions currentPath={path} />}
       </Flex>
     </>

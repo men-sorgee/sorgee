@@ -5,16 +5,19 @@ import {
   getNotifications,
 } from 'lib/services/directus/server/users/notifications'
 
-import { withMethods, withMember } from 'lib/utils/server'
+import { withMethods, withUser } from 'lib/utils/server'
 
-const handler = async (req: NextApiRequest, res: NextApiResponse<ApiResponse>) => {
+export default async function getUserNotifications(
+  req: NextApiRequest,
+  res: NextApiResponse<ApiResponse>
+) {
   try {
     const method = withMethods(req, ['GET', 'PUT'])
-    const member = await withMember(req, res)
+    const user = await withUser(req, res)
     let notifications: AppNotification[] = []
     switch (method) {
       case 'GET':
-        notifications = await getNotifications(member.id)
+        notifications = await getNotifications(user.id)
         return res.status(200).json(ApiResponse(notifications))
 
       case 'PUT':
@@ -30,5 +33,3 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ApiResponse>) =
     res.status(405).json(ApiResponse(null, e.message || e))
   }
 }
-
-export default handler

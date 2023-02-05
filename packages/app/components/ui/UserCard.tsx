@@ -1,43 +1,45 @@
-import { HStack, Avatar, VStack, Heading, Text } from '@chakra-ui/react'
+import { HStack, Avatar, VStack, Heading, Text, AvatarProps } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
-import { useMember } from 'hooks/use-member'
 import { UserBadge } from './'
 import { getAssetUrl } from 'lib/utils'
-interface Props {}
+import { Member } from '../../lib/models'
 
-export default function UserCard(_props: Props) {
+type Props = AvatarProps & {
+  user: Partial<Member>
+}
+
+export default function UserCard({ user }: Props) {
   const [loaded, setLoaded] = useState(false)
-  const { member, loading } = useMember()
   const [pictureSrc, setPictureSrc] = useState<string | null>()
 
   useEffect(() => {
-    if (!loaded && !loading && member) {
-      const { picture } = member
+    if (!loaded && user) {
+      const { picture } = user
       if (!pictureSrc && picture) setPictureSrc(getAssetUrl(picture))
       setLoaded(true)
     }
-  }, [member, pictureSrc, loaded, loading])
+  }, [user, pictureSrc, loaded])
 
-  if (!member) return null
+  if (!user) return null
 
   return (
     <>
       <HStack spacing={3} alignItems="center">
         <Avatar
-          id={member?.id}
+          id={user?.id}
           src={pictureSrc}
           size="lg"
           color="white"
           bg="primary.300"
-          title={member?.biography}
+          name={user?.nickname || user?.first_name}
         />
         <VStack spacing={0} align="flex-start">
           <Heading size="md" textTransform="uppercase" m={0}>
-            {member?.nickname}
+            {user?.nickname || user?.first_name}
           </Heading>
-          <UserBadge size="lg" user_type={member?.user_type} />
-          <Text fontSize="sm" color="gray.500">
-            {member?.city}
+          <UserBadge size="lg" user_type={user?.user_type} />
+          <Text fontSize="sm" color="text">
+            {user?.city}
           </Text>
         </VStack>
       </HStack>

@@ -1,29 +1,39 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getUser, updateUser } from 'lib/services/directus/server/users'
 import { withMethods, withMember } from 'lib/utils/server'
-import { User, Applicant, ApiResponse } from 'lib/models'
-import { uploadFile, getFileInfo, UploadFolder } from '../../../lib/services/directus/server'
+import { User, Applicant, ApiResponse, MemberLevel } from 'lib/models'
+import { uploadFile, getFileInfo, UploadFolder } from 'lib/services/directus/server'
 
 interface UserUpdate extends Omit<Partial<User>, 'id'> {
   image_field?: string
   image_name?: string
 }
-export default async function getUserDetails(
+export default async function getMemberDetails(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<Applicant> | ApiResponse>
 ) {
   try {
     const method = withMethods(req, ['GET', 'POST'])
     const member = await withMember(req, res)
-    if (!member || member.user_type != 'staff') {
+    if (!member) {
       return res.status(401).json(ApiResponse(null, 'Unauthorized'))
     }
 
     const { id } = req.query
     const user_id = String(id)
+    const level = MemberLevel[member.user_type]
     const user = await getUser(user_id)
     if (!user) {
       return res.status(404).json(ApiResponse(null, 'Not found'))
+    }
+    const user_level = MemberLevel[user.user_type]
+
+    if (user_level < MemberLevel.brother && level < MemberLevel.big_brother) {
+      return res.status(401).json(ApiResponse(null, 'Unauthorized'))
+    }
+
+    if (level < MemberLevel.staff && user.show_profile == false) {
+      return res.status(401).json(ApiResponse(null, 'Unauthorized'))
     }
 
     switch (method) {

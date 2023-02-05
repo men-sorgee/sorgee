@@ -93,7 +93,7 @@ export default function Scanner() {
                 torch={light}
               />
             </AspectRatio>
-            <HStack align="center" position="absolute" zIndex="100" spacing={4} mt={-12}>
+            <HStack align="center" position="absolute" zIndex="1" spacing={4} mt={-12}>
               <IconButton
                 colorScheme="ghost"
                 icon={<RefreshIcon />}

@@ -65,16 +65,21 @@ export async function findUser<T = Profile>(
   return user as T
 }
 
-export async function searchUsers<T = Profile>(
+export async function searchUsers<T = Member>(
   filter: FieldFilter<T>,
-  fields: UserFields = profileFields
-): Promise<T[] | null> {
+  fields: UserFields = memberFields,
+  limit: number = 20,
+  offset: number = 0
+) {
   const adminClient = await getAdminClient()
-  const { data: users } = await adminClient.items('users').readByQuery({
+  const results = await adminClient.items('users').readByQuery({
     filter,
-    fields: [...fields],
+    fields,
+    limit,
+    offset,
+    meta: '*',
   })
-  return users as T[]
+  return results
 }
 
 export async function getApplicant(id: string): Promise<Applicant | null> {

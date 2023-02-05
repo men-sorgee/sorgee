@@ -28,9 +28,9 @@ export default function UserMenu(_props: Props) {
               <UserAvatar />
             </MenuButton>
 
-            <MenuList bg="black" alignItems={'center'}>
+            <MenuList bg="black" alignItems={'center'} >
               <Box p={4} m={2} bgGradient="linear(to-bl, primary.300, accent.300)">
-                <UserCard />
+                <UserCard user={user} />
               </Box>
               <MenuDivider />
               {isApplicant && (

@@ -101,7 +101,6 @@ function Header({ children, ...props }: Props) {
         {...props}
         as="header"
         color="white"
-        position="sticky"
         shadow="xl"
         bg={useColorModeValue('primary.800', 'black')}
         minH="60px"
@@ -120,7 +119,7 @@ function Header({ children, ...props }: Props) {
             variant="primary"
             aria-label="Toggle Navigation"
           />
-          <Flex flex={1} justify="center" ml={12}>
+          <Flex flex={1} justify="center" ml={8}>
             <Logo width="20px" />
           </Flex>
 

@@ -59,7 +59,7 @@ type MemberFormData = Partial<Member>
 function Account(props: PageProps) {
   const { member, loading } = useMember()
   return (
-    <Page title="Account" loading={loading} requireAuth={true} header={<UserCard />}>
+    <Page title="Account" loading={loading} requireAuth={true} header={<UserCard user={member} />}>
       {member && <Form {...props} />}
     </Page>
   )

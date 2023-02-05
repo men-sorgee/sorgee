@@ -15,10 +15,12 @@ export default function UserBadge({ user_type, size = 'md' }: Props) {
     ['cyan.300', 'cyan.600'],
     ['purple.300', 'purple.600'],
     ['pink.300', 'pink.600'],
+    ['accent.500', 'accent.700'],
+    ['secondary.500', 'secondary.700'],
   ]
   const levelValue = MemberLevel[user_type]
   const levelColor = colors[levelValue]
-  const levelName = (user_type == 'user' ? 'applicant' : user_type).split('_').join(' ')
+  const levelName = user_type.split('_').join(' ')
   return (
     <Badge rounded={size} size={size} textTransform={'uppercase'} bg={levelColor} color="white">
       {levelName}

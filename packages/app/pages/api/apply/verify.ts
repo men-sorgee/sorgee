@@ -1,7 +1,7 @@
 import { getFileInfo, updateUser, uploadFile, UploadFolder } from 'lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse, ApplicationStatus } from 'lib/models'
-import { withMember, withMethods } from 'lib/utils/server'
+import { withApplicant, withMethods } from 'lib/utils/server'
 import { sendNotificationEmail } from 'lib/services/sendgrid/server'
 
 export const config = {
@@ -14,31 +14,31 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
     if (!withMethods(req, ['POST'])) return
 
-    const member = await withMember(req, res)
-    if (!member) return
+    const applicant = await withApplicant(req, res)
+    if (!applicant) return
 
     const file = await uploadFile(
       await getFileInfo(req),
       UploadFolder.verification,
-      `Verification: ${member.id.substring(0, 4)}-${member.id.substring(4, 8)}`
+      `Verification: ${applicant.id.substring(0, 4)}-${applicant.id.substring(4, 8)}`
     )
 
-    await updateUser(member.id, {
+    await updateUser(applicant.id, {
       photo: file.id,
       application_status: 'review',
       user_type: 'pledge',
     })
 
-    const status = ApplicationStatus[member.application_status]
+    const status = ApplicationStatus[applicant.application_status]
     if (status < 2)
       await sendNotificationEmail(
-        member.email,
-        member.nickname || member.first_name + ' ' + member.last_name,
+        applicant.email,
+        applicant.nickname || applicant.first_name + ' ' + applicant.last_name,
         `Application Status`,
         'Your photo ID was submitted. It may take a few days to review.',
         {
           button_text: 'Check Application Results',
-          button_url: 'https://guysnheat.com/apply/resume',
+          button_url: 'https://guysnheat.com/apply',
         }
       )
 

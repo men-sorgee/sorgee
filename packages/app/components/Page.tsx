@@ -87,7 +87,7 @@ const Page = ({
       direction="column"
       as="article"
       alignItems={['left', 'center']}
-      justifyItems="center"
+      justifyItems="stretch"
       w="full"
       flex="1"
       {...props}
@@ -97,7 +97,7 @@ const Page = ({
       {header}
       {(loading && (
         <Loading size="xl">
-          <Heading as="h2">hold up</Heading>
+          <h2>hold up</h2>
         </Loading>
       )) ||
         children}
