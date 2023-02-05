@@ -1,3 +1,4 @@
+import { UserInvite } from 'lib/models'
 import { User, UserAccount } from './directus'
 
 type Color = {
@@ -41,23 +42,25 @@ export type NotificationStatusType = 'new' | 'sent' | 'read' | 'deleted'
 export type UserType =
   | 'reject'
   | 'subscriber'
-  | 'user'
+  | 'applicant'
   | 'pledge'
-  | 'member'
+  | 'inductee'
   | 'brother'
   | 'big_brother'
   | 'staff'
+  | 'admin'
 
 export enum MemberLevel {
   reject = 0,
   subscriber = 1,
-  user = 2,
+  applicant = 2,
   pledge = 3,
-  member = 4,
+  inductee = 4,
   brother = 5,
   big_brother = 6,
   // -- //
-  staff = 10,
+  staff = 7,
+  admin = 8,
 }
 
 export type ApplicationStatusType =
@@ -122,7 +125,7 @@ export const profileFields: Array<keyof Profile> = [
 export type ContactPreferenceType = 'email' | 'phone_text' | 'phone_call'
 
 export type Applicant = Profile & {
-  invite?: string
+  invite?: UserInvite
   phone: string
   phone_verified: boolean
   contact_preference: ContactPreferenceType
@@ -216,6 +219,7 @@ export type Member = Applicant & {
   their_spectrum?: OrientationType[]
   their_relationship_status?: string[]
 }
+
 export const memberFields: Array<keyof Member> = [
   ...applicantFields,
   'nickname',
@@ -253,4 +257,73 @@ export const memberFields: Array<keyof Member> = [
   'show_interests',
   'show_health',
   'event_invites',
+]
+
+export type SearchableMember = Omit<
+  Member,
+  | 'invite'
+  | 'promo'
+  | 'accounts'
+  | 'needs_guidance'
+  | 'in_sendgrid'
+  | 'application_status'
+  | 'vouched_by'
+  | 'birth_month'
+  | 'birth_year'
+  | 'contact_preference'
+  | 'signed_waiver'
+  | 'video_consent'
+  | 'photo_consent'
+  | 'signed_waiver'
+  | 'phone'
+  | 'phone_verified'
+  | 'email'
+  | 'email_verified'
+  | 'last_name'
+  | 'show_profile'
+  | 'show_interests'
+  | 'show_interests'
+  | 'event_invites'
+  | 'their_positions'
+  | 'their_roles'
+  | 'their_spectrum'
+  | 'their_relationship_status'
+  | 'can_host'
+  | 'can_host_events'
+>
+export const searchableMemberFields: Array<keyof SearchableMember> = [
+  'user_type',
+  'presence',
+  'city',
+  'state',
+  'nickname',
+  'biography',
+  'spectrum',
+  'relationship_status',
+  'age',
+  'height',
+  'weight',
+  'skin_tone',
+  'my_positions',
+  'my_roles',
+  'sexual_scenes',
+  'social_scenes',
+  'body_hair',
+  'facial_hair',
+  'hair_color',
+  'hair_style',
+  'body_attributes',
+  'build',
+  'eye_color',
+  'ball_size',
+  'ball_gravity',
+  'cum_attributes',
+  'load_policy',
+  'hiv_status',
+  'last_tested',
+  'vaccinations',
+  'mannerisms',
+  'cock_length',
+  'cock_girth',
+  'cock_attributes',
 ]

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getInvite, getUser, updateInvite, updateUser } from 'lib/services/directus/server'
-import { withMember, withMethods } from 'lib/utils/server'
+import { withStaff, withMethods } from 'lib/utils/server'
 import { ApiResponse, EventUser, MemberLevel } from 'lib/models'
 
 export default async function updateInviteHandler(
@@ -9,12 +9,13 @@ export default async function updateInviteHandler(
 ) {
   try {
     withMethods(req, ['GET', 'POST'])
-    const member = await withMember(req, res)
+    const staff = await withStaff(req, res)
     const { id } = req.query
     console.log('id', id)
-    if (id == undefined || !member || member.user_type != MemberLevel[MemberLevel.staff]) {
-      return res.status(401).json(ApiResponse(null, 'Unauthorized'))
+    if (id == undefined) {
+      return res.status(404).json(ApiResponse(null, 'Not found'))
     }
+
     const invite_id = Number(id)
     const invite = await getInvite(invite_id)
     if (!invite) {

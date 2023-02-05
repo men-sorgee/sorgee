@@ -9,7 +9,7 @@ export default async function getUserDetails(
   res: NextApiResponse<ApiResponse<Applicant> | ApiResponse>
 ) {
   try {
-    const method = withMethods(req, ['POST'])
+    withMethods(req, ['POST'])
 
     const {
       first_name,
