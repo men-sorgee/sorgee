@@ -19,7 +19,7 @@ export const useMember = (id: string = 'me'): MemberResults => {
     error,
     isLoading,
   } = useSWR<Member, Error>(`/api/member/${id}`, JsonFetcher)
-  const level = MemberLevel[(member?.user_type as string) || 'subscriber']
+  const level = MemberLevel[member?.user_type || 'subscriber' || 'subscriber']
   return {
     member,
     error,

@@ -287,8 +287,12 @@ export type User = {
   users: string | UserRelationship[]
   accounts: string | UserAccount[]
   show_profile: boolean
+  show_explicit: boolean
+  show_location: boolean
+  show_contact: boolean
   show_interests: boolean
   show_health: boolean
+  show_events: boolean
   event_invites: boolean
   can_host?: boolean
   can_host_events: string[] | ('sex' | 'social' | 'individual')[]

@@ -27,10 +27,11 @@ export default function useMemberSearch(
   page: number,
   size: number,
   sort?: string,
-  filters?: Record<string, any>
+  filters?: Partial<SearchableMember>
 ) {
-  const [filter] = useState<string>(getSearchParams(filters || {}))
-  const key = `/api/members?limit=${size}&offset=${size * page}&sort=${sort}${filter}`
+  const key = `/api/members?limit=${size}&offset=${size * page}&sort=${sort}${getSearchParams(
+    filters || {}
+  )}`
   const { data: response, error } = useSWR<ManyItems<Partial<Profile>>>(key, JsonFetcher)
 
   const [pageCount, setPageCount] = useState(0)

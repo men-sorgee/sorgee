@@ -85,7 +85,7 @@ export default async function FindMembers(
       [
         'id',
         'status',
-        'nick_name',
+        'nickname',
         'biography',
         'first_name',
         'picture',

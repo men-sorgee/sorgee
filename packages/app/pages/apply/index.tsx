@@ -2,7 +2,7 @@ import { useSession, signIn } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import Page from 'components/Page'
-import { Heading } from '@chakra-ui/react'
+import { Loading } from 'components/ui'
 export default function Index({}) {
   const { data: session, status } = useSession({
     required: true,
@@ -17,8 +17,7 @@ export default function Index({}) {
     if (status !== 'loading' && user) {
       const { application_status } = user || {}
       if (application_status === 'approved') {
-        // TODO: move this the main members page once it's in place
-        router.push('/apply/approved')
+        router.push('/members')
       } else {
         router.push('/apply/' + application_status)
       }
@@ -26,8 +25,8 @@ export default function Index({}) {
   }, [status, router, user])
 
   return (
-    <Page loading={status === 'loading'} title="Application" requireAuth={true}>
-      <Heading>Redirecting...</Heading>
+    <Page title="Application" requireAuth={true}>
+      <Loading>Sit tight</Loading>
     </Page>
   )
 }

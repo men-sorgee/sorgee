@@ -1,10 +1,11 @@
 import { ManyItems } from '@directus/sdk'
 import Page from 'components/Page'
 import { useMember } from 'hooks/use-member'
+import { UserAddIcon, StarIcon, ChatIcon } from '@heroicons/react/solid'
 import { JsonFetcher, getSearchParams } from 'lib/utils'
 import { useCallback, useEffect, useState } from 'react'
 import useSWR from 'swr'
-import { UserCard } from 'components/ui'
+import { Loading, UserCard } from 'components/ui'
 import { ArrowRightIcon, ArrowLeftIcon, ChevronRightIcon, ChevronLeftIcon } from '@chakra-ui/icons'
 import {
   Divider,
@@ -18,7 +19,6 @@ import {
   StatNumber,
   SimpleGrid,
   Tooltip,
-  IconButton,
   Text,
   Accordion,
   AccordionButton,
@@ -27,13 +27,39 @@ import {
   AccordionPanel,
   Box,
   Card,
+  CardFooter,
+  CardHeader,
+  CardBody,
   Link,
   useColorModeValue,
   Badge,
   Wrap,
-  CardFooter,
+  useDisclosure,
+  Button,
+  IconButton,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  LinkBox,
+  LinkOverlay,
 } from '@chakra-ui/react'
-import { User, FormOptions, SearchableMember, searchableMemberFields } from 'lib/models'
+import {
+  User,
+  FormOptions,
+  SearchableMember,
+  searchableMemberFields,
+  UserType,
+  MemberLevel,
+} from 'lib/models'
 import { useRouter } from 'next/router'
 import { Rating } from 'components/ui'
 import useMemberSearch from 'hooks/use-members'
@@ -41,38 +67,47 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
 import { FieldCheckboxes } from '../../components/forms'
 
-type PageProps = {
-  spectrumOptions: FormOptions
-  relationshipOptions: FormOptions
-  positionsOptions: FormOptions
-  skinToneOptions: FormOptions
-  hairColorOptions: FormOptions
-  hairStyleOptions: FormOptions
-  eyeColorOptions: FormOptions
-  mannerismsOptions: FormOptions
-  bodyHairOptions: FormOptions
-  bodyAttributesOptions: FormOptions
-  facialHairOptions: FormOptions
-  scenesOptions: FormOptions
-  cockGirthOptions: FormOptions
-  cockAttributesOptions: FormOptions
-  ballSizeOptions: FormOptions
-  ballGravityOptions: FormOptions
-  cumAttributesOptions: FormOptions
-  loadPolicyOptions: FormOptions
-  hivStatusOptions: FormOptions
-  vaccinationStatusOptions: FormOptions
-  myRolesOptions: FormOptions
-  theirRolesOptions: FormOptions
-  theirSpectrumOptions: FormOptions
-  theirPositionsOptions: FormOptions
-  buildOptions: FormOptions
-}
+type PageProps = Partial<SearchableMember> &
+  (Record<string, any> & {
+    page: number
+    size: number
+    sort: keyof SearchableMember | string
+    spectrumOptions: FormOptions
+    relationshipOptions: FormOptions
+    positionsOptions: FormOptions
+    skinToneOptions: FormOptions
+    hairColorOptions: FormOptions
+    hairStyleOptions: FormOptions
+    eyeColorOptions: FormOptions
+    mannerismsOptions: FormOptions
+    bodyHairOptions: FormOptions
+    bodyAttributesOptions: FormOptions
+    facialHairOptions: FormOptions
+    scenesOptions: FormOptions
+    cockGirthOptions: FormOptions
+    cockAttributesOptions: FormOptions
+    ballSizeOptions: FormOptions
+    ballGravityOptions: FormOptions
+    cumAttributesOptions: FormOptions
+    loadPolicyOptions: FormOptions
+    hivStatusOptions: FormOptions
+    vaccinationStatusOptions: FormOptions
+    myRolesOptions: FormOptions
+    theirRolesOptions: FormOptions
+    theirSpectrumOptions: FormOptions
+    theirPositionsOptions: FormOptions
+    buildOptions: FormOptions
+  })
 
-/*
 export async function getServerSideProps(context: NextPageContext) {
   const { getFieldOptions } = await import('lib/services/directus/server')
+  const { page, size, sort = '-presence', ...filters } = context.query
+
   const props: PageProps = {
+    page: Number(page) || 1,
+    size: Number(size) || 10,
+    sort: sort as string,
+    ...filters,
     spectrumOptions: await getFieldOptions<User>('spectrum'),
     relationshipOptions: await getFieldOptions<User>('relationship_status'),
     positionsOptions: await getFieldOptions<User>('my_positions'),
@@ -101,10 +136,9 @@ export async function getServerSideProps(context: NextPageContext) {
   }
   return { props }
 }
-*/
 
 export default function MemberListPage(props: PageProps) {
-  /*const {
+  const {
     spectrumOptions,
     positionsOptions,
     relationshipOptions,
@@ -130,50 +164,42 @@ export default function MemberListPage(props: PageProps) {
     theirSpectrumOptions,
     theirPositionsOptions,
     buildOptions,
-  } = props*/
-
-  const [init, setInit] = useState<boolean>(false)
-  const [sort, setSort] = useState<string>('-presence')
-  const [page, setPage] = useState<number>(1)
-  const [size, setSize] = useState<number>(10)
-  const [filters, setFilters] = useState<Partial<SearchableMember>>(undefined)
-  const cardBg = useColorModeValue('white', 'black')
+    page: rawPage,
+    size: rawSize,
+    sort: rawSort,
+    user_type = '*',
+    ...rawFilters
+  } = props
   const router = useRouter()
-  const { page: rawPage, size: rawSize, sort: rawSort, ...rawFilters } = router.query
+
+  console.dir({ rawSort, user_type })
+  const [filters, setFilters] = useState<Partial<SearchableMember>>({ ...rawFilters } || {})
+  const [level, setLevel] = useState<(string & UserType) | '*'>(user_type)
+  const [sort, setSort] = useState<string>((rawSort as string) || '-presence')
+  const [page, setPage] = useState<number>(Number(rawPage || '1'))
+  const [size, setSize] = useState<number>(Number(rawSize || '20'))
+  console.dir({ sort, level })
   const { member, loading } = useMember()
+  const memberLevel = MemberLevel[member?.user_type || 'subscriber']
 
   useEffect(() => {
-    if (!loading && member && !init) {
-      if (rawPage) {
-        setPage(Number(rawPage))
-      }
-      if (rawSize) {
-        setSize(Number(rawSize))
-      }
-      if (rawSort) {
-        setSort(rawSort as string)
-      }
-      if (rawFilters) {
-        setFilters(rawFilters as any)
-      }
-      setInit(true)
-    } else {
-      let url =
-        `/members?page=${page}` + `&size=${size}&sort=${sort}` + `${getSearchParams(filters)}`
-      if (url != router.asPath) {
-        router.push(url)
-      }
-    }
-  }, [loading, member, rawPage, rawSize, rawSort, init, filters])
+    router.replace({
+      pathname: '/members',
+      query: { size, page, sort, user_type: level, ...filters },
+    })
+  }, [loading, member, page, size, sort, page, level, filters?.user_type, filters])
 
-  const { members, meta, pageCount, error } = useMemberSearch(page - 1, size, sort, filters)
+  const { members, meta, pageCount, error } = useMemberSearch(page - 1, size, sort, {
+    user_type: level as any,
+    ...filters,
+  })
 
   const methods = useForm<SearchableMember>({
     mode: 'onBlur',
     defaultValues: filters as any,
   })
 
-  const { handleSubmit } = methods
+  // const { handleSubmit } = methods
 
   return (
     <Page title="Members" loading={loading} w="full">
@@ -203,8 +229,24 @@ export default function MemberListPage(props: PageProps) {
             <option value="-last_login">Recently Online</option>
 
             <option value="nickname">By Username</option>
-            <option value="-user_type">By Level</option>
+            {level == '*' && <option value="-user_type">By Level</option>}
             <option value="-rating">Highest Rated</option>
+          </Select>
+          <Select
+            w={40}
+            value={level}
+            onChange={(e) => {
+              setLevel(e.target.value as any)
+            }}
+          >
+            <option value="*">All</option>
+            {memberLevel >= MemberLevel.staff && <option value="applicant">Applicants</option>}
+            {memberLevel >= MemberLevel.big_brother && <option value="pledge">Pledges</option>}
+            {memberLevel >= MemberLevel.brother && <option value="inductee">Inductees</option>}
+            <option value="brother">Brothers</option>
+            <option value="big_brother">Big Brothers</option>
+            <option value="staff">Staff</option>
+            <option value="admin">Admin</option>
           </Select>
         </Flex>
       )}
@@ -322,56 +364,9 @@ export default function MemberListPage(props: PageProps) {
         </Stat>
       </StatGroup>
       <SimpleGrid my={5} columns={[1, 1, 2]} spacing={4} w="full" justifyItems="stretch">
-        {members &&
-          members.map((member: SearchableMember) => {
-            return (
-              <Link key={member.id} _hover={{ textDecoration: 'none' }}>
-                <Card
-                  w="full"
-                  h="full"
-                  bg={cardBg}
-                  p={4}
-                  border="1px solid transparent"
-                  _hover={{ shadow: 'xl', borderColor: 'accent.500' }}
-                >
-                  <Flex direction="row" justify="stretch" gap={2} justifyContent="space-between">
-                    <Flex direction="column" align="start" justify="space-between">
-                      <UserCard user={member} />
-                      <Rating
-                        value={member.rating || 0}
-                        mt={2}
-                        aria-label="User Rating"
-                        size="xxs"
-                        simple
-                      />
-                    </Flex>
-                    <Flex
-                      direction="column"
-                      align="end"
-                      justify="space-between"
-                      alignItems="flex-end"
-                    >
-                      <Flex mb={2} align="flex-end" justify="space-between" gap={2}>
-                        {member?.spectrum && (
-                          <Badge colorScheme="primary">{member?.spectrum}</Badge>
-                        )}
-                        {member?.relationship_status && (
-                          <Badge colorScheme="accent">{member?.relationship_status}</Badge>
-                        )}
-                      </Flex>
-                      <Flex wrap="wrap" gap={2} align="end" justify="end" direction="row-reverse">
-                        {member?.my_positions?.map((position, i) => (
-                          <Badge key={i} colorScheme="secondary">
-                            {position}
-                          </Badge>
-                        ))}
-                      </Flex>
-                    </Flex>
-                  </Flex>
-                </Card>
-              </Link>
-            )
-          })}
+        {members?.map((member: SearchableMember) => (
+          <MemberCard key={member.id} member={member} />
+        ))}
       </SimpleGrid>
       <Flex justifyContent="space-between" m={4} alignItems="center">
         <Flex>
@@ -426,5 +421,138 @@ export default function MemberListPage(props: PageProps) {
         </Flex>
       </Flex>
     </Page>
+  )
+}
+
+function MemberSpotlight({ member: { id } }: { member: Partial<SearchableMember> }) {
+  const { member, loading } = useMember(id)
+  if (loading || !member) return <Loading />
+
+  return (
+    <Flex direction="column" mb={2} align="center" justify="start" gap={2}>
+      <Text>{member?.biography}</Text>
+      {member?.cock_length && (
+        <Badge size="lg" colorScheme="peach">
+          {member?.cock_length}" cock
+        </Badge>
+      )}
+      {member?.cock_girth && (
+        <Badge size="lg" colorScheme="peach">
+          {member?.cock_girth}
+        </Badge>
+      )}
+      <Flex gap={2}>
+        {member?.cock_attributes?.map((a, i) => (
+          <Badge size="lg" key={i} colorScheme="peach">
+            {a}
+          </Badge>
+        ))}
+      </Flex>
+      <Flex gap={2}>
+        {member?.cum_attributes?.map((a, i) => (
+          <Badge size="lg" key={i} colorScheme="accent">
+            {a}
+          </Badge>
+        ))}
+      </Flex>
+      <Wrap gap={2}>
+        {member?.my_positions?.map((position, i) => (
+          <Badge key={i} colorScheme="secondary">
+            {position}
+          </Badge>
+        ))}
+      </Wrap>
+      <Wrap gap={2}>
+        {member?.my_roles?.map((role, i) => (
+          <Badge key={i} colorScheme="red">
+            {role}
+          </Badge>
+        ))}
+      </Wrap>
+      <Wrap gap={2}>
+        {member?.sexual_scenes?.map((scene, i) => (
+          <Badge key={i} colorScheme="purple">
+            {scene}
+          </Badge>
+        ))}
+      </Wrap>
+    </Flex>
+  )
+}
+
+function MemberCard({ member }: { member: Partial<SearchableMember> }) {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const cardBg = useColorModeValue('white', 'black')
+
+  return (
+    <>
+      <LinkBox as="article" key={member?.id} onClick={onOpen}>
+        <Card
+          w="full"
+          h="full"
+          bg={cardBg}
+          border="1px solid transparent"
+          borderColor="accent.700"
+          _hover={{ shadow: '2xl', borderColor: 'accent.500' }}
+        >
+          <CardHeader>
+            <Flex direction="row" justify="stretch" gap={2} justifyContent="space-between">
+              <LinkOverlay href="#">
+                <UserCard user={member} />
+              </LinkOverlay>
+              <Flex direction="column">
+                <Rating
+                  value={member.rating || 0}
+                  mt={2}
+                  aria-label="User Rating"
+                  size="xs"
+                  simple
+                />
+              </Flex>
+            </Flex>
+          </CardHeader>
+          <CardBody>
+            <Text noOfLines={2}>{member?.biography}</Text>
+          </CardBody>
+          <CardFooter></CardFooter>
+        </Card>
+      </LinkBox>
+      <Modal size="2xl" isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay backdropFilter="auto" backdropBlur="2px" />
+        <ModalContent>
+          <ModalHeader>
+            <Flex direction="row" justify="flex-start" align="top">
+              <UserCard user={member} size="xl" />
+            </Flex>
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <MemberSpotlight member={member} />
+          </ModalBody>
+          <ModalFooter>
+            <Flex justify="space-between" align="center">
+              <IconButton
+                aria-label="Add Buddy"
+                disabled={true}
+                icon={<UserAddIcon fill="primary.300" />}
+                variant="ghost"
+              />
+              <IconButton
+                aria-label="Favorite"
+                disabled={true}
+                icon={<StarIcon fill="yellow.300" />}
+                variant="ghost"
+              />
+              <IconButton
+                aria-label="Message"
+                disabled={true}
+                icon={<ChatIcon fill="blue.300" />}
+                variant="ghost"
+              />
+            </Flex>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
   )
 }

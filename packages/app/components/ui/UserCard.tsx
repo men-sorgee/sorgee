@@ -43,8 +43,8 @@ export default function UserCard({ user }: Props) {
             src={pictureSrc}
             size="lg"
             color="white"
-            bg="primary.300"
             name={user?.nickname || user?.first_name}
+            bgGradient="linear(to-b, blue.500, accent.500)"
           >
             {user?.presence == 'online' && (
               <Tooltip label={lastLogin} placement="top">
@@ -58,7 +58,7 @@ export default function UserCard({ user }: Props) {
             </Heading>
             <UserBadge size="lg" user_type={user?.user_type} />
             <Text fontSize="sm" color="text">
-              {user?.city}
+              {user?.city || 'Nearby'} {user?.state}
             </Text>
           </VStack>
         </HStack>

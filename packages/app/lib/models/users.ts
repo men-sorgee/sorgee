@@ -126,6 +126,7 @@ export type ContactPreferenceType = 'email' | 'phone_text' | 'phone_call'
 
 export type Applicant = Profile & {
   invite?: UserInvite
+  show_contact: boolean
   phone: string
   phone_verified: boolean
   contact_preference: ContactPreferenceType
@@ -151,6 +152,7 @@ export type Applicant = Profile & {
 export const applicantFields: Array<keyof Applicant> = [
   ...profileFields,
   'vouched_by',
+  'show_contact',
   'phone',
   'phone_verified',
   'contact_preference',
@@ -174,24 +176,28 @@ export const applicantFields: Array<keyof Applicant> = [
 ]
 
 export type Member = Applicant & {
-  presence: 'offline' | 'online' | 'away'
-  nickname: User['nickname']
-  video_consent: boolean
-  photo_consent: boolean
   notifications: AppNotification[]
   signed_waiver: boolean
+  presence: 'offline' | 'online' | 'away'
+
+  video_consent: boolean
+  photo_consent: boolean
+
+  //-location
+  show_location?: boolean
   location?: string
   city?: string
   state?: string
-  // preferences
+
+  //-events
+  show_events: boolean
   can_host?: boolean
   can_host_events: string[]
-  show_location?: boolean
-  show_profile?: boolean
-  show_interests?: boolean
-  show_health?: boolean
   event_invites?: boolean
+
   //-profile
+  show_profile?: boolean
+  nickname: User['nickname']
   body_hair?: string
   facial_hair?: string
   hair_color?: string
@@ -200,20 +206,25 @@ export type Member = Applicant & {
   eye_color?: string
   mannerisms?: string
   build?: string
-  //-new
+
+  //-explicit
+  show_explicit: boolean
   cock_length?: number
   cock_girth?: string
   cock_attributes?: string[]
   ball_size?: string
   ball_gravity?: string
   cum_attributes?: string[]
-  load_policy?: string[]
 
   //-health
+  show_health?: boolean
   hiv_status?: string
   last_tested?: string
   vaccinations?: string[]
+  load_policy?: string[]
+
   //-them
+  show_interests?: boolean
   their_positions?: string[]
   their_roles?: string[]
   their_spectrum?: OrientationType[]
@@ -222,96 +233,55 @@ export type Member = Applicant & {
   rating: number
 }
 
-export const memberFields: Array<keyof Member> = [
-  ...applicantFields,
-  'nickname',
-  'city',
-  'state',
-  'video_consent',
-  'photo_consent',
-  'signed_waiver',
-  'body_hair',
-  'facial_hair',
-  'hair_color',
-  'hair_style',
-  'body_attributes',
-  'build',
-  'eye_color',
-  'ball_size',
-  'ball_gravity',
-  'cum_attributes',
-  'load_policy',
-  'hiv_status',
-  'last_tested',
-  'vaccinations',
-  'mannerisms',
-  'cock_length',
-  'cock_girth',
-  'cock_attributes',
-  'their_positions',
-  'their_roles',
-  'their_spectrum',
-  'their_relationship_status',
-  'can_host',
-  'can_host_events',
-  //'show_location',
-  'show_profile',
-  'show_interests',
-  'show_health',
-  'event_invites',
-  'rating',
-]
-
 export type SearchableMember = Omit<
   Member,
   | 'invite'
   | 'promo'
   | 'accounts'
-  | 'needs_guidance'
   | 'in_sendgrid'
   | 'application_status'
-  | 'vouched_by'
-  | 'birth_month'
-  | 'birth_year'
-  | 'contact_preference'
   | 'signed_waiver'
-  | 'video_consent'
-  | 'photo_consent'
-  | 'signed_waiver'
-  | 'phone'
   | 'phone_verified'
-  | 'email'
   | 'email_verified'
-  | 'last_name'
-  | 'show_profile'
-  | 'show_interests'
-  | 'show_interests'
-  | 'event_invites'
-  | 'their_positions'
-  | 'their_roles'
-  | 'their_spectrum'
-  | 'their_relationship_status'
-  | 'can_host'
-  | 'can_host_events'
+  | 'ratings'
+  | 'notifications'
+  | 'photos'
+  | 'picture'
+  | 'ratings'
   | 'ratings'
 >
-export const searchableMemberFields: Array<keyof SearchableMember> = [
-  'user_type',
-  'presence',
+
+export const memberProfilePrivateFields: Array<keyof SearchableMember> = [
+  'last_name',
+  'birth_month',
+  'birth_year',
+]
+
+export const memberProfileContactFields: Array<keyof SearchableMember> = [
+  'show_contact',
+  'email',
+  'phone',
+  'contact_preference',
+  'video_consent',
+  'photo_consent',
+]
+
+export const memberProfileLocationFields: Array<keyof SearchableMember> = [
+  'show_location',
+  'location',
   'city',
   'state',
+]
+
+export const memberProfileFields: Array<keyof SearchableMember> = [
+  'show_profile',
   'nickname',
   'biography',
-  'spectrum',
   'relationship_status',
   'age',
   'height',
   'weight',
   'skin_tone',
-  'my_positions',
-  'my_roles',
-  'sexual_scenes',
-  'social_scenes',
   'body_hair',
   'facial_hair',
   'hair_color',
@@ -319,16 +289,67 @@ export const searchableMemberFields: Array<keyof SearchableMember> = [
   'body_attributes',
   'build',
   'eye_color',
+]
+
+export const memberProfileExplicitFields: Array<keyof SearchableMember> = [
+  'show_explicit',
+  'spectrum',
+  'my_positions',
+  'my_roles',
   'ball_size',
   'ball_gravity',
   'cum_attributes',
-  'load_policy',
-  'hiv_status',
-  'last_tested',
-  'vaccinations',
   'mannerisms',
   'cock_length',
   'cock_girth',
   'cock_attributes',
+  'sexual_scenes',
+]
+
+export const memberInterestFields: Array<keyof SearchableMember> = [
+  'show_interests',
+  'their_positions',
+  'their_roles',
+  'their_spectrum',
+  'their_relationship_status',
+]
+
+export const memberEventFields: Array<keyof SearchableMember> = [
+  'show_events',
+  'event_invites',
+  'event_availability',
+  'social_scenes',
+  'can_host',
+  'can_host_events',
+]
+
+export const memberHealthFields: Array<keyof SearchableMember> = [
+  'show_health',
+  'load_policy',
+  'hiv_status',
+  'last_tested',
+  'vaccinations',
+]
+
+export const searchableMemberFields: Array<keyof SearchableMember> = [
+  'user_type',
+  'presence',
+  'rating',
+  ...memberProfilePrivateFields,
+  ...memberProfileFields,
+  ...memberProfileContactFields,
+  ...memberProfileExplicitFields,
+  ...memberHealthFields,
+  ...memberInterestFields,
+  ...memberEventFields,
+  ...memberProfileLocationFields,
+]
+
+export const memberFields: Array<keyof Member> = [
+  ...applicantFields,
+  ...searchableMemberFields,
+  'video_consent',
+  'photo_consent',
+  'signed_waiver',
   'rating',
 ]

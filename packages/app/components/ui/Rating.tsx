@@ -76,19 +76,17 @@ const rating = forwardRef<HTMLInputElement, Props>(
       'Members must have an average of 4-stars to be eligible for events. '
     return (
       <Tooltip label={tooltip} aria-label={tooltip}>
-        <Stack isInline mt={mt} justify="center">
+        <Stack isInline mt={mt} justify="center" title={help}>
           {!readonly && <input name="rating" type="hidden" value={rating} ref={ref} />}
           {buttons}
           {!simple && (
             <Box textAlign="center">
-              <Tooltip label={help} aria-label={help}>
-                <Text fontSize="sm" textTransform="uppercase">
-                  Rating
-                </Text>
-                <Text fontSize="2xl" fontWeight="semibold" lineHeight="1.2em">
-                  {rating}
-                </Text>
-              </Tooltip>
+              <Text fontSize="sm" textTransform="uppercase">
+                Rating
+              </Text>
+              <Text fontSize="2xl" fontWeight="semibold" lineHeight="1.2em">
+                {rating}
+              </Text>
             </Box>
           )}
         </Stack>
