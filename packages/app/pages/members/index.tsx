@@ -187,7 +187,7 @@ export default function MemberListPage(props: PageProps) {
       pathname: '/members',
       query: { size, page, sort, user_type: level, ...filters },
     })
-  }, [loading, member, page, size, sort, page, level, filters?.user_type, filters])
+  }, [router, loading, member, page, size, sort, level, filters?.user_type, filters])
 
   const { members, meta, pageCount, error } = useMemberSearch(page - 1, size, sort, {
     user_type: level as any,
@@ -433,7 +433,7 @@ function MemberSpotlight({ member: { id } }: { member: Partial<SearchableMember>
       <Text>{member?.biography}</Text>
       {member?.cock_length && (
         <Badge size="lg" colorScheme="peach">
-          {member?.cock_length}" cock
+          {member?.cock_length}&ldquo; cock
         </Badge>
       )}
       {member?.cock_girth && (
