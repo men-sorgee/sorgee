@@ -1,5 +1,5 @@
 import { NextPageContext, GetServerSidePropsResult } from 'next'
-import { EventDetail } from 'lib/models'
+import { EventDetail, MemberLevel } from 'lib/models'
 import Page from 'components/Page'
 import { List, ListItem } from '@chakra-ui/react'
 import { unstable_getServerSession } from 'next-auth/next'
@@ -13,7 +13,7 @@ export async function getServerSideProps(
   const { authOptions } = await import('lib/auth/config')
   const { req, res } = context
   const session = await unstable_getServerSession(req as any, res, authOptions)
-  if (!session || !session.user || session.user.user_type !== 'staff') {
+  if (!session || !session.user || MemberLevel[session.user.user_type] >= MemberLevel.staff) {
     return {
       redirect: {
         destination: '/',
@@ -29,7 +29,7 @@ export async function getServerSideProps(
 
 export default function EventList({ events }: Props) {
   return (
-    <Page title="Events">
+    <Page title="Events" requireAuth={true}>
       <List>
         {events.map((event) => (
           <ListItem key={event.id}>

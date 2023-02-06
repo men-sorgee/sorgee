@@ -84,7 +84,7 @@ export default function ThreeTierPricing() {
                   fontSize={{ base: 'lg', md: 'xl' }}
                   color={useColorModeValue('gray.500', 'gray.200')}
                 >
-                  $3
+                  $5
                 </Text>
                 <Show above="md">
                   <Text color={useColorModeValue('gray.500', 'gray.200')}>
@@ -97,7 +97,7 @@ export default function ThreeTierPricing() {
                   fontSize={{ base: 'lg', md: 'xl' }}
                   color={useColorModeValue('gray.500', 'gray.200')}
                 >
-                  $9
+                  $10
                 </Text>
                 <Show above="md">
                   <Text color={useColorModeValue('gray.500', 'gray.200')}>
@@ -110,7 +110,7 @@ export default function ThreeTierPricing() {
                   fontSize={{ base: 'lg', md: 'xl' }}
                   color={useColorModeValue('gray.500', 'gray.200')}
                 >
-                  $19
+                  $40
                 </Text>
                 <Show above="md">
                   <Text color={useColorModeValue('gray.500', 'gray.200')}>
@@ -140,16 +140,16 @@ export default function ThreeTierPricing() {
 
             <Tr>
               <Th color="gray.200">
-                <em>Search *</em>
+                <em>Search</em>
               </Th>
               <Td>
-                <Check />
+                <Check available />
               </Td>
               <Td>
-                <Check />
+                <Check available />
               </Td>
               <Td>
-                <Check />
+                <Check available />
               </Td>
             </Tr>
             <Tr>

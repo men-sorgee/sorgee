@@ -139,7 +139,7 @@ export default function InviteAdmin(_props: Props) {
     [event?.id, invite?.id, picture, router, setError, toast, user?.email, user?.id]
   )
   return (
-    <Page title={event?.name} description="Invite Admin" loading={loading}>
+    <Page title={event?.name} description="Invite Admin" loading={loading} requireAuth={true}>
       {(invite && (
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(updateInvite)} style={{ marginTop: '2rem' }}>

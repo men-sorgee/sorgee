@@ -202,7 +202,7 @@ export default function MemberListPage(props: PageProps) {
   // const { handleSubmit } = methods
 
   return (
-    <Page title="Members" loading={loading} w="full">
+    <Page title="Members" loading={loading} w="full" requireAuth={true}>
       {meta && (
         <Flex gap={2} align="center" justify="space-between" my={2}>
           <Select

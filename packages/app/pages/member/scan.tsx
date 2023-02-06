@@ -32,7 +32,7 @@ export default function Scanner() {
   }
   if (typeof window == 'undefined' || !member) return null
   return (
-    <Page title="Scan">
+    <Page title="Scan" requireAuth={true}>
       <Flex direction="column">
         <>
           {url && (
