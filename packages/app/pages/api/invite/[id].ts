@@ -39,9 +39,7 @@ export default async function updateInviteHandler(
 
         // if they are an inductee or pledge, make them a brother
         const user_type: string =
-          MemberLevel[attendee.user_type] < MemberLevel[MemberLevel.brother]
-            ? 'brother'
-            : attendee.user_type
+          MemberLevel[attendee.user_type] < MemberLevel.brother ? 'brother' : attendee.user_type
         await updateUser(user_id, {
           signed_waiver: signed_waiver,
           user_type,

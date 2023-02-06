@@ -171,6 +171,7 @@ export default function MemberListPage(props: PageProps) {
     ...rawFilters
   } = props
   const router = useRouter()
+
   const [filters, setFilters] = useState<Partial<SearchableMember>>({ ...rawFilters } || {})
   const [level, setLevel] = useState<(string & UserType) | '*'>(user_type)
   const [sort, setSort] = useState<string>((rawSort as string) || '-presence')
@@ -185,7 +186,7 @@ export default function MemberListPage(props: PageProps) {
       pathname: '/members',
       query: { size, page, sort, user_type: level, ...filters },
     })
-  }, [loading, member, page, size, sort, page, level, filters?.user_type, filters])
+  }, [router, loading, member, page, size, sort, level, filters?.user_type, filters])
 
   const { members, meta, pageCount, error } = useMemberSearch(page - 1, size, sort, {
     user_type: level as any,
@@ -200,7 +201,7 @@ export default function MemberListPage(props: PageProps) {
   // const { handleSubmit } = methods
 
   return (
-    <Page title="Members" loading={loading} w="full">
+    <Page title="Members" loading={loading} w="full" requireAuth={true}>
       {meta && (
         <Flex gap={2} align="center" justify="space-between" my={2}>
           <Select
@@ -431,7 +432,7 @@ function MemberSpotlight({ member: { id } }: { member: Partial<SearchableMember>
       <Text>{member?.biography}</Text>
       {member?.cock_length && (
         <Badge size="lg" colorScheme="peach">
-          {member?.cock_length}" cock
+          {member?.cock_length}&ldquo; cock
         </Badge>
       )}
       {member?.cock_girth && (
@@ -494,9 +495,21 @@ function MemberCard({ member }: { member: Partial<SearchableMember> }) {
           _hover={{ shadow: '2xl', borderColor: 'accent.500' }}
         >
           <CardHeader>
-            <Flex direction="row" justify="stretch" gap={2} justifyContent="space-between">
+            <Flex direction="row" justify="stretch" justifyContent="space-between">
               <LinkOverlay href="#">
                 <UserCard user={member} />
+                <Flex align="stretch" justify="stretch" mt={4}>
+                  {member?.spectrum && (
+                    <Badge size={'lg'} colorScheme="blue">
+                      {member.spectrum}
+                    </Badge>
+                  )}
+                  {member?.relationship_status && (
+                    <Badge size={'lg'} colorScheme="secondary">
+                      {member.relationship_status}
+                    </Badge>
+                  )}
+                </Flex>
               </LinkOverlay>
               <Flex direction="column">
                 <Rating
@@ -510,6 +523,7 @@ function MemberCard({ member }: { member: Partial<SearchableMember> }) {
             </Flex>
           </CardHeader>
           <CardBody>
+            <Divider />
             <Text noOfLines={2}>{member?.biography}</Text>
           </CardBody>
           <CardFooter></CardFooter>
@@ -519,8 +533,20 @@ function MemberCard({ member }: { member: Partial<SearchableMember> }) {
         <ModalOverlay backdropFilter="auto" backdropBlur="2px" />
         <ModalContent>
           <ModalHeader>
-            <Flex direction="row" justify="flex-start" align="top">
+            <Flex direction="column" justify="flex-start" align="top">
               <UserCard user={member} size="xl" />
+              <Flex align="stretch" justify="stretch" mt={4}>
+                {member?.spectrum && (
+                  <Badge size={'lg'} colorScheme="blue">
+                    {member.spectrum}
+                  </Badge>
+                )}
+                {member?.relationship_status && (
+                  <Badge size={'lg'} colorScheme="secondary">
+                    {member.relationship_status}
+                  </Badge>
+                )}
+              </Flex>
             </Flex>
           </ModalHeader>
           <ModalCloseButton />

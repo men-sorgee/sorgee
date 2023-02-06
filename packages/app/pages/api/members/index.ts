@@ -64,7 +64,9 @@ export default async function FindMembers(
     let searchLevels = allowedLevels
     if (user_type) {
       if (props.user_type.includes(',')) {
-        searchLevels = props.user_type.split(',').filter((type) => allowedLevels.includes(type))
+        searchLevels = props.user_type
+          .split(',')
+          .filter((type: string) => allowedLevels.includes(type))
       } else if (allowedLevels.includes(user_type)) {
         searchLevels = [user_type]
       }

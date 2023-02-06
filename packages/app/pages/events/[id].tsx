@@ -38,7 +38,7 @@ export default function EventAdmin({ event, error }: { event: EventDetail; error
   const isStaff = member && MemberLevel[member.user_type] >= MemberLevel.staff
   const isScheduled = event.status === 'scheduled'
   return (
-    <Page title="Event" loading={loading}>
+    <Page title="Event" loading={loading} requireAuth={true}>
       {member && (
         <EventCard event={event} level={MemberLevel[member.user_type]}>
           <Flex direction="column" gap={4}>
