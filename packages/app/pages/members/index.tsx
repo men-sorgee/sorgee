@@ -171,14 +171,12 @@ export default function MemberListPage(props: PageProps) {
     ...rawFilters
   } = props
   const router = useRouter()
-
-  console.dir({ rawSort, user_type })
   const [filters, setFilters] = useState<Partial<SearchableMember>>({ ...rawFilters } || {})
   const [level, setLevel] = useState<(string & UserType) | '*'>(user_type)
   const [sort, setSort] = useState<string>((rawSort as string) || '-presence')
   const [page, setPage] = useState<number>(Number(rawPage || '1'))
   const [size, setSize] = useState<number>(Number(rawSize || '20'))
-  console.dir({ sort, level })
+
   const { member, loading } = useMember()
   const memberLevel = MemberLevel[member?.user_type || 'subscriber']
 
