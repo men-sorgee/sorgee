@@ -27,6 +27,7 @@ export const NotificationContext = createContext<NotificationResult>({
 })
 
 export function useNotifications(): NotificationResult {
+  const [completed, setCompleted] = useState<boolean>(false)
   const {
     data: notifications,
     mutate,
@@ -39,11 +40,15 @@ export function useNotifications(): NotificationResult {
   const [hasNotifications, setHasNotifications] = useState(false)
   const [newNotifications, setNewNotifications] = useState<AppNotification[]>([])
   const [hasNewNotifications, setHasNewNotifications] = useState(false)
+
   useEffect(() => {
-    setHasNotifications(notifications?.length > 0)
-    setNewNotifications(notifications?.filter((n) => n.status === 'new') || [])
-    setHasNewNotifications(newNotifications?.length > 0)
-  }, [notifications, isLoading, newNotifications?.length])
+    if (!isLoading && !completed) {
+      setHasNotifications(notifications?.length > 0)
+      setNewNotifications(notifications?.filter((n) => n.status === 'new') || [])
+      setHasNewNotifications(newNotifications?.length > 0)
+      setCompleted(true)
+    }
+  }, [notifications, isLoading, newNotifications?.length, completed])
 
   return {
     notifications,

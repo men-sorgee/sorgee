@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { Box } from '@chakra-ui/react'
+import { Flex, Box, Spacer } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import Header from './Header'
 import Meta from './Meta'
 import Footer from './Footer'
-
+import Actions from './Actions'
+import { useAuth } from 'hooks'
 export const constrained = {
-  maxW: ['full', '4xl', '5xl', '6xl'],
+  maxW: ['full', '2xl', '3xl', '4xl'],
   mx: 'auto',
   p: 4,
 }
@@ -19,31 +20,48 @@ function Layout({
   className?: string
   fonts: any[]
 }) {
+  const { isMember } = useAuth()
   const router = useRouter()
   const [className, setClassName] = useState<string>()
-
+  const [path, setPath] = useState<string>()
   useEffect(() => {
-    if (router?.asPath && !className) {
+    if (router?.asPath) {
       let path = router.asPath
       if (path == '/') path = '/home'
+      setPath(path)
       let name = path.substring(1).split('/').join('-').toLowerCase()
       setClassName(name)
     }
-  }, [router, router?.pathname, className])
+  }, [router, path, className])
 
-  if (router?.pathname.startsWith('/code')) {
+  if (path?.startsWith('/code')) {
     return <>{children}</>
   }
+  const height = isMember ? '160px' : '85px'
   return (
     <>
       <Meta />
-      <Header />
-      <Box minH={'80vh'} className={`${className || ''} ${heading} ${body} ${mono}}`}>
-        <Box as="main" {...constrained} mx={['1', '2', 'auto']}>
-          {children}
-        </Box>
-      </Box>
-      <Footer />
+      <Flex direction="column" flex="1" overflowX="clip">
+        <Header />
+        <Flex
+          flex="1"
+          direction="column"
+          minH="70vh"
+          maxH={`calc(100vh - ${height})`}
+          overflowY="auto"
+        >
+          <Box
+            flex="1"
+            {...constrained}
+            className={`${className || ''} ${heading} ${body} ${mono}}`}
+          >
+            {children}
+          </Box>
+          <Spacer />
+          <Footer />
+        </Flex>
+        {isMember && <Actions currentPath={path} />}
+      </Flex>
     </>
   )
 }

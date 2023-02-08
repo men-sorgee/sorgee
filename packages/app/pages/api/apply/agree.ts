@@ -11,19 +11,19 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
 
     const { agree } = req.body as AgreementData
     const applicant = await withApplicant(req, res)
-    const appStatus = ApplicationStatus[applicant.application_status]
 
     if (applicant.application_status == 'approved') return res.status(200).end()
 
-    if (applicant && appStatus == 'agreement' && agree) {
+    if (applicant && applicant.application_status == 'agreement' && agree) {
       sendNotificationEmail(
         applicant.email,
         applicant.nickname || applicant.first_name + ' ' + applicant.last_name,
-        `Application Status`,
-        `Your free membership is now active!`,
+        `Application Approved`,
+        `Your application is approved. Congratulations, you are now an official pledge of Guys'n Heat! ` +
+          `A brother will be reaching out to finalize your onboarding process and if all goes well, invite you to the next event.`,
         {
-          button_text: 'Manage Profile',
-          button_url: 'https://guysnheat.com/member/account',
+          button_text: 'Complete Profile',
+          button_url: 'https://guysnheat.com/member/profile',
         }
       )
 
@@ -34,7 +34,7 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
 
       await updateSendGrid(user as Profile)
 
-      return res.status(200).end()
+      return res.status(200).json(ApiResponse(true))
     }
   } catch (e: any) {
     console.error(e)

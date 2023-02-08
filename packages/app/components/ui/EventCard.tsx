@@ -19,15 +19,9 @@ import {
   AccordionIcon,
 } from '@chakra-ui/react'
 import Markdown from './Markdown'
-import { MemberLevel, Event } from 'lib/models'
+import { MemberLevel, Event, Invite } from 'lib/models'
 
-type EventInfo =
-  | Event
-  | {
-      name: string
-      description: string
-      datetime: string
-    }
+type EventInfo = Event | Invite
 
 interface Props {
   children?: ReactNode | ReactNode[]
@@ -56,8 +50,10 @@ export default function EventCard({ event, children, level }: Props) {
       })
     })
   }, [event.datetime])
+  const isStaff = level && level >= MemberLevel.staff
+  const isScheduled = event.status == 'scheduled'
   return (
-    <Card p={0} mt={10}>
+    <Card p={0} mt={10} w={['full', '75%']}>
       <CardHeader p={0}>
         <HStack alignItems="stretch" spacing={0}>
           <Heading
@@ -89,23 +85,9 @@ export default function EventCard({ event, children, level }: Props) {
           </Heading>
         </HStack>
       </CardHeader>
-      <CardBody border={'solid 1px primary-900'} borderY={2}>
-        <VStack>
-          <Accordion defaultIndex={level < MemberLevel.staff ? [0] : null} allowToggle w="full">
-            <AccordionItem>
-              <Heading>
-                <AccordionButton>
-                  <Box as="span" flex="1" textAlign="left">
-                    Party Details
-                  </Box>
-                  <AccordionIcon />
-                </AccordionButton>
-              </Heading>
-              <AccordionPanel pb={4} style={{ width: 'full' }}>
-                <Markdown content={event.description} />
-              </AccordionPanel>
-            </AccordionItem>
-          </Accordion>
+      {isScheduled && (
+        <CardBody>
+          {!isStaff && <Markdown content={event.description} />}
 
           {level < MemberLevel.staff && (
             <Alert size="sm" maxW="md" mt="4rem" w="full" status="info">
@@ -115,8 +97,8 @@ export default function EventCard({ event, children, level }: Props) {
               communicate any changes to the event 24 hours in advance.
             </Alert>
           )}
-        </VStack>
-      </CardBody>
+        </CardBody>
+      )}
       <Divider />
       <CardFooter>{children}</CardFooter>
     </Card>

@@ -1,15 +1,12 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
-import { FormOptions, User } from 'lib/models'
-import { getFieldOptions } from 'lib/services/directus/server'
+import { FormOptions, Member, User } from 'lib/models'
 import { useMember } from 'hooks/use-member'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
   FieldInput,
   FieldSelect,
-  FieldNumber,
   FieldWrapper,
-  FieldText,
   FieldCheckboxes,
   FieldCheckbox,
   FieldSwitch,
@@ -18,7 +15,6 @@ import {
   Alert,
   Button,
   Tabs,
-  Heading,
   TabList,
   Tab,
   TabPanels,
@@ -27,97 +23,43 @@ import {
   Text,
   Select,
   SimpleGrid,
-  GridItem,
   Input,
   InputGroup,
-  InputRightAddon,
-  Avatar,
   VStack,
 } from '@chakra-ui/react'
 import Page from 'components/Page'
-import { useRouter } from 'next/router'
 import { useToast } from '@chakra-ui/react'
-import { ErrorMessage } from '@hookform/error-message'
 import { postJSON } from 'lib/utils'
-
 import { UserCard } from 'components/ui'
 
-export type PageProps = {
-  spectrumOptions: FormOptions
-  relationshipOptions: FormOptions
+type PageProps = {
   timeOfDayOptions: FormOptions
-  positionsOptions: FormOptions
-  skinToneOptions: FormOptions
-  hairColorOptions: FormOptions
-  hairStyleOptions: FormOptions
-  eyeColorOptions: FormOptions
-  mannerismsOptions: FormOptions
-  bodyHairOptions: FormOptions
-  bodyAttributesOptions: FormOptions
-  facialHairOptions: FormOptions
-  scenesOptions: FormOptions
   eventOptions: FormOptions
-  cockGirthOptions: FormOptions
-  cockAttributesOptions: FormOptions
-  ballSizeOptions: FormOptions
-  ballGravityOptions: FormOptions
-  cumAttributesOptions: FormOptions
-  loadPolicyOptions: FormOptions
-  hivStatusOptions: FormOptions
-  vaccinationStatusOptions: FormOptions
   contactPreferenceOptions: FormOptions
-  myRolesOptions: FormOptions
-  theirRolesOptions: FormOptions
-  theirSpectrumOptions: FormOptions
-  theirPositionsOptions: FormOptions
   hostEventOptions: FormOptions
   birthMonthOptions: FormOptions
+  stateOptions: FormOptions
 }
 
 export async function getServerSideProps(_context: NextPageContext) {
+  const { getFieldOptions } = await import('lib/services/directus/server')
   const props: PageProps = {
-    spectrumOptions: await getFieldOptions<User>('spectrum'),
-    relationshipOptions: await getFieldOptions<User>('relationship_status'),
     timeOfDayOptions: await getFieldOptions<User>('event_availability'),
-    positionsOptions: await getFieldOptions<User>('my_positions'),
-    skinToneOptions: await getFieldOptions<User>('skin_tone'),
-    hairColorOptions: await getFieldOptions<User>('hair_color'),
-    hairStyleOptions: await getFieldOptions<User>('hair_style'),
-    eyeColorOptions: await getFieldOptions<User>('eye_color'),
-    mannerismsOptions: await getFieldOptions<User>('mannerisms'),
-    bodyHairOptions: await getFieldOptions<User>('body_hair'),
-    bodyAttributesOptions: await getFieldOptions<User>('body_attributes'),
-    facialHairOptions: await getFieldOptions<User>('facial_hair'),
-    scenesOptions: await getFieldOptions<User>('sexual_scenes'),
     eventOptions: await getFieldOptions<User>('social_scenes'),
-    cockGirthOptions: await getFieldOptions<User>('cock_girth'),
-    cockAttributesOptions: await getFieldOptions<User>('cock_attributes'),
-    ballSizeOptions: await getFieldOptions<User>('ball_size'),
-    ballGravityOptions: await getFieldOptions<User>('ball_gravity'),
-    cumAttributesOptions: await getFieldOptions<User>('cum_attributes'),
-    loadPolicyOptions: await getFieldOptions<User>('load_policy'),
-    hivStatusOptions: await getFieldOptions<User>('hiv_status'),
-    vaccinationStatusOptions: await getFieldOptions<User>('vaccinations'),
     contactPreferenceOptions: await getFieldOptions<User>('contact_preference'),
-    myRolesOptions: await getFieldOptions<User>('my_roles'),
     hostEventOptions: await getFieldOptions<User>('can_host_events'),
-    theirRolesOptions: await getFieldOptions<User>('their_roles'),
-    theirSpectrumOptions: await getFieldOptions<User>('their_spectrum'),
-    theirPositionsOptions: await getFieldOptions<User>('their_positions'),
     birthMonthOptions: await getFieldOptions<User>('birth_month'),
+    stateOptions: await getFieldOptions<User>('state'),
   }
   return { props }
 }
 
-type MemberFormData = Partial<User> & {
-  height_feet: string
-  height_inches: string
-}
+type MemberFormData = Partial<Member>
 
 function Account(props: PageProps) {
   const { member, loading } = useMember()
   return (
-    <Page title="Account" loading={loading} requireAuth={true} header={<UserCard />}>
+    <Page title="Account" loading={loading} requireAuth={true} header={<UserCard user={member} />}>
       {member && <Form {...props} />}
     </Page>
   )
@@ -126,79 +68,37 @@ function Account(props: PageProps) {
 function Form(props: PageProps) {
   const toast = useToast()
   const { member, reload, loading } = useMember()
-  const router = useRouter()
   const {
-    spectrumOptions,
-    positionsOptions,
-    relationshipOptions,
-    skinToneOptions,
-    hairColorOptions,
-    hairStyleOptions,
-    eyeColorOptions,
-    mannerismsOptions,
-    bodyHairOptions,
-    bodyAttributesOptions,
-    facialHairOptions,
     timeOfDayOptions,
-    scenesOptions,
     eventOptions,
-    cockGirthOptions,
-    cockAttributesOptions,
-    ballSizeOptions,
-    ballGravityOptions,
-    cumAttributesOptions,
-    loadPolicyOptions,
-    hivStatusOptions,
-    vaccinationStatusOptions,
     contactPreferenceOptions,
-    myRolesOptions,
     hostEventOptions,
-    theirRolesOptions,
-    theirSpectrumOptions,
-    theirPositionsOptions,
     birthMonthOptions,
+    stateOptions,
   } = props
-  const [tabValue, setTabValue] = useState(Number(router.query.t) || 0)
-  const [height_feet, setHeightFeet] = useState<string | null>()
-  const [height_inches, setHeightInches] = useState<string | null>()
-
-  useEffect(() => {
-    if (!loading && member && !height_feet && !height_inches) {
-      setHeightFeet(member?.height?.toString().substring(0, 1) || '')
-      setHeightInches(member?.height?.toString().substring(2) || '')
-    }
-  }, [loading, member, height_feet, height_inches])
+  const [tabValue, setTabValue] = useState(0)
 
   const methods = useForm<MemberFormData>({
     mode: 'onBlur',
     defaultValues: {
       ...member,
-      height_feet,
-      height_inches,
     },
   })
   const {
     register,
     handleSubmit,
     setError,
+    watch,
     formState: { isSubmitting, errors },
   } = methods
 
-  useEffect(() => {
-    if (tabValue !== Number(router.query.t || 0)) router.push(`/member/account?t=${tabValue}`)
-  }, [router, tabValue])
-
   async function onSubmit(data: MemberFormData) {
-    if (data.height_feet || data.height_inches) {
-      data.height = `${data.height_feet} ${data.height_inches}`
-    }
-
     const [ok, response] = await postJSON<User>('/api/member/me', data)
 
     if (ok) {
       toast({
         title: 'Success',
-        description: 'Your account and profile are updated.',
+        description: 'Your account was updated.',
         status: 'success',
         duration: 9000,
         isClosable: true,
@@ -215,27 +115,25 @@ function Form(props: PageProps) {
   const required = { value: true, message: 'Required' }
   const minYear = new Date().getFullYear() - 100
   const maxYear = new Date().getFullYear() - 21
+  const can_host = watch('can_host')
   return (
     <>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Tabs isFitted defaultIndex={tabValue} onChange={(index) => setTabValue(index)}>
-            <TabList fontSize={{ base: 'md', md: 'lg' }} fontWeight="bold">
-              <Tab fontWeight="bold">Private</Tab>
-              <Tab fontWeight="bold">Events</Tab>
-              <Tab fontWeight="bold">Profile</Tab>
-              <Tab fontWeight="bold" display={{ base: 'none', md: 'inherit' }}>
-                Interests
-              </Tab>
-              <Tab fontWeight="bold" display={{ base: 'none', md: 'inherit' }}>
-                Attractions
-              </Tab>
-              <Tab fontWeight="bold">Health</Tab>
+          <Tabs
+            isFitted
+            fontSize={{ base: 'sm', md: 'lg' }}
+            defaultIndex={tabValue}
+            onChange={(index) => setTabValue(index)}
+          >
+            <TabList fontWeight="bold">
+              <Tab fontWeight={tabValue == 0 ? 'bold' : null}>Information</Tab>
+              <Tab fontWeight={tabValue == 1 ? 'bold' : null}>Event Settings</Tab>
             </TabList>
             <TabPanels>
               <TabPanel p={0}>
                 <Alert
-                  bg={['primary.200', 'primary.700']}
+                  bg="primary"
                   color="white"
                   flexDirection="column"
                   my={4}
@@ -248,7 +146,7 @@ function Form(props: PageProps) {
                     only for administrative purposes.
                   </Text>
                 </Alert>
-                <SimpleGrid spacing={4} columns={{ base: 1, md: 2, lg: 4 }}>
+                <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
                   <FieldInput
                     field="first_name"
                     label="First Name"
@@ -275,7 +173,7 @@ function Form(props: PageProps) {
                   />
 
                   <FieldInput field="city" label="City" />
-                  <FieldInput field="state" label="State" value="Colorado" readOnly />
+                  <FieldSelect field="state" label="State" formOptions={stateOptions} />
 
                   <FieldWrapper field="height" label="Birth Month/Year">
                     <InputGroup>
@@ -309,15 +207,14 @@ function Form(props: PageProps) {
                     label="Contact Preference"
                     formOptions={contactPreferenceOptions}
                   />
-                  <FieldCheckbox
-                    field="needs_guidance"
-                    help="Our staff will reach out to you to help guide you along the way."
-                    label="Request Guidance"
-                  >
-                    Yes
-                  </FieldCheckbox>
                 </SimpleGrid>
-
+                <FieldCheckbox
+                  field="needs_guidance"
+                  help="Our staff will reach out to you to help guide you along the way."
+                  label="Request Guidance"
+                >
+                  I need assistance
+                </FieldCheckbox>
                 <Alert bg="secondary" color="white" my={4} borderRadius="md" shadow="md">
                   <Stack direction={'column'} spacing={2}>
                     <Text>
@@ -342,7 +239,7 @@ function Form(props: PageProps) {
               </TabPanel>
               <TabPanel p={0}>
                 <Alert
-                  bg={['primary.200', 'primary.700']}
+                  bg="primary"
                   color="white"
                   flexDirection="column"
                   my={4}
@@ -390,255 +287,16 @@ function Form(props: PageProps) {
                     </Text>
                     <Stack direction="column" spacing={2}>
                       <FieldSwitch field="can_host" label="Can Host Events" />
-                      <FieldCheckboxes
-                        field="can_host_events"
-                        label="Events"
-                        formOptions={hostEventOptions}
-                      />
+                      {can_host && (
+                        <FieldCheckboxes
+                          field="can_host_events"
+                          label="Events"
+                          formOptions={hostEventOptions}
+                        />
+                      )}
                     </Stack>
                   </Stack>
                 </Alert>
-              </TabPanel>
-              <TabPanel p={0}>
-                <Alert
-                  bg={['primary.200', 'primary.700']}
-                  color="white"
-                  flexDirection="column"
-                  my={4}
-                  p={4}
-                  borderRadius="md"
-                  shadow="md"
-                >
-                  <Text w={['full']}>
-                    This is your profile. Other verified members are able to see this information.
-                    You can also choose to make your profile private.
-                  </Text>
-                  <FieldSwitch
-                    field="show_profile"
-                    label="Show Profile"
-                    help="Turn this on, if you are okay showing this information to other verified members."
-                  />
-                </Alert>
-                <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
-                  <GridItem colSpan={{ base: 1, sm: 2 }}>
-                    <FieldInput
-                      field="nickname"
-                      label="Nickname"
-                      className="col-span-2 sm:col-span-4"
-                    />
-                  </GridItem>
-                  <FieldSelect field="spectrum" label="Orientation" formOptions={spectrumOptions} />
-                  <FieldSelect
-                    field="relationship_status"
-                    label="Relationship Status"
-                    formOptions={relationshipOptions}
-                  />
-                </SimpleGrid>
-                <FieldText
-                  field="biography"
-                  label="Biography"
-                  help="Tell us about yourself. What are your interests? What are you looking for?"
-                  rows={4}
-                  placeholder="I am a bit shy, but love to get aggressive in bed."
-                />
-                <SimpleGrid spacing={4} columns={{ base: 1, sm: 2, md: 4 }}>
-                  <FieldWrapper field="height" label="Height">
-                    <InputGroup>
-                      <Input type="number" id="height_feet" {...register('height_feet')} />
-                      <InputRightAddon mr={2}>&apos;</InputRightAddon>
-                      <Input type="number" id="height_inches" {...register('height_inches')} />
-                      <InputRightAddon>&quot;</InputRightAddon>
-                    </InputGroup>
-                  </FieldWrapper>
-
-                  <FieldNumber field="weight" label="Weight" rightAddon="#" />
-                  <FieldInput type="number" field="age" label="Age" min={21} />
-                  <FieldSelect field="skin_tone" label="Skin Tone" formOptions={skinToneOptions} />
-
-                  <GridItem colSpan={[1, 2, 4]}>
-                    <FieldCheckboxes
-                      field="body_attributes"
-                      label="Body Attributes"
-                      formOptions={bodyAttributesOptions}
-                    />
-                  </GridItem>
-                  <FieldSelect
-                    field="hair_color"
-                    label="Hair Color"
-                    formOptions={hairColorOptions}
-                  />
-                  <FieldSelect
-                    field="hair_style"
-                    label="Hair Style"
-                    formOptions={hairStyleOptions}
-                  />
-                  <FieldSelect field="body_hair" label="Body Hair" formOptions={bodyHairOptions} />
-                  <FieldSelect
-                    field="facial_hair"
-                    label="Facial Hair"
-                    formOptions={facialHairOptions}
-                  />
-                  <FieldSelect field="eye_color" label="Eye Color" formOptions={eyeColorOptions} />
-                  <FieldSelect
-                    field="mannerisms"
-                    label="Mannerisms"
-                    formOptions={mannerismsOptions}
-                  />
-
-                  <FieldInput
-                    field="cock_length"
-                    label="Cock Length"
-                    type="number"
-                    registerOptions={{}}
-                  />
-                  <FieldSelect
-                    field="cock_girth"
-                    label="Cock Girth"
-                    formOptions={cockGirthOptions}
-                  />
-                </SimpleGrid>
-                <FieldCheckboxes
-                  field="cock_attributes"
-                  label="Cock Attributes"
-                  className="sm:col-span-2"
-                  formOptions={cockAttributesOptions}
-                />
-                <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
-                  <FieldSelect field="ball_size" label="Ball Size" formOptions={ballSizeOptions} />
-                  <FieldSelect
-                    field="ball_gravity"
-                    label="Ball Gravity"
-                    formOptions={ballGravityOptions}
-                  />
-                </SimpleGrid>
-                <FieldCheckboxes
-                  field="cum_attributes"
-                  label="Cum Attributes"
-                  className="sm:col-span-2"
-                  formOptions={cumAttributesOptions}
-                />
-              </TabPanel>
-
-              <TabPanel p={0}>
-                <Alert
-                  bg={['primary.200', 'primary.700']}
-                  color="white"
-                  flexDirection="column"
-                  my={4}
-                  p={4}
-                  borderRadius="md"
-                  shadow="md"
-                >
-                  <Text>
-                    Your sexual interests help us match you with other members and is visible with
-                    your profile. Members can search for other members based on these attributes.
-                  </Text>
-                  <FieldSwitch
-                    field="show_interests"
-                    label="Show Interests "
-                    help="Turn this on, if you are okay showing this information to other verified members."
-                  />
-                </Alert>
-                <SimpleGrid spacing={4}>
-                  <FieldCheckboxes
-                    field="my_positions"
-                    label="My Sexual Positions"
-                    formOptions={positionsOptions}
-                  />
-                  <FieldCheckboxes
-                    field="my_roles"
-                    label="My Sexual Roles"
-                    formOptions={myRolesOptions}
-                  />
-                  <FieldCheckboxes
-                    field="sexual_scenes"
-                    label="Sexual Scenes"
-                    formOptions={scenesOptions}
-                  />
-                </SimpleGrid>
-              </TabPanel>
-              <TabPanel p={0}>
-                <Alert
-                  bg={['primary.200', 'primary.700']}
-                  color="white"
-                  flexDirection="column"
-                  my={4}
-                  p={4}
-                  borderRadius="md"
-                  shadow="md"
-                >
-                  <Text>
-                    What are you attracted to and/or compatible with? We will use this information
-                    to optimize compatibilty for events. Other members will not see this
-                    information.
-                  </Text>
-                </Alert>
-                <SimpleGrid spacing={4}>
-                  <FieldCheckboxes
-                    field="their_spectrum"
-                    label="Their Orientation"
-                    formOptions={theirSpectrumOptions}
-                  />
-                  <FieldCheckboxes
-                    field="their_relationship_status"
-                    label="Their Relationship Status"
-                    formOptions={relationshipOptions}
-                  />
-
-                  <FieldCheckboxes
-                    field="their_positions"
-                    label="Their Sexual Positions"
-                    formOptions={theirPositionsOptions}
-                  />
-
-                  <FieldCheckboxes
-                    field="their_roles"
-                    label="Their Sexual Roles"
-                    formOptions={theirRolesOptions}
-                  />
-                </SimpleGrid>
-              </TabPanel>
-              <TabPanel p={0}>
-                <Alert
-                  bg={['primary.200', 'primary.700']}
-                  color="white"
-                  flexDirection="column"
-                  my={4}
-                  p={4}
-                  borderRadius="md"
-                  shadow="md"
-                >
-                  <Text>
-                    This is your health information. Other verified members are able to see this
-                    information if you choose to show it. If you are not comfortable sharing this
-                    information, you can choose to hide it.
-                  </Text>
-                  <FieldSwitch
-                    field="show_health"
-                    label="Show Health Information"
-                    help="Turn this on, if you are okay showing this information to other verified members."
-                  />
-                </Alert>
-                <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
-                  <FieldSelect
-                    field="hiv_status"
-                    label="HIV Status"
-                    formOptions={hivStatusOptions}
-                  />
-                  <FieldInput field="last_tested" label="Last Tested" type="date" />
-                </SimpleGrid>
-                <SimpleGrid spacing={4}>
-                  <FieldCheckboxes
-                    field="load_policy"
-                    label="Load Policy"
-                    formOptions={loadPolicyOptions}
-                  />
-                  <FieldCheckboxes
-                    field="vaccinations"
-                    label="Vax Status"
-                    formOptions={vaccinationStatusOptions}
-                  />
-                </SimpleGrid>
               </TabPanel>
             </TabPanels>
           </Tabs>
@@ -654,9 +312,8 @@ function Form(props: PageProps) {
               color="white"
               disabled={isSubmitting}
             >
-              Update Profile
+              Update Account
             </Button>
-            <ErrorMessage errors={errors} name="form" />
           </VStack>
         </form>
       </FormProvider>

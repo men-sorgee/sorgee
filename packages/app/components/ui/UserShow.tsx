@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react'
 import { useState, useEffect, ReactNode } from 'react'
 
-export const UserShow = ({ children }: { children: ReactNode | ReactNode[] }) => {
+export default function UserShow({ children }: { children: ReactNode | ReactNode[] }) {
   const { status } = useSession()
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
   useEffect(() => {

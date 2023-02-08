@@ -20,7 +20,9 @@ export type Event = {
   location?: string | Location
   description?: string
   users: string | EventUser[]
+  cost: number
 }
+
 export type UserFields = (string | keyof User)[] | '*' | '*.*' | any
 
 export type EventUser = {
@@ -35,6 +37,20 @@ export type EventUser = {
   guest?: boolean
   reason?: string
   attendance: string
+}
+
+export type Promos = {
+  id: number
+  user_created?: string | DirectusUser
+  date_created?: string
+  user_updated?: string | DirectusUser
+  date_updated?: string
+  code: string
+  expires?: string
+  override?: unknown
+  vouching_user?: string | User
+  description?: string
+  name?: string
 }
 
 export type Location = {
@@ -271,12 +287,33 @@ export type User = {
   users: string | UserRelationship[]
   accounts: string | UserAccount[]
   show_profile: boolean
+  show_explicit: boolean
+  show_location: boolean
+  show_contact: boolean
   show_interests: boolean
   show_health: boolean
+  show_events: boolean
   event_invites: boolean
   can_host?: boolean
   can_host_events: string[] | ('sex' | 'social' | 'individual')[]
   promo: number | Promo
+  rating: number
+  ratings: (string | number)[] | Rating[]
+}
+
+export type Rating = {
+  id: string
+  date_created?: string
+  date_updated?: string
+  user?: string | User
+  rated: number
+}
+
+export type RatingRated = {
+  id: number
+  rating_id?: string
+  item: string
+  collection: string
 }
 
 export type UserFile = {
@@ -386,6 +423,56 @@ export type DirectusUser = {
   external_identifier?: string
   auth_data?: unknown
   email_notifications?: boolean
+}
+
+export type SurveyAnswer = {
+  id: string
+  user?: string | User
+  survey?: string | Survey
+  question?: string | SurveyQuestion
+  answer_text?: string
+  answer_number?: number
+  answer_boolean?: boolean
+  answer_context?: string
+}
+
+export type SurveyAnswerUser = {
+  id: number
+  survey_answers_id?: string
+  users_id?: string
+}
+
+export type SurveyQuestion = {
+  id: string
+  user_created?: string | DirectusUser
+  date_created?: string
+  user_updated?: string | DirectusUser
+  date_updated?: string
+  answer_type?: string
+  question?: string
+  context?: string
+  options?: unknown
+}
+
+export type Survey = {
+  id: string
+  status: string
+  user_created?: string | DirectusUser
+  date_created?: string
+  user_updated?: string | DirectusUser
+  date_updated?: string
+  name?: string
+  title?: string
+  category?: unknown
+  notification?: string | Notification
+  questions: string | SurveySurveyQuestion[]
+}
+
+export type SurveySurveyQuestion = {
+  id: number
+  surveys_id?: string | Survey
+  survey_questions_id?: string | SurveyQuestion
+  sort?: number
 }
 
 export type DirectusTypes = {

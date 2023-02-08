@@ -20,7 +20,7 @@ export default function Section({ content }: { content: PageContent }) {
     case 'image':
       return (
         <Image
-          className={`w-full ${container_classes} `}
+          w="full"
           src={`/api/asset/${content.image.id}`}
           alt={content.image.description}
           height={content.image.height}

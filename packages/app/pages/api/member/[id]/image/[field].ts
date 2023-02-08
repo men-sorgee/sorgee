@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getUser, updateUser } from 'lib/services/directus/server/users'
-import { withMethods, withMember } from 'lib/utils/server'
+import { withMethods, withUser } from 'lib/utils/server'
 import { User, Applicant, ApiResponse } from 'lib/models'
 import { uploadFile, getFileInfo, UploadFolder } from 'lib/services/directus/server'
 
@@ -13,7 +13,7 @@ export default async function MemberImage(
     const { id, field, name } = req.query
     const image_field = String(field)
     const image_name = String(name)
-    const member = await withMember(req, res)
+    const member = await withUser(req, res)
 
     if (!member) {
       return res.status(401).end('Unauthorized')

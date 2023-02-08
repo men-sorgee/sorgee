@@ -23,12 +23,13 @@ const SwitchField = (props: Props) => {
       <HStack>
         <Switch
           textAlign="left"
+          id={field}
           size={size}
           {...opts}
           {...register(field, registerOptions)}
           className={classes}
-        ></Switch>
-        <Text size={size} style={{ fontWeight: 'bold' }}>
+        />
+        <Text as="label" htmlFor={field} size={size} style={{ fontWeight: 'bold' }}>
           {label}
         </Text>
       </HStack>

@@ -22,7 +22,7 @@ export async function createUser(member: Partial<User>): Promise<User> {
   return getUser(id)
 }
 
-export async function updateUser(id: string, member: Partial<User>): Promise<User> {
+export async function updateUser(id: string, member: Partial<User>) {
   const adminClient = await getAdminClient()
   const user = await adminClient.items('users').updateOne(id!, member)
   return user as User
@@ -65,16 +65,23 @@ export async function findUser<T = Profile>(
   return user as T
 }
 
-export async function searchUsers<T = Profile>(
+export async function searchUsers<T = Member>(
   filter: FieldFilter<T>,
-  fields: UserFields = profileFields
-): Promise<T[] | null> {
+  fields: UserFields = memberFields,
+  limit: number = 20,
+  offset: number = 0,
+  sort: any
+) {
   const adminClient = await getAdminClient()
-  const { data: users } = await adminClient.items('users').readByQuery({
+  const results = await adminClient.items('users').readByQuery({
     filter,
-    fields: [...fields],
+    fields,
+    limit,
+    offset,
+    meta: '*',
+    sort,
   })
-  return users as T[]
+  return results
 }
 
 export async function getApplicant(id: string): Promise<Applicant | null> {
@@ -130,5 +137,5 @@ export async function listUsersByLevel<T = Member>(
 }
 
 export * from './auth'
-export * from './events'
+export * from './invites'
 export * from './notifications'

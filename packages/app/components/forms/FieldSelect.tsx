@@ -16,12 +16,10 @@ type Props = SelectProps &
 
 const SelectField = (props: Props) => {
   const { field, label, help, registerOptions = {}, formOptions, className, ...opts } = props
-  const { register, getFieldState, formState } = useFormContext()
-  const { error } = getFieldState(field, formState)
-  const classes = error ? 'error' : ''
+  const { register } = useFormContext()
   return (
     <FieldWrapper field={field} label={label} help={help} className={className}>
-      <Select {...opts} id={field} {...register(field as any, registerOptions)} className={classes}>
+      <Select {...opts} {...register(field as any, registerOptions)}>
         {formOptions?.map(({ text, value }, index) => (
           <option key={index.toString()} value={value}>
             {text}

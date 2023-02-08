@@ -1,6 +1,5 @@
 import { AuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
-import DiscordProvider from 'next-auth/providers/discord'
 import MicrosoftProvider from 'next-auth/providers/azure-ad'
 import YahooProvider from './yahoo'
 import EmailProvider from 'next-auth/providers/email'
@@ -8,15 +7,13 @@ import { TwitterLegacy } from 'next-auth/providers/twitter'
 import { authAdapter } from './adapter'
 import { sendNotificationEmail, updateSendGrid } from 'lib/services/sendgrid/server'
 import {
-  createAccount,
-  createUser,
   findUser,
   findUserByAccount,
   getUser,
   recordUserLogin,
-  // recordUserLogout,
+  recordUserLogout,
 } from 'lib/services/directus/server/users'
-import { Member, memberFields, Profile, User, UserStatusType } from 'lib/models'
+import { Member, memberFields, Profile, UserStatusType } from 'lib/models'
 import config from 'lib/config/server'
 const { google, discord, twitter, yahoo, microsoft } = config
 const allowedStatuses: UserStatusType[] = ['new', 'active', 'inactive', 'stale']
@@ -32,35 +29,38 @@ export const authOptions: AuthOptions = {
     logo: '/logo.svg',
     brandColor: '#0038A8', // brand.colors.primary.DEFAULT,
     colorScheme: 'dark',
+    buttonText: 'Use',
   },
 
   callbacks: {
-    async signIn(props) {
-      return true
-      //console.debug('callback:signIn')
-      //console.dir(props)
-      //const { user, email, profile, account } = props
-      //if (email?.verificationRequest) {
-      //  let found = (await getUser(user.id)) || (await findUser(account.userId))
-      //  return found != null
-      //}
-      //if (profile?.email) {
-      //  let user = await findUser(profile.email)
-      //  return user && allowedStatuses.includes(user.status as UserStatusType)
-      //}
-      //return false
-      //if (!user && account) {
-      //  user = await findUserByAccount(account.provider, account.providerAccountId)
-      //}
-      //
-      //if (user && allowedStatuses.includes(user.status as UserStatusType)) {
-      //  //let path = '/apply/resume'
-      //  if (user.status === 'active' && user.application_status == 'approved') {
-      //    //path = '/member/account'
-      //  }
-      //  return true
-      //}
-      //return user != null
+    async signIn(data) {
+      //console.dir(data)
+      const { user, email, profile, account } = data
+      //return true
+      console.debug('callback:signIn')
+
+      if (email?.verificationRequest) {
+        let found = (await getUser(user.id)) || (await findUser(account.userId))
+        return found != null
+      }
+
+      let findEmail: string =
+        profile?.email ||
+        user?.email ||
+        ((account?.user || account?.sub || account?.userId || account?.email) as string)
+      if (findEmail) {
+        let user = await findUser(findEmail)
+        return user && allowedStatuses.includes(user.status as UserStatusType)
+      }
+      if (account?.providerAccountId) {
+        let user = await findUserByAccount(account.provider, account.providerAccountId)
+        return user && allowedStatuses.includes(user.status as UserStatusType)
+      }
+      if (user?.id) {
+        let found = await getUser(user.id)
+        return found != null
+      }
+      return false
     },
     async session({ session, user }) {
       console.debug('callback:session')
@@ -81,7 +81,7 @@ export const authOptions: AuthOptions = {
         'Thank you for applying for membership!',
         {
           button_text: 'Complete Application',
-          button_url: 'https://guysnheat.com/apply/resume',
+          button_url: 'https://guysnheat.com/apply',
         }
       )
     },
@@ -90,8 +90,8 @@ export const authOptions: AuthOptions = {
       await recordUserLogin(user.id)
     },
     async signOut(props) {
-      //console.log('event:signOut')
-      //await recordUserLogout(user.id)
+      console.log('event:signOut', props)
+      //if (session?.user.id) await recordUserLogout(session.user.id)
     },
   },
   providers: [
@@ -105,26 +105,26 @@ export const authOptions: AuthOptions = {
     //  clientSecret: discord.clientSecret,
     //  allowDangerousEmailAccountLinking: true,
     //}),
-    //TwitterLegacy({
-    //  id: 'twitter',
-    //  name: 'Twitter',
-    //  clientId: twitter.clientId,
-    //  clientSecret: twitter.clientSecret,
-    //  allowDangerousEmailAccountLinking: true,
-    //}),
-    //MicrosoftProvider({
-    //  name: 'Microsoft',
-    //  id: 'microsoft',
-    //  clientId: microsoft.clientId,
-    //  clientSecret: microsoft.clientSecret,
-    //  allowDangerousEmailAccountLinking: true,
-    //}),
-    //YahooProvider({
-    //  id: 'yahoo',
-    //  clientId: yahoo.clientId,
-    //  clientSecret: yahoo.clientSecret,
-    //  allowDangerousEmailAccountLinking: true,
-    //}),
+    TwitterLegacy({
+      id: 'twitter',
+      name: 'Twitter',
+      clientId: twitter.clientId,
+      clientSecret: twitter.clientSecret,
+      allowDangerousEmailAccountLinking: true,
+    }),
+    MicrosoftProvider({
+      name: 'Microsoft',
+      id: 'microsoft',
+      clientId: microsoft.clientId,
+      clientSecret: microsoft.clientSecret,
+      allowDangerousEmailAccountLinking: true,
+    }),
+    YahooProvider({
+      id: 'yahoo',
+      clientId: yahoo.clientId,
+      clientSecret: yahoo.clientSecret,
+      allowDangerousEmailAccountLinking: true,
+    }),
     EmailProvider({
       maxAge: 24 * 60 * 60 * 2, // 24 hours
       async sendVerificationRequest({ identifier: email, url }) {

@@ -3,10 +3,10 @@ import Loading from 'components/ui/Loading'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState, useCallback } from 'react'
 import AccessDenied from './AccessDenied'
-import { Flex, Heading } from '@chakra-ui/react'
+import { Flex, Heading, FlexProps, chakra } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 
-interface Props {
+type Props = FlexProps & {
   id?: string
   title: string
   loading?: boolean
@@ -25,9 +25,9 @@ const Page = ({
   description,
   header,
   image,
-  sectionClass = '',
   children,
   requireAuth = false,
+  ...props
 }: Props) => {
   const { setMeta } = useMeta()
 
@@ -87,24 +87,17 @@ const Page = ({
       direction="column"
       as="article"
       alignItems={['left', 'center']}
-      justifyItems="center"
-      mx="auto"
-      maxW={['md', 'lg', 'xl', '2xl', '3xl']}
+      justifyItems="stretch"
+      w="full"
+      flex="1"
+      {...props}
     >
-      <Heading
-        as="h1"
-        textAlign={['left', 'center']}
-        size={['2xl', '4xl']}
-        lineHeight={['3rem', '6rem']}
-        w="full"
-      >
-        {title}
-      </Heading>
+      <h1>{title}</h1>
 
       {header}
       {(loading && (
         <Loading size="xl">
-          <Heading as="h2">hold up</Heading>
+          <h2>hold up</h2>
         </Loading>
       )) ||
         children}
@@ -112,4 +105,4 @@ const Page = ({
   )
 }
 
-export default Page
+export default chakra(Page)

@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { updateUser } from 'lib/services/directus/server/users'
-import { withMethods, withMember } from 'lib/utils/server'
-import { User, Applicant, ApiResponse, Member } from 'lib/models'
+import { withMethods, withUser } from 'lib/utils/server'
+import { User, Applicant, ApiResponse } from 'lib/models'
 
 export default async function getUserDetails(
   req: NextApiRequest,
@@ -9,20 +9,20 @@ export default async function getUserDetails(
 ) {
   try {
     const method = withMethods(req, ['GET', 'POST'])
-    let member: Member
+    let user: User
     try {
-      member = await withMember(req, res)
+      user = await withUser(req, res)
     } catch (_er) {
       return res.status(401).json(ApiResponse(null, 'Unauthorized'))
     }
 
     switch (method) {
       case 'GET':
-        return res.status(200).json(ApiResponse(member))
+        return res.status(200).json(ApiResponse(user))
 
       case 'POST':
         const userDetails = req.body as Partial<User>
-        updateUser(member.id, userDetails)
+        updateUser(user.id, userDetails)
         return res.status(200).json(ApiResponse(null))
 
       default:

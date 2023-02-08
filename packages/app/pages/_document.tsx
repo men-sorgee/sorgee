@@ -1,11 +1,16 @@
 import Document, { Head, Html, Main, NextScript } from 'next/document'
 import Script from 'next/script'
+import getConfig from 'next/config'
+const { publicRuntimeConfig } = getConfig()
+const { dev } = publicRuntimeConfig
 class MyDocument extends Document {
   render() {
     return (
       <Html lang="en">
         <Head />
-        <body style={{ minWidth: '370px' }}>
+        <body
+          style={{ minWidth: '370px', height: '100vh', position: 'relative', overflowY: 'hidden' }}
+        >
           <Script
             id="termly"
             src="https://app.termly.io/embed.min.js"
@@ -30,6 +35,14 @@ class MyDocument extends Document {
           />
           <Main />
           <NextScript />
+
+          {dev == false && (
+            <Script
+              async
+              src="https://api.buglog.io/website/80W58ZYWE9/code"
+              strategy="afterInteractive"
+            />
+          )}
         </body>
       </Html>
     )

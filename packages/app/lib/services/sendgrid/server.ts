@@ -35,7 +35,7 @@ export async function updateSendGrid(
 ): Promise<string> {
   const { first_name, last_name, email, id: member_id, user_type } = user
   const member_level = MemberLevel[user_type] as number
-  if (member_level >= MemberLevel.member) {
+  if (member_level >= MemberLevel.inductee) {
     lists.push(SendGridList.Members)
   }
   try {
@@ -87,6 +87,7 @@ export async function sendNotificationEmail(
       {
         to: [{ email: to_email, name: to_name }],
         dynamicTemplateData: {
+          email: to_email,
           subject,
           name: to_name,
           body,

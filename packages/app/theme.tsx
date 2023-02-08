@@ -2,11 +2,6 @@ import { ChakraTheme, extendTheme, StyleFunctionProps } from '@chakra-ui/react'
 import { default as defaultTheme } from '@chakra-ui/theme'
 import { mode } from '@chakra-ui/theme-tools'
 import { StepsStyleConfig } from 'chakra-ui-steps'
-import { radioAnatomy } from '@chakra-ui/anatomy'
-import { createMultiStyleConfigHelpers } from '@chakra-ui/react'
-const { definePartsStyle, defineMultiStyleConfig } = createMultiStyleConfigHelpers(
-  radioAnatomy.keys
-)
 
 export const brand = {
   colors: {
@@ -92,44 +87,46 @@ const custom: Partial<ChakraTheme> = {
         }
       },
     },
-    Heading: {
-      ...defaultTheme.components.Heading,
-      baseStyle: {},
-      variants: {},
-    },
     Input: {
+      defaultProps: {
+        size: 'lg',
+        variant: 'outline',
+        colorScheme: 'ghost',
+      },
       baseStyle: {
         field: {
-          padding: '0 .5rem',
           _placeholder: {
             color: 'gray.50',
           },
         },
       },
-      variants: {
-        outlined: {
-          field: {
-            border: '2px solid',
-            borderColor: 'gray.500',
-
-            //bg: 'transparent',
-            // Let's also provide dark mode alternatives
-            _dark: {
-              borderColor: 'white',
-              color: 'white',
-              //bg: 'transparent',
-            },
-          },
-          addon: {
-            border: '2px solid',
-            borderColor: 'gray.200',
-            color: 'gray.500',
-            _dark: {
-              borderColor: 'white',
-              color: 'white',
-            },
-          },
-        },
+    },
+    Select: {
+      defaultProps: {
+        size: 'lg',
+        variant: 'outline',
+        colorScheme: 'ghost',
+      },
+    },
+    Checkbox: {
+      defaultProps: {
+        size: 'lg',
+        variant: 'outline',
+        colorScheme: 'primary',
+      },
+    },
+    Switch: {
+      defaultProps: {
+        size: 'lg',
+        variant: 'outline',
+        colorScheme: 'accent',
+      },
+    },
+    NumberInput: {
+      defaultProps: {
+        size: 'lg',
+        variant: 'outline',
+        colorScheme: 'ghost',
       },
     },
   },
@@ -163,6 +160,10 @@ const custom: Partial<ChakraTheme> = {
       success: {
         default: 'green.200',
         _dark: 'green.300',
+      },
+      info: {
+        default: 'primary.700',
+        _dark: 'primary.500',
       },
       primary: {
         default: 'primary.700',
@@ -248,6 +249,9 @@ const custom: Partial<ChakraTheme> = {
         li: { textAlign: 'left' },
         p: {
           my: 2,
+        },
+        img: {
+          width: '100%',
         },
       }
     },

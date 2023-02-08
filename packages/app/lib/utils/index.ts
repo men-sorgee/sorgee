@@ -61,4 +61,10 @@ export function getAssetUrl(assetId: string) {
   return `/api/asset/${assetId}`
 }
 
+export function getSearchParams(params: Record<string, any> = {}) {
+  return Object.keys(params).reduce((acc, key) => {
+    return `${acc}&${key}=${params[key]}`
+  }, '')
+}
+
 export * from './fetchers'

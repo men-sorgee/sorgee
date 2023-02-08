@@ -1,7 +1,6 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { postJSON, pruneUndefined } from 'lib/utils'
 import { useEffect, useState } from 'react'
-import { getFieldOptions } from 'lib/services/directus/server'
 import { NextRouter, useRouter } from 'next/router'
 import { Applicant, FormOptions, MemberLevel, Profile, Promo, UserInvite } from 'lib/models'
 import {
@@ -46,7 +45,9 @@ export type PageProps = {
   promo?: Promo
 }
 
-export const getServerSideProps = async (context) => {
+export const getServerSideProps = async (_context) => {
+  const { getFieldOptions } = await import('lib/services/directus/server')
+
   const props: Partial<PageProps> = {
     spectrumOptions: await getFieldOptions('spectrum'),
     relationshipOptions: await getFieldOptions('relationship_status'),

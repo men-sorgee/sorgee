@@ -13,20 +13,15 @@ import { BellIcon as NotificationsOffIcon } from '@heroicons/react/outline'
 import { BellIcon as NotificationsOnIcon } from '@heroicons/react/solid'
 import { useNotifications } from 'hooks/use-notifications'
 import { Notification } from 'components/ui'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
-interface Props {
-  setNotificationBadge: (hasNewNotifications: boolean) => void
-}
+interface Props {}
 
-const Notifications = ({ setNotificationBadge }: Props) => {
-  const { notifications, hasNewNotifications, newNotificationCount } = useNotifications()
+const Notifications = (_props: Props) => {
+  const { notifications, hasNewNotifications, newNotificationCount, loading } = useNotifications()
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  useEffect(() => {
-    setNotificationBadge(hasNewNotifications)
-  }, [hasNewNotifications, notifications, setNotificationBadge])
-
+  if (loading || !notifications || notifications.length == 0) return null
   return (
     <>
       <MenuItem
