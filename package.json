@@ -18,8 +18,5 @@
     "postinstall": "chmod +x .devcontainer/.bashrc && bash -c 'source .devcontainer/.bashrc'",
     "admin:secrets": "kubectl create secret generic gnh-admin --from-env-file=packages/admin/.env.production -n gnh",
     "app:secrets": "kubectl create secret generic gnh-app --from-env-file=packages/app/.env.production -n gnh"
-  },
-  "dependencies": {
-    "usher-cli": "^2.11.4"
   }
 }

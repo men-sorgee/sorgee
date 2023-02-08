@@ -61,7 +61,7 @@ export default function useMemberSearch(
         })
       }
     }
-  }, [response?.data])
+  }, [response, response.data, size])
 
   return {
     members,
