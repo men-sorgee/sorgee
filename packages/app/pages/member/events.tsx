@@ -233,7 +233,7 @@ function EventInfo({ invite, member }: { invite: Invite; member: Member }) {
                 <input type="hidden" {...methods.register('user_id')} />
                 <FieldRadioButtons
                   field="rsvp"
-                  formOptions={responseOptions}
+                  options={responseOptions}
                   registerOptions={{
                     required: true,
                   }}

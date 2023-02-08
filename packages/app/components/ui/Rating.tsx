@@ -1,6 +1,6 @@
 import { useState, forwardRef, useEffect } from 'react'
 import { StarIcon } from '@chakra-ui/icons'
-import { Box, Icon, IconButton, Stack, Text, IconButtonProps, Tooltip } from '@chakra-ui/react'
+import { Box, Icon, IconButton, Stack, Text, IconButtonProps } from '@chakra-ui/react'
 type Props = IconButtonProps & {
   value?: number
   readonly?: boolean
@@ -75,22 +75,20 @@ const rating = forwardRef<HTMLInputElement, Props>(
       'No-shows automatically receive 2-star ratings by the event. ' +
       'Members must have an average of 4-stars to be eligible for events. '
     return (
-      <Tooltip label={tooltip} aria-label={tooltip}>
-        <Stack isInline mt={mt} justify="center" title={help}>
-          {!readonly && <input name="rating" type="hidden" value={rating} ref={ref} />}
-          {buttons}
-          {!simple && (
-            <Box textAlign="center">
-              <Text fontSize="sm" textTransform="uppercase">
-                Rating
-              </Text>
-              <Text fontSize="2xl" fontWeight="semibold" lineHeight="1.2em">
-                {rating}
-              </Text>
-            </Box>
-          )}
-        </Stack>
-      </Tooltip>
+      <Stack isInline mt={mt} justify="center" title={help}>
+        {!readonly && <input name="rating" type="hidden" value={rating} ref={ref} />}
+        {buttons}
+        {!simple && (
+          <Box textAlign="center">
+            <Text fontSize="sm" textTransform="uppercase">
+              Rating
+            </Text>
+            <Text fontSize="2xl" fontWeight="semibold" lineHeight="1.2em">
+              {rating}
+            </Text>
+          </Box>
+        )}
+      </Stack>
     )
   }
 )

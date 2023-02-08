@@ -22,18 +22,7 @@ function Layout({
 }) {
   const { isMember } = useAuth()
   const router = useRouter()
-  const [className, setClassName] = useState<string>()
-  const [path, setPath] = useState<string>()
-  useEffect(() => {
-    if (router?.asPath) {
-      let path = router.asPath
-      if (path == '/') path = '/home'
-      setPath(path)
-      let name = path.substring(1).split('/').join('-').toLowerCase()
-      setClassName(name)
-    }
-  }, [router, path, className])
-
+  const [path] = useState<string>(router?.asPath)
   if (path?.startsWith('/code')) {
     return <>{children}</>
   }
@@ -50,11 +39,7 @@ function Layout({
           maxH={`calc(100vh - ${height})`}
           overflowY="auto"
         >
-          <Box
-            flex="1"
-            {...constrained}
-            className={`${className || ''} ${heading} ${body} ${mono}}`}
-          >
+          <Box flex="1" {...constrained} className={` ${heading} ${body} ${mono}}`}>
             {children}
           </Box>
           <Spacer />

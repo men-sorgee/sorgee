@@ -1,7 +1,7 @@
 import { signIn } from 'next-auth/react'
 import { Button, GridItem, Heading, SimpleGrid, useToast } from '@chakra-ui/react'
 import Page from 'components/Page'
-import { FormOptions, Promo, User } from 'lib/models'
+import { FieldOptions, Promo, User } from 'lib/models'
 import { findPromo, getFieldOptions } from 'lib/services/directus/server'
 import { useSite } from 'hooks/use-site'
 import { useEffect } from 'react'
@@ -14,7 +14,7 @@ import { useRouter } from 'next/router'
 
 type Props = {
   promo?: Promo
-  birthMonthOptions: FormOptions
+  birthMonthOptions: FieldOptions
 }
 
 export async function getServerSideProps({ params }) {
@@ -115,7 +115,7 @@ export default function Register({ promo, birthMonthOptions }: Props) {
             <FieldSelect
               field="birth_month"
               label="Birth Month"
-              formOptions={birthMonthOptions}
+              options={birthMonthOptions}
               registerOptions={required}
             />
             <FieldInput

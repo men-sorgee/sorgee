@@ -74,7 +74,7 @@ function Review() {
                     w="fit-content"
                     field="contact_preference"
                     registerOptions={{ required: 'Certification is Required' }}
-                    formOptions={[
+                    options={[
                       { text: 'Email', value: 'email' },
                       { text: 'Phone', value: 'phone_call' },
                       { text: 'Text', value: 'phone_text' },

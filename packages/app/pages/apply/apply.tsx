@@ -2,7 +2,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { postJSON, pruneUndefined } from 'lib/utils'
 import { useEffect, useState } from 'react'
 import { NextRouter, useRouter } from 'next/router'
-import { Applicant, FormOptions, MemberLevel, Profile, Promo, UserInvite } from 'lib/models'
+import { Applicant, FieldOptions, MemberLevel, Profile, Promo, UserInvite } from 'lib/models'
 import {
   FieldCheckbox,
   FieldInput,
@@ -31,12 +31,12 @@ import { useMember } from '../../hooks/use-member'
 
 export type PageProps = {
   invite?: UserInvite
-  spectrumOptions: FormOptions
-  relationshipOptions: FormOptions
-  timeOfDayOptions: FormOptions
-  positionsOptions: FormOptions
-  skinToneOptions: FormOptions
-  birthMonthOptions: FormOptions
+  spectrumOptions: FieldOptions
+  relationshipOptions: FieldOptions
+  timeOfDayOptions: FieldOptions
+  positionsOptions: FieldOptions
+  skinToneOptions: FieldOptions
+  birthMonthOptions: FieldOptions
   page?: string
   setComplete: (complete: boolean) => void
   router: NextRouter
@@ -217,18 +217,18 @@ function Form({ user, ...props }: PageProps & { user: Applicant }) {
             <GridItem colSpan={{ base: 1, sm: 2 }}>
               <FieldInput field="nickname" label="Nickname" />
             </GridItem>
-            <FieldSelect field="spectrum" label="Orientation" formOptions={spectrumOptions} />
+            <FieldSelect field="spectrum" label="Orientation" options={spectrumOptions} />
             <FieldSelect
               field="relationship_status"
               label="Relationship Status"
-              formOptions={relationshipOptions}
+              options={relationshipOptions}
             />
           </SimpleGrid>
           <SimpleGrid spacing={4} columns={{ base: 1, sm: 2, md: 4 }}>
             <FieldSelect
               field="birth_month"
               label="Birth Month"
-              formOptions={birthMonthOptions}
+              options={birthMonthOptions}
               registerOptions={{
                 required: 'You must provide your month of birth',
               }}
@@ -283,7 +283,7 @@ function Form({ user, ...props }: PageProps & { user: Applicant }) {
             field="event_availability"
             label="Preferred Event Times"
             help="We host events to meet the demands of our brothers. Let us know what times work best in general"
-            formOptions={timeOfDayOptions}
+            options={timeOfDayOptions}
           />
 
           <Heading as="h3">Sexual Preferences</Heading>
@@ -292,7 +292,7 @@ function Form({ user, ...props }: PageProps & { user: Applicant }) {
               field="my_positions"
               label="Your Positions"
               help="What positions or acts are you interested in? We will use this to match you with compatible brothers. Select all that apply"
-              formOptions={positionsOptions}
+              options={positionsOptions}
             />
             <Heading as="h3">Assistance</Heading>
             <Text>

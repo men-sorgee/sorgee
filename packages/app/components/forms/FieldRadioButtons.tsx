@@ -1,6 +1,6 @@
 import { InputHTMLAttributes } from 'react'
 import { useFormContext, RegisterOptions } from 'react-hook-form'
-import { FormOptions } from 'lib/models'
+import { FieldOptions } from 'lib/models'
 import FieldWrapper from './FieldWrapper'
 import { Radio, RadioGroup, Flex, RadioProps, chakra, SimpleGrid } from '@chakra-ui/react'
 
@@ -9,7 +9,7 @@ type Props = RadioProps &
     field: string
     label?: string
     help?: string
-    formOptions: FormOptions
+    options: FieldOptions
     registerOptions?: RegisterOptions
     className?: string
     color?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info'
@@ -21,7 +21,7 @@ function RadioButtonsField(props: Props) {
     label,
     help,
     registerOptions = {},
-    formOptions,
+    options,
     className,
     color = 'primary',
     size,
@@ -42,7 +42,7 @@ function RadioButtonsField(props: Props) {
         as={Flex}
         justifyContent={justifyContent}
       >
-        {formOptions?.map(({ text, value }, index) => (
+        {options?.map(({ text, value }, index) => (
           <Radio
             {...opts}
             {...register(field, registerOptions)}

@@ -1,6 +1,6 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
-import { FormOptions, User } from 'lib/models'
+import { FieldOptions, User } from 'lib/models'
 import { useMember } from 'hooks/use-member'
 import { useEffect, useState } from 'react'
 import {
@@ -31,33 +31,34 @@ import { useToast } from '@chakra-ui/react'
 import { ErrorMessage } from '@hookform/error-message'
 import { postJSON } from 'lib/utils'
 import { UserCard } from 'components/ui'
+import { useWarnIfUnsavedChanges } from '../../hooks/use-warn-if-unsaved'
 
 type PageProps = {
-  spectrumOptions: FormOptions
-  relationshipOptions: FormOptions
-  positionsOptions: FormOptions
-  skinToneOptions: FormOptions
-  hairColorOptions: FormOptions
-  hairStyleOptions: FormOptions
-  eyeColorOptions: FormOptions
-  mannerismsOptions: FormOptions
-  bodyHairOptions: FormOptions
-  bodyAttributesOptions: FormOptions
-  facialHairOptions: FormOptions
-  scenesOptions: FormOptions
-  cockGirthOptions: FormOptions
-  cockAttributesOptions: FormOptions
-  ballSizeOptions: FormOptions
-  ballGravityOptions: FormOptions
-  cumAttributesOptions: FormOptions
-  loadPolicyOptions: FormOptions
-  hivStatusOptions: FormOptions
-  vaccinationStatusOptions: FormOptions
-  myRolesOptions: FormOptions
-  theirRolesOptions: FormOptions
-  theirSpectrumOptions: FormOptions
-  theirPositionsOptions: FormOptions
-  buildOptions: FormOptions
+  spectrumOptions: FieldOptions
+  relationshipOptions: FieldOptions
+  positionsOptions: FieldOptions
+  skinToneOptions: FieldOptions
+  hairColorOptions: FieldOptions
+  hairStyleOptions: FieldOptions
+  eyeColorOptions: FieldOptions
+  mannerismsOptions: FieldOptions
+  bodyHairOptions: FieldOptions
+  bodyAttributesOptions: FieldOptions
+  facialHairOptions: FieldOptions
+  scenesOptions: FieldOptions
+  cockGirthOptions: FieldOptions
+  cockAttributesOptions: FieldOptions
+  ballSizeOptions: FieldOptions
+  ballGravityOptions: FieldOptions
+  cumAttributesOptions: FieldOptions
+  loadPolicyOptions: FieldOptions
+  hivStatusOptions: FieldOptions
+  vaccinationStatusOptions: FieldOptions
+  myRolesOptions: FieldOptions
+  theirRolesOptions: FieldOptions
+  theirSpectrumOptions: FieldOptions
+  theirPositionsOptions: FieldOptions
+  buildOptions: FieldOptions
 }
 
 export async function getServerSideProps(context: NextPageContext) {
@@ -150,8 +151,12 @@ function Form(props: PageProps) {
     register,
     handleSubmit,
     setError,
-    formState: { isSubmitting, errors },
+    formState: { isSubmitting, isDirty },
   } = methods
+
+  useWarnIfUnsavedChanges(isDirty, () => {
+    return window.confirm('Are you sure you want to leave? You have unsaved changes.')
+  })
 
   async function onSubmit(data: MemberFormData) {
     const [ok, response] = await postJSON<User>('/api/member/me', data)
@@ -216,16 +221,12 @@ function Form(props: PageProps) {
                       className="col-span-2 sm:col-span-4"
                     />
                   </GridItem>
-                  <FieldSelect field="spectrum" label="Orientation" formOptions={spectrumOptions} />
-                  <FieldSelect
-                    field="mannerisms"
-                    label="Mannerisms"
-                    formOptions={mannerismsOptions}
-                  />
+                  <FieldSelect field="spectrum" label="Orientation" options={spectrumOptions} />
+                  <FieldSelect field="mannerisms" label="Mannerisms" options={mannerismsOptions} />
                   <FieldSelect
                     field="relationship_status"
                     label="Relationship Status"
-                    formOptions={relationshipOptions}
+                    options={relationshipOptions}
                   />
                 </SimpleGrid>
                 <FieldText
@@ -238,33 +239,25 @@ function Form(props: PageProps) {
                   <FieldNumber field="age" label="Age" min={21} />
                   <FieldInput field="height" label="Height" placeholder="5'11" />
                   <FieldNumber field="weight" label="Weight" placeholder="185" />
-                  <FieldSelect field="build" label="Build" formOptions={buildOptions} />
+                  <FieldSelect field="build" label="Build" options={buildOptions} />
                 </SimpleGrid>
 
                 <SimpleGrid spacing={2} columns={[1, 3]}>
-                  <FieldSelect field="skin_tone" label="Skin Tone" formOptions={skinToneOptions} />
-                  <FieldSelect
-                    field="hair_color"
-                    label="Hair Color"
-                    formOptions={hairColorOptions}
-                  />
-                  <FieldSelect
-                    field="hair_style"
-                    label="Hair Style"
-                    formOptions={hairStyleOptions}
-                  />
-                  <FieldSelect field="body_hair" label="Body Hair" formOptions={bodyHairOptions} />
+                  <FieldSelect field="skin_tone" label="Skin Tone" options={skinToneOptions} />
+                  <FieldSelect field="hair_color" label="Hair Color" options={hairColorOptions} />
+                  <FieldSelect field="hair_style" label="Hair Style" options={hairStyleOptions} />
+                  <FieldSelect field="body_hair" label="Body Hair" options={bodyHairOptions} />
                   <FieldSelect
                     field="facial_hair"
                     label="Facial Hair"
-                    formOptions={facialHairOptions}
+                    options={facialHairOptions}
                   />
-                  <FieldSelect field="eye_color" label="Eye Color" formOptions={eyeColorOptions} />
+                  <FieldSelect field="eye_color" label="Eye Color" options={eyeColorOptions} />
                 </SimpleGrid>
                 <FieldCheckboxes
                   field="body_attributes"
                   label="Other Attributes"
-                  formOptions={bodyAttributesOptions}
+                  options={bodyAttributesOptions}
                 />
                 <Divider mt={4} mb={2} />
                 <SimpleGrid spacing={2} columns={{ base: 1, md: 2 }}>
@@ -274,31 +267,27 @@ function Form(props: PageProps) {
                     type="number"
                     registerOptions={{}}
                   />
-                  <FieldSelect
-                    field="cock_girth"
-                    label="Cock Girth"
-                    formOptions={cockGirthOptions}
-                  />
+                  <FieldSelect field="cock_girth" label="Cock Girth" options={cockGirthOptions} />
                 </SimpleGrid>
                 <FieldCheckboxes
                   field="cock_attributes"
                   label="Cock Attributes"
                   className="sm:col-span-2"
-                  formOptions={cockAttributesOptions}
+                  options={cockAttributesOptions}
                 />
                 <SimpleGrid spacing={2} columns={{ base: 1, md: 2 }}>
-                  <FieldSelect field="ball_size" label="Ball Size" formOptions={ballSizeOptions} />
+                  <FieldSelect field="ball_size" label="Ball Size" options={ballSizeOptions} />
                   <FieldSelect
                     field="ball_gravity"
                     label="Ball Sack"
-                    formOptions={ballGravityOptions}
+                    options={ballGravityOptions}
                   />
                 </SimpleGrid>
                 <FieldCheckboxes
                   field="cum_attributes"
                   label="Cum Attributes"
                   className="sm:col-span-2"
-                  formOptions={cumAttributesOptions}
+                  options={cumAttributesOptions}
                 />
               </TabPanel>
 
@@ -326,17 +315,17 @@ function Form(props: PageProps) {
                   <FieldCheckboxes
                     field="my_positions"
                     label="My Sexual Positions"
-                    formOptions={positionsOptions}
+                    options={positionsOptions}
                   />
                   <FieldCheckboxes
                     field="my_roles"
                     label="My Sexual Roles"
-                    formOptions={myRolesOptions}
+                    options={myRolesOptions}
                   />
                   <FieldCheckboxes
                     field="sexual_scenes"
                     label="Sexual Scenes"
-                    formOptions={scenesOptions}
+                    options={scenesOptions}
                   />
                 </SimpleGrid>
               </TabPanel>
@@ -360,24 +349,24 @@ function Form(props: PageProps) {
                   <FieldCheckboxes
                     field="their_spectrum"
                     label="Their Orientation"
-                    formOptions={theirSpectrumOptions}
+                    options={theirSpectrumOptions}
                   />
                   <FieldCheckboxes
                     field="their_relationship_status"
                     label="Their Relationship Status"
-                    formOptions={relationshipOptions}
+                    options={relationshipOptions}
                   />
 
                   <FieldCheckboxes
                     field="their_positions"
                     label="Their Sexual Positions"
-                    formOptions={theirPositionsOptions}
+                    options={theirPositionsOptions}
                   />
 
                   <FieldCheckboxes
                     field="their_roles"
                     label="Their Sexual Roles"
-                    formOptions={theirRolesOptions}
+                    options={theirRolesOptions}
                   />
                 </SimpleGrid>
               </TabPanel>
@@ -403,23 +392,19 @@ function Form(props: PageProps) {
                   />
                 </Alert>
                 <SimpleGrid spacing={2} columns={{ base: 1, md: 2 }}>
-                  <FieldSelect
-                    field="hiv_status"
-                    label="HIV Status"
-                    formOptions={hivStatusOptions}
-                  />
+                  <FieldSelect field="hiv_status" label="HIV Status" options={hivStatusOptions} />
                   <FieldInput field="last_tested" label="Last Tested" type="date" />
                 </SimpleGrid>
                 <SimpleGrid spacing={2}>
                   <FieldCheckboxes
                     field="load_policy"
                     label="Safety Policy"
-                    formOptions={loadPolicyOptions}
+                    options={loadPolicyOptions}
                   />
                   <FieldCheckboxes
                     field="vaccinations"
                     label="Vax Status"
-                    formOptions={vaccinationStatusOptions}
+                    options={vaccinationStatusOptions}
                   />
                 </SimpleGrid>
               </TabPanel>
@@ -428,18 +413,16 @@ function Form(props: PageProps) {
 
           <input type="hidden" {...register('id')} />
 
-          <VStack>
-            <Button
-              mt={10}
-              size="lg"
-              type="submit"
-              bg="primary"
-              color="white"
-              disabled={isSubmitting}
-            >
-              Update Profile
-            </Button>
-          </VStack>
+          <Button
+            mt={10}
+            size="lg"
+            type="submit"
+            bg="primary"
+            color="white"
+            disabled={isSubmitting || !isDirty}
+          >
+            Update Profile
+          </Button>
         </form>
       </FormProvider>
     </>

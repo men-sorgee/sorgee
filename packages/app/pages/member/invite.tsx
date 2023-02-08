@@ -2,7 +2,7 @@ import { useMember } from 'hooks/use-member'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
 import { copyTextToClipboard, postJSON } from 'lib/utils'
-import { MemberLevel, UserInvite, FormOptions, InviteLink, UserType } from 'lib/models'
+import { MemberLevel, UserInvite, FieldOptions, InviteLink, UserType } from 'lib/models'
 import { HStack, Button, Box, Text, VStack, useColorModeValue, useToast } from '@chakra-ui/react'
 import { FieldInput, FieldSelect } from 'components/forms'
 import Page from 'components/Page'
@@ -22,7 +22,7 @@ export const getServerSideProps: GetServerSideProps = async (_context) => {
 }
 
 type PageProps = {
-  userTypeOptions: FormOptions
+  userTypeOptions: FieldOptions
 }
 
 function Invite({ userTypeOptions }: PageProps) {
@@ -124,7 +124,7 @@ function Form({ userTypeOptions }: PageProps) {
           />
 
           {member?.user_type == 'staff' && (
-            <FieldSelect bg="primary.50" field="t" label="Level" formOptions={userTypeOptions} />
+            <FieldSelect bg="primary.50" field="t" label="Level" options={userTypeOptions} />
           )}
 
           <input type="hidden" name="link" defaultValue={link} />

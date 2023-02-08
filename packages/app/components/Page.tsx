@@ -30,52 +30,14 @@ const Page = ({
   ...props
 }: Props) => {
   const { setMeta } = useMeta()
-
-  const [routeChanging, setRouteChanging] = useState(false)
-  const router = useRouter()
   const { status } = useSession()
   const [denied, setDenied] = useState(false)
-
-  const routeStart = useCallback(
-    (url: string) => {
-      console.log('route start', url, router.asPath)
-      const incoming = url.split('?')[0]
-      const path = router.asPath.split('?')[0]
-      if (incoming !== path) setRouteChanging(true)
-    },
-    [router.asPath]
-  )
-
-  const routeComplete = useCallback(() => {
-    if (routeChanging) setRouteChanging(false)
-  }, [routeChanging])
-
   useEffect(() => {
     setMeta(title, description, image)
     if (status != 'loading' && requireAuth && status !== 'authenticated') {
       setDenied(true)
     }
-    router.events.on('routeChangeStart', routeStart)
-    router.events.on('routeChangeComplete', routeComplete)
-    return () => {
-      router.events.off('routeChangeStart', routeStart)
-      router.events.off('routeChangeComplete', routeComplete)
-    }
-  }, [
-    description,
-    image,
-    requireAuth,
-    routeComplete,
-    routeStart,
-    router.events,
-    setMeta,
-    status,
-    title,
-  ])
-
-  if (routeChanging) {
-    return <Loading size="xl" />
-  }
+  }, [description, image, requireAuth, setMeta, status, title])
 
   if (denied) {
     return <AccessDenied />

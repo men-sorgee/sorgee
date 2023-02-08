@@ -51,20 +51,16 @@ export async function copyTextToClipboard(text: string) {
   }
 }
 
-export function pruneUndefined(obj: Record<string, any>) {
+export function pruneUndefined(obj: Record<string, any>, and: (v: any) => boolean = () => true) {
   return Object.fromEntries(
-    Object.entries(obj).filter(([_, v]) => v !== undefined && v !== null && v !== '')
+    Object.entries(obj)
+      .filter(([_, v]) => v !== undefined && v !== null && v !== '')
+      .filter(([_, v]) => and(v))
   )
 }
 
 export function getAssetUrl(assetId: string) {
   return `/api/asset/${assetId}`
-}
-
-export function getSearchParams(params: Record<string, any> = {}) {
-  return Object.keys(params).reduce((acc, key) => {
-    return `${acc}&${key}=${params[key]}`
-  }, '')
 }
 
 export * from './fetchers'

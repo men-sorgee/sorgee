@@ -41,7 +41,7 @@ const Form = () => {
           <FieldSelect
             field="choices"
             label="Choices"
-            formOptions={[
+            options={[
               { text: 'One', value: '1' },
               { text: 'Two', value: '2' },
             ]}
@@ -52,7 +52,7 @@ const Form = () => {
           <FieldCheckboxes
             field="checkboxes"
             label="Checkboxes"
-            formOptions={[
+            options={[
               { text: 'One', value: '1' },
               { text: 'Two', value: '2' },
             ]}
@@ -60,7 +60,7 @@ const Form = () => {
           <FieldRadioButtons
             field="radios"
             label="Radios"
-            formOptions={[
+            options={[
               { text: 'One', value: '1' },
               { text: 'Two', value: '2' },
             ]}

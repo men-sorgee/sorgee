@@ -38,7 +38,7 @@ export default function ActionsNav({ children, currentPath, ...props }: Props) {
             variant="primary"
             size="lg"
             icon={<UserGroupIcon />}
-            color={currentPath === '/members' ? 'accent.500' : 'white'}
+            color={currentPath.startsWith('/members') ? 'accent.500' : 'white'}
             aria-label={'View Members'}
             title="View Members"
           />
@@ -48,7 +48,7 @@ export default function ActionsNav({ children, currentPath, ...props }: Props) {
             variant="primary"
             size="lg"
             icon={<InboxIcon />}
-            color={currentPath === '/member/events' ? 'accent.500' : 'white'}
+            color={currentPath.startsWith('/member/events') ? 'accent.500' : 'white'}
             aria-label={'Invites'}
             title="Invites"
           />

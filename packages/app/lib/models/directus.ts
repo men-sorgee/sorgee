@@ -355,7 +355,7 @@ export type DirectusField = {
   field: string
   special?: unknown
   interface?: string
-  options?: unknown
+  options?: FieldOptions
   display?: string
   display_options?: unknown
   readonly: boolean
@@ -369,7 +369,24 @@ export type DirectusField = {
   group?: string | DirectusField
   validation?: unknown
   validation_message?: string
+  meta?: {
+    id: number
+    field: string
+    options?: {
+      choices?: FieldOptions
+    }
+    display: string
+    display_options: {
+      choices?: FieldOptions
+    }
+    note: 'string'
+  }
 }
+
+export type FieldOptions = Array<{
+  text: string
+  value: string
+}>
 
 export type DirectusFile = {
   id: string

@@ -258,7 +258,6 @@ export const memberProfilePrivateFields: Array<keyof SearchableMember> = [
 ]
 
 export const memberProfileContactFields: Array<keyof SearchableMember> = [
-  'show_contact',
   'email',
   'phone',
   'contact_preference',
@@ -267,47 +266,38 @@ export const memberProfileContactFields: Array<keyof SearchableMember> = [
 ]
 
 export const memberProfileLocationFields: Array<keyof SearchableMember> = [
-  'show_location',
   'location',
   'city',
   'state',
 ]
 
 export const memberProfileFields: Array<keyof SearchableMember> = [
-  'show_profile',
-  'nickname',
-  'biography',
-  'relationship_status',
   'age',
   'height',
   'weight',
   'skin_tone',
-  'body_hair',
   'facial_hair',
+  'eye_color',
   'hair_color',
   'hair_style',
-  'body_attributes',
+  'body_hair',
   'build',
-  'eye_color',
+  'body_attributes',
 ]
 
 export const memberProfileExplicitFields: Array<keyof SearchableMember> = [
-  'show_explicit',
-  'spectrum',
-  'my_positions',
-  'my_roles',
   'ball_size',
   'ball_gravity',
-  'cum_attributes',
-  'mannerisms',
   'cock_length',
   'cock_girth',
   'cock_attributes',
+  'cum_attributes',
+  'my_positions',
+  'my_roles',
   'sexual_scenes',
 ]
 
 export const memberInterestFields: Array<keyof SearchableMember> = [
-  'show_interests',
   'their_positions',
   'their_roles',
   'their_spectrum',
@@ -315,19 +305,17 @@ export const memberInterestFields: Array<keyof SearchableMember> = [
 ]
 
 export const memberEventFields: Array<keyof SearchableMember> = [
-  'show_events',
   'event_invites',
+  'can_host',
   'event_availability',
   'social_scenes',
-  'can_host',
   'can_host_events',
 ]
 
 export const memberHealthFields: Array<keyof SearchableMember> = [
-  'show_health',
-  'load_policy',
   'hiv_status',
   'last_tested',
+  'load_policy',
   'vaccinations',
 ]
 
@@ -335,13 +323,25 @@ export const searchableMemberFields: Array<keyof SearchableMember> = [
   'user_type',
   'presence',
   'rating',
-  ...memberProfilePrivateFields,
-  ...memberProfileFields,
+  'nickname',
+  'biography',
+  'relationship_status',
+  'spectrum',
+  'mannerisms',
   ...memberProfileContactFields,
+  'show_contact',
+  ...memberProfilePrivateFields,
+  'show_profile',
+  ...memberProfileFields,
+  'show_explicit',
   ...memberProfileExplicitFields,
+  'show_health',
   ...memberHealthFields,
+  'show_interests',
   ...memberInterestFields,
+  'show_events',
   ...memberEventFields,
+  'show_location',
   ...memberProfileLocationFields,
 ]
 

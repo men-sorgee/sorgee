@@ -1,6 +1,6 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
-import { FormOptions, Member, User } from 'lib/models'
+import { FieldOptions, Member, User } from 'lib/models'
 import { useMember } from 'hooks/use-member'
 import { useState } from 'react'
 import {
@@ -31,14 +31,15 @@ import Page from 'components/Page'
 import { useToast } from '@chakra-ui/react'
 import { postJSON } from 'lib/utils'
 import { UserCard } from 'components/ui'
+import { useWarnIfUnsavedChanges } from '../../hooks/use-warn-if-unsaved'
 
 type PageProps = {
-  timeOfDayOptions: FormOptions
-  eventOptions: FormOptions
-  contactPreferenceOptions: FormOptions
-  hostEventOptions: FormOptions
-  birthMonthOptions: FormOptions
-  stateOptions: FormOptions
+  timeOfDayOptions: FieldOptions
+  eventOptions: FieldOptions
+  contactPreferenceOptions: FieldOptions
+  hostEventOptions: FieldOptions
+  birthMonthOptions: FieldOptions
+  stateOptions: FieldOptions
 }
 
 export async function getServerSideProps(_context: NextPageContext) {
@@ -89,8 +90,12 @@ function Form(props: PageProps) {
     handleSubmit,
     setError,
     watch,
-    formState: { isSubmitting, errors },
+    formState: { isSubmitting, isDirty, touchedFields, isSubmitted },
   } = methods
+
+  useWarnIfUnsavedChanges(isDirty, () => {
+    return window.confirm('Are you sure you want to leave? You have unsaved changes.')
+  })
 
   async function onSubmit(data: MemberFormData) {
     const [ok, response] = await postJSON<User>('/api/member/me', data)
@@ -173,7 +178,7 @@ function Form(props: PageProps) {
                   />
 
                   <FieldInput field="city" label="City" />
-                  <FieldSelect field="state" label="State" formOptions={stateOptions} />
+                  <FieldSelect field="state" label="State" options={stateOptions} />
 
                   <FieldWrapper field="height" label="Birth Month/Year">
                     <InputGroup>
@@ -205,7 +210,7 @@ function Form(props: PageProps) {
                     w="full"
                     field="contact_preference"
                     label="Contact Preference"
-                    formOptions={contactPreferenceOptions}
+                    options={contactPreferenceOptions}
                   />
                 </SimpleGrid>
                 <FieldCheckbox
@@ -263,14 +268,14 @@ function Form(props: PageProps) {
                     field="social_scenes"
                     label="Social Activities"
                     help="We host events to meet the demands of our brothers. Tell us what kind of events you are interested in."
-                    formOptions={eventOptions}
+                    options={eventOptions}
                   />
 
                   <FieldCheckboxes
                     field="event_availability"
                     label="Preferred Event Times"
                     help="We host events to meet the demands of our brothers. Let us know what times work best in general"
-                    formOptions={timeOfDayOptions}
+                    options={timeOfDayOptions}
                   />
                 </SimpleGrid>
                 <Text>
@@ -291,7 +296,7 @@ function Form(props: PageProps) {
                         <FieldCheckboxes
                           field="can_host_events"
                           label="Events"
-                          formOptions={hostEventOptions}
+                          options={hostEventOptions}
                         />
                       )}
                     </Stack>
@@ -303,18 +308,16 @@ function Form(props: PageProps) {
 
           <input type="hidden" {...register('id')} />
 
-          <VStack>
-            <Button
-              mt={10}
-              size="lg"
-              type="submit"
-              bg="primary"
-              color="white"
-              disabled={isSubmitting}
-            >
-              Update Account
-            </Button>
-          </VStack>
+          <Button
+            mt={10}
+            size="lg"
+            type="submit"
+            bg="primary"
+            color="white"
+            disabled={isSubmitting || !isDirty}
+          >
+            Update Account
+          </Button>
         </form>
       </FormProvider>
     </>
