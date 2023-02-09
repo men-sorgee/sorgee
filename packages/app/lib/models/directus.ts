@@ -21,6 +21,7 @@ export type Event = {
   description?: string
   users: string | EventUser[]
   cost: number
+  invite_only: boolean
 }
 
 export type UserFields = (string | keyof User)[] | '*' | '*.*' | any

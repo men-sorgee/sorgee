@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Flex, Box, Spacer } from '@chakra-ui/react'
+import { Flex, Box, Spacer, Slide, useDisclosure } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import Header from './Header'
 import Meta from './Meta'
@@ -23,10 +23,20 @@ function Layout({
   const { isMember } = useAuth()
   const router = useRouter()
   const [path] = useState<string>(router?.asPath)
+
+  const height = isMember ? '160px' : '85px'
+  const { isOpen, onOpen } = useDisclosure()
+
+  useEffect(() => {
+    if (isMember)
+      setTimeout(() => {
+        onOpen()
+      }, 3000)
+  }, [isMember, onOpen])
+
   if (path?.startsWith('/code')) {
     return <>{children}</>
   }
-  const height = isMember ? '160px' : '85px'
   return (
     <>
       <Meta />
@@ -35,7 +45,7 @@ function Layout({
         <Flex
           flex="1"
           direction="column"
-          minH="70vh"
+          minH={isOpen ? '70dvh' : '100vh'}
           maxH={`calc(100vh - ${height})`}
           overflowY="auto"
         >
@@ -45,7 +55,10 @@ function Layout({
           <Spacer />
           <Footer />
         </Flex>
-        {isMember && <Actions currentPath={path} />}
+
+        <Slide in={isOpen} direction="bottom">
+          <Actions />
+        </Slide>
       </Flex>
     </>
   )

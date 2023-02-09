@@ -55,6 +55,7 @@ import {
   Spacer,
   GridItem,
 } from '@chakra-ui/react'
+import NextLink from 'next/link'
 import useSWR from 'swr'
 import {
   User,
@@ -228,10 +229,17 @@ export default function MemberListPage(props: PageProps) {
           style={{ width: '100%' }}
         >
           <Accordion allowToggle w="full">
-            <AccordionItem>
-              <AccordionButton>
-                <Flex direction="row" pr={4} gap={4} justify="space-between" w="full">
-                  <h3>Filter Members</h3>
+            <AccordionItem w="full">
+              <AccordionButton px={0} py={1}>
+                <Flex
+                  direction="row"
+                  pr={4}
+                  gap={[2, 4]}
+                  justify="space-between"
+                  align="left"
+                  w="full"
+                >
+                  <h3>Filter</h3>
                   <StatGroup as={HStack} spacing={4}>
                     <Stat colorScheme="primary">
                       <StatLabel>Total</StatLabel>
@@ -414,7 +422,7 @@ function MemberCard({ member, onOpen }: { member: Partial<SearchableMember>; onO
   const router = useRouter()
   return (
     <>
-      <LinkBox as="article" key={member?.id}>
+      <LinkBox key={member?.id}>
         <Card
           w="full"
           h="full"
@@ -425,6 +433,7 @@ function MemberCard({ member, onOpen }: { member: Partial<SearchableMember>; onO
         >
           <CardHeader>
             <LinkOverlay
+              as={NextLink}
               href={`/members/${member?.id}`}
               onClick={(e) => {
                 e.preventDefault()
@@ -479,6 +488,7 @@ function PropertyGroup({
   fieldList,
   fields,
   color,
+  minCols = 1,
   maxCols = 3,
 }: {
   k: string
@@ -488,6 +498,7 @@ function PropertyGroup({
   fields: Record<string, DirectusField>
   color: string
   maxCols?: number
+  minCols?: number
 }) {
   if (!show) return null
   const getValue = (field: string, value: string) => {
@@ -498,11 +509,11 @@ function PropertyGroup({
     return value
   }
   return (
-    <SimpleGrid columns={[1, 2, maxCols]} spacing={1} alignItems="start">
+    <SimpleGrid columns={[minCols, 2, maxCols]} spacing={1} alignItems="start">
       {fieldList?.map((field, i: number) => (
         <GridItem
           key={`${field}-${i}`}
-          colSpan={Array.isArray(member[field]) ? [1, 2, maxCols] : 1}
+          colSpan={Array.isArray(member[field]) ? [minCols, 2, maxCols] : minCols}
         >
           {member[field] &&
             (Array.isArray(member[field]) ? (
@@ -614,7 +625,7 @@ function MemberSpotlight({ id, fields }: { id: string; fields: Record<string, Di
 
 function MemberHeader({ id }: { id: string }) {
   const { member, loading } = useMember(id)
-  if (loading || !member) return <Loading />
+  if (loading || !member) return <></>
   return (
     <Flex direction="column" justify="flex-start" align="top">
       <UserCard user={member} size="xl" />

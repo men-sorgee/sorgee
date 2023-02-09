@@ -30,10 +30,7 @@ export default function SubscribeBox() {
     }
   }
 
-  const bg = useColorModeValue(
-    'linear(to-r, primary.200, primary.400)',
-    'linear(to-r, primary.500, primary.700)'
-  )
+  const bg = useColorModeValue('white', 'gray.700')
 
   if (subscribed)
     return (
@@ -52,7 +49,7 @@ export default function SubscribeBox() {
         boxShadow={'2xl'}
         rounded={'xl'}
         p={3}
-        bgGradient={bg}
+        bg={bg}
         color="white"
         align="center"
       >
@@ -100,12 +97,12 @@ export default function SubscribeBox() {
                   type="submit"
                   size={'md'}
                   w={['full', 'full', '50%', 'full']}
-                  colorScheme="accent"
+                  bg="primary.500"
                   color={'white'}
                 >
                   Subscribe
                 </Button>
-                <Text fontSize="xs" fontStyle={'italic'} color={'white'}>
+                <Text fontSize="xs" fontStyle={'italic'} color={'text'}>
                   Subscribe only if you agree to our Terms of Service and Privacy Policy .
                 </Text>
               </Flex>

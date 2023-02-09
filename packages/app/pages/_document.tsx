@@ -9,7 +9,13 @@ class MyDocument extends Document {
       <Html lang="en">
         <Head />
         <body
-          style={{ minWidth: '370px', height: '100vh', position: 'relative', overflowY: 'hidden' }}
+          style={{
+            width: '100%',
+            minWidth: '370px',
+            height: '100dvh',
+            position: 'fixed',
+            overflowY: 'hidden',
+          }}
         >
           <Script
             id="termly"

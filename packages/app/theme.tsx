@@ -150,8 +150,8 @@ const custom: Partial<ChakraTheme> = {
         _dark: 'white',
       },
       bg: {
-        default: 'gray.50',
-        _dark: 'gray.500',
+        default: 'gray.100',
+        _dark: 'gray.400',
       },
       error: {
         default: 'red.500',
@@ -170,7 +170,7 @@ const custom: Partial<ChakraTheme> = {
         _dark: 'primary.500',
       },
       secondary: {
-        default: 'secondary.500',
+        default: 'secondary.800',
         _dark: 'secondary.700',
       },
     },
@@ -202,11 +202,13 @@ const custom: Partial<ChakraTheme> = {
           fontSize: ['4xl', '5xl', '6xl'],
           lineHeight: ['3rem', '4rem', '6rem'],
           fontWeight: 'extrabold',
-          leading: 'tight',
-          bgGradient: 'linear(to-r, pink.500, blue.500)',
+          leading: 'loose',
+          fontFamily: 'heading',
+          bgGradient: 'linear(to-r, pink.300, blue.300)',
           bgClip: 'text',
-          my: 2,
+          mt: 2,
           overflow: 'visible',
+          textShadow: 'lg',
         },
         h2: {
           fontSize: ['3xl', '4xl'],
@@ -215,7 +217,7 @@ const custom: Partial<ChakraTheme> = {
           color: mode('primary.500', 'primary.300')(props),
           //width: 'fit-content',
           //mx: 'auto',
-          my: 3,
+          mt: 3,
         },
         h3: {
           fontSize: ['2xl', '3xl'],
@@ -252,6 +254,8 @@ const custom: Partial<ChakraTheme> = {
         },
         img: {
           width: '100%',
+          rounded: 'lg',
+          shadow: 'lg',
         },
       }
     },

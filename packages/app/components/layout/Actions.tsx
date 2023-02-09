@@ -13,32 +13,33 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { constrained } from '.'
 import NextLink from 'next/link'
-import { useSession } from 'next-auth/react'
-export type Props = BoxProps & {
-  currentPath: string
-}
+export type Props = BoxProps & {}
 
-export default function ActionsNav({ children, currentPath, ...props }: Props) {
+export default function ActionsNav({ children, ...props }: Props) {
+  const router = useRouter()
+  const [path, setPath] = useState(router.asPath)
+  useEffect(() => {
+    setPath(router.asPath)
+  }, [router, router.asPath])
   return (
     <Box
       {...props}
       as="nav"
       color={'white'}
-      position="absolute"
-      bottom={0}
-      minH={'80px'}
-      zIndex={1}
       width="100%"
+      minH={'80px'}
       shadow="xl"
       bg={useColorModeValue('primary.800', 'black')}
+      borderTop="1px solid"
+      borderTopColor={useColorModeValue('primary.500', 'accent.400')}
     >
-      <Flex justify="center" w="full" gap={10} p={4}>
+      <Flex justify="center" w="full" gap={10} p={4} {...constrained}>
         <Link href="/members" as={NextLink}>
           <IconButton
             variant="primary"
             size="lg"
             icon={<UserGroupIcon />}
-            color={currentPath.startsWith('/members') ? 'accent.500' : 'white'}
+            color={path.startsWith('/members') ? 'accent.500' : 'white'}
             aria-label={'View Members'}
             title="View Members"
           />
@@ -48,7 +49,7 @@ export default function ActionsNav({ children, currentPath, ...props }: Props) {
             variant="primary"
             size="lg"
             icon={<InboxIcon />}
-            color={currentPath.startsWith('/member/events') ? 'accent.500' : 'white'}
+            color={path.startsWith('/member/events') ? 'accent.500' : 'white'}
             aria-label={'Invites'}
             title="Invites"
           />

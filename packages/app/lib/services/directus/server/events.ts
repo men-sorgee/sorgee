@@ -12,12 +12,16 @@ export async function listUpcomingEvents(): Promise<EventDetail[]> {
   return data as EventDetail[]
 }
 
-export async function listEvents() {
+export async function listEvents(privileged: boolean = false): Promise<EventDetail[]> {
   const client = await getAdminClient()
+  const filter = {
+    status: { _in: ['scheduled', 'occurred'] },
+  }
+  if (!privileged) {
+    filter['invite_only'] = { _eq: false }
+  }
   const { data } = await client.items('events').readByQuery({
-    filter: {
-      status: { _in: ['scheduled', 'occurred'] },
-    },
+    filter,
     fields: ['*.*'],
     sort: ['-datetime'],
   })
