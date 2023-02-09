@@ -64,4 +64,24 @@ export function getAssetUrl(assetId: string | { id: string }) {
   else return `/api/asset/${assetId.id}`
 }
 
+export function normalize<T>(params: any): Record<keyof T, string[]> {
+  const result = {} as Record<keyof T, string[]>
+  Object.keys(pruneUndefined(params)).forEach((key) => {
+    if (params[key] === undefined || params[key] === null || params[key] === false) return
+    const value = params[key]
+    result[key] = Array.isArray(value) ? value : value.includes(',') ? value.split(',') : [value]
+  })
+  return result
+}
+
+export function serialize<T>(params: Record<keyof T, string[]>) {
+  const pairs = Object.entries(params).map(([key, value]: [string, string[]]) => [
+    key,
+    value.join(','),
+  ]) as [string, string][]
+  return pairs.reduce((acc, [key, value]) => {
+    return acc + `&${key}=${value}`
+  }, '')
+}
+
 export * from './fetchers'

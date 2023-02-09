@@ -81,9 +81,9 @@ export default function EventCard({ event, children, level }: Props) {
             justifyContent="middle"
             color="white!important"
           >
-            {eventDate.month}
+            {eventDate.month.toUpperCase()}
             <br />
-            <Text size="3xl"> {eventDate.date}</Text>
+            <Text size="4xl"> {eventDate.date}</Text>
           </Heading>
         </Flex>
       </CardHeader>

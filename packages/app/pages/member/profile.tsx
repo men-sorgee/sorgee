@@ -151,6 +151,7 @@ function Form(props: PageProps) {
     register,
     handleSubmit,
     setError,
+    reset,
     formState: { isSubmitting, isDirty },
   } = methods
 
@@ -170,6 +171,7 @@ function Form(props: PageProps) {
         isClosable: true,
       })
       reload()
+      reset()
     } else if (response.error?.field) {
       // @ts-ignore
       setError(response.error!.field, response.error.message)

@@ -3,7 +3,7 @@ import Page from 'components/Page'
 import { signIn } from 'next-auth/react'
 import { useMember } from 'hooks/use-member'
 import { UserAddIcon, StarIcon, ChatIcon } from '@heroicons/react/solid'
-import { pruneUndefined } from 'lib/utils'
+import { normalize, serialize } from 'lib/utils'
 import { useCallback, useEffect, useState } from 'react'
 import { capitalCase } from 'change-case'
 import { Loading, UserCard } from 'components/ui'
@@ -20,7 +20,6 @@ import {
   StatNumber,
   SimpleGrid,
   Tooltip,
-  Text,
   Accordion,
   AccordionButton,
   AccordionIcon,
@@ -31,6 +30,7 @@ import {
   CardFooter,
   CardHeader,
   CardBody,
+  Container,
   Link,
   useColorModeValue,
   Badge,
@@ -50,6 +50,7 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  Text,
   LinkBox,
   LinkOverlay,
   Spacer,
@@ -77,7 +78,7 @@ import {
 import { JsonFetcher } from 'lib/utils'
 import { useRouter } from 'next/router'
 import { Rating } from 'components/ui'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
 import { FieldCheckboxes } from 'components/forms'
 
@@ -102,16 +103,18 @@ export async function getServerSideProps(context: NextPageContext): Promise<{ pr
   }
 }
 
+type QueryParams = Record<keyof SearchableMember, string[]>
+
 export default function MemberListPage(props: PageProps) {
   const router = useRouter()
   const { fieldMap: fields, id: i, ...params } = props
   const { page: p, size: s, sort: o, ...q } = router.query || params
   const [id, setId] = useState(i)
-  const [page, $setPage] = useState(1)
-  const [size, $setSize] = useState(10)
-  const [sort, $setSort] = useState('-presence')
-  const [query, setQuery] = useState<Record<string, string | string[]>>(q)
-  const [key, setKey] = useState(`/api/members?limit=${size}&offset=${page * size}&sort=${sort}`)
+  const [page, setPage] = useState<number>()
+  const [size, setSize] = useState<number>()
+  const [sort, setSort] = useState<string>()
+  const [query, setQuery] = useState<QueryParams>({} as any)
+  const [key, setKey] = useState<string>()
   const { member: currentMember, loading } = useMember()
   const [meta, setMeta] = useState<{ total: number; filtered: number }>({
     total: 0,
@@ -120,81 +123,34 @@ export default function MemberListPage(props: PageProps) {
   const [pageCount, setPageCount] = useState(0)
   const [members, setMembers] = useState<SearchableMember[]>([])
   const allowedUserTypes = getAllowedUsers(MemberLevel[currentMember?.user_type || 'inductee'])
+
+  useEffect(() => {
+    setPage(Number(p || 1))
+    setSize(Number(s || 10))
+    setSort((o as string) || '-presence')
+    setQuery(normalize<SearchableMember>(q))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   useEffect(() => {
     if (!loading && !currentMember) {
       signIn()
     }
-    if (!loading && currentMember) {
-      if (p && Number(p) != page) $setPage(Number(p))
-      if (s && Number(s) != size) $setSize(Number(s))
-      if (o && (o as string) != sort) $setSort(o as string)
-      if (q) {
-        setQuery(
-          Object.entries(q)?.reduce(
-            (acc, [k, v]) => ({ ...acc, [k]: Array.isArray(v) ? v : [v] }),
-            {}
-          )
-        )
-      }
-      if (p || s || o || q) {
-        const search = new URLSearchParams(q as any).toString()
-        setKey(
-          `/api/members?limit=${s || 10}&offset=${Number(s || 10) * (Number(p || 1) - 1)}&sort=${
-            o || '-presence'
-          }&${search}`
-        )
-      }
+    if (page && size && sort) {
+      const filter = query ? serialize<SearchableMember>(query) : ''
+      window.history.pushState(
+        null,
+        'Members',
+        `/members?page=${page}&size=${size}&sort=${sort}${filter}`
+      )
+      setKey(`/api/members?limit=${size}&offset=${size * (page - 1)}&sort=${sort}${filter}`)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [page, size, sort, query, loading, currentMember])
 
-  const searchMembers = useCallback(
-    (p: number, s: number, o: string, d: Record<string, string | string[]>) => {
-      let search = pruneUndefined(
-        {
-          page: p,
-          size: s,
-          sort: o,
-          ...d,
-        },
-        (v) => v != false
-      )
-      let filter = Object.entries(d || {}).reduce(
-        (acc, [k, v]) => ({ ...acc, [k]: Array.isArray(v) ? v : [v] }),
-        {}
-      )
-      router
-        .replace({
-          pathname: '/members',
-          query: search,
-        })
-        .then(() => {
-          setQuery(filter)
-        })
-
-      setKey(`/api/members?limit=${size}&offset=${size * page}&sort=${sort}&${filter}`)
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [page, size, sort, query, key]
-  )
-
-  const methods = useForm<Record<string, string | string[]>>({
+  const methods = useForm<QueryParams>({
     mode: 'onBlur',
-    defaultValues: query,
+    defaultValues: { ...query, ...normalize<SearchableMember>(q) },
   })
-
-  const setPage = (p: number) => {
-    $setPage(p)
-    searchMembers(p, Number(s) || size, (o as string) || sort, query)
-  }
-  const setSize = (s: number) => {
-    $setSize(s)
-    searchMembers(1, s, (o as string) || sort, query)
-  }
-  const setSort = (o: string) => {
-    $setSort(o)
-    searchMembers(Number(p) || page, Number(s) || size, o, query)
-  }
 
   const { data: response } = useSWR<ManyItems<Partial<SearchableMember>>>(key, JsonFetcher)
 
@@ -207,8 +163,11 @@ export default function MemberListPage(props: PageProps) {
       })
       setPageCount(Math.ceil((filter_count || size) / size))
       setMembers(response.data)
+      console.log('results')
+      console.dir({ p, s, o, q, page, size, sort, query })
     }
-  }, [size, page, sort, response?.data, response?.meta, key])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [response?.data, response?.meta, key, query])
 
   const pageIndex = page - 1
 
@@ -223,10 +182,8 @@ export default function MemberListPage(props: PageProps) {
     <Page title="Members" loading={loading} w="full" requireAuth={true}>
       <FormProvider {...methods}>
         <form
-          onSubmit={methods.handleSubmit((data) => {
-            searchMembers(1, size, sort, data)
-          })}
-          style={{ width: '100%' }}
+          onSubmit={methods.handleSubmit((d) => setQuery(normalize({ ...d })))}
+          style={{ width: '100%', display: 'block' }}
         >
           <Accordion allowToggle w="full">
             <AccordionItem w="full">
@@ -282,12 +239,27 @@ export default function MemberListPage(props: PageProps) {
                   label="Positions"
                   options={fields['my_positions'].meta.options.choices}
                 />
-                <Button size="lg" type="submit" colorScheme="blue">
-                  Search
-                </Button>
+                <HStack spacing={4} py={10} w="full" justify="center">
+                  <Button size="lg" type="submit" colorScheme="primary">
+                    Search
+                  </Button>
+                  <Button
+                    size="lg"
+                    colorScheme="blue"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      setQuery(null)
+                      methods.reset()
+                      router.push('/members')
+                    }}
+                  >
+                    Clear
+                  </Button>
+                </HStack>
               </AccordionPanel>
             </AccordionItem>
           </Accordion>
+
           <Flex gap={4} mt={4}>
             <Select
               value={s || size}
@@ -314,58 +286,110 @@ export default function MemberListPage(props: PageProps) {
               <option value="-rating">Highest Rated</option>
             </Select>
           </Flex>
+          {members && pageCount > 0 && (
+            <Flex justifyContent="space-between" alignItems="center" mt={4}>
+              <Flex>
+                <IconButton
+                  onClick={() => setPage(1)}
+                  isDisabled={pageIndex == 0}
+                  icon={<ArrowLeftIcon h={3} w={3} />}
+                  mr={4}
+                  aria-label="First Page"
+                />
+                <IconButton
+                  onClick={() => setPage(page - 1)}
+                  isDisabled={page == 1}
+                  icon={<ChevronLeftIcon h={6} w={6} />}
+                  aria-label="Previous Page"
+                />
+              </Flex>
 
-          <SimpleGrid my={5} columns={[1, 1, 2]} spacing={4} w="full" justifyItems="stretch">
-            {!isOpen &&
-              members?.map((member: SearchableMember) => (
-                <MemberCard key={member.id} member={member} onOpen={onOpen} />
-              ))}
+              <Flex alignItems="center">
+                <Text flexShrink="0" mx={8}>
+                  <Text fontWeight="bold" as="span">
+                    {page}
+                  </Text>
+                  {' / '}
+                  <Text fontWeight="bold" as="span">
+                    {pageCount}
+                  </Text>
+                </Text>
+              </Flex>
+              <Flex>
+                <IconButton
+                  onClick={() => setPage(page + 1)}
+                  isDisabled={page >= pageCount - 1}
+                  icon={<ChevronRightIcon h={6} w={6} />}
+                  aria-label="Next Page"
+                />
+
+                <IconButton
+                  onClick={() => setPage(pageCount - 1)}
+                  isDisabled={page >= pageCount - 1}
+                  icon={<ArrowRightIcon h={3} w={3} />}
+                  ml={4}
+                  aria-label="Last Page"
+                />
+              </Flex>
+            </Flex>
+          )}
+          <SimpleGrid my={4} columns={[1, 1, 2, 2, 3]} spacing={4} w="100%" justifyItems="stretch">
+            {members?.map((member: SearchableMember) => (
+              <MemberCard key={member.id} member={member} setId={setId} />
+            ))}
           </SimpleGrid>
-          <Flex justifyContent="space-between" alignItems="center">
-            <Flex>
-              <IconButton
-                onClick={() => setPage(1)}
-                isDisabled={pageIndex == 0}
-                icon={<ArrowLeftIcon h={3} w={3} />}
-                mr={4}
-                aria-label="First Page"
-              />
-              <IconButton
-                onClick={() => setPage(page - 1)}
-                isDisabled={page == 1}
-                icon={<ChevronLeftIcon h={6} w={6} />}
-                aria-label="Previous Page"
-              />
-            </Flex>
+          {pageCount == 0 && (
+            <Container w="4xl" textAlign="center">
+              <Text>No results found</Text>
+            </Container>
+          )}
+          {members && pageCount > 0 && (
+            <Flex justifyContent="space-between" alignItems="center">
+              <Flex>
+                <IconButton
+                  onClick={() => setPage(1)}
+                  isDisabled={pageIndex == 0}
+                  icon={<ArrowLeftIcon h={3} w={3} />}
+                  mr={4}
+                  aria-label="First Page"
+                />
+                <IconButton
+                  onClick={() => setPage(page - 1)}
+                  isDisabled={page == 1}
+                  icon={<ChevronLeftIcon h={6} w={6} />}
+                  aria-label="Previous Page"
+                />
+              </Flex>
 
-            <Flex alignItems="center">
-              <Text flexShrink="0" mx={8}>
-                <Text fontWeight="bold" as="span">
-                  {page}
+              <Flex alignItems="center">
+                <Text flexShrink="0" mx={8}>
+                  <Text fontWeight="bold" as="span">
+                    {page}
+                  </Text>
+                  {' / '}
+                  <Text fontWeight="bold" as="span">
+                    {pageCount}
+                  </Text>
                 </Text>
-                {' / '}
-                <Text fontWeight="bold" as="span">
-                  {pageCount}
-                </Text>
-              </Text>
-            </Flex>
-            <Flex>
-              <IconButton
-                onClick={() => setPage(page + 1)}
-                isDisabled={pageCount == 0 || page >= pageCount}
-                icon={<ChevronRightIcon h={6} w={6} />}
-                aria-label="Next Page"
-              />
+              </Flex>
+              <Flex>
+                <IconButton
+                  onClick={() => setPage(page + 1)}
+                  isDisabled={pageCount == 0 || page >= pageCount}
+                  icon={<ChevronRightIcon h={6} w={6} />}
+                  aria-label="Next Page"
+                />
 
-              <IconButton
-                onClick={() => setPage(pageCount)}
-                isDisabled={page == pageCount}
-                icon={<ArrowRightIcon h={3} w={3} />}
-                ml={4}
-                aria-label="Last Page"
-              />
+                <IconButton
+                  onClick={() => setPage(pageCount)}
+                  isDisabled={page == pageCount}
+                  icon={<ArrowRightIcon h={3} w={3} />}
+                  ml={4}
+                  aria-label="Last Page"
+                />
+              </Flex>
             </Flex>
-          </Flex>
+          )}
         </form>
       </FormProvider>
       <Modal
@@ -418,7 +442,13 @@ export default function MemberListPage(props: PageProps) {
   )
 }
 
-function MemberCard({ member, onOpen }: { member: Partial<SearchableMember>; onOpen: () => void }) {
+function MemberCard({
+  member,
+  setId,
+}: {
+  member: Partial<SearchableMember>
+  setId: (id: string) => void
+}) {
   const router = useRouter()
   return (
     <>
@@ -434,14 +464,11 @@ function MemberCard({ member, onOpen }: { member: Partial<SearchableMember>; onO
           <CardHeader>
             <LinkOverlay
               as={NextLink}
-              href={`/members/${member?.id}`}
+              href={`/members/${member.id}`}
               onClick={(e) => {
                 e.preventDefault()
-                router
-                  .push({
-                    pathname: `/members/${member?.id}`,
-                  })
-                  .then(() => onOpen())
+                setId(member.id)
+                window.history.pushState({}, '', `/members/${member?.id}`)
               }}
             >
               <UserCard user={member} />

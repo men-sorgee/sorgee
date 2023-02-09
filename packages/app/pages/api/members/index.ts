@@ -6,12 +6,11 @@ import {
   getAllowedUsers,
   MemberLevel,
   SearchableMember,
-  searchableMemberFields,
   User,
   UserType,
 } from 'lib/models'
 import { ManyItems } from '@directus/sdk'
-
+import { normalize } from 'lib/utils'
 type MemberSearch = SearchableMember & {
   offset?: number
   limit?: number
@@ -30,43 +29,34 @@ export default async function FindMembers(
     }
 
     const level = MemberLevel[member.user_type]
-    const { offset = 0, limit = 20, sort, ...props } = req.query as Record<keyof MemberSearch, any>
+    const { offset = 0, limit = 10, sort, ...props } = req.query as Record<keyof MemberSearch, any>
 
     const allowedLevels = getAllowedUsers(level)
 
-    const searchParams = Object.keys(props)
-      .filter((key: string) => searchableMemberFields.includes(key as any))
-      .reduce(
-        (acc, key) => {
-          if (Array.isArray(props[key])) {
-            acc[key] = {
-              _in: props[key],
-            }
-          } else {
-            acc[key] = {
-              _in: [props[key]],
-            }
-          }
-          return acc
-        },
-        {
-          show_profile: {
-            _eq: true,
-          },
-          id: {
-            _neq: member.id,
-          },
-        }
-      )
+    const params = normalize<SearchableMember>(props)
+    const searchParams = {
+      show_profile: {
+        _eq: true,
+      },
+      id: {
+        _neq: member.id,
+      },
+    }
 
-    const { user_type } = props
-    let searchLevels = allowedLevels
-    if (user_type) {
-      if (Array.isArray(user_type)) {
-        searchLevels = user_type.filter((type: UserType) => allowedLevels.includes(type))
-      } else if (allowedLevels.includes(user_type)) {
-        searchLevels = [user_type]
+    const postQueryParams = {}
+
+    Object.keys(params).forEach((key) => {
+      if (Array.isArray(member[key])) {
+        postQueryParams[key] = params[key]
+      } else {
+        searchParams[key] = { _in: params[key] }
       }
+    })
+
+    let userTypes = params.user_type as UserType[]
+    let searchLevels = allowedLevels
+    if (userTypes) {
+      searchLevels = userTypes.filter((type: UserType) => allowedLevels.includes(type))
     }
     if (level < MemberLevel.staff) {
       searchParams['status'] = { _eq: 'active' }
@@ -76,8 +66,6 @@ export default async function FindMembers(
     searchParams['user_type'] = {
       _in: searchLevels,
     }
-
-    //console.dir(searchParams)
 
     const results = await searchUsers<Partial<User>>(
       searchParams,
@@ -106,6 +94,17 @@ export default async function FindMembers(
       offset,
       sort
     )
+
+    if (Object.keys(postQueryParams).length > 0) {
+      const filtered = results.data.filter((user) => {
+        return Object.keys(postQueryParams).every((key) => {
+          return postQueryParams[key].some((i: string) => user[key].includes(i))
+        })
+      })
+
+      results.meta.filter_count = filtered.length
+      results.data = filtered
+    }
 
     return res.status(200).json(ApiResponse(results))
   } catch (e) {

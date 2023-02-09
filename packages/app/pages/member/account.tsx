@@ -90,7 +90,8 @@ function Form(props: PageProps) {
     handleSubmit,
     setError,
     watch,
-    formState: { isSubmitting, isDirty, touchedFields, isSubmitted },
+    reset,
+    formState: { isSubmitting, isDirty },
   } = methods
 
   useWarnIfUnsavedChanges(isDirty, () => {
@@ -109,6 +110,7 @@ function Form(props: PageProps) {
         isClosable: true,
       })
       reload()
+      reset()
     } else if (response.error?.field) {
       // @ts-ignore
       setError(response.error!.field, response.error.message)
