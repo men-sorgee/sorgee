@@ -48,7 +48,7 @@ const Page = ({
       id={id}
       direction="column"
       as="article"
-      alignItems={['left', 'center']}
+      alignItems={'center'}
       justifyItems="stretch"
       {...props}
     >

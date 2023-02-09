@@ -6,7 +6,7 @@ import {
   CardFooter,
   Alert,
   AlertIcon,
-  HStack,
+  Flex,
   Heading,
   VStack,
   Divider,
@@ -53,10 +53,11 @@ export default function EventCard({ event, children, level }: Props) {
   const isStaff = level && level >= MemberLevel.staff
   const isScheduled = event.status == 'scheduled'
   return (
-    <Card p={0} mt={10} w={['full', '75%']}>
+    <Card p={0} mt={10} w="full" boxShadow="lg" rounded="lg">
       <CardHeader p={0}>
-        <HStack alignItems="stretch" spacing={0}>
+        <Flex direction="row" alignItems="stretch" gap={0}>
           <Heading
+            borderRadius="10px 0 0 0"
             bg="primary.400"
             as="h2"
             size="xl"
@@ -72,6 +73,7 @@ export default function EventCard({ event, children, level }: Props) {
           <Heading
             as="h3"
             bg="primary.700"
+            borderRadius="0 10px 0  0"
             m={0}
             w="25%"
             p={4}
@@ -83,14 +85,14 @@ export default function EventCard({ event, children, level }: Props) {
             <br />
             <Text size="3xl"> {eventDate.date}</Text>
           </Heading>
-        </HStack>
+        </Flex>
       </CardHeader>
       {isScheduled && (
-        <CardBody>
+        <CardBody w="full">
           {!isStaff && <Markdown content={event.description} />}
 
           {level < MemberLevel.staff && (
-            <Alert size="sm" maxW="md" mt="4rem" w="full" status="info">
+            <Alert size="sm" mt="4rem" w="full" status="info">
               <AlertIcon />
               Location announced on the day of the event and is sent to confirmed attendees only.
               Events are subject to change or cancellation, depending upon member interest. We will
@@ -99,8 +101,9 @@ export default function EventCard({ event, children, level }: Props) {
           )}
         </CardBody>
       )}
-      <Divider />
-      <CardFooter>{children}</CardFooter>
+      <CardFooter w="full" pb={10} as={Flex} direction="column" align="center">
+        {children}
+      </CardFooter>
     </Card>
   )
 }

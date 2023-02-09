@@ -20,11 +20,11 @@ type Props = FormControlProps & {
 }
 
 const FieldWrapper = (props: Props) => {
-  const { field, label, help, className, children, size, align = 'left', ...opts } = props
+  const { field, label, help, className, children, size, align = 'left', w, p = 2, ...opts } = props
   const { getFieldState } = useFormContext()
   const { error, isDirty } = getFieldState(field)
   return (
-    <FormControl size={size} align={align} isInvalid={!!error} {...opts} p={2}>
+    <FormControl w={w} size={size} align={align} isInvalid={!!error} {...opts} p={p}>
       {label && (
         <FormLabel size={size} fontWeight="bold" htmlFor={field}>
           {label}

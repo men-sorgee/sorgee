@@ -66,9 +66,9 @@ export default function EventList({ events: eventList }: Props) {
 
   return (
     <Page title="Events" requireAuth={true}>
-      <List>
+      <List w="full">
         {events?.map((event) => (
-          <ListItem key={event.id}>
+          <ListItem key={event.id} w="full">
             <LinkBox>
               <Card mb={2} p={0} bg={event.status == 'occurred' ? 'gray.100' : 'white'}>
                 <CardHeader p={0} w="full">

@@ -204,11 +204,12 @@ const custom: Partial<ChakraTheme> = {
           fontWeight: 'extrabold',
           leading: 'loose',
           fontFamily: 'heading',
-          bgGradient: 'linear(to-r, pink.300, blue.300)',
+          bgGradient: 'linear(to-r, pink.400, blue.400)',
           bgClip: 'text',
           mt: 2,
           overflow: 'visible',
           textShadow: 'lg',
+          textStyles: '2px solid primary.500',
         },
         h2: {
           fontSize: ['3xl', '4xl'],

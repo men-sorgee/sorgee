@@ -15,11 +15,22 @@ type Props = SelectProps &
   }
 
 const SelectField = (props: Props) => {
-  const { field, label, help, registerOptions = {}, options, className, ...opts } = props
+  const {
+    field,
+    label,
+    help,
+    registerOptions = {},
+    options,
+    className,
+    size,
+    w,
+    p,
+    ...opts
+  } = props
   const { register } = useFormContext()
   return (
-    <FieldWrapper field={field} label={label} help={help} className={className}>
-      <Select {...opts} {...register(field as any, registerOptions)}>
+    <FieldWrapper w={w} field={field} label={label} help={help} className={className}>
+      <Select p={p} w={w} size={size} {...opts} {...register(field as any, registerOptions)}>
         {options?.map(({ text, value }, index) => (
           <option key={index.toString()} value={value}>
             {text}

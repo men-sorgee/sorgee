@@ -8,29 +8,31 @@ import {
   Center,
   AlertIcon,
   Alert,
+  Box,
 } from '@chakra-ui/react'
 import Page from 'components/Page'
 import { useMember } from 'hooks'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { FormProvider, useForm } from 'react-hook-form'
-import { FieldRadioButtons } from 'components/forms'
+import { FieldSelect } from 'components/forms'
 import { postJSON } from 'lib/utils'
-import { Invite, Member, MemberLevel } from 'lib/models'
+import { EventUser, FieldOptions, Invite, Member, MemberLevel, Event } from 'lib/models'
 import EventCard from 'components/ui/EventCard'
-import { unstable_getServerSession } from 'next-auth'
+import { getServerSession } from 'next-auth'
 import { NextPageContext, GetServerSidePropsResult } from 'next'
 
 type Props = {
   invites: Invite[]
+  rsvpOptions: FieldOptions
 }
 export async function getServerSideProps(
   context: NextPageContext
 ): Promise<GetServerSidePropsResult<Props>> {
   const { authOptions } = await import('lib/auth/config')
   const { req, res } = context
-  const session = await unstable_getServerSession(req as any, res, authOptions)
-  if (!session) {
+  const session = await getServerSession(req as any, res, authOptions)
+  if (!session || !session.user) {
     return {
       redirect: {
         destination: '/',
@@ -41,14 +43,16 @@ export async function getServerSideProps(
   const { listInvites: listUserInvites } = await import('lib/services/directus/server/users')
   const invites = await listUserInvites(session.user.id)
 
+  const { getFieldOptions } = await import('lib/services/directus/server')
   return {
     props: {
       invites,
+      rsvpOptions: await getFieldOptions<EventUser>('rsvp', 'events_users'),
     },
   }
 }
 
-function EventPage({ invites }: Props) {
+function EventPage({ invites, rsvpOptions }: Props) {
   const [allowed, setAllowed] = useState(false)
   const { member, loading, level } = useMember()
 
@@ -64,7 +68,6 @@ function EventPage({ invites }: Props) {
       title="Event Invitations"
       description="Upcoming event invitations."
       requireAuth={true}
-      maxW={['md', 'xl', '2xl']}
     >
       {allowed ? (
         <>
@@ -78,7 +81,7 @@ function EventPage({ invites }: Props) {
             future invite lists. If you stop getting invites and think this might have happened, you
             can contact the event organizers to appeal your removal.
           </Text>
-          <Events {...{ invites, member }} />
+          <Events {...{ invites, member, rsvpOptions }} />
         </>
       ) : (
         <Flex direction="column">
@@ -99,14 +102,22 @@ type InviteRSVP = {
   rsvp?: string
 }
 
-function Events({ invites, member }: { invites: Invite[]; member: Member }) {
+function Events({
+  invites,
+  member,
+  rsvpOptions,
+}: {
+  invites: Invite[]
+  member: Member
+  rsvpOptions: FieldOptions
+}) {
   if (invites?.length === 0) {
     return (
       <Flex direction="column">
         <Heading>No Invites</Heading>
         <Text>
           Check back later for upcoming events. If you never see invitations, make sure your account
-          is set to recieve invites and that you never no-show to an event.
+          is set to receive invites and that you never no-show to an event.
         </Text>
       </Flex>
     )
@@ -116,7 +127,9 @@ function Events({ invites, member }: { invites: Invite[]; member: Member }) {
   return (
     <>
       {member &&
-        upcoming?.map((invite) => <EventInfo key={invite.id} invite={invite} member={member} />)}
+        upcoming?.map((invite) => (
+          <EventInfo key={invite.id} invite={invite} member={member} rsvpOptions={rsvpOptions} />
+        ))}
 
       {past && past.length > 0 && <h2>Past Invites</h2>}
       {past?.map((invite) => (
@@ -129,7 +142,7 @@ function Events({ invites, member }: { invites: Invite[]; member: Member }) {
 function PastEventInfo({ invite }: { invite: Invite }) {
   const date = new Date(invite.datetime)
   return (
-    <Flex direction="column" justify="start" align="left" gap={4} w="full" mb={8}>
+    <Flex direction="column" justify="stretch" align="center" gap={4} w="full" mb={8}>
       <h3>
         {invite.name} - {date.toLocaleDateString()}
       </h3>
@@ -152,31 +165,38 @@ function PastEventInfo({ invite }: { invite: Invite }) {
   )
 }
 
-function EventInfo({ invite, member }: { invite: Invite; member: Member }) {
+function EventInfo({
+  invite,
+  member,
+  rsvpOptions,
+}: {
+  invite: Invite
+  member: Member
+  rsvpOptions: FieldOptions
+}) {
   const [working, setWorking] = useState(false)
   const toast = useToast()
-  const [rsvp, setRsvp] = useState(invite.rsvp)
+  const [rsvp, setRsvp] = useState<string>()
+  const { id: event_id } = (invite.events_id as Event) || {}
   const methods = useForm<InviteRSVP>({
     mode: 'onBlur',
     defaultValues: {
       user_id: invite.users_id as string,
-      event_id: invite.events_id as string,
+      event_id,
       reason: invite.reason,
-      rsvp,
+      rsvp: invite.rsvp,
     },
   })
   const { setError } = methods
 
-  const responseOptions = [
-    { text: 'Confirmed', value: 'confirmed' },
-    { text: 'Maybe', value: 'maybe' },
-    { text: 'Declined', value: 'declined' },
-  ]
+  useEffect(() => {
+    if (invite.rsvp && !rsvp) setRsvp(invite.rsvp), [invite.rsvp, rsvp]
+  }, [invite.rsvp, rsvp])
 
   const respond = useCallback(
     async (data: InviteRSVP) => {
       setWorking(true)
-      const [ok, response] = await postJSON('/api/member/rsvp', data)
+      const [ok, response] = await postJSON('/api/invite/rsvp', data)
       if (ok) {
         setRsvp(data.rsvp)
         toast({
@@ -206,43 +226,51 @@ function EventInfo({ invite, member }: { invite: Invite; member: Member }) {
   const message =
     rsvp === 'invited'
       ? 'Please let us know if you can make it!'
-      : 'You have already RSVPed. Use the form below to update your response.'
+      : 'You have RSVPed. Use the form below to update your response.'
+  const form = useRef<HTMLButtonElement>(null)
   return (
     <>
       <EventCard event={invite} level={MemberLevel[member.user_type]}>
         <>
           <FormProvider {...methods}>
-            <form
-              onSubmit={methods.handleSubmit(respond)}
-              style={{ display: 'contents', width: 'full' }}
-            >
-              <Flex
-                direction="column"
-                justifyItems="center"
-                alignItems="center"
-                mx={'auto'}
-                width={['100%', '50%']}
-              >
-                <Heading mx={'auto'} maxWidth={{ base: '100%', md: '75%' }} color="text">
-                  You are {rsvp}!
+            <form onSubmit={methods.handleSubmit(respond)} style={{ display: 'block' }}>
+              <Flex direction="column" w="full">
+                <Heading mt={0} textAlign="center">
+                  Your Response:
                 </Heading>
-                <Text mx={'auto'} maxWidth={{ base: '100%', md: '75%' }} color="text" size="sm">
+                <Heading as="h1" textAlign="center">
+                  {rsvp?.toUpperCase() || '*crickets*'}
+                </Heading>
+                <Text color="text" size="sm">
                   {message}
                 </Text>
                 <input type="hidden" {...methods.register('event_id')} />
                 <input type="hidden" {...methods.register('user_id')} />
-                <FieldRadioButtons
-                  field="rsvp"
-                  options={responseOptions}
-                  registerOptions={{
-                    required: true,
-                  }}
-                  mx={'auto'}
-                />
-
-                <Button colorScheme={'primary'} type="submit" disabled={working}>
-                  Update RSVP
-                </Button>
+                <Box w={['full', '50%']} mx="auto">
+                  <FieldSelect
+                    field="rsvp"
+                    onChange={(_e) => {
+                      form.current.dispatchEvent(new Event('submit', { cancelable: true }))
+                    }}
+                    options={rsvpOptions.filter(
+                      (d) => d.value != 'cancelled' && d.value != 'invited'
+                    )}
+                    registerOptions={{
+                      required: true,
+                    }}
+                    p={10}
+                  />
+                  <Button
+                    mt={8}
+                    size="lg"
+                    colorScheme={'primary'}
+                    w="full"
+                    type="submit"
+                    disabled={working}
+                  >
+                    Update RSVP
+                  </Button>
+                </Box>
               </Flex>
             </form>
           </FormProvider>
