@@ -50,8 +50,6 @@ const Page = ({
       as="article"
       alignItems={['left', 'center']}
       justifyItems="stretch"
-      w="full"
-      flex="1"
       {...props}
     >
       <h1>{title}</h1>

@@ -24,8 +24,8 @@ export async function createUser(member: Partial<User>): Promise<User> {
 
 export async function updateUser(id: string, member: Partial<User>) {
   const adminClient = await getAdminClient()
-  const user = await adminClient.items('users').updateOne(id!, member)
-  return user as User
+  await adminClient.items('users').updateOne(id!, member)
+  return getUser(id)
 }
 
 export async function getUser<T = User>(

@@ -353,3 +353,12 @@ export const memberFields: Array<keyof Member> = [
   'signed_waiver',
   'rating',
 ]
+
+export const getAllowedUsers = (level: MemberLevel) => {
+  let allowedLevels: UserType[] = ['brother', 'big_brother', 'staff', 'admin']
+  if (level >= MemberLevel.brother) allowedLevels = [...allowedLevels, 'inductee']
+  if (level >= MemberLevel.big_brother) allowedLevels = [...allowedLevels, 'pledge']
+  if (level >= MemberLevel.staff) allowedLevels = [...allowedLevels, 'applicant', 'subscriber']
+
+  return allowedLevels
+}

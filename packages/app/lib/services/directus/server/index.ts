@@ -21,7 +21,7 @@ export async function findPromo(code: string): Promise<Promo | null> {
 }
 const cache: { [key: string]: any } = {}
 
-export async function getFields(collection: string = 'users') {
+export async function getFields(collection: string = 'users'): Promise<DirectusField[]> {
   const key = `${collection}}`
   if (cache[key]) {
     return cache[key]

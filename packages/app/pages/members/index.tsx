@@ -1,5 +1,6 @@
 import { ManyItems } from '@directus/sdk'
 import Page from 'components/Page'
+import { signIn } from 'next-auth/react'
 import { useMember } from 'hooks/use-member'
 import { UserAddIcon, StarIcon, ChatIcon } from '@heroicons/react/solid'
 import { pruneUndefined } from 'lib/utils'
@@ -70,135 +71,153 @@ import {
   MemberLevel,
   Member,
   memberProfileContactFields,
+  getAllowedUsers,
 } from 'lib/models'
 import { JsonFetcher } from 'lib/utils'
 import { useRouter } from 'next/router'
 import { Rating } from 'components/ui'
-import useMemberSearch from 'hooks/use-members'
 import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
 import { FieldCheckboxes } from 'components/forms'
 
-type PageProps = Partial<SearchableMember> & {
-  page: number
-  size: number
-  sort: string
+type PageProps = Record<string, string[]> & {
   fieldMap: Record<string, DirectusField>
+  id?: string
 }
 
-export async function getServerSideProps(context: NextPageContext) {
+export async function getServerSideProps(context: NextPageContext): Promise<{ props: PageProps }> {
   const { getFields } = await import('lib/services/directus/server')
-  const { page, size, sort = '-presence', user_type = '', ...filters } = context.query
-
   const fields = await getFields('users')
-  const fieldMap = fields.reduce((acc, field) => {
+  const fieldMap = fields.reduce((acc: any, field: DirectusField): any => {
     acc[field.field] = field
     return acc
   }, {} as Record<string, DirectusField>)
 
-  const props: PageProps = {
-    page: Number(page || 1),
-    size: Number(size || 10),
-    sort: sort as string,
-    fieldMap,
-    ...(filters as Partial<SearchableMember>),
+  return {
+    props: {
+      fieldMap,
+      ...context.query,
+    },
   }
-  return { props }
 }
 
-export default function MemberListPage({
-  fieldMap: fields,
-  page,
-  size,
-  sort,
-  ...filters
-}: PageProps) {
+export default function MemberListPage(props: PageProps) {
   const router = useRouter()
-  const { page: _1, size: _2, sort: _3, ...q } = router.query
-  const [query, setQuery] = useState<Partial<SearchableMember>>(q)
-  const { member, loading } = useMember()
-  const memberLevel = MemberLevel[member?.user_type || 'subscriber']
-
-  const methods = useForm<Partial<SearchableMember>>({
-    mode: 'onBlur',
-    defaultValues: query,
-  })
-
-  useEffect(() => {
-    if (!loading && query == null && filters) {
-      setQuery(filters)
-    }
-  }, [loading, query, filters])
-
-  const searchMembers = useCallback(
-    (p: number, z: number, s: string, d: Partial<SearchableMember>) => {
-      let query = pruneUndefined(
-        {
-          page: p,
-          size: z,
-          sort: s,
-          ...d,
-        },
-        (v) => v != false
-      )
-      router
-        .replace({
-          pathname: '/members',
-          query,
-        })
-        .then(() => {
-          setQuery(d)
-        })
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [router, query]
-  )
-
-  const setPage = (p: number) => {
-    searchMembers(p, size, sort, query)
-  }
-  const setSize = (s: number) => {
-    searchMembers(1, s, sort, query)
-  }
-  const setSort = (s: string) => {
-    searchMembers(page, size, s, query)
-  }
-
-  const key = `/api/members?limit=${size}&offset=${
-    size * (page - 1)
-  }&sort=${sort}&${new URLSearchParams(query as any).toString()}`
-  const {
-    data: response,
-    error,
-    isLoading,
-  } = useSWR<ManyItems<Partial<SearchableMember>>>(key, JsonFetcher)
+  const { fieldMap: fields, id: i, ...params } = props
+  const { page: p, size: s, sort: o, ...q } = router.query || params
+  const [id, setId] = useState(i)
+  const [page, $setPage] = useState(1)
+  const [size, $setSize] = useState(10)
+  const [sort, $setSort] = useState('-presence')
+  const [query, setQuery] = useState<Record<string, string | string[]>>(q)
+  const [key, setKey] = useState(`/api/members?limit=${size}&offset=${page * size}&sort=${sort}`)
+  const { member: currentMember, loading } = useMember()
   const [meta, setMeta] = useState<{ total: number; filtered: number }>({
     total: 0,
     filtered: 0,
   })
   const [pageCount, setPageCount] = useState(0)
   const [members, setMembers] = useState<SearchableMember[]>([])
+  const allowedUserTypes = getAllowedUsers(MemberLevel[currentMember?.user_type || 'inductee'])
   useEffect(() => {
-    if (!loading && !isLoading && response?.data) {
+    if (!loading && !currentMember) {
+      signIn()
+    }
+    if (!loading && currentMember) {
+      if (p && Number(p) != page) $setPage(Number(p))
+      if (s && Number(s) != size) $setSize(Number(s))
+      if (o && (o as string) != sort) $setSort(o as string)
+      if (q) {
+        setQuery(
+          Object.entries(q)?.reduce(
+            (acc, [k, v]) => ({ ...acc, [k]: Array.isArray(v) ? v : [v] }),
+            {}
+          )
+        )
+      }
+      if (p || s || o || q) {
+        const search = new URLSearchParams(q as any).toString()
+        setKey(
+          `/api/members?limit=${s || 10}&offset=${Number(s || 10) * (Number(p || 1) - 1)}&sort=${
+            o || '-presence'
+          }&${search}`
+        )
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const searchMembers = useCallback(
+    (p: number, s: number, o: string, d: Record<string, string | string[]>) => {
+      let search = pruneUndefined(
+        {
+          page: p,
+          size: s,
+          sort: o,
+          ...d,
+        },
+        (v) => v != false
+      )
+      let filter = Object.entries(d || {}).reduce(
+        (acc, [k, v]) => ({ ...acc, [k]: Array.isArray(v) ? v : [v] }),
+        {}
+      )
+      router
+        .replace({
+          pathname: '/members',
+          query: search,
+        })
+        .then(() => {
+          setQuery(filter)
+        })
+
+      setKey(`/api/members?limit=${size}&offset=${size * page}&sort=${sort}&${filter}`)
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [page, size, sort, query, key]
+  )
+
+  const methods = useForm<Record<string, string | string[]>>({
+    mode: 'onBlur',
+    defaultValues: query,
+  })
+
+  const setPage = (p: number) => {
+    $setPage(p)
+    searchMembers(p, Number(s) || size, (o as string) || sort, query)
+  }
+  const setSize = (s: number) => {
+    $setSize(s)
+    searchMembers(1, s, (o as string) || sort, query)
+  }
+  const setSort = (o: string) => {
+    $setSort(o)
+    searchMembers(Number(p) || page, Number(s) || size, o, query)
+  }
+
+  const { data: response } = useSWR<ManyItems<Partial<SearchableMember>>>(key, JsonFetcher)
+
+  useEffect(() => {
+    if (response?.data && response?.meta) {
+      const { total_count, filter_count } = response.meta
       setMeta({
-        total: response?.meta?.total_count || 0,
-        filtered: response?.meta?.filter_count || 0,
+        total: total_count || 0,
+        filtered: filter_count || 0,
       })
-      setPageCount(Math.ceil(meta?.filtered ? meta.filtered / size : 1))
+      setPageCount(Math.ceil((filter_count || size) / size))
       setMembers(response.data)
     }
-  }, [
-    loading,
-    isLoading,
-    members,
-    meta?.filtered,
-    response?.data,
-    response?.meta?.filter_count,
-    response?.meta?.total_count,
-    size,
-  ])
+  }, [size, page, sort, response?.data, response?.meta, key])
 
   const pageIndex = page - 1
+
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  useEffect(() => {
+    if (id) {
+      onOpen()
+    }
+  }, [id, onOpen])
+
   return (
     <Page title="Members" loading={loading} w="full" requireAuth={true}>
       <FormProvider {...methods}>
@@ -231,7 +250,9 @@ export default function MemberListPage({
                 <FieldCheckboxes
                   field="user_type"
                   label="Level"
-                  options={fields['user_type'].meta.options.choices}
+                  options={fields['user_type'].meta.options.choices.filter((item) =>
+                    allowedUserTypes.includes(item.value as UserType)
+                  )}
                 />
                 <FieldCheckboxes
                   field="spectrum"
@@ -261,10 +282,9 @@ export default function MemberListPage({
           </Accordion>
           <Flex gap={4} mt={4}>
             <Select
-              value={size}
+              value={s || size}
               onChange={(e) => {
                 setSize(Number(e.target.value))
-                setPage(1)
               }}
             >
               {[10, 20, 30, 40, 50].map((pageSize) => (
@@ -274,7 +294,7 @@ export default function MemberListPage({
               ))}
             </Select>
             <Select
-              value={sort}
+              value={o || sort}
               onChange={(e) => {
                 setSort(e.target.value as any)
               }}
@@ -288,9 +308,10 @@ export default function MemberListPage({
           </Flex>
 
           <SimpleGrid my={5} columns={[1, 1, 2]} spacing={4} w="full" justifyItems="stretch">
-            {members?.map((member: SearchableMember) => (
-              <MemberCard key={member.id} member={member} fields={fields} />
-            ))}
+            {!isOpen &&
+              members?.map((member: SearchableMember) => (
+                <MemberCard key={member.id} member={member} onOpen={onOpen} />
+              ))}
           </SimpleGrid>
           <Flex justifyContent="space-between" alignItems="center">
             <Flex>
@@ -303,7 +324,7 @@ export default function MemberListPage({
               />
               <IconButton
                 onClick={() => setPage(page - 1)}
-                isDisabled={pageIndex == 0}
+                isDisabled={page == 1}
                 icon={<ChevronLeftIcon h={6} w={6} />}
                 aria-label="Previous Page"
               />
@@ -330,7 +351,7 @@ export default function MemberListPage({
 
               <IconButton
                 onClick={() => setPage(pageCount)}
-                isDisabled={pageIndex + 1 == pageCount}
+                isDisabled={page == pageCount}
                 icon={<ArrowRightIcon h={3} w={3} />}
                 ml={4}
                 aria-label="Last Page"
@@ -339,176 +360,83 @@ export default function MemberListPage({
           </Flex>
         </form>
       </FormProvider>
+      <Modal
+        size="2xl"
+        isOpen={isOpen}
+        onClose={() => {
+          onClose()
+          router.back()
+        }}
+        scrollBehavior="inside"
+      >
+        <ModalOverlay backdropFilter="auto" backdropBlur="2px" />
+        <ModalContent
+          bg={useColorModeValue('white', 'black')}
+          border="1px solid transparent"
+          borderColor="accent.700"
+        >
+          <ModalHeader>
+            <MemberHeader id={id as string} />
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <MemberSpotlight id={id as string} fields={fields} />
+          </ModalBody>
+          <ModalFooter>
+            <Flex justify="space-between" align="center">
+              <IconButton
+                aria-label="Add Buddy"
+                disabled={true}
+                icon={<UserAddIcon fill="primary.300" />}
+                variant="ghost"
+              />
+              <IconButton
+                aria-label="Favorite"
+                disabled={true}
+                icon={<StarIcon fill="yellow.300" />}
+                variant="ghost"
+              />
+              <IconButton
+                aria-label="Message"
+                disabled={true}
+                icon={<ChatIcon fill="blue.300" />}
+                variant="ghost"
+              />
+            </Flex>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Page>
   )
 }
 
-function PropertyGroup({
-  key,
-  member,
-  show,
-  fieldList,
-  fields,
-  color,
-  maxCols = 3,
-}: {
-  key: string
-  member: Member
-  show: boolean
-  fieldList: string[]
-  fields: Record<string, DirectusField>
-  color: string
-  maxCols?: number
-}) {
-  if (!show) return null
-  const getValue = (field: string, value: string) => {
-    if (fields[field]?.meta?.options?.choices) {
-      const option = fields[field].meta.options.choices.find((choice: any) => choice.value == value)
-      return option?.text
-    }
-    return value
-  }
-  return (
-    <SimpleGrid key={key} columns={[1, 2, maxCols]} spacing={1} alignItems="start">
-      {fieldList?.map((field, i: number) => (
-        <>
-          {member[field] &&
-            (Array.isArray(member[field]) ? (
-              <GridItem key={`${key}-item-${i}`} colSpan={[1, 2, maxCols]}>
-                <h5>{capitalCase(fields[field].field)}:</h5>
-                <Wrap gap={2}>
-                  {member[field]?.map((item: any, d: number) => (
-                    <Badge colorScheme={color} key={`badge-${d}`}>
-                      {getValue(field, item)}
-                    </Badge>
-                  ))}
-                </Wrap>
-              </GridItem>
-            ) : (
-              <GridItem key={`${key}-item-${i}`}>
-                <h5>{capitalCase(fields[field].field)}:</h5>
-                <h4 style={{ textTransform: 'capitalize' }}>{getValue(field, member[field])}</h4>
-              </GridItem>
-            ))}
-        </>
-      ))}
-    </SimpleGrid>
-  )
-}
-
-function MemberSpotlight({
-  member: { id },
-  fields,
-}: {
-  member: Partial<SearchableMember>
-  fields: Record<string, DirectusField>
-}) {
-  const { member, loading } = useMember(id)
-  if (loading || !member) return <Loading />
-
-  return (
-    <Flex direction="column" mb={2} align="start" justify="stretch" gap={2} w="full">
-      <Text>{member?.biography}</Text>
-
-      <Tabs isFitted fontSize={{ base: 'sm', md: 'lg' }} w="full">
-        <TabList>
-          <Tab>General</Tab>
-          <Tab>Sexual</Tab>
-          <Tab>Interests</Tab>
-          {/**<Tab>Location</Tab>**/}
-          <Tab>Health</Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel>
-            <PropertyGroup
-              key="profile"
-              member={member}
-              fieldList={memberProfileFields}
-              show={member?.show_profile}
-              fields={fields}
-              color="green"
-            />
-          </TabPanel>
-          <TabPanel>
-            <PropertyGroup
-              key="explicit"
-              member={member}
-              fieldList={memberProfileExplicitFields}
-              show={member?.show_explicit}
-              fields={fields}
-              color="red"
-            />
-          </TabPanel>
-          <TabPanel>
-            <PropertyGroup
-              key="interests"
-              member={member}
-              fieldList={memberInterestFields}
-              show={member?.show_interests}
-              fields={fields}
-              color="blue"
-            />
-          </TabPanel>
-          {/**<TabPanel>
-            <PropertyGroup
-              member={member}
-              fieldList={memberProfileLocationFields}
-              show={member?.show_location}
-              fields={fields}
-              color="purple"
-            />
-          </TabPanel>
-          {**/}
-          <TabPanel>
-            <PropertyGroup
-              key="health"
-              member={member}
-              fieldList={memberHealthFields}
-              show={member?.show_health}
-              fields={fields}
-              color="orange"
-              maxCols={2}
-            />
-          </TabPanel>
-          <TabPanel>
-            <PropertyGroup
-              key="contact"
-              member={member}
-              fieldList={memberProfileContactFields}
-              show={member?.show_contact}
-              fields={fields}
-              color="orange"
-            />
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
-    </Flex>
-  )
-}
-
-function MemberCard({
-  member,
-  fields,
-}: {
-  member: Partial<SearchableMember>
-  fields: Record<string, DirectusField>
-}) {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const cardBg = useColorModeValue('white', 'black')
-
+function MemberCard({ member, onOpen }: { member: Partial<SearchableMember>; onOpen: () => void }) {
+  const router = useRouter()
   return (
     <>
-      <LinkBox as="article" key={member?.id} onClick={onOpen}>
+      <LinkBox as="article" key={member?.id}>
         <Card
           w="full"
           h="full"
-          bg={cardBg}
+          bg={useColorModeValue('white', 'black')}
           border="1px solid transparent"
           borderColor="accent.700"
           _hover={{ shadow: '2xl', borderColor: 'accent.500' }}
         >
           <CardHeader>
-            <UserCard user={member} />
+            <LinkOverlay
+              href={`/members/${member?.id}`}
+              onClick={(e) => {
+                e.preventDefault()
+                router
+                  .push({
+                    pathname: `/members/${member?.id}`,
+                  })
+                  .then(() => onOpen())
+              }}
+            >
+              <UserCard user={member} />
+            </LinkOverlay>
             <Flex justify="end" align="end" mt={-1} mb={2} w="full">
               {member?.spectrum && (
                 <Badge size={'lg'} colorScheme="blue" rounded={0}>
@@ -540,54 +468,168 @@ function MemberCard({
           </CardFooter>
         </Card>
       </LinkBox>
-      <Modal size="2xl" isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
-        <ModalOverlay backdropFilter="auto" backdropBlur="2px" />
-        <ModalContent bg={cardBg} border="1px solid transparent" borderColor="accent.700">
-          <ModalHeader>
-            <Flex direction="column" justify="flex-start" align="top">
-              <UserCard user={member} size="xl" />
-              <Flex align="stretch" justify="stretch" mt={4}>
-                {member?.spectrum && (
-                  <Badge size={'lg'} colorScheme="blue">
-                    {member.spectrum}
-                  </Badge>
-                )}
-                {member?.relationship_status && (
-                  <Badge size={'lg'} colorScheme="secondary">
-                    {member.relationship_status}
-                  </Badge>
-                )}
-              </Flex>
-            </Flex>
-          </ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <MemberSpotlight member={member} fields={fields} />
-          </ModalBody>
-          <ModalFooter>
-            <Flex justify="space-between" align="center">
-              <IconButton
-                aria-label="Add Buddy"
-                disabled={true}
-                icon={<UserAddIcon fill="primary.300" />}
-                variant="ghost"
-              />
-              <IconButton
-                aria-label="Favorite"
-                disabled={true}
-                icon={<StarIcon fill="yellow.300" />}
-                variant="ghost"
-              />
-              <IconButton
-                aria-label="Message"
-                disabled={true}
-                icon={<ChatIcon fill="blue.300" />}
-                variant="ghost"
-              />
-            </Flex>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
     </>
+  )
+}
+
+function PropertyGroup({
+  k,
+  member,
+  show,
+  fieldList,
+  fields,
+  color,
+  maxCols = 3,
+}: {
+  k: string
+  member: Member
+  show: boolean
+  fieldList: string[]
+  fields: Record<string, DirectusField>
+  color: string
+  maxCols?: number
+}) {
+  if (!show) return null
+  const getValue = (field: string, value: string) => {
+    if (fields[field]?.meta?.options?.choices) {
+      const option = fields[field].meta.options.choices.find((choice: any) => choice.value == value)
+      return option?.text
+    }
+    return value
+  }
+  return (
+    <SimpleGrid columns={[1, 2, maxCols]} spacing={1} alignItems="start">
+      {fieldList?.map((field, i: number) => (
+        <GridItem
+          key={`${field}-${i}`}
+          colSpan={Array.isArray(member[field]) ? [1, 2, maxCols] : 1}
+        >
+          {member[field] &&
+            (Array.isArray(member[field]) ? (
+              <>
+                <h5>{capitalCase(fields[field].field)}:</h5>
+                <Wrap gap={2}>
+                  {member[field]?.map((item: any, d: number) => (
+                    <Badge colorScheme={color} key={`badge-${item}`}>
+                      {getValue(field, item)}
+                    </Badge>
+                  ))}
+                </Wrap>
+              </>
+            ) : (
+              <>
+                <h5>{capitalCase(fields[field].field)}:</h5>
+                <h4 style={{ textTransform: 'capitalize' }}>{getValue(field, member[field])}</h4>
+              </>
+            ))}
+        </GridItem>
+      ))}
+    </SimpleGrid>
+  )
+}
+
+function MemberSpotlight({ id, fields }: { id: string; fields: Record<string, DirectusField> }) {
+  const { member, loading } = useMember(id)
+  if (loading || !member) return <Loading />
+
+  return (
+    <Flex direction="column" mb={2} align="start" justify="stretch" gap={2} w="full">
+      <Text>{member?.biography}</Text>
+
+      <Tabs isFitted fontSize={{ base: 'sm', md: 'lg' }} w="full">
+        <TabList>
+          <Tab>General</Tab>
+          <Tab>Sexual</Tab>
+          <Tab>Interests</Tab>
+          {/**<Tab>Location</Tab>**/}
+          <Tab>Health</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel>
+            <PropertyGroup
+              k="profile"
+              member={member}
+              fieldList={memberProfileFields}
+              show={member?.show_profile}
+              fields={fields}
+              color="green"
+            />
+          </TabPanel>
+          <TabPanel>
+            <PropertyGroup
+              k="explicit"
+              member={member}
+              fieldList={memberProfileExplicitFields}
+              show={member?.show_explicit}
+              fields={fields}
+              color="red"
+            />
+          </TabPanel>
+          <TabPanel>
+            <PropertyGroup
+              k="interests"
+              member={member}
+              fieldList={memberInterestFields}
+              show={member?.show_interests}
+              fields={fields}
+              color="blue"
+            />
+          </TabPanel>
+          {/**<TabPanel>
+            <PropertyGroup
+              member={member}
+              fieldList={memberProfileLocationFields}
+              show={member?.show_location}
+              fields={fields}
+              color="purple"
+            />
+          </TabPanel>
+          {**/}
+          <TabPanel>
+            <PropertyGroup
+              k="health"
+              member={member}
+              fieldList={memberHealthFields}
+              show={member?.show_health}
+              fields={fields}
+              color="orange"
+              maxCols={2}
+            />
+          </TabPanel>
+          <TabPanel>
+            <PropertyGroup
+              k="contact"
+              member={member}
+              fieldList={memberProfileContactFields}
+              show={member?.show_contact}
+              fields={fields}
+              color="orange"
+            />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </Flex>
+  )
+}
+
+function MemberHeader({ id }: { id: string }) {
+  const { member, loading } = useMember(id)
+  if (loading || !member) return <Loading />
+  return (
+    <Flex direction="column" justify="flex-start" align="top">
+      <UserCard user={member} size="xl" />
+      <Flex align="stretch" justify="stretch" mt={4}>
+        {member?.spectrum && (
+          <Badge size={'lg'} colorScheme="blue">
+            {member.spectrum}
+          </Badge>
+        )}
+        {member?.relationship_status && (
+          <Badge size={'lg'} colorScheme="secondary">
+            {member.relationship_status}
+          </Badge>
+        )}
+      </Flex>
+    </Flex>
   )
 }

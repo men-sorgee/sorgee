@@ -20,7 +20,15 @@ export default function UserAvatar() {
   if (!member) return null
 
   return (
-    <Avatar bg="accent.500" name={name} src={pictureSrc} color="white">
+    <Avatar
+      bg="accent.500"
+      name={name}
+      src={pictureSrc}
+      showBorder
+      borderWidth="2px"
+      borderColor={'accent.300'}
+      color="white"
+    >
       {hasNewNotifications && (
         <AvatarBadge borderWidth="thin" boxSize="1em" bg="red">
           {newNotificationCount}

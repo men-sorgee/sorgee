@@ -13,9 +13,6 @@ async function Subscribe(req: NextApiRequest, res: NextApiResponse<ApiResponse>)
     let member = await findUser<User>(email)
     if (member) {
       await updateUser(member.id, {
-        first_name: member.first_name || first,
-        last_name: member.last_name || last,
-        nickname: member.nickname || name,
         in_sendgrid: true,
       })
       await updateSendGrid(member as Profile)

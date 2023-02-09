@@ -3,10 +3,12 @@ import { searchUsers } from 'lib/services/directus/server/users'
 import { withMember } from 'lib/utils/server'
 import {
   ApiResponse,
+  getAllowedUsers,
   MemberLevel,
   SearchableMember,
   searchableMemberFields,
   User,
+  UserType,
 } from 'lib/models'
 import { ManyItems } from '@directus/sdk'
 
@@ -30,13 +32,15 @@ export default async function FindMembers(
     const level = MemberLevel[member.user_type]
     const { offset = 0, limit = 20, sort, ...props } = req.query as Record<keyof MemberSearch, any>
 
+    const allowedLevels = getAllowedUsers(level)
+
     const searchParams = Object.keys(props)
       .filter((key: string) => searchableMemberFields.includes(key as any))
       .reduce(
         (acc, key) => {
-          if (props[key].includes(',')) {
+          if (Array.isArray(props[key])) {
             acc[key] = {
-              _in: props[key].split(','),
+              _in: props[key],
             }
           } else {
             acc[key] = {
@@ -55,18 +59,11 @@ export default async function FindMembers(
         }
       )
 
-    let allowedLevels = ['brother', 'big_brother', 'staff', 'admin']
-    if (level >= MemberLevel.brother) allowedLevels = [...allowedLevels, 'inductee']
-    if (level >= MemberLevel.big_brother) allowedLevels = [...allowedLevels, 'pledge']
-    if (level >= MemberLevel.staff) allowedLevels = [...allowedLevels, 'applicant', 'subscriber']
-
     const { user_type } = props
     let searchLevels = allowedLevels
     if (user_type) {
-      if (props.user_type.includes(',')) {
-        searchLevels = props.user_type
-          .split(',')
-          .filter((type: string) => allowedLevels.includes(type))
+      if (Array.isArray(user_type)) {
+        searchLevels = user_type.filter((type: UserType) => allowedLevels.includes(type))
       } else if (allowedLevels.includes(user_type)) {
         searchLevels = [user_type]
       }
