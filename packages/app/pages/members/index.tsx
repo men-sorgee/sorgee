@@ -150,7 +150,8 @@ export default function MemberListPage({
           setQuery(d)
         })
     },
-    [router]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [router, query]
   )
 
   const setPage = (p: number) => {
@@ -190,8 +191,8 @@ export default function MemberListPage({
     loading,
     isLoading,
     members,
-    meta.filtered,
-    response.data,
+    meta?.filtered,
+    response?.data,
     response?.meta?.filter_count,
     response?.meta?.total_count,
     size,
@@ -343,17 +344,21 @@ export default function MemberListPage({
 }
 
 function PropertyGroup({
+  key,
   member,
   show,
   fieldList,
   fields,
   color,
+  maxCols = 3,
 }: {
+  key: string
   member: Member
   show: boolean
   fieldList: string[]
   fields: Record<string, DirectusField>
   color: string
+  maxCols?: number
 }) {
   if (!show) return null
   const getValue = (field: string, value: string) => {
@@ -364,27 +369,25 @@ function PropertyGroup({
     return value
   }
   return (
-    <SimpleGrid columns={[1, 2, 3]} spacing={1} alignItems="start">
+    <SimpleGrid key={key} columns={[1, 2, maxCols]} spacing={1} alignItems="start">
       {fieldList?.map((field, i: number) => (
         <>
           {member[field] &&
             (Array.isArray(member[field]) ? (
-              <GridItem key={`${i}`} colSpan={[1, 2, 3]}>
+              <GridItem key={`${key}-item-${i}`} colSpan={[1, 2, maxCols]}>
                 <h5>{capitalCase(fields[field].field)}:</h5>
                 <Wrap gap={2}>
                   {member[field]?.map((item: any, d: number) => (
-                    <Badge colorScheme={color} key={d}>
+                    <Badge colorScheme={color} key={`badge-${d}`}>
                       {getValue(field, item)}
                     </Badge>
                   ))}
                 </Wrap>
               </GridItem>
             ) : (
-              <GridItem key={`${i}`}>
+              <GridItem key={`${key}-item-${i}`}>
                 <h5>{capitalCase(fields[field].field)}:</h5>
-                {!Array.isArray(member[field]) && (
-                  <h4 style={{ textTransform: 'uppercase' }}>{getValue(field, member[field])}</h4>
-                )}
+                <h4 style={{ textTransform: 'capitalize' }}>{getValue(field, member[field])}</h4>
               </GridItem>
             ))}
         </>
@@ -412,12 +415,13 @@ function MemberSpotlight({
           <Tab>General</Tab>
           <Tab>Sexual</Tab>
           <Tab>Interests</Tab>
-          <Tab>Location</Tab>
+          {/**<Tab>Location</Tab>**/}
           <Tab>Health</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
             <PropertyGroup
+              key="profile"
               member={member}
               fieldList={memberProfileFields}
               show={member?.show_profile}
@@ -427,6 +431,7 @@ function MemberSpotlight({
           </TabPanel>
           <TabPanel>
             <PropertyGroup
+              key="explicit"
               member={member}
               fieldList={memberProfileExplicitFields}
               show={member?.show_explicit}
@@ -436,6 +441,7 @@ function MemberSpotlight({
           </TabPanel>
           <TabPanel>
             <PropertyGroup
+              key="interests"
               member={member}
               fieldList={memberInterestFields}
               show={member?.show_interests}
@@ -443,7 +449,7 @@ function MemberSpotlight({
               color="blue"
             />
           </TabPanel>
-          <TabPanel>
+          {/**<TabPanel>
             <PropertyGroup
               member={member}
               fieldList={memberProfileLocationFields}
@@ -452,17 +458,21 @@ function MemberSpotlight({
               color="purple"
             />
           </TabPanel>
+          {**/}
           <TabPanel>
             <PropertyGroup
+              key="health"
               member={member}
               fieldList={memberHealthFields}
               show={member?.show_health}
               fields={fields}
               color="orange"
+              maxCols={2}
             />
           </TabPanel>
           <TabPanel>
             <PropertyGroup
+              key="contact"
               member={member}
               fieldList={memberProfileContactFields}
               show={member?.show_contact}
@@ -530,7 +540,7 @@ function MemberCard({
           </CardFooter>
         </Card>
       </LinkBox>
-      <Modal size="2xl" isOpen={isOpen} onClose={onClose}>
+      <Modal size="2xl" isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
         <ModalOverlay backdropFilter="auto" backdropBlur="2px" />
         <ModalContent bg={cardBg} border="1px solid transparent" borderColor="accent.700">
           <ModalHeader>

@@ -1,6 +1,6 @@
 import { createUser, findUser, updateUser } from 'lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { ApiResponse, MemberLevel, SubscriptionData } from 'lib/models'
+import { ApiResponse, Profile, SubscriptionData, User } from 'lib/models'
 import { withMethods } from 'lib/utils/server'
 import { updateSendGrid } from 'lib/services/sendgrid/server'
 
@@ -10,7 +10,7 @@ async function Subscribe(req: NextApiRequest, res: NextApiResponse<ApiResponse>)
 
     const { name, email } = req.body as SubscriptionData
     let [first, last] = name?.split(' ') || ['Prospective', 'Brother']
-    let member = await findUser(email)
+    let member = await findUser<User>(email)
     if (member) {
       await updateUser(member.id, {
         first_name: member.first_name || first,
@@ -18,9 +18,9 @@ async function Subscribe(req: NextApiRequest, res: NextApiResponse<ApiResponse>)
         nickname: member.nickname || name,
         in_sendgrid: true,
       })
-      await updateSendGrid(member)
+      await updateSendGrid(member as Profile)
     } else {
-      await createUser({
+      member = await createUser({
         first_name: first,
         last_name: last,
         nickname: name,
@@ -28,7 +28,7 @@ async function Subscribe(req: NextApiRequest, res: NextApiResponse<ApiResponse>)
         user_type: 'subscriber',
         in_sendgrid: true,
       })
-      await updateSendGrid(member)
+      await updateSendGrid(member as Profile)
     }
 
     res.status(200).end()

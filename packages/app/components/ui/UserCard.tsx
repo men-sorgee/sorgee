@@ -11,7 +11,7 @@ import {
 import { useCallback, useEffect, useState } from 'react'
 import { UserBadge } from './'
 import { getAssetUrl } from 'lib/utils'
-import { Member } from 'lib/models'
+import { DirectusFile, Member } from 'lib/models'
 import dynamic from 'next/dynamic'
 
 type Props = AvatarProps & {
@@ -20,11 +20,11 @@ type Props = AvatarProps & {
 
 export default function UserCard({ user }: Props) {
   const [loaded, setLoaded] = useState(false)
-  const [pictureSrc, setPictureSrc] = useState<string | null>()
+  const [pictureSrc, setPictureSrc] = useState<string | null>(null)
   const [lastLogin, setLastLogin] = useState<string | null>(null)
   useEffect(() => {
     if (!loaded && user) {
-      const { picture } = user
+      const picture = user.picture
       if (!pictureSrc && picture) setPictureSrc(getAssetUrl(picture))
       setLoaded(true)
       import('moment').then((m) => {

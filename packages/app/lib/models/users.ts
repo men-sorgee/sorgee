@@ -1,5 +1,5 @@
 import { RatingRated, UserInvite } from 'lib/models'
-import { User, UserAccount } from './directus'
+import { DirectusFile, User, UserAccount } from './directus'
 
 type Color = {
   DEFAULT: string
@@ -95,7 +95,7 @@ export type UserStatusType = 'new' | 'active' | 'inactive' | 'stale' | 'deleted'
 
 export type Profile = {
   id: string
-  picture: string
+  picture?: DirectusFile | string
   nickname: string
   first_name: string
   last_name: string
@@ -146,7 +146,7 @@ export type Applicant = Profile & {
   my_roles: User['my_roles']
   sexual_scenes: User['sexual_scenes']
   social_scenes: User['social_scenes']
-  photo: string | null
+  photo?: string | DirectusFile
   photo_denial_reason: string | null
 }
 export const applicantFields: Array<keyof Applicant> = [

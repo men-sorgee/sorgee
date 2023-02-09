@@ -26,12 +26,25 @@ export default function useMemberSearch(
     query
   ).toString()}`
   const { data: response, error } = useSWR<ManyItems<Partial<Profile>>>(key, JsonFetcher)
-  const [meta] = useState<{ total: number; filtered: number }>({
-    total: response?.meta?.total_count || 0,
-    filtered: response?.meta?.filter_count || 0,
+  const [meta, setMeta] = useState<{ total: number; filtered: number }>({
+    total: 0,
+    filtered: 0,
   })
-  const [pageCount] = useState(Math.ceil(meta?.filtered ? meta.filtered / size : 1))
-  const [members] = useState<SearchableMember[]>(response?.data || [])
+  const [pageCount, setPageCount] = useState(1)
+  const [members, setMembers] = useState<SearchableMember[]>([])
+
+  useEffect(() => {
+    if (response?.meta) {
+      setMeta({
+        total: response?.meta?.total_count || 0,
+        filtered: response?.meta?.filter_count || 0,
+      })
+      setPageCount(Math.ceil(meta?.filtered ? meta.filtered / size : 1))
+    }
+    if (response.data) {
+      setMembers(response.data)
+    }
+  }, [key, response?.meta])
 
   return {
     members,

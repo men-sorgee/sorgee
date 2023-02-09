@@ -59,8 +59,9 @@ export function pruneUndefined(obj: Record<string, any>, and: (v: any) => boolea
   )
 }
 
-export function getAssetUrl(assetId: string) {
-  return `/api/asset/${assetId}`
+export function getAssetUrl(assetId: string | { id: string }) {
+  if (typeof assetId == 'string') return `/api/asset/${assetId}`
+  else return `/api/asset/${assetId.id}`
 }
 
 export * from './fetchers'
