@@ -11,7 +11,7 @@ WORKDIR /app
 COPY . .
 COPY --from=dependencies /app/node_modules ./node_modules
 
-RUN npm run build
+RUN yarn run build
 
 # Production image, copy all the files and run next
 FROM node:16-alpine AS runner
