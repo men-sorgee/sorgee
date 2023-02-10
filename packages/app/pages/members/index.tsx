@@ -493,12 +493,6 @@ function MemberCard({
             <Text noOfLines={2}>{member?.biography}</Text>
           </CardBody>
           <CardFooter justify="space-between" alignItems="end">
-            <StatGroup>
-              <Stat>
-                <StatLabel>Score</StatLabel>
-                <StatNumber mb={0}>{member.rating.toFixed(2)}</StatNumber>
-              </Stat>
-            </StatGroup>
             <Spacer />
             {member?.rating > 0 && (
               <Rating
