@@ -7,7 +7,7 @@ import Footer from './Footer'
 import Actions from './Actions'
 import { useAuth } from 'hooks'
 export const constrained = {
-  maxW: ['full', 'lg', '2xl', '3xl', '4xl'],
+  w: ['full', 'lg', '2xl', '3xl', '4xl', '5xl'],
   mx: 'auto',
   p: 4,
 }

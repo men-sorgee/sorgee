@@ -19,7 +19,7 @@ import {
   StatLabel,
   StatNumber,
   SimpleGrid,
-  Tooltip,
+  Heading,
   Accordion,
   AccordionButton,
   AccordionIcon,
@@ -185,7 +185,7 @@ export default function MemberListPage(props: PageProps) {
           onSubmit={methods.handleSubmit((d) => setQuery(normalize({ ...d })))}
           style={{ width: '100%', display: 'block' }}
         >
-          <Accordion allowToggle w="full">
+          <Accordion allowToggle w="full" shadow="lg">
             <AccordionItem w="full">
               <AccordionButton px={0} py={1}>
                 <Flex
@@ -196,7 +196,9 @@ export default function MemberListPage(props: PageProps) {
                   align="left"
                   w="full"
                 >
-                  <h3>Filter</h3>
+                  <Heading mt={1} ml={2} as="h3">
+                    Filter
+                  </Heading>
                   <StatGroup as={HStack} spacing={4}>
                     <Stat colorScheme="primary">
                       <StatLabel>Total</StatLabel>
@@ -333,7 +335,7 @@ export default function MemberListPage(props: PageProps) {
               </Flex>
             </Flex>
           )}
-          <SimpleGrid my={4} columns={[1, 1, 2, 2, 3]} spacing={4} w="100%" justifyItems="stretch">
+          <SimpleGrid my={4} columns={[1, 1, 2, 2, 3]} spacing={4} w="full" justifyItems="stretch">
             {members?.map((member: SearchableMember) => (
               <MemberCard key={member.id} member={member} setId={setId} />
             ))}
@@ -456,9 +458,9 @@ function MemberCard({
         <Card
           w="full"
           h="full"
-          bg={useColorModeValue('white', 'black')}
+          bg={useColorModeValue('gray.50', 'dark.700')}
           border="1px solid transparent"
-          borderColor="accent.700"
+          borderColor="accent.400"
           _hover={{ shadow: '2xl', borderColor: 'accent.500' }}
         >
           <CardHeader>
@@ -490,7 +492,13 @@ function MemberCard({
           <CardBody>
             <Text noOfLines={2}>{member?.biography}</Text>
           </CardBody>
-          <CardFooter>
+          <CardFooter justify="space-between" alignItems="end">
+            <StatGroup>
+              <Stat>
+                <StatLabel>Score</StatLabel>
+                <StatNumber mb={0}>{member.rating.toFixed(2)}</StatNumber>
+              </Stat>
+            </StatGroup>
             <Spacer />
             {member?.rating > 0 && (
               <Rating

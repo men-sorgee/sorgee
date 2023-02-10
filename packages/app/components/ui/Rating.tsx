@@ -17,9 +17,10 @@ const rating = forwardRef<HTMLInputElement, Props>(
       size = 'xs',
       icon = <StarIcon />,
       scale = 5,
-      fillColor = 'yellow.100',
-      strokeColor = 'gray.200',
+      fillColor = 'purple.400',
+      strokeColor = 'gray.300',
       simple = false,
+
       mt,
     }: Props,
     ref
@@ -58,8 +59,10 @@ const rating = forwardRef<HTMLInputElement, Props>(
           _focus={{ outline: 0 }}
           size={size}
           icon={icon}
+          colorScheme="purple"
           color={fillColor}
           stroke={strokeColor}
+          shadow="lg"
           fill={fill}
           fillOpacity={fill ? '100%' : '0'}
         />
