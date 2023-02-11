@@ -1,5 +1,5 @@
 import { getAdminClient } from '.'
-import { Event, EventDetail, EventUser } from '../../../models'
+import { GroupEvent, EventDetail, EventUser } from '../../../models'
 
 export async function listUpcomingEvents(): Promise<EventDetail[]> {
   const client = await getAdminClient()
@@ -30,7 +30,9 @@ export async function listEvents(privileged: boolean = false): Promise<EventDeta
 
 export async function getEvent(id: string): Promise<EventDetail> {
   const client = await getAdminClient()
-  const event: Event = await client.items('events').readOne(id, { fields: ['*', 'users.*' as any] })
+  const event: GroupEvent = await client
+    .items('events')
+    .readOne(id, { fields: ['*', 'users.*' as any] })
   const { users: eventUsers, ...eventData } = event
   const users = (eventUsers as EventUser[]) || []
   return {

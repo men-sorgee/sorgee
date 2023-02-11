@@ -1,4 +1,4 @@
-import { EventUser, Event } from './directus'
+import { EventUser, GroupEvent } from './directus'
 import { MemberLevel } from './users'
 
 export type UserInvite = {
@@ -7,7 +7,7 @@ export type UserInvite = {
   v: string
 }
 
-export type EventDetail = Event & {
+export type EventDetail = GroupEvent & {
   invited_count: number
   confirmed_count: number
   maybe_count: number

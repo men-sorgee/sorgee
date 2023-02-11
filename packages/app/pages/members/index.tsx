@@ -3,7 +3,7 @@ import Page from 'components/Page'
 import { signIn } from 'next-auth/react'
 import { useMember } from 'hooks/use-member'
 import { UserAddIcon, StarIcon, ChatIcon } from '@heroicons/react/solid'
-import { normalize, serialize } from 'lib/utils'
+import { pruneUndefined, normalize, serialize } from 'lib/utils'
 import { useCallback, useEffect, useState } from 'react'
 import { capitalCase } from 'change-case'
 import { Loading, UserCard } from 'components/ui'
@@ -129,7 +129,11 @@ export default function MemberListPage(props: PageProps) {
     setPage(Number(p || '1'))
     setSize(Number(s || '10'))
     setSort(String(o || '-last_login'))
-    setQuery(normalize<SearchableMember>(q))
+
+    if (q) {
+      const w = normalize<SearchableMember>(q) as QueryParams
+      setQuery(normalize)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -162,11 +166,8 @@ export default function MemberListPage(props: PageProps) {
       })
       setPageCount(Math.ceil((filter_count || size) / size))
       setMembers(response.data)
-      console.log('results')
-      console.dir({ p, s, o, q, page, size, sort, query })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [response?.data, response?.meta, key, query])
+  }, [response?.data, response?.meta, key, query, size, p, s, o, q, page, sort])
 
   const pageIndex = page - 1
 
@@ -182,7 +183,8 @@ export default function MemberListPage(props: PageProps) {
       <FormProvider {...methods}>
         <form
           onSubmit={methods.handleSubmit((d) => {
-            setQuery(d)
+            let newQuery = pruneUndefined(d, (v) => v !== false) as QueryParams
+            setQuery(newQuery)
             setPage(1)
           })}
           style={{ width: '100%', display: 'block' }}
@@ -475,7 +477,7 @@ function MemberCard({
                 window.history.pushState({}, '', `/members/${member?.id}`)
               }}
             >
-              <UserCard user={member} />
+              <UserCard user={member as Member} />
             </LinkOverlay>
             <Flex justify="end" align="end" mt={-1} mb={2} w="full">
               {member?.spectrum && (

@@ -252,11 +252,9 @@ export type SearchableMember = Omit<
   | 'flags'
   | 'reviewed_by'
   | 'photo_denial_reason'
-  | 'date_created'
-  | 'date_updated'
 >
 
-export const memberProfilePrivateFields: Array<keyof User> = [
+export const memberProfilePrivateFields: Array<keyof Member> = [
   'last_name',
   'birth_month',
   'birth_year',
@@ -264,15 +262,15 @@ export const memberProfilePrivateFields: Array<keyof User> = [
   'photo_consent',
 ]
 
-export const memberProfileContactFields: Array<keyof User> = [
+export const memberProfileContactFields: Array<keyof Member> = [
   'email',
   'phone',
   'contact_preference',
 ]
 
-export const memberProfileLocationFields: Array<keyof User> = ['location', 'city', 'state']
+export const memberProfileLocationFields: Array<keyof Member> = ['location', 'city', 'state']
 
-export const memberProfileFields: Array<keyof User> = [
+export const memberProfileFields: Array<keyof Member> = [
   'age',
   'height',
   'weight',
@@ -286,7 +284,7 @@ export const memberProfileFields: Array<keyof User> = [
   'body_attributes',
 ]
 
-export const memberProfileExplicitFields: Array<keyof User> = [
+export const memberProfileExplicitFields: Array<keyof Member> = [
   'ball_size',
   'ball_gravity',
   'cock_length',
@@ -298,14 +296,14 @@ export const memberProfileExplicitFields: Array<keyof User> = [
   'sexual_scenes',
 ]
 
-export const memberInterestsFields: Array<keyof User> = [
+export const memberInterestsFields: Array<keyof Member> = [
   'their_positions',
   'their_roles',
   'their_spectrum',
   'their_relationship_status',
 ]
 
-export const memberEventFields: Array<keyof User> = [
+export const memberEventFields: Array<keyof Member> = [
   'event_invites',
   'can_host',
   'event_availability',
@@ -313,14 +311,14 @@ export const memberEventFields: Array<keyof User> = [
   'can_host_events',
 ]
 
-export const memberHealthFields: Array<keyof User> = [
+export const memberHealthFields: Array<keyof Member> = [
   'hiv_status',
   'last_tested',
   'load_policy',
   'vaccinations',
 ]
 
-export const searchableMemberFields: Array<keyof User> = [
+export const searchableMemberFields: Array<keyof Member> = [
   'user_type',
   'presence',
   'rating',
@@ -351,12 +349,7 @@ export const searchableMemberFields: Array<keyof User> = [
 export const memberFields: Array<keyof Member> = [
   ...profileFields,
   ...applicantFields,
-  'video_consent',
-  'photo_consent',
-  'signed_waiver',
-  'presence',
-  'last_login',
-  'rating',
+  ...searchableMemberFields,
 ]
 
 export const getAllowedUsers = (level: MemberLevel) => {

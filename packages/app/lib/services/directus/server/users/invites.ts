@@ -1,5 +1,5 @@
 import { getAdminClient } from '..'
-import { Invite, InviteRSVPType, EventUser, Event, EventDetail } from 'lib/models'
+import { Invite, InviteRSVPType, EventUser, GroupEvent, EventDetail } from 'lib/models'
 
 export async function getInvite(inviteId: number): Promise<EventUser | null> {
   const client = await getAdminClient()

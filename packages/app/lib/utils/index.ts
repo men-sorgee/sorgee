@@ -77,7 +77,7 @@ export function normalize<T>(params: any): Record<keyof T, string[]> {
 export function serialize<T>(params: Record<keyof T, string[]>) {
   const pairs = Object.entries(params).map(([key, value]: [string, string[]]) => [
     key,
-    value.join(','),
+    Array.isArray(value) ? value.join(',') : value,
   ]) as [string, string][]
   return pairs.reduce((acc, [key, value]) => {
     return acc + `&${key}=${value}`

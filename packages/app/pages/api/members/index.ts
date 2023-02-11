@@ -6,6 +6,7 @@ import {
   getAllowedUsers,
   MemberLevel,
   SearchableMember,
+  searchableMemberFields,
   User,
   UserType,
 } from 'lib/models'
@@ -24,16 +25,11 @@ export default async function FindMembers(
 ) {
   try {
     const member = await withMember(req, res)
-    if (!member) {
-      return res.status(401).json(ApiResponse(null, 'Unauthorized'))
-    }
-
     const level = MemberLevel[member.user_type]
     const { offset = 0, limit = 10, sort, ...props } = req.query as Record<keyof MemberSearch, any>
-
     const allowedLevels = getAllowedUsers(level)
-
     const params = normalize<SearchableMember>(props)
+    const postQueryParams = {}
     const searchParams = {
       show_profile: {
         _eq: true,
@@ -42,8 +38,6 @@ export default async function FindMembers(
         _neq: member.id,
       },
     }
-
-    const postQueryParams = {}
 
     Object.keys(params).forEach((key) => {
       if (Array.isArray(member[key])) {
@@ -62,34 +56,13 @@ export default async function FindMembers(
       searchParams['status'] = { _eq: 'active' }
       searchParams['application_status'] = { _eq: 'approved' }
     }
-
     searchParams['user_type'] = {
       _in: searchLevels,
     }
 
     const results = await searchUsers<Partial<User>>(
       searchParams,
-      [
-        'id',
-        'status',
-        'nickname',
-        'biography',
-        'first_name',
-        'picture',
-        'user_type',
-        'show_health',
-        'show_interests',
-        'presence',
-        'location',
-        'city',
-        'state',
-        'rating',
-        'spectrum',
-        'my_positions',
-        'relationship_status',
-        'last_login',
-        'date_created',
-      ],
+      searchableMemberFields,
       limit,
       offset,
       sort
