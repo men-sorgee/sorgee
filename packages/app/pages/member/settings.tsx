@@ -60,7 +60,7 @@ type MemberFormData = Partial<Member>
 function Account(props: PageProps) {
   const { member, loading } = useMember()
   return (
-    <Page title="Account" loading={loading} requireAuth={true} header={<UserCard user={member} />}>
+    <Page title="Settings" loading={loading} requireAuth={true} header={<UserCard user={member} />}>
       {member && <Form {...props} />}
     </Page>
   )
@@ -134,8 +134,8 @@ function Form(props: PageProps) {
             onChange={(index) => setTabValue(index)}
           >
             <TabList fontWeight="bold">
-              <Tab fontWeight={tabValue == 0 ? 'bold' : null}>Contact Info</Tab>
-              <Tab fontWeight={tabValue == 1 ? 'bold' : null}>Event Settings</Tab>
+              <Tab fontWeight={tabValue == 0 ? 'bold' : null}>Contact</Tab>
+              <Tab fontWeight={tabValue == 1 ? 'bold' : null}>Event</Tab>
             </TabList>
             <TabPanels>
               <TabPanel p={0}>

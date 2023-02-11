@@ -346,11 +346,7 @@ export const searchableMemberFields: Array<keyof Member> = [
   'my_photos',
 ]
 
-export const memberFields: Array<keyof Member> = [
-  ...profileFields,
-  ...applicantFields,
-  ...searchableMemberFields,
-]
+export const memberFields: Array<keyof Member> = [...applicantFields, ...searchableMemberFields]
 
 export const getAllowedUsers = (level: MemberLevel) => {
   let allowedLevels: UserType[] = ['brother', 'big_brother', 'staff', 'admin']
