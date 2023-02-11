@@ -1,5 +1,5 @@
 import { signIn, useSession } from 'next-auth/react'
-import { LinkButton } from './ui'
+import { LinkButton } from './controls'
 import { Box, Heading, Text } from '@chakra-ui/react'
 import { useEffect } from 'react'
 const AccessDenied = () => {

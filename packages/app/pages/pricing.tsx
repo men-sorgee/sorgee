@@ -20,7 +20,7 @@ import {
 import { CheckCircleIcon } from '@heroicons/react/solid'
 import Page from 'components/Page'
 import { useSite } from '../hooks/use-site'
-import { LinkButton } from '../components/ui'
+import { LinkButton } from '../components/controls'
 const Check = ({ available = false }) => {
   const style = useColorModeValue('gray.500', 'gray.300')
   return <Icon as={CheckCircleIcon} boxSize={6} color={available ? 'green.500' : style} />

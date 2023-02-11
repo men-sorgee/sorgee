@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useRemark } from 'react-remark'
 import { Heading, Image, ListItem, OrderedList, Text, UnorderedList } from '@chakra-ui/react'
-export default function Markdown({ content }: { content: string }) {
+export const Markdown = ({ content }: { content: string }) => {
   const [reactContent, setMarkdownSource] = useRemark({
     rehypeReactOptions: {
       components: {

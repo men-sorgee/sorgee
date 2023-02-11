@@ -15,11 +15,8 @@ export default async function getMemberDetails(
   try {
     const method = withMethods(req, ['GET', 'POST'])
     const member = await withMember(req, res)
-    if (!member) {
-      return res.status(401).json(ApiResponse(null, 'Unauthorized'))
-    }
 
-    const { id } = req.query
+    const { id } = req.query || member
     const user_id = String(id)
     const level = MemberLevel[member.user_type]
     const user = await getUser(user_id)

@@ -2,7 +2,7 @@ import { signIn, signOut, useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import { Box, Menu, MenuButton, MenuItem, MenuList, MenuDivider, Link } from '@chakra-ui/react'
 import { ApplicationStatus, MemberLevel } from 'lib/models'
-import { LinkButton, UserAvatar, UserCard } from 'components/ui'
+import { LinkButton, UserAvatar, UserCard } from 'components/controls'
 import Notifications from './Notifications'
 import {
   CalendarIcon,

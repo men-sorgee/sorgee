@@ -1,9 +1,9 @@
 import { useMeta } from 'hooks/use-meta'
-import Loading from 'components/ui/Loading'
+import { Loading } from 'components/controls'
 import { useSession } from 'next-auth/react'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import AccessDenied from './AccessDenied'
-import { Flex, Heading, FlexProps, chakra } from '@chakra-ui/react'
+import { Flex, FlexProps, chakra } from '@chakra-ui/react'
 
 type Props = FlexProps & {
   id?: string

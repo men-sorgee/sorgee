@@ -1,5 +1,5 @@
 import { Alert, HStack, Flex, AlertIcon, Stat, StatLabel, StatNumber } from '@chakra-ui/react'
-import { EventCard, LinkButton } from 'components/ui'
+import { EventCard, LinkButton } from 'components/controls'
 import { MemberLevel, User, EventDetail } from 'lib/models'
 import { GetServerSidePropsResult, NextPageContext } from 'next'
 import { useMember } from 'hooks/use-member'

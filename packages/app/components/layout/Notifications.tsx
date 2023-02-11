@@ -12,7 +12,7 @@ import {
 import { BellIcon as NotificationsOffIcon } from '@heroicons/react/outline'
 import { BellIcon as NotificationsOnIcon } from '@heroicons/react/solid'
 import { useNotifications } from 'hooks/use-notifications'
-import { Notification } from 'components/ui'
+import { NotificationCard } from 'components/controls'
 
 interface Props {}
 
@@ -53,7 +53,7 @@ const Notifications = (_props: Props) => {
           <DrawerBody p={4}>
             <>
               {notifications?.map((notification) => (
-                <Notification key={notification.id} notification={notification} />
+                <NotificationCard key={notification.id} notification={notification} />
               ))}
             </>
           </DrawerBody>

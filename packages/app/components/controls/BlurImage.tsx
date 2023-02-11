@@ -8,7 +8,7 @@ export type ImageProps = Props &
     src: string
   }
 
-const BlurImage = ({ src, ...props }: ImageProps) => {
+export const BlurImage = chakra(({ src, ...props }: ImageProps) => {
   const [isLoading, setLoading] = useState(true)
 
   return (
@@ -25,6 +25,4 @@ const BlurImage = ({ src, ...props }: ImageProps) => {
       }}
     />
   )
-}
-
-export default chakra(BlurImage)
+})

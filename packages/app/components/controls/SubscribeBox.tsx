@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react'
 import { postJSON } from 'lib/utils'
 
-export default function SubscribeBox() {
+export const SubscribeBox = () => {
   const [subscribed, setSubscribed] = useState(false)
   const methods = useForm<SubscriptionData>({
     mode: 'onBlur',

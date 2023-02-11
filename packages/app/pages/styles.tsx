@@ -29,7 +29,7 @@ import {
 } from '../components/forms'
 import FieldRange from '../components/forms/FieldRange'
 import Page from '../components/Page'
-import { LinkButton, Loading } from '../components/ui'
+import { LinkButton, Loading } from '../components/controls'
 
 const Form = () => {
   const methods = useForm()

@@ -1,6 +1,7 @@
 import { useState, forwardRef, useEffect } from 'react'
 import { StarIcon } from '@chakra-ui/icons'
 import { Box, Icon, IconButton, Stack, Text, IconButtonProps } from '@chakra-ui/react'
+
 type Props = IconButtonProps & {
   value?: number
   readonly?: boolean
@@ -9,7 +10,8 @@ type Props = IconButtonProps & {
   strokeColor?: string
   simple?: boolean
 }
-const rating = forwardRef<HTMLInputElement, Props>(
+
+const Rating = forwardRef<HTMLInputElement, Props>(
   (
     {
       value,
@@ -96,6 +98,6 @@ const rating = forwardRef<HTMLInputElement, Props>(
   }
 )
 
-rating.displayName = 'rating'
+Rating.displayName = 'rating'
 
-export default rating
+export { Rating }

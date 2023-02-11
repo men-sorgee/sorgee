@@ -1,7 +1,7 @@
 import { Box, Heading, Text } from '@chakra-ui/react'
 import { useMeta } from 'hooks/use-meta'
 import { useEffect } from 'react'
-import { LinkButton } from '../components/ui'
+import { LinkButton } from '../components/controls'
 
 export default function NotFound() {
   const { setMeta } = useMeta()

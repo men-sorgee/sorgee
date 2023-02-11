@@ -8,17 +8,9 @@ import {
   AlertIcon,
   Flex,
   Heading,
-  VStack,
-  Divider,
   Text,
-  Box,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
 } from '@chakra-ui/react'
-import Markdown from './Markdown'
+import { Markdown } from './Markdown'
 import { MemberLevel, GroupEvent, Invite } from 'lib/models'
 
 type EventInfo = GroupEvent | Invite
@@ -29,7 +21,7 @@ interface Props {
   level?: MemberLevel
 }
 
-export default function EventCard({ event, children, level }: Props) {
+export const EventCard = ({ event, children, level }: Props) => {
   const [eventDate, setEventDate] = useState({
     day: '',
     short: '',

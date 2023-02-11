@@ -7,12 +7,10 @@ interface Props extends ButtonProps {
   onClick?: (e: any) => void
 }
 
-const LinkButton = ({ href, children, onClick, ...styles }: Props) => {
+export const LinkButton = chakra(({ href, children, onClick, ...styles }: Props) => {
   return (
     <Link as={NextLink} href={href} onClick={onClick}>
       <Button {...styles}>{children}</Button>
     </Link>
   )
-}
-
-export default chakra(LinkButton)
+})

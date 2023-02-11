@@ -14,7 +14,7 @@ import {
   Box,
 } from '@chakra-ui/react'
 import { EventUser, Invite, GroupEvent, User } from 'lib/models'
-import { LinkButton, Loading, TakePhoto, UserBadge } from 'components/ui'
+import { LinkButton, Loading, TakePhoto, UserBadge } from 'components/controls'
 import { FieldSwitch } from 'components/forms'
 import { useMember } from 'hooks/use-member'
 import { useRouter } from 'next/router'
