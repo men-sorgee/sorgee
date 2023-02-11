@@ -17,7 +17,7 @@ import Link from 'next/link'
 import { FormProvider, useForm } from 'react-hook-form'
 import { FieldSelect } from 'components/forms'
 import { postJSON } from 'lib/utils'
-import { EventUser, FieldOptions, Invite, Member, MemberLevel, Event } from 'lib/models'
+import { EventUser, FieldOptions, Invite, Member, MemberLevel, GroupEvent } from 'lib/models'
 import EventCard from 'components/ui/EventCard'
 import { getServerSession } from 'next-auth'
 import { NextPageContext, GetServerSidePropsResult } from 'next'
@@ -177,7 +177,7 @@ function EventInfo({
   const [working, setWorking] = useState(false)
   const toast = useToast()
   const [rsvp, setRsvp] = useState<string>()
-  const { id: event_id } = (invite.events_id as Event) || {}
+  const { id: event_id } = (invite.events_id as GroupEvent) || {}
   const methods = useForm<InviteRSVP>({
     mode: 'onBlur',
     defaultValues: {

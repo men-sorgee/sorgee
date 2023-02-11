@@ -13,7 +13,7 @@ import {
   AlertIcon,
   Box,
 } from '@chakra-ui/react'
-import { EventUser, Invite, Event, User } from 'lib/models'
+import { EventUser, Invite, GroupEvent, User } from 'lib/models'
 import { LinkButton, Loading, TakePhoto, UserBadge } from 'components/ui'
 import { FieldSwitch } from 'components/forms'
 import { useMember } from 'hooks/use-member'
@@ -34,7 +34,7 @@ export default function InviteAdmin(_props: Props) {
   const [{ invite, user, event }, setInvite] = useState<{
     invite?: Invite
     user?: User
-    event?: Event
+    event?: GroupEvent
   }>({})
   const [camera, setCamera] = useState(false)
   const [picture, setPicture] = useState<string | undefined>()
@@ -54,7 +54,7 @@ export default function InviteAdmin(_props: Props) {
             setInvite({
               invite: data as Invite,
               user: data.users_id as User,
-              event: data.events_id as Event,
+              event: data.events_id as GroupEvent,
             })
           }
         })

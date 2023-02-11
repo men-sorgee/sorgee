@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { baseUrl } from 'lib/config'
 import { findInvite, updateInvite } from 'lib/services/directus/server'
 import { withMethods } from 'lib/utils/server'
-import { ApiResponse, Applicant, EventUser, Event } from 'lib/models'
+import { ApiResponse, Applicant, EventUser, GroupEvent } from 'lib/models'
 
 export default async function inviteRSVP(
   req: NextApiRequest,
@@ -17,7 +17,7 @@ export default async function inviteRSVP(
     }
 
     const invite = (await findInvite(event_id as string, user_id as string)) as EventUser
-    const event = invite.events_id as Event
+    const event = invite.events_id as GroupEvent
 
     switch (method) {
       case 'GET': {

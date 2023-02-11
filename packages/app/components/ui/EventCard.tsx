@@ -19,9 +19,9 @@ import {
   AccordionIcon,
 } from '@chakra-ui/react'
 import Markdown from './Markdown'
-import { MemberLevel, Event, Invite } from 'lib/models'
+import { MemberLevel, GroupEvent, Invite } from 'lib/models'
 
-type EventInfo = Event | Invite
+type EventInfo = GroupEvent | Invite
 
 interface Props {
   children?: ReactNode | ReactNode[]

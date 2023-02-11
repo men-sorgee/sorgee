@@ -8,7 +8,7 @@ import {
   UserType,
 } from './users'
 
-export type Event = {
+export type GroupEvent = {
   id: string
   status: string
   user_created?: string | DirectusUser
@@ -28,7 +28,7 @@ export type UserFields = (string | keyof User)[] | '*' | '*.*' | any
 
 export type EventUser = {
   id: number
-  events_id: string | Event
+  events_id: string | GroupEvent
   users_id: string | User
   engagement?: unknown
   attended?: boolean
@@ -497,7 +497,7 @@ export type SurveySurveyQuestion = {
 }
 
 export type DirectusTypes = {
-  events: Event
+  events: GroupEvent
   events_users: EventUser
   location: Location
   notifications: Notification

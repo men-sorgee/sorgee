@@ -49,7 +49,7 @@ export function useNotifications(): NotificationResult {
         if (!window?.sessionStorage.getItem('notified')) {
           const audio = new Audio('/sounds/ding.mp3')
           audio.play()
-          window?.sessionStorage.setItem('notified', true)
+          window?.sessionStorage.setItem('notified', 'true')
         }
       }
     }
