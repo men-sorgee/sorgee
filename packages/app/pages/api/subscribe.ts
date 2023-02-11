@@ -9,7 +9,6 @@ async function Subscribe(req: NextApiRequest, res: NextApiResponse<ApiResponse>)
     withMethods(req, ['POST'])
 
     const { name, email } = req.body as SubscriptionData
-    let [first, last] = name?.split(' ') || ['Prospective', 'Brother']
     let member = await findUser<User>(email)
     if (member) {
       await updateUser(member.id, {
@@ -18,8 +17,7 @@ async function Subscribe(req: NextApiRequest, res: NextApiResponse<ApiResponse>)
       await updateSendGrid(member as Profile)
     } else {
       member = await createUser({
-        first_name: first,
-        last_name: last,
+        first_name: name,
         nickname: name,
         email,
         user_type: 'subscriber',

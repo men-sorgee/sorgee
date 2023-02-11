@@ -19,7 +19,6 @@ async function SendNotification(req: NextApiRequest, res: NextApiResponse<ApiRes
       email,
       name,
       subject,
-      message,
       body,
       data,
       template = SendGridTemplate.AppNotification,
@@ -27,7 +26,7 @@ async function SendNotification(req: NextApiRequest, res: NextApiResponse<ApiRes
       notification_id = null,
     } = req.body
 
-    await sendNotificationEmail(email, name, subject, message || body, data, template, category)
+    await sendNotificationEmail(email, name, subject, body, data, template, category)
 
     if (notification_id) await markNotification(notification_id, 'sent')
 

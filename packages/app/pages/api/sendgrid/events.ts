@@ -22,8 +22,6 @@ type SendGridEvent = {
 
 export default async function HandleEvents(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
-    withMethods(req, ['POST'])
-
     const events: SendGridEvent[] = req.body
     await Promise.all(
       events.map((sgEvent) => {

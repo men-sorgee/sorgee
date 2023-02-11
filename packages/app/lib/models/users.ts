@@ -1,5 +1,5 @@
 import { RatingRated, UserInvite } from 'lib/models'
-import { DirectusFile, User, UserAccount } from './directus'
+import { DirectusFile, User, UserAccount, UserFields, UserFile, UserPhoto } from './directus'
 
 type Color = {
   DEFAULT: string
@@ -183,6 +183,10 @@ export type Member = Applicant & {
   video_consent: boolean
   photo_consent: boolean
 
+  //-photos
+  show_photos: boolean
+  my_photos: UserPhoto[]
+
   //-location
   show_location?: boolean
   location?: string
@@ -234,44 +238,41 @@ export type Member = Applicant & {
 }
 
 export type SearchableMember = Omit<
-  Member,
+  User,
   | 'invite'
   | 'promo'
   | 'accounts'
   | 'in_sendgrid'
   | 'application_status'
-  | 'signed_waiver'
-  | 'phone_verified'
-  | 'email_verified'
-  | 'ratings'
-  | 'notifications'
-  | 'photos'
-  | 'picture'
-  | 'ratings'
-  | 'ratings'
+  | 'contact_attempts'
+  | 'accounts'
+  | 'sessions'
+  | 'notes'
+  | 'tags'
+  | 'flags'
+  | 'reviewed_by'
+  | 'photo_denial_reason'
+  | 'date_created'
+  | 'date_updated'
 >
 
-export const memberProfilePrivateFields: Array<keyof SearchableMember> = [
+export const memberProfilePrivateFields: Array<keyof User> = [
   'last_name',
   'birth_month',
   'birth_year',
-]
-
-export const memberProfileContactFields: Array<keyof SearchableMember> = [
-  'email',
-  'phone',
-  'contact_preference',
   'video_consent',
   'photo_consent',
 ]
 
-export const memberProfileLocationFields: Array<keyof SearchableMember> = [
-  'location',
-  'city',
-  'state',
+export const memberProfileContactFields: Array<keyof User> = [
+  'email',
+  'phone',
+  'contact_preference',
 ]
 
-export const memberProfileFields: Array<keyof SearchableMember> = [
+export const memberProfileLocationFields: Array<keyof User> = ['location', 'city', 'state']
+
+export const memberProfileFields: Array<keyof User> = [
   'age',
   'height',
   'weight',
@@ -285,7 +286,7 @@ export const memberProfileFields: Array<keyof SearchableMember> = [
   'body_attributes',
 ]
 
-export const memberProfileExplicitFields: Array<keyof SearchableMember> = [
+export const memberProfileExplicitFields: Array<keyof User> = [
   'ball_size',
   'ball_gravity',
   'cock_length',
@@ -297,14 +298,14 @@ export const memberProfileExplicitFields: Array<keyof SearchableMember> = [
   'sexual_scenes',
 ]
 
-export const memberInterestFields: Array<keyof SearchableMember> = [
+export const memberInterestsFields: Array<keyof User> = [
   'their_positions',
   'their_roles',
   'their_spectrum',
   'their_relationship_status',
 ]
 
-export const memberEventFields: Array<keyof SearchableMember> = [
+export const memberEventFields: Array<keyof User> = [
   'event_invites',
   'can_host',
   'event_availability',
@@ -312,14 +313,14 @@ export const memberEventFields: Array<keyof SearchableMember> = [
   'can_host_events',
 ]
 
-export const memberHealthFields: Array<keyof SearchableMember> = [
+export const memberHealthFields: Array<keyof User> = [
   'hiv_status',
   'last_tested',
   'load_policy',
   'vaccinations',
 ]
 
-export const searchableMemberFields: Array<keyof SearchableMember> = [
+export const searchableMemberFields: Array<keyof User> = [
   'user_type',
   'presence',
   'rating',
@@ -328,9 +329,9 @@ export const searchableMemberFields: Array<keyof SearchableMember> = [
   'relationship_status',
   'spectrum',
   'mannerisms',
-  ...memberProfileContactFields,
-  'show_contact',
   ...memberProfilePrivateFields,
+  'show_contact',
+  ...memberProfileContactFields,
   'show_profile',
   ...memberProfileFields,
   'show_explicit',
@@ -338,16 +339,18 @@ export const searchableMemberFields: Array<keyof SearchableMember> = [
   'show_health',
   ...memberHealthFields,
   'show_interests',
-  ...memberInterestFields,
+  ...memberInterestsFields,
   'show_events',
   ...memberEventFields,
   'show_location',
   ...memberProfileLocationFields,
+  'show_photos',
+  'my_photos',
 ]
 
 export const memberFields: Array<keyof Member> = [
+  ...profileFields,
   ...applicantFields,
-  ...searchableMemberFields,
   'video_consent',
   'photo_consent',
   'signed_waiver',

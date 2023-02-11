@@ -282,7 +282,7 @@ export type User = {
   location?: string
   state: string
   events: string | EventUser[]
-  my_files: string | UserPhoto[]
+  my_photos: string | UserPhoto[]
   email_events: string | UserEmailEvent[]
   images: string | UserFile[]
   users: string | UserRelationship[]
@@ -294,7 +294,10 @@ export type User = {
   show_interests: boolean
   show_health: boolean
   show_events: boolean
+  show_images: boolean
+  show_photos: boolean
   event_invites: boolean
+
   can_host?: boolean
   can_host_events: string[] | ('sex' | 'social' | 'individual')[]
   promo: number | Promo

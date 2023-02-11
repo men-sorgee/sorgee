@@ -33,6 +33,7 @@ export async function updateSendGrid(
   user: Profile,
   lists: SendGridList[] = [SendGridList.Subscribers]
 ): Promise<string> {
+  if (!user) return
   const { first_name, last_name, email, id: member_id, user_type } = user || {}
   const member_level = MemberLevel[user_type || 'subscriber'] as number
   if (member_level >= MemberLevel.inductee) {

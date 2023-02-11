@@ -16,16 +16,15 @@ import { FieldFilter } from '@directus/sdk'
 
 export async function createUser(member: Partial<User>): Promise<User> {
   const adminClient = await getAdminClient()
-  const { id } = await adminClient.items('users').createOne(member, {
-    fields: memberFields as any[],
-  })
-  return getUser(id)
+  const user = await adminClient.items('users').createOne(member)
+  if (!user) throw new Error('Failed to create user')
+  return user as User
 }
 
-export async function updateUser(id: string, member: Partial<User>) {
+export async function updateUser(id: string, member: Partial<User>): Promise<User> {
   const adminClient = await getAdminClient()
-  await adminClient.items('users').updateOne(id!, member)
-  return getUser(id)
+  const user = await adminClient.items('users').updateOne(id!, member)
+  return user as User
 }
 
 export async function getUser<T = User>(
@@ -113,7 +112,7 @@ export async function getUserId(email: string) {
 
 export async function storeEmailEvent(event: UserEmailEvent) {
   const adminClient = await getAdminClient()
-  event.user = (await getUserId(event.email)) || null
+  if (event.email) event.user = (await getUserId(event.email)) || null
   return await adminClient.items('user_email_events').createOne(event)
 }
 
