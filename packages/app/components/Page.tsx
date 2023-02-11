@@ -4,7 +4,6 @@ import { useSession } from 'next-auth/react'
 import { useEffect, useState, useCallback } from 'react'
 import AccessDenied from './AccessDenied'
 import { Flex, Heading, FlexProps, chakra } from '@chakra-ui/react'
-import { useRouter } from 'next/router'
 
 type Props = FlexProps & {
   id?: string

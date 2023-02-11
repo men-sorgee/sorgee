@@ -134,7 +134,7 @@ function Form(props: PageProps) {
             onChange={(index) => setTabValue(index)}
           >
             <TabList fontWeight="bold">
-              <Tab fontWeight={tabValue == 0 ? 'bold' : null}>Information</Tab>
+              <Tab fontWeight={tabValue == 0 ? 'bold' : null}>Contact Info</Tab>
               <Tab fontWeight={tabValue == 1 ? 'bold' : null}>Event Settings</Tab>
             </TabList>
             <TabPanels>
@@ -152,6 +152,11 @@ function Form(props: PageProps) {
                     This information is private and can not be seen by any other member. It is used
                     only for administrative purposes.
                   </Text>
+                  <FieldSwitch
+                    field="show_contact"
+                    label="Show Contact Info"
+                    help="Turn this on if you want display your contact information to other members."
+                  />
                 </Alert>
                 <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
                   <FieldInput

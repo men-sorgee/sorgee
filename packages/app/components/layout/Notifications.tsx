@@ -13,7 +13,6 @@ import { BellIcon as NotificationsOffIcon } from '@heroicons/react/outline'
 import { BellIcon as NotificationsOnIcon } from '@heroicons/react/solid'
 import { useNotifications } from 'hooks/use-notifications'
 import { Notification } from 'components/ui'
-import { useEffect, useState } from 'react'
 
 interface Props {}
 

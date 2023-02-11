@@ -1,5 +1,5 @@
 import { RatingRated, UserInvite } from 'lib/models'
-import { DirectusFile, User, UserAccount, UserFields, UserFile, UserPhoto } from './directus'
+import { DirectusFile, User, UserAccount, UserFile, UserPhoto } from './directus'
 
 type Color = {
   DEFAULT: string
@@ -354,6 +354,8 @@ export const memberFields: Array<keyof Member> = [
   'video_consent',
   'photo_consent',
   'signed_waiver',
+  'presence',
+  'last_login',
   'rating',
 ]
 

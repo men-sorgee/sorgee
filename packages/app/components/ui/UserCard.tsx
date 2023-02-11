@@ -8,11 +8,10 @@ import {
   AvatarBadge,
   Tooltip,
 } from '@chakra-ui/react'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { UserBadge } from './'
 import { getAssetUrl } from 'lib/utils'
-import { DirectusFile, Member } from 'lib/models'
-import dynamic from 'next/dynamic'
+import { Member } from 'lib/models'
 
 type Props = AvatarProps & {
   user: Partial<Member>
@@ -29,7 +28,7 @@ export default function UserCard({ user }: Props) {
       setLoaded(true)
       import('moment').then((m) => {
         let moment = m.default
-        setLastLogin('Online since ' + user?.last_login ? moment(user?.last_login).fromNow() : '')
+        setLastLogin('Last login ' + user?.last_login ? moment.utc(user?.last_login).fromNow() : '')
       })
     }
   }, [user, pictureSrc, loaded, lastLogin])

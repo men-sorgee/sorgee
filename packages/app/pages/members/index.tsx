@@ -65,7 +65,7 @@ import {
   searchableMemberFields,
   memberProfileExplicitFields,
   memberProfileLocationFields,
-  memberInterestFields,
+  memberInterestsFields,
   memberProfileFields,
   memberHealthFields,
   memberEventFields,
@@ -110,10 +110,10 @@ export default function MemberListPage(props: PageProps) {
   const { fieldMap: fields, id: i, ...params } = props
   const { page: p, size: s, sort: o, ...q } = router.query || params
   const [id, setId] = useState(i)
-  const [page, setPage] = useState<number>()
-  const [size, setSize] = useState<number>()
-  const [sort, setSort] = useState<string>()
-  const [query, setQuery] = useState<QueryParams>({} as any)
+  const [page, setPage] = useState<number>(1)
+  const [size, setSize] = useState<number>(10)
+  const [sort, setSort] = useState<string>('-last_login')
+
   const [key, setKey] = useState<string>()
   const { member: currentMember, loading } = useMember()
   const [meta, setMeta] = useState<{ total: number; filtered: number }>({
@@ -124,10 +124,11 @@ export default function MemberListPage(props: PageProps) {
   const [members, setMembers] = useState<SearchableMember[]>([])
   const allowedUserTypes = getAllowedUsers(MemberLevel[currentMember?.user_type || 'inductee'])
 
+  const [query, setQuery] = useState<QueryParams>({} as any)
   useEffect(() => {
-    setPage(Number(p || 1))
-    setSize(Number(s || 10))
-    setSort((o as string) || '-presence')
+    setPage(Number(p || '1'))
+    setSize(Number(s || '10'))
+    setSort(String(o || '-last_login'))
     setQuery(normalize<SearchableMember>(q))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -136,15 +137,14 @@ export default function MemberListPage(props: PageProps) {
     if (!loading && !currentMember) {
       signIn()
     }
-    if (page && size && sort) {
-      const filter = query ? serialize<SearchableMember>(query) : ''
-      window.history.pushState(
-        null,
-        'Members',
-        `/members?page=${page}&size=${size}&sort=${sort}${filter}`
-      )
-      setKey(`/api/members?limit=${size}&offset=${size * (page - 1)}&sort=${sort}${filter}`)
-    }
+
+    const filter = query ? serialize<SearchableMember>(query) : ''
+    window.history.pushState(
+      null,
+      'Members',
+      `/members?page=${page}&size=${size}&sort=${sort}${filter}`
+    )
+    setKey(`/api/members?limit=${size}&offset=${size * (page - 1)}&sort=${sort}${filter}`)
   }, [page, size, sort, query, loading, currentMember])
 
   const methods = useForm<QueryParams>({
@@ -153,7 +153,6 @@ export default function MemberListPage(props: PageProps) {
   })
 
   const { data: response } = useSWR<ManyItems<Partial<SearchableMember>>>(key, JsonFetcher)
-
   useEffect(() => {
     if (response?.data && response?.meta) {
       const { total_count, filter_count } = response.meta
@@ -182,7 +181,10 @@ export default function MemberListPage(props: PageProps) {
     <Page title="Members" loading={loading} w="full" requireAuth={true}>
       <FormProvider {...methods}>
         <form
-          onSubmit={methods.handleSubmit((d) => setQuery(normalize({ ...d })))}
+          onSubmit={methods.handleSubmit((d) => {
+            setQuery(d)
+            setPage(1)
+          })}
           style={{ width: '100%', display: 'block' }}
         >
           <Accordion allowToggle w="full" shadow="lg">
@@ -335,7 +337,7 @@ export default function MemberListPage(props: PageProps) {
               </Flex>
             </Flex>
           )}
-          <SimpleGrid my={4} columns={[1, 1, 2, 2, 3]} spacing={4} w="full" justifyItems="stretch">
+          <SimpleGrid my={4} columns={[1, 1, 1, 2]} spacing={4} w="full" justifyItems="stretch">
             {members?.map((member: SearchableMember) => (
               <MemberCard key={member.id} member={member} setId={setId} />
             ))}
@@ -609,7 +611,7 @@ function MemberSpotlight({ id, fields }: { id: string; fields: Record<string, Di
             <PropertyGroup
               k="interests"
               member={member}
-              fieldList={memberInterestFields}
+              fieldList={memberInterestsFields}
               show={member?.show_interests}
               fields={fields}
               color="blue"

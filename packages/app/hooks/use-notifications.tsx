@@ -27,7 +27,6 @@ export const NotificationContext = createContext<NotificationResult>({
 })
 
 export function useNotifications(): NotificationResult {
-  const [completed, setCompleted] = useState<boolean>(false)
   const {
     data: notifications,
     mutate,
@@ -37,18 +36,24 @@ export function useNotifications(): NotificationResult {
     refreshInterval: 1000 * 30, // 30 seconds
     fallbackData: [],
   })
-  const [hasNotifications, setHasNotifications] = useState(false)
-  const [newNotifications, setNewNotifications] = useState<AppNotification[]>([])
-  const [hasNewNotifications, setHasNewNotifications] = useState(false)
+  const [hasNotifications, setHasNotifications] = useState<boolean>(undefined)
+  const [newNotifications, setNewNotifications] = useState<AppNotification[]>(undefined)
+  const [hasNewNotifications, setHasNewNotifications] = useState<boolean>(undefined)
 
   useEffect(() => {
-    if (!isLoading && !completed) {
+    if (!isLoading) {
       setHasNotifications(notifications?.length > 0)
       setNewNotifications(notifications?.filter((n) => n.status === 'new') || [])
       setHasNewNotifications(newNotifications?.length > 0)
-      setCompleted(true)
+      if (hasNewNotifications) {
+        if (!window?.sessionStorage.getItem('notified')) {
+          const audio = new Audio('/sounds/ding.mp3')
+          audio.play()
+          window?.sessionStorage.setItem('notified', true)
+        }
+      }
     }
-  }, [notifications, isLoading, newNotifications?.length, completed])
+  }, [notifications, isLoading, newNotifications?.length, hasNewNotifications])
 
   return {
     notifications,
@@ -58,6 +63,7 @@ export function useNotifications(): NotificationResult {
     newNotificationCount: newNotifications?.length || 0,
     error,
     mark: async (id: number, state: NotificationStatusType) => {
+      window?.sessionStorage.removeItem('notified')
       const [ok, data] = await putJSON(`/api/member/notifications`, {
         id,
         state,
