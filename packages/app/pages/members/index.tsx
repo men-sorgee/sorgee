@@ -73,7 +73,7 @@ export default function MemberListPage(props: PageProps) {
   const router = useRouter()
 
   const { fieldMap: fields, id: i, ...params } = props
-  const { page: p, size: s, sort: o, ...q } = router.query || params
+  const { page: p, size: s, sort: o, id: _, ...q } = router.query || params
 
   const [id, setId] = useState(i)
   const [page, setPage] = useState<number>(undefined)
