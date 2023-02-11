@@ -11,10 +11,10 @@ import {
 import { useEffect, useState } from 'react'
 import { UserBadge } from './'
 import { getAssetUrl } from 'lib/utils'
-import { Member } from 'lib/models'
+import { Member, SearchableMember } from 'lib/models'
 
 type Props = AvatarProps & {
-  user: Partial<Member>
+  user: Partial<Member | SearchableMember>
 }
 
 export default function UserCard({ user }: Props) {

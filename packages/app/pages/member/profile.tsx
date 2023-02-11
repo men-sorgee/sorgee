@@ -187,9 +187,9 @@ function Form(props: PageProps) {
           <Tabs isFitted defaultIndex={tabValue} onChange={(index) => setTabValue(index)}>
             <TabList fontSize={['sm', 'md', 'lg']} fontWeight="bold">
               <Tab fontWeight={tabValue == 0 ? 'bold' : null}>General</Tab>
-              <Tab fontWeight={tabValue == 1 ? 'bold' : null}>Interests</Tab>
+              <Tab fontWeight={tabValue == 1 ? 'bold' : null}>Sexuality</Tab>
               <Tab fontWeight={tabValue == 2 ? 'bold' : null} display={['none', 'inherit']}>
-                Preferences
+                Looking For
               </Tab>
               <Tab fontWeight={tabValue == 3 ? 'bold' : null}>Health</Tab>
             </TabList>

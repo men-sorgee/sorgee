@@ -455,7 +455,6 @@ function MemberCard({
   member: Partial<SearchableMember>
   setId: (id: string) => void
 }) {
-  const router = useRouter()
   return (
     <>
       <LinkBox key={member?.id}>
@@ -477,7 +476,7 @@ function MemberCard({
                 window.history.pushState({}, '', `/members/${member?.id}`)
               }}
             >
-              <UserCard user={member as Member} />
+              <UserCard user={member} />
             </LinkOverlay>
             <Flex justify="end" align="end" mt={-1} mb={2} w="full">
               {member?.spectrum && (
