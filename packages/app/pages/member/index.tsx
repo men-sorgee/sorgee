@@ -1,3 +1,3 @@
-import { default as Account } from './account'
+import { default as Account } from './settings'
 
 export default Account

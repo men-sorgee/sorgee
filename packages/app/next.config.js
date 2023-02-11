@@ -37,6 +37,11 @@ const getConfig = ( phase ) => {
           permanent: true
         },
         {
+          source: '/member/account',
+          destination: '/member/settings',
+          permanent: false
+        },
+        {
           source: '/api/admin/:path',
           destination: '/api/member/:path',
           permanent: true

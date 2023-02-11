@@ -23,7 +23,7 @@ function Approved() {
     >
       <>
         <Heading as="h2" pt={10}>
-          Congratulations!
+          Congratulations and Welcome!
         </Heading>
         <Heading as="h3">Your membership was approved.</Heading>
 
@@ -31,18 +31,16 @@ function Approved() {
           <Text>
             You will now get periodic event invites as well as access to our member-only content.
           </Text>
-          <HStack spacing={4} textAlign="center">
-            <LinkButton href="/member/invite" colorScheme="primary">
-              Invite a Friend
-            </LinkButton>
-            <LinkButton href="/member/account" colorScheme="primary">
+          <LinkButton colorScheme="primary" href="/members">
+            View Members
+          </LinkButton>
+          <Text>Or, manage your account:</Text>
+          <HStack spacing={4} textAlign="center" mt={4}>
+            <LinkButton href="/member/settings" colorScheme="primary">
               Manage Account
             </LinkButton>
             <LinkButton href="/member/profile" colorScheme="primary">
-              Manage Full Profile
-            </LinkButton>
-            <LinkButton href="/member/events" colorScheme="primary">
-              View Event Invites
+              Manage Profile
             </LinkButton>
           </HStack>
         </VStack>

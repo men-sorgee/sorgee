@@ -6,12 +6,15 @@ import { LinkButton, UserAvatar, UserCard } from 'components/ui'
 import Notifications from './Notifications'
 import {
   CalendarIcon,
+  InboxIcon,
   CogIcon,
+  ArrowRightIcon,
   ExternalLinkIcon,
   UserGroupIcon,
   LogoutIcon,
   QrcodeIcon,
   UserIcon,
+  CameraIcon,
 } from '@heroicons/react/outline'
 import { useAuth } from 'hooks'
 
@@ -28,7 +31,7 @@ export default function UserMenu(_props: Props) {
               <UserAvatar />
             </MenuButton>
 
-            <MenuList bg="black" alignItems={'center'} >
+            <MenuList bg="black" alignItems={'center'}>
               <Box p={4} m={2} bgGradient="linear(to-bl, primary.300, accent.300)">
                 <UserCard user={user} />
               </Box>
@@ -51,7 +54,7 @@ export default function UserMenu(_props: Props) {
                     bg="black"
                     _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                     as={Link}
-                    href="/member/account"
+                    href="/member/settings"
                   >
                     Account Settings
                   </MenuItem>
@@ -62,11 +65,31 @@ export default function UserMenu(_props: Props) {
                     as={Link}
                     href="/member/profile"
                   >
-                    Member Profile
+                    Edit Profile
+                  </MenuItem>
+                  <MenuItem
+                    icon={<CameraIcon color={'white'} width={'1.5rem'} />}
+                    bg="black"
+                    _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                    as={Link}
+                    href="/member/photos"
+                  >
+                    Edit Photos
                   </MenuItem>
                   <Notifications />
+                  <MenuDivider />
                   <MenuItem
                     icon={<CalendarIcon color={'white'} width={'1.5rem'} />}
+                    bg="black"
+                    _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                    as={Link}
+                    href="/events"
+                  >
+                    All Events
+                  </MenuItem>
+
+                  <MenuItem
+                    icon={<InboxIcon color={'white'} width={'1.5rem'} />}
                     bg="black"
                     _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                     as={Link}
@@ -76,6 +99,15 @@ export default function UserMenu(_props: Props) {
                   </MenuItem>
                   <MenuItem
                     icon={<UserGroupIcon color={'white'} width={'1.5rem'} />}
+                    bg="black"
+                    _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                    as={Link}
+                    href="/members"
+                  >
+                    Search Members
+                  </MenuItem>
+                  <MenuItem
+                    icon={<ArrowRightIcon color={'white'} width={'1.5rem'} />}
                     bg="black"
                     _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                     as={Link}
