@@ -8,7 +8,7 @@ import { useEffect } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { FieldInput, FieldSelect } from 'components/forms'
 import { postJSON } from 'lib/utils'
-import { Markdown } from 'components/ui'
+import { Markdown } from 'components/controls'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 

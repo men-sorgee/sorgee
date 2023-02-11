@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import ApplicationSteps from './_steps'
 import { Text, Heading, HStack, VStack } from '@chakra-ui/react'
 import Page from 'components/Page'
-import { LinkButton } from '../../components/ui'
+import { LinkButton } from '../../components/controls'
 
 function Approved() {
   const router = useRouter()

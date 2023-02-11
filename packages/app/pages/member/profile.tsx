@@ -30,7 +30,7 @@ import { useRouter } from 'next/router'
 import { useToast } from '@chakra-ui/react'
 import { ErrorMessage } from '@hookform/error-message'
 import { postJSON } from 'lib/utils'
-import { UserCard } from 'components/ui'
+import { UserCard } from 'components/controls'
 import { useWarnIfUnsavedChanges } from '../../hooks/use-warn-if-unsaved'
 
 type PageProps = {

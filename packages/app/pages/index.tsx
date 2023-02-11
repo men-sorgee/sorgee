@@ -1,10 +1,10 @@
 import { useMeta } from 'hooks/use-meta'
 import { getPageContentById } from 'lib/services/directus/static'
-import { Markdown, Subscribe } from 'components/ui'
+import { Markdown, SubscribeBox } from 'components/controls'
 import Section from 'components/Section'
 import { Page } from 'lib/models'
 import { Box, Heading, Text, Center, Flex, useColorModeValue } from '@chakra-ui/react'
-import { LinkButton } from 'components/ui'
+import { LinkButton } from 'components/controls'
 import { useEffect } from 'react'
 
 interface Props {
@@ -75,7 +75,7 @@ export default function HomePage({ page }: Props) {
           {content?.map((s, i) => (
             <Section key={i} content={s} />
           ))}
-          <Subscribe />
+          <SubscribeBox />
         </Flex>
         <></>
       </article>

@@ -18,7 +18,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { FieldSelect } from 'components/forms'
 import { postJSON } from 'lib/utils'
 import { EventUser, FieldOptions, Invite, Member, MemberLevel, GroupEvent } from 'lib/models'
-import EventCard from 'components/ui/EventCard'
+import { EventCard } from 'components/controls'
 import { getServerSession } from 'next-auth'
 import { NextPageContext, GetServerSidePropsResult } from 'next'
 

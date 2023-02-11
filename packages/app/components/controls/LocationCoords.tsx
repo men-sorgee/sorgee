@@ -10,7 +10,8 @@ import {
   StatNumber,
   VStack,
 } from '@chakra-ui/react'
-function LocationCoords({ coords, text, isCurrentUser }) {
+
+export const LocationCoords = ({ coords, text, isCurrentUser }) => {
   return (
     <VStack align="flex-start" w="full">
       <HStack>
@@ -38,5 +39,3 @@ function LocationCoords({ coords, text, isCurrentUser }) {
     </VStack>
   )
 }
-
-export default LocationCoords

@@ -14,11 +14,6 @@ import {
 } from '@chakra-ui/react'
 import { createRef, forwardRef, useCallback, useRef, useState } from 'react'
 import { CameraIcon } from '@heroicons/react/solid'
-import dynamic from 'next/dynamic'
-
-//const Camera = dynamic(() => import('react-camera-pro').then((mod) => mod.Camera), {
-//  ssr: false,
-//})
 import { Camera } from 'react-camera-pro'
 
 type Props = StackProps & {
@@ -28,7 +23,7 @@ type Props = StackProps & {
 }
 const visible = (show: boolean) => (show ? 'inherit' : 'none')
 
-function TakePhoto({ children, onAccept, facingMode, ...props }: Props) {
+export const TakePhoto = chakra(({ children, onAccept, facingMode, ...props }: Props) => {
   const [image, setImage] = useState<string>(undefined)
   const camera = useRef(null)
 
@@ -99,6 +94,4 @@ function TakePhoto({ children, onAccept, facingMode, ...props }: Props) {
       </Box>
     </>
   )
-}
-
-export default chakra(TakePhoto)
+})

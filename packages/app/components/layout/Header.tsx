@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react'
 import { CloseIcon, ChevronDownIcon } from '@chakra-ui/icons'
 import { MoonIcon, SunIcon, MenuIcon } from '@heroicons/react/solid'
-import { Logo } from '../ui'
+import { Logo } from '../controls'
 import { useState, useEffect, useCallback } from 'react'
 import { PageItem } from 'lib/models'
 import NextLink from 'next/link'

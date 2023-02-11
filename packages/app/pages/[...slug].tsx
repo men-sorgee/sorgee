@@ -1,5 +1,5 @@
 import { Key, useEffect, useState } from 'react'
-import { Markdown, LinkButton, Subscribe } from 'components/ui'
+import { Markdown, LinkButton, SubscribeBox } from 'components/controls'
 import Section from 'components/Section'
 import Page from 'components/Page'
 import { listActivePages } from 'lib/services/directus/static'
@@ -7,7 +7,6 @@ import { Page as PageModel } from 'lib/models'
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next'
 import { ParsedUrlQuery } from 'querystring'
 import { Stack, HStack } from '@chakra-ui/react'
-import { sentenceCase } from 'change-case'
 import { useSite } from '../hooks/use-site'
 import NotFound from '../components/NotFound'
 
@@ -94,7 +93,7 @@ export default function DynamicPage({ page }: Props) {
           <Section key={i} content={s} />
         ))}
       </>
-      <Subscribe />
+      <SubscribeBox />
     </Page>
   )
 }

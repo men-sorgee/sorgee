@@ -2,7 +2,7 @@ import { signIn, signOut, useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import { Box, Menu, MenuButton, MenuItem, MenuList, MenuDivider, Link } from '@chakra-ui/react'
 import { ApplicationStatus, MemberLevel } from 'lib/models'
-import { LinkButton, UserAvatar, UserCard } from 'components/ui'
+import { LinkButton, UserAvatar, UserCard } from 'components/controls'
 import Notifications from './Notifications'
 import {
   CalendarIcon,
@@ -28,7 +28,7 @@ export default function UserMenu(_props: Props) {
               <UserAvatar />
             </MenuButton>
 
-            <MenuList bg="black" alignItems={'center'} >
+            <MenuList bg="black" alignItems={'center'}>
               <Box p={4} m={2} bgGradient="linear(to-bl, primary.300, accent.300)">
                 <UserCard user={user} />
               </Box>

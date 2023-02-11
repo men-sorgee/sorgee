@@ -19,10 +19,14 @@ import {
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { AppNotification } from 'lib/models'
-import Markdown from './Markdown'
-import LinkButton from './LinkButton'
+import { Markdown } from './Markdown'
+import { LinkButton } from './LinkButton'
 
-function NotificationCard({ notification }: { notification: AppNotification }) {
+type Props = {
+  notification: AppNotification
+}
+
+export const NotificationCard = chakra(({ notification }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { mark } = useNotifications()
   const [isNew] = useState(notification.status === 'new')
@@ -76,6 +80,4 @@ function NotificationCard({ notification }: { notification: AppNotification }) {
       </Modal>
     </>
   )
-}
-
-export default chakra(NotificationCard)
+})

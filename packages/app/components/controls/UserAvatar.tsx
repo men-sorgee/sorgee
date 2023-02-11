@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { useMember, useNotifications } from 'hooks'
 import { getAssetUrl } from 'lib/utils'
 
-export default function UserAvatar() {
+export const UserAvatar = () => {
   const { hasNewNotifications, newNotificationCount } = useNotifications()
   const [pictureSrc, setPictureSrc] = useState<string | null>(null)
   const [name, setName] = useState<string | null>(null)

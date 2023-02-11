@@ -17,7 +17,7 @@ type Props = AvatarProps & {
   user: Partial<Member | SearchableMember>
 }
 
-export default function UserCard({ user }: Props) {
+export const UserCard = ({ user }: Props) => {
   const [loaded, setLoaded] = useState(false)
   const [pictureSrc, setPictureSrc] = useState<string | null>(null)
   const [lastLogin, setLastLogin] = useState<string | null>(null)

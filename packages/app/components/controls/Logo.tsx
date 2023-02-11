@@ -2,7 +2,7 @@ import { chakra } from '@chakra-ui/react'
 import NextLink from 'next/link'
 import { CSSProperties } from 'react'
 
-const Logo = ({ width = '50px', ...props }: CSSProperties) => (
+export const Logo = chakra(({ width = '50px', ...props }: CSSProperties) => (
   <NextLink href="/">
     <svg
       color="#D60270"
@@ -10,6 +10,7 @@ const Logo = ({ width = '50px', ...props }: CSSProperties) => (
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
       width={width}
+      css={props}
     >
       <defs>
         <path fill="#9B4F96" id="a" d="M0 0h59.314v59.414H0z"></path>
@@ -29,6 +30,4 @@ const Logo = ({ width = '50px', ...props }: CSSProperties) => (
       </g>
     </svg>
   </NextLink>
-)
-
-export default chakra(Logo)
+))
