@@ -81,7 +81,7 @@ export async function sendNotificationEmail(
   templateId: SendGridTemplate = SendGridTemplate.AppNotification,
   category: SendGridCategory = SendGridCategory.Notification
 ) {
-  if (body?.includes('\n')) body = await convertMarkdownToHtml(body)
+  body = await convertMarkdownToHtml(body)
 
   const email: MailDataRequired = {
     personalizations: [
