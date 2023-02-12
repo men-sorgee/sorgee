@@ -1,3 +1,4 @@
+import { UserType } from 'lib/models'
 // Service Calls ------------------------------------
 
 import { getAdminClient } from '..'
@@ -127,12 +128,69 @@ export async function listUsersByLevel<T = Member>(
         _eq: type,
       },
       status: {
-        _eq: 'active',
+        _in: ['new', 'active'],
       },
     },
     fields: [...fields],
   })
   return data as T[]
+}
+
+export async function getUserStats(): Promise<{
+  subscribers: number
+  applicants: number
+  pledges: number
+  inductees: number
+  brothers: number
+  big_brothers: number
+  admins: number
+  staff: number
+}> {
+  const adminClient = await getAdminClient()
+  const { data } = await adminClient.graphql.items<{
+    users_aggregated: Array<{
+      group: {
+        user_type: UserType
+      }
+      count: {
+        id: number
+      }
+    }>
+  }>(`{
+    users_aggregated(
+      groupBy: ["user_type"]
+      filter: {
+          status: {
+              _eq: "active"
+          }
+      }
+    ) {
+      group
+      count {
+        id
+      }
+      avg {
+        age
+      }
+      avgDistinct {
+        weight
+      }
+    }
+  }
+  `)
+
+  const { users_aggregated: stats } = data
+
+  return {
+    subscribers: stats.find((s) => s.group.user_type === 'subscriber')?.count.id || 0,
+    applicants: stats.find((s) => s.group.user_type === 'applicant')?.count.id || 0,
+    pledges: stats.find((s) => s.group.user_type === 'pledge')?.count.id || 0,
+    inductees: stats.find((s) => s.group.user_type === 'inductee')?.count.id || 0,
+    brothers: stats.find((s) => s.group.user_type === 'brother')?.count.id || 0,
+    big_brothers: stats.find((s) => s.group.user_type === 'big_brother')?.count.id || 0,
+    admins: stats.find((s) => s.group.user_type === 'admin')?.count.id || 0,
+    staff: stats.find((s) => s.group.user_type === 'staff')?.count.id || 0,
+  }
 }
 
 export * from './auth'
