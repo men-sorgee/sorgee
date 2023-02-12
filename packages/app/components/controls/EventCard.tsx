@@ -12,6 +12,8 @@ import {
 } from '@chakra-ui/react'
 import { Markdown } from './Markdown'
 import { MemberLevel, GroupEvent, Invite } from 'lib/models'
+import { format } from 'date-fns'
+import { getEventDate } from '../../lib/utils'
 
 type EventInfo = GroupEvent | Invite
 
@@ -32,16 +34,7 @@ export const EventCard = ({ event, children, level, type }: Props) => {
   })
 
   useEffect(() => {
-    import('moment').then(({ default: moment }) => {
-      const date = moment(event.datetime)
-      setEventDate({
-        day: date.format('dddd'),
-        short: date.format('MMM D'),
-        month: date.format('MMM'),
-        date: date.format('D'),
-        time: date.format('h:mm A'),
-      })
-    })
+    const date = getEventDate(event.datetime)
   }, [event.datetime])
   const isStaff = level && level >= MemberLevel.staff
   const isScheduled = event.status == 'scheduled'

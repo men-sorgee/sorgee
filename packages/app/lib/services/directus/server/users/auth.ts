@@ -1,5 +1,6 @@
-import { getAdminClient } from '..'
+import { getAdminClient, updateUser } from '..'
 import { User, UserAccount, UserSession, UserVerificationToken } from 'lib/models'
+import { addHours, formatISO } from 'date-fns'
 
 export async function recordUserLogin(id: string) {
   const adminClient = await getAdminClient()
@@ -9,10 +10,30 @@ export async function recordUserLogin(id: string) {
   })
 }
 
-export async function recordUserLogout(id: string) {
+export async function extendUserPresence(id: string) {
+  const expires = addHours(new Date(), 1).toISOString()
+  await updateUser(id, {
+    session_expire: expires,
+  })
+  await expireSessions()
+}
+
+export async function expireSessions() {
   const adminClient = await getAdminClient()
-  return await adminClient.items('users').updateOne(id, {
+  const { data: expired } = await adminClient.items('users').readByQuery({
+    filter: {
+      session_expire: { _lt: '$NOW' },
+      presence: { _eq: 'online' },
+    },
+    fields: ['id'],
+  })
+
+  if (!expired?.length) return
+  const ids = expired.map((u) => u.id)
+
+  return await adminClient.items('users').updateMany(ids, {
     presence: 'offline',
+    session_expire: null,
   })
 }
 

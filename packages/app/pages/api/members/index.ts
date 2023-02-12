@@ -52,10 +52,9 @@ export default async function FindMembers(
     if (userTypes) {
       searchLevels = userTypes.filter((type: UserType) => allowedLevels.includes(type))
     }
-    if (level < MemberLevel.staff) {
-      searchParams['status'] = { _eq: 'active' }
-      searchParams['application_status'] = { _eq: 'approved' }
-    }
+
+    searchParams['status'] = { _eq: 'active' }
+    searchParams['application_status'] = { _eq: 'approved' }
 
     searchParams['user_type'] = {
       _in: searchLevels,

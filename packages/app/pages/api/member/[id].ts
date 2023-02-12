@@ -18,18 +18,18 @@ export default async function getMemberDetails(
 
     const { id } = req.query || member
     const user_id = String(id)
-    const level = MemberLevel[member.user_type]
+    const viewer_level = MemberLevel[member.user_type]
     const user = await getUser(user_id)
     if (!user) {
       return res.status(404).json(ApiResponse(null, 'Not found'))
     }
     const user_level = MemberLevel[user.user_type]
 
-    if (user_level < MemberLevel.brother && level < MemberLevel.big_brother) {
+    if (viewer_level < MemberLevel.big_brother && user_level < MemberLevel.brother) {
       return res.status(401).json(ApiResponse(null, 'Unauthorized'))
     }
 
-    if (level < MemberLevel.staff && user.show_profile == false) {
+    if (viewer_level < MemberLevel.staff && user.show_profile == false) {
       return res.status(401).json(ApiResponse(null, 'Unauthorized'))
     }
 
