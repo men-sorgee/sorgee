@@ -3,7 +3,7 @@ import { getUser, updateUser } from 'lib/services/directus/server/users'
 import { withMethods, withUser } from 'lib/utils/server'
 import { Applicant, ApiResponse, MemberLevel } from 'lib/models'
 import { uploadFile, getFileInfo, UploadFolder } from 'lib/services/directus/server'
-import { addUserPhoto } from '../../../../../lib/services/directus/server/users/photos'
+import { addUserPhoto } from 'lib/services/directus/server/users/photos'
 
 export default async function MemberImage(
   req: NextApiRequest,
