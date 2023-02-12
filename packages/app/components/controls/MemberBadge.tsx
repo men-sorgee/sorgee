@@ -5,7 +5,7 @@ interface Props {
   size?: string
 }
 
-export const UserBadge = ({ user_type, size = 'md' }: Props) => {
+export const MemberBadge = ({ user_type, size = 'md' }: Props) => {
   if (!user_type) return null
   const colors = [
     ['red.300', 'red.600'],

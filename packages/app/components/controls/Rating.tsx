@@ -11,7 +11,7 @@ type Props = IconButtonProps & {
   simple?: boolean
 }
 
-const Rating = forwardRef<HTMLInputElement, Props>(
+const rating = forwardRef<HTMLInputElement, Props>(
   (
     {
       value,
@@ -98,6 +98,6 @@ const Rating = forwardRef<HTMLInputElement, Props>(
   }
 )
 
-Rating.displayName = 'rating'
+rating.displayName = 'rating'
 
-export { Rating }
+export const Rating = rating

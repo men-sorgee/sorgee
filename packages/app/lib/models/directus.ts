@@ -323,13 +323,16 @@ export type RatingRated = {
 export type UserFile = {
   id: number
   users_id?: string | User
-  directus_files_id?: string | DirectusFile
+  directus_files_id: DirectusFile
 }
 
 export type UserPhoto = {
-  id: number
+  id?: number
   users_id?: string | User
-  directus_files_id?: string | DirectusFile
+  directus_files_id: DirectusFile | string
+  sort?: number
+  is_public: boolean
+  status?: 'new' | 'approved' | 'rejected'
 }
 
 export type DirectusCollection = {
@@ -506,6 +509,9 @@ export type DirectusTypes = {
   promos: Promo
   page_content: PageContent
   site: Site
+  surveys: Survey
+  survey_questions: SurveyQuestion
+  survey_answers: SurveyAnswer
   user_account: UserAccount
   user_session: UserSession
   user_verification_token: UserVerificationToken

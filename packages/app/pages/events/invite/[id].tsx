@@ -96,7 +96,7 @@ export default function InviteAdmin(_props: Props) {
         const media = await fetch(picture!).then((res) => res.blob())
         let formData = new FormData()
         formData.append('media', media)
-        await fetch(`/api/member/${user.id}/image/picture?name=${user.email}-face`, {
+        await fetch(`/api/member/${user.id}/photos/picture?name=${user.email}-face`, {
           method: 'POST',
           body: formData,
         })

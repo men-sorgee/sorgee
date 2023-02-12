@@ -1,10 +1,18 @@
 import { chakra, Image, ImageProps } from '@chakra-ui/react'
+import { DirectusFile } from 'lib/models'
 
-interface Props extends ImageProps {
-  id: string
+type Props = ImageProps & {
+  file: DirectusFile
 }
 
-export const AssetImage = chakra(({ src, height, width, alt, ...props }: Props) => {
-  src = `/pages/api/assets/${src}`
-  return <Image src={src} height={height} width={width} alt={alt} {...props} />
+export const AssetImage = chakra(({ file, height, width, alt, ...props }: Props) => {
+  return (
+    <Image
+      src={`/pages/api/assets/${file.id}`}
+      height={height || file.height}
+      width={width || file.width}
+      alt={alt || file.description}
+      {...props}
+    />
+  )
 })

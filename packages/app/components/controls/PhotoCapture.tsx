@@ -1,5 +1,3 @@
-/* eslint-disable react/display-name */
-/* eslint-disable @next/next/no-img-element */
 import {
   AspectRatio,
   HStack,
@@ -23,7 +21,7 @@ type Props = StackProps & {
 }
 const visible = (show: boolean) => (show ? 'inherit' : 'none')
 
-export const TakePhoto = chakra(({ children, onAccept, facingMode, ...props }: Props) => {
+export const PhotoCapture = chakra(({ children, onAccept, facingMode, ...props }: Props) => {
   const [image, setImage] = useState<string>(undefined)
   const camera = useRef(null)
 
@@ -45,6 +43,7 @@ export const TakePhoto = chakra(({ children, onAccept, facingMode, ...props }: P
       >
         <Box display={visible(image != undefined)} w="full">
           <AspectRatio mx="auto" mb={4} ratio={1} w="full">
+            {/*eslint-disable-next-line @next/next/no-img-element*/}
             <img src={image} alt="upload" width="100%" />
           </AspectRatio>
 

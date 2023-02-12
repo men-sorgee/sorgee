@@ -114,13 +114,19 @@ async function decodeBase64Image(dataString: string) {
 
 // Service Calls ------------------------------------
 
-export async function uploadFile(fileInfo: FileInfo, folder: UploadFolder, title: string) {
+export async function uploadFile(
+  fileInfo: FileInfo,
+  folder: UploadFolder,
+  title: string,
+  description?: string
+) {
   const adminClient = await getAdminClient()
   const { mimetype: type, originalFilename: name, filepath: path, data } = fileInfo
   const formData = new FormData()
   formData.append('folder', folder)
   formData.append('title', title)
   formData.append('filename', name)
+  formData.append('description', description)
   formData.append('mimetype', type)
   formData.append('file', data, {
     filename: name,

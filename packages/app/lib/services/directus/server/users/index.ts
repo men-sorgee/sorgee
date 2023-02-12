@@ -11,6 +11,7 @@ import {
   applicantFields,
   UserEmailEvent,
   UserFields,
+  UserPhoto,
 } from 'lib/models'
 import { FieldFilter } from '@directus/sdk'
 
