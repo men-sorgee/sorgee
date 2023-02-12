@@ -70,15 +70,16 @@ export default function HomePage({ page }: Props) {
         )}
       </Box>
       <article>
-        <Flex m="auto" direction="column" gap={8} justify="space-between ">
+        <Flex m="auto" direction="column" gap={8}>
           <Markdown content={markdown} />
           {content?.map((s, i) => (
             <Section key={i} content={s} />
           ))}
-          <SubscribeBox />
         </Flex>
-        <></>
       </article>
+      <Flex mt={8} direction="column" align="center">
+        <SubscribeBox maxW="lg" />
+      </Flex>
     </>
   )
 }

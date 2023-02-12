@@ -5,16 +5,10 @@ export const Markdown = ({ content }: { content: string }) => {
   const [reactContent, setMarkdownSource] = useRemark({
     rehypeReactOptions: {
       components: {
-        img: ({ height, width, alt, ...props }) => {
+        img: ({ height, src, width, alt, ...props }) => {
           return (
-            <Image
-              {...props}
-              height={height || 250}
-              width={width || 500}
-              alt={alt || 'guysnheat image'}
-              w="full"
-              h="auto"
-            />
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={src} height={1000} width={1500} alt={alt || 'guysnheat image'} />
           )
         },
         p: ({ children }: { children: React.ReactNode }) => <Text>{children}</Text>,

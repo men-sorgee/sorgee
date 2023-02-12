@@ -109,9 +109,9 @@ export type Page = {
   in_menu?: boolean
   image?: DirectusFile
   sort: number
-  parent?: Page
+  parent?: Partial<Page>
+  children?: Partial<Page>[]
   markdown?: string
-  children: Page[]
   content: PageContent[]
   next_page?: Page
   next_page_params?: string

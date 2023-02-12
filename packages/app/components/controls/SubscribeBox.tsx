@@ -11,10 +11,11 @@ import {
   Icon,
   useColorModeValue,
   createIcon,
+  chakra,
 } from '@chakra-ui/react'
 import { postJSON } from 'lib/utils'
 
-export const SubscribeBox = () => {
+export const SubscribeBox = chakra(({ ...props }) => {
   const [subscribed, setSubscribed] = useState(false)
   const methods = useForm<SubscriptionData>({
     mode: 'onBlur',
@@ -45,15 +46,17 @@ export const SubscribeBox = () => {
   return (
     <>
       <Stack
-        direction={{ base: 'column', sm: 'row', lg: 'column' }}
+        direction={['column', 'row']}
         boxShadow={'2xl'}
         rounded={'xl'}
         p={3}
+        px={6}
         bg={bg}
         color="white"
         align="center"
+        {...props}
       >
-        <Flex align="center" gap={2} px={10}>
+        <Flex align="center" gap={2}>
           <Icon as={NotificationIcon} w={24} h={24} />
         </Flex>
         <Flex align="center">
@@ -92,6 +95,7 @@ export const SubscribeBox = () => {
                 justify={['stretch', 'middle']}
                 w="full"
                 gap={4}
+                px={1}
               >
                 <Button
                   type="submit"
@@ -103,7 +107,7 @@ export const SubscribeBox = () => {
                   Subscribe
                 </Button>
                 <Text fontSize="xs" fontStyle={'italic'} color={'text'}>
-                  Subscribe only if you agree to our Terms of Service and Privacy Policy .
+                  Subscribe only if you agree to our Terms of Service and Privacy Policy.
                 </Text>
               </Flex>
             </form>
@@ -112,7 +116,7 @@ export const SubscribeBox = () => {
       </Stack>
     </>
   )
-}
+})
 
 const NotificationIcon = createIcon({
   displayName: 'Notification',

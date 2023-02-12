@@ -41,6 +41,7 @@ export type ContentType = 'html' | 'md' | 'image' | 'control'
 export type PageItem = {
   title: string
   path: string
+  children: PageItem[]
 }
 
 export * from './directus'

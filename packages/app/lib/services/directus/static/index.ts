@@ -158,6 +158,14 @@ const all_pages = `
       title
     }
     next_page_params
+    parent {
+      id
+      slug
+    }
+    children {
+      id
+      slug
+    }
   }
 }
 `
@@ -169,8 +177,16 @@ export async function listActivePages(): Promise<Page[]> {
   const { Directus } = await import('@directus/sdk')
   const directusDB = new Directus<DirectusTypes>(adminBaseUrl)
   const { data } = await directusDB.graphql.items<{ pages: Page[] }>(all_pages)
-
-  data.pages.forEach((page) => {
+  const { pages } = data
+  pages.map((p) => {
+    const { parent } = p
+    if (parent?.id) {
+      let base = pages.find((page) => page.id === parent.id)
+      p.slug = `${base.slug}/${p.slug}`
+    }
+    return p
+  })
+  pages.forEach((page) => {
     cachedPages.set(page.slug, page)
   })
 
