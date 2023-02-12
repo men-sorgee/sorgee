@@ -122,7 +122,7 @@ function Events({
     )
   }
   const getType = (type: string) => {
-    let t = eventTypeOptions.find((o) => o.value == type)
+    let t = eventTypeOptions.find((o) => o.value.toLowerCase() == type.toLowerCase())
     if (t) return t.text
     return type
   }
