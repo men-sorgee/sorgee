@@ -123,6 +123,7 @@ function Form(props: PageProps) {
   const minYear = new Date().getFullYear() - 100
   const maxYear = new Date().getFullYear() - 21
   const can_host = watch('can_host')
+  const event_invites = watch('event_invites')
   return (
     <>
       <FormProvider {...methods}>
@@ -269,6 +270,14 @@ function Form(props: PageProps) {
                     label="Get Invites to Events"
                     help="Turn this on, if you want to be invited to events that meet your interests."
                   />
+                  {event_invites && (
+                    <Text>
+                      Members who RSVP to events are expected to attend. Members that RSVP to event
+                      and do not attend, decrease the likelihood of getting invited again. We
+                      understand that things come up, but please be respectful of your brothers and
+                      RSVP accurately and let us know if you can&apos;t make it.
+                    </Text>
+                  )}
                 </Alert>
                 <SimpleGrid spacing={4}>
                   <FieldCheckboxes
@@ -285,30 +294,27 @@ function Form(props: PageProps) {
                     options={timeOfDayOptions}
                   />
                 </SimpleGrid>
-                <Text>
-                  Members who RSVP to events are expected to attend. Members that RSVP to event and
-                  do not attend, decrease the likelihood of getting invited again. We understand
-                  that things come up, but please be respectful of your brothers and RSVP accurately
-                  and let us know if you can&apos;t make it.
-                </Text>
-                <Alert bg="secondary" color="white" my={4} borderRadius="md" shadow="md">
-                  <Stack direction={'column'} spacing={2}>
-                    <Text>
-                      <strong>Are you interested in hosting?</strong> If so, let us know by checking
-                      the box below. We are always looking for new hosts.
-                    </Text>
-                    <Stack direction="column" spacing={2}>
-                      <FieldSwitch field="can_host" label="Can Host Events" />
-                      {can_host && (
-                        <FieldCheckboxes
-                          field="can_host_events"
-                          label="Events"
-                          options={hostEventOptions}
-                        />
-                      )}
+
+                {event_invites && (
+                  <Alert bg="secondary" color="white" my={4} borderRadius="md" shadow="md">
+                    <Stack direction={'column'} spacing={2}>
+                      <Text>
+                        <strong>Are you interested in hosting?</strong> If so, let us know by
+                        checking the box below. We are always looking for new hosts.
+                      </Text>
+                      <Stack direction="column" spacing={2}>
+                        <FieldSwitch field="can_host" label="Can Host Events" />
+                        {can_host && (
+                          <FieldCheckboxes
+                            field="can_host_events"
+                            label="Events"
+                            options={hostEventOptions}
+                          />
+                        )}
+                      </Stack>
                     </Stack>
-                  </Stack>
-                </Alert>
+                  </Alert>
+                )}
               </TabPanel>
             </TabPanels>
           </Tabs>

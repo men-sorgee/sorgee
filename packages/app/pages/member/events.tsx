@@ -25,6 +25,7 @@ import { NextPageContext, GetServerSidePropsResult } from 'next'
 type Props = {
   invites: Invite[]
   rsvpOptions: FieldOptions
+  eventTypeOptions: FieldOptions
 }
 export async function getServerSideProps(
   context: NextPageContext
@@ -48,11 +49,12 @@ export async function getServerSideProps(
     props: {
       invites,
       rsvpOptions: await getFieldOptions<EventUser>('rsvp', 'events_users'),
+      eventTypeOptions: await getFieldOptions<GroupEvent>('type', 'events'),
     },
   }
 }
 
-function EventPage({ invites, rsvpOptions }: Props) {
+function EventPage({ invites, rsvpOptions, eventTypeOptions }: Props) {
   const [allowed, setAllowed] = useState(false)
   const { member, loading, level } = useMember()
 
@@ -71,17 +73,7 @@ function EventPage({ invites, rsvpOptions }: Props) {
     >
       {allowed ? (
         <>
-          <Text>
-            Please only RSVP to events you are sure you can attend! We have to make sure that we
-            have enough space for everyone who wants to attend. Hosts also count on confirmed
-            attendees to help cover the cost of the event.
-          </Text>
-          <Text>
-            If you confirm attendance to an event and then do not show up, you may be removed from
-            future invite lists. If you stop getting invites and think this might have happened, you
-            can contact the event organizers to appeal your removal.
-          </Text>
-          <Events {...{ invites, member, rsvpOptions }} />
+          <Events eventTypeOptions={eventTypeOptions} {...{ invites, member, rsvpOptions }} />
         </>
       ) : (
         <Flex direction="column">
@@ -106,10 +98,12 @@ function Events({
   invites,
   member,
   rsvpOptions,
+  eventTypeOptions,
 }: {
   invites: Invite[]
   member: Member
   rsvpOptions: FieldOptions
+  eventTypeOptions: FieldOptions
 }) {
   if (invites?.length === 0) {
     return (
@@ -119,32 +113,50 @@ function Events({
           Check back later for upcoming events. If you never see invitations, make sure your account
           is set to receive invites and that you never no-show to an event.
         </Text>
+        <Text>
+          If you confirm attendance to an event and then do not show up, you may be removed from
+          future invite lists. If you stop getting invites and think this might have happened, you
+          can contact the event organizers to appeal your removal.
+        </Text>
       </Flex>
     )
   }
+  const getType = (type: string) => {
+    let t = eventTypeOptions.find((o) => o.value.toLowerCase() == type.toLowerCase())
+    if (t) return t.text
+    return type
+  }
+  console.dir(eventTypeOptions)
+
   const upcoming = invites?.filter((i) => i.status == 'scheduled')
   const past = invites?.filter((i) => i.status !== 'scheduled')
   return (
     <>
       {member &&
         upcoming?.map((invite) => (
-          <EventInfo key={invite.id} invite={invite} member={member} rsvpOptions={rsvpOptions} />
+          <EventInfo
+            key={invite.id}
+            invite={invite}
+            member={member}
+            rsvpOptions={rsvpOptions}
+            type={getType(invite.type)}
+          />
         ))}
 
       {past && past.length > 0 && <h2>Past Invites</h2>}
       {past?.map((invite) => (
-        <PastEventInfo key={invite.id} invite={invite} />
+        <PastEventInfo key={invite.id} invite={invite} type={getType(invite.type)} />
       ))}
     </>
   )
 }
 
-function PastEventInfo({ invite }: { invite: Invite }) {
+function PastEventInfo({ invite, type }: { invite: Invite; type: string }) {
   const date = new Date(invite.datetime)
   return (
     <Flex direction="column" justify="stretch" align="center" gap={4} w="full" mb={8}>
       <h3>
-        {invite.name} - {date.toLocaleDateString()}
+        {type}: {invite.name} - {date.toLocaleDateString()}
       </h3>
       <h5>
         RSVP: {invite.rsvp.toUpperCase()} | {invite.attended ? 'You attended!' : 'Did not attend'}
@@ -169,14 +181,15 @@ function EventInfo({
   invite,
   member,
   rsvpOptions,
+  type,
 }: {
   invite: Invite
   member: Member
   rsvpOptions: FieldOptions
+  type: string
 }) {
   const [working, setWorking] = useState(false)
   const toast = useToast()
-  const [rsvp, setRsvp] = useState<string>()
   const { id: event_id } = (invite.events_id as GroupEvent) || {}
   const methods = useForm<InviteRSVP>({
     mode: 'onBlur',
@@ -187,18 +200,15 @@ function EventInfo({
       rsvp: invite.rsvp,
     },
   })
-  const { setError } = methods
+  const { setError, watch } = methods
 
-  useEffect(() => {
-    if (invite.rsvp && !rsvp) setRsvp(invite.rsvp), [invite.rsvp, rsvp]
-  }, [invite.rsvp, rsvp])
+  const rsvp = watch('rsvp')
 
   const respond = useCallback(
     async (data: InviteRSVP) => {
       setWorking(true)
       const [ok, response] = await postJSON('/api/invite/rsvp', data)
       if (ok) {
-        setRsvp(data.rsvp)
         toast({
           title: 'RSVP Updated',
           position: 'bottom',
@@ -230,25 +240,21 @@ function EventInfo({
   const form = useRef<HTMLButtonElement>(null)
   return (
     <>
-      <EventCard event={invite} level={MemberLevel[member.user_type]}>
+      <EventCard event={invite} level={MemberLevel[member.user_type]} type={type}>
         <>
           <FormProvider {...methods}>
-            <form onSubmit={methods.handleSubmit(respond)} style={{ display: 'block' }}>
+            <form
+              onSubmit={methods.handleSubmit(respond)}
+              style={{ display: 'block', width: '100%' }}
+            >
               <Flex direction="column" w="full">
-                <Heading mt={0} textAlign="center">
-                  Your Response:
-                </Heading>
-                <Heading as="h1" textAlign="center">
-                  {rsvp?.toUpperCase() || '*crickets*'}
-                </Heading>
-                <Text color="text" size="sm">
-                  {message}
-                </Text>
                 <input type="hidden" {...methods.register('event_id')} />
                 <input type="hidden" {...methods.register('user_id')} />
-                <Box w={['full', '50%']} mx="auto">
+                <Flex direction={['column', 'column', 'row']} w="full" justify="stretch">
                   <FieldSelect
                     field="rsvp"
+                    w="full"
+                    p={0}
                     onChange={(_e) => {
                       form.current.dispatchEvent(new Event('submit', { cancelable: true }))
                     }}
@@ -258,19 +264,29 @@ function EventInfo({
                     registerOptions={{
                       required: true,
                     }}
-                    p={10}
                   />
+
                   <Button
-                    mt={8}
                     size="lg"
-                    colorScheme={'primary'}
+                    colorScheme="secondary"
                     w="full"
+                    mt={2}
                     type="submit"
                     disabled={working}
                   >
                     Update RSVP
                   </Button>
-                </Box>
+                </Flex>
+                {rsvp == 'confirmed' && (
+                  <Alert status="warning" mt={4} rounded="lg" shadow="lg">
+                    <AlertIcon />
+                    <Text>
+                      Please only RSVP to events you are sure you can attend! We have to make sure
+                      that we have enough space for everyone who wants to attend. Hosts also count
+                      on confirmed attendees to help cover the cost of the event.
+                    </Text>
+                  </Alert>
+                )}
               </Flex>
             </form>
           </FormProvider>

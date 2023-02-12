@@ -235,7 +235,7 @@ export default function MemberListPage(props: PageProps) {
                   label="Positions"
                   options={fields['my_positions'].meta.options.choices}
                 />
-                <AccordionButton _hover={{ bg: 'transparent', cursor: 'default' }}>
+                <AccordionButton as={'div'} _hover={{ bg: 'transparent', cursor: 'default' }}>
                   <HStack w="full" justify="center">
                     <Button size="lg" type="submit" colorScheme="primary">
                       Search

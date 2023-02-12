@@ -27,7 +27,7 @@ export async function getServerSideProps(
   const { req, res } = context
   const session = await getServerSession(req as any, res, authOptions)
   const level = MemberLevel[session.user.user_type]
-  if (!session || !session.user || level < MemberLevel.inductee) {
+  if (!session || !session.user || level < MemberLevel.staff) {
     return {
       redirect: {
         destination: '/',
@@ -44,7 +44,7 @@ export async function getServerSideProps(
 const moment = async (date: string) => import('moment').then(({ default: moment }) => moment(date))
 
 export default function EventList({ events: eventList }: Props) {
-  const [events, setEvents] = useState([])
+  const [events, setEvents] = useState(undefined)
   async function getEventDate(eventStart: string) {
     let eventDate = await moment(eventStart)
     return {
@@ -56,12 +56,14 @@ export default function EventList({ events: eventList }: Props) {
     }
   }
   useEffect(() => {
-    Promise.all(
-      eventList.map(async (eventData) => {
-        eventData.moment = await getEventDate(eventData.datetime)
-        return eventData
-      })
-    ).then((events) => setEvents(events))
+    if (events == undefined && eventList != undefined) {
+      Promise.all(
+        eventList.map(async (eventData) => {
+          eventData.moment = await getEventDate(eventData.datetime)
+          return eventData
+        })
+      ).then((events) => setEvents(events))
+    }
   }, [eventList, events])
 
   return (
