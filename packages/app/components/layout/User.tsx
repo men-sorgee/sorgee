@@ -40,7 +40,7 @@ export default function UserMenu(_props: Props) {
             </MenuButton>
 
             <MenuList bg="black" alignItems={'center'}>
-              <Box p={4} m={2} bgGradient="linear(to-bl, primary.300, accent.300)">
+              <Box p={4} m={2} mt={0} bgGradient="linear(to-bl, primary.300, accent.300)">
                 <UserCard user={user} />
               </Box>
               <MenuDivider />
