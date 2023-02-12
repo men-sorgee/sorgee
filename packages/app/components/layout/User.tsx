@@ -51,7 +51,7 @@ export default function UserMenu(_props: Props) {
                     bg="black"
                     _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                     as={Link}
-                    href="/member/account"
+                    href="/member/settings"
                   >
                     Account Settings
                   </MenuItem>
@@ -64,7 +64,7 @@ export default function UserMenu(_props: Props) {
                   >
                     Member Profile
                   </MenuItem>
-                  <Notifications />
+                  <Notifications member={user} />
                   <MenuItem
                     icon={<CalendarIcon color={'white'} width={'1.5rem'} />}
                     bg="black"

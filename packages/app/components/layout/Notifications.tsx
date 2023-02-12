@@ -13,10 +13,13 @@ import { BellIcon as NotificationsOffIcon } from '@heroicons/react/outline'
 import { BellIcon as NotificationsOnIcon } from '@heroicons/react/solid'
 import { useNotifications } from 'hooks/use-notifications'
 import { NotificationCard } from 'components/controls'
+import { Member } from '../../lib/models'
 
-interface Props {}
+interface Props {
+  member: Member
+}
 
-const Notifications = (_props: Props) => {
+const Notifications = ({ member }: Props) => {
   const { notifications, hasNewNotifications, newNotificationCount, loading } = useNotifications()
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -53,7 +56,11 @@ const Notifications = (_props: Props) => {
           <DrawerBody p={4}>
             <>
               {notifications?.map((notification) => (
-                <NotificationCard key={notification.id} notification={notification} />
+                <NotificationCard
+                  key={notification.id}
+                  member={member}
+                  notification={notification}
+                />
               ))}
             </>
           </DrawerBody>
