@@ -1,13 +1,24 @@
-'use client'
 import { ApiResponse } from 'lib/models'
+import { format } from 'date-fns'
+
+export function toLocaleDate(value: string) {
+  const t = new Date()
+  const date = new Date(value)
+  return date.setMinutes(date.getMinutes() - t.getTimezoneOffset())
+}
+
+export function getEventDate(eventStart: string) {
+  let date = new Date(eventStart)
+  return {
+    day: format(date, 'dddd'),
+    short: format(date, 'MMM d'),
+    month: format(date, 'MMM'),
+    date: format(date, 'd'),
+    time: format(date, 'h:mm a'),
+  }
+}
 
 export type HttpMethod = (string & 'GET') | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
-
-export function toDateTime(secs: number) {
-  var t = new Date('1970-01-01T00:30:00Z') // Unix epoch start.
-  t.setSeconds(secs)
-  return t
-}
 
 export async function getJSON<T = never | any>(url: string): Promise<[boolean, ApiResponse<T>]> {
   return await fetchJSON(url)

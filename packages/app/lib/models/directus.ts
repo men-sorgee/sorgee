@@ -217,6 +217,8 @@ export type User = {
   id: string
   presence?: string
   status: string | UserStatusType
+  last_login?: string
+  session_expire?: string
   date_created?: string
   date_updated?: string
   first_name: string
@@ -244,7 +246,7 @@ export type User = {
   mannerisms?: string
   height?: string
   nickname?: string
-  last_login?: string
+
   vouched_by?: string | User
   needs_guidance?: boolean
   signed_waiver?: boolean

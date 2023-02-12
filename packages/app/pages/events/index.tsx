@@ -16,6 +16,7 @@ import {
 import { getServerSession } from 'next-auth/next'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { getEventDate } from 'lib/utils'
 
 type Props = {
   events: (EventDetail & { moment?: any })[]
@@ -41,20 +42,9 @@ export async function getServerSideProps(
   return { props: { events } }
 }
 
-const moment = async (date: string) => import('moment').then(({ default: moment }) => moment(date))
-
 export default function EventList({ events: eventList }: Props) {
   const [events, setEvents] = useState(undefined)
-  async function getEventDate(eventStart: string) {
-    let eventDate = await moment(eventStart)
-    return {
-      day: eventDate.format('dddd'),
-      short: eventDate.format('MMM D'),
-      month: eventDate.format('MMM'),
-      date: eventDate.format('D'),
-      time: eventDate.format('h:mm A'),
-    }
-  }
+
   useEffect(() => {
     if (events == undefined && eventList != undefined) {
       Promise.all(

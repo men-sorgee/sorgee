@@ -10,9 +10,9 @@ import {
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { UserBadge } from './'
-import { getAssetUrl } from 'lib/utils'
+import { getAssetUrl, toLocaleDate } from 'lib/utils'
 import { Member, SearchableMember } from 'lib/models'
-
+import { formatDistanceToNowStrict } from 'date-fns'
 type Props = AvatarProps & {
   user: Partial<Member | SearchableMember>
 }
@@ -26,10 +26,12 @@ export const UserCard = ({ user }: Props) => {
       const picture = user.picture
       if (!pictureSrc && picture) setPictureSrc(getAssetUrl(picture))
       setLoaded(true)
-      import('moment').then((m) => {
-        let moment = m.default
-        setLastLogin('Last login ' + user?.last_login ? moment.utc(user?.last_login).fromNow() : '')
-      })
+
+      setLastLogin(
+        user?.last_login
+          ? `Last seen ${formatDistanceToNowStrict(toLocaleDate(user.last_login))} ago`
+          : undefined
+      )
     }
   }, [user, pictureSrc, loaded, lastLogin])
 

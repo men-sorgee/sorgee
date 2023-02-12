@@ -7,14 +7,15 @@ import { TwitterLegacy } from 'next-auth/providers/twitter'
 import { authAdapter } from './adapter'
 import { sendNotificationEmail, updateSendGrid } from 'lib/services/sendgrid/server'
 import {
+  extendUserPresence,
   findUser,
   findUserByAccount,
   getUser,
   recordUserLogin,
-  recordUserLogout,
 } from 'lib/services/directus/server/users'
 import { Member, memberFields, Profile, UserStatusType } from 'lib/models'
 import config from 'lib/config/server'
+
 const { google, discord, twitter, yahoo, microsoft } = config
 const allowedStatuses: UserStatusType[] = ['new', 'active', 'inactive', 'stale']
 export const authOptions: AuthOptions = {
@@ -66,6 +67,8 @@ export const authOptions: AuthOptions = {
       console.debug('callback:session')
       const fullUser = await findUser<Member>(user.email, memberFields)
       session.user = fullUser
+
+      await extendUserPresence(user.id)
       return session
     },
   },
@@ -86,7 +89,7 @@ export const authOptions: AuthOptions = {
       )
     },
     async signIn({ user }) {
-      //console.log('event:signIn')
+      console.log('event:signIn')
       await recordUserLogin(user.id)
     },
     async signOut(props) {

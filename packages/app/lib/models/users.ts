@@ -102,6 +102,7 @@ export type Profile = {
   email: string
   email_verified: boolean
   last_login: string | null
+  session_expire: string | null
   in_sendgrid: boolean
   user_type: UserType
   application_status: string
@@ -173,6 +174,7 @@ export const applicantFields: Array<keyof Applicant> = [
   'social_scenes',
   'photo',
   'photo_denial_reason',
+  'session_expire',
 ]
 
 export type Member = Applicant & {
