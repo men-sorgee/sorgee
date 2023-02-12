@@ -37,6 +37,7 @@ export type Invite = EventUser & {
   description: string
   datetime: string
   status: EventStatusType
+  type: string
 }
 
 export type EventInvite = EventUser & {

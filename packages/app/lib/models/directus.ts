@@ -21,6 +21,7 @@ export type GroupEvent = {
   description?: string
   users: string | EventUser[]
   cost: number
+  type: string
   invite_only: boolean
 }
 

@@ -1,7 +1,15 @@
 import { signIn, signOut, useSession } from 'next-auth/react'
-import { useEffect, useState } from 'react'
-import { Box, Menu, MenuButton, MenuItem, MenuList, MenuDivider, Link } from '@chakra-ui/react'
-import { ApplicationStatus, MemberLevel } from 'lib/models'
+import {
+  Box,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  useColorMode,
+  useColorModeValue,
+  MenuDivider,
+  Link,
+} from '@chakra-ui/react'
 import { LinkButton, UserAvatar, UserCard } from 'components/controls'
 import Notifications from './Notifications'
 import {
@@ -12,12 +20,15 @@ import {
   LogoutIcon,
   QrcodeIcon,
   UserIcon,
+  MoonIcon,
+  SunIcon,
 } from '@heroicons/react/outline'
 import { useAuth } from 'hooks'
 
 interface Props {}
 
 export default function UserMenu(_props: Props) {
+  const { colorMode, toggleColorMode } = useColorMode()
   const { user, isApplicant, isMember, isStaff, showApply } = useAuth()
   return (
     <>
@@ -33,6 +44,22 @@ export default function UserMenu(_props: Props) {
                 <UserCard user={user} />
               </Box>
               <MenuDivider />
+              <MenuItem
+                icon={
+                  colorMode === 'light' ? (
+                    <MoonIcon color={'white'} width={'1.5rem'} />
+                  ) : (
+                    <SunIcon color={'white'} width={'1.5rem'} />
+                  )
+                }
+                bg="black"
+                _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                onClick={toggleColorMode}
+                aria-label="Toggle Theme"
+              >
+                Set Theme To {colorMode === 'light' ? 'Dark' : 'Light'}
+              </MenuItem>
+              {user && <Notifications member={user} />}
               {isApplicant && (
                 <MenuItem
                   icon={<ExternalLinkIcon color={'white'} width={'1.5rem'} />}
@@ -46,6 +73,7 @@ export default function UserMenu(_props: Props) {
               )}
               {isMember && (
                 <>
+                  <MenuDivider />
                   <MenuItem
                     icon={<CogIcon color={'white'} width={'1.5rem'} />}
                     bg="black"
@@ -64,7 +92,7 @@ export default function UserMenu(_props: Props) {
                   >
                     Member Profile
                   </MenuItem>
-                  <Notifications member={user} />
+
                   <MenuItem
                     icon={<CalendarIcon color={'white'} width={'1.5rem'} />}
                     bg="black"

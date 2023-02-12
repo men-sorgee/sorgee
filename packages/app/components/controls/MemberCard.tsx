@@ -56,7 +56,7 @@ export const MemberCardLink = ({ member, onClick }: Props) => {
           borderColor="accent.400"
           _hover={{ shadow: '2xl', borderColor: 'accent.500' }}
         >
-          <CardHeader>
+          <CardHeader h={20} pb={2}>
             <LinkOverlay
               as={NextLink}
               href={`/members/${member.id}`}
@@ -67,7 +67,7 @@ export const MemberCardLink = ({ member, onClick }: Props) => {
             >
               <UserCard user={member} />
             </LinkOverlay>
-            <Flex justify="end" align="end" mt={-1} mb={2} w="full">
+            <Flex justify="end" align="end" mt={-4} mb={2} w="full">
               {member?.spectrum && (
                 <Badge size={'lg'} colorScheme="blue" rounded={0}>
                   {member.spectrum}
@@ -79,9 +79,9 @@ export const MemberCardLink = ({ member, onClick }: Props) => {
                 </Badge>
               )}
             </Flex>
-            <Divider />
           </CardHeader>
           <CardBody>
+            <Divider />
             <Text noOfLines={2}>{member.biography}</Text>
           </CardBody>
           <CardFooter justify="space-between" alignItems="end">

@@ -16,7 +16,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react'
 import { CloseIcon, ChevronDownIcon } from '@chakra-ui/icons'
-import { MoonIcon, SunIcon, MenuIcon } from '@heroicons/react/solid'
+import { MenuIcon } from '@heroicons/react/solid'
 import { Logo } from '../controls'
 import { useState, useEffect, useCallback } from 'react'
 import { PageItem } from 'lib/models'
@@ -32,7 +32,6 @@ function Header({ children, ...props }: Props) {
   const router = useRouter()
   const { isOpen, onToggle, onClose } = useDisclosure()
   const [pages, setPages] = useState<PageItem[]>()
-  const { colorMode, toggleColorMode } = useColorMode()
 
   const routeStart = useCallback(() => {
     onClose()
@@ -122,18 +121,7 @@ function Header({ children, ...props }: Props) {
           <Flex flex={1} justify="center" ml={8}>
             <Logo width="20px" />
           </Flex>
-
-          <HStack spacing={2} alignItems="center" justifyItems="middle">
-            <User />
-
-            <IconButton
-              size="lg"
-              onClick={toggleColorMode}
-              icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-              variant="primary"
-              aria-label="Toggle Theme"
-            />
-          </HStack>
+          <User />
         </HStack>
         <Collapse in={isOpen} animateOpacity>
           <MobileNav navItems={navItems} {...constrained} />

@@ -187,10 +187,8 @@ function Form(props: PageProps) {
           <Tabs isFitted defaultIndex={tabValue} onChange={(index) => setTabValue(index)}>
             <TabList fontSize={['sm', 'md', 'lg']} fontWeight="bold">
               <Tab fontWeight={tabValue == 0 ? 'bold' : null}>General</Tab>
-              <Tab fontWeight={tabValue == 1 ? 'bold' : null}>Sexuality</Tab>
-              <Tab fontWeight={tabValue == 2 ? 'bold' : null} display={['none', 'inherit']}>
-                Looking For
-              </Tab>
+              <Tab fontWeight={tabValue == 1 ? 'bold' : null}>Me</Tab>
+              <Tab fontWeight={tabValue == 2 ? 'bold' : null}>Them </Tab>
               <Tab fontWeight={tabValue == 3 ? 'bold' : null}>Health</Tab>
             </TabList>
             <TabPanels>
@@ -308,8 +306,8 @@ function Form(props: PageProps) {
                     your profile. Members can search for other members based on these attributes.
                   </Text>
                   <FieldSwitch
-                    field="show_interests"
-                    label="Show Interests "
+                    field="show_explicit"
+                    label="Show Sexuality "
                     help="Turn this on, if you are okay showing this information to other verified members."
                   />
                 </Alert>
@@ -346,6 +344,11 @@ function Form(props: PageProps) {
                     to optimize compatibility for events. Other members will not see this
                     information.
                   </Text>
+                  <FieldSwitch
+                    field="show_interests"
+                    label="Show Interests "
+                    help="Turn this on, if you are okay showing this information to other verified members."
+                  />
                 </Alert>
                 <SimpleGrid spacing={2}>
                   <FieldCheckboxes

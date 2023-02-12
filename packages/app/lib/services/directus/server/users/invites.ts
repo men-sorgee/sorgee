@@ -40,6 +40,7 @@ export async function listInvites(user_id: string): Promise<Invite[]> {
       status: event.status,
       rsvp: i.rsvp,
       ...i,
+      ...event,
     }
   }) || []) as Invite[]
 }

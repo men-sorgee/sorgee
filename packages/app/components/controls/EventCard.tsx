@@ -19,9 +19,10 @@ interface Props {
   children?: ReactNode | ReactNode[]
   event: EventInfo
   level?: MemberLevel
+  type?: string
 }
 
-export const EventCard = ({ event, children, level }: Props) => {
+export const EventCard = ({ event, children, level, type }: Props) => {
   const [eventDate, setEventDate] = useState({
     day: '',
     short: '',
@@ -59,9 +60,12 @@ export const EventCard = ({ event, children, level }: Props) => {
             m={0}
             p={4}
           >
-            {event.name}
-            <br />@ {eventDate.time}
+            <Text as="div" color="white" textTransform="uppercase">
+              {type}
+            </Text>
+            {event.name} @ {eventDate.time}
           </Heading>
+
           <Heading
             as="h3"
             bg="primary.700"
@@ -80,18 +84,7 @@ export const EventCard = ({ event, children, level }: Props) => {
         </Flex>
       </CardHeader>
       {isScheduled && (
-        <CardBody w="full">
-          {!isStaff && <Markdown content={event.description} />}
-
-          {level < MemberLevel.staff && (
-            <Alert size="sm" mt="4rem" w="full" status="info">
-              <AlertIcon />
-              Location announced on the day of the event and is sent to confirmed attendees only.
-              Events are subject to change or cancellation, depending upon member interest. We will
-              communicate any changes to the event 24 hours in advance.
-            </Alert>
-          )}
-        </CardBody>
+        <CardBody w="full">{!isStaff && <Markdown content={event.description} />}</CardBody>
       )}
       <CardFooter w="full" pb={10} as={Flex} direction="column" align="center">
         {children}
