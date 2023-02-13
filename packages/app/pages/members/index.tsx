@@ -42,7 +42,7 @@ import { JsonFetcher } from 'lib/utils'
 import { useRouter } from 'next/router'
 import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
-import { FieldCheckboxes } from 'components/forms'
+import { FieldCheckboxes, FieldInput } from 'components/forms'
 
 type PageProps = Record<string, string[]> & {
   fieldMap: Record<string, DirectusField>
@@ -210,7 +210,7 @@ export default function MemberListPage(props: PageProps) {
               <AccordionPanel>
                 <FieldCheckboxes
                   field="user_type"
-                  label="Level"
+                  label="User Level"
                   options={fields['user_type'].meta.options.choices.filter((item) =>
                     allowedUserTypes.includes(item.value as UserType)
                   )}
@@ -235,6 +235,7 @@ export default function MemberListPage(props: PageProps) {
                   label="Positions"
                   options={fields['my_positions'].meta.options.choices}
                 />
+                <FieldInput field="nickname" label="Nickname" />
                 <AccordionButton as={'div'} _hover={{ bg: 'transparent', cursor: 'default' }}>
                   <HStack w="full" justify="center">
                     <Button size="lg" type="submit" colorScheme="primary">
@@ -289,7 +290,7 @@ export default function MemberListPage(props: PageProps) {
               <Flex>
                 <IconButton
                   onClick={() => setPage(1)}
-                  isDisabled={pageIndex == 0}
+                  isDisabled={page == 1}
                   icon={<ArrowLeftIcon h={3} w={3} />}
                   mr={4}
                   aria-label="First Page"
@@ -344,14 +345,14 @@ export default function MemberListPage(props: PageProps) {
               <Flex>
                 <IconButton
                   onClick={() => setPage(1)}
-                  isDisabled={pageIndex == 0}
+                  isDisabled={page == 1}
                   icon={<ArrowLeftIcon h={3} w={3} />}
                   mr={4}
                   aria-label="First Page"
                 />
                 <IconButton
                   onClick={() => setPage(page - 1)}
-                  isDisabled={pageIndex == 0}
+                  isDisabled={page == 1}
                   icon={<ChevronLeftIcon h={6} w={6} />}
                   aria-label="Previous Page"
                 />
@@ -378,7 +379,7 @@ export default function MemberListPage(props: PageProps) {
 
                 <IconButton
                   onClick={() => setPage(pageCount)}
-                  isDisabled={page == pageCount}
+                  isDisabled={page >= pageCount}
                   icon={<ArrowRightIcon h={3} w={3} />}
                   ml={4}
                   aria-label="Last Page"

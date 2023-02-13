@@ -40,6 +40,10 @@ type PageProps = {
   hostEventOptions: FieldOptions
   birthMonthOptions: FieldOptions
   stateOptions: FieldOptions
+  theirRolesOptions: FieldOptions
+  theirSpectrumOptions: FieldOptions
+  theirPositionsOptions: FieldOptions
+  relationshipOptions: FieldOptions
 }
 
 export async function getServerSideProps(_context: NextPageContext) {
@@ -51,6 +55,10 @@ export async function getServerSideProps(_context: NextPageContext) {
     hostEventOptions: await getFieldOptions<User>('can_host_events'),
     birthMonthOptions: await getFieldOptions<User>('birth_month'),
     stateOptions: await getFieldOptions<User>('state'),
+    relationshipOptions: await getFieldOptions<User>('relationship_status'),
+    theirRolesOptions: await getFieldOptions<User>('their_roles'),
+    theirSpectrumOptions: await getFieldOptions<User>('their_spectrum'),
+    theirPositionsOptions: await getFieldOptions<User>('their_positions'),
   }
   return { props }
 }
@@ -66,7 +74,7 @@ function Account(props: PageProps) {
   )
 }
 
-function Form(props: PageProps) {
+export default function Form(props: PageProps) {
   const toast = useToast()
   const { member, reload, loading } = useMember()
   const {
@@ -76,6 +84,10 @@ function Form(props: PageProps) {
     hostEventOptions,
     birthMonthOptions,
     stateOptions,
+    theirRolesOptions,
+    theirSpectrumOptions,
+    theirPositionsOptions,
+    relationshipOptions,
   } = props
   const [tabValue, setTabValue] = useState(0)
 
@@ -137,6 +149,7 @@ function Form(props: PageProps) {
             <TabList fontWeight="bold">
               <Tab fontWeight={tabValue == 0 ? 'bold' : null}>Contact</Tab>
               <Tab fontWeight={tabValue == 1 ? 'bold' : null}>Event</Tab>
+              <Tab fontWeight={tabValue == 2 ? 'bold' : null}>Interests </Tab>
             </TabList>
             <TabPanels>
               <TabPanel p={0}>
@@ -309,6 +322,52 @@ function Form(props: PageProps) {
                   </Alert>
                 )}
               </TabPanel>
+              <TabPanel p={0}>
+                <Alert
+                  bg={'primary'}
+                  color="white"
+                  flexDirection="column"
+                  my={4}
+                  p={4}
+                  borderRadius="md"
+                  shadow="md"
+                >
+                  <Text>
+                    What are you looking for and compatible with? We use this information to
+                    optimize compatibility for events. If you choose to display this info, other
+                    members can find you based on these attributes.
+                  </Text>
+                  <FieldSwitch
+                    field="show_interests"
+                    label="Show Interests "
+                    help="Turn this off, if you'd prefer to not display this information to other verified members."
+                  />
+                </Alert>
+                <SimpleGrid spacing={2}>
+                  <FieldCheckboxes
+                    field="their_spectrum"
+                    label="Their Orientation"
+                    options={theirSpectrumOptions}
+                  />
+                  <FieldCheckboxes
+                    field="their_relationship_status"
+                    label="Their Relationship Status"
+                    options={relationshipOptions}
+                  />
+
+                  <FieldCheckboxes
+                    field="their_positions"
+                    label="Their Sexual Positions"
+                    options={theirPositionsOptions}
+                  />
+
+                  <FieldCheckboxes
+                    field="their_roles"
+                    label="Their Sexual Roles"
+                    options={theirRolesOptions}
+                  />
+                </SimpleGrid>
+              </TabPanel>
             </TabPanels>
           </Tabs>
 
@@ -322,12 +381,10 @@ function Form(props: PageProps) {
             color="white"
             disabled={isSubmitting || !isDirty}
           >
-            Update Account
+            Update Settings
           </Button>
         </form>
       </FormProvider>
     </>
   )
 }
-
-export default Account

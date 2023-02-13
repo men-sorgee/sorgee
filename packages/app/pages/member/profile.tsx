@@ -55,9 +55,7 @@ type PageProps = {
   hivStatusOptions: FieldOptions
   vaccinationStatusOptions: FieldOptions
   myRolesOptions: FieldOptions
-  theirRolesOptions: FieldOptions
-  theirSpectrumOptions: FieldOptions
-  theirPositionsOptions: FieldOptions
+
   buildOptions: FieldOptions
 }
 
@@ -85,9 +83,6 @@ export async function getServerSideProps(context: NextPageContext) {
     hivStatusOptions: await getFieldOptions<User>('hiv_status'),
     vaccinationStatusOptions: await getFieldOptions<User>('vaccinations'),
     myRolesOptions: await getFieldOptions<User>('my_roles'),
-    theirRolesOptions: await getFieldOptions<User>('their_roles'),
-    theirSpectrumOptions: await getFieldOptions<User>('their_spectrum'),
-    theirPositionsOptions: await getFieldOptions<User>('their_positions'),
     buildOptions: await getFieldOptions<User>('build'),
   }
   return { props }
@@ -95,7 +90,7 @@ export async function getServerSideProps(context: NextPageContext) {
 
 type MemberFormData = Partial<User>
 
-function Account(props: PageProps) {
+export default function Account(props: PageProps) {
   const { member, loading } = useMember()
   return (
     <Page
@@ -134,9 +129,6 @@ function Form(props: PageProps) {
     hivStatusOptions,
     vaccinationStatusOptions,
     myRolesOptions,
-    theirRolesOptions,
-    theirSpectrumOptions,
-    theirPositionsOptions,
     buildOptions,
   } = props
   const [tabValue, setTabValue] = useState(0)
@@ -186,10 +178,9 @@ function Form(props: PageProps) {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Tabs isFitted defaultIndex={tabValue} onChange={(index) => setTabValue(index)}>
             <TabList fontSize={['sm', 'md', 'lg']} fontWeight="bold">
-              <Tab fontWeight={tabValue == 0 ? 'bold' : null}>General</Tab>
-              <Tab fontWeight={tabValue == 1 ? 'bold' : null}>Me</Tab>
-              <Tab fontWeight={tabValue == 2 ? 'bold' : null}>Them </Tab>
-              <Tab fontWeight={tabValue == 3 ? 'bold' : null}>Health</Tab>
+              <Tab fontWeight={tabValue == 0 ? 'bold' : null}>Basic Info</Tab>
+              <Tab fontWeight={tabValue == 1 ? 'bold' : null}>Explicit Info</Tab>
+              <Tab fontWeight={tabValue == 2 ? 'bold' : null}>Health Info</Tab>
             </TabList>
             <TabPanels>
               <TabPanel p={0}>
@@ -210,7 +201,7 @@ function Form(props: PageProps) {
                   </Text>
                   <FieldSwitch
                     field="show_profile"
-                    label="Show Profile"
+                    label="Show Profile in Search"
                     help="Turn this off, if do not wish to be searchable on the members page."
                   />
                 </Alert>
@@ -281,7 +272,7 @@ function Form(props: PageProps) {
                   </Text>
                   <FieldSwitch
                     field="show_explicit"
-                    label="Show Explicit Details "
+                    label="Show Explicit Details on Profile"
                     help="Turn this on, if you are okay showing this information to other verified members."
                   />
                 </Alert>
@@ -343,52 +334,7 @@ function Form(props: PageProps) {
                   options={scenesOptions}
                 />
               </TabPanel>
-              <TabPanel p={0}>
-                <Alert
-                  bg={'primary'}
-                  color="white"
-                  flexDirection="column"
-                  my={4}
-                  p={4}
-                  borderRadius="md"
-                  shadow="md"
-                >
-                  <Text>
-                    What are you looking for and compatible with? We use this information to
-                    optimize compatibility for events. If you choose to display this info, other
-                    members can find you based on these attributes.
-                  </Text>
-                  <FieldSwitch
-                    field="show_interests"
-                    label="Show Interests "
-                    help="Turn this off, if you'd prefer to not display this information to other verified members."
-                  />
-                </Alert>
-                <SimpleGrid spacing={2}>
-                  <FieldCheckboxes
-                    field="their_spectrum"
-                    label="Their Orientation"
-                    options={theirSpectrumOptions}
-                  />
-                  <FieldCheckboxes
-                    field="their_relationship_status"
-                    label="Their Relationship Status"
-                    options={relationshipOptions}
-                  />
 
-                  <FieldCheckboxes
-                    field="their_positions"
-                    label="Their Sexual Positions"
-                    options={theirPositionsOptions}
-                  />
-
-                  <FieldCheckboxes
-                    field="their_roles"
-                    label="Their Sexual Roles"
-                    options={theirRolesOptions}
-                  />
-                </SimpleGrid>
-              </TabPanel>
               <TabPanel p={0}>
                 <Alert
                   bg={'primary'}
@@ -405,7 +351,7 @@ function Form(props: PageProps) {
                   </Text>
                   <FieldSwitch
                     field="show_health"
-                    label="Show Health Information"
+                    label="Show Health Information on Profile"
                     help="Turn this off, if you'd prefer to not display this information to other verified members."
                   />
                 </Alert>
@@ -446,5 +392,3 @@ function Form(props: PageProps) {
     </>
   )
 }
-
-export default Account

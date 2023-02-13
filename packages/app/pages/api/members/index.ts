@@ -30,20 +30,24 @@ export default async function FindMembers(
     const allowedLevels = getAllowedUsers(level)
     const params = normalize<SearchableMember>(props)
     const postQueryParams = {}
-    const searchParams = {
-      show_profile: {
-        _eq: true,
-      },
-      id: {
-        _neq: member.id,
-      },
-    }
+
+    const orSearchItems = []
+    const andSearchItems = []
+    andSearchItems.push({ show_profile: { _eq: true } })
 
     Object.keys(params).forEach((key) => {
       if (Array.isArray(member[key])) {
-        postQueryParams[key] = params[key]
+        postQueryParams[key].push(params[key])
+      } else if (key == 'nickname') {
+        let nickname = params[key].join('')
+        orSearchItems.push({
+          first_name: { _contains: nickname },
+        })
+        orSearchItems.push({
+          nickname: { _contains: nickname },
+        })
       } else {
-        searchParams[key] = { _in: params[key] }
+        andSearchItems.push({ [key]: { _in: params[key] } })
       }
     })
 
@@ -53,15 +57,23 @@ export default async function FindMembers(
       searchLevels = userTypes.filter((type: UserType) => allowedLevels.includes(type))
     }
 
-    searchParams['status'] = { _eq: 'active' }
-    searchParams['application_status'] = { _eq: 'approved' }
+    andSearchItems.push({ status: { _eq: 'active' } })
+    andSearchItems.push({ application_status: { _eq: 'approved' } })
 
-    searchParams['user_type'] = {
-      _in: searchLevels,
+    andSearchItems.push({
+      user_type: {
+        _in: searchLevels,
+      },
+    })
+
+    if (orSearchItems.length > 0) andSearchItems.push({ _or: orSearchItems })
+
+    const searchParams = {
+      _and: andSearchItems,
     }
 
     const results = await searchUsers<Partial<User>>(
-      searchParams,
+      searchParams as any,
       [
         'id',
         'status',
