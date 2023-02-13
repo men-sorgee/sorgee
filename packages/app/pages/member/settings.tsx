@@ -150,8 +150,8 @@ function Form(props: PageProps) {
                   shadow="md"
                 >
                   <Text w={['full']}>
-                    This information is private and can not be seen by any other member. It is used
-                    only for administrative purposes.
+                    This information is private by default, but you can opt to display it if you
+                    choose.
                   </Text>
                   <FieldSwitch
                     field="show_contact"
@@ -188,7 +188,7 @@ function Form(props: PageProps) {
                   <FieldInput field="city" label="City" />
                   <FieldSelect field="state" label="State" options={stateOptions} />
 
-                  <FieldWrapper field="height" label="Birth Month/Year">
+                  <FieldWrapper field="birth_month" label="Birth Month/Year">
                     <InputGroup>
                       <Select
                         mr={2}
@@ -221,13 +221,7 @@ function Form(props: PageProps) {
                     options={contactPreferenceOptions}
                   />
                 </SimpleGrid>
-                <FieldCheckbox
-                  field="needs_guidance"
-                  help="Our staff will reach out to you to help guide you along the way."
-                  label="Request Guidance"
-                >
-                  I need assistance
-                </FieldCheckbox>
+
                 <Alert bg="secondary" color="white" my={4} borderRadius="md" shadow="md">
                   <Stack direction={'column'} spacing={2}>
                     <Text>
@@ -249,6 +243,13 @@ function Form(props: PageProps) {
                     </Stack>
                   </Stack>
                 </Alert>
+                <FieldCheckbox
+                  field="needs_guidance"
+                  help="Our staff will reach out to you to help guide you along the way."
+                  label="Request Guidance"
+                >
+                  I need assistance
+                </FieldCheckbox>
               </TabPanel>
               <TabPanel p={0}>
                 <Alert
@@ -270,14 +271,6 @@ function Form(props: PageProps) {
                     label="Get Invites to Events"
                     help="Turn this on, if you want to be invited to events that meet your interests."
                   />
-                  {event_invites && (
-                    <Text>
-                      Members who RSVP to events are expected to attend. Members that RSVP to event
-                      and do not attend, decrease the likelihood of getting invited again. We
-                      understand that things come up, but please be respectful of your brothers and
-                      RSVP accurately and let us know if you can&apos;t make it.
-                    </Text>
-                  )}
                 </Alert>
                 <SimpleGrid spacing={4}>
                   <FieldCheckboxes

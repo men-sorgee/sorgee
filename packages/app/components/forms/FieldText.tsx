@@ -6,7 +6,7 @@ import { Textarea, TextareaProps } from '@chakra-ui/react'
 type Props = TextareaProps &
   TextareaHTMLAttributes<HTMLInputElement> & {
     field: string
-    label: string
+    label?: string
     help?: string
     registerOptions?: RegisterOptions
     className?: string

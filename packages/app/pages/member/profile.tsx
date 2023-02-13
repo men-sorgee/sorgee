@@ -203,13 +203,13 @@ function Form(props: PageProps) {
                   shadow="md"
                 >
                   <Text>
-                    This is your profile. Other verified members are able to see this information.
-                    You can also choose to make your profile private.
+                    This is your profile. Other verified members are able to see this information,
+                    by default, but you can also choose to make your profile private.
                   </Text>
                   <FieldSwitch
                     field="show_profile"
                     label="Show Profile"
-                    help="Turn this on, if you are okay showing this information to other verified members."
+                    help="Turn this off, if do not wish to be found in the members page."
                   />
                 </Alert>
                 <SimpleGrid spacing={2} columns={[1, 1, 3]}>
@@ -260,6 +260,28 @@ function Form(props: PageProps) {
                   options={bodyAttributesOptions}
                 />
                 <Divider mt={4} mb={2} />
+              </TabPanel>
+
+              <TabPanel p={0}>
+                <Alert
+                  bg={'primary'}
+                  color="white"
+                  flexDirection="column"
+                  my={4}
+                  p={4}
+                  borderRadius="md"
+                  shadow="md"
+                >
+                  <Text>
+                    Your sexual preferences help us match you with other members. If you choose to
+                    display this info, other members can search find you based on these attributes.
+                  </Text>
+                  <FieldSwitch
+                    field="show_explicit"
+                    label="Show Sexuality "
+                    help="Turn this on, if you are okay showing this information to other verified members."
+                  />
+                </Alert>
                 <SimpleGrid spacing={2} columns={{ base: 1, md: 2 }}>
                   <FieldInput
                     field="cock_length"
@@ -289,28 +311,6 @@ function Form(props: PageProps) {
                   className="sm:col-span-2"
                   options={cumAttributesOptions}
                 />
-              </TabPanel>
-
-              <TabPanel p={0}>
-                <Alert
-                  bg={'primary'}
-                  color="white"
-                  flexDirection="column"
-                  my={4}
-                  p={4}
-                  borderRadius="md"
-                  shadow="md"
-                >
-                  <Text>
-                    Your sexual interests help us match you with other members and is visible with
-                    your profile. Members can search for other members based on these attributes.
-                  </Text>
-                  <FieldSwitch
-                    field="show_explicit"
-                    label="Show Sexuality "
-                    help="Turn this on, if you are okay showing this information to other verified members."
-                  />
-                </Alert>
                 <SimpleGrid spacing={2}>
                   <FieldCheckboxes
                     field="my_positions"
@@ -342,7 +342,7 @@ function Form(props: PageProps) {
                   <Text>
                     What are you attracted to and/or compatible with? We will use this information
                     to optimize compatibility for events. Other members will not see this
-                    information.
+                    information, unless you opt to show it on your profile.
                   </Text>
                   <FieldSwitch
                     field="show_interests"
@@ -386,9 +386,9 @@ function Form(props: PageProps) {
                   shadow="md"
                 >
                   <Text>
-                    This is your health information. Other verified members are able to see this
-                    information if you choose to show it. If you are not comfortable sharing this
-                    information, you can choose to hide it.
+                    This is your health information. Other members are able to see this information
+                    if you choose to show it. If you are not comfortable sharing this information,
+                    you can choose not to display it.
                   </Text>
                   <FieldSwitch
                     field="show_health"
