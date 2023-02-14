@@ -1,3 +1,4 @@
+import { getUser } from 'lib/services/directus/server'
 import { getAdminClient, updateUser } from '..'
 import { User, UserAccount, UserSession, UserVerificationToken } from 'lib/models'
 import { addHours, formatISO } from 'date-fns'
@@ -12,6 +13,8 @@ export async function recordUserLogin(id: string) {
 
 export async function extendUserPresence(id: string) {
   const expires = addHours(new Date(), 1).toISOString()
+  const user = await getUser(id)
+  if (user.presence === 'online' && user.session_expire > expires) return
   await updateUser(id, {
     session_expire: expires,
   })

@@ -50,7 +50,7 @@ export const UserCard = chakra(({ user, size = 'lg', ...props }: Props) => {
             bgGradient="linear(to-b, blue.500, accent.500)"
             loading="lazy"
             borderColor="accent.500"
-            borderWidth=".15em"
+            borderWidth="thin"
             {...props}
           >
             {user?.presence == 'online' && (
