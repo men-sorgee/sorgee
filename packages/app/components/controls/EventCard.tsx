@@ -25,17 +25,8 @@ interface Props {
 }
 
 export const EventCard = ({ event, children, level, type }: Props) => {
-  const [eventDate, setEventDate] = useState({
-    day: '',
-    short: '',
-    month: '',
-    date: '',
-    time: '',
-  })
+  const eventDate = getEventDate(event.datetime)
 
-  useEffect(() => {
-    const date = getEventDate(event.datetime)
-  }, [event.datetime])
   const isStaff = level && level >= MemberLevel.staff
   const isScheduled = event.status == 'scheduled'
   return (

@@ -126,7 +126,6 @@ function Events({
     if (t) return t.text
     return type
   }
-  console.dir(eventTypeOptions)
 
   const upcoming = invites?.filter((i) => i.status == 'scheduled')
   const past = invites?.filter((i) => i.status !== 'scheduled')

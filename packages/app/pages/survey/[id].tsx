@@ -101,8 +101,7 @@ function Form({ survey }: PageProps) {
   // const email = getFieldState('email', formState)
 
   const questions = survey.questions.map((s: SurveySurveyQuestion) => s.survey_questions_id)
-  console.dir(survey)
-  console.dir(questions)
+
   return (
     <>
       <Text mb={10}>{member?.first_name || 'Brother'}, please let us know how we did!</Text>
