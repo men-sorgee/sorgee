@@ -25,7 +25,7 @@ import {
   SimpleGrid,
   Input,
   InputGroup,
-  VStack,
+  Box,
 } from '@chakra-ui/react'
 import Page from 'components/Page'
 import { useToast } from '@chakra-ui/react'
@@ -68,7 +68,12 @@ type MemberFormData = Partial<Member>
 export default function SettingsPage(props: PageProps) {
   const { member, loading } = useMember()
   return (
-    <Page title="Settings" loading={loading} requireAuth={true} header={<UserCard user={member} />}>
+    <Page
+      title="Settings"
+      loading={loading}
+      requireAuth={true}
+      header={<UserCard user={member} size="xl" />}
+    >
       {member && <Form {...props} />}
     </Page>
   )
@@ -76,7 +81,7 @@ export default function SettingsPage(props: PageProps) {
 
 function Form(props: PageProps) {
   const toast = useToast()
-  const { member, reload, loading } = useMember()
+  const { member } = useMember()
   const {
     timeOfDayOptions,
     eventOptions,
@@ -110,7 +115,7 @@ function Form(props: PageProps) {
     return window.confirm('Are you sure you want to leave? You have unsaved changes.')
   })
 
-  async function onSubmit(data: MemberFormData) {
+  const onSubmit = async (data: MemberFormData) => {
     const [ok, response] = await postJSON<User>('/api/member/me', data)
 
     if (ok) {
@@ -135,6 +140,7 @@ function Form(props: PageProps) {
   const maxYear = new Date().getFullYear() - 21
   const can_host = watch('can_host')
   const event_invites = watch('event_invites')
+  const show_profile = watch('show_profile')
   return (
     <>
       <FormProvider {...methods}>
@@ -152,25 +158,27 @@ function Form(props: PageProps) {
             </TabList>
             <TabPanels>
               <TabPanel p={0}>
-                <Alert
-                  bg="primary"
-                  color="white"
-                  flexDirection="column"
-                  my={4}
-                  p={4}
-                  borderRadius="md"
-                  shadow="md"
-                >
-                  <Text w={['full']}>
-                    This information is private by default, but you can opt to display it if you
-                    choose.
-                  </Text>
-                  <FieldSwitch
-                    field="show_contact"
-                    label="Show Contact Info"
-                    help="Turn this on if you want display your contact information to other members."
-                  />
-                </Alert>
+                {show_profile && (
+                  <Alert
+                    bg="primary"
+                    color="white"
+                    flexDirection="column"
+                    my={4}
+                    p={4}
+                    borderRadius="md"
+                    shadow="md"
+                  >
+                    <Text w={['full']}>
+                      This information is private by default, but you can opt to display it if you
+                      choose.
+                    </Text>
+                    <FieldSwitch
+                      field="show_contact"
+                      label="Show Contact Info"
+                      help="Turn this on if you want display your contact information to other members."
+                    />
+                  </Alert>
+                )}
                 <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
                   <FieldInput
                     field="first_name"
@@ -234,7 +242,7 @@ function Form(props: PageProps) {
                   />
                 </SimpleGrid>
 
-                <Alert bg="secondary" color="white" my={4} borderRadius="md" shadow="md">
+                <Alert bg="primary.300" color="white" my={4} borderRadius="md" shadow="md">
                   <Stack direction={'column'} spacing={2}>
                     <Text>
                       <strong>Are you an exhibitionist?</strong> If so, you can opt-in to be a part
@@ -284,6 +292,7 @@ function Form(props: PageProps) {
                     help="Turn this on, if you want to be invited to events that meet your interests."
                   />
                 </Alert>
+
                 <SimpleGrid spacing={4}>
                   <FieldCheckboxes
                     field="social_scenes"
@@ -301,7 +310,7 @@ function Form(props: PageProps) {
                 </SimpleGrid>
 
                 {event_invites && (
-                  <Alert bg="secondary" color="white" my={4} borderRadius="md" shadow="md">
+                  <Alert bg="primary.300" color="white" my={4} borderRadius="md" shadow="md">
                     <Stack direction={'column'} spacing={2}>
                       <Text>
                         <strong>Are you interested in hosting?</strong> If so, let us know by
@@ -322,26 +331,28 @@ function Form(props: PageProps) {
                 )}
               </TabPanel>
               <TabPanel p={0}>
-                <Alert
-                  bg={'primary'}
-                  color="white"
-                  flexDirection="column"
-                  my={4}
-                  p={4}
-                  borderRadius="md"
-                  shadow="md"
-                >
-                  <Text>
-                    What are you looking for and compatible with? We use this information to
-                    optimize compatibility for events. If you choose to display this info, other
-                    members can find you based on these attributes.
-                  </Text>
-                  <FieldSwitch
-                    field="show_interests"
-                    label="Show Interests "
-                    help="Turn this off, if you'd prefer to not display this information to other verified members."
-                  />
-                </Alert>
+                {show_profile && (
+                  <Alert
+                    bg={'primary'}
+                    color="white"
+                    flexDirection="column"
+                    my={4}
+                    p={4}
+                    borderRadius="md"
+                    shadow="md"
+                  >
+                    <Text>
+                      What are you looking for and compatible with? We use this information to
+                      optimize compatibility for events. If you choose to display this info, other
+                      members can find you based on these attributes.
+                    </Text>
+                    <FieldSwitch
+                      field="show_interests"
+                      label="Show Interests "
+                      help="Turn this off, if you'd prefer to not display this information to other verified members."
+                    />
+                  </Alert>
+                )}
                 <SimpleGrid spacing={2}>
                   <FieldCheckboxes
                     field="their_spectrum"
@@ -372,13 +383,17 @@ function Form(props: PageProps) {
 
           <input type="hidden" {...register('id')} />
 
+          <Box backdropFilter="blur(1px)" position="sticky" h="80px" w="full" bottom={0}></Box>
           <Button
-            mt={10}
+            mt={-10}
             size="lg"
             type="submit"
             bg="primary"
             color="white"
             disabled={isSubmitting || !isDirty}
+            position="sticky"
+            bottom={4}
+            mx={2}
           >
             Update Settings
           </Button>

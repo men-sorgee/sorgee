@@ -183,6 +183,21 @@ const custom: Partial<ChakraTheme> = {
           color: 'text',
           bg: 'bg',
         },
+        '*': {
+          scrollbarWidth: 'auto',
+          scrollbarColor: `${brand.colors.primary.DEFAULT} #ffffff;`,
+        },
+        '*::-webkit-scrollbar': {
+          width: '16px',
+        },
+        '*::-webkit-scrollbar-track': {
+          background: '#ffffff',
+        },
+        '*::-webkit-scrollbar-thumb': {
+          backgroundColor: brand.colors.primary.DEFAULT,
+          borderRadius: '10px',
+          border: '3px solid #ffffff',
+        },
         header: {
           a: {
             color: 'gray.100',

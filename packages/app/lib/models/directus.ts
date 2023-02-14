@@ -499,6 +499,8 @@ export type SurveySurveyQuestion = {
   sort?: number
 }
 
+export type FieldMap = Record<string, DirectusField>
+
 export type DirectusTypes = {
   events: GroupEvent
   events_users: EventUser

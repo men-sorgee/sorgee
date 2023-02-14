@@ -1,7 +1,8 @@
 import { Directus } from '@directus/sdk'
-import { DirectusField, DirectusTypes, Promo, User } from 'lib/models'
+import { DirectusField, DirectusTypes, Promo, User, FieldMap } from 'lib/models'
 
 const adminDb = new Directus<DirectusTypes>(process.env.ADMIN_URL)
+const cache: { [key: string]: any } = {}
 
 export async function getAdminClient(): Promise<Directus<DirectusTypes>> {
   if (await adminDb.auth.token) return adminDb
@@ -19,21 +20,24 @@ export async function findPromo(code: string): Promise<Promo | null> {
   console.dir(data)
   return data?.length ? (data[0] as Promo) : null
 }
-const cache: { [key: string]: any } = {}
 
-export async function getFields(collection: string = 'users'): Promise<DirectusField[]> {
-  const key = `${collection}}`
+export async function getFields(collection: string = 'users'): Promise<FieldMap> {
+  const key = `${collection}-fields`
   if (cache[key]) {
     return cache[key]
   }
   const adminClient = await getAdminClient()
   const { data } = await adminClient.fields.readMany(collection)
-  if (!data) return []
-  data.forEach((field: DirectusField) => {
+  if (!data) return {}
+
+  const fieldMap = data.reduce((acc: any, field: DirectusField): any => {
     field.options = field.meta?.options?.choices || []
     cache[`${collection}:${field.field}`] = field
-  })
-  return (cache[key] = data as DirectusField[])
+    acc[field.field] = field
+    return acc
+  }, {} as Record<string, DirectusField>)
+
+  return (cache[key] = fieldMap)
 }
 
 export async function getField<T = User>(field: keyof T, collection: string = 'users') {

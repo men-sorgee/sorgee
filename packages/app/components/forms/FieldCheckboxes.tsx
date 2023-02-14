@@ -23,7 +23,7 @@ const CheckboxesField = (props: Props) => {
   }
   return (
     <FieldWrapper field={field} help={help} label={label} className={className}>
-      <SimpleGrid gap={4} columns={[2, 2, 3, 4]}>
+      <SimpleGrid gap={4} columns={[2, 2, 3, 3, 4]}>
         <CheckboxGroup name={field} {...opts} defaultValue={val}>
           {options?.map(({ text, value }, index) => (
             <Checkbox key={index.toString()} value={value} {...register(field, registerOptions)}>

@@ -37,7 +37,7 @@ import {
 } from '@chakra-ui/react'
 import useSWR from 'swr'
 import {
-  DirectusField,
+  FieldMap,
   SearchableMember,
   UserType,
   MemberLevel,
@@ -50,25 +50,23 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
 import { FieldCheckboxes, FieldInput } from 'components/forms'
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/outline'
-type PageProps = Record<string, string[]> & {
-  fieldMap: FieldMap
-  id?: string
-}
+
 type QueryParams = Record<keyof SearchableMember, string[]>
 
-type FieldMap = Record<string, DirectusField>
+type PageProps = {
+  fieldMap: FieldMap
+  id?: string
+  params?: QueryParams
+}
+
 export async function getServerSideProps(context: NextPageContext): Promise<{ props: PageProps }> {
   const { getFields } = await import('lib/services/directus/server')
-  const fields = await getFields('users')
-  const fieldMap = fields.reduce((acc: any, field: DirectusField): any => {
-    acc[field.field] = field
-    return acc
-  }, {} as Record<string, DirectusField>)
-
+  const fieldMap = await getFields('users')
+  const params = (context.query as QueryParams) || ({} as QueryParams)
   return {
     props: {
       fieldMap,
-      ...context.query,
+      params,
     },
   }
 }
@@ -80,7 +78,7 @@ type Meta = {
 export default function MemberListPage(props: PageProps) {
   const { member: currentMember, loading } = useMember()
   const router = useRouter()
-  const { fieldMap: fields, id: i, ...params } = props
+  const { fieldMap: fields, id: i, params } = props
   const { page: p, size: s, sort: o, id: _, ...q } = router.query || params
 
   const [id, setId] = useState(i)
@@ -236,7 +234,7 @@ export default function MemberListPage(props: PageProps) {
           <Pager page={page} pageCount={pageCount} setPage={setPage} />
         </form>
       </FormProvider>
-      <Modal size="2xl" isOpen={isOpen} onClose={() => setId(undefined)} scrollBehavior="inside">
+      <Modal size="2xl" isOpen={isOpen} onClose={() => setId(undefined)}>
         <ModalOverlay backdropFilter="auto" backdropBlur="2px" />
         <ModalContent
           bg={useColorModeValue('white', 'black')}
@@ -244,7 +242,7 @@ export default function MemberListPage(props: PageProps) {
           borderColor="accent.700"
         >
           <ModalCloseButton />
-          <ModalBody>
+          <ModalBody px={1}>
             <MemberSpotlight id={id as string} fields={fields} />
           </ModalBody>
         </ModalContent>
