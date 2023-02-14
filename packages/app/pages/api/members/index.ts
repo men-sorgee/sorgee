@@ -92,6 +92,7 @@ export default async function FindMembers(
         'spectrum',
         'my_positions',
         'relationship_status',
+        'mannerisms',
         'last_login',
         'date_created',
       ],

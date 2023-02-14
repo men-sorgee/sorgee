@@ -12,39 +12,17 @@ import {
   Spacer,
   Text,
 } from '@chakra-ui/react'
-import { SearchableMember } from '../../lib/models'
+import { Member, SearchableMember } from '../../lib/models'
 import { Rating } from './Rating'
-import { UserCard } from './UserCard'
+import { MemberHeader } from './MemberHeader'
 import NextLink from 'next/link'
-import { useMember } from 'hooks'
+
 type Props = {
   member: Partial<SearchableMember>
-  onClick: () => void
+  onClick?: () => void
 }
 
-export const MemberCard = ({ id }: { id: string }) => {
-  const { member, loading } = useMember(id)
-  if (loading || !id || !member) return <></>
-  return (
-    <Flex direction="column" justify="flex-start" align="top">
-      <UserCard user={member} size="xl" />
-      <Flex align="stretch" justify="stretch" mt={4}>
-        {member?.spectrum && (
-          <Badge size={'lg'} colorScheme="blue">
-            {member.spectrum}
-          </Badge>
-        )}
-        {member?.relationship_status && (
-          <Badge size={'lg'} colorScheme="secondary">
-            {member.relationship_status}
-          </Badge>
-        )}
-      </Flex>
-    </Flex>
-  )
-}
-
-export const MemberCardLink = ({ member, onClick }: Props) => {
+export const MemberCard = ({ member, onClick }: Props) => {
   return (
     <>
       <LinkBox key={member.id}>
@@ -65,20 +43,8 @@ export const MemberCardLink = ({ member, onClick }: Props) => {
                 onClick()
               }}
             >
-              <UserCard user={member} />
+              <MemberHeader member={member} />
             </LinkOverlay>
-            <Flex justify="end" align="end" mt={-4} mb={2} w="full">
-              {member?.spectrum && (
-                <Badge size={'lg'} colorScheme="blue" rounded={0}>
-                  {member.spectrum}
-                </Badge>
-              )}
-              {member?.relationship_status && (
-                <Badge size="lg" colorScheme="red" rounded={0}>
-                  {member.relationship_status}
-                </Badge>
-              )}
-            </Flex>
           </CardHeader>
           <CardBody>
             <Divider />

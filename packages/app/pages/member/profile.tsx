@@ -23,12 +23,9 @@ import {
   Text,
   SimpleGrid,
   GridItem,
-  VStack,
 } from '@chakra-ui/react'
 import Page from 'components/Page'
-import { useRouter } from 'next/router'
 import { useToast } from '@chakra-ui/react'
-import { ErrorMessage } from '@hookform/error-message'
 import { postJSON } from 'lib/utils'
 import { UserCard } from 'components/controls'
 import { useWarnIfUnsavedChanges } from '../../hooks/use-warn-if-unsaved'
@@ -55,7 +52,6 @@ type PageProps = {
   hivStatusOptions: FieldOptions
   vaccinationStatusOptions: FieldOptions
   myRolesOptions: FieldOptions
-
   buildOptions: FieldOptions
 }
 
@@ -90,11 +86,11 @@ export async function getServerSideProps(context: NextPageContext) {
 
 type MemberFormData = Partial<User>
 
-export default function Account(props: PageProps) {
-  const { member, loading } = useMember()
+export default function ProfilePage(props: PageProps) {
+  const { member, loading, name } = useMember()
   return (
     <Page
-      title="Edit Profile"
+      title={`${name}'s Profile`}
       loading={loading}
       requireAuth={true}
       header={<UserCard user={member} />}
@@ -162,8 +158,6 @@ function Form(props: PageProps) {
         duration: 9000,
         isClosable: true,
       })
-      reload()
-      reset()
     } else if (response.error?.field) {
       // @ts-ignore
       setError(response.error!.field, response.error.message)
@@ -176,16 +170,77 @@ function Form(props: PageProps) {
     <>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
+          <Alert
+            bg="primary"
+            color="white"
+            flexDirection="column"
+            my={4}
+            p={4}
+            borderRadius="md"
+            shadow="md"
+          >
+            <Text>
+              This is your profile. We use this information to match you with brothers. By default,
+              they are able to see this information. You can choose to make your profile private if
+              you do not wish to show up in member searches. This does not affect this information
+              being used to recommend you to other events and members.
+            </Text>
+            <FieldSwitch
+              field="show_profile"
+              label="Show Profile in Search"
+              help="Turn this off, if do not wish to be searchable on the members page."
+            />
+          </Alert>
+          <SimpleGrid spacing={2} columns={[1, 1, 3]}>
+            <GridItem colSpan={[1, 1, 3]}>
+              <FieldInput
+                field="nickname"
+                label="Username"
+                help="This is the name that will be displayed on your profile."
+                className="col-span-2 sm:col-span-4"
+              />
+            </GridItem>
+            <FieldSelect field="spectrum" label="Orientation" options={spectrumOptions} />
+            <FieldSelect field="mannerisms" label="Mannerisms" options={mannerismsOptions} />
+            <FieldSelect
+              field="relationship_status"
+              label="Relationship Status"
+              options={relationshipOptions}
+            />
+          </SimpleGrid>
+          <FieldText
+            field="biography"
+            label="Biography"
+            help="Tell us about yourself. What are your interests? What are you looking for?"
+            rows={4}
+          />
+          <SimpleGrid spacing={2} columns={[2, 2, 4]}>
+            <FieldNumber field="age" label="Age" min={21} />
+            <FieldInput field="height" label="Height" placeholder="5'11" />
+            <FieldNumber field="weight" label="Weight" placeholder="185" />
+            <FieldSelect field="build" label="Build" options={buildOptions} />
+            <FieldSelect field="skin_tone" label="Skin Tone" options={skinToneOptions} />
+            <FieldSelect field="hair_color" label="Hair Color" options={hairColorOptions} />
+            <FieldSelect field="hair_style" label="Hair Style" options={hairStyleOptions} />
+            <FieldSelect field="body_hair" label="Body Hair" options={bodyHairOptions} />
+            <FieldSelect field="facial_hair" label="Facial Hair" options={facialHairOptions} />
+            <FieldSelect field="eye_color" label="Eye Color" options={eyeColorOptions} />
+          </SimpleGrid>
+          <FieldCheckboxes
+            field="body_attributes"
+            label="Other Attributes"
+            options={bodyAttributesOptions}
+          />
           <Tabs isFitted defaultIndex={tabValue} onChange={(index) => setTabValue(index)}>
             <TabList fontSize={['sm', 'md', 'lg']} fontWeight="bold">
-              <Tab fontWeight={tabValue == 0 ? 'bold' : null}>Basic Info</Tab>
-              <Tab fontWeight={tabValue == 1 ? 'bold' : null}>Explicit Info</Tab>
+              <Tab fontWeight={tabValue == 0 ? 'bold' : null}>Below the Belt</Tab>
+              <Tab fontWeight={tabValue == 1 ? 'bold' : null}>Role & Fetishes</Tab>
               <Tab fontWeight={tabValue == 2 ? 'bold' : null}>Health Info</Tab>
             </TabList>
             <TabPanels>
               <TabPanel p={0}>
                 <Alert
-                  bg="primary"
+                  bg={'primary'}
                   color="white"
                   flexDirection="column"
                   my={4}
@@ -193,66 +248,28 @@ function Form(props: PageProps) {
                   borderRadius="md"
                   shadow="md"
                 >
-                  <Text>
-                    This is your profile. We use this information to match you with brothers. By
-                    default, they are able to see this information. You can choose to make your
-                    profile private if you do not wish to show up in member searches. This does not
-                    affect this information being used to recommend you to other events and members.
-                  </Text>
                   <FieldSwitch
-                    field="show_profile"
-                    label="Show Profile in Search"
-                    help="Turn this off, if do not wish to be searchable on the members page."
+                    field="show_explicit"
+                    label="Show Explicit Details on Profile"
+                    help="Turn this off, if would rather not show this information to other verified members."
                   />
                 </Alert>
-                <SimpleGrid spacing={2} columns={[1, 1, 3]}>
-                  <GridItem colSpan={[1, 1, 3]}>
-                    <FieldInput
-                      field="nickname"
-                      label="Username"
-                      help="This is the name that will be displayed on your profile."
-                      className="col-span-2 sm:col-span-4"
-                    />
-                  </GridItem>
-                  <FieldSelect field="spectrum" label="Orientation" options={spectrumOptions} />
-                  <FieldSelect field="mannerisms" label="Mannerisms" options={mannerismsOptions} />
-                  <FieldSelect
-                    field="relationship_status"
-                    label="Relationship Status"
-                    options={relationshipOptions}
-                  />
-                </SimpleGrid>
-                <FieldText
-                  field="biography"
-                  label="Biography"
-                  help="Tell us about yourself. What are your interests? What are you looking for?"
-                  rows={4}
-                />
-                <SimpleGrid spacing={2} columns={[2, 2, 4]}>
-                  <FieldNumber field="age" label="Age" min={21} />
-                  <FieldInput field="height" label="Height" placeholder="5'11" />
-                  <FieldNumber field="weight" label="Weight" placeholder="185" />
-                  <FieldSelect field="build" label="Build" options={buildOptions} />
-                </SimpleGrid>
+                <SimpleGrid spacing={2} columns={[2]}>
+                  <FieldInput field="cock_length" label="Cock Length" type="number" />
+                  <FieldSelect field="cock_girth" label="Cock Girth" options={cockGirthOptions} />
 
-                <SimpleGrid spacing={2} columns={[1, 3]}>
-                  <FieldSelect field="skin_tone" label="Skin Tone" options={skinToneOptions} />
-                  <FieldSelect field="hair_color" label="Hair Color" options={hairColorOptions} />
-                  <FieldSelect field="hair_style" label="Hair Style" options={hairStyleOptions} />
-                  <FieldSelect field="body_hair" label="Body Hair" options={bodyHairOptions} />
-                  <FieldSelect
-                    field="facial_hair"
-                    label="Facial Hair"
-                    options={facialHairOptions}
-                  />
-                  <FieldSelect field="eye_color" label="Eye Color" options={eyeColorOptions} />
+                  <FieldSelect field="ball_size" label="Ball Size" options={ballSizeOptions} />
                 </SimpleGrid>
                 <FieldCheckboxes
-                  field="body_attributes"
-                  label="Other Attributes"
-                  options={bodyAttributesOptions}
+                  field="cock_attributes"
+                  label="Cock Attributes"
+                  options={cockAttributesOptions}
                 />
-                <Divider mt={4} mb={2} />
+                <FieldCheckboxes
+                  field="cum_attributes"
+                  label="Cum Attributes"
+                  options={cumAttributesOptions}
+                />
               </TabPanel>
 
               <TabPanel p={0}>
@@ -265,57 +282,12 @@ function Form(props: PageProps) {
                   borderRadius="md"
                   shadow="md"
                 >
-                  <Text>
-                    Your sexual preferences and explicit stats help match you with other members. If
-                    you choose to display this info, other members can find you based on these
-                    attributes.
-                  </Text>
                   <FieldSwitch
                     field="show_explicit"
+                    mx="auto"
                     label="Show Explicit Details on Profile"
-                    help="Turn this on, if you are okay showing this information to other verified members."
+                    help="Turn this off, if would rather not show this information to other verified members."
                   />
-                </Alert>
-                <SimpleGrid spacing={2} columns={{ base: 1, md: 2 }}>
-                  <FieldInput
-                    field="cock_length"
-                    label="Cock Length"
-                    type="number"
-                    registerOptions={{}}
-                  />
-                  <FieldSelect field="cock_girth" label="Cock Girth" options={cockGirthOptions} />
-                  <FieldCheckboxes
-                    field="cock_attributes"
-                    label="Cock Attributes"
-                    className="sm:col-span-2"
-                    options={cockAttributesOptions}
-                  />
-                  <FieldSelect field="ball_size" label="Ball Size" options={ballSizeOptions} />
-                  <FieldSelect
-                    field="ball_gravity"
-                    label="Ball Sack"
-                    options={ballGravityOptions}
-                  />
-                </SimpleGrid>
-                <FieldCheckboxes
-                  field="cum_attributes"
-                  label="Cum Attributes"
-                  className="sm:col-span-2"
-                  options={cumAttributesOptions}
-                />
-                <Alert
-                  bg={'primary'}
-                  color="white"
-                  flexDirection="column"
-                  my={4}
-                  p={4}
-                  borderRadius="md"
-                  shadow="md"
-                >
-                  <Text>
-                    Your sexual preferences help us match you with other members that are into the
-                    same things.
-                  </Text>
                 </Alert>
 
                 <FieldCheckboxes
@@ -345,10 +317,6 @@ function Form(props: PageProps) {
                   borderRadius="md"
                   shadow="md"
                 >
-                  <Text>
-                    This is your health information. Other members are able to see this information
-                    if you choose to show it.
-                  </Text>
                   <FieldSwitch
                     field="show_health"
                     label="Show Health Information on Profile"

@@ -65,7 +65,7 @@ export async function getServerSideProps(_context: NextPageContext) {
 
 type MemberFormData = Partial<Member>
 
-function Account(props: PageProps) {
+export default function SettingsPage(props: PageProps) {
   const { member, loading } = useMember()
   return (
     <Page title="Settings" loading={loading} requireAuth={true} header={<UserCard user={member} />}>
@@ -74,7 +74,7 @@ function Account(props: PageProps) {
   )
 }
 
-export default function Form(props: PageProps) {
+function Form(props: PageProps) {
   const toast = useToast()
   const { member, reload, loading } = useMember()
   const {
@@ -121,8 +121,6 @@ export default function Form(props: PageProps) {
         duration: 9000,
         isClosable: true,
       })
-      reload()
-      reset()
     } else if (response.error?.field) {
       // @ts-ignore
       setError(response.error!.field, response.error.message)

@@ -1,3 +1,3 @@
-import { default as Account } from './settings'
+import { default as ProfilePage } from './profile'
 
-export default Account
+export default ProfilePage
