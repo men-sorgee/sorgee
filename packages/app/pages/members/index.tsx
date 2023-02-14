@@ -214,7 +214,7 @@ export default function MemberListPage(props: PageProps) {
             <Select
               value={sortTerm}
               onChange={(e) => {
-                setSort(`${sortDir}${e.target.value}`)
+                setSortTerm(e.target.value)
               }}
             >
               <option value="last_login">Recently Online</option>
@@ -225,7 +225,7 @@ export default function MemberListPage(props: PageProps) {
               <IconButton
                 aria-label="Ascending"
                 title="Sorted by ascending. Click to sort by descending"
-                icon={<ArrowUpIcon height={20} />}
+                icon={<ArrowDownIcon height={20} />}
                 onClick={() => setSortDir('-')}
               />
             )}
@@ -233,7 +233,7 @@ export default function MemberListPage(props: PageProps) {
               <IconButton
                 aria-label="Ascending"
                 title="Sorted by descending. Click to sort by ascending"
-                icon={<ArrowDownIcon height={20} />}
+                icon={<ArrowUpIcon height={20} />}
                 onClick={() => setSortDir('')}
               />
             )}
@@ -263,28 +263,6 @@ export default function MemberListPage(props: PageProps) {
           <ModalBody>
             <MemberSpotlight id={id as string} fields={fields} />
           </ModalBody>
-          <ModalFooter hidden>
-            <Flex justify="space-between" align="center">
-              <IconButton
-                aria-label="Add Buddy"
-                disabled={true}
-                icon={<UserAddIcon fill="primary.300" />}
-                variant="ghost"
-              />
-              <IconButton
-                aria-label="Favorite"
-                disabled={true}
-                icon={<StarIcon fill="yellow.300" />}
-                variant="ghost"
-              />
-              <IconButton
-                aria-label="Message"
-                disabled={true}
-                icon={<ChatIcon fill="blue.300" />}
-                variant="ghost"
-              />
-            </Flex>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </Page>

@@ -114,6 +114,7 @@ function Form(props: PageProps) {
     const [ok, response] = await postJSON<User>('/api/member/me', data)
 
     if (ok) {
+      reset()
       toast({
         title: 'Success',
         description: 'Your account was updated.',

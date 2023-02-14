@@ -32,7 +32,6 @@ export const MemberSpotlight = ({ id, fields }: Props) => {
             <Tab>General</Tab>
             <Tab>Sexual</Tab>
             <Tab>Interests</Tab>
-            {/**<Tab>Location</Tab>**/}
             <Tab>Health</Tab>
           </TabList>
           <TabPanels>
@@ -66,16 +65,6 @@ export const MemberSpotlight = ({ id, fields }: Props) => {
                 color="blue"
               />
             </TabPanel>
-            {/**<TabPanel>
-            <PropertyGroup
-              member={member}
-              fieldList={memberProfileLocationFields}
-              show={member?.show_location}
-              fields={fields}
-              color="purple"
-            />
-          </TabPanel>
-          {**/}
             <TabPanel>
               <MemberPropertyGroup
                 k="health"

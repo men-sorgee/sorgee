@@ -34,7 +34,7 @@ export const MemberCard = ({ member, onClick }: Props) => {
           borderColor="accent.400"
           _hover={{ shadow: '2xl', borderColor: 'accent.500' }}
         >
-          <CardHeader h={20} pb={2}>
+          <CardBody>
             <LinkOverlay
               as={NextLink}
               href={`/members/${member.id}`}
@@ -45,10 +45,9 @@ export const MemberCard = ({ member, onClick }: Props) => {
             >
               <MemberHeader member={member} />
             </LinkOverlay>
-          </CardHeader>
-          <CardBody>
-            <Divider />
-            <Text noOfLines={2}>{member.biography}</Text>
+            <Text noOfLines={2} py={0} my={0}>
+              {member.biography}
+            </Text>
           </CardBody>
           <CardFooter justify="space-between" alignItems="end">
             <Spacer />
