@@ -8,9 +8,9 @@ export const MemberHeader = ({ member }: { member: Partial<SearchableMember> }) 
       <Flex direction="column" justify="flex-between" align="top" w="full">
         <UserCard user={member} size="xl" />
         <Flex justify="start" align="start" my={2} w="full">
-          {member?.spectrum && (
-            <Badge size={'lg'} colorScheme="blue" rounded={0}>
-              {member.spectrum}
+          {member?.mannerisms && (
+            <Badge size="lg" colorScheme="orange" rounded={0}>
+              {member.mannerisms}
             </Badge>
           )}
           {member?.relationship_status && (
@@ -18,9 +18,9 @@ export const MemberHeader = ({ member }: { member: Partial<SearchableMember> }) 
               {member.relationship_status}
             </Badge>
           )}
-          {member?.mannerisms && (
-            <Badge size="lg" colorScheme="orange" rounded={0}>
-              {member.mannerisms}
+          {member?.spectrum && (
+            <Badge size={'lg'} colorScheme="blue" rounded={0}>
+              {member.spectrum}
             </Badge>
           )}
         </Flex>

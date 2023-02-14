@@ -7,17 +7,19 @@ import {
   AvatarProps,
   AvatarBadge,
   Tooltip,
+  chakra,
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { UserBadge } from './'
 import { getAssetUrl, toLocaleDate } from 'lib/utils'
 import { Member, SearchableMember } from 'lib/models'
 import { formatDistanceToNowStrict } from 'date-fns'
+
 type Props = AvatarProps & {
   user: Partial<Member | SearchableMember>
 }
 
-export const UserCard = ({ user }: Props) => {
+export const UserCard = chakra(({ user, ...props }: Props) => {
   const [loaded, setLoaded] = useState(false)
   const [pictureSrc, setPictureSrc] = useState<string | null>(null)
   const [lastLogin, setLastLogin] = useState<string | null>(null)
@@ -46,10 +48,12 @@ export const UserCard = ({ user }: Props) => {
             color="white"
             name={user?.nickname || user?.first_name}
             bgGradient="linear(to-b, blue.500, accent.500)"
+            loading="lazy"
+            {...props}
           >
             {user?.presence == 'online' && (
               <Tooltip label={lastLogin} placement="top">
-                <AvatarBadge boxSize="1em" bg="green.500" title="Online" />
+                <AvatarBadge boxSize=".5em" bg="green.500" title="Online" />
               </Tooltip>
             )}
           </Avatar>
@@ -66,4 +70,4 @@ export const UserCard = ({ user }: Props) => {
       )}
     </>
   )
-}
+})
