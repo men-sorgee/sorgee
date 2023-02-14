@@ -87,8 +87,6 @@ export default function MemberListPage(props: PageProps) {
   const [page, setPage] = useState<number>(undefined)
   const [size, setSize] = useState<number>(undefined)
   const [sort, setSort] = useState<string>(undefined)
-  const [sortTerm, setSortTerm] = useState<string>(undefined)
-  const [sortDir, setSortDir] = useState<string>(undefined)
   const [key, setKey] = useState<string>(undefined)
   const [pageCount, setPageCount] = useState<number>(undefined)
   const [members, setMembers] = useState<SearchableMember[]>(undefined)
@@ -106,13 +104,8 @@ export default function MemberListPage(props: PageProps) {
 
     if (page == undefined) setPage(pg)
     if (size == undefined) setSize(sz)
-    if (sort == undefined) {
-      let d = so.startsWith('-') ? '-' : ''
-      let t = so.startsWith('-') ? so.slice(1) : so
-      setSortDir(d)
-      setSortTerm(t)
-      setSort(so)
-    }
+    if (sort == undefined) setSort(so)
+
     if (query == undefined && q != undefined) {
       setQuery(normalize<SearchableMember>(q) as QueryParams)
     }
@@ -151,17 +144,6 @@ export default function MemberListPage(props: PageProps) {
   }, [size])
 
   useEffect(() => {
-    //if (sort) {
-    //  setSortDir(sort.startsWith('-') ? '-' : '')
-    //  setSortTerm(sort.startsWith('-') ? sort.slice(1) : sort)
-    //}
-  }, [sort])
-
-  useEffect(() => {
-    setSort(`${sortDir}${sortTerm}`)
-  }, [sortDir, sortTerm])
-
-  useEffect(() => {
     if (response?.data && response?.meta) {
       const { total_count, filter_count } = response.meta
       setMeta({
@@ -183,6 +165,9 @@ export default function MemberListPage(props: PageProps) {
     }
   }, [id, setId, onOpen, onClose])
 
+  const sortDir = sort?.startsWith('-') ? '-' : ''
+  const sortTerm = sort?.startsWith('-') ? sort.slice(1) : sort || 'last_login'
+
   return (
     <Page title="Members" loading={loading} w="full" requireAuth={true}>
       <FormProvider {...methods}>
@@ -199,7 +184,7 @@ export default function MemberListPage(props: PageProps) {
 
           <Flex gap={4} mt={4} align="center">
             <Select
-              value={s || size}
+              value={size || 10}
               onChange={(e) => {
                 setSize(Number(e.target.value))
               }}
@@ -210,23 +195,12 @@ export default function MemberListPage(props: PageProps) {
                 </option>
               ))}
             </Select>
-
-            <Select
-              value={sortTerm}
-              onChange={(e) => {
-                setSortTerm(e.target.value)
-              }}
-            >
-              <option value="last_login">Recently Online</option>
-              <option value="nickname">By Username</option>
-              <option value="rating">Rating</option>
-            </Select>
             {sortDir == '' && (
               <IconButton
                 aria-label="Ascending"
                 title="Sorted by ascending. Click to sort by descending"
                 icon={<ArrowDownIcon height={20} />}
-                onClick={() => setSortDir('-')}
+                onClick={() => setSort(`-${sortTerm}`)}
               />
             )}
             {sortDir == '-' && (
@@ -234,9 +208,19 @@ export default function MemberListPage(props: PageProps) {
                 aria-label="Ascending"
                 title="Sorted by descending. Click to sort by ascending"
                 icon={<ArrowUpIcon height={20} />}
-                onClick={() => setSortDir('')}
+                onClick={() => setSort(sortTerm)}
               />
             )}
+            <Select
+              value={sortTerm}
+              onChange={(e) => {
+                setSort(`${sortDir}${e.target.value}`)
+              }}
+            >
+              <option value="last_login">Recently Online</option>
+              <option value="nickname">By Username</option>
+              <option value="rating">Rating</option>
+            </Select>
           </Flex>
           <Pager page={page} pageCount={pageCount} setPage={setPage} />
           <SimpleGrid my={4} columns={[1, 1, 1, 2]} spacing={4} w="full" justifyItems="stretch">
@@ -368,7 +352,7 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
 
 type PagerProps = { page: number; pageCount: number; setPage: any }
 const Pager = ({ page, pageCount, setPage }: PagerProps) => {
-  if (pageCount == undefined) return null
+  if (pageCount == undefined || pageCount == 0) return null
   return (
     <>
       <Flex justifyContent="space-between" alignItems="center" mt={4}>

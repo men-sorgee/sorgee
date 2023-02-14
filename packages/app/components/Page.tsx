@@ -56,7 +56,7 @@ const Page = ({
       {header}
       {(loading && (
         <Loading size="xl">
-          <h2>hold up</h2>
+          <h2>hold please</h2>
         </Loading>
       )) ||
         children}

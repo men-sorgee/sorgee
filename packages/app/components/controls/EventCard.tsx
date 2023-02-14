@@ -57,9 +57,11 @@ export const EventCard = ({ event, children, level, type }: Props) => {
             m={0}
             w="25%"
             p={4}
+            pt={[16, 2]}
             textAlign="center"
             justifyContent="middle"
             color="white!important"
+            fontSize={['xl', '3xl']}
           >
             {eventDate.month.toUpperCase()}
             <br />

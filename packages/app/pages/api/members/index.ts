@@ -26,7 +26,12 @@ export default async function FindMembers(
   try {
     const member = await withMember(req, res)
     const level = MemberLevel[member.user_type]
-    const { offset = 0, limit = 10, sort, ...props } = req.query as Record<keyof MemberSearch, any>
+    const {
+      offset = 0,
+      limit = 10,
+      sort = '-last_login',
+      ...props
+    } = req.query as Record<keyof MemberSearch, any>
     const allowedLevels = getAllowedUsers(level)
     const params = normalize<SearchableMember>(props)
     const postQueryParams = {}
