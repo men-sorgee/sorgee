@@ -59,11 +59,11 @@ export const UserCard = chakra(({ user, size = 'lg', ...props }: Props) => {
               </Tooltip>
             )}
           </Avatar>
-          <VStack spacing={0} align="flex-start">
-            <Heading size="md" textTransform="uppercase" m={0}>
+          <VStack spacing={1} align="flex-start">
+            <Heading size="md" textTransform="uppercase" m={0} color="white">
               {user?.nickname || user?.first_name}
             </Heading>
-            <MemberBadge size="lg" user_type={user?.user_type} />
+            <MemberBadge size="lg" user_type={user?.user_type} my={2} />
             <Text fontSize="sm" color="text">
               {user?.city || 'Nearby'} {user?.state}
             </Text>

@@ -1,11 +1,11 @@
-import { Badge } from '@chakra-ui/react'
+import { Badge, BadgeProps, chakra } from '@chakra-ui/react'
 import { MemberLevel } from 'lib/models'
-interface Props {
+type Props = BadgeProps & {
   user_type: string
   size?: string
 }
 
-export const MemberBadge = ({ user_type, size = 'md' }: Props) => {
+export const MemberBadge = chakra(({ user_type, size = 'md', ...props }: Props) => {
   if (!user_type) return null
   const colors = [
     ['red.300', 'red.600'],
@@ -22,8 +22,15 @@ export const MemberBadge = ({ user_type, size = 'md' }: Props) => {
   const levelColor = colors[levelValue]
   const levelName = user_type.split('_').join(' ')
   return (
-    <Badge rounded={size} size={size} textTransform={'uppercase'} bg={levelColor} color="white">
+    <Badge
+      {...props}
+      rounded={size}
+      size={size}
+      textTransform={'uppercase'}
+      bg={levelColor}
+      color="white"
+    >
       {levelName}
     </Badge>
   )
-}
+})
