@@ -177,26 +177,28 @@ const custom: Partial<ChakraTheme> = {
   },
   styles: {
     global: (props: StyleFunctionProps) => {
+      const bg = mode(defaultTheme.colors.gray['200'], defaultTheme.colors.gray['700'])(props)
+      const fg = brand.colors.accent['500']
       return {
         body: {
           fontFamily: 'body',
           color: 'text',
-          bg: 'bg',
+          backgroundColor: bg,
         },
         '*': {
           scrollbarWidth: 'auto',
-          scrollbarColor: `${brand.colors.primary.DEFAULT} #ffffff;`,
+          scrollbarColor: `${bg} ${fg};`,
         },
         '*::-webkit-scrollbar': {
           width: '16px',
         },
         '*::-webkit-scrollbar-track': {
-          background: '#ffffff',
+          background: bg,
         },
         '*::-webkit-scrollbar-thumb': {
-          backgroundColor: brand.colors.primary.DEFAULT,
+          backgroundColor: fg,
           borderRadius: '10px',
-          border: '3px solid #ffffff',
+          border: `3px solid ${bg}`,
         },
         header: {
           a: {
