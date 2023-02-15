@@ -8,7 +8,13 @@ export const Markdown = ({ content }: { content: string }) => {
         img: ({ height, src, width, alt, ...props }) => {
           return (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={src} height={1000} width={1500} alt={alt || 'guysnheat image'} />
+            <Image
+              src={src}
+              width="100%"
+              rounded="lg"
+              boxShadow="lg"
+              alt={alt || 'guysnheat image'}
+            />
           )
         },
         p: ({ children }: { children: React.ReactNode }) => <Text>{children}</Text>,

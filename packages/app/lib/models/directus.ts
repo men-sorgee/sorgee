@@ -24,7 +24,7 @@ export type GroupEvent = {
   type: string
   invite_only: boolean
 }
-
+export type UserPhotoFieldType = 'photo' | 'picture' | 'public' | 'private'
 export type UserFields = (string | keyof User)[] | '*' | '*.*' | any
 
 export type EventUser = {
@@ -306,6 +306,9 @@ export type User = {
   promo: number | Promo
   rating: number
   ratings: (string | number)[] | Rating[]
+
+  private_folder?: string
+  public_folder?: string
 }
 
 export type Rating = {

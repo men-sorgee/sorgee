@@ -32,6 +32,10 @@ export async function putJSON<T = never | any>(url: string, data: object) {
   return await fetchJSON(url, data, 'PUT')
 }
 
+export async function deleteJSON<T = never | any>(url: string, data?: object) {
+  return await fetchJSON(url, data, 'DELETE')
+}
+
 export async function fetchJSON<T = never | any>(
   url: string,
   data?: object,
@@ -71,6 +75,7 @@ export function pruneUndefined(obj: Record<string, any>, and: (v: any) => boolea
 }
 
 export function getAssetUrl(assetId: string | { id: string }) {
+  if (!assetId) return null
   if (typeof assetId == 'string') return `/api/asset/${assetId}`
   else return `/api/asset/${assetId.id}`
 }

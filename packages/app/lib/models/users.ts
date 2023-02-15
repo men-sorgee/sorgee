@@ -237,6 +237,8 @@ export type Member = Applicant & {
   their_relationship_status?: string[]
 
   rating: number
+  private_folder?: string
+  public_folder?: string
 }
 
 export type SearchableMember = Omit<
@@ -329,6 +331,8 @@ export const searchableMemberFields: Array<keyof Member> = [
   'relationship_status',
   'spectrum',
   'mannerisms',
+  'private_folder',
+  'public_folder',
   ...memberProfilePrivateFields,
   'show_contact',
   ...memberProfileContactFields,

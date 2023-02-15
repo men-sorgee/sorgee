@@ -1,4 +1,4 @@
-import { signIn, signOut, useSession } from 'next-auth/react'
+import { signIn, signOut } from 'next-auth/react'
 import {
   Box,
   Menu,
@@ -6,11 +6,10 @@ import {
   MenuItem,
   MenuList,
   useColorMode,
-  useColorModeValue,
   MenuDivider,
   Link,
 } from '@chakra-ui/react'
-import { LinkButton, UserAvatar, UserCard } from 'components/controls'
+import { LinkButton, MemberAvatar, UserCard } from 'components/controls'
 import Notifications from './Notifications'
 import {
   CalendarIcon,
@@ -26,25 +25,26 @@ import {
   MoonIcon,
   SunIcon,
 } from '@heroicons/react/outline'
-import { useAuth } from 'hooks'
+import { useAuth, useMember } from 'hooks'
 
 interface Props {}
 
 export default function UserMenu(_props: Props) {
   const { colorMode, toggleColorMode } = useColorMode()
   const { user, isApplicant, isMember, isStaff, showApply } = useAuth()
+  const { member } = useMember()
   return (
     <>
       {user ? (
         <>
           <Menu placement="bottom">
             <MenuButton cursor={'pointer'}>
-              <UserAvatar />
+              <MemberAvatar />
             </MenuButton>
 
             <MenuList bg="black" alignItems={'center'}>
               <Box p={4} m={2} mt={0} bgGradient="linear(to-bl, primary.300, accent.300)">
-                <UserCard user={user} />
+                <UserCard user={member || user} />
               </Box>
               <MenuDivider />
               <MenuItem

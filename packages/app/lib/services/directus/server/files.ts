@@ -4,13 +4,21 @@ import IncomingForm from 'formidable/Formidable'
 import { NextApiRequest } from 'next'
 import { Writable } from 'node:stream'
 import FormData from 'form-data'
-import { DirectusFile } from 'lib/models'
+import { DirectusFile, DirectusFolder } from 'lib/models'
+import { isNull } from 'node:util'
+import { ItemInput, FileItem } from '@directus/sdk'
 
 export enum UploadFolder {
   members = '8c3d5472-6b02-4056-affd-ab3d461b273d',
   profiles = '1ea29489-e282-4a1f-a981-8d578b6a1667',
   verification = '19610a61-14b2-4470-8952-e4d3502294cd',
 }
+
+export enum FolderType {
+  private = 'private',
+  public = 'public',
+}
+
 const formidableConfig = {
   keepExtensions: true,
   maxFileSize: 10_000_000,
@@ -92,31 +100,35 @@ async function decodeBase64Image(dataString: string) {
   }
 }
 
-//function base64toBytes(base64Data) {
-//  const sliceSize = 1024
-//  const byteCharacters = Buffer.from(base64Data, 'base64')
-//  const bytesLength = byteCharacters.length
-//  var slicesCount = Math.ceil(bytesLength / sliceSize)
-//  var byteArrays = new Array(slicesCount)
-//
-//  for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
-//    var begin = sliceIndex * sliceSize
-//    var end = Math.min(begin + sliceSize, bytesLength)
-//
-//    var bytes = new Array(end - begin)
-//    for (var offset = begin, i = 0; offset < end; ++i, ++offset) {
-//bytes[i] = byteCharacters[offset].charCodeAt(0)
-//    }
-//    byteArrays[sliceIndex] = new Uint8Array(bytes)
-//  }
-//  return Buffer.from(byteArrays)
-//}
-
 // Service Calls ------------------------------------
+export async function createFolder(newFolder: {
+  name: string
+  id?: string
+  parent?: string
+}): Promise<DirectusFolder> {
+  const adminClient = await getAdminClient()
+  const folder = await adminClient.folders.createOne(newFolder)
+  return folder
+}
+
+export async function findFolder(name: string, parent?: string): Promise<DirectusFolder> {
+  const adminClient = await getAdminClient()
+  const filter = {
+    name: { _eq: name },
+  }
+  if (parent) {
+    filter['parent'] = { _eq: parent }
+  }
+  const folders = await adminClient.folders.readByQuery({
+    filter,
+  })
+  if (folders.data.length === 0) return null
+  return folders.data[0] as DirectusFolder
+}
 
 export async function uploadFile(
   fileInfo: FileInfo,
-  folder: UploadFolder,
+  folder: UploadFolder | string,
   title: string,
   description?: string
 ) {
@@ -191,4 +203,21 @@ export async function importFile(
     },
   })
   return file as DirectusFile
+}
+
+export async function deleteFile(id: string) {
+  const adminClient = await getAdminClient()
+  await adminClient.files.deleteOne(id)
+}
+
+export async function getFile(id: string) {
+  const adminClient = await getAdminClient()
+  const file = await adminClient.files.readOne(id)
+  if (!file) return null
+  return file as unknown as DirectusFile
+}
+
+export async function updateFile(id: string, fileInfo: DirectusFile) {
+  const adminClient = await getAdminClient()
+  await adminClient.files.updateOne(id, fileInfo as any)
 }

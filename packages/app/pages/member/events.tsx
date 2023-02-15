@@ -250,7 +250,7 @@ function EventInfo({
               <Flex direction="column" w="full">
                 <input type="hidden" {...methods.register('event_id')} />
                 <input type="hidden" {...methods.register('user_id')} />
-                <Flex direction={['column', 'column', 'row']} w="full" justify="stretch">
+                <Flex gap={2} direction={['column', 'column', 'row']} w="full" justify="stretch">
                   <FieldSelect
                     field="rsvp"
                     w="full"
@@ -266,14 +266,7 @@ function EventInfo({
                     }}
                   />
 
-                  <Button
-                    size="lg"
-                    colorScheme="secondary"
-                    w="full"
-                    mt={2}
-                    type="submit"
-                    disabled={working}
-                  >
+                  <Button size="lg" colorScheme="accent" w="full" type="submit" disabled={working}>
                     Update RSVP
                   </Button>
                 </Flex>

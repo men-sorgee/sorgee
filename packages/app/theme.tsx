@@ -269,12 +269,7 @@ const custom: Partial<ChakraTheme> = {
         li: { textAlign: 'left' },
         p: {
           my: 2,
-        },
-        img: {
-          width: '100%',
-          rounded: 'lg',
-          shadow: 'lg',
-        },
+        }
       }
     },
   },

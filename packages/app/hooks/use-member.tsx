@@ -8,9 +8,8 @@ type MemberResults = {
   member: Member | null
   name: string | undefined
   error?: any
-  //mutate: KeyedMutator<Partial<Member>>
   loading: boolean
-  reload: () => void
+  reload: () => Promise<Member>
   level: MemberLevel
 }
 
@@ -30,7 +29,11 @@ export const useMember = (id: string = 'me', refreshIntervalMinutes: number = 5)
     member,
     error,
     name,
-    reload: () => mutate(),
+    reload: () => {
+      return mutate(null, {
+        revalidate: true,
+      })
+    },
     loading: isLoading,
     level,
   }

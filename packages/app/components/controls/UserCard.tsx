@@ -10,7 +10,7 @@ import {
   chakra,
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
-import { UserBadge } from './'
+import { MemberBadge } from './'
 import { getAssetUrl, toLocaleDate } from 'lib/utils'
 import { Member, SearchableMember } from 'lib/models'
 import { formatDistanceToNowStrict } from 'date-fns'
@@ -63,7 +63,7 @@ export const UserCard = chakra(({ user, size = 'lg', ...props }: Props) => {
             <Heading size="md" textTransform="uppercase" m={0}>
               {user?.nickname || user?.first_name}
             </Heading>
-            <UserBadge size="lg" user_type={user?.user_type} />
+            <MemberBadge size="lg" user_type={user?.user_type} />
             <Text fontSize="sm" color="text">
               {user?.city || 'Nearby'} {user?.state}
             </Text>

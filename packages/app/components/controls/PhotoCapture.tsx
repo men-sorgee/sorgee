@@ -7,7 +7,7 @@ import {
   chakra,
   StackProps,
   Flex,
-  Center,
+  Image,
   Circle,
 } from '@chakra-ui/react'
 import { createRef, forwardRef, useCallback, useRef, useState } from 'react'
@@ -34,17 +34,11 @@ export const PhotoCapture = chakra(({ children, onAccept, facingMode, ...props }
 
   return (
     <>
-      <Box
-        bgGradient="linear(to-r, accent.500, primary.400)"
-        p={4}
-        rounded="lg"
-        w="full"
-        textAlign="center"
-      >
+      <Box shadow="md" bg="gray.300" p={4} rounded="lg" w="full" textAlign="center">
         <Box display={visible(image != undefined)} w="full">
           <AspectRatio mx="auto" mb={4} ratio={1} w="full">
             {/*eslint-disable-next-line @next/next/no-img-element*/}
-            <img src={image} alt="upload" width="100%" />
+            <Image src={image} alt="upload" w="100%" rounded="md" />
           </AspectRatio>
 
           <HStack spacing={4} mx="auto" maxWidth="fit-content">
@@ -59,7 +53,7 @@ export const PhotoCapture = chakra(({ children, onAccept, facingMode, ...props }
         </Box>
 
         <Box display={visible(image == undefined)} w="full">
-          <AspectRatio ratio={1} mb={4} w="full">
+          <AspectRatio ratio={1} mb={4} w="full" rounded="md">
             <Camera
               {...props}
               ref={camera}

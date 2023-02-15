@@ -14,7 +14,7 @@ import {
   Box,
 } from '@chakra-ui/react'
 import { EventUser, Invite, GroupEvent, User } from 'lib/models'
-import { LinkButton, Loading, TakePhoto, UserBadge } from 'components/controls'
+import { LinkButton, Loading, TakePhoto, MemberBadge } from 'components/controls'
 import { FieldSwitch } from 'components/forms'
 import { useMember } from 'hooks/use-member'
 import { useRouter } from 'next/router'
@@ -173,7 +173,7 @@ export default function InviteAdmin(_props: Props) {
                     <Heading size={['sm', 'sm', 'md']} textTransform="uppercase" m={0}>
                       {user?.first_name} {user?.last_name}
                     </Heading>
-                    <UserBadge size="lg" user_type={user?.user_type} />
+                    <MemberBadge size="lg" user_type={user?.user_type} />
                     <Text fontSize="xs" color="gray.500">
                       <a href={'mailto:' + user?.email}>{user?.email}</a>
                     </Text>

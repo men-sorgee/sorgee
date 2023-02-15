@@ -1,4 +1,4 @@
-import { Box, Tabs, TabList, Tab, TabPanels, TabPanel, Text } from '@chakra-ui/react'
+import { Box, Tabs, TabList, Tab, TabPanels, TabPanel, Text, Wrap } from '@chakra-ui/react'
 import { useMember } from 'hooks'
 import {
   DirectusField,
@@ -7,7 +7,9 @@ import {
   memberInterestsFields,
   memberHealthFields,
   memberProfileContactFields,
+  UserPhoto,
 } from 'lib/models'
+import { AssetImage } from './AssetImage'
 import { Loading } from './Loading'
 import { MemberHeader } from './MemberHeader'
 import { MemberPropertyGroup } from './MemberPropertyGroup'
@@ -39,6 +41,7 @@ export const MemberSpotlight = ({ id, fields }: Props) => {
           <Tab>General</Tab>
           <Tab>Sexual</Tab>
           <Tab>Interests</Tab>
+          <Tab>Photos</Tab>
           <Tab>Health</Tab>
         </TabList>
         <TabPanels maxH={300} minH={200} overflowY="scroll" my={2}>
@@ -69,6 +72,15 @@ export const MemberSpotlight = ({ id, fields }: Props) => {
               show={member?.show_interests}
               fields={fields}
             />
+          </TabPanel>
+          <TabPanel>
+            <Wrap>
+              {member.my_photos
+                .filter((p) => p.is_public)
+                .map((p: UserPhoto) => (
+                  <AssetImage rounded="lg" shadow="lg" key={p.id} fileId={p.directus_files_id} />
+                ))}
+            </Wrap>
           </TabPanel>
           <TabPanel>
             <MemberPropertyGroup

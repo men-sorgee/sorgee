@@ -1,8 +1,9 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
-import { FieldMap, User } from 'lib/models'
+import { DirectusFile, FieldMap, User } from 'lib/models'
 import { useMember } from 'hooks/use-member'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+
 import {
   FieldInput,
   FieldSelect,
@@ -10,13 +11,12 @@ import {
   FieldText,
   FieldCheckboxes,
   FieldSwitch,
+  FieldImage,
 } from 'components/forms'
 import {
   Alert,
   Button,
   Box,
-  Card,
-  CardBody,
   Flex,
   Tabs,
   TabList,
@@ -32,8 +32,8 @@ import {
 import Page from 'components/Page'
 import { useToast } from '@chakra-ui/react'
 import { postJSON } from 'lib/utils'
-import { MemberHeader, UserCard } from 'components/controls'
-import { useWarnIfUnsavedChanges } from '../../hooks/use-warn-if-unsaved'
+import { MemberHeader } from 'components/controls'
+import { useWarnIfUnsavedChanges } from 'hooks/use-warn-if-unsaved'
 
 type PageProps = {
   fieldMap: FieldMap
@@ -42,7 +42,6 @@ type PageProps = {
 export async function getServerSideProps(context: NextPageContext): Promise<{ props: PageProps }> {
   const { getFields } = await import('lib/services/directus/server')
   const fieldMap = await getFields('users')
-
   return {
     props: {
       fieldMap,
@@ -51,14 +50,9 @@ export async function getServerSideProps(context: NextPageContext): Promise<{ pr
 }
 
 export default function ProfilePage(props: PageProps) {
-  const { member, loading } = useMember()
+  const { member, loading, reload } = useMember()
   return (
-    <Page
-      title={`Profile`}
-      loading={loading}
-      requireAuth={true}
-      header={<UserCard user={member} size="xl" />}
-    >
+    <Page title={`Profile`} loading={loading} requireAuth={true}>
       {member && <Form {...props} />}
     </Page>
   )
@@ -113,60 +107,69 @@ function Form(props: PageProps) {
   const getOptions = (field: string) => {
     return fieldMap[field]?.meta.options.choices
   }
+
   const showProfile = watch('show_profile')
+  const bg = useColorModeValue('gray.100', 'dark.700')
   return (
     <>
       <FormProvider {...methods}>
+        <Text size="lg">
+          This is your profile. We use this information to match you with brothers. Verified
+          brothers can see your full profile, unless you choose to make it private.
+        </Text>
+
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Alert
-            bg="primary"
-            color="white"
-            flexDirection="column"
+          <SimpleGrid
+            bg={bg}
+            columns={{ base: 1, lg: 2 }}
             my={4}
-            p={4}
-            borderRadius="md"
-            shadow="md"
+            rounded="lg"
+            shadow="lg"
+            border="1px solid transparent"
+            borderColor={showProfile ? 'accent.500' : ''}
           >
-            <Text>
-              You can choose to make your profile private if you do not wish to show up in member
-              searches. This does not affect this information being used to recommend you to other
-              events and members.
-            </Text>
-            <FieldSwitch
-              field="show_profile"
-              label="Show Profile in Search"
-              help="Turn this off, if do not wish to be searchable on the members page."
-            />
-          </Alert>
-          <Text size="lg">
-            This is your profile. We use this information to match you with brothers. Verified
-            brothers can see your full profile, unless you choose to make it private.
-          </Text>
-          <Collapse animateOpacity in={showProfile}>
-            <Card
-              w="full"
-              h="full"
-              bg={useColorModeValue('gray.50', 'dark.700')}
-              border="1px solid transparent"
-              borderColor="accent.400"
-            >
-              <CardBody>
-                <Flex>
-                  <MemberHeader member={member} />
-                </Flex>
-                {member && <Text>{member?.biography}</Text>}
-              </CardBody>
-            </Card>
-          </Collapse>
-          <SimpleGrid spacing={2} columns={[1, 1, 3]}>
-            <GridItem colSpan={[1, 1, 3]}>
-              <FieldInput
-                field="nickname"
-                label="Nickname"
-                help="This is the name that will be displayed on your profile."
-                className="col-span-2 sm:col-span-4"
-              />
+            <Collapse animateOpacity in={showProfile}>
+              <Flex direction="column" alignContent="center" p={4}>
+                <MemberHeader member={member} />
+
+                {member && (
+                  <Text noOfLines={2} py={0} my={0}>
+                    {member?.biography}
+                  </Text>
+                )}
+              </Flex>
+            </Collapse>
+            <GridItem colSpan={showProfile ? 1 : 2}>
+              <Flex
+                flexDirection="column"
+                p={4}
+                flexShrink={1}
+                borderLeft={{ base: 'none', lg: showProfile ? '4px dotted black' : '' }}
+                borderTop={{ base: showProfile ? '4px dotted black' : '', lg: 'none' }}
+              >
+                <Text>
+                  You can choose to make your profile private if you do not wish to show up in
+                  member searches.*
+                </Text>
+                <FieldSwitch
+                  field="show_profile"
+                  label="Show Profile in Search"
+                  help="Turn this off, if do not wish to be searchable on the members page."
+                />
+              </Flex>
             </GridItem>
+          </SimpleGrid>
+          <Text fontSize="xs" as="em">
+            * This does not affect this information being used to recommend you to other events and
+            members.
+          </Text>
+          <FieldInput
+            field="nickname"
+            label="Nickname"
+            help="This is the name that will be displayed on your profile."
+            className="col-span-2 sm:col-span-4"
+          />
+          <SimpleGrid spacing={2} columns={[1, 1, 3]} mt={10}>
             <FieldSelect field="spectrum" label="Orientation" options={getOptions('spectrum')} />
             <FieldSelect field="mannerisms" label="Mannerisms" options={getOptions('mannerisms')} />
             <FieldSelect
@@ -174,14 +177,17 @@ function Form(props: PageProps) {
               label="Relationship Status"
               options={getOptions('relationship_status')}
             />
+            <GridItem colSpan={[1, 1, 3]}>
+              <FieldText
+                field="biography"
+                label="Biography"
+                help="Tell us about yourself. What are your interests? What are you looking for?"
+                rows={4}
+              />
+            </GridItem>
           </SimpleGrid>
-          <FieldText
-            field="biography"
-            label="Biography"
-            help="Tell us about yourself. What are your interests? What are you looking for?"
-            rows={4}
-          />
-          <SimpleGrid spacing={2} columns={[2, 2, 3, 4]}>
+
+          <SimpleGrid spacing={2} columns={[2, 2, 4]}>
             <FieldNumber field="age" label="Age" min={21} />
             <FieldInput field="height" label="Height" placeholder="5'11" />
             <FieldNumber field="weight" label="Weight" placeholder="185" />
@@ -190,18 +196,25 @@ function Form(props: PageProps) {
             <FieldSelect field="hair_color" label="Hair Color" options={getOptions('hair_color')} />
             <FieldSelect field="hair_style" label="Hair Style" options={getOptions('hair_style')} />
             <FieldSelect field="body_hair" label="Body Hair" options={getOptions('body_hair')} />
-            <FieldSelect
-              field="facial_hair"
-              label="Facial Hair"
-              options={getOptions('facial_hair')}
-            />
-            <FieldSelect field="eye_color" label="Eye Color" options={getOptions('eye_color')} />
+            <GridItem colSpan={[1, 1, 2]}>
+              <FieldSelect
+                field="facial_hair"
+                label="Facial Hair"
+                options={getOptions('facial_hair')}
+              />
+            </GridItem>
+            <GridItem colSpan={[1, 1, 2]}>
+              <FieldSelect field="eye_color" label="Eye Color" options={getOptions('eye_color')} />
+            </GridItem>
+            <GridItem colSpan={[2, 2, 4]}>
+              <FieldCheckboxes
+                field="body_attributes"
+                label="Other Attributes"
+                options={getOptions('body_attributes')}
+              />
+            </GridItem>
           </SimpleGrid>
-          <FieldCheckboxes
-            field="body_attributes"
-            label="Other Attributes"
-            options={getOptions('body_attributes')}
-          />
+
           <Tabs isFitted defaultIndex={tabValue} onChange={(index) => setTabValue(index)} mt={4}>
             <TabList fontWeight="bold">
               <Tab fontSize={['md', 'lg', 'xl']} fontWeight={tabValue == 0 ? 'bold' : null}>
@@ -354,7 +367,6 @@ function Form(props: PageProps) {
             disabled={isSubmitting || !isDirty}
             position="sticky"
             bottom={4}
-            mx={2}
           >
             Update Profile
           </Button>

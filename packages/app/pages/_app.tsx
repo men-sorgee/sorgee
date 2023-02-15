@@ -4,9 +4,10 @@ import { SessionProvider } from 'next-auth/react'
 import { ChakraProvider, cookieStorageManager, extendTheme } from '@chakra-ui/react'
 import Layout from 'components/layout/index'
 import { theme } from '../theme'
-import { MetaProvider } from '../hooks/use-meta'
+import { MetaProvider } from 'hooks/use-meta'
 import { Manrope, Arvo, Roboto_Mono } from '@next/font/google'
 import { useRouter } from 'next/router'
+import { StrictMode } from 'react'
 const heading = Arvo({
   variable: '--heading-font',
   weight: ['400', '700'],
@@ -40,17 +41,19 @@ function MyApp({ Component, pageProps }: AppProps) {
     return <Component key={router.asPath} {...pageProps} />
   }
   return (
-    <MetaProvider>
-      <SessionProvider>
-        <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
-          <Layout fonts={[heading.variable, body.variable, mono.variable]}>
-            <ErrorBoundary>
-              <Component key={router.asPath} {...pageProps} />
-            </ErrorBoundary>
-          </Layout>
-        </ChakraProvider>
-      </SessionProvider>
-    </MetaProvider>
+    <StrictMode>
+      <MetaProvider>
+        <SessionProvider>
+          <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
+            <Layout fonts={[heading.variable, body.variable, mono.variable]}>
+              <ErrorBoundary>
+                <Component key={router.asPath} {...pageProps} />
+              </ErrorBoundary>
+            </Layout>
+          </ChakraProvider>
+        </SessionProvider>
+      </MetaProvider>
+    </StrictMode>
   )
 }
 

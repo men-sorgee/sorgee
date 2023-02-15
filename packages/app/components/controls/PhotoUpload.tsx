@@ -1,78 +1,82 @@
 import {
-  Stack,
-  Center,
+  Box,
+  Flex,
+  IconButton,
   Input,
-  Alert,
-  AlertIcon,
-  VStack,
+  Image,
+  ImageProps,
   HStack,
   Button,
-  Text,
+  Icon,
   chakra,
+  useToast,
 } from '@chakra-ui/react'
-import { ErrorMessage } from '@hookform/error-message'
-import { useState, ChangeEvent, useEffect } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
-import { useMember } from 'hooks'
+import { UploadIcon, XIcon } from '@heroicons/react/outline'
+import { useState, ChangeEvent, useEffect, useRef } from 'react'
 import { ApiResponse } from 'lib/models'
-import { getAssetUrl } from 'lib/utils'
-import { FieldCheckbox, FieldInput, FieldText } from 'components/forms'
 
-type Props = {
-  memberId: string
-  previewUrl?: string
-  field: 'picture' | 'public' | 'private'
-  setCompleted: (completed: boolean) => void
-  onClear: () => void
-}
-
-type FormValues = {
-  memberId: string
-  file: File
+export type PhotoUploadProps = ImageProps & {
   name: string
   description: string
-  verify: boolean
+  photoUrl?: string
+  postUrl: string
+  file?: File
+  imageExtensions?: string[]
+  setCompleted?: (completed: boolean) => void
+  onClear?: () => void
 }
 
 export const PhotoUpload = chakra(
-  ({ onClear, memberId, previewUrl: p, setCompleted, field }: Props) => {
-    const [file, setFile] = useState<File>(undefined)
-    const [previewUrl, setPreviewUrl] = useState<string>(undefined)
-    const methods = useForm<FormValues>({
-      defaultValues: {
-        name: field,
-      },
-      mode: 'onChange',
-    })
-    const {
-      handleSubmit,
-      reset,
-      setError,
-      clearErrors,
-      formState: { errors },
-    } = methods
+  ({
+    name,
+    description,
+    postUrl,
+    photoUrl,
+    setCompleted = (b: boolean) => {},
+    onClear = () => {},
+    imageExtensions = ['.jpg', '.gif', '.png', '.gif'],
+    h,
+    w,
+    file: f,
+    ...props
+  }: PhotoUploadProps) => {
+    const [upload, setUpload] = useState<boolean>(true)
+    const [file, setFile] = useState<File>(f)
+    const [previewSrc, setPreviewSrc] = useState<string>(undefined)
+    const toast = useToast()
+    const fileInput = useRef<HTMLInputElement>(null)
+    const [photoSrc, setPhotoSrc] = useState<string>(undefined)
 
     useEffect(() => {
-      if (p && !previewUrl) {
-        fetch(p)
-          .then((res) => res.blob())
-          .then((blob) => setFile(new File([blob], 'image.jpg')))
-
-        setPreviewUrl(p)
+      if (photoUrl && photoSrc == undefined) {
+        setPhotoSrc(photoUrl)
+        setUpload(false)
       }
-    }, [p, previewUrl])
+    }, [photoSrc, photoUrl])
+
+    const setError = (error: string) => {
+      toast({
+        title: 'Something went wrong',
+        description: error,
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      })
+    }
 
     const onFileUploadChange = (e: ChangeEvent<HTMLInputElement>) => {
-      const fileInput = e.target
-
-      const file = fileInput.files ? (fileInput.files?.length ? fileInput.files[0] : null) : null
+      const file = fileInput?.current?.files
+        ? fileInput.current.files?.length
+          ? fileInput.current.files[0]
+          : null
+        : null
       if (!file || !file.type.startsWith('image')) {
-        setError('file', { message: 'Please select a valid image' })
+        setError('Please select a valid image')
         return
       }
-      clearErrors()
       setFile(file)
-      setPreviewUrl(URL.createObjectURL(file))
+      setPreviewSrc(URL.createObjectURL(file))
+      setUpload(false)
 
       e.currentTarget.type = 'text'
       e.currentTarget.type = 'file'
@@ -81,89 +85,156 @@ export const PhotoUpload = chakra(
     const onCancelFile = (e: { preventDefault: () => void }) => {
       e.preventDefault()
       onClear()
-      reset({ file: null, verify: false })
-      clearErrors()
       setFile(null)
-      setPreviewUrl(null)
+      setPreviewSrc(null)
     }
 
-    async function onSubmit({ verify, name }: FormValues) {
-      if (!file || !verify) return
+    async function onSubmit() {
+      if (!file) return
 
       try {
         let formData = new FormData()
         formData.append('media', file)
         formData.append('name', name)
-        const res = await fetch(`/api/member/${memberId}/photos/${field}`, {
+        formData.append('title', name)
+        formData.append('description', description)
+        const res = await fetch(postUrl, {
           method: 'POST',
           body: formData,
         })
 
         if (res.ok) {
           setCompleted(true)
+          setFile(null)
         } else {
           const body = (await res.json()) as ApiResponse
           if (body.error?.field) {
-            setError(body.error!.field as any, body.error.message as any)
+            setError(body.error.message as any)
           } else {
-            setError('file', { message: 'Something went wrong' })
+            setError('Unknown error')
           }
         }
       } catch (error) {
-        setError('file', { message: error.message })
+        setError(error.message)
       }
     }
 
-    return (
-      <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Stack alignItems="center">
-            {previewUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                alt="file uploader preview"
-                src={previewUrl}
-                width={150}
-                style={{ margin: '0 auto' }}
-              />
-            ) : (
-              <Center as="label" py={3} px={100} border={'1px dashed'} borderColor="primary">
-                <Input hidden onChange={onFileUploadChange} type="file" />
-                <Text fontSize="xl" textAlign="center">
-                  Drop Image Here
-                </Text>
-              </Center>
-            )}
-            <FieldInput
-              field="name"
-              label="Name"
-              registerOptions={{ required: 'Name is Required' }}
-            />
-            <FieldCheckbox
-              w="fit-content"
-              field="verify"
-              label="I certify that the photo is of me."
-              registerOptions={{ required: 'Certification is Required' }}
-            />
-            <ErrorMessage
-              render={(m) => <Text className="text-red-500">{m.message}</Text>}
-              errors={errors}
-              name={'file'}
-            />
+    const imageSrc = previewSrc || photoSrc
 
-            <HStack spacing={4} justify="center">
-              <Button color="info" size="lg" disabled={!previewUrl} onClick={onCancelFile}>
+    return (
+      <>
+        {upload && (
+          <Flex
+            h={h || w}
+            w={w || h}
+            cursor="pointer"
+            border="3px dotted"
+            borderColor="primary.500"
+            mx="auto"
+            p={8}
+          >
+            <label>
+              <Input
+                accept={imageExtensions.join(',')}
+                hidden
+                onChange={onFileUploadChange}
+                type="file"
+                ref={fileInput}
+              />
+              <Icon
+                cursor="pointer"
+                color="white"
+                rounded="full"
+                bg="primary"
+                h="3em"
+                w="3em"
+                p={3}
+                as={UploadIcon}
+                margin="auto"
+              />
+            </label>
+            <Icon
+              color="white"
+              rounded="full"
+              bg="primary"
+              h="3em"
+              w="3em"
+              as={XIcon}
+              p={3}
+              ml="2rem"
+              margin="auto"
+              onClick={() => {
+                setUpload(false)
+              }}
+            />
+          </Flex>
+        )}
+        {!upload && imageSrc && (
+          <Box position="relative">
+            <Image
+              src={imageSrc}
+              w={'100%'}
+              {...props}
+              objectFit="cover"
+              border="1px solid"
+              rounded="md"
+              shadow="md"
+              borderColor="gray.200"
+              cursor="pointer"
+              onClick={() => setUpload(true)}
+              alt=""
+            />
+            <IconButton
+              icon={<UploadIcon />}
+              rounded="full"
+              variant="ghost"
+              position="absolute"
+              bg="white"
+              opacity=".15"
+              color="primary"
+              _hover={{ opacity: 1, bg: 'white' }}
+              aria-label={''}
+              p={2}
+              mt="-5rem"
+              onClick={() => {
+                setUpload(true)
+              }}
+              ml="1rem"
+            />
+            <IconButton
+              icon={<XIcon />}
+              color="primary"
+              rounded="full"
+              margin="auto"
+              onClick={() => {
+                setUpload(false)
+              }}
+              bg="white"
+              opacity=".15"
+              _hover={{ opacity: 1, bg: 'white' }}
+              aria-label={''}
+              p={2}
+              mt="-9.5rem"
+              ml="5.5rem"
+            />
+          </Box>
+        )}
+
+        {file && (
+          <HStack spacing={4} mt={4} justify="center">
+            {file && (
+              <Button color="info" size="lg" disabled={!previewSrc} onClick={onCancelFile}>
                 Clear
               </Button>
-              {file && (
-                <Button type="submit" size="lg" disabled={!previewUrl} colorScheme="accent">
-                  Upload
-                </Button>
-              )}
-            </HStack>
-          </Stack>
-        </form>
-      </FormProvider>
+            )}
+            {file && (
+              <Button size="lg" disabled={!previewSrc} colorScheme="accent" onClick={onSubmit}>
+                Upload
+              </Button>
+            )}
+          </HStack>
+        )}
+      </>
     )
   }
 )
