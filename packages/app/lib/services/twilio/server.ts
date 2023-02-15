@@ -8,10 +8,12 @@ const config = {
 
 export async function sendNotification(phone: string, message: string) {
   const client = twilio(config.twilioSid, config.twilioToken)
+
+  const fixedFormat = '+1' + phone.replace(/[^0-9]/g, '')
   const result = await client.messages.create({
     body: message,
     from: config.twilioNumber,
-    to: phone,
+    to: fixedFormat,
   })
   return result
 }

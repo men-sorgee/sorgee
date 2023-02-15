@@ -101,6 +101,8 @@ export type Profile = {
   last_name: string
   email: string
   email_verified: boolean
+  phone: string
+  phone_verified: boolean
   last_login: string | null
   session_expire: string | null
   in_sendgrid: boolean
@@ -108,6 +110,7 @@ export type Profile = {
   application_status: string
   status: UserStatusType
   accounts: UserAccount[]
+  auth_with_phone: boolean
 }
 export const profileFields: Array<keyof Profile> = [
   'id',
@@ -117,10 +120,13 @@ export const profileFields: Array<keyof Profile> = [
   'last_name',
   'email',
   'email_verified',
+  'phone',
+  'phone_verified',
   'last_login',
   'user_type',
   'application_status',
   'status',
+  'auth_with_phone',
 ]
 
 export type ContactPreferenceType = 'email' | 'phone_text' | 'phone_call'
@@ -128,8 +134,7 @@ export type ContactPreferenceType = 'email' | 'phone_text' | 'phone_call'
 export type Applicant = Profile & {
   invite?: UserInvite
   show_contact: boolean
-  phone: string
-  phone_verified: boolean
+
   contact_preference: ContactPreferenceType
   vouched_by: string
   biography: string
@@ -154,8 +159,7 @@ export const applicantFields: Array<keyof Applicant> = [
   ...profileFields,
   'vouched_by',
   'show_contact',
-  'phone',
-  'phone_verified',
+
   'contact_preference',
   'biography',
   'needs_guidance',

@@ -246,7 +246,7 @@ export type User = {
   mannerisms?: string
   height?: string
   nickname?: string
-
+  auth_with_phone: boolean
   vouched_by?: string | User
   needs_guidance?: boolean
   signed_waiver?: boolean

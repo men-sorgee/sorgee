@@ -1,3 +1,4 @@
+import { theme } from './../../theme'
 import { AuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import MicrosoftProvider from 'next-auth/providers/azure-ad'
@@ -13,8 +14,9 @@ import {
   getUser,
   recordUserLogin,
 } from 'lib/services/directus/server/users'
-import { Member, memberFields, Profile, UserStatusType } from 'lib/models'
+import { Member, memberFields, Profile, User, UserStatusType } from 'lib/models'
 import config from 'lib/config/server'
+import { sendNotification } from '../services/twilio/server'
 
 const { google, discord, twitter, yahoo, microsoft } = config
 const allowedStatuses: UserStatusType[] = ['new', 'active', 'inactive', 'stale']
@@ -131,8 +133,20 @@ export const authOptions: AuthOptions = {
     EmailProvider({
       maxAge: 24 * 60 * 60 * 2, // 24 hours
       async sendVerificationRequest({ identifier: email, url }) {
-        const user = await findUser(email)
-        if (user && user.status !== 'banned') {
+        const user = await findUser<User>(email)
+
+        if (user && user.status == 'active') {
+          // check if the user needs to sign in with their phone
+          if (user.phone && user.phone_verified && user.auth_with_phone) {
+            try {
+              await sendNotification(user.phone, `Sign in:  ${url}`)
+              console.log(`Sent sign in notification to ${user.phone} for ${user.email} `)
+              return
+            } catch (e) {
+              console.error(e)
+            }
+          }
+
           await sendNotificationEmail(
             email,
             'User',
