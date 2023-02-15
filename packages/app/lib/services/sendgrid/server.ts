@@ -72,6 +72,20 @@ async function convertMarkdownToHtml(markdown: string) {
   return remark().use(html).processSync(markdown).toString()
 }
 
+// to verify we never send the same email twice
+// hash email + subject + body and check this store
+// if it exists, don't send the email
+const hashSet = new Set<string>()
+
+const canSendEmail = (email: string, subject: string, body: string) => {
+  const hash = `${email}${subject}${body}`
+  if (hashSet.has(hash)) {
+    return false
+  }
+  hashSet.add(hash)
+  return true
+}
+
 export async function sendNotificationEmail(
   to_email: string,
   to_name: string,
@@ -82,6 +96,11 @@ export async function sendNotificationEmail(
   category: SendGridCategory = SendGridCategory.Notification
 ) {
   body = await convertMarkdownToHtml(body)
+
+  if (!canSendEmail(to_email, subject, body)) {
+    console.log(`SendGrid Email ${category} Skipped: ${to_email}`)
+    return
+  }
 
   const email: MailDataRequired = {
     personalizations: [

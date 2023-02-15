@@ -214,7 +214,10 @@ const authAdapter: Adapter = {
       const verificationToken = await findVerificationToken(identifier)
       if (!verificationToken) return null
       if (verificationToken.token !== token) return null
-      await deleteVerificationToken(identifier)
+
+      // Disabling this functionality to let the expiration handle it
+      // it instead
+      // await deleteVerificationToken(identifier)
       return mapToken(verificationToken)
     } catch (e) {
       console.error(e.response?.body?.errors[0].message || e)
