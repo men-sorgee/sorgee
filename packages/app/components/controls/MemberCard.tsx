@@ -29,7 +29,7 @@ export const MemberCard = ({ member, onClick }: Props) => {
         <Card
           w="full"
           h="full"
-          bg={useColorModeValue('gray.50', 'dark.700')}
+          bg={useColorModeValue('gray.100', 'gray.700')}
           border="1px solid transparent"
           borderColor="accent.400"
           _hover={{ shadow: '2xl', borderColor: 'accent.500' }}
