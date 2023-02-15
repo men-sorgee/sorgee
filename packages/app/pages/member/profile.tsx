@@ -1,8 +1,8 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
-import { FieldOptions, User } from 'lib/models'
+import { FieldMap, User } from 'lib/models'
 import { useMember } from 'hooks/use-member'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
   FieldInput,
   FieldSelect,
@@ -14,7 +14,10 @@ import {
 import {
   Alert,
   Button,
-  Divider,
+  Box,
+  Card,
+  CardBody,
+  Flex,
   Tabs,
   TabList,
   Tab,
@@ -23,122 +26,49 @@ import {
   Text,
   SimpleGrid,
   GridItem,
-  VStack,
+  useColorModeValue,
+  Collapse,
 } from '@chakra-ui/react'
 import Page from 'components/Page'
-import { useRouter } from 'next/router'
 import { useToast } from '@chakra-ui/react'
-import { ErrorMessage } from '@hookform/error-message'
 import { postJSON } from 'lib/utils'
-import { UserCard } from 'components/controls'
+import { MemberHeader, UserCard } from 'components/controls'
 import { useWarnIfUnsavedChanges } from '../../hooks/use-warn-if-unsaved'
 
 type PageProps = {
-  spectrumOptions: FieldOptions
-  relationshipOptions: FieldOptions
-  positionsOptions: FieldOptions
-  skinToneOptions: FieldOptions
-  hairColorOptions: FieldOptions
-  hairStyleOptions: FieldOptions
-  eyeColorOptions: FieldOptions
-  mannerismsOptions: FieldOptions
-  bodyHairOptions: FieldOptions
-  bodyAttributesOptions: FieldOptions
-  facialHairOptions: FieldOptions
-  scenesOptions: FieldOptions
-  cockGirthOptions: FieldOptions
-  cockAttributesOptions: FieldOptions
-  ballSizeOptions: FieldOptions
-  ballGravityOptions: FieldOptions
-  cumAttributesOptions: FieldOptions
-  loadPolicyOptions: FieldOptions
-  hivStatusOptions: FieldOptions
-  vaccinationStatusOptions: FieldOptions
-  myRolesOptions: FieldOptions
-  theirRolesOptions: FieldOptions
-  theirSpectrumOptions: FieldOptions
-  theirPositionsOptions: FieldOptions
-  buildOptions: FieldOptions
+  fieldMap: FieldMap
 }
 
-export async function getServerSideProps(context: NextPageContext) {
-  const { getFieldOptions } = await import('lib/services/directus/server')
-  const props: PageProps = {
-    spectrumOptions: await getFieldOptions<User>('spectrum'),
-    relationshipOptions: await getFieldOptions<User>('relationship_status'),
-    positionsOptions: await getFieldOptions<User>('my_positions'),
-    skinToneOptions: await getFieldOptions<User>('skin_tone'),
-    hairColorOptions: await getFieldOptions<User>('hair_color'),
-    hairStyleOptions: await getFieldOptions<User>('hair_style'),
-    eyeColorOptions: await getFieldOptions<User>('eye_color'),
-    mannerismsOptions: await getFieldOptions<User>('mannerisms'),
-    bodyHairOptions: await getFieldOptions<User>('body_hair'),
-    bodyAttributesOptions: await getFieldOptions<User>('body_attributes'),
-    facialHairOptions: await getFieldOptions<User>('facial_hair'),
-    scenesOptions: await getFieldOptions<User>('sexual_scenes'),
-    cockGirthOptions: await getFieldOptions<User>('cock_girth'),
-    cockAttributesOptions: await getFieldOptions<User>('cock_attributes'),
-    ballSizeOptions: await getFieldOptions<User>('ball_size'),
-    ballGravityOptions: await getFieldOptions<User>('ball_gravity'),
-    cumAttributesOptions: await getFieldOptions<User>('cum_attributes'),
-    loadPolicyOptions: await getFieldOptions<User>('load_policy'),
-    hivStatusOptions: await getFieldOptions<User>('hiv_status'),
-    vaccinationStatusOptions: await getFieldOptions<User>('vaccinations'),
-    myRolesOptions: await getFieldOptions<User>('my_roles'),
-    theirRolesOptions: await getFieldOptions<User>('their_roles'),
-    theirSpectrumOptions: await getFieldOptions<User>('their_spectrum'),
-    theirPositionsOptions: await getFieldOptions<User>('their_positions'),
-    buildOptions: await getFieldOptions<User>('build'),
+export async function getServerSideProps(context: NextPageContext): Promise<{ props: PageProps }> {
+  const { getFields } = await import('lib/services/directus/server')
+  const fieldMap = await getFields('users')
+
+  return {
+    props: {
+      fieldMap,
+    },
   }
-  return { props }
 }
 
-type MemberFormData = Partial<User>
-
-function Account(props: PageProps) {
+export default function ProfilePage(props: PageProps) {
   const { member, loading } = useMember()
   return (
     <Page
-      title="Edit Profile"
+      title={`Profile`}
       loading={loading}
       requireAuth={true}
-      header={<UserCard user={member} />}
+      header={<UserCard user={member} size="xl" />}
     >
       {member && <Form {...props} />}
     </Page>
   )
 }
 
+type MemberFormData = Partial<User>
 function Form(props: PageProps) {
   const toast = useToast()
-  const { member, reload } = useMember()
-  const {
-    spectrumOptions,
-    positionsOptions,
-    relationshipOptions,
-    skinToneOptions,
-    hairColorOptions,
-    hairStyleOptions,
-    eyeColorOptions,
-    mannerismsOptions,
-    bodyHairOptions,
-    bodyAttributesOptions,
-    facialHairOptions,
-    scenesOptions,
-    cockGirthOptions,
-    cockAttributesOptions,
-    ballSizeOptions,
-    ballGravityOptions,
-    cumAttributesOptions,
-    loadPolicyOptions,
-    hivStatusOptions,
-    vaccinationStatusOptions,
-    myRolesOptions,
-    theirRolesOptions,
-    theirSpectrumOptions,
-    theirPositionsOptions,
-    buildOptions,
-  } = props
+  const { member } = useMember()
+  const { fieldMap } = props
   const [tabValue, setTabValue] = useState(0)
 
   const methods = useForm<MemberFormData>({
@@ -152,6 +82,7 @@ function Form(props: PageProps) {
     handleSubmit,
     setError,
     reset,
+    watch,
     formState: { isSubmitting, isDirty },
   } = methods
 
@@ -163,6 +94,7 @@ function Form(props: PageProps) {
     const [ok, response] = await postJSON<User>('/api/member/me', data)
 
     if (ok) {
+      reset()
       toast({
         title: 'Success',
         description: 'Your account and profile are updated.',
@@ -170,8 +102,6 @@ function Form(props: PageProps) {
         duration: 9000,
         isClosable: true,
       })
-      reload()
-      reset()
     } else if (response.error?.field) {
       // @ts-ignore
       setError(response.error!.field, response.error.message)
@@ -180,236 +110,233 @@ function Form(props: PageProps) {
     }
   }
 
+  const getOptions = (field: string) => {
+    return fieldMap[field]?.meta.options.choices
+  }
+  const showProfile = watch('show_profile')
   return (
     <>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Tabs isFitted defaultIndex={tabValue} onChange={(index) => setTabValue(index)}>
-            <TabList fontSize={['sm', 'md', 'lg']} fontWeight="bold">
-              <Tab fontWeight={tabValue == 0 ? 'bold' : null}>General</Tab>
-              <Tab fontWeight={tabValue == 1 ? 'bold' : null}>Me</Tab>
-              <Tab fontWeight={tabValue == 2 ? 'bold' : null}>Them </Tab>
-              <Tab fontWeight={tabValue == 3 ? 'bold' : null}>Health</Tab>
+          <Alert
+            bg="primary"
+            color="white"
+            flexDirection="column"
+            my={4}
+            p={4}
+            borderRadius="md"
+            shadow="md"
+          >
+            <Text>
+              You can choose to make your profile private if you do not wish to show up in member
+              searches. This does not affect this information being used to recommend you to other
+              events and members.
+            </Text>
+            <FieldSwitch
+              field="show_profile"
+              label="Show Profile in Search"
+              help="Turn this off, if do not wish to be searchable on the members page."
+            />
+          </Alert>
+          <Text size="lg">
+            This is your profile. We use this information to match you with brothers. Verified
+            brothers can see your full profile, unless you choose to make it private.
+          </Text>
+          <Collapse animateOpacity in={showProfile}>
+            <Card
+              w="full"
+              h="full"
+              bg={useColorModeValue('gray.50', 'dark.700')}
+              border="1px solid transparent"
+              borderColor="accent.400"
+            >
+              <CardBody>
+                <Flex>
+                  <MemberHeader member={member} />
+                </Flex>
+                {member && <Text>{member?.biography}</Text>}
+              </CardBody>
+            </Card>
+          </Collapse>
+          <SimpleGrid spacing={2} columns={[1, 1, 3]}>
+            <GridItem colSpan={[1, 1, 3]}>
+              <FieldInput
+                field="nickname"
+                label="Nickname"
+                help="This is the name that will be displayed on your profile."
+                className="col-span-2 sm:col-span-4"
+              />
+            </GridItem>
+            <FieldSelect field="spectrum" label="Orientation" options={getOptions('spectrum')} />
+            <FieldSelect field="mannerisms" label="Mannerisms" options={getOptions('mannerisms')} />
+            <FieldSelect
+              field="relationship_status"
+              label="Relationship Status"
+              options={getOptions('relationship_status')}
+            />
+          </SimpleGrid>
+          <FieldText
+            field="biography"
+            label="Biography"
+            help="Tell us about yourself. What are your interests? What are you looking for?"
+            rows={4}
+          />
+          <SimpleGrid spacing={2} columns={[2, 2, 3, 4]}>
+            <FieldNumber field="age" label="Age" min={21} />
+            <FieldInput field="height" label="Height" placeholder="5'11" />
+            <FieldNumber field="weight" label="Weight" placeholder="185" />
+            <FieldSelect field="build" label="Build" options={getOptions('build')} />
+            <FieldSelect field="skin_tone" label="Skin Tone" options={getOptions('skin_tone')} />
+            <FieldSelect field="hair_color" label="Hair Color" options={getOptions('hair_color')} />
+            <FieldSelect field="hair_style" label="Hair Style" options={getOptions('hair_style')} />
+            <FieldSelect field="body_hair" label="Body Hair" options={getOptions('body_hair')} />
+            <FieldSelect
+              field="facial_hair"
+              label="Facial Hair"
+              options={getOptions('facial_hair')}
+            />
+            <FieldSelect field="eye_color" label="Eye Color" options={getOptions('eye_color')} />
+          </SimpleGrid>
+          <FieldCheckboxes
+            field="body_attributes"
+            label="Other Attributes"
+            options={getOptions('body_attributes')}
+          />
+          <Tabs isFitted defaultIndex={tabValue} onChange={(index) => setTabValue(index)} mt={4}>
+            <TabList fontWeight="bold">
+              <Tab fontSize={['md', 'lg', 'xl']} fontWeight={tabValue == 0 ? 'bold' : null}>
+                Below the Belt
+              </Tab>
+              <Tab fontSize={['md', 'lg', 'xl']} fontWeight={tabValue == 1 ? 'bold' : null}>
+                Role & Fetishes
+              </Tab>
+              <Tab fontSize={['md', 'lg', 'xl']} fontWeight={tabValue == 2 ? 'bold' : null}>
+                Health Info
+              </Tab>
             </TabList>
             <TabPanels>
               <TabPanel p={0}>
-                <Alert
-                  bg="primary"
-                  color="white"
-                  flexDirection="column"
-                  my={4}
-                  p={4}
-                  borderRadius="md"
-                  shadow="md"
-                >
-                  <Text>
-                    This is your profile. Other verified members are able to see this information.
-                    You can also choose to make your profile private.
-                  </Text>
-                  <FieldSwitch
-                    field="show_profile"
-                    label="Show Profile"
-                    help="Turn this on, if you are okay showing this information to other verified members."
-                  />
-                </Alert>
-                <SimpleGrid spacing={2} columns={[1, 1, 3]}>
-                  <GridItem colSpan={[1, 1, 3]}>
-                    <FieldInput
-                      field="nickname"
-                      label="Username"
-                      help="This is the name that will be displayed on your profile."
-                      className="col-span-2 sm:col-span-4"
+                <Collapse animateOpacity in={showProfile}>
+                  <Alert
+                    bg={'primary.300'}
+                    color="white"
+                    flexDirection="column"
+                    my={4}
+                    p={4}
+                    borderRadius="md"
+                    shadow="md"
+                  >
+                    <FieldSwitch
+                      field="show_explicit"
+                      label="Show Explicit Details on Profile"
+                      help="Turn this off, if would rather not show this information to other verified members."
                     />
-                  </GridItem>
-                  <FieldSelect field="spectrum" label="Orientation" options={spectrumOptions} />
-                  <FieldSelect field="mannerisms" label="Mannerisms" options={mannerismsOptions} />
+                  </Alert>
+                </Collapse>
+                <SimpleGrid spacing={2} columns={[2]}>
+                  <FieldInput field="cock_length" label="Cock Length" type="number" />
                   <FieldSelect
-                    field="relationship_status"
-                    label="Relationship Status"
-                    options={relationshipOptions}
+                    field="cock_girth"
+                    label="Cock Girth"
+                    options={getOptions('cock_girth')}
                   />
-                </SimpleGrid>
-                <FieldText
-                  field="biography"
-                  label="Biography"
-                  help="Tell us about yourself. What are your interests? What are you looking for?"
-                  rows={4}
-                />
-                <SimpleGrid spacing={2} columns={[2, 2, 4]}>
-                  <FieldNumber field="age" label="Age" min={21} />
-                  <FieldInput field="height" label="Height" placeholder="5'11" />
-                  <FieldNumber field="weight" label="Weight" placeholder="185" />
-                  <FieldSelect field="build" label="Build" options={buildOptions} />
-                </SimpleGrid>
 
-                <SimpleGrid spacing={2} columns={[1, 3]}>
-                  <FieldSelect field="skin_tone" label="Skin Tone" options={skinToneOptions} />
-                  <FieldSelect field="hair_color" label="Hair Color" options={hairColorOptions} />
-                  <FieldSelect field="hair_style" label="Hair Style" options={hairStyleOptions} />
-                  <FieldSelect field="body_hair" label="Body Hair" options={bodyHairOptions} />
                   <FieldSelect
-                    field="facial_hair"
-                    label="Facial Hair"
-                    options={facialHairOptions}
+                    field="ball_size"
+                    label="Ball Size"
+                    options={getOptions('ball_size')}
                   />
-                  <FieldSelect field="eye_color" label="Eye Color" options={eyeColorOptions} />
-                </SimpleGrid>
-                <FieldCheckboxes
-                  field="body_attributes"
-                  label="Other Attributes"
-                  options={bodyAttributesOptions}
-                />
-                <Divider mt={4} mb={2} />
-                <SimpleGrid spacing={2} columns={{ base: 1, md: 2 }}>
-                  <FieldInput
-                    field="cock_length"
-                    label="Cock Length"
-                    type="number"
-                    registerOptions={{}}
+                  <FieldSelect
+                    field="ball_gravity"
+                    label="Ball Sack"
+                    options={getOptions('ball_gravity')}
                   />
-                  <FieldSelect field="cock_girth" label="Cock Girth" options={cockGirthOptions} />
                 </SimpleGrid>
                 <FieldCheckboxes
                   field="cock_attributes"
                   label="Cock Attributes"
-                  className="sm:col-span-2"
-                  options={cockAttributesOptions}
+                  options={getOptions('cock_attributes')}
                 />
-                <SimpleGrid spacing={2} columns={{ base: 1, md: 2 }}>
-                  <FieldSelect field="ball_size" label="Ball Size" options={ballSizeOptions} />
-                  <FieldSelect
-                    field="ball_gravity"
-                    label="Ball Sack"
-                    options={ballGravityOptions}
-                  />
-                </SimpleGrid>
                 <FieldCheckboxes
                   field="cum_attributes"
                   label="Cum Attributes"
-                  className="sm:col-span-2"
-                  options={cumAttributesOptions}
+                  options={getOptions('cum_attributes')}
                 />
               </TabPanel>
 
               <TabPanel p={0}>
-                <Alert
-                  bg={'primary'}
-                  color="white"
-                  flexDirection="column"
-                  my={4}
-                  p={4}
-                  borderRadius="md"
-                  shadow="md"
-                >
-                  <Text>
-                    Your sexual interests help us match you with other members and is visible with
-                    your profile. Members can search for other members based on these attributes.
-                  </Text>
-                  <FieldSwitch
-                    field="show_explicit"
-                    label="Show Sexuality "
-                    help="Turn this on, if you are okay showing this information to other verified members."
-                  />
-                </Alert>
-                <SimpleGrid spacing={2}>
-                  <FieldCheckboxes
-                    field="my_positions"
-                    label="My Sexual Positions"
-                    options={positionsOptions}
-                  />
-                  <FieldCheckboxes
-                    field="my_roles"
-                    label="My Sexual Roles"
-                    options={myRolesOptions}
-                  />
-                  <FieldCheckboxes
-                    field="sexual_scenes"
-                    label="Sexual Scenes"
-                    options={scenesOptions}
-                  />
-                </SimpleGrid>
-              </TabPanel>
-              <TabPanel p={0}>
-                <Alert
-                  bg={'primary'}
-                  color="white"
-                  flexDirection="column"
-                  my={4}
-                  p={4}
-                  borderRadius="md"
-                  shadow="md"
-                >
-                  <Text>
-                    What are you attracted to and/or compatible with? We will use this information
-                    to optimize compatibility for events. Other members will not see this
-                    information.
-                  </Text>
-                  <FieldSwitch
-                    field="show_interests"
-                    label="Show Interests "
-                    help="Turn this on, if you are okay showing this information to other verified members."
-                  />
-                </Alert>
-                <SimpleGrid spacing={2}>
-                  <FieldCheckboxes
-                    field="their_spectrum"
-                    label="Their Orientation"
-                    options={theirSpectrumOptions}
-                  />
-                  <FieldCheckboxes
-                    field="their_relationship_status"
-                    label="Their Relationship Status"
-                    options={relationshipOptions}
-                  />
+                <Collapse animateOpacity in={showProfile}>
+                  <Alert
+                    bg={'primary.300'}
+                    color="white"
+                    flexDirection="column"
+                    my={4}
+                    p={4}
+                    borderRadius="md"
+                    shadow="md"
+                  >
+                    <FieldSwitch
+                      field="show_explicit"
+                      mx="auto"
+                      label="Show Explicit Details on Profile"
+                      help="Turn this off, if would rather not show this information to other verified members."
+                    />
+                  </Alert>
+                </Collapse>
 
-                  <FieldCheckboxes
-                    field="their_positions"
-                    label="Their Sexual Positions"
-                    options={theirPositionsOptions}
-                  />
-
-                  <FieldCheckboxes
-                    field="their_roles"
-                    label="Their Sexual Roles"
-                    options={theirRolesOptions}
-                  />
-                </SimpleGrid>
+                <FieldCheckboxes
+                  field="my_positions"
+                  label="My Sexual Positions"
+                  options={getOptions('my_positions')}
+                />
+                <FieldCheckboxes
+                  field="my_roles"
+                  label="My Sexual Roles"
+                  options={getOptions('my_roles')}
+                />
+                <FieldCheckboxes
+                  field="sexual_scenes"
+                  label="Sexual Scenes"
+                  options={getOptions('sexual_scenes')}
+                />
               </TabPanel>
+
               <TabPanel p={0}>
-                <Alert
-                  bg={'primary'}
-                  color="white"
-                  flexDirection="column"
-                  my={4}
-                  p={4}
-                  borderRadius="md"
-                  shadow="md"
-                >
-                  <Text>
-                    This is your health information. Other verified members are able to see this
-                    information if you choose to show it. If you are not comfortable sharing this
-                    information, you can choose to hide it.
-                  </Text>
-                  <FieldSwitch
-                    field="show_health"
-                    label="Show Health Information"
-                    help="Turn this on, if you are okay showing this information to other verified members."
-                  />
-                </Alert>
+                <Collapse animateOpacity in={showProfile}>
+                  <Alert
+                    bg={'primary.300'}
+                    color="white"
+                    flexDirection="column"
+                    my={4}
+                    p={4}
+                    borderRadius="md"
+                    shadow="md"
+                  >
+                    <FieldSwitch
+                      field="show_health"
+                      label="Show Health Information on Profile"
+                      help="Turn this off, if you'd prefer to not display this information to other verified members."
+                    />
+                  </Alert>
+                </Collapse>
                 <SimpleGrid spacing={2} columns={{ base: 1, md: 2 }}>
-                  <FieldSelect field="hiv_status" label="HIV Status" options={hivStatusOptions} />
+                  <FieldSelect
+                    field="hiv_status"
+                    label="HIV Status"
+                    options={getOptions('hiv_status')}
+                  />
                   <FieldInput field="last_tested" label="Last Tested" type="date" />
                 </SimpleGrid>
                 <SimpleGrid spacing={2}>
                   <FieldCheckboxes
                     field="load_policy"
                     label="Safety Policy"
-                    options={loadPolicyOptions}
+                    options={getOptions('load_policy')}
                   />
                   <FieldCheckboxes
                     field="vaccinations"
                     label="Vax Status"
-                    options={vaccinationStatusOptions}
+                    options={getOptions('vaccinations')}
                   />
                 </SimpleGrid>
               </TabPanel>
@@ -417,14 +344,17 @@ function Form(props: PageProps) {
           </Tabs>
 
           <input type="hidden" {...register('id')} />
-
+          <Box backdropFilter="blur(1px)" position="sticky" h="80px" w="full" bottom={0}></Box>
           <Button
-            mt={10}
+            mt={-10}
             size="lg"
             type="submit"
             bg="primary"
             color="white"
             disabled={isSubmitting || !isDirty}
+            position="sticky"
+            bottom={4}
+            mx={2}
           >
             Update Profile
           </Button>
@@ -433,5 +363,3 @@ function Form(props: PageProps) {
     </>
   )
 }
-
-export default Account

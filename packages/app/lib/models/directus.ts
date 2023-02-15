@@ -109,9 +109,9 @@ export type Page = {
   in_menu?: boolean
   image?: DirectusFile
   sort: number
-  parent?: Page
+  parent?: Partial<Page>
+  children?: Partial<Page>[]
   markdown?: string
-  children: Page[]
   content: PageContent[]
   next_page?: Page
   next_page_params?: string
@@ -471,14 +471,14 @@ export type SurveyAnswerUser = {
 
 export type SurveyQuestion = {
   id: string
+  answer_type?: 'string' | 'number' | 'text' | 'boolean' | 'select' | 'choose'
+  question: string
+  context?: string
+  options?: { name: string; value: string }[]
   user_created?: string | DirectusUser
   date_created?: string
   user_updated?: string | DirectusUser
   date_updated?: string
-  answer_type?: string
-  question?: string
-  context?: string
-  options?: unknown
 }
 
 export type Survey = {
@@ -492,15 +492,17 @@ export type Survey = {
   title?: string
   category?: unknown
   notification?: string | Notification
-  questions: string | SurveySurveyQuestion[]
+  questions: SurveySurveyQuestion[]
 }
 
 export type SurveySurveyQuestion = {
   id: number
   surveys_id?: string | Survey
-  survey_questions_id?: string | SurveyQuestion
+  survey_questions_id: SurveyQuestion
   sort?: number
 }
+
+export type FieldMap = Record<string, DirectusField>
 
 export type DirectusTypes = {
   events: GroupEvent

@@ -19,7 +19,7 @@ import { CloseIcon, ChevronDownIcon } from '@chakra-ui/icons'
 import { MenuIcon } from '@heroicons/react/solid'
 import { Logo } from '../controls'
 import { useState, useEffect, useCallback } from 'react'
-import { PageItem } from 'lib/models'
+import { Page, PageItem } from 'lib/models'
 import NextLink from 'next/link'
 import { listActivePages } from 'lib/services/directus/static'
 import { constrained } from './index'
@@ -28,6 +28,19 @@ import { useRouter } from 'next/router'
 export type Props = BoxProps & {
   children?: React.ReactNode | React.ReactNode[]
 }
+
+const recursiveChildren = (parent: Page, pages: Page[]) => {
+  return pages
+    .filter((child) => (child.parent as string) === parent.id)
+    .map((child) => {
+      return {
+        title: child.title,
+        path: `/${parent.slug}/${child.slug}`,
+        children: recursiveChildren(child, pages),
+      }
+    })
+}
+
 function Header({ children, ...props }: Props) {
   const router = useRouter()
   const { isOpen, onToggle, onClose } = useDisclosure()
@@ -46,7 +59,11 @@ function Header({ children, ...props }: Props) {
           pages
             .filter((p) => p.in_menu)
             .map((p) => {
-              return { title: p.title, path: `/${p.slug}` }
+              return {
+                title: p.title,
+                path: `/${p.slug}`,
+                children: recursiveChildren(p, pages),
+              }
             })
         )
       })
@@ -56,40 +73,38 @@ function Header({ children, ...props }: Props) {
     }
   }, [setPages, pages, router.events, routeStart])
 
-  const navPages =
-    pages?.map((p) => {
-      return {
-        label: p.title,
-        href: p.path,
-      }
-    }) || []
   const navItems: Array<NavItem> = [
     {
-      label: 'INFORMATION',
+      title: 'INFORMATION',
+      path: null,
       children: [
         {
-          label: 'Home',
-          href: '/',
+          title: 'Home',
+          path: '/',
+          children: [],
         },
-        ...navPages,
+        ...(pages || []),
         {
-          label: 'Pricing',
-          href: '/pricing',
+          title: 'Pricing',
+          path: '/pricing',
+          children: [],
         },
       ],
     },
     {
-      label: 'LEGAL',
+      title: 'LEGAL',
       children: [
         {
-          label: 'Privacy Policy',
-          href: '/privacy',
+          title: 'Privacy Policy',
+          path: '/privacy',
           reload: true,
+          children: [],
         },
         {
-          label: 'Terms of Service',
-          href: '/terms',
+          title: 'Terms of Service',
+          path: '/terms',
           reload: true,
+          children: [],
         },
       ],
     },
@@ -135,13 +150,13 @@ const MobileNav = ({ navItems, ...props }: StackProps & { navItems: NavItem[] })
   return (
     <Stack as="nav" color={'white'} __css={props} mb={4}>
       {navItems?.map((navItem, index) => (
-        <MobileNavItem key={navItem.label} {...navItem} childrenOpen={index == 0} />
+        <MobileNavItem key={navItem.title} {...navItem} childrenOpen={index == 0} />
       ))}
     </Stack>
   )
 }
 
-const MobileNavItem = ({ label, children, href, childrenOpen = false }: NavItem) => {
+const MobileNavItem = ({ title: label, children, path, childrenOpen = false }: NavItem) => {
   const { isOpen, onToggle } = useDisclosure({
     defaultIsOpen: childrenOpen,
   })
@@ -151,7 +166,7 @@ const MobileNavItem = ({ label, children, href, childrenOpen = false }: NavItem)
       <Flex
         py={4}
         as={Link}
-        href={href ?? '#'}
+        href={path ?? '#'}
         justify={'space-between'}
         align={'center'}
         _hover={{
@@ -182,11 +197,11 @@ const MobileNavItem = ({ label, children, href, childrenOpen = false }: NavItem)
           align={'start'}
         >
           {children &&
-            children.map((child, i) => (
+            children.map((child: NavItem, i: number) => (
               <Box key={i} w="full" _hover={{ bg: 'primary.400' }} py={1} px={2}>
                 {(child.reload && (
-                  <a style={{ display: 'block' }} href={child.href}>
-                    {child.label}
+                  <a style={{ display: 'block' }} href={child.path}>
+                    {child.title}
                   </a>
                 )) || (
                   <Link
@@ -194,9 +209,9 @@ const MobileNavItem = ({ label, children, href, childrenOpen = false }: NavItem)
                     _hover={{ textDecoration: 'none' }}
                     as={NextLink}
                     py={2}
-                    href={child.href}
+                    href={child.path}
                   >
-                    {child.label}
+                    {child.title}
                   </Link>
                 )}
               </Box>
@@ -207,13 +222,11 @@ const MobileNavItem = ({ label, children, href, childrenOpen = false }: NavItem)
   )
 }
 
-interface NavItem {
-  label: string
+type NavItem = Partial<PageItem> & {
   subLabel?: string
-  children?: Array<NavItem>
   childrenOpen?: boolean
-  href?: string
   reload?: boolean
+  children?: NavItem[]
 }
 
 export default chakra(Header)

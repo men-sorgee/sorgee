@@ -21,6 +21,7 @@ import { CheckCircleIcon } from '@heroicons/react/solid'
 import Page from 'components/Page'
 import { useSite } from '../hooks/use-site'
 import { LinkButton } from '../components/controls'
+
 const Check = ({ available = false }) => {
   const style = useColorModeValue('gray.500', 'gray.300')
   return <Icon as={CheckCircleIcon} boxSize={6} color={available ? 'green.500' : style} />
@@ -39,6 +40,7 @@ export default function ThreeTierPricing() {
 
       <TableContainer>
         <Table
+          color={useColorModeValue('primary.300', 'white')}
           css={css`
             --chakra-space-4: 0.75em;
           `}
@@ -82,12 +84,12 @@ export default function ThreeTierPricing() {
               <Th>
                 <Text
                   fontSize={{ base: 'lg', md: 'xl' }}
-                  color={useColorModeValue('gray.500', 'gray.200')}
+                  color={useColorModeValue('gray.500', 'white')}
                 >
                   $5
                 </Text>
                 <Show above="md">
-                  <Text color={useColorModeValue('gray.500', 'gray.200')}>
+                  <Text color={useColorModeValue('gray.500', 'white')}>
                     <em>/ month</em>
                   </Text>
                 </Show>
@@ -95,12 +97,12 @@ export default function ThreeTierPricing() {
               <Th>
                 <Text
                   fontSize={{ base: 'lg', md: 'xl' }}
-                  color={useColorModeValue('gray.500', 'gray.200')}
+                  color={useColorModeValue('gray.500', 'white')}
                 >
                   $10
                 </Text>
                 <Show above="md">
-                  <Text color={useColorModeValue('gray.500', 'gray.200')}>
+                  <Text color={useColorModeValue('gray.500', 'white')}>
                     <em>/ month</em>
                   </Text>
                 </Show>
@@ -108,12 +110,12 @@ export default function ThreeTierPricing() {
               <Th>
                 <Text
                   fontSize={{ base: 'lg', md: 'xl' }}
-                  color={useColorModeValue('gray.500', 'gray.200')}
+                  color={useColorModeValue('gray.500', 'white')}
                 >
                   $40
                 </Text>
                 <Show above="md">
-                  <Text color={useColorModeValue('gray.500', 'gray.200')}>
+                  <Text color={useColorModeValue('gray.500', 'white')}>
                     <em>/ month</em>
                   </Text>
                 </Show>
@@ -123,7 +125,7 @@ export default function ThreeTierPricing() {
           <Tbody>
             <Tr>
               <Th>
-                <Text as="strong" color={useColorModeValue('gray.500', 'gray.200')}>
+                <Text as="strong" color={useColorModeValue('gray.500', 'white')}>
                   Event Invites
                 </Text>
               </Th>
@@ -139,8 +141,10 @@ export default function ThreeTierPricing() {
             </Tr>
 
             <Tr>
-              <Th color="gray.200">
-                <em>Search</em>
+              <Th>
+                <Text as="strong" color={useColorModeValue('gray.500', 'white')}>
+                  <em>Search</em>
+                </Text>
               </Th>
               <Td>
                 <Check available />
@@ -153,8 +157,10 @@ export default function ThreeTierPricing() {
               </Td>
             </Tr>
             <Tr>
-              <Th color={useColorModeValue('gray.500', 'gray.200')}>
-                <em>Messaging *</em>
+              <Th>
+                <Text as="strong" color={useColorModeValue('gray.500', 'white')}>
+                  <em>Messaging *</em>
+                </Text>
               </Th>
               <Td>
                 <Check />
@@ -167,8 +173,10 @@ export default function ThreeTierPricing() {
               </Td>
             </Tr>
             <Tr>
-              <Th color={useColorModeValue('gray.500', 'gray.200')}>
-                <em>Live Location *</em>
+              <Th>
+                <Text as="strong" color={useColorModeValue('gray.500', 'white')}>
+                  <em>Live Location *</em>
+                </Text>
               </Th>
               <Td></Td>
               <Td>
@@ -179,8 +187,10 @@ export default function ThreeTierPricing() {
               </Td>
             </Tr>
             <Tr>
-              <Th color={useColorModeValue('gray.500', 'gray.200')}>
-                <em>Live Chat *</em>
+              <Th>
+                <Text as="strong" color={useColorModeValue('gray.500', 'white')}>
+                  <em>Live Chat *</em>
+                </Text>
               </Th>
               <Td></Td>
               <Td>
@@ -191,8 +201,10 @@ export default function ThreeTierPricing() {
               </Td>
             </Tr>
             <Tr>
-              <Th color={useColorModeValue('gray.500', 'gray.200')}>
-                <em>Create Groups *</em>
+              <Th>
+                <Text as="strong" color={useColorModeValue('gray.500', 'white')}>
+                  <em>Create Groups *</em>
+                </Text>
               </Th>
               <Td></Td>
               <Td></Td>
@@ -201,8 +213,10 @@ export default function ThreeTierPricing() {
               </Td>
             </Tr>
             <Tr>
-              <Th color={useColorModeValue('gray.500', 'gray.200')}>
-                <em>Host Events *</em>
+              <Th>
+                <Text as="strong" color={useColorModeValue('gray.500', 'white')}>
+                  <em>Host Events *</em>
+                </Text>
               </Th>
               <Td></Td>
               <Td></Td>
@@ -214,7 +228,7 @@ export default function ThreeTierPricing() {
           <Tfoot>
             <Tr>
               <Th>
-                <Text as="em" color="gray.200">
+                <Text as="em" color={useColorModeValue('gray.500', 'white')}>
                   * coming soon
                 </Text>
               </Th>

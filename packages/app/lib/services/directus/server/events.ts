@@ -1,5 +1,5 @@
 import { getAdminClient } from '.'
-import { GroupEvent, EventDetail, EventUser } from '../../../models'
+import { GroupEvent, EventDetail, EventUser } from 'lib/models'
 
 export async function listUpcomingEvents(): Promise<EventDetail[]> {
   const client = await getAdminClient()

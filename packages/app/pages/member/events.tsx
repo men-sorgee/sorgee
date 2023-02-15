@@ -126,7 +126,6 @@ function Events({
     if (t) return t.text
     return type
   }
-  console.dir(eventTypeOptions)
 
   const upcoming = invites?.filter((i) => i.status == 'scheduled')
   const past = invites?.filter((i) => i.status !== 'scheduled')
@@ -143,10 +142,11 @@ function Events({
           />
         ))}
 
-      {past && past.length > 0 && <h2>Past Invites</h2>}
-      {past?.map((invite) => (
-        <PastEventInfo key={invite.id} invite={invite} type={getType(invite.type)} />
-      ))}
+      {false && past && past.length > 0 && <h2>Past Invites</h2>}
+      {false &&
+        past?.map((invite) => (
+          <PastEventInfo key={invite.id} invite={invite} type={getType(invite.type)} />
+        ))}
     </>
   )
 }

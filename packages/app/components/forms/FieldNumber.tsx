@@ -39,21 +39,14 @@ const InputField = (props: Props) => {
     showStepper = false,
     ...opts
   } = props
-  const { register, getFieldState, formState } = useFormContext()
-  const { error } = getFieldState(field, formState)
-  const classes = error ? 'error' : ''
+  const { register } = useFormContext()
 
   return (
     <FieldWrapper field={field} label={label} help={help} className={className}>
       <InputGroup size={size}>
         {leftAddon && <InputLeftAddon>{leftAddon}</InputLeftAddon>}
-        <NumberInput {...opts} size={size}>
-          <NumberInputField
-            size={size}
-            className={classes}
-            id={field}
-            {...register(field as any, registerOptions)}
-          />
+        <NumberInput {...opts} size={size} w="full">
+          <NumberInputField size={size} id={field} {...register(field as any, registerOptions)} />
           {showStepper && (
             <NumberInputStepper>
               <NumberIncrementStepper />

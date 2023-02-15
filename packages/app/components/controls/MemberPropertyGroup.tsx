@@ -1,5 +1,5 @@
 import { LockIcon } from '@chakra-ui/icons'
-import { SimpleGrid, GridItem, Wrap, Badge, Square, Flex } from '@chakra-ui/react'
+import { SimpleGrid, GridItem, Wrap, Text, Flex, Heading, Box } from '@chakra-ui/react'
 import { capitalCase } from 'change-case'
 import { Member, DirectusField } from 'lib/models'
 
@@ -9,7 +9,6 @@ type Props = {
   show: boolean
   fieldList: string[]
   fields: Record<string, DirectusField>
-  color: string
   maxCols?: number
   minCols?: number
 }
@@ -20,7 +19,6 @@ export const MemberPropertyGroup = ({
   show,
   fieldList,
   fields,
-  color,
   minCols = 1,
   maxCols = 3,
 }: Props) => {
@@ -53,22 +51,33 @@ export const MemberPropertyGroup = ({
               >
                 {Array.isArray(member[field]) ? (
                   <>
-                    <h5>{capitalCase(fields[field].field)}:</h5>
-                    <Wrap gap={2}>
+                    <Heading as="h4" size="sm">
+                      {capitalCase(fields[field].field)}:
+                    </Heading>
+                    <Wrap gap={2} my={4}>
                       {member[field]?.map((item: any, d: number) => (
-                        <Badge colorScheme={color} key={`badge-${item}-${d}`}>
+                        <Text
+                          lineHeight={1}
+                          color="primary.400"
+                          key={`badge-${item}-${d}`}
+                          size="2xl"
+                          fontWeight="bold"
+                        >
                           {getValue(field, item)}
-                        </Badge>
+                          {d < member[field].length - 1 && ','}
+                        </Text>
                       ))}
                     </Wrap>
                   </>
                 ) : (
-                  <>
-                    <h5>{capitalCase(fields[field].field)}:</h5>
-                    <h4 style={{ textTransform: 'capitalize' }}>
+                  <Box my={2}>
+                    <Heading as="h4" size="sm" m={0}>
+                      {capitalCase(fields[field].field)}:
+                    </Heading>
+                    <Heading as="h5" size="md" color="primary.400" textTransform="capitalize">
                       {getValue(field, member[field])}
-                    </h4>
-                  </>
+                    </Heading>
+                  </Box>
                 )}
               </GridItem>
             )

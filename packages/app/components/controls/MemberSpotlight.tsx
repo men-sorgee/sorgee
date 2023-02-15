@@ -1,5 +1,5 @@
-import { Flex, Tabs, TabList, Tab, TabPanels, TabPanel, Text } from '@chakra-ui/react'
-import { useMember } from '../../hooks'
+import { Box, Tabs, TabList, Tab, TabPanels, TabPanel, Text } from '@chakra-ui/react'
+import { useMember } from 'hooks'
 import {
   DirectusField,
   memberProfileFields,
@@ -7,8 +7,9 @@ import {
   memberInterestsFields,
   memberHealthFields,
   memberProfileContactFields,
-} from '../../lib/models'
+} from 'lib/models'
 import { Loading } from './Loading'
+import { MemberHeader } from './MemberHeader'
 import { MemberPropertyGroup } from './MemberPropertyGroup'
 
 type Props = {
@@ -21,26 +22,33 @@ export const MemberSpotlight = ({ id, fields }: Props) => {
   if (loading || !id || !member) return <Loading />
 
   return (
-    <Flex direction="column" mb={2} align="start" justify="stretch" gap={2} w="full">
-      <Text>{member?.biography}</Text>
-
-      <Tabs isFitted fontSize={{ base: 'sm', md: 'lg' }} w="full">
+    <>
+      <Box p={4}>
+        <MemberHeader member={member} />
+        <Text>{member?.biography}</Text>
+      </Box>
+      <Tabs
+        isFitted
+        variant="enclosed"
+        colorScheme="primary"
+        fontSize={['sm', 'md', 'lg']}
+        w="full"
+        px={2}
+      >
         <TabList>
           <Tab>General</Tab>
           <Tab>Sexual</Tab>
           <Tab>Interests</Tab>
-          {/**<Tab>Location</Tab>**/}
           <Tab>Health</Tab>
         </TabList>
-        <TabPanels>
-          <TabPanel>
+        <TabPanels maxH={300} minH={200} overflowY="scroll" my={2}>
+          <TabPanel p={4}>
             <MemberPropertyGroup
               k="profile"
               member={member}
               fieldList={memberProfileFields}
               show={member?.show_profile}
               fields={fields}
-              color="green"
             />
           </TabPanel>
           <TabPanel>
@@ -50,7 +58,7 @@ export const MemberSpotlight = ({ id, fields }: Props) => {
               fieldList={memberProfileExplicitFields}
               show={member?.show_explicit}
               fields={fields}
-              color="red"
+              maxCols={2}
             />
           </TabPanel>
           <TabPanel>
@@ -60,19 +68,8 @@ export const MemberSpotlight = ({ id, fields }: Props) => {
               fieldList={memberInterestsFields}
               show={member?.show_interests}
               fields={fields}
-              color="blue"
             />
           </TabPanel>
-          {/**<TabPanel>
-            <PropertyGroup
-              member={member}
-              fieldList={memberProfileLocationFields}
-              show={member?.show_location}
-              fields={fields}
-              color="purple"
-            />
-          </TabPanel>
-          {**/}
           <TabPanel>
             <MemberPropertyGroup
               k="health"
@@ -80,7 +77,6 @@ export const MemberSpotlight = ({ id, fields }: Props) => {
               fieldList={memberHealthFields}
               show={member?.show_health}
               fields={fields}
-              color="orange"
               maxCols={2}
             />
           </TabPanel>
@@ -91,11 +87,10 @@ export const MemberSpotlight = ({ id, fields }: Props) => {
               fieldList={memberProfileContactFields}
               show={member?.show_contact}
               fields={fields}
-              color="orange"
             />
           </TabPanel>
         </TabPanels>
       </Tabs>
-    </Flex>
+    </>
   )
 }

@@ -6,9 +6,8 @@ import {
   FormControlProps,
   FormLabel,
   FormErrorMessage,
+  Flex,
   chakra,
-  HStack,
-  StyleProps,
 } from '@chakra-ui/react'
 import { InfoIcon } from '../icons'
 type Props = FormControlProps & {
@@ -31,7 +30,11 @@ const FieldWrapper = (props: Props) => {
         </FormLabel>
       )}
       {children}
-      {!isDirty && help && <FormHelperText cursor={'help'}>{help}</FormHelperText>}
+      {!isDirty && help && (
+        <FormHelperText as={Flex} cursor={'help'}>
+          <InfoIcon color="primary" mr={2} /> {help}
+        </FormHelperText>
+      )}
       {error && <FormErrorMessage>{error.message}</FormErrorMessage>}
     </FormControl>
   )

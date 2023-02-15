@@ -63,7 +63,7 @@ export async function withMember(
   if (
     member.status != 'active' ||
     member.application_status != 'approved' ||
-    MemberLevel[member.user_type] < MemberLevel.brother
+    MemberLevel[member.user_type] < MemberLevel.pledge
   )
     throw new Error('Unauthorized')
   return member

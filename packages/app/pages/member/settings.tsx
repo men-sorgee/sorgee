@@ -25,7 +25,7 @@ import {
   SimpleGrid,
   Input,
   InputGroup,
-  VStack,
+  Box,
 } from '@chakra-ui/react'
 import Page from 'components/Page'
 import { useToast } from '@chakra-ui/react'
@@ -40,6 +40,10 @@ type PageProps = {
   hostEventOptions: FieldOptions
   birthMonthOptions: FieldOptions
   stateOptions: FieldOptions
+  theirRolesOptions: FieldOptions
+  theirSpectrumOptions: FieldOptions
+  theirPositionsOptions: FieldOptions
+  relationshipOptions: FieldOptions
 }
 
 export async function getServerSideProps(_context: NextPageContext) {
@@ -51,16 +55,25 @@ export async function getServerSideProps(_context: NextPageContext) {
     hostEventOptions: await getFieldOptions<User>('can_host_events'),
     birthMonthOptions: await getFieldOptions<User>('birth_month'),
     stateOptions: await getFieldOptions<User>('state'),
+    relationshipOptions: await getFieldOptions<User>('relationship_status'),
+    theirRolesOptions: await getFieldOptions<User>('their_roles'),
+    theirSpectrumOptions: await getFieldOptions<User>('their_spectrum'),
+    theirPositionsOptions: await getFieldOptions<User>('their_positions'),
   }
   return { props }
 }
 
 type MemberFormData = Partial<Member>
 
-function Account(props: PageProps) {
+export default function SettingsPage(props: PageProps) {
   const { member, loading } = useMember()
   return (
-    <Page title="Settings" loading={loading} requireAuth={true} header={<UserCard user={member} />}>
+    <Page
+      title="Settings"
+      loading={loading}
+      requireAuth={true}
+      header={<UserCard user={member} size="xl" />}
+    >
       {member && <Form {...props} />}
     </Page>
   )
@@ -68,7 +81,7 @@ function Account(props: PageProps) {
 
 function Form(props: PageProps) {
   const toast = useToast()
-  const { member, reload, loading } = useMember()
+  const { member } = useMember()
   const {
     timeOfDayOptions,
     eventOptions,
@@ -76,6 +89,10 @@ function Form(props: PageProps) {
     hostEventOptions,
     birthMonthOptions,
     stateOptions,
+    theirRolesOptions,
+    theirSpectrumOptions,
+    theirPositionsOptions,
+    relationshipOptions,
   } = props
   const [tabValue, setTabValue] = useState(0)
 
@@ -98,10 +115,11 @@ function Form(props: PageProps) {
     return window.confirm('Are you sure you want to leave? You have unsaved changes.')
   })
 
-  async function onSubmit(data: MemberFormData) {
+  const onSubmit = async (data: MemberFormData) => {
     const [ok, response] = await postJSON<User>('/api/member/me', data)
 
     if (ok) {
+      reset()
       toast({
         title: 'Success',
         description: 'Your account was updated.',
@@ -109,8 +127,6 @@ function Form(props: PageProps) {
         duration: 9000,
         isClosable: true,
       })
-      reload()
-      reset()
     } else if (response.error?.field) {
       // @ts-ignore
       setError(response.error!.field, response.error.message)
@@ -124,6 +140,7 @@ function Form(props: PageProps) {
   const maxYear = new Date().getFullYear() - 21
   const can_host = watch('can_host')
   const event_invites = watch('event_invites')
+  const show_profile = watch('show_profile')
   return (
     <>
       <FormProvider {...methods}>
@@ -137,28 +154,31 @@ function Form(props: PageProps) {
             <TabList fontWeight="bold">
               <Tab fontWeight={tabValue == 0 ? 'bold' : null}>Contact</Tab>
               <Tab fontWeight={tabValue == 1 ? 'bold' : null}>Event</Tab>
+              <Tab fontWeight={tabValue == 2 ? 'bold' : null}>Interests </Tab>
             </TabList>
             <TabPanels>
               <TabPanel p={0}>
-                <Alert
-                  bg="primary"
-                  color="white"
-                  flexDirection="column"
-                  my={4}
-                  p={4}
-                  borderRadius="md"
-                  shadow="md"
-                >
-                  <Text w={['full']}>
-                    This information is private and can not be seen by any other member. It is used
-                    only for administrative purposes.
-                  </Text>
-                  <FieldSwitch
-                    field="show_contact"
-                    label="Show Contact Info"
-                    help="Turn this on if you want display your contact information to other members."
-                  />
-                </Alert>
+                {show_profile && (
+                  <Alert
+                    bg="primary"
+                    color="white"
+                    flexDirection="column"
+                    my={4}
+                    p={4}
+                    borderRadius="md"
+                    shadow="md"
+                  >
+                    <Text w={['full']}>
+                      This information is private by default, but you can opt to display it if you
+                      choose.
+                    </Text>
+                    <FieldSwitch
+                      field="show_contact"
+                      label="Show Contact Info"
+                      help="Turn this on if you want display your contact information to other members."
+                    />
+                  </Alert>
+                )}
                 <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
                   <FieldInput
                     field="first_name"
@@ -188,7 +208,7 @@ function Form(props: PageProps) {
                   <FieldInput field="city" label="City" />
                   <FieldSelect field="state" label="State" options={stateOptions} />
 
-                  <FieldWrapper field="height" label="Birth Month/Year">
+                  <FieldWrapper field="birth_month" label="Birth Month/Year">
                     <InputGroup>
                       <Select
                         mr={2}
@@ -221,14 +241,8 @@ function Form(props: PageProps) {
                     options={contactPreferenceOptions}
                   />
                 </SimpleGrid>
-                <FieldCheckbox
-                  field="needs_guidance"
-                  help="Our staff will reach out to you to help guide you along the way."
-                  label="Request Guidance"
-                >
-                  I need assistance
-                </FieldCheckbox>
-                <Alert bg="secondary" color="white" my={4} borderRadius="md" shadow="md">
+
+                <Alert bg="primary.300" color="white" my={4} borderRadius="md" shadow="md">
                   <Stack direction={'column'} spacing={2}>
                     <Text>
                       <strong>Are you an exhibitionist?</strong> If so, you can opt-in to be a part
@@ -249,6 +263,13 @@ function Form(props: PageProps) {
                     </Stack>
                   </Stack>
                 </Alert>
+                <FieldCheckbox
+                  field="needs_guidance"
+                  help="Our staff will reach out to you to help guide you along the way."
+                  label="Request Guidance"
+                >
+                  I need assistance
+                </FieldCheckbox>
               </TabPanel>
               <TabPanel p={0}>
                 <Alert
@@ -270,15 +291,8 @@ function Form(props: PageProps) {
                     label="Get Invites to Events"
                     help="Turn this on, if you want to be invited to events that meet your interests."
                   />
-                  {event_invites && (
-                    <Text>
-                      Members who RSVP to events are expected to attend. Members that RSVP to event
-                      and do not attend, decrease the likelihood of getting invited again. We
-                      understand that things come up, but please be respectful of your brothers and
-                      RSVP accurately and let us know if you can&apos;t make it.
-                    </Text>
-                  )}
                 </Alert>
+
                 <SimpleGrid spacing={4}>
                   <FieldCheckboxes
                     field="social_scenes"
@@ -296,7 +310,7 @@ function Form(props: PageProps) {
                 </SimpleGrid>
 
                 {event_invites && (
-                  <Alert bg="secondary" color="white" my={4} borderRadius="md" shadow="md">
+                  <Alert bg="primary.300" color="white" my={4} borderRadius="md" shadow="md">
                     <Stack direction={'column'} spacing={2}>
                       <Text>
                         <strong>Are you interested in hosting?</strong> If so, let us know by
@@ -316,25 +330,75 @@ function Form(props: PageProps) {
                   </Alert>
                 )}
               </TabPanel>
+              <TabPanel p={0}>
+                {show_profile && (
+                  <Alert
+                    bg={'primary'}
+                    color="white"
+                    flexDirection="column"
+                    my={4}
+                    p={4}
+                    borderRadius="md"
+                    shadow="md"
+                  >
+                    <Text>
+                      What are you looking for and compatible with? We use this information to
+                      optimize compatibility for events. If you choose to display this info, other
+                      members can find you based on these attributes.
+                    </Text>
+                    <FieldSwitch
+                      field="show_interests"
+                      label="Show Interests "
+                      help="Turn this off, if you'd prefer to not display this information to other verified members."
+                    />
+                  </Alert>
+                )}
+                <SimpleGrid spacing={2}>
+                  <FieldCheckboxes
+                    field="their_spectrum"
+                    label="Their Orientation"
+                    options={theirSpectrumOptions}
+                  />
+                  <FieldCheckboxes
+                    field="their_relationship_status"
+                    label="Their Relationship Status"
+                    options={relationshipOptions}
+                  />
+
+                  <FieldCheckboxes
+                    field="their_positions"
+                    label="Their Sexual Positions"
+                    options={theirPositionsOptions}
+                  />
+
+                  <FieldCheckboxes
+                    field="their_roles"
+                    label="Their Sexual Roles"
+                    options={theirRolesOptions}
+                  />
+                </SimpleGrid>
+              </TabPanel>
             </TabPanels>
           </Tabs>
 
           <input type="hidden" {...register('id')} />
 
+          <Box backdropFilter="blur(1px)" position="sticky" h="80px" w="full" bottom={0}></Box>
           <Button
-            mt={10}
+            mt={-10}
             size="lg"
             type="submit"
             bg="primary"
             color="white"
             disabled={isSubmitting || !isDirty}
+            position="sticky"
+            bottom={4}
+            mx={2}
           >
-            Update Account
+            Update Settings
           </Button>
         </form>
       </FormProvider>
     </>
   )
 }
-
-export default Account
