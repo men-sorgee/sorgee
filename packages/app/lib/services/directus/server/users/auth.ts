@@ -121,13 +121,32 @@ export async function findVerificationToken(email: string, token?: string) {
   const adminClient = await getAdminClient()
   const filter = {
     email: { _eq: email },
+    expires: { _gt: '$NOW' },
   }
   if (token) filter['token'] = { _eq: token }
 
   const tokens = await adminClient.items('user_verification_token').readByQuery({
     filter,
   })
+
+  expireOldVerificationTokens().catch((e) => console.error(e))
+
   return tokens?.data?.length ? (tokens.data[0] as UserVerificationToken) : null
+}
+
+export async function expireOldVerificationTokens() {
+  const adminClient = await getAdminClient()
+  const { data: expired } = await adminClient.items('user_verification_token').readByQuery({
+    filter: {
+      expires: { _lt: '$NOW' },
+    },
+    fields: ['id'],
+  })
+
+  if (!expired?.length) return
+  const ids = expired.map((u) => u.id)
+
+  return await adminClient.items('user_verification_token').deleteMany(ids)
 }
 
 export async function deleteVerificationToken(email: string) {

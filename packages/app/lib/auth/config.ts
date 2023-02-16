@@ -131,7 +131,7 @@ export const authOptions: AuthOptions = {
       allowDangerousEmailAccountLinking: true,
     }),
     EmailProvider({
-      maxAge: 24 * 60 * 60 * 2, // 24 hours
+      maxAge: 60 * 60, // 1 hour
       async sendVerificationRequest({ identifier: email, url }) {
         const user = await findUser<User>(email)
 

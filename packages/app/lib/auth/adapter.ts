@@ -1,5 +1,5 @@
 import { Adapter, AdapterUser, AdapterSession, VerificationToken } from 'next-auth/adapters'
-
+import { addHours } from 'date-fns'
 import { DirectusFile, UserVerificationToken, User, UserSession } from 'lib/models'
 import {
   createUser,
@@ -213,11 +213,7 @@ const authAdapter: Adapter = {
       log('useVerificationToken', identifier, token)
       const verificationToken = await findVerificationToken(identifier, token)
       if (!verificationToken) return null
-      if (verificationToken.token !== token) return null
 
-      // Disabling this functionality to let the expiration handle it
-      // it instead
-      // await deleteVerificationToken(identifier)
       return mapToken(verificationToken)
     } catch (e) {
       console.error(e.response?.body?.errors[0].message || e)
