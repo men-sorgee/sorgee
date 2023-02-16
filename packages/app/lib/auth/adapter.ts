@@ -211,7 +211,7 @@ const authAdapter: Adapter = {
   async useVerificationToken({ identifier, token }) {
     try {
       log('useVerificationToken', identifier, token)
-      const verificationToken = await findVerificationToken(identifier)
+      const verificationToken = await findVerificationToken(identifier, token)
       if (!verificationToken) return null
       if (verificationToken.token !== token) return null
 

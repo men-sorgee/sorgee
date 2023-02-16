@@ -117,12 +117,15 @@ export async function addVerificationToken(
   return verificationToken as UserVerificationToken
 }
 
-export async function findVerificationToken(email: string) {
+export async function findVerificationToken(email: string, token?: string) {
   const adminClient = await getAdminClient()
+  const filter = {
+    email: { _eq: email },
+  }
+  if (token) filter['token'] = { _eq: token }
+
   const tokens = await adminClient.items('user_verification_token').readByQuery({
-    filter: {
-      email: { _eq: email },
-    },
+    filter,
   })
   return tokens?.data?.length ? (tokens.data[0] as UserVerificationToken) : null
 }
