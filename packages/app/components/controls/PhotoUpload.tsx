@@ -95,10 +95,8 @@ export const PhotoUpload = chakra(
       try {
         let formData = new FormData()
         formData.append('media', file)
-        formData.append('name', name)
-        formData.append('title', name)
-        formData.append('description', description)
-        const res = await fetch(postUrl, {
+        const query = `?name=${name}&title=${name}&description=${description}`
+        const res = await fetch(postUrl + query, {
           method: 'POST',
           body: formData,
         })

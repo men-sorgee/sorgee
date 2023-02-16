@@ -12,6 +12,7 @@ export async function getUserPhotos(userId: string, is_public: boolean = true) {
         _eq: is_public,
       },
     },
+    sort: ['sort'],
   })
   return photos.data
 }
