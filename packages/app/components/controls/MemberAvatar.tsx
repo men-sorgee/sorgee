@@ -20,20 +20,25 @@ export const MemberAvatar = () => {
   if (!member) return null
 
   return (
-    <Avatar
-      bg="accent.500"
-      name={name}
-      src={pictureSrc}
-      showBorder
-      borderWidth="2px"
-      borderColor={'accent.300'}
-      color="white"
-    >
-      {hasNewNotifications && (
-        <AvatarBadge borderWidth="thin" boxSize="1em" bg="red">
-          {newNotificationCount}
-        </AvatarBadge>
-      )}
-    </Avatar>
+    <>
+      <Avatar
+        bg="accent.500"
+        name={name}
+        src={pictureSrc}
+        showBorder
+        borderWidth="2px"
+        borderColor={'accent.300'}
+        color="white"
+      >
+        {hasNewNotifications && (
+          <AvatarBadge borderWidth="thin" boxSize="1em" bg="red">
+            {newNotificationCount}
+          </AvatarBadge>
+        )}
+      </Avatar>
+      <span id="account-email" hidden>
+        {member.email}
+      </span>
+    </>
   )
 }
