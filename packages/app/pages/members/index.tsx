@@ -1,7 +1,7 @@
 import { ManyItems } from '@directus/sdk'
 import Page from 'components/Page'
 import { signIn } from 'next-auth/react'
-import { useUser } from '@/hooks/use-user'
+import { useUser, useMember } from 'hooks'
 import { UserAddIcon, StarIcon, ChatIcon } from '@heroicons/react/solid'
 import { pruneUndefined, normalize, serialize } from 'lib/utils'
 import { useEffect, useState } from 'react'
@@ -89,7 +89,8 @@ export default function MemberListPage(props: PageProps) {
   const [pageCount, setPageCount] = useState<number>(undefined)
   const [members, setMembers] = useState<SearchableMember[]>(undefined)
   const [query, setQuery] = useState<QueryParams>(undefined)
-
+  const [title, setTitle] = useState<string>(undefined)
+  const [description, setDescription] = useState<string>(undefined)
   const [meta, setMeta] = useState<Meta>({
     total: 0,
     filtered: 0,
@@ -111,8 +112,7 @@ export default function MemberListPage(props: PageProps) {
   }, [])
 
   useEffect(() => {
-    if (!loading && !currentMember) {
-      signIn()
+    if (!currentMember) {
       return
     }
 
@@ -126,6 +126,9 @@ export default function MemberListPage(props: PageProps) {
         'Members',
         `/members?page=${page}&size=${size}&sort=${sort}${filter}`
       )
+      setTitle('Members')
+      setDescription('View and find other members.')
+
       setKey(`/api/members?limit=${size}&offset=${size * (page - 1)}&sort=${sort}${filter}`)
     }
   }, [id, setId, page, size, sort, query, loading, currentMember])
@@ -167,7 +170,13 @@ export default function MemberListPage(props: PageProps) {
   const sortTerm = sort?.startsWith('-') ? sort.slice(1) : sort || 'last_login'
 
   return (
-    <Page title="Members" loading={loading} w="full" requireAuth={true}>
+    <Page
+      title={title || 'Members'}
+      description={description}
+      loading={loading}
+      w="full"
+      requireAuth={true}
+    >
       <FormProvider {...methods}>
         <form
           id="filter-form"

@@ -13,17 +13,21 @@ type MemberResults = {
   level: MemberLevel
 }
 
-export const useMember = (id: string = 'me', refreshIntervalMinutes: number = 5): MemberResults => {
+export const useMember = (id: string, refreshIntervalMinutes: number = 5): MemberResults => {
   const {
     data: member,
     mutate,
     error,
     isLoading,
-  } = useSWR<Member, Error>(`/api/member/${id}`, JsonFetcher, {
+  } = useSWR<Member, Error>(`/api/member/${id || ''}`, JsonFetcher, {
     refreshInterval: 1000 * 60 * refreshIntervalMinutes,
+    isPaused: () => !id || id === 'me' || id === 'null' || id === 'undefined',
+    fallback: {
+      '/api/member/': null,
+    },
   })
   const level = MemberLevel[member?.user_type || 'subscriber']
-  const name = member?.nickname || member?.first_name || 'Member'
+  const name = member?.nickname || member?.first_name || null
 
   return {
     member,

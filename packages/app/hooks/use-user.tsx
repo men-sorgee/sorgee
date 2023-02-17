@@ -70,7 +70,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     if (!loading && member) {
       setUser(member)
     }
-  }, [status, session?.user, user, none, member, loading, _mutate])
+  }, [status, session?.user, user, none, member, loading, _mutate, authenticated])
 
   const { application_status, user_type } = user || {}
   const name = user?.nickname || user?.first_name || 'Member'

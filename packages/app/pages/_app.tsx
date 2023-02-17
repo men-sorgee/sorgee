@@ -1,14 +1,13 @@
 import { ErrorBoundary } from 'components/ErrorBoundary'
 import { AppProps } from 'next/app'
-import { SessionProvider, SessionContext } from 'next-auth/react'
+import { SessionProvider } from 'next-auth/react'
 import { ChakraProvider, cookieStorageManager, extendTheme } from '@chakra-ui/react'
 import Layout from 'components/layout/index'
 import { theme } from '../theme'
-import { MetaContextProvider } from 'hooks/use-meta'
 import { Manrope, Arvo, Roboto_Mono } from '@next/font/google'
 import { useRouter } from 'next/router'
-import { NotificationsProvider, UserContext, UserProvider } from 'hooks'
-import { StrictMode } from 'react'
+import { NotificationsProvider, UserProvider, MetaContextProvider } from 'hooks'
+import { Session } from 'next-auth'
 const heading = Arvo({
   variable: '--heading-font',
   weight: ['400', '700'],
@@ -38,28 +37,26 @@ extendTheme({
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
-  if (router?.pathname.startsWith('/qr')) {
+  if (router?.pathname.startsWith('/code/')) {
     return <Component key={router.asPath} {...pageProps} />
   }
 
   return (
-    <StrictMode>
+    <SessionProvider session={pageProps.session}>
       <MetaContextProvider>
         <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
-          <SessionProvider>
-            <UserProvider>
-              <NotificationsProvider>
+          <UserProvider>
+            <NotificationsProvider>
+              <ErrorBoundary>
                 <Layout fonts={[heading.variable, body.variable, mono.variable]}>
-                  <ErrorBoundary>
-                    <Component key={router.asPath} {...pageProps} />
-                  </ErrorBoundary>
+                  <Component key={router.asPath} {...pageProps} />
                 </Layout>
-              </NotificationsProvider>
-            </UserProvider>
-          </SessionProvider>
+              </ErrorBoundary>
+            </NotificationsProvider>
+          </UserProvider>
         </ChakraProvider>
       </MetaContextProvider>
-    </StrictMode>
+    </SessionProvider>
   )
 }
 

@@ -1,4 +1,5 @@
-import { theme } from './../../theme'
+import { memberProfileContactFields } from './../models/users'
+import { brand } from 'lib/config/brand'
 import { AuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import MicrosoftProvider from 'next-auth/providers/azure-ad'
@@ -16,13 +17,14 @@ import {
 } from 'lib/services/directus/server/users'
 import { Member, memberFields, Profile, User, UserStatusType } from 'lib/models'
 import config from 'lib/config/server'
-import { sendNotification } from '../services/twilio/server'
+import { sendNotification } from 'lib/services/twilio/server'
 
 const { google, discord, twitter, yahoo, microsoft } = config
 const allowedStatuses: UserStatusType[] = ['new', 'active', 'inactive', 'stale']
+
 export const authOptions: AuthOptions = {
   adapter: authAdapter,
-  secret: process.env.AUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'database',
     maxAge: 10 * 24 * 60 * 60, // 10 days
@@ -30,7 +32,7 @@ export const authOptions: AuthOptions = {
   },
   theme: {
     logo: '/logo.svg',
-    brandColor: '#0038A8', // brand.colors.primary.DEFAULT,
+    brandColor: brand.colors.primary.DEFAULT,
     colorScheme: 'dark',
     buttonText: 'Use',
   },

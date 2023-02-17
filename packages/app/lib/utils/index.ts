@@ -77,12 +77,15 @@ export async function copyTextToClipboard(text: string) {
   }
 }
 
-export function pruneUndefined(obj: Record<string, any>, and: (v: any) => boolean = () => true) {
+export function pruneUndefined<T = Record<string, any>>(
+  obj: T,
+  and: (v: any) => boolean = () => true
+): T {
   return Object.fromEntries(
     Object.entries(obj)
       .filter(([_, v]) => v !== undefined && v !== null && v !== '')
       .filter(([_, v]) => and(v))
-  )
+  ) as any as T
 }
 
 export function getAssetUrl(assetId: string | { id: string }) {

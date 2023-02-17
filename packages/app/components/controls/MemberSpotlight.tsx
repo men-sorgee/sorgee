@@ -1,5 +1,5 @@
 import { Box, Tabs, TabList, Tab, TabPanels, TabPanel, Text, Wrap } from '@chakra-ui/react'
-import { useMember } from 'hooks'
+import { useMember, useMeta } from 'hooks'
 import {
   DirectusField,
   memberProfileFields,
@@ -9,7 +9,7 @@ import {
   memberProfileContactFields,
   UserPhoto,
 } from 'lib/models'
-import { AssetImage } from './AssetImage'
+import { useEffect } from 'react'
 import ImageGallery from './ImageGallery'
 import { Loading } from './Loading'
 import { MemberHeader } from './MemberHeader'
@@ -22,6 +22,7 @@ type Props = {
 
 export const MemberSpotlight = ({ id, fields }: Props) => {
   const { member, loading } = useMember(id)
+  const { setMeta } = useMeta()
   if (loading || !id || !member) return <Loading />
   const publicPhotos = member.my_photos?.filter((p) => p.is_public) || []
   return (

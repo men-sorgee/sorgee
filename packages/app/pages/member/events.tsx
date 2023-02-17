@@ -16,7 +16,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { FormProvider, useForm } from 'react-hook-form'
 import { FieldSelect } from 'components/forms'
-import { postJSON } from 'lib/utils'
+import { postJSON, pruneUndefined } from 'lib/utils'
 import { EventUser, FieldOptions, Invite, Member, MemberLevel, GroupEvent } from 'lib/models'
 import { EventCard } from 'components/controls'
 import { getServerSession } from 'next-auth'
@@ -45,12 +45,15 @@ export async function getServerSideProps(
   const invites = await listUserInvites(session.user.id)
 
   const { getFieldOptions } = await import('lib/services/directus/server')
+
+  const props = {
+    invites,
+    rsvpOptions: await getFieldOptions<EventUser>('rsvp', 'events_users'),
+    eventTypeOptions: await getFieldOptions<GroupEvent>('type', 'events'),
+  }
+
   return {
-    props: {
-      invites,
-      rsvpOptions: await getFieldOptions<EventUser>('rsvp', 'events_users'),
-      eventTypeOptions: await getFieldOptions<GroupEvent>('type', 'events'),
-    },
+    props: pruneUndefined<Props>(props),
   }
 }
 
