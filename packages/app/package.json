@@ -53,7 +53,7 @@
     "remark-html": "^15.0.1",
     "styled-components": "^5.3.6",
     "swr": "2.0.3",
-    "twilio": "^3.84.1",
+    "twilio": "^4.7.2",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
