@@ -51,9 +51,9 @@ import { NextPageContext } from 'next'
 import { FieldCheckboxes, FieldInput } from 'components/forms'
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/outline'
 
-type QueryParams = Record<keyof SearchableMember, string[]>
+export type QueryParams = Record<keyof SearchableMember, string[]>
 
-type PageProps = {
+export type PageProps = {
   fieldMap: FieldMap
   id?: string
   params?: QueryParams
