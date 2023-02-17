@@ -53,12 +53,13 @@ function log(...args) {
 }
 
 const authAdapter: Adapter = {
-  async createUser(user: AdapterUser) {
+  async createUser(user: AdapterUser | any) {
     try {
       log('createUser', user)
       let image: DirectusFile = null
-      if (user.image) {
-        image = await importFile(user.image, UploadFolder.members, `avatar-${user.email}`)
+      if (user.image || user.picture) {
+        const imageUrl = (user.image || user.picture) as string
+        image = await importFile(imageUrl, UploadFolder.members, `avatar-${user.email}`)
       }
       const newUser = await createUser({
         email: user.email,
