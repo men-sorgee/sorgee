@@ -301,7 +301,7 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
           </AccordionButton>
 
           <AccordionPanel>
-            <SimpleGrid columns={[1, 1, 2]} spacing={4}>
+            <SimpleGrid columns={[1, 1, 2]} spacing={4} mb={4}>
               <FieldInput field="nickname" label="Nickname" />
               <FieldInput field="biography" label="Keywords" />
             </SimpleGrid>
@@ -333,7 +333,7 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
               options={fields['my_positions'].meta.options.choices}
             />
 
-            <AccordionButton as={'div'} _hover={{ bg: 'transparent', cursor: 'default' }}>
+            <AccordionButton as={'div'} mt={6} _hover={{ bg: 'transparent', cursor: 'default' }}>
               <HStack w="full" justify="center">
                 <Button size="lg" type="submit" colorScheme="primary">
                   Search
