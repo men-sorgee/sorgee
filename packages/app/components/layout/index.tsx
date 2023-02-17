@@ -5,7 +5,7 @@ import Header from './Header'
 import Meta from './Meta'
 import Footer from './Footer'
 import Actions from './Actions'
-import { useAuth } from 'hooks'
+import { useUser } from '../../hooks/use-user'
 
 export const constrained = {
   maxW: ['full', 'lg', '2xl', '3xl', '4xl', '5xl'],
@@ -21,19 +21,19 @@ function Layout({
   className?: string
   fonts: any[]
 }) {
-  const { isMember } = useAuth()
+  const { authenticated } = useUser()
   const router = useRouter()
   const [path] = useState<string>(router?.asPath)
 
-  const height = isMember ? '160px' : '85px'
+  const height = authenticated ? '160px' : '85px'
   const { isOpen, onOpen } = useDisclosure()
 
   useEffect(() => {
-    if (isMember)
+    if (authenticated)
       setTimeout(() => {
         onOpen()
       }, 3000)
-  }, [isMember, onOpen])
+  }, [authenticated, onOpen])
 
   if (path?.startsWith('/code')) {
     return <>{children}</>

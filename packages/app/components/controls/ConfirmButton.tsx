@@ -12,10 +12,10 @@ import {
   AlertDialogFooter,
 } from '@chakra-ui/react'
 import { useRef, useCallback } from 'react'
-import { ApiResponse } from 'lib/models'
+import { ApiResult } from 'lib/utils'
 
 export type ConfirmButtonProps = ButtonProps & {
-  request: () => Promise<[boolean, ApiResponse]>
+  request: () => Promise<ApiResult<any>>
   complete: (bool: boolean, error?: string) => void
   title: string
   confirmMessage: string
@@ -39,8 +39,8 @@ export const ConfirmButton = chakra(
     const { isOpen, onOpen, onClose } = useDisclosure()
     const cancelRef = useRef()
     const action = useCallback(() => {
-      request().then(([ok, res]) => {
-        complete(ok, res.error?.message)
+      request().then(({ success: ok, error }) => {
+        complete(ok, error?.message)
         if (ok) {
           toast({
             title,
@@ -51,7 +51,7 @@ export const ConfirmButton = chakra(
         } else {
           toast({
             title,
-            description: failureMessage + ' ' + res.error.message,
+            description: failureMessage + ' ' + error.message,
             status: 'error',
             duration: 5000,
           })

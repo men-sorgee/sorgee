@@ -22,11 +22,10 @@ export const SubscribeBox = chakra(({ ...props }) => {
   })
   const { handleSubmit, setError } = methods
   const onSubmit = async (data: SubscriptionData) => {
-    const [ok, response] = await postJSON('/api/subscribe', data)
-    if (ok) {
+    const { success, error } = await postJSON('/api/subscribe', data)
+    if (success) {
       setSubscribed(true)
     } else {
-      const { error } = response
       setError('email', error)
     }
   }

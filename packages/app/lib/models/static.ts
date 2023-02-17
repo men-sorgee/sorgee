@@ -5,25 +5,6 @@ export type File = {
   mimetype: string
 }
 
-export type ApiResponse<T = (object & never) | any> = {
-  error?: {
-    field: string & keyof T
-    message: string
-  }
-  data?: T
-}
-
-export function ApiResponse<T = any | any>(
-  data: T,
-  error?: string,
-  field?: string & keyof T
-): ApiResponse<T> {
-  return {
-    data,
-    error: error ? { message: error, field } : undefined,
-  }
-}
-
 export type MetaProps = {
   title: string
   description?: string

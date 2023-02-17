@@ -78,9 +78,9 @@ export default function Register({ promo, birthMonthOptions }: Props) {
   }
 
   const onSubmit = async (data: SignUpForm) => {
-    const [ok, response] = await postJSON('/api/apply/register', data)
+    const { success, error } = await postJSON('/api/apply/register', data)
 
-    if (ok) {
+    if (success) {
       toast({
         title: 'Success',
         description: 'Your account has been created.',
@@ -91,8 +91,8 @@ export default function Register({ promo, birthMonthOptions }: Props) {
           signIn('email', { email: data.email, callbackUrl: '/apply' })
         },
       })
-    } else if (response.error) {
-      setError((response.error!.field as any) || 'email', response.error.message as any)
+    } else if (error) {
+      setError((error!.field as any) || 'email', error.message as any)
     }
   }
 

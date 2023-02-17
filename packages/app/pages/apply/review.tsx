@@ -1,4 +1,4 @@
-import { useMember } from 'hooks/use-member'
+import { useUser } from '@/hooks/use-user'
 import { useRouter } from 'next/router'
 import ApplicationSteps from './_steps'
 import Page from 'components/Page'
@@ -12,7 +12,7 @@ import { useToast } from '@chakra-ui/react'
 function Review() {
   const router = useRouter()
   const [complete, setComplete] = useState<boolean>(false)
-  const { loading, member, reload } = useMember()
+  const { loading, member, reload } = useUser()
 
   useEffect(() => {
     reload()
@@ -27,8 +27,8 @@ function Review() {
   const { setError } = methods
   const toast = useToast()
   const onSubmit = async ({ contact_preference }) => {
-    const [ok, response] = await postJSON('/api/member/me', { contact_preference })
-    if (ok) {
+    const { success, error } = await postJSON('/api/member/me', { contact_preference })
+    if (success) {
       toast({
         title: 'Application Submitted',
         description: 'Your application has been submitted for review.',
@@ -38,8 +38,8 @@ function Review() {
       })
       setComplete(true)
       return
-    } else if (response.error?.field) {
-      setError(response.error!.field as any, response.error.message as any)
+    } else if (error?.field) {
+      setError(error!.field as any, error.message as any)
     }
   }
 
@@ -91,8 +91,8 @@ function Review() {
         {complete && (
           <>
             <Alert as="h3" my={8} status="success" justifyContent="center" py={8}>
-              This is not an error. Actual humans are invoved! With interest spiking it can take a
-              few days to follow up. Please have patience with us.
+              This is not an error. Actual humans need to review your photo! With interest spiking
+              it can take a few days to follow up. Please have patience with us.
             </Alert>
             <Text fontSize="2xl">
               Your application is currently being reviewed by our team. You will receive an email

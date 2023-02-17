@@ -1,7 +1,7 @@
 import { getAdminClient } from '.'
 import { GroupEvent, EventDetail, EventUser } from 'lib/models'
 
-export async function listUpcomingEvents(): Promise<EventDetail[]> {
+export async function listUpcomingEvents(): Promise<GroupEvent[]> {
   const client = await getAdminClient()
   const { data } = await client.items('events').readByQuery({
     filter: {
@@ -9,23 +9,21 @@ export async function listUpcomingEvents(): Promise<EventDetail[]> {
     },
     fields: ['*.*'],
   })
-  return data as EventDetail[]
+  return data as unknown as GroupEvent[]
 }
 
-export async function listEvents(privileged: boolean = false): Promise<EventDetail[]> {
+export async function listAdminEvents(): Promise<GroupEvent[]> {
   const client = await getAdminClient()
   const filter = {
     status: { _in: ['scheduled', 'occurred'] },
-  }
-  if (!privileged) {
-    filter['invite_only'] = { _eq: false }
   }
   const { data } = await client.items('events').readByQuery({
     filter,
     fields: ['*.*'],
     sort: ['-datetime'],
   })
-  return data as EventDetail[]
+  if (!data || data.length == 0) return []
+  return data as unknown as GroupEvent[]
 }
 
 export async function getEvent(id: string): Promise<EventDetail> {

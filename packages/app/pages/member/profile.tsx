@@ -1,7 +1,7 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
-import { DirectusFile, FieldMap, User } from 'lib/models'
-import { useMember } from 'hooks/use-member'
+import { DirectusFile, FieldMap, Member, User } from 'lib/models'
+import { useUser } from '@/hooks/use-user'
 import { useState, useEffect } from 'react'
 
 import {
@@ -50,7 +50,7 @@ export async function getServerSideProps(context: NextPageContext): Promise<{ pr
 }
 
 export default function ProfilePage(props: PageProps) {
-  const { member, loading, reload } = useMember()
+  const { member, loading, reload } = useUser()
   return (
     <Page title={`Profile`} loading={loading} requireAuth={true}>
       {member && <Form {...props} />}
@@ -61,22 +61,20 @@ export default function ProfilePage(props: PageProps) {
 type MemberFormData = Partial<User>
 function Form(props: PageProps) {
   const toast = useToast()
-  const { member } = useMember()
+  const { member, mutate } = useUser()
   const { fieldMap } = props
   const [tabValue, setTabValue] = useState(0)
 
   const methods = useForm<MemberFormData>({
     mode: 'onBlur',
-    defaultValues: {
-      ...member,
-    },
+    defaultValues: member,
   })
   const {
     register,
     handleSubmit,
     setError,
-    reset,
     watch,
+    reset,
     formState: { isSubmitting, isDirty },
   } = methods
 
@@ -85,22 +83,31 @@ function Form(props: PageProps) {
   })
 
   async function onSubmit(data: MemberFormData) {
-    const [ok, response] = await postJSON<User>('/api/member/me', data)
+    const [r, error] = await mutate(data)
+    const ok = r && !error
 
     if (ok) {
-      reset()
       toast({
         title: 'Success',
-        description: 'Your account and profile are updated.',
+        description: 'Your profile was updated.',
         status: 'success',
         duration: 9000,
         isClosable: true,
+        onCloseComplete: () => {
+          reset(r)
+        },
       })
-    } else if (response.error?.field) {
+    } else if (error?.field) {
       // @ts-ignore
-      setError(response.error!.field, response.error.message)
+      setError(error!.field, error.message)
     } else {
-      setError('form' as any, { message: 'Something went wrong' })
+      toast({
+        title: 'Error',
+        description: `Something went wrong ${error.message || error}`,
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      })
     }
   }
 

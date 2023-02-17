@@ -1,7 +1,7 @@
 import { ManyItems } from '@directus/sdk'
 import Page from 'components/Page'
 import { signIn } from 'next-auth/react'
-import { useMember } from 'hooks/use-member'
+import { useUser } from '@/hooks/use-user'
 import { UserAddIcon, StarIcon, ChatIcon } from '@heroicons/react/solid'
 import { pruneUndefined, normalize, serialize } from 'lib/utils'
 import { useEffect, useState } from 'react'
@@ -76,7 +76,7 @@ type Meta = {
   filtered: number
 }
 export default function MemberListPage(props: PageProps) {
-  const { member: currentMember, loading } = useMember()
+  const { member: currentMember, loading } = useUser()
   const router = useRouter()
   const { fieldMap: fields, id: i, params } = props
   const { page: p, size: s, sort: o, id: _, ...q } = router.query || params

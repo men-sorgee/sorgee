@@ -16,7 +16,7 @@ import {
 import { EventUser, Invite, GroupEvent, User } from 'lib/models'
 import { LinkButton, Loading, TakePhoto, MemberBadge } from 'components/controls'
 import { FieldSwitch } from 'components/forms'
-import { useMember } from 'hooks/use-member'
+import { useUser } from '@/hooks/use-user'
 import { useRouter } from 'next/router'
 import Page from 'components/Page'
 type Props = {}
@@ -42,15 +42,15 @@ export default function InviteAdmin(_props: Props) {
     user?.picture ? '/api/asset/' + user?.picture : undefined
   )
   const toast = useToast()
-  const { member, loading } = useMember()
+  const { member, loading } = useUser()
   const [working, setWorking] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
     if (member) {
       if (!invite && !user && !event) {
-        fetchJSON<EventUser>('/api/invite/' + router.query.id).then(([ok, { data }]) => {
-          if (ok) {
+        fetchJSON<EventUser>('/api/invite/' + router.query.id).then(({ success, data }) => {
+          if (success) {
             setInvite({
               invite: data as Invite,
               user: data.users_id as User,
@@ -102,13 +102,13 @@ export default function InviteAdmin(_props: Props) {
         })
       }
 
-      const [ok, response] = await postJSON('/api/invite/' + invite.id, {
+      const { success, error } = await postJSON('/api/invite/' + invite.id, {
         user_id: user.id,
         paid: data.paid,
         attended: true,
         signed_waiver: data.signed_waiver,
       })
-      if (ok) {
+      if (success) {
         toast({
           title: 'Invite Updated',
           position: 'bottom',
@@ -121,8 +121,8 @@ export default function InviteAdmin(_props: Props) {
             setWorking(false)
           },
         })
-      } else if (response.error?.field) {
-        setError(response.error!.field as any, response.error.message as any)
+      } else if (error?.field) {
+        setError(error!.field as any, error.message as any)
         setWorking(false)
       } else {
         toast({

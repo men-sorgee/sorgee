@@ -1,5 +1,7 @@
-import { ApiResponse } from 'lib/models'
+import { extendTheme } from '@chakra-ui/react'
+import { ApiError, ApiResponse } from 'lib/models'
 import { format } from 'date-fns'
+import { KeyedMutator } from 'swr'
 
 export function toLocaleDate(value: string) {
   const t = new Date()
@@ -18,32 +20,37 @@ export function getEventDate(eventStart: string) {
   }
 }
 
+export type ApiResult<T = any> = {
+  success: boolean
+  data?: T
+  error?: ApiError
+}
 export type HttpMethod = (string & 'GET') | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
 
-export async function getJSON<T = never | any>(url: string): Promise<[boolean, ApiResponse<T>]> {
-  return await fetchJSON(url)
+export async function getJSON<T = never | any>(url: string): Promise<ApiResult<T>> {
+  return await fetchJSON<T>(url)
 }
 
-export async function postJSON<T = never | any>(url: string, data: object) {
-  return await fetchJSON(url, data, 'POST')
+export async function postJSON<T = never | any>(url: string, data: T): Promise<ApiResult<T>> {
+  return await fetchJSON<T>(url, data, 'POST')
 }
 
-export async function putJSON<T = never | any>(url: string, data: object) {
-  return await fetchJSON(url, data, 'PUT')
+export async function putJSON<T = never | any>(url: string, data: T): Promise<ApiResult<T>> {
+  return await fetchJSON<T>(url, data, 'PUT')
 }
 
-export async function deleteJSON<T = never | any>(url: string, data?: object) {
-  return await fetchJSON(url, data, 'DELETE')
+export async function deleteJSON<T = never | any>(url: string, data?: T): Promise<ApiResult<T>> {
+  return await fetchJSON<T>(url, data, 'DELETE')
 }
 
-export async function fetchJSON<T = never | any>(
+export async function fetchJSON<T = object | any>(
   url: string,
-  data?: object,
+  data?: T,
   method: HttpMethod = 'GET',
   headers: Record<string, string> = {
     'Content-Type': 'application/json',
   }
-): Promise<[boolean, ApiResponse<T>]> {
+): Promise<ApiResult<T>> {
   const response = await fetch(url, {
     method,
     headers,
@@ -52,9 +59,14 @@ export async function fetchJSON<T = never | any>(
 
   try {
     const body = (await response.json()) as ApiResponse<T>
-    return [response.ok, body]
-  } catch {
-    return [response.ok, { data: null }]
+    if (!body) {
+      return { success: false, error: { message: 'No response body' } }
+    }
+    const { ok: success } = response
+    const { data, error } = body
+    return { success, data, error } as ApiResult<T>
+  } catch (error) {
+    return { success: false, error: { message: error.message || error } }
   }
 }
 

@@ -1,8 +1,8 @@
-import { useMember } from 'hooks/use-member'
+import { useUser } from '@/hooks/use-user'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
 import { postJSON } from 'lib/utils'
-import { SurveyQuestion, SurveyAnswer, Survey, SurveySurveyQuestion } from 'lib/models'
+import { SurveyAnswer, Survey, SurveyQuestion, Question } from 'lib/models'
 import {
   HStack,
   Button,
@@ -57,7 +57,7 @@ type PageProps = {
 }
 
 export default function SurveyPage({ survey }: PageProps) {
-  const { loading, member } = useMember()
+  const { loading, member } = useUser()
   return (
     <Page title="Survey" loading={loading} requireAuth={true}>
       {member && <Form survey={survey} />}
@@ -66,7 +66,7 @@ export default function SurveyPage({ survey }: PageProps) {
 }
 
 function Form({ survey }: PageProps) {
-  const { loading, member } = useMember()
+  const { loading, member } = useUser()
   const toast = useToast()
   const [link, setLink] = useState<string>()
   const methods = useForm<SurveyAnswer[]>({
@@ -78,7 +78,7 @@ function Form({ survey }: PageProps) {
   useEffect(() => {}, [loading, member])
 
   const onSubmit = async (data: any) => {
-    const [ok, response] = await postJSON('/api/survey/' + survey.id, data)
+    const { success: ok, data: response, error } = await postJSON('/api/survey/' + survey.id, data)
 
     if (ok) {
       toast({
@@ -100,7 +100,7 @@ function Form({ survey }: PageProps) {
   }
   // const email = getFieldState('email', formState)
 
-  const questions = survey.questions.map((s: SurveySurveyQuestion) => s.survey_questions_id)
+  const questions: Question[] = survey.questions.map((s: SurveyQuestion) => s.survey_questions_id)
 
   return (
     <>
@@ -138,7 +138,7 @@ function Form({ survey }: PageProps) {
   )
 }
 
-function QuestionField({ question }: { question: SurveyQuestion }) {
+function QuestionField({ question }: { question: Question }) {
   switch (question.answer_type) {
     case 'select':
       return (

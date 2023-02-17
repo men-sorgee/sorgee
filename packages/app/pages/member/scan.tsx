@@ -2,7 +2,7 @@ import { AspectRatio, HStack, Button, Box, IconButton, Badge, Flex } from '@chak
 import { useState } from 'react'
 import { RefreshIcon, LightningBoltIcon } from '@heroicons/react/outline'
 import { LightningBoltIcon as LightningBoltIconSolid } from '@heroicons/react/solid'
-import { useMember } from 'hooks'
+import { useUser } from 'hooks'
 import Page from 'components/Page'
 import dynamic from 'next/dynamic'
 
@@ -14,7 +14,7 @@ export default function Scanner() {
   const [show, setShow] = useState(true)
   const [url, setUrl] = useState<string>()
   const [stopStream, setStopStream] = useState(false)
-  const { member, loading } = useMember()
+  const { member, loading } = useUser()
   const onScan = (err: string, result: { getText: () => any }) => {
     if (!err && result) {
       let data = result.getText()

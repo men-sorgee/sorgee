@@ -11,10 +11,6 @@ import {
 export type GroupEvent = {
   id: string
   status: string
-  user_created?: string | DirectusUser
-  date_created?: string
-  user_updated?: string | DirectusUser
-  date_updated?: string
   datetime?: string
   name?: string
   location?: string | Location
@@ -23,8 +19,14 @@ export type GroupEvent = {
   cost: number
   type: string
   invite_only: boolean
+  visibility: UserType[]
+  user_created?: string | DirectusUser
+  date_created?: string
+  user_updated?: string | DirectusUser
+  date_updated?: string
 }
 export type UserPhotoFieldType = 'photo' | 'picture' | 'public' | 'private'
+
 export type UserFields = (string | keyof User)[] | '*' | '*.*' | any
 
 export type EventUser = {
@@ -455,24 +457,36 @@ export type DirectusUser = {
   email_notifications?: boolean
 }
 
-export type SurveyAnswer = {
+export type Survey = {
   id: string
-  user?: string | User
-  survey?: string | Survey
-  question?: string | SurveyQuestion
-  answer_text?: string
-  answer_number?: number
-  answer_boolean?: boolean
-  answer_context?: string
+  status: string
+  surveyed: string | Surveyed[]
+  user_created?: string | DirectusUser
+  date_created?: string
+  user_updated?: string | DirectusUser
+  date_updated?: string
+  name?: string
+  title?: string
+  category?: unknown
+  notification?: string | Notification
+  questions: SurveyQuestion[]
 }
 
-export type SurveyAnswerUser = {
+export type Surveyed = {
   id: number
-  survey_answers_id?: string
-  users_id?: string
+  surveys_id?: string | Survey
+  item?: string | any
+  collection?: string
 }
 
 export type SurveyQuestion = {
+  id: number
+  surveys_id?: string | Survey
+  survey_questions_id: Question
+  sort?: number
+}
+
+export type Question = {
   id: string
   answer_type?: 'string' | 'number' | 'text' | 'boolean' | 'select' | 'choose'
   question: string
@@ -484,25 +498,15 @@ export type SurveyQuestion = {
   date_updated?: string
 }
 
-export type Survey = {
+export type SurveyAnswer = {
   id: string
-  status: string
-  user_created?: string | DirectusUser
-  date_created?: string
-  user_updated?: string | DirectusUser
-  date_updated?: string
-  name?: string
-  title?: string
-  category?: unknown
-  notification?: string | Notification
-  questions: SurveySurveyQuestion[]
-}
-
-export type SurveySurveyQuestion = {
-  id: number
-  surveys_id?: string | Survey
-  survey_questions_id: SurveyQuestion
-  sort?: number
+  user?: string & User
+  survey?: string & Survey
+  question?: string & SurveyQuestion
+  answer_text?: string
+  answer_number?: number
+  answer_boolean?: boolean
+  answer_context?: string
 }
 
 export type FieldMap = Record<string, DirectusField>
@@ -528,6 +532,8 @@ export type DirectusTypes = {
   users: User
   users_files: UserFile
   users_photos: UserPhoto
+  rating: Rating
+  rating_rated: RatingRated
   directus_collections: DirectusCollection
   directus_fields: DirectusField
   directus_files: DirectusFile

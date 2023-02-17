@@ -1,11 +1,11 @@
-import { useMember } from 'hooks/use-member'
+import { useUser } from '@/hooks/use-user'
 import { useRouter } from 'next/router'
 import Page from 'components/Page'
 import { Text, Heading, Link } from '@chakra-ui/react'
 
 function Denied() {
   const router = useRouter()
-  const { loading, member } = useMember()
+  const { loading, member } = useUser()
 
   if (member && member?.application_status && member.application_status !== 'denied') {
     router.push('/apply/' + member?.application_status)

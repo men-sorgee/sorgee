@@ -1,5 +1,5 @@
 import { NextPageContext, GetServerSidePropsResult } from 'next'
-import { EventDetail, MemberLevel } from 'lib/models'
+import { EventDetail, GroupEvent, MemberLevel } from 'lib/models'
 import Page from 'components/Page'
 import {
   Card,
@@ -19,7 +19,7 @@ import { useEffect, useState } from 'react'
 import { getEventDate } from 'lib/utils'
 
 type Props = {
-  events: (EventDetail & { moment?: any })[]
+  events: (GroupEvent & { moment?: any })[]
 }
 export async function getServerSideProps(
   context: NextPageContext
@@ -37,8 +37,8 @@ export async function getServerSideProps(
     }
   }
 
-  const { listEvents } = await import('lib/services/directus/server/events')
-  const events = await listEvents(level >= MemberLevel.staff)
+  const { listAdminEvents } = await import('lib/services/directus/server/events')
+  const events = await listAdminEvents()
   return { props: { events } }
 }
 

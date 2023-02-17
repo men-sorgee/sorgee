@@ -1,5 +1,5 @@
 import ApplicationSteps from './_steps'
-import { useMember } from 'hooks/use-member'
+import { useUser } from '@/hooks/use-user'
 import { NextRouter, useRouter } from 'next/router'
 import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -11,7 +11,7 @@ import Page from 'components/Page'
 
 function Agreement() {
   const router = useRouter()
-  const { loading, member } = useMember()
+  const { loading, member } = useUser()
 
   if (member && member?.application_status && member.application_status !== 'agreement') {
     router.push('/apply/' + member?.application_status)
@@ -42,13 +42,13 @@ function Form({ router }: Props) {
   const { handleSubmit, setError, watch } = methods
 
   async function onSubmit(data: AgreementData) {
-    const [success, response] = await postJSON('/api/apply/agree', data)
+    const { success, error } = await postJSON('/api/apply/agree', data)
 
     if (success) {
       setCompleted(true)
       router.push('/apply/approved')
-    } else if (response.error?.field) {
-      setError(response.error!.field as any, response.error.message as any)
+    } else if (error?.field) {
+      setError(error!.field as any, error.message as any)
     } else {
       setError('agree', { message: 'Something went wrong' })
     }

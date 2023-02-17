@@ -1,13 +1,13 @@
 import { Directus } from '@directus/sdk'
 import { DirectusField, DirectusTypes, Promo, User, FieldMap } from 'lib/models'
 
-const adminDb = new Directus<DirectusTypes>(process.env.ADMIN_URL)
+const _adminDb = new Directus<DirectusTypes>(process.env.ADMIN_URL)
 const cache: { [key: string]: any } = {}
 
 export async function getAdminClient(): Promise<Directus<DirectusTypes>> {
-  if (await adminDb.auth.token) return adminDb
-  await adminDb.auth.static(process.env.ADMIN_TOKEN)
-  return adminDb
+  if (await _adminDb.auth.token) return _adminDb
+  await _adminDb.auth.static(process.env.ADMIN_TOKEN)
+  return _adminDb
 }
 
 export async function findPromo(code: string): Promise<Promo | null> {

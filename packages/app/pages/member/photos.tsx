@@ -1,13 +1,6 @@
-import { useMember } from 'hooks/use-member'
-import { useRouter } from 'next/router'
+import { useUser } from '@/hooks/use-user'
 import { useState, useEffect, useCallback, useRef } from 'react'
-import {
-  TakePhoto,
-  AssetImage,
-  PhotoCapture,
-  PhotoUpload,
-  ConfirmButton,
-} from 'components/controls'
+import { AssetImage, PhotoCapture, PhotoUpload, ConfirmButton } from 'components/controls'
 import {
   HStack,
   Modal,
@@ -41,7 +34,7 @@ type PhotoItem = {
   is_public: boolean
 }
 export default function PhotoAlbums({}: Props) {
-  const { member, loading, reload } = useMember()
+  const { member, loading, reload } = useUser()
   const [pictureSrc, setPictureSrc] = useState<string>(undefined)
 
   useEffect(() => {
@@ -53,7 +46,7 @@ export default function PhotoAlbums({}: Props) {
   }, [loading, member, pictureSrc, reload])
 
   const list =
-    member?.my_photos.map((image: UserPhoto) => {
+    member?.my_photos?.map((image: UserPhoto) => {
       return {
         fileId: image.directus_files_id as string,
         photoId: image.id as number,

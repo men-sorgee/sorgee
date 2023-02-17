@@ -1,4 +1,4 @@
-import { useMember } from 'hooks/use-member'
+import { useUser } from '@/hooks/use-user'
 import { useRouter } from 'next/router'
 import { useState, ChangeEvent } from 'react'
 import ApplicationSteps from './_steps'
@@ -22,7 +22,7 @@ import { ApiResponse } from 'lib/models'
 import { getAssetUrl } from 'lib/utils'
 
 function Verification() {
-  const { member, loading } = useMember()
+  const { member, loading } = useUser()
   const [completed, setCompleted] = useState(false)
   const router = useRouter()
 
@@ -44,7 +44,7 @@ function Verification() {
 }
 
 function Form({ code, router, setCompleted }): JSX.Element {
-  const { member, reload } = useMember()
+  const { member, reload } = useUser()
   const [previewUrl, setPreviewUrl] = useState<string | null>(
     member?.photo ? getAssetUrl(member.photo) : null
   )

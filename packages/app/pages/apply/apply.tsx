@@ -27,7 +27,7 @@ import ApplicationSteps from './_steps'
 import Page from 'components/Page'
 import { signIn, useSession } from 'next-auth/react'
 import { useSite } from '../../hooks/use-site'
-import { useMember } from '../../hooks/use-member'
+import { useUser } from '../../hooks/use-user'
 
 export type PageProps = {
   invite?: UserInvite
@@ -66,7 +66,7 @@ function Apply({ promo, invite, ...props }: PageProps) {
       signIn()
     },
   })
-  const { member: user, loading } = useMember()
+  const { member: user, loading } = useUser()
 
   const [formError, setFormError] = useState<string>()
 
@@ -163,12 +163,15 @@ function Form({ user, ...props }: PageProps & { user: Applicant }) {
     if (data.height_feet || data.height_inches) {
       data.height = `${data.height_feet} ${data.height_inches}`
     }
-    const [ok, response] = await postJSON('/api/apply', pruneUndefined(data))
+    const {
+      success: ok,
+      error,
+    } = await postJSON('/api/apply', pruneUndefined(data))
 
     if (ok) {
       router.push('/apply/verify')
-    } else if (response.error?.field) {
-      setError(response.error!.field as any, response.error.message as any)
+    } else if (error?.field) {
+      setError(error!.field as any, error.message as any)
     } else {
       setFormError('Something went wrong')
     }

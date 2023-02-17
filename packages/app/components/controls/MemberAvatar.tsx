@@ -1,44 +1,34 @@
-import { Avatar, AvatarBadge } from '@chakra-ui/react'
-import { useState, useEffect } from 'react'
-import { useMember, useNotifications } from 'hooks'
-import { getAssetUrl } from 'lib/utils'
+import { Avatar, AvatarProps, AvatarBadge, chakra } from '@chakra-ui/react'
+import { UserContext } from 'hooks/use-user'
+import { NotificationsContext } from '../../hooks/use-notifications'
 
-export const MemberAvatar = () => {
-  const { hasNewNotifications, newNotificationCount } = useNotifications()
-  const [pictureSrc, setPictureSrc] = useState<string | null>(null)
-  const [name, setName] = useState<string | null>(null)
-  const { member, loading } = useMember()
+type Props = AvatarProps
 
-  useEffect(() => {
-    if (!loading && member && name == null) {
-      const { picture, first_name, last_name, nickname } = member
-      if (!pictureSrc && picture) setPictureSrc(getAssetUrl(picture))
-      if (!name) setName(nickname || `${first_name} ${last_name}`)
-    }
-  }, [member, name, pictureSrc, loading, newNotificationCount, hasNewNotifications])
-
-  if (!member) return null
-
+export const MemberAvatar = chakra(({ ...props }: Props) => {
   return (
-    <>
-      <Avatar
-        bg="accent.500"
-        name={name}
-        src={pictureSrc}
-        showBorder
-        borderWidth="2px"
-        borderColor={'accent.300'}
-        color="white"
-      >
-        {hasNewNotifications && (
-          <AvatarBadge borderWidth="thin" boxSize="1em" bg="red">
-            {newNotificationCount}
-          </AvatarBadge>
-        )}
-      </Avatar>
-      <span id="account-email" hidden>
-        {member.email}
-      </span>
-    </>
+    <UserContext.Consumer>
+      {({ name, picture }) => (
+        <Avatar
+          bg="accent.500"
+          name={name}
+          src={picture}
+          showBorder
+          borderWidth="2px"
+          borderColor={'accent.300'}
+          color="white"
+          {...props}
+        >
+          <NotificationsContext.Consumer>
+            {({ hasNewNotifications, newNotificationCount }) =>
+              hasNewNotifications && (
+                <AvatarBadge borderWidth="thin" boxSize="1em" bg="red">
+                  {newNotificationCount}
+                </AvatarBadge>
+              )
+            }
+          </NotificationsContext.Consumer>
+        </Avatar>
+      )}
+    </UserContext.Consumer>
   )
-}
+})

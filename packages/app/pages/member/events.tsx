@@ -11,7 +11,7 @@ import {
   Box,
 } from '@chakra-ui/react'
 import Page from 'components/Page'
-import { useMember } from 'hooks'
+import { useUser } from 'hooks'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -56,7 +56,7 @@ export async function getServerSideProps(
 
 function EventPage({ invites, rsvpOptions, eventTypeOptions }: Props) {
   const [allowed, setAllowed] = useState(false)
-  const { member, loading, level } = useMember()
+  const { member, loading, level } = useUser()
 
   useEffect(() => {
     if (!loading && member && !allowed) {
@@ -207,8 +207,8 @@ function EventInfo({
   const respond = useCallback(
     async (data: InviteRSVP) => {
       setWorking(true)
-      const [ok, response] = await postJSON('/api/invite/rsvp', data)
-      if (ok) {
+      const { success, error } = await postJSON('/api/invite/rsvp', data)
+      if (success) {
         toast({
           title: 'RSVP Updated',
           position: 'bottom',
@@ -217,8 +217,8 @@ function EventInfo({
           duration: 5000,
           isClosable: true,
         })
-      } else if (response.error?.field) {
-        setError(response.error!.field as any, response.error.message as any)
+      } else if (error?.field) {
+        setError(error!.field as any, error.message as any)
       } else {
         toast({
           title: 'Something went wrong.',

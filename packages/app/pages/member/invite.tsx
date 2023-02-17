@@ -1,4 +1,4 @@
-import { useMember } from 'hooks/use-member'
+import { useUser } from '@/hooks/use-user'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
 import { copyTextToClipboard, postJSON } from 'lib/utils'
@@ -26,7 +26,7 @@ type PageProps = {
 }
 
 function Invite({ userTypeOptions }: PageProps) {
-  const { loading, member } = useMember()
+  const { loading, member } = useUser()
   return (
     <Page title="Invite Someone" loading={loading} sectionClass="" requireAuth={true}>
       {member && <Form userTypeOptions={userTypeOptions} />}
@@ -35,7 +35,7 @@ function Invite({ userTypeOptions }: PageProps) {
 }
 
 function Form({ userTypeOptions }: PageProps) {
-  const { loading, member } = useMember()
+  const { loading, member } = useUser()
   const toast = useToast()
   const [link, setLink] = useState<string>()
   const methods = useForm<InviteLink & { t: MemberLevel }>({
@@ -78,12 +78,12 @@ function Form({ userTypeOptions }: PageProps) {
       v: member?.id,
     })
     setLink(inviteLink)
-    const [ok, response] = await postJSON('/api/member/invite', {
+    const { success, error } = await postJSON('/api/member/invite', {
       ...data,
       link: inviteLink,
     })
 
-    if (ok) {
+    if (success) {
       toast({
         title: 'Copied!',
         description: 'The invite link was sent to ' + data.email,
@@ -93,7 +93,6 @@ function Form({ userTypeOptions }: PageProps) {
       })
       reset()
     } else {
-      const { error } = response
       setError('email', { message: error?.message })
     }
   }

@@ -4,7 +4,7 @@ import { MetaProps } from 'lib/models'
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { useSite } from './use-site'
 
-type Context = MetaProps & {
+export type MetaContextData = MetaProps & {
   siteTitle: string
   setMeta: (title: string, description?: string, image?: string) => void
   metaBlob?: any
@@ -13,9 +13,9 @@ type Context = MetaProps & {
   path: string
 }
 
-export const MetaContext = createContext<Context>(undefined)
+export const MetaContext = createContext<MetaContextData>(undefined)
 
-export function MetaProvider(props: any) {
+export function MetaContextProvider(props: any) {
   const { site, loading } = useSite()
   const router = useRouter()
   const [siteTitle, setSiteTitle] = useState<string>(site?.site_title)
@@ -36,7 +36,7 @@ export function MetaProvider(props: any) {
     }
   }, [site.site_title, title, loading, router])
 
-  const meta: Context = {
+  const meta: MetaContextData = {
     siteTitle,
     title: `${title} :: ${siteTitle}`,
     description,

@@ -1,7 +1,7 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
 import { FieldOptions, Member, User } from 'lib/models'
-import { useMember } from 'hooks/use-member'
+import { useUser } from '@/hooks/use-user'
 import { useState } from 'react'
 import {
   FieldInput,
@@ -66,7 +66,7 @@ export async function getServerSideProps(_context: NextPageContext) {
 type MemberFormData = Partial<Member>
 
 export default function SettingsPage(props: PageProps) {
-  const { member, loading } = useMember()
+  const { member, loading } = useUser()
   return (
     <Page
       title="Settings"
@@ -81,7 +81,7 @@ export default function SettingsPage(props: PageProps) {
 
 function Form(props: PageProps) {
   const toast = useToast()
-  const { member } = useMember()
+  const { member, mutate } = useUser()
   const {
     timeOfDayOptions,
     eventOptions,
@@ -116,22 +116,31 @@ function Form(props: PageProps) {
   })
 
   const onSubmit = async (data: MemberFormData) => {
-    const [ok, response] = await postJSON<User>('/api/member/me', data)
+    const [r, error] = await mutate(data)
+    const ok = r && !error
 
     if (ok) {
-      reset()
       toast({
         title: 'Success',
         description: 'Your account was updated.',
         status: 'success',
         duration: 9000,
         isClosable: true,
+        onCloseComplete: () => {
+          reset(r)
+        },
       })
-    } else if (response.error?.field) {
+    } else if (error?.field) {
       // @ts-ignore
-      setError(response.error!.field, response.error.message)
+      setError(error!.field, error.message)
     } else {
-      setError('form' as any, { message: 'Something went wrong' })
+      toast({
+        title: 'Error',
+        description: `Something went wrong ${error.message || error}`,
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      })
     }
   }
 

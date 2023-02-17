@@ -2,7 +2,7 @@ import { Alert, HStack, Flex, AlertIcon, Stat, StatLabel, StatNumber } from '@ch
 import { EventCard, LinkButton } from 'components/controls'
 import { MemberLevel, User, EventDetail } from 'lib/models'
 import { GetServerSidePropsResult, NextPageContext } from 'next'
-import { useMember } from 'hooks/use-member'
+import { useUser } from '@/hooks/use-user'
 import Page from 'components/Page'
 import { useState } from 'react'
 type Props = {
@@ -33,7 +33,7 @@ export async function getServerSideProps(
 }
 
 export default function EventAdmin({ event, error }: { event: EventDetail; error: string }) {
-  const { member, loading } = useMember()
+  const { member, loading } = useUser()
   const [fees] = useState(event.cost * event.paid_count)
   const isStaff = member && MemberLevel[member.user_type] >= MemberLevel.staff
   const isScheduled = event.status === 'scheduled'

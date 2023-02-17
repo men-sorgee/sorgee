@@ -1,4 +1,4 @@
-import { useMember } from 'hooks/use-member'
+import { useUser } from '@/hooks/use-user'
 import { useRouter } from 'next/router'
 import ApplicationSteps from './_steps'
 import { Text, Heading, HStack, VStack } from '@chakra-ui/react'
@@ -7,7 +7,7 @@ import { LinkButton } from '../../components/controls'
 
 function Approved() {
   const router = useRouter()
-  const { loading, member } = useMember()
+  const { loading, member } = useUser()
 
   if (member && member?.application_status && member.application_status !== 'approved') {
     router.push('/apply/' + member?.application_status)

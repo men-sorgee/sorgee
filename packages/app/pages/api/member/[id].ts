@@ -57,11 +57,11 @@ export default async function getMemberDetails(
             )
             .catch((e) => console.error(e.message || e, e.stack))
         }
-        await updateUser(user_id, userDetails)
-        return res.status(200).json(ApiResponse(null))
+        const updated = await updateUser(user_id, userDetails)
+        return res.status(200).json(ApiResponse(updated))
       }
       default:
-        return res.status(200).end()
+        return res.status(200).json(ApiResponse(user))
     }
   } catch (e) {
     console.error(e.message || e, e.stack)
