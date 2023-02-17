@@ -5,8 +5,6 @@ import { NextApiRequest } from 'next'
 import { Writable } from 'node:stream'
 import FormData from 'form-data'
 import { DirectusFile, DirectusFolder } from 'lib/models'
-import { isNull } from 'node:util'
-import { ItemInput, FileItem } from '@directus/sdk'
 
 export enum UploadFolder {
   members = '8c3d5472-6b02-4056-affd-ab3d461b273d',
@@ -65,13 +63,15 @@ export type FileInfo = {
 export async function getFileInfo(req: NextApiRequest): Promise<FileInfo & { form: IncomingForm }> {
   const chunks: never[] = []
   try {
-    const { files: raw, form } = await formidablePromise(req, {
+    const { files, form } = await formidablePromise(req, {
       ...formidableConfig,
       fileWriteStreamHandler: () => fileConsumer(chunks),
     })
-    const fileInfo: File = raw.media as File
+
+    const media = files.media as File
+    //const fileInfo: File = files as File
     const data = Buffer.concat(chunks)
-    const { mimetype, originalFilename, filepath } = fileInfo
+    const { mimetype, originalFilename, filepath } = media
     return { mimetype, originalFilename, filepath, data, form }
   } catch (er) {
     console.error(er)
@@ -141,6 +141,7 @@ export async function uploadFile(
   formData.append('description', description)
   formData.append('mimetype', type)
   formData.append('file', data, {
+    ...fileInfo,
     filename: name,
     filepath: path,
     contentType: type,

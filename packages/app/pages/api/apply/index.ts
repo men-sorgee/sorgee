@@ -35,7 +35,7 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     res.status(400).json(ApiResponse(null, e.message || e))
   }
 
-  res.status(200).end()
+  res.status(200).json(ApiResponse({}))
 }
 
 export default Apply

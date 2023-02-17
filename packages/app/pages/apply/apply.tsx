@@ -163,12 +163,9 @@ function Form({ user, ...props }: PageProps & { user: Applicant }) {
     if (data.height_feet || data.height_inches) {
       data.height = `${data.height_feet} ${data.height_inches}`
     }
-    const {
-      success: ok,
-      error,
-    } = await postJSON('/api/apply', pruneUndefined(data))
-
-    if (ok) {
+    const { success, data: d, error } = await postJSON('/api/apply', pruneUndefined(data))
+    console.dir({ success, data: d, error })
+    if (success) {
       router.push('/apply/verify')
     } else if (error?.field) {
       setError(error!.field as any, error.message as any)

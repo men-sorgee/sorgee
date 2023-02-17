@@ -4,22 +4,18 @@ import { ApiResponse, ApplicationStatus } from 'lib/models'
 import { withApplicant, withMethods } from 'lib/utils/server'
 import { sendNotificationEmail } from 'lib/services/sendgrid/server'
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-}
-
 async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
     if (!withMethods(req, ['POST'])) return
 
     const applicant = await withApplicant(req, res)
 
+    const fileInfo = await getFileInfo(req)
     const file = await uploadFile(
-      await getFileInfo(req),
+      fileInfo,
       UploadFolder.verification,
-      `Verification: ${applicant.id.substring(0, 4)}-${applicant.id.substring(4, 8)}`
+      `Verification: ${applicant.id.substring(0, 4)}-${applicant.id.substring(4, 8)}`,
+      `Verification for ${applicant.email}: ${applicant.first_name} ${applicant.last_name} `
     )
 
     await updateUser(applicant.id, {
@@ -41,7 +37,7 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
         }
       )
 
-    res.status(200).end()
+    res.status(200).json(ApiResponse({}))
   } catch (e: any) {
     console.error(e)
     res.status(500).json(ApiResponse(null, e.message || e))
@@ -49,3 +45,8 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
 }
 
 export default Verify
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+}

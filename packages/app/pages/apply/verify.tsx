@@ -7,11 +7,12 @@ import {
   Center,
   Stack,
   Text,
-  Heading,
-  VStack,
+  Alert,
+  Flex,
   HStack,
   Input,
-  Alert,
+  Heading,
+  Image,
   AlertIcon,
 } from '@chakra-ui/react'
 import Page from 'components/Page'
@@ -59,6 +60,7 @@ function Form({ code, router, setCompleted }): JSX.Element {
     reset,
     setError,
     clearErrors,
+    watch,
     formState: { errors },
   } = methods
 
@@ -90,7 +92,9 @@ function Form({ code, router, setCompleted }): JSX.Element {
   }
 
   function skip() {
-    router.push('/apply/review')
+    reload().then(() => {
+      window.location.href = '/apply/review'
+    })
   }
 
   async function onSubmit({ verify }: { verify: boolean }) {
@@ -99,11 +103,6 @@ function Form({ code, router, setCompleted }): JSX.Element {
     try {
       let formData = new FormData()
       formData.append('media', file)
-      formData.append('image_field', 'photo')
-      formData.append(
-        'image_name',
-        `Verification: ${member.id.substring(0, 4)}-${member.id.substring(4, 8)}`
-      )
       const res = await fetch('/api/apply/verify', {
         method: 'POST',
         body: formData,
@@ -111,7 +110,7 @@ function Form({ code, router, setCompleted }): JSX.Element {
 
       if (res.ok) {
         setCompleted(true)
-        window.location.href = '/apply/review'
+        router.push('/apply/review')
       } else {
         const body = (await res.json()) as ApiResponse
         if (body.error?.field) {
@@ -124,22 +123,32 @@ function Form({ code, router, setCompleted }): JSX.Element {
       setError('file', { message: error.message })
     }
   }
+  const isVerified = watch('verify', false)
+  const hasPhoto = previewUrl != null || file != null
+
+  const canUpload = isVerified && hasPhoto
 
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Text fontSize="xl">
-          To verify you are who you say you are, please take a selfie while holding a piece of paper
-          with the following verification-code written on it.
-        </Text>
-
-        <Stack alignItems="center">
-          <Heading as="h2" size="4xl" textAlign="center">
+        <Flex direction="column" alignItems="center"></Flex>
+        <Stack alignItems="center" spacing={4}>
+          <Text fontSize="xl">
+            To verify you are who you say you are, please take a selfie while holding a piece of
+            paper with the following verification-code written on it. ( This photo will not be
+            shared with anyone and will not be used for your profile.)
+          </Text>
+          <Heading size="3xl" mb={3}>
             {code}
           </Heading>
           {previewUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
+              objectFit="cover"
+              border="1px solid"
+              rounded="md"
+              shadow="md"
+              borderColor="gray.200"
               alt="file uploader preview"
               src={previewUrl}
               width={300}
@@ -171,38 +180,44 @@ function Form({ code, router, setCompleted }): JSX.Element {
               </Text>
             </Alert>
           )}
-          <Text fontSize="xl" textAlign="center">
-            <strong>
-              Be sure your face and code is clearly visible, with no sunglasses or hats.
-            </strong>
-            <br />
-            This photo will not be shared with anyone and will not be used for your profile.
-          </Text>
-          <VStack alignItems="center" align="center" justify="middle" textAlign="center">
+          <Alert rounded="lg" shadow="lg" status="warning">
+            <AlertIcon />
+            <Text fontSize="xl" textAlign="left">
+              <strong>
+                Be sure your face and code is clearly visible, with no sunglasses or hats.
+              </strong>
+              <br />
+              Your photo will not be accepted without the verification code written on a piece of
+              paper.
+            </Text>
+          </Alert>
+          <Flex alignItems="center" align="center" justify="middle" textAlign="center">
             <FieldCheckbox
               w="fit-content"
               field="verify"
-              label="I certify that the photo I am submitting is me."
+              label=""
               registerOptions={{ required: 'Certification is Required' }}
-            />
+            >
+              I certify that the photo I am submitting is me.
+            </FieldCheckbox>
             <ErrorMessage
               render={(m) => <Text className="text-red-500">{m.message}</Text>}
               errors={errors}
               name={'file'}
             />
-          </VStack>
+          </Flex>
 
           <HStack spacing={4} justify="center">
-            <Button color="info" size="lg" disabled={!previewUrl} onClick={onCancelFile}>
+            <Button size="lg" disabled={!previewUrl} onClick={onCancelFile}>
               Clear
             </Button>
-            {member?.photo && !member?.photo_denial_reason && (
-              <Button type="submit" size="lg" onClick={handleSubmit(skip)} color="primary.500">
+            {member?.photo && !member?.photo_denial_reason && isVerified && (
+              <Button type="submit" size="lg" onClick={handleSubmit(skip)} colorScheme="primary">
                 Use Existing
               </Button>
             )}
             {file && (
-              <Button type="submit" size="lg" disabled={!previewUrl} colorScheme="accent">
+              <Button type="submit" size="lg" disabled={!canUpload} colorScheme="accent">
                 Upload
               </Button>
             )}

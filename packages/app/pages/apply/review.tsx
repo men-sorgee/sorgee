@@ -15,8 +15,14 @@ function Review() {
   const { loading, member, reload } = useUser()
 
   useEffect(() => {
-    reload()
-  })
+    if (member && member?.application_status && member.application_status !== 'review') {
+      router.push('/apply/' + member?.application_status)
+    }
+    if (member?.contact_preference) {
+      setComplete(true)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const methods = useForm<{ contact_preference: string }>({
     mode: 'onBlur',
@@ -81,7 +87,7 @@ function Review() {
                     ]}
                   />
                   <Button type="submit" mt={8} size="lg" bgColor="accent.500">
-                    Contact Me
+                    Set Contact Preference
                   </Button>
                 </form>
               </FormProvider>
@@ -90,15 +96,20 @@ function Review() {
         )}
         {complete && (
           <>
-            <Alert as="h3" my={8} status="success" justifyContent="center" py={8}>
-              This is not an error. Actual humans need to review your photo! With interest spiking
-              it can take a few days to follow up. Please have patience with us.
-            </Alert>
-            <Text fontSize="2xl">
+            <Alert
+              as="h4"
+              color="white"
+              my={8}
+              status="success"
+              justifyContent="center"
+              py={8}
+              rounded="lg"
+              shadow="lg"
+            >
               Your application is currently being reviewed by our team. You will receive an email
               with our decision within 7 days. <br />
               Thank you for your interest in our fraternity.
-            </Text>
+            </Alert>
           </>
         )}
       </Box>

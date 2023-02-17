@@ -55,12 +55,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
   } = useSWR<Member, Error>(key, authenticatedFetcher(authenticated), {
     revalidateOnFocus: true,
     revalidateOnReconnect: true,
+    revalidateOnMount: true,
     refreshInterval: 1000 * 60 * 3, // 3 minutes
     fallbackData: user as any,
   })
 
   useEffect(() => {
-    if (loading && status != 'loading' && session?.user && user == none) {
+    if (authenticated && session?.user && user == none) {
       setUser(session.user)
       _mutate(session.user as Member, {
         revalidate: true,

@@ -11,7 +11,7 @@ export async function JsonFetcher<T>(url: string) {
   return body?.data as T
 }
 
-export const authenticatedFetcher = (authenticated: boolean) => {
+export function authenticatedFetcher<T>(authenticated: boolean): (url: string) => Promise<T> {
   if (!authenticated) return () => Promise.resolve(null)
-  return JsonFetcher
+  return (url: string) => JsonFetcher<T>(url)
 }

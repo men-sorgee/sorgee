@@ -15,7 +15,6 @@ function Agreement() {
 
   if (member && member?.application_status && member.application_status !== 'agreement') {
     router.push('/apply/' + member?.application_status)
-    return null
   }
 
   return (
@@ -25,16 +24,14 @@ function Agreement() {
       requireAuth={true}
       header={<ApplicationSteps status={'agreement'} />}
     >
-      <Form router={router} />
+      <Form />
     </Page>
   )
 }
 
-type Props = {
-  router: NextRouter
-}
-
-function Form({ router }: Props) {
+function Form() {
+  const { reload } = useUser()
+  const router = useRouter()
   const [completed, setCompleted] = useState(false)
   const methods = useForm<AgreementData>({
     mode: 'onBlur',
@@ -46,7 +43,9 @@ function Form({ router }: Props) {
 
     if (success) {
       setCompleted(true)
-      router.push('/apply/approved')
+      reload().then(() => {
+        router.push('/apply/approved')
+      })
     } else if (error?.field) {
       setError(error!.field as any, error.message as any)
     } else {

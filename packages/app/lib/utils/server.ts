@@ -11,7 +11,7 @@ import {
 } from 'lib/models'
 
 import { findUser } from 'lib/services/directus/server'
-import { unstable_getServerSession } from 'next-auth'
+import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth/config'
 import { User as AuthUser } from 'next-auth'
 
@@ -30,7 +30,7 @@ export async function withAuthUser(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<AuthUser | null> {
-  const session = await unstable_getServerSession(req, res, authOptions)
+  const session = await getServerSession(req, res, authOptions)
   if (!session) throw new Error('Unauthorized')
   return session.user as AuthUser
 }

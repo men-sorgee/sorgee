@@ -148,7 +148,7 @@ export default function MemberListPage(props: PageProps) {
         total: total_count || 0,
         filtered: filter_count || 0,
       })
-      setPageCount(filter_count > 0 ? Math.ceil(filter_count / size) - 1 : 0)
+      setPageCount(filter_count > 0 ? Math.ceil(filter_count / size) : 0)
       setMembers(response.data)
       window?.scrollTo(0, 0)
     }
@@ -226,7 +226,7 @@ export default function MemberListPage(props: PageProps) {
               <MemberCard key={member.id} member={member} onClick={() => setId(member.id)} />
             ))}
           </SimpleGrid>
-          {pageCount == 0 && (
+          {meta.filtered == 0 && (
             <Container w="4xl" textAlign="center">
               <Text>No results found</Text>
             </Container>

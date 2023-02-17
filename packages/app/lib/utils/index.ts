@@ -56,17 +56,16 @@ export async function fetchJSON<T = object | any>(
     headers,
     body: data ? Buffer.from(JSON.stringify(pruneUndefined(data))) : undefined,
   })
-
+  const { ok: success } = response
   try {
     const body = (await response.json()) as ApiResponse<T>
     if (!body) {
-      return { success: false, error: { message: 'No response body' } }
+      return { success, error: { message: 'No response body' } }
     }
-    const { ok: success } = response
     const { data, error } = body
     return { success, data, error } as ApiResult<T>
   } catch (error) {
-    return { success: false, error: { message: error.message || error } }
+    return { success, error: { message: error.message || error } }
   }
 }
 
