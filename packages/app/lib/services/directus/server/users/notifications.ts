@@ -24,20 +24,22 @@ export async function getNotifications(user_id: string): Promise<AppNotification
     fields: '*, notification_id.*' as any,
   })
 
-  const notifications = notificationsRaw.map((n: UserNotification) => {
-    const notification: Notification = n.notification_id as Notification
+  const notifications = notificationsRaw.map((userNotification: UserNotification) => {
+    const notification: Notification = userNotification.notification_id as Notification
     delete notification.users
     delete notification.status
     delete notification.id
+    const { subject, body, message, button_link, button_text, link, category } = notification
     return {
-      id: n.id,
-      status: n.status,
-      subject: notification.subject,
-      link: notification.link,
-      body: notification.body,
-      message: notification.message,
-      date_sent: notification.date_sent,
-      date_created: notification.date_created,
+      id: userNotification.id,
+      status: userNotification.status,
+      subject,
+      body,
+      message,
+      button_link,
+      button_text,
+      link,
+      category,
     } as AppNotification
   })
   return notifications

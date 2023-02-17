@@ -1,5 +1,5 @@
 import { RatingRated, UserInvite } from 'lib/models'
-import { DirectusFile, User, UserAccount, UserFile, UserPhoto } from './directus'
+import { DirectusFile, User, UserAccount, Notification, UserPhoto } from './directus'
 
 type Color = {
   DEFAULT: string
@@ -80,15 +80,12 @@ export enum ApplicationStatus {
   denied = -1,
 }
 
-export type AppNotification = {
+export type AppNotification = Omit<
+  Notification,
+  'id' | 'status' | 'users' | 'data' | 'template'
+> & {
   id: number
-  status: string | NotificationStatusType
-  link?: string
-  subject?: string
-  message?: string
-  body?: string
-  date_sent?: string
-  date_created?: string
+  status: NotificationStatusType
 }
 
 export type UserStatusType = 'new' | 'active' | 'inactive' | 'stale' | 'deleted' | 'banned'

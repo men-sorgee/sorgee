@@ -85,12 +85,12 @@ export const NotificationCard = chakra(({ member, notification }: Props) => {
         {subject && <AlertTitle fontWeight="bold">{subject}</AlertTitle>}
         {message && <AlertDescription textAlign={'left'}>{message}</AlertDescription>}
       </Alert>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
         <ModalOverlay />
         <ModalContent>
           {subject && (
             <ModalHeader>
-              <Heading size="md">{subject}</Heading>
+              <Heading size="lg">{subject}</Heading>
             </ModalHeader>
           )}
           <ModalCloseButton />
@@ -99,7 +99,7 @@ export const NotificationCard = chakra(({ member, notification }: Props) => {
             <HStack spacing={2} align="right">
               {notification?.link && (
                 <LinkButton onClick={onClose} href={notification?.link} colorScheme="purple">
-                  Go!
+                  {notification?.button_text || 'Check it Out!'}
                 </LinkButton>
               )}
               <Button onClick={markAsDeleted} colorScheme="red">

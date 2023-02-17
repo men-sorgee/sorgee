@@ -85,10 +85,14 @@ export type Notification = {
   button_link?: string
   button_text?: string
   message?: string
+  category?: string
+  visibility: UserType[]
   body?: string
   date_sent?: string
   template?: string
   users: string | UserNotification[]
+  data: any
+  static: boolean
 }
 
 export type UserNotification = {
