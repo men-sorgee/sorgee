@@ -56,7 +56,7 @@ export const UserCard = chakra(({ user, size = 'lg', ...props }: Props) => {
             {...props}
             cursor="pointer"
             onClick={() => {
-              setOpen(true)
+              if (pictureSrc) setOpen(true)
             }}
           >
             {user?.presence == 'online' && (
