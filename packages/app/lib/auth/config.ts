@@ -72,7 +72,7 @@ export const authOptions: AuthOptions = {
       const fullUser = await findUser<Member>(user.email, memberFields)
       session.user = fullUser
 
-      await extendUserPresence(fullUser as any)
+      await extendUserPresence(fullUser.id)
       return session
     },
   },
