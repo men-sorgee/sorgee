@@ -1,12 +1,13 @@
 'use client'
 import useSWR, { KeyedMutator } from 'swr'
 import { Member, MemberLevel, User } from 'lib/models'
-import { JsonFetcher } from 'lib/utils'
+import { getAssetUrl, JsonFetcher } from 'lib/utils'
 import { useEffect, useState } from 'react'
 
 type MemberResults = {
-  member: Member | null
-  name: string | undefined
+  member: Member
+  name: string
+  picture: string
   error?: any
   loading: boolean
   reload: () => Promise<Member>
@@ -28,11 +29,12 @@ export const useMember = (id: string, refreshIntervalMinutes: number = 5): Membe
   })
   const level = MemberLevel[member?.user_type || 'subscriber']
   const name = member?.nickname || member?.first_name || null
-
+  const picture = member?.picture ? getAssetUrl(member.picture) : null
   return {
     member,
     error,
     name,
+    picture,
     reload: () => {
       return mutate(null, {
         revalidate: true,

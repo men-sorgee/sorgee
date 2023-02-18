@@ -4,7 +4,7 @@ import { signIn } from 'next-auth/react'
 import { useUser, useMember } from 'hooks'
 import { UserAddIcon, StarIcon, ChatIcon } from '@heroicons/react/solid'
 import { pruneUndefined, normalize, serialize } from 'lib/utils'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, createRef } from 'react'
 import { MemberSpotlight, MemberCard } from 'components/controls'
 import { ArrowRightIcon, ArrowLeftIcon, ChevronRightIcon, ChevronLeftIcon } from '@chakra-ui/icons'
 import {
@@ -108,6 +108,7 @@ export default function MemberListPage(props: PageProps) {
     if (query == undefined && q != undefined) {
       setQuery(normalize<SearchableMember>(q) as QueryParams)
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -128,7 +129,9 @@ export default function MemberListPage(props: PageProps) {
       )
       setTitle('Members')
       setDescription('View and find other members.')
-
+      setTimeout(() => {
+        topRef.current?.scrollIntoView({ behavior: 'smooth' })
+      }, 1)
       setKey(`/api/members?limit=${size}&offset=${size * (page - 1)}&sort=${sort}${filter}`)
     }
   }, [id, setId, page, size, sort, query, loading, currentMember])
@@ -143,7 +146,7 @@ export default function MemberListPage(props: PageProps) {
   useEffect(() => {
     setPage(1)
   }, [size])
-
+  const topRef = createRef<HTMLFormElement>()
   useEffect(() => {
     if (response?.data && response?.meta) {
       const { total_count, filter_count } = response.meta
@@ -153,8 +156,8 @@ export default function MemberListPage(props: PageProps) {
       })
       setPageCount(filter_count > 0 ? Math.ceil(filter_count / size) : 0)
       setMembers(response.data)
-      window?.scrollTo(0, 0)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [response?.data, response?.meta, key, size])
 
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -180,6 +183,7 @@ export default function MemberListPage(props: PageProps) {
       <FormProvider {...methods}>
         <form
           id="filter-form"
+          ref={topRef}
           onSubmit={methods.handleSubmit((d) => {
             let newQuery = pruneUndefined(d, (v) => v !== false) as QueryParams
             setQuery(newQuery)

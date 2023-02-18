@@ -32,7 +32,7 @@ export const MemberPropertyGroup = ({
   const getValue = (field: string, value: string) => {
     if (fields[field]?.meta?.options?.choices) {
       const option = fields[field].meta.options.choices.find(
-        (choice: any) => choice.value?.toLowerCase() == value?.toLowerCase()
+        (choice: any) => choice.value?.toLowerCase() == value?.toString()?.toLowerCase()
       )
       return option?.text || value
     }

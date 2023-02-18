@@ -14,6 +14,7 @@ import { MemberBadge } from './'
 import { getAssetUrl, toLocaleDate } from 'lib/utils'
 import { Member, SearchableMember } from 'lib/models'
 import { formatDistanceToNowStrict } from 'date-fns'
+import { ImageModal } from './ImageModal'
 
 type Props = AvatarProps & {
   user: Partial<Member | SearchableMember>
@@ -37,6 +38,7 @@ export const UserCard = chakra(({ user, size = 'lg', ...props }: Props) => {
     }
   }, [user, pictureSrc, loaded, lastLogin])
 
+  const [isOpen, setOpen] = useState<boolean>(undefined)
   return (
     <>
       {user && (
@@ -52,6 +54,10 @@ export const UserCard = chakra(({ user, size = 'lg', ...props }: Props) => {
             borderColor="accent.500"
             borderWidth="thin"
             {...props}
+            cursor="pointer"
+            onClick={() => {
+              setOpen(true)
+            }}
           >
             {user?.presence == 'online' && (
               <Tooltip label={lastLogin} placement="top">
@@ -59,6 +65,13 @@ export const UserCard = chakra(({ user, size = 'lg', ...props }: Props) => {
               </Tooltip>
             )}
           </Avatar>
+          <ImageModal
+            isOpen={isOpen}
+            onClose={() => {
+              setOpen(false)
+            }}
+            imageSrc={pictureSrc}
+          />
           <VStack spacing={1} align="flex-start">
             <Heading size="md" textTransform="uppercase" m={0} color="white">
               {user?.nickname || user?.first_name}

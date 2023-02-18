@@ -1,33 +1,21 @@
-import React from 'react'
-import { Box, Icon, IconButton, useBreakpointValue } from '@chakra-ui/react'
-// Here we have used react-icons package for the icons
+import { useCallback, useState } from 'react'
+import { Box, IconButton, useBreakpointValue } from '@chakra-ui/react'
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/outline'
-// And react-slick as our Carousel Lib
-import Slider from 'react-slick'
+import { ImageModal } from './ImageModal'
 
-export default function Carousel({ images }: { images: string[] }) {
-  // As we have used custom buttons, we need a reference variable to
-  // change the state
-  const [slider, setSlider] = React.useState<Slider | null>(null)
-
-  // These are the breakpoints which changes the position of the
-  // buttons as the screen size changes
+export const ImageGallery = ({ images }: { images: string[] }) => {
+  const [openIndex, setOpenIndex] = useState<number>(undefined)
+  const [viewIndex, setViewIndex] = useState<number>(0)
   const top = useBreakpointValue({ base: '90%', md: '50%' })
   const side = useBreakpointValue({ base: '30%', md: '10px' })
   const showScroll = images?.length > 0
-  const settings = {
-    dots: true,
-    arrows: true,
-    fade: true,
-    infinite: true,
-    autoplay: true,
-    speed: 500,
-    autoplaySpeed: 5000,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-  }
+
+  const handleImageClick = useCallback((index) => {
+    setOpenIndex(index)
+  }, [])
+
   return (
-    <Box position={'relative'} height="50vh" width={'full'} overflow={'hidden'}>
+    <Box position={'relative'} height="30vh" width={'full'} overflow={'hidden'}>
       {/* Left Icon */}
       {showScroll && (
         <IconButton
@@ -42,7 +30,10 @@ export default function Carousel({ images }: { images: string[] }) {
           top={top}
           transform={'translate(0%, -50%)'}
           zIndex={2}
-          onClick={() => slider?.slickPrev()}
+          hidden={viewIndex === 0}
+          onClick={() => {
+            setViewIndex(viewIndex - 1)
+          }}
         />
       )}
       {/* Right Icon */}
@@ -59,23 +50,40 @@ export default function Carousel({ images }: { images: string[] }) {
           color="accent.400"
           transform={'translate(0%, -50%)'}
           zIndex={2}
-          onClick={() => slider?.slickNext()}
+          hidden={viewIndex === images.length - 1}
+          onClick={() => {
+            setViewIndex(viewIndex + 1)
+          }}
         />
       )}
-      {/* Slider */}
-      <Slider {...settings} ref={(slider: any) => setSlider(slider)}>
-        {images.map((url, index) => (
+
+      {images.map((url, index) => (
+        <>
           <Box
             key={index}
-            height={'xl'}
+            rounded="lg"
+            shadow="lg"
+            height={'lg'}
             position="relative"
             backgroundPosition="center"
             backgroundRepeat="no-repeat"
-            backgroundSize="fit"
             backgroundImage={`url(${url})`}
-          />
-        ))}
-      </Slider>
+            backgroundSize="cover"
+            hidden={viewIndex !== index}
+            onClick={() => {
+              handleImageClick(index)
+            }}
+            cursor="pointer"
+          >
+            <ImageModal
+              key={'modal-' + index}
+              isOpen={openIndex === index}
+              onClose={() => setOpenIndex(-1)}
+              imageSrc={url}
+            />
+          </Box>
+        </>
+      ))}
     </Box>
   )
 }

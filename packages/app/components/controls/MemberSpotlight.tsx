@@ -10,7 +10,7 @@ import {
   UserPhoto,
 } from 'lib/models'
 import { useEffect } from 'react'
-import ImageGallery from './ImageGallery'
+import { ImageGallery } from './ImageGallery'
 import { Loading } from './Loading'
 import { MemberHeader } from './MemberHeader'
 import { MemberPropertyGroup } from './MemberPropertyGroup'
@@ -21,8 +21,11 @@ type Props = {
 }
 
 export const MemberSpotlight = ({ id, fields }: Props) => {
-  const { member, loading } = useMember(id)
+  const { member, name, picture, loading } = useMember(id)
   const { setMeta } = useMeta()
+  useEffect(() => {
+    setMeta(name || 'Brother', member?.biography, picture)
+  }, [member, name, picture, setMeta])
   if (loading || !id || !member) return <Loading />
   const publicPhotos = member.my_photos?.filter((p) => p.is_public) || []
   return (
