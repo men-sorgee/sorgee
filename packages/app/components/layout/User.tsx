@@ -127,7 +127,7 @@ export default function UserMenu(_props: Props) {
                   as={Link}
                   href="/members"
                 >
-                  Search Members
+                  Find Men
                 </MenuItem>
                 <MenuItem
                   icon={<ArrowRightIcon color={'white'} width={'1.5rem'} />}

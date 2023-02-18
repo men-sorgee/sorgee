@@ -124,16 +124,17 @@ export default function MemberListPage(props: PageProps) {
       const filter = query ? serialize<SearchableMember>(query) : ''
       window.history.pushState(
         null,
-        'Members',
+        'Men Nearby',
         `/members?page=${page}&size=${size}&sort=${sort}${filter}`
       )
-      setTitle('Members')
-      setDescription('View and find other members.')
+      setTitle('Men Nearby')
+      setDescription('View and find other men.')
       setTimeout(() => {
         topRef.current?.scrollIntoView({ behavior: 'smooth' })
       }, 1)
       setKey(`/api/members?limit=${size}&offset=${size * (page - 1)}&sort=${sort}${filter}`)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, setId, page, size, sort, query, loading, currentMember])
 
   const methods = useForm<QueryParams>({
