@@ -1,21 +1,22 @@
+import { getUser } from 'lib/services/directus/server'
 import { getAdminClient, updateUser } from '..'
 import { User, UserAccount, UserSession, UserVerificationToken } from 'lib/models'
+import { addHours, formatISO } from 'date-fns'
 
 export async function recordUserLogin(id: string) {
   const adminClient = await getAdminClient()
   return await adminClient.items('users').updateOne(id, {
     presence: 'online',
-    last_login: '$NOW',
-    session_expire: '$NOW(+1 hours)',
+    last_login: new Date().toISOString(),
   })
 }
 
-export async function extendUserPresence(user: User) {
-  const expires = new Date(user.session_expire)
-  if (expires > new Date()) return
-  await updateUser(user.id, {
+export async function extendUserPresence(id: string) {
+  const expires = addHours(new Date(), 1)
+
+  await updateUser(id, {
     presence: 'online',
-    session_expire: '$NOW(+1 hours)',
+    session_expire: expires.toISOString(),
   })
   await expireSessions()
 }
