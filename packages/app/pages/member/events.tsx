@@ -53,7 +53,7 @@ function EventPage({}: Props) {
               <Tab>Past</Tab>
             </TabList>
             <TabPanels>
-              <TabPanel>
+              <TabPanel p={0}>
                 <Heading mb={4}>Upcoming Events</Heading>
                 {(upcoming.length && (
                   <Events list={upcoming} member={member} onChange={onEventsChange} />
@@ -65,7 +65,7 @@ function EventPage({}: Props) {
                   </Box>
                 )}
               </TabPanel>
-              <TabPanel>
+              <TabPanel p={0}>
                 <Heading mb={4}>Event Invitations</Heading>
                 {(invitations.length && (
                   <Events list={invitations} member={member} onChange={onEventsChange} />
@@ -82,7 +82,7 @@ function EventPage({}: Props) {
                 )}
               </TabPanel>
 
-              <TabPanel>
+              <TabPanel p={0}>
                 <Box>
                   <Heading mb={4}>Past Events</Heading>
                   {(past.length &&
