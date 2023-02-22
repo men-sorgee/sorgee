@@ -7,20 +7,35 @@ import {
   Flex,
   Collapse,
   Link,
+  Badge,
 } from '@chakra-ui/react'
 import { Box, BoxProps } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { constrained } from '.'
 import NextLink from 'next/link'
+import { useEvents, useUser, useUserEvents } from 'hooks'
 export type Props = BoxProps & {}
 
 export default function ActionsNav({ children, ...props }: Props) {
   const router = useRouter()
+  const { authenticated } = useUser()
   const [path, setPath] = useState(router.asPath)
+  const { invitations } = useUserEvents(authenticated)
+  const { events } = useEvents(authenticated)
   useEffect(() => {
     setPath(router.asPath)
-  }, [router, router.asPath])
+  }, [router, router.asPath, authenticated])
+
+  const bgColor = useColorModeValue('primary.800', 'black')
+  const borderColor = useColorModeValue('primary.500', 'accent.400')
+
+  if (!authenticated) return null
+
+  console.dir({
+    invitations,
+    events,
+  })
   return (
     <Box
       {...props}
@@ -29,9 +44,9 @@ export default function ActionsNav({ children, ...props }: Props) {
       width="100%"
       minH={'80px'}
       shadow="xl"
-      bg={useColorModeValue('primary.800', 'black')}
+      bg={bgColor}
       borderTop="1px solid"
-      borderTopColor={useColorModeValue('primary.500', 'accent.400')}
+      borderTopColor={borderColor}
     >
       <Flex justify="center" w="full" gap={10} p={4} {...constrained}>
         <Link href="/members" as={NextLink}>
@@ -51,8 +66,22 @@ export default function ActionsNav({ children, ...props }: Props) {
             icon={<CalendarIcon />}
             color={path.startsWith('/events') ? 'accent.500' : 'white'}
             aria-label={'Events'}
-            title="Public Events"
+            title="Events"
           />
+          {events.length > 0 && (
+            <Badge
+              ml={-4}
+              zIndex={2}
+              position="absolute"
+              bg="accent.500"
+              rounded="full"
+              px={2}
+              py={0.5}
+              color="white"
+            >
+              {events.length}
+            </Badge>
+          )}
         </Link>
         <Link href="/member/events" as={NextLink}>
           <IconButton
@@ -63,6 +92,20 @@ export default function ActionsNav({ children, ...props }: Props) {
             aria-label={'Invites'}
             title="My Events"
           />
+          {invitations.length > 0 && (
+            <Badge
+              ml={-4}
+              zIndex={2}
+              position="absolute"
+              bg="accent.500"
+              rounded="full"
+              px={2}
+              py={0.5}
+              color="white"
+            >
+              {invitations.length}
+            </Badge>
+          )}
         </Link>
       </Flex>
     </Box>

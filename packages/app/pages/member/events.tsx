@@ -9,6 +9,7 @@ import {
   Tab,
   TabPanels,
   TabPanel,
+  Badge,
 } from '@chakra-ui/react'
 import Page from 'components/Page'
 import { useUser, useUserEvents } from 'hooks'
@@ -22,7 +23,7 @@ type Props = {}
 function EventPage({}: Props) {
   const [allowed, setAllowed] = useState(false)
   const { member, loading, level } = useUser()
-  const { invites, reload } = useUserEvents(member != null)
+  const { invitations, upcoming, past, reload } = useUserEvents(member != null)
 
   useEffect(() => {
     if (!loading && member && !allowed) {
@@ -34,10 +35,6 @@ function EventPage({}: Props) {
     reload()
   }, [reload])
 
-  const invitations = invites?.filter((i) => i.rsvp == 'invited')
-  const upcoming = invites?.filter((i) => i.rsvp != 'invited' && i.events_id.status == 'scheduled')
-  const past = invites?.filter((i) => i.attended && i.events_id.status == 'occurred')
-
   return (
     <Page loading={loading} title="Your Events" description="Upcoming events." requireAuth={true}>
       {allowed ? (
@@ -45,34 +42,41 @@ function EventPage({}: Props) {
           <Tabs isFitted>
             <TabList>
               <Tab>Upcoming Events</Tab>
-              <Tab>Invitations</Tab>
+              <Tab>
+                Invitations
+                {invitations.length > 0 && (
+                  <Badge ml={1} bg="red.500" rounded="full" px={2} py={0.5} color="white">
+                    {invitations.length}
+                  </Badge>
+                )}
+              </Tab>
               <Tab>Past Events</Tab>
             </TabList>
             <TabPanels>
               <TabPanel>
-                {(invitations.length && (
-                  <Events invites={upcoming} member={member} onChange={onEventsChange} />
+                <Heading mb={4}>Upcoming Events</Heading>
+                {(upcoming.length && (
+                  <Events list={upcoming} member={member} onChange={onEventsChange} />
                 )) || (
                   <Box>
-                    <Heading>No Upcoming Events</Heading>
+                    <Heading as="h3" size="md">
+                      No Upcoming Events
+                    </Heading>
                   </Box>
                 )}
               </TabPanel>
               <TabPanel>
+                <Heading mb={4}>Event Invitations</Heading>
                 {(invitations.length && (
-                  <Events invites={invitations} member={member} onChange={onEventsChange} />
+                  <Events list={invitations} member={member} onChange={onEventsChange} />
                 )) || (
                   <Box>
-                    <Heading>No Invites</Heading>
+                    <Heading as="h3" size="md">
+                      No Invites
+                    </Heading>
                     <Text>
                       Check back later for upcoming events. If you never see invitations, make sure
                       your account is set to receive invites and that you never no-show to an event.
-                    </Text>
-                    <Text>
-                      If you confirm attendance to an event and then do not show up, you may be
-                      removed from future invite lists. If you stop getting invites and think this
-                      might have happened, you can contact the event organizers to appeal your
-                      removal.
                     </Text>
                   </Box>
                 )}
@@ -80,6 +84,7 @@ function EventPage({}: Props) {
 
               <TabPanel>
                 <Box>
+                  <Heading mb={4}>Past Events</Heading>
                   {(past.length &&
                     past.map((invite) => (
                       <EventCard
@@ -94,7 +99,11 @@ function EventPage({}: Props) {
                           event={invite.events_id as GroupEvent}
                         />
                       </EventCard>
-                    ))) || <Heading>No Past Events</Heading>}
+                    ))) || (
+                    <Heading as="h3" size="md">
+                      No Past Events
+                    </Heading>
+                  )}
                 </Box>
               </TabPanel>
             </TabPanels>
@@ -113,22 +122,22 @@ function EventPage({}: Props) {
 }
 
 function Events({
-  invites,
+  list,
   member,
   onChange,
 }: {
-  invites: EventUser[]
+  list: EventUser[]
   member: Member
   onChange: () => void
 }) {
-  if (invites?.length === 0) {
+  if (list.length === 0) {
     return null
   }
 
   return (
     <>
       {member &&
-        invites?.map((invite) => (
+        list.map((invite) => (
           <EventRSVPCard
             key={invite.id}
             event={invite.events_id as GroupEvent}
@@ -150,13 +159,13 @@ function PastEventInfo({ invite, event }: { invite: EventUser; event: GroupEvent
         RSVP: {invite.rsvp.toUpperCase()} | {invite.attended ? 'You attended!' : 'Did not attend'}
       </h5>
       {!invite.attended && invite.rsvp == 'confirmed' && (
-        <Alert status="warning">
+        <Alert status="warning" rounded="lg" mt={4}>
           <AlertIcon />
           You did not show up, despite being confirmed.
         </Alert>
       )}
       {invite.attended && invite.rsvp == 'invited' && (
-        <Alert status="warning">
+        <Alert status="warning" rounded="lg" mt={4}>
           <AlertIcon />
           You showed up, but did not RSVP.
         </Alert>

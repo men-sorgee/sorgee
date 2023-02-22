@@ -1,10 +1,10 @@
-import { isSameDay } from 'date-fns'
+import { addDays, isSameDay } from 'date-fns'
 import { SetStateAction, useCallback, useEffect, useState } from 'react'
 import Calendar from 'react-calendar'
 import Page from 'components/Page'
 import { Box, Flex, Text, Show, Hide } from '@chakra-ui/react'
 import { useEvents, useMeta, useUser } from 'hooks'
-import { EventUser, GroupEvent, Invite, Member } from 'lib/models'
+import { GroupEvent, Member } from 'lib/models'
 
 import brand from '../../theme'
 import { EventRSVPCard, ModalPopup, EventBadge, EventCard } from 'components/controls'
@@ -25,12 +25,15 @@ export async function getServerSideProps(context: NextPageContext): Promise<{ pr
 }
 
 export default function CalendarPage({ id }: PageProps) {
+  const today = new Date()
+  const minDate = addDays(today, -14)
+  const maxDate = addDays(today, 120)
   const { setMeta } = useMeta()
   const router = useRouter()
   const { id: i } = router.query
   const [value, setValue] = useState(new Date())
-  const { member, loading } = useUser()
-  const { events } = useEvents(member)
+  const { member, authenticated, loading } = useUser()
+  const { events } = useEvents(authenticated)
   const [eventId, setEventId] = useState<string>(id || i ? String(i) : undefined)
 
   const onChange = useCallback((nextValue: SetStateAction<Date>) => {
@@ -42,7 +45,7 @@ export default function CalendarPage({ id }: PageProps) {
       window.history.pushState({}, null, `/events/${eventId}`)
     } else if (!loading) {
       window.history.pushState(null, 'Events', `/events`)
-      setMeta('Public Events', 'All Public Events')
+      setMeta('Events', 'All Events')
     }
   }, [eventId, loading, setMeta])
 
@@ -95,8 +98,8 @@ export default function CalendarPage({ id }: PageProps) {
 
   return (
     <Page
-      title="Public Events"
-      description="All Public Events"
+      title="Events"
+      description="All Events"
       loading={loading}
       css={{
         '.react-calendar ': {
@@ -140,6 +143,8 @@ export default function CalendarPage({ id }: PageProps) {
           onChange={onChange}
           value={value}
           tileContent={tileContent}
+          minDate={minDate}
+          maxDate={maxDate}
         />
       </Show>
       <Hide above="md">

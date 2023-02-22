@@ -118,14 +118,14 @@ export default function UserMenu(_props: Props) {
                   as={Link}
                   href="/events"
                 >
-                  Public Events
+                  Events
                 </MenuItem>
                 <MenuItem
                   icon={<InboxIcon color={'white'} width={'1.5rem'} />}
                   bg="black"
                   _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                   as={Link}
-                  href="/members/events"
+                  href="/member/events"
                 >
                   Your Events
                 </MenuItem>

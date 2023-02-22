@@ -11,7 +11,7 @@ type EventsResults = {
   reload: () => void
 }
 
-export const useEvents = (user: Partial<Member>): EventsResults => {
+export const useEvents = (authenticated: boolean): EventsResults => {
   const {
     data: events = [],
     mutate,
@@ -20,7 +20,7 @@ export const useEvents = (user: Partial<Member>): EventsResults => {
   } = useSWR<GroupEvent[], Error>(`/api/events`, JsonFetcher, {
     refreshWhenHidden: false,
     refreshWhenOffline: false,
-    isPaused: () => !user,
+    isPaused: () => !authenticated,
     fallbackData: [],
   })
 

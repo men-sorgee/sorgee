@@ -32,7 +32,7 @@ function Layout({
     if (authenticated)
       setTimeout(() => {
         onOpen()
-      }, 3000)
+      }, 1000)
   }, [authenticated, onOpen])
 
   if (path?.startsWith('/code')) {
@@ -49,6 +49,7 @@ function Layout({
           </Box>
           <Spacer />
           <Footer />
+          <Spacer h={height} />
         </Flex>
 
         <Slide in={isOpen} direction="bottom">
