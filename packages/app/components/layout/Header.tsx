@@ -127,7 +127,7 @@ function Header({ children, ...props }: Props) {
           __css={constrained}
         >
           <IconButton
-            size="lg"
+            size="md"
             onClick={onToggle}
             icon={isOpen ? <CloseIcon /> : <MenuIcon />}
             variant="primary"

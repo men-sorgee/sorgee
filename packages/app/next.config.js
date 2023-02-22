@@ -33,12 +33,17 @@ const getConfig = ( phase ) => {
         },
         {
           source: '/invite',
-          destination: '/member/invite',
+          destination: '/members/invite',
           permanent: true
         },
         {
           source: '/member/account',
           destination: '/member/settings',
+          permanent: false
+        },
+        {
+          source: '/member/invites',
+          destination: '/member/events',
           permanent: false
         },
         {

@@ -3,9 +3,9 @@ import { Loading } from 'components/controls'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import AccessDenied from './AccessDenied'
-import { Flex, FlexProps, chakra } from '@chakra-ui/react'
+import { Flex, BoxProps, chakra, Box, Heading } from '@chakra-ui/react'
 
-type Props = FlexProps & {
+type Props = BoxProps & {
   id?: string
   title: string
   loading?: boolean
@@ -43,7 +43,7 @@ const Page = ({
   }
 
   return (
-    <Flex
+    <Box
       id={id}
       direction="column"
       as="article"
@@ -51,7 +51,9 @@ const Page = ({
       justifyItems="stretch"
       {...props}
     >
-      <h1>{title}</h1>
+      <Heading textAlign="center" as="h1" size="4xl" mb={4}>
+        {title}
+      </Heading>
 
       {header}
       {(loading && (
@@ -60,7 +62,7 @@ const Page = ({
         </Loading>
       )) ||
         children}
-    </Flex>
+    </Box>
   )
 }
 

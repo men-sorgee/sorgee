@@ -147,10 +147,12 @@ const custom: Partial<ChakraTheme> = {
         header: {
           a: {
             color: 'gray.100',
-            fontWeight: 'bold',
             _hover: {
               color: 'white',
             },
+          },
+          'a.active': {
+            fontWeight: 'bold',
           },
         },
         a: {

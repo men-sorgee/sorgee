@@ -112,14 +112,24 @@ export default function UserMenu(_props: Props) {
                 </MenuItem>
                 <MenuDivider />
                 <MenuItem
+                  icon={<CalendarIcon color={'white'} width={'1.5rem'} />}
+                  bg="black"
+                  _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                  as={Link}
+                  href="/events"
+                >
+                  Public Events
+                </MenuItem>
+                <MenuItem
                   icon={<InboxIcon color={'white'} width={'1.5rem'} />}
                   bg="black"
                   _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                   as={Link}
-                  href="/member/events"
+                  href="/members/events"
                 >
-                  Event Invites
+                  Your Events
                 </MenuItem>
+                <MenuDivider />
                 <MenuItem
                   icon={<UserGroupIcon color={'white'} width={'1.5rem'} />}
                   bg="black"
@@ -134,22 +144,13 @@ export default function UserMenu(_props: Props) {
                   bg="black"
                   _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                   as={Link}
-                  href="/member/invite"
+                  href="/members/invite"
                 >
                   Invite Friend
                 </MenuItem>
                 {isStaff && (
                   <>
                     <MenuDivider />
-                    <MenuItem
-                      icon={<CalendarIcon color={'white'} width={'1.5rem'} />}
-                      bg="black"
-                      _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                      as={Link}
-                      href="/events"
-                    >
-                      All Events
-                    </MenuItem>
                     <MenuItem
                       icon={<QrcodeIcon color={'white'} width={'1.5rem'} />}
                       bg="black"

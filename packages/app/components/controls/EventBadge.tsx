@@ -1,0 +1,47 @@
+import { Badge, BadgeProps, chakra } from '@chakra-ui/react'
+import { capitalCase } from 'change-case'
+type Props = BadgeProps & {
+  status: string
+  type: string
+  size?: string
+}
+
+const statusMap = {
+  cancelled: '.5',
+  planned: '.8',
+  scheduled: '1',
+  occurred: '.5',
+}
+
+/// background color, text color
+const typeMap = {
+  'Group Sex': ['accent.500', 'white'],
+  'Watch Sports': ['blue', 'white'],
+  'Outdoor Activity': ['green', 'white'],
+  Camping: ['orange', 'yellow'],
+  'Drinks Out': ['pink', 'black'],
+  'Game Night': ['yellow', 'black'],
+  Cigars: ['brown', 'white'],
+  default: ['gray', 'white'],
+}
+
+export const EventBadge = chakra(({ status, type, size = 'md', ...props }: Props) => {
+  if (!status || !type) return null
+  const bgColor = typeMap[type] ? typeMap[type][0] : typeMap.default[0]
+  const textColor = typeMap[type] ? typeMap[type][1] : typeMap.default[1]
+  const opacity = statusMap[status]
+  return (
+    <Badge
+      rounded={size}
+      size={size}
+      textTransform={'uppercase'}
+      bg={bgColor}
+      color={textColor}
+      title={status}
+      opacity={opacity}
+      {...props}
+    >
+      {capitalCase(type)}
+    </Badge>
+  )
+})

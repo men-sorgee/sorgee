@@ -60,7 +60,7 @@ export default function InviteAdmin(_props: Props) {
         })
       }
       if (event && member.user_type !== 'staff') {
-        router.push(`/events/${event?.id}?error=You+do+not+have+permission+to+view+admin+events.`)
+        router.push(`/event/${event?.id}?error=You+do+not+have+permission+to+view+admin+events.`)
       }
       if (user) {
         setImage(user.picture ? '/api/asset/' + user.picture : undefined)
@@ -117,7 +117,7 @@ export default function InviteAdmin(_props: Props) {
           duration: 2000,
           isClosable: true,
           onCloseComplete: () => {
-            router.push('/events/' + event.id)
+            router.push('/event/' + event.id)
             setWorking(false)
           },
         })
@@ -246,7 +246,7 @@ export default function InviteAdmin(_props: Props) {
               <LinkButton colorScheme="primary" href="/member/scan" my={4}>
                 Scan Another
               </LinkButton>
-              <LinkButton colorScheme="gray" href={'/events/' + event?.id} my={4}>
+              <LinkButton colorScheme="gray" href={'/event/' + event?.id} my={4}>
                 Return to Event
               </LinkButton>
             </HStack>

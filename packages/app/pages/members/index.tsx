@@ -1,8 +1,7 @@
 import { ManyItems } from '@directus/sdk'
 import Page from 'components/Page'
 import { signIn } from 'next-auth/react'
-import { useUser, useMember } from 'hooks'
-import { UserAddIcon, StarIcon, ChatIcon } from '@heroicons/react/solid'
+import { useUser } from 'hooks'
 import { pruneUndefined, normalize, serialize } from 'lib/utils'
 import { useEffect, useState, createRef } from 'react'
 import { MemberSpotlight, MemberCard } from 'components/controls'
@@ -31,7 +30,6 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalOverlay,
   Text,
 } from '@chakra-ui/react'
@@ -97,7 +95,7 @@ export default function MemberListPage(props: PageProps) {
   })
 
   useEffect(() => {
-    let sz = Number(s || '10')
+    let sz = Number(s || '20')
     let pg = Number(p || '1')
     let so = String(o || '-last_login')
 
@@ -175,7 +173,7 @@ export default function MemberListPage(props: PageProps) {
 
   return (
     <Page
-      title={title || 'Members'}
+      title={title || 'Men Nearby'}
       description={description}
       loading={loading}
       w="full"
@@ -196,12 +194,12 @@ export default function MemberListPage(props: PageProps) {
 
           <Flex gap={4} mt={4} align="center">
             <Select
-              value={size || 10}
+              value={size || 20}
               onChange={(e) => {
                 setSize(Number(e.target.value))
               }}
             >
-              {[10, 20, 30, 40, 50].map((pageSize) => (
+              {[20, 30, 40, 50].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>

@@ -22,27 +22,17 @@ export async function findInvite(eventId: string, userId: string): Promise<Event
   return query.data[0] as EventUser
 }
 
-export async function listInvites(user_id: string): Promise<Invite[]> {
+export async function listInvites(user_id: string): Promise<EventUser[]> {
   const client = await getAdminClient()
-  const invites = await client.items('events_users').readByQuery({
+  const { data: invites } = await client.items('events_users').readByQuery({
     filter: {
       users_id: { _eq: user_id },
+      events_id: { status: { _in: ['planned', 'scheduled', 'occurred'] } },
     },
     fields: ['*', 'events_id.*' as any],
   })
-  return (invites.data?.map((i: any) => {
-    const event = i.events_id
-    return {
-      id: event.id,
-      name: event.name!,
-      description: event.description,
-      datetime: event.datetime,
-      status: event.status,
-      rsvp: i.rsvp,
-      ...i,
-      ...event,
-    }
-  }) || []) as Invite[]
+
+  return (invites || []) as EventUser[]
 }
 
 export async function updateInvite(

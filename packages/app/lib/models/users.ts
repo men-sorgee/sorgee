@@ -1,5 +1,5 @@
-import { RatingRated, UserInvite } from 'lib/models'
-import { DirectusFile, User, UserAccount, Notification, UserPhoto } from './directus'
+import { Invite, RatingRated, UserInvite } from 'lib/models'
+import { DirectusFile, User, UserAccount, Notification, UserPhoto, EventUser } from './directus'
 
 type Color = {
   DEFAULT: string
@@ -201,6 +201,7 @@ export type Member = Applicant & {
   can_host?: boolean
   can_host_events: string[]
   event_invites?: boolean
+  events: EventUser[]
 
   //-profile
   show_profile?: boolean

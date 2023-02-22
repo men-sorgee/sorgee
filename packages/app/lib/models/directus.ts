@@ -1,4 +1,4 @@
-import { UserStatusType } from 'lib/models'
+import { EventStatusType, UserStatusType } from 'lib/models'
 import { Block } from 'editorjs-blocks-react-renderer'
 import { ProviderType } from 'next-auth/providers'
 import {
@@ -10,7 +10,7 @@ import {
 
 export type GroupEvent = {
   id: string
-  status: string
+  status: EventStatusType
   datetime?: string
   name?: string
   location?: string | Location
@@ -31,7 +31,7 @@ export type UserFields = (string | keyof User)[] | '*' | '*.*' | any
 
 export type EventUser = {
   id: number
-  events_id: string | GroupEvent
+  events_id: string & GroupEvent
   users_id: string | User
   engagement?: unknown
   attended?: boolean
@@ -40,7 +40,7 @@ export type EventUser = {
   paid?: boolean
   guest?: boolean
   reason?: string
-  attendance: string
+  attendance?: string
 }
 
 export type Promos = {
@@ -402,10 +402,12 @@ export type DirectusField = {
   }
 }
 
-export type FieldOptions = Array<{
+export type FieldOption<T = string> = {
   text: string
-  value: string
-}>
+  value: T
+}
+
+export type FieldOptions = FieldOption[]
 
 export type DirectusFile = {
   id: string

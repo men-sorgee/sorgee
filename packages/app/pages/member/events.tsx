@@ -1,65 +1,28 @@
 import {
-  Button,
+  Box,
   Heading,
   Text,
-  VStack,
-  Flex,
-  useToast,
-  Center,
   AlertIcon,
   Alert,
-  Box,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
 } from '@chakra-ui/react'
 import Page from 'components/Page'
-import { useUser } from 'hooks'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useUser, useUserEvents } from 'hooks'
+import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
-import { FormProvider, useForm } from 'react-hook-form'
-import { FieldSelect } from 'components/forms'
-import { postJSON, pruneUndefined } from 'lib/utils'
-import { EventUser, FieldOptions, Invite, Member, MemberLevel, GroupEvent } from 'lib/models'
-import { EventCard } from 'components/controls'
-import { getServerSession } from 'next-auth'
-import { NextPageContext, GetServerSidePropsResult } from 'next'
+import { EventUser, Member, GroupEvent } from 'lib/models'
+import { EventCard, EventRSVPCard } from 'components/controls'
 
-type Props = {
-  invites: Invite[]
-  rsvpOptions: FieldOptions
-  eventTypeOptions: FieldOptions
-}
-export async function getServerSideProps(
-  context: NextPageContext
-): Promise<GetServerSidePropsResult<Props>> {
-  const { authOptions } = await import('lib/auth/config')
-  const { req, res } = context
-  const session = await getServerSession(req as any, res, authOptions)
-  if (!session || !session.user) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    }
-  }
-  const { listInvites: listUserInvites } = await import('lib/services/directus/server/users')
-  const invites = await listUserInvites(session.user.id)
+type Props = {}
 
-  const { getFieldOptions } = await import('lib/services/directus/server')
-
-  const props = {
-    invites,
-    rsvpOptions: await getFieldOptions<EventUser>('rsvp', 'events_users'),
-    eventTypeOptions: await getFieldOptions<GroupEvent>('type', 'events'),
-  }
-
-  return {
-    props: pruneUndefined<Props>(props),
-  }
-}
-
-function EventPage({ invites, rsvpOptions, eventTypeOptions }: Props) {
+function EventPage({}: Props) {
   const [allowed, setAllowed] = useState(false)
   const { member, loading, level } = useUser()
+  const { invites, reload } = useUserEvents(member != null)
 
   useEffect(() => {
     if (!loading && member && !allowed) {
@@ -67,100 +30,122 @@ function EventPage({ invites, rsvpOptions, eventTypeOptions }: Props) {
     }
   }, [member, level, loading, allowed])
 
+  const onEventsChange = useCallback(() => {
+    reload()
+  }, [reload])
+
+  const invitations = invites?.filter((i) => i.rsvp == 'invited')
+  const upcoming = invites?.filter((i) => i.rsvp != 'invited' && i.events_id.status == 'scheduled')
+  const past = invites?.filter((i) => i.attended && i.events_id.status == 'occurred')
+
   return (
-    <Page
-      loading={loading}
-      title="Event Invitations"
-      description="Upcoming event invitations."
-      requireAuth={true}
-    >
+    <Page loading={loading} title="Your Events" description="Upcoming events." requireAuth={true}>
       {allowed ? (
         <>
-          <Events eventTypeOptions={eventTypeOptions} {...{ invites, member, rsvpOptions }} />
+          <Tabs isFitted>
+            <TabList>
+              <Tab>Upcoming Events</Tab>
+              <Tab>Invitations</Tab>
+              <Tab>Past Events</Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
+                {(invitations.length && (
+                  <Events invites={upcoming} member={member} onChange={onEventsChange} />
+                )) || (
+                  <Box>
+                    <Heading>No Upcoming Events</Heading>
+                  </Box>
+                )}
+              </TabPanel>
+              <TabPanel>
+                {(invitations.length && (
+                  <Events invites={invitations} member={member} onChange={onEventsChange} />
+                )) || (
+                  <Box>
+                    <Heading>No Invites</Heading>
+                    <Text>
+                      Check back later for upcoming events. If you never see invitations, make sure
+                      your account is set to receive invites and that you never no-show to an event.
+                    </Text>
+                    <Text>
+                      If you confirm attendance to an event and then do not show up, you may be
+                      removed from future invite lists. If you stop getting invites and think this
+                      might have happened, you can contact the event organizers to appeal your
+                      removal.
+                    </Text>
+                  </Box>
+                )}
+              </TabPanel>
+
+              <TabPanel>
+                <Box>
+                  {(past.length &&
+                    past.map((invite) => (
+                      <EventCard
+                        key={invite.id}
+                        event={invite.events_id as GroupEvent}
+                        member={member}
+                        mb={4}
+                      >
+                        <PastEventInfo
+                          key={invite.id}
+                          invite={invite}
+                          event={invite.events_id as GroupEvent}
+                        />
+                      </EventCard>
+                    ))) || <Heading>No Past Events</Heading>}
+                </Box>
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
         </>
       ) : (
-        <Flex direction="column">
-          <Heading>No Invites</Heading>
+        <Box>
+          <Heading>Nothing to see here</Heading>
           <Text>
             Please complete your <Link href="/apply">membership application</Link>.
           </Text>
-        </Flex>
+        </Box>
       )}
     </Page>
   )
 }
 
-type InviteRSVP = {
-  user_id: string
-  event_id: string
-  reason: string
-  rsvp?: string
-}
-
 function Events({
   invites,
   member,
-  rsvpOptions,
-  eventTypeOptions,
+  onChange,
 }: {
-  invites: Invite[]
+  invites: EventUser[]
   member: Member
-  rsvpOptions: FieldOptions
-  eventTypeOptions: FieldOptions
+  onChange: () => void
 }) {
   if (invites?.length === 0) {
-    return (
-      <Flex direction="column">
-        <Heading>No Invites</Heading>
-        <Text>
-          Check back later for upcoming events. If you never see invitations, make sure your account
-          is set to receive invites and that you never no-show to an event.
-        </Text>
-        <Text>
-          If you confirm attendance to an event and then do not show up, you may be removed from
-          future invite lists. If you stop getting invites and think this might have happened, you
-          can contact the event organizers to appeal your removal.
-        </Text>
-      </Flex>
-    )
-  }
-  const getType = (type: string) => {
-    let t = eventTypeOptions.find((o) => o.value.toLowerCase() == type.toLowerCase())
-    if (t) return t.text
-    return type
+    return null
   }
 
-  const upcoming = invites?.filter((i) => i.status == 'scheduled')
-  const past = invites?.filter((i) => i.status !== 'scheduled')
   return (
     <>
       {member &&
-        upcoming?.map((invite) => (
-          <EventInfo
+        invites?.map((invite) => (
+          <EventRSVPCard
             key={invite.id}
+            event={invite.events_id as GroupEvent}
             invite={invite}
             member={member}
-            rsvpOptions={rsvpOptions}
-            type={getType(invite.type)}
+            mb={4}
+            onChange={onChange}
+            full
           />
-        ))}
-
-      {false && past && past.length > 0 && <h2>Past Invites</h2>}
-      {false &&
-        past?.map((invite) => (
-          <PastEventInfo key={invite.id} invite={invite} type={getType(invite.type)} />
         ))}
     </>
   )
 }
 
-function PastEventInfo({ invite, type }: { invite: Invite; type: string }) {
-  const date = new Date(invite.datetime)
+function PastEventInfo({ invite, event }: { invite: EventUser; event: GroupEvent }) {
   return (
-    <Flex direction="column" justify="stretch" align="center" gap={4} w="full" mb={8}>
-      <h3>
-        {type}: {invite.name} - {date.toLocaleDateString()}
-      </h3>
+    <Box>
       <h5>
         RSVP: {invite.rsvp.toUpperCase()} | {invite.attended ? 'You attended!' : 'Did not attend'}
       </h5>
@@ -176,119 +161,7 @@ function PastEventInfo({ invite, type }: { invite: Invite; type: string }) {
           You showed up, but did not RSVP.
         </Alert>
       )}
-    </Flex>
-  )
-}
-
-function EventInfo({
-  invite,
-  member,
-  rsvpOptions,
-  type,
-}: {
-  invite: Invite
-  member: Member
-  rsvpOptions: FieldOptions
-  type: string
-}) {
-  const [working, setWorking] = useState(false)
-  const toast = useToast()
-  const { id: event_id } = (invite.events_id as GroupEvent) || {}
-  const methods = useForm<InviteRSVP>({
-    mode: 'onBlur',
-    defaultValues: {
-      user_id: invite.users_id as string,
-      event_id,
-      reason: invite.reason,
-      rsvp: invite.rsvp,
-    },
-  })
-  const { setError, watch } = methods
-
-  const rsvp = watch('rsvp')
-
-  const respond = useCallback(
-    async (data: InviteRSVP) => {
-      setWorking(true)
-      const { success, error } = await postJSON('/api/invite/rsvp', data)
-      if (success) {
-        toast({
-          title: 'RSVP Updated',
-          position: 'bottom',
-          description: 'Your RSVP has been updated.',
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-        })
-      } else if (error?.field) {
-        setError(error!.field as any, error.message as any)
-      } else {
-        toast({
-          title: 'Something went wrong.',
-          position: 'bottom',
-          description: 'Please try again later.',
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        })
-      }
-      setWorking(false)
-    },
-    [setError, toast]
-  )
-  const message =
-    rsvp === 'invited'
-      ? 'Please let us know if you can make it!'
-      : 'You have RSVPed. Use the form below to update your response.'
-  const form = useRef<HTMLButtonElement>(null)
-  return (
-    <>
-      <EventCard event={invite} level={MemberLevel[member.user_type]} type={type}>
-        <>
-          <FormProvider {...methods}>
-            <form
-              onSubmit={methods.handleSubmit(respond)}
-              style={{ display: 'block', width: '100%' }}
-            >
-              <Flex direction="column" w="full">
-                <input type="hidden" {...methods.register('event_id')} />
-                <input type="hidden" {...methods.register('user_id')} />
-                <Flex gap={2} direction={['column', 'column', 'row']} w="full" justify="stretch">
-                  <FieldSelect
-                    field="rsvp"
-                    w="full"
-                    p={0}
-                    onChange={(_e) => {
-                      form.current.dispatchEvent(new Event('submit', { cancelable: true }))
-                    }}
-                    options={rsvpOptions.filter(
-                      (d) => d.value != 'cancelled' && d.value != 'invited'
-                    )}
-                    registerOptions={{
-                      required: true,
-                    }}
-                  />
-
-                  <Button size="lg" colorScheme="accent" w="full" type="submit" disabled={working}>
-                    Update RSVP
-                  </Button>
-                </Flex>
-                {rsvp == 'confirmed' && (
-                  <Alert status="warning" mt={4} rounded="lg" shadow="lg">
-                    <AlertIcon />
-                    <Text>
-                      Please only RSVP to events you are sure you can attend! We have to make sure
-                      that we have enough space for everyone who wants to attend. Hosts also count
-                      on confirmed attendees to help cover the cost of the event.
-                    </Text>
-                  </Alert>
-                )}
-              </Flex>
-            </form>
-          </FormProvider>
-        </>
-      </EventCard>
-    </>
+    </Box>
   )
 }
 

@@ -1,88 +1,169 @@
-import { NextPageContext, GetServerSidePropsResult } from 'next'
-import { EventDetail, GroupEvent, MemberLevel } from 'lib/models'
+import { isSameDay } from 'date-fns'
+import { SetStateAction, useCallback, useEffect, useState } from 'react'
+import Calendar from 'react-calendar'
 import Page from 'components/Page'
-import {
-  Card,
-  CardHeader,
-  Flex,
-  LinkBox,
-  LinkOverlay,
-  List,
-  ListItem,
-  Heading,
-  GridItem,
-  SimpleGrid,
-} from '@chakra-ui/react'
-import { getServerSession } from 'next-auth/next'
-import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { getEventDate } from 'lib/utils'
+import { Box, Flex, Text, Show, Hide } from '@chakra-ui/react'
+import { useEvents, useMeta, useUser } from 'hooks'
+import { EventUser, GroupEvent, Invite, Member } from 'lib/models'
 
-type Props = {
-  events: (GroupEvent & { moment?: any })[]
+import brand from '../../theme'
+import { EventRSVPCard, ModalPopup, EventBadge, EventCard } from 'components/controls'
+import { useRouter } from 'next/router'
+import { pruneUndefined } from 'lib/utils'
+import { NextPageContext } from 'next'
+
+export type PageProps = {
+  id?: string
 }
-export async function getServerSideProps(
-  context: NextPageContext
-): Promise<GetServerSidePropsResult<Props>> {
-  const { authOptions } = await import('lib/auth/config')
-  const { req, res } = context
-  const session = await getServerSession(req as any, res, authOptions)
-  const level = MemberLevel[session.user.user_type]
-  if (!session || !session.user || level < MemberLevel.staff) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
+
+export async function getServerSideProps(context: NextPageContext): Promise<{ props: PageProps }> {
+  return {
+    props: pruneUndefined({
+      id: String(context.query.id),
+    }),
+  }
+}
+
+export default function CalendarPage({ id }: PageProps) {
+  const { setMeta } = useMeta()
+  const router = useRouter()
+  const { id: i } = router.query
+  const [value, setValue] = useState(new Date())
+  const { member, loading } = useUser()
+  const { events } = useEvents(member)
+  const [eventId, setEventId] = useState<string>(id || i ? String(i) : undefined)
+
+  const onChange = useCallback((nextValue: SetStateAction<Date>) => {
+    setValue(nextValue)
+  }, [])
+
+  useEffect(() => {
+    if (eventId && eventId !== 'undefined') {
+      window.history.pushState({}, null, `/events/${eventId}`)
+    } else if (!loading) {
+      window.history.pushState(null, 'Events', `/events`)
+      setMeta('Public Events', 'All Public Events')
+    }
+  }, [eventId, loading, setMeta])
+
+  const EventView = ({ event, full = false }: { event: GroupEvent; full?: boolean }) => {
+    return (
+      <>
+        <Box
+          m={1}
+          p={full ? 2 : 0}
+          color="primary.500"
+          onClick={() => {
+            setEventId(event.id)
+          }}
+          cursor="pointer"
+        >
+          {(full && <EventCard member={member} event={event} />) || (
+            <Box>
+              <EventBadge type={event.type} status={event.status} />
+              <Text p={0} m={0}>
+                {event.name}
+              </Text>
+            </Box>
+          )}
+        </Box>
+
+        <ModalPopup
+          isOpen={eventId === event.id}
+          onClose={() => {
+            setEventId(null)
+          }}
+        >
+          <CalendarPageItem event={event} member={member} />
+        </ModalPopup>
+      </>
+    )
+  }
+
+  const tileContent = ({ date, view }: { date: Date; view: string }) => {
+    if (loading || !events?.length) return <Flex height="full" width="full"></Flex>
+    // Add class to tiles in month view only
+    if (view === 'month') {
+      const event: GroupEvent = events
+        ? events?.find((e, i) => isSameDay(new Date(e.datetime), date))
+        : null
+      // Check if a date React-Calendar wants to check is on the list of dates to add class to
+      if (!event) return <Flex height="full" width="full"></Flex>
+      return <EventView event={event} />
     }
   }
 
-  const { listAdminEvents } = await import('lib/services/directus/server/events')
-  const events = await listAdminEvents()
-  return { props: { events } }
-}
-
-export default function EventList({ events: eventList }: Props) {
-  const [events, setEvents] = useState(undefined)
-
-  useEffect(() => {
-    if (events == undefined && eventList != undefined) {
-      Promise.all(
-        eventList.map(async (eventData) => {
-          eventData.moment = await getEventDate(eventData.datetime)
-          return eventData
-        })
-      ).then((events) => setEvents(events))
-    }
-  }, [eventList, events])
-
   return (
-    <Page title="Events" requireAuth={true}>
-      <List w="full">
-        {events?.map((event) => (
-          <ListItem key={event.id} w="full">
-            <LinkBox>
-              <Card mb={2} p={0} bg={event.status == 'occurred' ? 'gray.100' : 'white'}>
-                <CardHeader p={0} w="full">
-                  <SimpleGrid columns={4} spacing={1} h="full" w="full">
-                    <GridItem as="h4" colSpan={3} p={2}>
-                      <LinkOverlay as={Link} href={`/events/${event.id}`}>
-                        {event.name}
-                      </LinkOverlay>
-                    </GridItem>
-                    <Heading as="h5" bg={'primary.500'} color={'white'} textAlign="center" p={2}>
-                      {event.moment.month}
-                      <br />
-                      {event.moment.date}
-                      <br />
-                    </Heading>
-                  </SimpleGrid>
-                </CardHeader>
-              </Card>
-            </LinkBox>
-          </ListItem>
-        ))}
-      </List>
+    <Page
+      title="Public Events"
+      description="All Public Events"
+      loading={loading}
+      css={{
+        '.react-calendar ': {
+          width: '100%',
+          minH: '50vh',
+          borderColor: brand.colors.primary[300],
+          border: '1px solid',
+          margin: '2rem 0 0 0',
+        },
+        '.react-calendar__navigation': {
+          backgroundColor: brand.colors.secondary[500],
+          color: 'white',
+          padding: '0 .5em',
+          display: 'flex',
+
+          fontWeight: 'bold',
+          fontSize: '2.5em',
+          gap: '1rem',
+        },
+        '.react-calendar__tile': {
+          minHeight: '100px',
+          borderColor: brand.colors.primary[500],
+          border: '1px solid',
+          margin: '0',
+          color: brand.colors.primary[300],
+        },
+        '.react-calendar__month-view__weekdays': {
+          backgroundColor: brand.colors.primary[600],
+          color: 'white',
+          textTransform: 'uppercase',
+        },
+        '.react-calendar__month-view__weekdays__weekday': {
+          padding: '0.5em',
+          textAlign: 'center',
+        },
+      }}
+    >
+      <Show above="md">
+        <Calendar
+          className="calendar"
+          onChange={onChange}
+          value={value}
+          tileContent={tileContent}
+        />
+      </Show>
+      <Hide above="md">
+        <Flex direction="column" width="100%">
+          {events?.map((event) => (
+            <EventView key={event.id} event={event} full />
+          ))}
+        </Flex>
+      </Hide>
     </Page>
   )
+}
+
+type CalendarPageItemProps = {
+  event: GroupEvent
+  member: Member
+}
+const CalendarPageItem = ({ event, member }: CalendarPageItemProps) => {
+  const { setMeta } = useMeta()
+
+  useEffect(() => {
+    setMeta(event.name, event.description)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  return <EventRSVPCard event={event} member={member} />
 }

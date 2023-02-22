@@ -1,40 +1,54 @@
 import { ReactNode, useEffect, useState } from 'react'
 import {
+  Box,
   Card,
   CardHeader,
   CardBody,
   CardFooter,
-  Alert,
-  AlertIcon,
   Flex,
   Heading,
   Text,
+  CardProps,
 } from '@chakra-ui/react'
 import { Markdown } from './Markdown'
-import { MemberLevel, GroupEvent, Invite } from 'lib/models'
-import { format } from 'date-fns'
-import { getEventDate } from '../../lib/utils'
+import { GroupEvent, Member, MemberLevel } from 'lib/models'
+import { getEventDate } from 'lib/utils'
+import { capitalCase } from 'change-case'
 
-type EventInfo = GroupEvent | Invite
-
-interface Props {
+type EventCardProps = CardProps & {
   children?: ReactNode | ReactNode[]
-  event: EventInfo
-  level?: MemberLevel
-  type?: string
+  event: GroupEvent
+  member: Member
 }
 
-export const EventCard = ({ event, children, level, type }: Props) => {
-  const eventDate = getEventDate(event.datetime)
+export const EventCard = ({ event, member, children, ...props }: EventCardProps) => {
+  const [eventDate, setEventDate] = useState<{
+    day: string
+    short: string
+    month: string
+    date: string
+    time: string
+  }>()
 
+  const user_type = member.user_type
+  const level = MemberLevel[user_type]
   const isStaff = level && level >= MemberLevel.staff
-  const isScheduled = event.status == 'scheduled'
+  const isScheduled = event?.status && event.status !== 'occurred'
+
+  useEffect(() => {
+    if (event && !eventDate) {
+      setEventDate(getEventDate(event.datetime))
+    }
+  }, [event, eventDate])
+
+  if (!event) return null
+
   return (
-    <Card p={0} mt={10} w="full" boxShadow="lg" rounded="lg">
+    <Card p={0} w="full" boxShadow="lg" rounded="md" {...props}>
       <CardHeader p={0}>
         <Flex direction="row" alignItems="stretch" gap={0}>
           <Heading
-            borderRadius="10px 0 0 0"
+            borderRadius="5px 0 0 0"
             bg="primary.400"
             as="h2"
             size="xl"
@@ -44,37 +58,38 @@ export const EventCard = ({ event, children, level, type }: Props) => {
             m={0}
             p={4}
           >
-            <Text as="div" color="white" textTransform="uppercase">
-              {type}
-            </Text>
-            {event.name} @ {eventDate.time}
+            {event.name} @ {eventDate?.time}
           </Heading>
 
           <Heading
             as="h3"
             bg="primary.700"
-            borderRadius="0 10px 0  0"
+            borderRadius="0 5px 0  0"
             m={0}
             w="25%"
             p={4}
-            pt={[16, 2]}
             textAlign="center"
             justifyContent="middle"
             color="white!important"
             fontSize={['xl', '3xl']}
           >
-            {eventDate.month.toUpperCase()}
+            {eventDate?.month.toUpperCase()}
             <br />
-            <Text size="4xl"> {eventDate.date}</Text>
+            <Text size="4xl"> {eventDate?.date}</Text>
           </Heading>
         </Flex>
       </CardHeader>
       {isScheduled && (
-        <CardBody w="full">{!isStaff && <Markdown content={event.description} />}</CardBody>
+        <CardBody w="full">
+          <Heading as="h5" size="md" textTransform="uppercase">
+            Event Type: {event.invite_only ? 'Private ' : 'Public '} {capitalCase(event.type)}
+            <br />
+            Door Fee: ${event.cost}
+          </Heading>
+          <Markdown content={event.description} />
+        </CardBody>
       )}
-      <CardFooter w="full" pb={10} as={Flex} direction="column" align="center">
-        {children}
-      </CardFooter>
+      <CardFooter flexDirection="column">{children}</CardFooter>
     </Card>
   )
 }

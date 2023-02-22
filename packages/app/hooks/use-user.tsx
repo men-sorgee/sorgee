@@ -47,19 +47,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<Profile>(none as any)
   const authenticated = status === 'authenticated'
 
-  const {
-    data: member,
-    mutate: _mutate,
-    error,
-    isLoading: loading,
-  } = useSWR<Member, Error>(key, authenticatedFetcher(authenticated), {
-    revalidateOnFocus: true,
-    revalidateOnReconnect: true,
-    revalidateOnMount: true,
-    refreshInterval: 1000 * 60 * 3, // 3 minutes
-    fallbackData: user as any,
-  })
-
   useEffect(() => {
     if (authenticated && session?.user && user == none) {
       setUser(session.user)
@@ -67,10 +54,22 @@ export function UserProvider({ children }: { children: ReactNode }) {
         revalidate: true,
       })
     }
+  }, [status, session?.user, user, none, authenticated])
+
+  const {
+    data: member,
+    mutate: _mutate,
+    error,
+    isLoading: loading,
+  } = useSWR<Member, Error>(key, authenticatedFetcher(authenticated), {
+    fallbackData: user as Member,
+  })
+
+  useEffect(() => {
     if (!loading && member) {
       setUser(member)
     }
-  }, [status, session?.user, user, none, member, loading, _mutate, authenticated])
+  }, [member, loading, _mutate, user])
 
   const { application_status, user_type } = user || {}
   const name = user?.nickname || user?.first_name || 'Member'

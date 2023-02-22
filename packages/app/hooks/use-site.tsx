@@ -18,9 +18,10 @@ export const useSite = (): SiteResults => {
     error,
     isLoading,
   } = useSWR<Site, Error>(`/api/site`, JsonFetcher, {
-    refreshInterval: 1000 * 60 * 60 * 24, // 24 hours]
     refreshWhenHidden: false,
     refreshWhenOffline: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
     fallbackData: {
       site_title: 'GuysNHeat',
       description:

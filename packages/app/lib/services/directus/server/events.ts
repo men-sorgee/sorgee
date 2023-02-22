@@ -1,15 +1,19 @@
 import { getAdminClient } from '.'
-import { GroupEvent, EventDetail, EventUser } from 'lib/models'
+import { GroupEvent, EventDetail, EventUser, UserType, InviteRSVPType } from 'lib/models'
 
-export async function listUpcomingEvents(): Promise<GroupEvent[]> {
+export async function listUpcomingEvents(user_type: UserType): Promise<GroupEvent[]> {
   const client = await getAdminClient()
   const { data } = await client.items('events').readByQuery({
     filter: {
-      status: { _eq: 'scheduled' },
+      status: { _in: ['scheduled', 'planned'] },
+      datetime: { _gte: '$NOW(-7 days)' },
+      invite_only: { _eq: false },
     },
     fields: ['*.*'],
+    sort: ['datetime'],
   })
-  return data as unknown as GroupEvent[]
+  if (user_type == 'admin' || user_type == 'staff') return data as unknown as GroupEvent[]
+  return (data?.filter((e) => e.visibility?.includes(user_type)) || []) as unknown as GroupEvent[]
 }
 
 export async function listAdminEvents(): Promise<GroupEvent[]> {
@@ -24,6 +28,20 @@ export async function listAdminEvents(): Promise<GroupEvent[]> {
   })
   if (!data || data.length == 0) return []
   return data as unknown as GroupEvent[]
+}
+
+export async function registerForEvent(
+  event_id: string,
+  user_id: string,
+  rsvp: InviteRSVPType
+): Promise<EventUser> {
+  const client = await getAdminClient()
+  const invite = await client.items('events_users').createOne({
+    events_id: event_id,
+    users_id: user_id,
+    rsvp,
+  })
+  return invite as unknown as EventUser
 }
 
 export async function getEvent(id: string): Promise<EventDetail> {

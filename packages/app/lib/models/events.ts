@@ -32,12 +32,13 @@ export enum EventStatusType {
 }
 
 export type Invite = EventUser & {
-  id: string
+  id: number
   name: string
   description: string
   datetime: string
   status: EventStatusType
   type: string
+  cost: number
 }
 
 export type EventInvite = EventUser & {
