@@ -43,13 +43,7 @@ function Layout({
       <Meta />
       <Flex direction="column" flex="1" overflowX="clip">
         <Header />
-        <Flex
-          flex="1 100%"
-          direction="column"
-          minH={isOpen ? '70dvh' : '100vh'}
-          maxH={`calc(100vh - ${height})`}
-          overflowY="auto"
-        >
+        <Flex flex="1 100%" direction="column" maxH={`calc(100vh - ${height})`} overflowY="auto">
           <Box w="full" flex="1 100%" {...constrained} className={` ${heading} ${body} ${mono}}`}>
             {children}
           </Box>
