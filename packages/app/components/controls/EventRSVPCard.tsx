@@ -58,7 +58,8 @@ export const EventRSVPCard = ({
     setError,
     watch,
     setValue,
-    formState: { errors },
+    reset,
+    formState: { errors, isDirty },
   } = useForm<RSVPInfo>({
     mode: 'onChange',
     defaultValues: invite || {
@@ -99,6 +100,7 @@ export const EventRSVPCard = ({
         error,
       } = await postJSON<EventUser>('/api/events/rsvp', data as any)
       if (success) {
+        reset(data)
         setInvite({
           user_id: String(invite.users_id),
           event_id: String(invite.events_id),
@@ -131,7 +133,7 @@ export const EventRSVPCard = ({
       }
       setWorking(false)
     },
-    [onChange, reload, setError, toast]
+    [onChange, reload, reset, setError, toast]
   )
 
   const rsvp = watch('rsvp')
@@ -161,7 +163,7 @@ export const EventRSVPCard = ({
       <EventCard event={event} showDescription={rsvp !== 'confirmed'} {...props}>
         <>
           <form onSubmit={handleSubmit(respond)}>
-            <SlideFade in={rsvp == 'confirmed'} unmountOnExit>
+            <SlideFade in={isDirty && rsvp == 'confirmed'} unmountOnExit>
               <Alert status="info" mb={6} rounded="lg" shadow="lg">
                 <AlertIcon />
                 <Text>
