@@ -32,10 +32,6 @@ export default function ActionsNav({ children, ...props }: Props) {
 
   if (!authenticated) return null
 
-  console.dir({
-    invitations,
-    events,
-  })
   return (
     <Box
       {...props}
@@ -59,16 +55,17 @@ export default function ActionsNav({ children, ...props }: Props) {
             title="View Members"
           />
         </Link>
-        <Link href="/events" as={NextLink}>
-          <IconButton
-            variant="primary"
-            size="lg"
-            icon={<CalendarIcon />}
-            color={path.startsWith('/events') ? 'accent.500' : 'white'}
-            aria-label={'Events'}
-            title="Events"
-          />
-          {events.length > 0 && (
+        {events.length > 0 && (
+          <Link href="/events" as={NextLink}>
+            <IconButton
+              variant="primary"
+              size="lg"
+              icon={<CalendarIcon />}
+              color={path.startsWith('/events') ? 'accent.500' : 'white'}
+              aria-label={'Events'}
+              title="Events"
+            />
+
             <Badge
               ml={-4}
               zIndex={2}
@@ -81,8 +78,8 @@ export default function ActionsNav({ children, ...props }: Props) {
             >
               {events.length}
             </Badge>
-          )}
-        </Link>
+          </Link>
+        )}
         <Link href="/member/events" as={NextLink}>
           <IconButton
             variant="primary"
