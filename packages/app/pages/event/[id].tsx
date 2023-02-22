@@ -40,7 +40,7 @@ export default function EventAdmin({ event, error }: { event: EventDetail; error
   return (
     <Page title="Event" loading={loading} requireAuth={true}>
       {member && (
-        <EventCard event={event} member={member}>
+        <EventCard event={event}>
           <Flex direction="column" gap={4}>
             {error && (
               <Alert status="error" size="lg">

@@ -2,7 +2,7 @@ import { addDays, isSameDay } from 'date-fns'
 import { SetStateAction, useCallback, useEffect, useState } from 'react'
 import Calendar from 'react-calendar'
 import Page from 'components/Page'
-import { Box, Flex, Text, Show, Hide } from '@chakra-ui/react'
+import { Box, Flex, Text, Show, Hide, Heading } from '@chakra-ui/react'
 import { useEvents, useMeta, useUser } from 'hooks'
 import { GroupEvent, Member } from 'lib/models'
 
@@ -61,7 +61,7 @@ export default function CalendarPage({ id }: PageProps) {
           }}
           cursor="pointer"
         >
-          {(full && <EventCard member={member} event={event} />) || (
+          {(full && <EventCard event={event} />) || (
             <Box>
               <EventBadge type={event.type} status={event.status} />
               <Text p={0} m={0}>
@@ -137,23 +137,27 @@ export default function CalendarPage({ id }: PageProps) {
         },
       }}
     >
-      <Show above="md">
-        <Calendar
-          className="calendar"
-          onChange={onChange}
-          value={value}
-          tileContent={tileContent}
-          minDate={minDate}
-          maxDate={maxDate}
-        />
-      </Show>
-      <Hide above="md">
-        <Flex direction="column" width="100%">
-          {events?.map((event) => (
-            <EventView key={event.id} event={event} full />
-          ))}
-        </Flex>
-      </Hide>
+      {(events?.length > 0 && (
+        <>
+          <Show above="md">
+            <Calendar
+              className="calendar"
+              onChange={onChange}
+              value={value}
+              tileContent={tileContent}
+              minDate={minDate}
+              maxDate={maxDate}
+            />
+          </Show>
+          <Hide above="md">
+            <Flex direction="column" width="100%">
+              {events?.map((event) => (
+                <EventView key={event.id} event={event} full />
+              ))}
+            </Flex>
+          </Hide>
+        </>
+      )) || <Heading textAlign="center">No Events</Heading>}
     </Page>
   )
 }

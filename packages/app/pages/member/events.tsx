@@ -39,9 +39,9 @@ function EventPage({}: Props) {
     <Page loading={loading} title="Your Events" description="Upcoming events." requireAuth={true}>
       {allowed ? (
         <>
-          <Tabs isFitted>
+          <Tabs isFitted m={0}>
             <TabList>
-              <Tab>Upcoming Events</Tab>
+              <Tab>Upcoming</Tab>
               <Tab>
                 Invitations
                 {invitations.length > 0 && (
@@ -50,7 +50,7 @@ function EventPage({}: Props) {
                   </Badge>
                 )}
               </Tab>
-              <Tab>Past Events</Tab>
+              <Tab>Past</Tab>
             </TabList>
             <TabPanels>
               <TabPanel>
@@ -90,7 +90,7 @@ function EventPage({}: Props) {
                       <EventCard
                         key={invite.id}
                         event={invite.events_id as GroupEvent}
-                        member={member}
+                        showDescription={false}
                         mb={4}
                       >
                         <PastEventInfo

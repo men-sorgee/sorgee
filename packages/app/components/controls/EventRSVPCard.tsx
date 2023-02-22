@@ -158,7 +158,7 @@ export const EventRSVPCard = ({
   }
   return (
     <>
-      <EventCard member={member} event={event} {...props}>
+      <EventCard event={event} showDescription={rsvp !== 'confirmed'} {...props}>
         <>
           <form onSubmit={handleSubmit(respond)}>
             <SlideFade in={rsvp == 'confirmed'} unmountOnExit>
