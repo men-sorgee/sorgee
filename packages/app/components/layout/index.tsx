@@ -6,6 +6,7 @@ import Meta from './Meta'
 import Footer from './Footer'
 import Actions from './Actions'
 import { useUser } from '../../hooks/use-user'
+import PullToRefresh from 'react-simple-pull-to-refresh'
 
 export const constrained = {
   maxW: ['full', 'lg', '2xl', '3xl', '4xl', '5xl'],
@@ -45,7 +46,13 @@ function Layout({
         <Header />
         <Flex flex="1 100%" direction="column" maxH={`calc(100vh - ${height})`} overflowY="auto">
           <Box w="full" flex="1 100%" {...constrained} className={` ${heading} ${body} ${mono}}`}>
-            {children}
+            <PullToRefresh
+              onRefresh={async () => {
+                router.reload()
+              }}
+            >
+              {children}
+            </PullToRefresh>
           </Box>
           <Spacer />
           <Footer />

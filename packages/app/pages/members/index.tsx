@@ -308,33 +308,35 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
               <FieldInput field="nickname" label="Nickname" />
               <FieldInput field="biography" label="Keywords" />
             </SimpleGrid>
-            <FieldCheckboxes
-              field="user_type"
-              label="User Level"
-              options={fields['user_type'].meta.options.choices.filter((item) =>
-                allowedUserTypes.includes(item.value as UserType)
-              )}
-            />
-            <FieldCheckboxes
-              field="spectrum"
-              label="Orientation"
-              options={fields['spectrum'].meta.options.choices}
-            />
-            <FieldCheckboxes
-              field="mannerisms"
-              label="Mannerisms"
-              options={fields['mannerisms'].meta.options.choices}
-            />
-            <FieldCheckboxes
-              field="relationship_status"
-              label="Relationship Status"
-              options={fields['relationship_status'].meta.options.choices}
-            />
-            <FieldCheckboxes
-              field="my_positions"
-              label="Positions"
-              options={fields['my_positions'].meta.options.choices}
-            />
+            <SimpleGrid columns={1} spacing={4} mb={4}>
+              <FieldCheckboxes
+                field="user_type"
+                label="User Level"
+                options={fields['user_type'].meta.options.choices.filter((item) =>
+                  allowedUserTypes.includes(item.value as UserType)
+                )}
+              />
+              <FieldCheckboxes
+                field="spectrum"
+                label="Orientation"
+                options={fields['spectrum'].meta.options.choices}
+              />
+              <FieldCheckboxes
+                field="mannerisms"
+                label="Mannerisms"
+                options={fields['mannerisms'].meta.options.choices}
+              />
+              <FieldCheckboxes
+                field="relationship_status"
+                label="Relationship Status"
+                options={fields['relationship_status'].meta.options.choices}
+              />
+              <FieldCheckboxes
+                field="my_positions"
+                label="Positions"
+                options={fields['my_positions'].meta.options.choices}
+              />
+            </SimpleGrid>
 
             <AccordionButton as={'div'} mt={6} _hover={{ bg: 'transparent', cursor: 'default' }}>
               <HStack w="full" justify="center">
