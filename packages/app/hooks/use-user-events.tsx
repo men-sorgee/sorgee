@@ -1,6 +1,6 @@
 'use client'
 import useSWR from 'swr'
-import { EventUser, Invite } from 'lib/models'
+import { EventUser, GroupEvent, Invite } from 'lib/models'
 import { JsonFetcher } from 'lib/utils'
 
 type InvitesResults = {
@@ -31,13 +31,16 @@ export const useUserEvents = (authenticated: boolean): InvitesResults => {
   if (invites == null)
     return { invitations: [], upcoming: [], past: [], loading: true, reload: () => {} }
 
+  const getEvent = (e: EventUser) => {
+    return e.events_id as GroupEvent
+  }
   const invitations = invites?.filter(
-    (i) => !attending.includes(i.rsvp) && upComing.includes(i.events_id.status)
+    (i) => !attending.includes(i.rsvp) && upComing.includes(getEvent(i).status)
   )
   const upcoming = invites?.filter(
-    (i) => attending.includes(i.rsvp) && upComing.includes(i.events_id.status)
+    (i) => attending.includes(i.rsvp) && upComing.includes(getEvent(i).status)
   )
-  const past = invites?.filter((i) => i.events_id.status == 'occurred')
+  const past = invites?.filter((i) => getEvent(i).status == 'occurred')
 
   return {
     invitations,

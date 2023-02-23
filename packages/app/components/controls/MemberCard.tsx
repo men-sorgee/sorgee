@@ -2,17 +2,13 @@ import {
   LinkBox,
   Card,
   useColorModeValue,
-  CardHeader,
   LinkOverlay,
-  Flex,
-  Badge,
-  Divider,
   CardBody,
   CardFooter,
   Spacer,
   Text,
 } from '@chakra-ui/react'
-import { Member, SearchableMember } from '../../lib/models'
+import { SearchableMember } from 'lib/models'
 import { Rating } from './Rating'
 import { MemberHeader } from './MemberHeader'
 import NextLink from 'next/link'
@@ -60,6 +56,11 @@ export const MemberCard = ({ member, onClick }: Props) => {
                 simple
               />
             )}
+            <Text display="none">
+              Ratings are based on the number of stars a member has received from other members and
+              event hosts. No-shows automatically receive 2-star ratings by the event. Members must
+              have an average of 4-stars to be eligible for events.
+            </Text>
           </CardFooter>
         </Card>
       </LinkBox>

@@ -29,7 +29,7 @@ export async function listInvites(user_id: string): Promise<EventUser[]> {
       users_id: { _eq: user_id },
       events_id: { status: { _in: ['planned', 'scheduled', 'occurred'] } },
     },
-    fields: ['*', 'events_id.*' as any, 'events_id.location.*' as any],
+    fields: ['*.*' as any],
     sort: ['events_id.datetime' as any],
   })
 
@@ -37,7 +37,7 @@ export async function listInvites(user_id: string): Promise<EventUser[]> {
     const today = new Date(new Date().toDateString())
     const event = invite.events_id as GroupEvent
     const eventDate = new Date(new Date(event.datetime).toDateString())
-    if (today.getTime() != eventDate.getTime()) delete invite.events_id.location
+    if (today.getTime() !== eventDate.getTime()) delete event.location
 
     return invite
   })

@@ -13,12 +13,12 @@ type Props = TextareaProps &
   }
 
 const TextField = (props: Props) => {
-  const { field, label, help, registerOptions = {}, className, ...opts } = props
+  const { field, label, help, registerOptions = {}, className, mt, ...opts } = props
   const { register, getFieldState, formState } = useFormContext()
   const { error } = getFieldState(field, formState)
   const classes = error ? 'error' : ''
   return (
-    <FieldWrapper field={field} label={label} help={help} className={className}>
+    <FieldWrapper field={field} label={label} help={help} className={className} mt={mt}>
       <Textarea
         {...opts}
         id={field}
