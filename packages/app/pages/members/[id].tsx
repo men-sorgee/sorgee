@@ -7,7 +7,7 @@ export async function getServerSideProps(ctx: NextPageContext) {
   const { getFields } = await import('lib/services/directus/server')
   const fieldMap = await getFields('users')
 
-  const params = (ctx.query as QueryParams) || ({} as QueryParams)
+  const params = (ctx.query as unknown as QueryParams) || ({} as QueryParams)
 
   const props: any = {
     fieldMap,
