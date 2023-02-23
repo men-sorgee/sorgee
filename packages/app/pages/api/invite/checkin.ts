@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { baseUrl } from 'lib/config'
-import { findInvite, getEvent, updateInvite } from 'lib/services/directus/server'
+import { findInvite, getEvent } from 'lib/services/directus/server'
 import { ApiResponse, Applicant } from 'lib/models'
 
 export default async function checkIn(

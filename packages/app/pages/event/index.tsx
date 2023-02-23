@@ -2,8 +2,6 @@ import { NextPageContext, GetServerSidePropsResult } from 'next'
 import { EventDetail, GroupEvent, MemberLevel } from 'lib/models'
 import Page from 'components/Page'
 import {
-  Card,
-  CardHeader,
   Tab,
   TabList,
   TabPanel,
@@ -11,16 +9,10 @@ import {
   Tabs,
   LinkBox,
   LinkOverlay,
-  List,
-  ListItem,
   Heading,
-  GridItem,
-  SimpleGrid,
 } from '@chakra-ui/react'
 import { getServerSession } from 'next-auth/next'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { getEventDate } from 'lib/utils'
 import { EventCard } from 'components/controls'
 import { useUser } from 'hooks'
 type Props = {

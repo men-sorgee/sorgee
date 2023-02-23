@@ -35,8 +35,7 @@ export async function getServerSideProps(
 export default function EventAdmin({ event, error }: { event: EventDetail; error: string }) {
   const { member, level, loading } = useUser()
   const [fees] = useState(event.cost * event.paid_count)
-  const isStaff = member && level >= MemberLevel.staff
-  const isScheduled = event.status === 'scheduled'
+  const isStaff = level >= MemberLevel.staff
 
   return (
     <Page title={event?.name + ' Admin'} loading={loading} requireAuth={true}>
@@ -88,7 +87,7 @@ export default function EventAdmin({ event, error }: { event: EventDetail; error
         <LinkButton href="/event" my={4}>
           Back to Events
         </LinkButton>
-        {isStaff && isScheduled && (
+        {isStaff && (
           <LinkButton colorScheme="primary" href="/member/scan" my={4}>
             Scan Invite
           </LinkButton>

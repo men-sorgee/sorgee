@@ -13,13 +13,18 @@ import {
   AlertIcon,
   Box,
 } from '@chakra-ui/react'
-import { EventUser, Invite, GroupEvent, User } from 'lib/models'
+import { EventUser, Invite, GroupEvent, User, MemberLevel } from 'lib/models'
 import { LinkButton, Loading, TakePhoto, MemberBadge } from 'components/controls'
 import { FieldSwitch } from 'components/forms'
-import { useUser } from '@/hooks/use-user'
 import { useRouter } from 'next/router'
 import Page from 'components/Page'
-type Props = {}
+import { useMember, useUser } from 'hooks'
+
+type Props = {
+  event: GroupEvent
+  invite: EventUser
+  user: User
+}
 const visible = (show: boolean) => (show ? 'flex' : 'none')
 
 type FormValues = {
@@ -30,43 +35,46 @@ type FormValues = {
   picture?: string
 }
 
-export default function InviteAdmin(_props: Props) {
-  const [{ invite, user, event }, setInvite] = useState<{
-    invite?: Invite
-    user?: User
-    event?: GroupEvent
-  }>({})
+export const getServerSideProps = async (context) => {
+  const { getInvite } = await import('lib/services/directus/server/users')
+  const inviteId = Number(context.query.id)
+
+  const invite = await getInvite(inviteId)
+  if (!invite) {
+    return {
+      notFound: true,
+    }
+  }
+  const event = invite.events_id as GroupEvent
+  const user = invite.users_id as User
+
+  return {
+    props: {
+      invite,
+      event,
+      user,
+    },
+  }
+}
+
+export default function InviteAdmin({ event, invite, user }: Props) {
+  const { member, loading, level } = useUser()
+  const { picture: p, name } = useMember(user?.id)
   const [camera, setCamera] = useState(false)
-  const [picture, setPicture] = useState<string | undefined>()
-  const [image, setImage] = useState<string | undefined>(
-    user?.picture ? '/api/asset/' + user?.picture : undefined
-  )
+  const [picture, setPicture] = useState<string>(p)
+
   const toast = useToast()
-  const { member, loading } = useUser()
+
   const [working, setWorking] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
-    if (member) {
-      if (!invite && !user && !event) {
-        fetchJSON<EventUser>('/api/invite/' + router.query.id).then(({ success, data }) => {
-          if (success) {
-            setInvite({
-              invite: data as Invite,
-              user: data.users_id as User,
-              event: data.events_id as GroupEvent,
-            })
-          }
-        })
-      }
-      if (event && member.user_type !== 'staff') {
+    if (!loading && member) {
+      if (event && level < MemberLevel.staff) {
         router.push(`/event/${event?.id}?error=You+do+not+have+permission+to+view+admin+events.`)
       }
-      if (user) {
-        setImage(user.picture ? '/api/asset/' + user.picture : undefined)
-      }
     }
-  }, [event, invite, loading, member, router, user])
+  }, [event, level, loading, member, router])
 
   const methods = useForm<FormValues>({
     mode: 'onBlur',
@@ -78,15 +86,14 @@ export default function InviteAdmin(_props: Props) {
     },
   })
 
-  const { setError, handleSubmit } = methods
+  const { setError, handleSubmit, watch } = methods
 
   const takePhoto = useCallback(
     (data: string) => {
       setPicture(data)
-      setImage(data)
       setCamera(false)
     },
-    [setImage, setPicture, setCamera]
+    [setPicture, setCamera]
   )
 
   const updateInvite = useCallback(
@@ -138,8 +145,16 @@ export default function InviteAdmin(_props: Props) {
     },
     [event?.id, invite?.id, picture, router, setError, toast, user?.email, user?.id]
   )
+  const paid = watch('paid')
+  const signed_waiver = watch('signed_waiver')
+  const ready = picture && signed_waiver && (invite.guest || paid)
   return (
-    <Page title={event?.name} description="Invite Admin" loading={loading} requireAuth={true}>
+    <Page
+      title={`Check-in ${event.name}`}
+      description="Invite Admin"
+      loading={loading}
+      requireAuth={true}
+    >
       {(invite && (
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(updateInvite)} style={{ marginTop: '2rem' }}>
@@ -161,7 +176,7 @@ export default function InviteAdmin(_props: Props) {
                 <Flex direction="row" gap={8} alignItems="center" justifyItems="center">
                   <Avatar
                     id={user.id}
-                    src={image}
+                    src={picture}
                     size="2xl"
                     color="white"
                     bg="primary.300"
@@ -205,14 +220,14 @@ export default function InviteAdmin(_props: Props) {
                     }}
                   />
                 </Flex>
-                {(image && (
+                {(picture && (
                   <Button
                     type="submit"
                     hidden={invite?.attended}
                     colorScheme={'accent'}
                     p={8}
                     size="xl"
-                    disabled={working}
+                    disabled={working || !ready}
                   >
                     Check In
                   </Button>
@@ -243,11 +258,11 @@ export default function InviteAdmin(_props: Props) {
               </Box>
             )}
             <HStack spacing={4}>
-              <LinkButton colorScheme="primary" href="/member/scan" my={4}>
-                Scan Another
-              </LinkButton>
               <LinkButton colorScheme="gray" href={'/event/' + event?.id} my={4}>
                 Return to Event
+              </LinkButton>
+              <LinkButton colorScheme="primary" href="/member/scan" my={4}>
+                Scan Another
               </LinkButton>
             </HStack>
           </form>

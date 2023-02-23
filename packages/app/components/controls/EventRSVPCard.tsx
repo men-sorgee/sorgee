@@ -161,6 +161,10 @@ export const EventRSVPCard = ({
       value: 'cancelled',
     })
   }
+  const checkinUrl = `/api/${event.invite_only ? 'invite' : 'events'}/checkin?user_id=${
+    member?.id
+  }&event_id=${event?.id}`
+
   return (
     <>
       <EventCard
@@ -232,9 +236,7 @@ export const EventRSVPCard = ({
                 shadow="lg"
                 maxW="sm"
                 mt={-8}
-                src={`/api/code/api/${event.invite_only ? 'invite' : 'events'}/checkin?user_id=${
-                  member?.id
-                }&event_id=${event?.id}`}
+                src={`/api/code${checkinUrl}`}
                 alt="Ticket"
                 w="full"
               />
@@ -267,12 +269,12 @@ export const EventRSVPCard = ({
                       maxW="md"
                       mt={4}
                       mx="auto"
-                      src={`/api/code/api/${
-                        event.invite_only ? 'invite' : 'events'
-                      }/checkin?user_id=${member?.id}&event_id=${event?.id}`}
+                      src={`/api/code/${checkinUrl}`}
                       alt="Ticket"
                       w="full"
                     />
+
+                    {checkinUrl}
                   </SlideFade>
                 </Flex>
               </div>
