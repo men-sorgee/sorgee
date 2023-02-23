@@ -14,7 +14,7 @@ export async function recordUserLogin(id: string) {
 }
 
 export async function extendUserPresence(id: string) {
-  const expires = addHours(new Date(), 1)
+  const expires = addHours(new Date(), 10)
 
   await updateUser(id, {
     presence: 'online',
@@ -24,7 +24,7 @@ export async function extendUserPresence(id: string) {
 }
 
 export async function expireSessions() {
-  const expires = addHours(new Date(), -4)
+  const expires = addHours(new Date(), +7)
   const adminClient = await getAdminClient()
   const { data: expired } = await adminClient.items('users').readByQuery({
     filter: {
