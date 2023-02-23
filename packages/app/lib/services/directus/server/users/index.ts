@@ -1,4 +1,4 @@
-import { UserType } from 'lib/models'
+import { Rating, RatingCollection, UserType } from 'lib/models'
 // Service Calls ------------------------------------
 
 import { getAdminClient } from '..'
@@ -135,6 +135,63 @@ export async function listUsersByLevel<T = Member>(
     fields: [...fields],
   })
   return data as T[]
+}
+
+export async function getRating(user_id: string, collection: RatingCollection, item_id: string) {
+  const adminClient = await getAdminClient()
+  const filter = {
+    user: {
+      _eq: user_id,
+    },
+    collection: {
+      _eq: collection,
+    },
+  }
+  switch (collection) {
+    case 'events': {
+      filter['event'] = {
+        _eq: item_id,
+      }
+    }
+  }
+
+  const { data: ratings } = await adminClient.items('rating').readByQuery({
+    filter,
+  })
+  if (ratings?.length) {
+    return ratings[0] as Rating
+  } else {
+    return null
+  }
+}
+
+export async function setRating(
+  user_id: string,
+  collection: RatingCollection,
+  item: string,
+  rate: number
+) {
+  const adminClient = await getAdminClient()
+  const existingRating = await getRating(user_id, collection, item)
+  if (existingRating) {
+    return (await adminClient.items('rating').updateOne(existingRating.id, {
+      rate,
+    })) as Rating
+  } else {
+    let value = {} as Partial<Rating>
+    switch (collection) {
+      case 'events': {
+        value.event = item
+        break
+      }
+    }
+    return (await adminClient.items('rating').createOne({
+      user: user_id,
+      collection,
+      rate,
+      ...value,
+    })) as Rating
+  }
 }
 
 export async function getUserStats(): Promise<{

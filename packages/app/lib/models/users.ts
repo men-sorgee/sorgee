@@ -1,4 +1,4 @@
-import { Invite, RatingRated, UserInvite } from 'lib/models'
+import { UserInvite } from 'lib/models'
 import { DirectusFile, User, UserAccount, Notification, UserPhoto, EventUser } from './directus'
 
 type Color = {

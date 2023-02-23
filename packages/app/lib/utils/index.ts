@@ -1,7 +1,5 @@
-import { extendTheme } from '@chakra-ui/react'
 import { ApiError, ApiResponse } from 'lib/models'
 import { format } from 'date-fns'
-import { KeyedMutator } from 'swr'
 
 export function toLocaleDate(value: string) {
   const t = new Date()

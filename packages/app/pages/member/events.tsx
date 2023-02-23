@@ -10,13 +10,16 @@ import {
   TabPanels,
   TabPanel,
   Badge,
+  Spacer,
+  Flex,
 } from '@chakra-ui/react'
+
 import Page from 'components/Page'
 import { useUser, useUserEvents } from 'hooks'
-import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useCallback, useEffect, useState } from 'react'
 import { EventUser, Member, GroupEvent } from 'lib/models'
-import { EventCard, EventRSVPCard } from 'components/controls'
+import { EventCard, EventRSVPCard, LinkButton, RateItem } from 'components/controls'
 
 type Props = {}
 
@@ -38,7 +41,7 @@ function EventPage({}: Props) {
   }, [reload])
 
   const activeEvent = upcoming.find(
-    (invite) =>
+    (invite: any) =>
       new Date(new Date(invite.events_id.datetime).toDateString()).getTime() == today.getTime()
   )
 
@@ -73,60 +76,31 @@ function EventPage({}: Props) {
               )}
               <TabPanel p={0}>
                 <Heading mb={4}>Upcoming Events</Heading>
-                {(upcoming.length && (
-                  <Events
-                    list={upcoming.filter((e) => e != activeEvent)}
-                    member={member}
-                    onChange={onEventsChange}
-                  />
-                )) || (
-                  <Box>
-                    <Heading as="h3" size="md">
-                      No Upcoming Events
-                    </Heading>
-                  </Box>
-                )}
+
+                <Events
+                  list={upcoming.filter((e) => e != activeEvent)}
+                  member={member}
+                  onChange={onEventsChange}
+                  name="Upcoming Events"
+                  text="Check back later for upcoming events."
+                />
               </TabPanel>
               <TabPanel p={0}>
                 <Heading mb={4}>Event Invitations</Heading>
-                {(invitations.length && (
-                  <Events list={invitations} member={member} onChange={onEventsChange} />
-                )) || (
-                  <Box>
-                    <Heading as="h3" size="md">
-                      No Invites
-                    </Heading>
-                    <Text>
-                      Check back later for upcoming events. If you never see invitations, make sure
-                      your account is set to receive invites and that you never no-show to an event.
-                    </Text>
-                  </Box>
-                )}
+
+                <Events
+                  list={invitations}
+                  member={member}
+                  onChange={onEventsChange}
+                  name="Invitations"
+                  text="If you never see invitations, make sure
+          your account is set to receive invites and that you never no-show to an event."
+                />
               </TabPanel>
 
               <TabPanel p={0}>
-                <Box>
-                  <Heading mb={4}>Past Events</Heading>
-                  {(past.length &&
-                    past.map((invite) => (
-                      <EventCard
-                        key={invite.id}
-                        event={invite.events_id as GroupEvent}
-                        showDescription={false}
-                        mb={4}
-                      >
-                        <PastEventInfo
-                          key={invite.id}
-                          invite={invite}
-                          event={invite.events_id as GroupEvent}
-                        />
-                      </EventCard>
-                    ))) || (
-                    <Heading as="h3" size="md">
-                      No Past Events
-                    </Heading>
-                  )}
-                </Box>
+                <Heading mb={4}>Past Events</Heading>
+                <PastEvents list={past} />
               </TabPanel>
             </TabPanels>
           </Tabs>
@@ -146,52 +120,94 @@ function EventPage({}: Props) {
 function Events({
   list,
   member,
+  name,
+  text,
   onChange,
 }: {
   list: EventUser[]
   member: Member
+  name: string
+  text?: string
   onChange: () => void
 }) {
   if (list.length === 0) {
-    return null
+    return (
+      <Box>
+        <Heading as="h3" size="md">
+          No {name}
+        </Heading>
+        <Text>{text}</Text>
+      </Box>
+    )
   }
 
   return (
     <>
-      {member &&
-        list.map((invite) => (
-          <EventRSVPCard
-            key={invite.id}
-            event={invite.events_id as GroupEvent}
-            invite={invite}
-            member={member}
-            mb={4}
-            onChange={onChange}
-          />
-        ))}
+      {list.map((invite) => (
+        <EventRSVPCard
+          key={invite.id}
+          event={invite.events_id as GroupEvent}
+          invite={invite}
+          member={member}
+          mb={4}
+          onChange={onChange}
+        />
+      ))}
     </>
   )
 }
 
-function PastEventInfo({ invite, event }: { invite: EventUser; event: GroupEvent }) {
+function PastEvents({ list }: { list: EventUser[] }) {
+  if (list.length === 0) {
+    return null
+  }
+
+  const PastEventItem = ({ invite }: { invite: EventUser }) => {
+    const event = invite.events_id as GroupEvent
+    const surveyId = event.survey ? event.survey[0] : undefined
+    return (
+      <Box>
+        <h5>
+          RSVP: {invite.rsvp.toUpperCase()} | {invite.attended ? 'You attended!' : 'Did not attend'}
+        </h5>
+        {!invite.attended && invite.rsvp == 'confirmed' && (
+          <Alert status="warning" rounded="lg" mt={4}>
+            <AlertIcon />
+            You did not show up, despite being confirmed.
+          </Alert>
+        )}
+        {invite.attended && invite.rsvp == 'invited' && (
+          <Alert status="warning" rounded="lg" mt={4}>
+            <AlertIcon />
+            You showed up, but did not RSVP.
+          </Alert>
+        )}
+        <Flex mt={4} gap={4} align="end" justify="space-between">
+          {(invite.attended && surveyId && (
+            <LinkButton size="lg" href={`/survey/${surveyId}`} colorScheme="accent">
+              Take the Survey
+            </LinkButton>
+          )) || <Spacer />}
+
+          <RateItem item_id={event.id} collection="events" />
+        </Flex>
+      </Box>
+    )
+  }
+
   return (
-    <Box>
-      <h5>
-        RSVP: {invite.rsvp.toUpperCase()} | {invite.attended ? 'You attended!' : 'Did not attend'}
-      </h5>
-      {!invite.attended && invite.rsvp == 'confirmed' && (
-        <Alert status="warning" rounded="lg" mt={4}>
-          <AlertIcon />
-          You did not show up, despite being confirmed.
-        </Alert>
-      )}
-      {invite.attended && invite.rsvp == 'invited' && (
-        <Alert status="warning" rounded="lg" mt={4}>
-          <AlertIcon />
-          You showed up, but did not RSVP.
-        </Alert>
-      )}
-    </Box>
+    <>
+      {list.map((invite) => (
+        <EventCard
+          key={invite.id}
+          event={invite.events_id as GroupEvent}
+          showDescription={false}
+          mb={4}
+        >
+          <PastEventItem invite={invite} />
+        </EventCard>
+      ))}
+    </>
   )
 }
 
