@@ -19,12 +19,12 @@ export async function listUpcomingEvents(user_type: UserType): Promise<GroupEven
 export async function listAdminEvents(): Promise<GroupEvent[]> {
   const client = await getAdminClient()
   const filter = {
-    status: { _in: ['scheduled', 'occurred'] },
+    status: { _in: ['scheduled', 'occurred', 'planned'] },
   }
   const { data } = await client.items('events').readByQuery({
     filter,
     fields: ['*.*'],
-    sort: ['-datetime'],
+    sort: ['datetime'],
   })
   if (!data || data.length == 0) return []
   return data as unknown as GroupEvent[]

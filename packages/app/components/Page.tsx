@@ -51,10 +51,11 @@ const Page = ({
       justifyItems="stretch"
       {...props}
     >
-      <Heading textAlign="center" as="h1" size="4xl" mb={4}>
-        {title}
-      </Heading>
-
+      <div className="no-print">
+        <Heading textAlign="center" as="h1" size="4xl" mb={4}>
+          {title}
+        </Heading>
+      </div>
       {header}
       {(loading && (
         <Loading size="xl">

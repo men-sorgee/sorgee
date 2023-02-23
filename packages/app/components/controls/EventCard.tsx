@@ -9,14 +9,18 @@ import {
   Heading,
   Text,
   CardProps,
+  LinkBox,
+  LinkOverlay,
+  Icon,
 } from '@chakra-ui/react'
 import { Markdown } from './Markdown'
-import { GroupEvent } from 'lib/models'
+import { GroupEvent, Location } from 'lib/models'
 import { getEventDate } from 'lib/utils'
 import { capitalCase } from 'change-case'
-
+import { LocationMarkerIcon } from '@heroicons/react/outline'
 type EventCardProps = CardProps & {
   showDescription?: boolean
+  showLocation?: boolean
   children?: ReactNode | ReactNode[]
   event: GroupEvent
 }
@@ -24,6 +28,7 @@ type EventCardProps = CardProps & {
 export const EventCard = ({
   event,
   showDescription = true,
+  showLocation = false,
   children,
   ...props
 }: EventCardProps) => {
@@ -44,9 +49,9 @@ export const EventCard = ({
   }, [event, eventDate])
 
   if (!event) return null
-
+  const location = event.location as Location
   return (
-    <Card p={0} w="full" boxShadow="lg" rounded="md" {...props}>
+    <Card p={0} w="full" boxShadow="lg" rounded="md" {...props} _print={{ shadow: 'none' }}>
       <CardHeader p={0}>
         <Flex direction="row" alignItems="stretch" alignContent="center" gap={0}>
           <Heading
@@ -84,13 +89,46 @@ export const EventCard = ({
       {isScheduled && (
         <CardBody w="full">
           <Heading as="h5" size="md" textTransform="uppercase">
-            Event Type: {event.invite_only ? 'Private ' : 'Public '} {capitalCase(event.type)}
+            <span className="no-print">
+              Event Type: {event.invite_only ? 'Private ' : 'Public '} {capitalCase(event.type)}
+            </span>
             <br />
             Door Fee: ${event.cost}
             <br />
             Event Time: {eventDate?.time}
           </Heading>
           {showDescription && <Markdown content={event.description} />}
+          {showLocation && location && (
+            <>
+              <Heading as="h5" size="md" textTransform="uppercase">
+                Location:
+              </Heading>
+              <LinkBox>
+                <Flex>
+                  <Icon
+                    h={20}
+                    w={20}
+                    as={LocationMarkerIcon}
+                    color="primary.200"
+                    fill="primary.500"
+                  />
+                  <LinkOverlay
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={`https://www.google.com/maps/place/${location.street} ${location.city} ${location.state} ${location.zip}`}
+                  >
+                    <Text fontWeight="bold" ml={3} color="primary.500">
+                      {location.name}
+                      <br />
+                      {location.street} {location.unit}
+                      <br />
+                      {location.city}, {location.state} {location.zip}
+                    </Text>
+                  </LinkOverlay>
+                </Flex>
+              </LinkBox>
+            </>
+          )}
         </CardBody>
       )}
       <CardFooter flexDirection="column">{children}</CardFooter>

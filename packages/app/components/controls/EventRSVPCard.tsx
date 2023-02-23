@@ -45,6 +45,9 @@ export const EventRSVPCard = ({
   onChange,
   ...props
 }: RSVPProps) => {
+  const today = new Date(new Date().toDateString())
+  const eventDate = new Date(new Date(event.datetime).toDateString())
+  const isToday = today.getTime() == eventDate.getTime()
   const { reload } = useUser()
   const [working, setWorking] = useState<boolean>(undefined)
   const [invite, setInvite] = useState<RSVPInfo>(undefined)
@@ -160,9 +163,14 @@ export const EventRSVPCard = ({
   }
   return (
     <>
-      <EventCard event={event} showDescription={rsvp !== 'confirmed'} {...props}>
+      <EventCard
+        event={event}
+        showDescription={rsvp !== 'confirmed'}
+        {...props}
+        showLocation={rsvp == 'confirmed' && isToday}
+      >
         <>
-          <form onSubmit={handleSubmit(respond)}>
+          <form className="no-print" onSubmit={handleSubmit(respond)}>
             <SlideFade in={isDirty && rsvp == 'confirmed'} unmountOnExit>
               <Alert status="info" mb={6} rounded="lg" shadow="lg">
                 <AlertIcon />
@@ -217,40 +225,58 @@ export const EventRSVPCard = ({
             </Box>
           </form>
           {full && rsvp == 'confirmed' && (
-            <Flex direction="column">
-              <Flex
-                alignContent="center"
-                justifyContent="center"
-                align="center"
-                bg="gray.200"
-                color="white"
-                mt={6}
-                px={2}
-                py={1}
-                cursor="pointer"
-                _hover={{ bg: 'primary' }}
-                rounded="lg"
-                onClick={() => setShowTicket(!showTicket)}
-              >
-                <Text color="white">{showTicket ? 'Hide' : 'Show'} Ticket</Text>
-              </Flex>
-              <SlideFade in={showTicket} unmountOnExit>
-                <Text>
-                  <strong>Important:</strong> Present this ticket to the host when you arrive for
-                  access.
-                </Text>
-                <Image
-                  rounded="xl"
-                  shadow="lg"
-                  mt={4}
-                  src={`/api/code/api/${event.invite_only ? 'invite' : 'events'}}/checkin?user_id=${
-                    member?.id
-                  }&event_id=${event?.id}`}
-                  alt="Ticket"
-                  w="full"
-                />
-              </SlideFade>
-            </Flex>
+            <>
+              <Image
+                className="print-only"
+                rounded="xl"
+                shadow="lg"
+                maxW="sm"
+                mt={-8}
+                src={`/api/code/api/${event.invite_only ? 'invite' : 'events'}/checkin?user_id=${
+                  member?.id
+                }&event_id=${event?.id}`}
+                alt="Ticket"
+                w="full"
+              />
+              <div className="no-print">
+                <Flex direction="column">
+                  <Flex
+                    alignContent="center"
+                    justifyContent="center"
+                    align="center"
+                    bg="gray.200"
+                    color="white"
+                    mt={6}
+                    px={2}
+                    py={1}
+                    cursor="pointer"
+                    _hover={{ bg: 'primary' }}
+                    rounded="lg"
+                    onClick={() => setShowTicket(!showTicket)}
+                  >
+                    <Text color="white">{showTicket ? 'Hide' : 'Show'} Ticket</Text>
+                  </Flex>
+                  <SlideFade in={showTicket} unmountOnExit>
+                    <Text textAlign="center">
+                      <strong>Important:</strong> Present this ticket to the host when you arrive
+                      for access.
+                    </Text>
+                    <Image
+                      rounded="xl"
+                      shadow="lg"
+                      maxW="md"
+                      mt={4}
+                      mx="auto"
+                      src={`/api/code/api/${
+                        event.invite_only ? 'invite' : 'events'
+                      }/checkin?user_id=${member?.id}&event_id=${event?.id}`}
+                      alt="Ticket"
+                      w="full"
+                    />
+                  </SlideFade>
+                </Flex>
+              </div>
+            </>
           )}
         </>
       </EventCard>

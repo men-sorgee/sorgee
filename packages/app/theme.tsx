@@ -216,6 +216,20 @@ const custom: Partial<ChakraTheme> = {
         p: {
           my: 2,
         },
+        '.print-only': {
+          display: 'none',
+        },
+        '@media print': {
+          '.print-only': {
+            display: 'inherit',
+          },
+          '.no-print': {
+            display: 'none',
+          },
+          'header, footer': {
+            display: 'none!important',
+          },
+        },
       }
     },
   },

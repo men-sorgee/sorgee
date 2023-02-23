@@ -4,7 +4,11 @@ import Page from 'components/Page'
 import {
   Card,
   CardHeader,
-  Flex,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   LinkBox,
   LinkOverlay,
   List,
@@ -17,7 +21,8 @@ import { getServerSession } from 'next-auth/next'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { getEventDate } from 'lib/utils'
-
+import { EventCard } from 'components/controls'
+import { useUser } from 'hooks'
 type Props = {
   events: (GroupEvent & { moment?: any })[]
 }
@@ -31,7 +36,7 @@ export async function getServerSideProps(
   if (!session || !session.user || level < MemberLevel.staff) {
     return {
       redirect: {
-        destination: '/',
+        destination: '/events',
         permanent: false,
       },
     }
@@ -42,47 +47,67 @@ export async function getServerSideProps(
   return { props: { events } }
 }
 
-export default function EventList({ events: eventList }: Props) {
-  const [events, setEvents] = useState(undefined)
-
-  useEffect(() => {
-    if (events == undefined && eventList != undefined) {
-      Promise.all(
-        eventList.map(async (eventData) => {
-          eventData.moment = await getEventDate(eventData.datetime)
-          return eventData
-        })
-      ).then((events) => setEvents(events))
-    }
-  }, [eventList, events])
+export default function AdminEventList({ events }: Props) {
+  const { loading } = useUser()
+  const eventList =
+    events?.map((event) => {
+      const date = new Date(new Date(event.datetime).toDateString())
+      return {
+        ...event,
+        date,
+      }
+    }) || []
+  const today = new Date(new Date().toDateString())
+  const upcoming = eventList?.filter((event) => event.date > today)
+  const past = eventList?.filter((event) => event.date < today)
+  const activeEvent = eventList?.find((event) => Number(event.date) == Number(today))
 
   return (
-    <Page title="Events" requireAuth={true}>
-      <List w="full">
-        {events?.map((event) => (
-          <ListItem key={event.id} w="full">
-            <LinkBox>
-              <Card mb={2} p={0} bg={event.status == 'occurred' ? 'gray.100' : 'white'}>
-                <CardHeader p={0} w="full">
-                  <SimpleGrid columns={4} spacing={1} h="full" w="full">
-                    <GridItem as="h4" colSpan={3} p={2}>
-                      <LinkOverlay as={Link} href={`/event/${event.id}`}>
-                        {event.name}
-                      </LinkOverlay>
-                    </GridItem>
-                    <Heading as="h5" bg={'primary.500'} color={'white'} textAlign="center" p={2}>
-                      {event.moment.month}
-                      <br />
-                      {event.moment.date}
-                      <br />
-                    </Heading>
-                  </SimpleGrid>
-                </CardHeader>
-              </Card>
-            </LinkBox>
-          </ListItem>
-        ))}
-      </List>
+    <Page title="Event Admin" requireAuth={true} loading={loading}>
+      <Tabs isFitted m={0}>
+        <TabList>
+          {activeEvent && <Tab>Active</Tab>}
+          <Tab>Upcoming</Tab>
+          <Tab>Past</Tab>
+        </TabList>
+        <TabPanels>
+          {activeEvent && (
+            <TabPanel p={0}>
+              <LinkBox cursor="pointer" my={4}>
+                <EventCard event={activeEvent} showDescription={false}>
+                  <LinkOverlay as={Link} href={`/event/${activeEvent.id}`}>
+                    View Event
+                  </LinkOverlay>
+                </EventCard>
+              </LinkBox>
+            </TabPanel>
+          )}
+          <TabPanel p={0}>
+            <Heading mb={4}>Upcoming Events</Heading>
+            {upcoming.map((event) => (
+              <LinkBox key={event.id} cursor="pointer" mb={4}>
+                <EventCard event={event} showDescription={false}>
+                  <LinkOverlay as={Link} href={`/event/${event.id}`}>
+                    View Event
+                  </LinkOverlay>
+                </EventCard>
+              </LinkBox>
+            ))}
+          </TabPanel>
+          <TabPanel p={0}>
+            <Heading mb={4}>Past Events</Heading>
+            {past.map((event) => (
+              <LinkBox key={event.id} cursor="pointer" mb={4}>
+                <EventCard event={event} showDescription={false}>
+                  <LinkOverlay as={Link} href={`/event/${event.id}`}>
+                    View Event
+                  </LinkOverlay>
+                </EventCard>
+              </LinkBox>
+            ))}
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </Page>
   )
 }

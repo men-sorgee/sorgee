@@ -28,6 +28,9 @@ export const useUserEvents = (authenticated: boolean): InvitesResults => {
   const upComing = ['scheduled', 'planned']
   const attending = ['confirmed', 'maybe']
 
+  if (invites == null)
+    return { invitations: [], upcoming: [], past: [], loading: true, reload: () => {} }
+
   const invitations = invites?.filter(
     (i) => !attending.includes(i.rsvp) && upComing.includes(i.events_id.status)
   )

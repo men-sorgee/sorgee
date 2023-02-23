@@ -21,6 +21,8 @@ import { EventCard, EventRSVPCard } from 'components/controls'
 type Props = {}
 
 function EventPage({}: Props) {
+  const today = new Date(new Date().toDateString())
+
   const [allowed, setAllowed] = useState(false)
   const { member, loading, level } = useUser()
   const { invitations, upcoming, past, reload } = useUserEvents(member != null)
@@ -35,28 +37,48 @@ function EventPage({}: Props) {
     reload()
   }, [reload])
 
+  const activeEvent = upcoming.find(
+    (invite) =>
+      new Date(new Date(invite.events_id.datetime).toDateString()).getTime() == today.getTime()
+  )
+
   return (
     <Page loading={loading} title="Your Events" description="Upcoming events." requireAuth={true}>
       {allowed ? (
         <>
           <Tabs isFitted m={0}>
-            <TabList>
-              <Tab>Upcoming</Tab>
-              <Tab>
-                Invitations
-                {invitations.length > 0 && (
-                  <Badge ml={1} bg="red.500" rounded="full" px={2} py={0.5} color="white">
-                    {invitations.length}
-                  </Badge>
-                )}
-              </Tab>
-              <Tab>Past</Tab>
-            </TabList>
+            <div className="no-print">
+              <TabList>
+                {activeEvent && <Tab className="no-print">Active</Tab>}
+                <Tab className="no-print">Upcoming</Tab>
+                <Tab className="no-print">
+                  Invitations
+                  {invitations.length > 0 && (
+                    <Badge ml={1} bg="red.500" rounded="full" px={2} py={0.5} color="white">
+                      {invitations.length}
+                    </Badge>
+                  )}
+                </Tab>
+                <Tab className="no-print">Past</Tab>
+              </TabList>
+            </div>
             <TabPanels>
+              {activeEvent && (
+                <TabPanel p={0}>
+                  <Heading mb={4} className="no-print">
+                    Active Event
+                  </Heading>
+                  <EventRSVPCard member={member} event={activeEvent.events_id as GroupEvent} full />
+                </TabPanel>
+              )}
               <TabPanel p={0}>
                 <Heading mb={4}>Upcoming Events</Heading>
                 {(upcoming.length && (
-                  <Events list={upcoming} member={member} onChange={onEventsChange} />
+                  <Events
+                    list={upcoming.filter((e) => e != activeEvent)}
+                    member={member}
+                    onChange={onEventsChange}
+                  />
                 )) || (
                   <Box>
                     <Heading as="h3" size="md">
@@ -145,7 +167,6 @@ function Events({
             member={member}
             mb={4}
             onChange={onChange}
-            full
           />
         ))}
     </>

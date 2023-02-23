@@ -34,6 +34,7 @@ export default function ActionsNav({ children, ...props }: Props) {
 
   return (
     <Box
+      className="no-print"
       {...props}
       as="nav"
       color={'white'}

@@ -2,9 +2,9 @@ import { Alert, HStack, Flex, AlertIcon, Stat, StatLabel, StatNumber } from '@ch
 import { EventCard, LinkButton } from 'components/controls'
 import { MemberLevel, User, EventDetail } from 'lib/models'
 import { GetServerSidePropsResult, NextPageContext } from 'next'
-import { useUser } from '@/hooks/use-user'
 import Page from 'components/Page'
 import { useState } from 'react'
+import { useUser } from 'hooks'
 type Props = {
   event: EventDetail
   user?: User
@@ -37,8 +37,9 @@ export default function EventAdmin({ event, error }: { event: EventDetail; error
   const [fees] = useState(event.cost * event.paid_count)
   const isStaff = member && level >= MemberLevel.staff
   const isScheduled = event.status === 'scheduled'
+
   return (
-    <Page title="Event" loading={loading} requireAuth={true}>
+    <Page title={event?.name + ' Admin'} loading={loading} requireAuth={true}>
       {member && (
         <EventCard event={event}>
           <Flex direction="column" gap={4}>
@@ -80,19 +81,19 @@ export default function EventAdmin({ event, error }: { event: EventDetail; error
                 </>
               )}
             </HStack>
-            <HStack spacing={4}>
-              <LinkButton colorScheme="secondary" href="/event" my={4}>
-                Back to Events
-              </LinkButton>
-              {isStaff && isScheduled && (
-                <LinkButton colorScheme="primary" href="/member/scan" my={4}>
-                  Scan Invite
-                </LinkButton>
-              )}
-            </HStack>
           </Flex>
         </EventCard>
       )}
+      <HStack spacing={4}>
+        <LinkButton href="/event" my={4}>
+          Back to Events
+        </LinkButton>
+        {isStaff && isScheduled && (
+          <LinkButton colorScheme="primary" href="/member/scan" my={4}>
+            Scan Invite
+          </LinkButton>
+        )}
+      </HStack>
     </Page>
   )
 }

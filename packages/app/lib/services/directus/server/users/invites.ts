@@ -1,5 +1,5 @@
 import { getAdminClient } from '..'
-import { Invite, InviteRSVPType, EventUser, GroupEvent, EventDetail } from 'lib/models'
+import { Invite, InviteRSVPType, EventUser, GroupEvent, Location } from 'lib/models'
 
 export async function getInvite(inviteId: number): Promise<EventUser | null> {
   const client = await getAdminClient()
@@ -24,12 +24,22 @@ export async function findInvite(eventId: string, userId: string): Promise<Event
 
 export async function listInvites(user_id: string): Promise<EventUser[]> {
   const client = await getAdminClient()
-  const { data: invites } = await client.items('events_users').readByQuery({
+  const { data } = await client.items('events_users').readByQuery({
     filter: {
       users_id: { _eq: user_id },
       events_id: { status: { _in: ['planned', 'scheduled', 'occurred'] } },
     },
-    fields: ['*', 'events_id.*' as any],
+    fields: ['*', 'events_id.*' as any, 'events_id.location.*' as any],
+    sort: ['events_id.datetime' as any],
+  })
+
+  const invites = data.map((invite: EventUser) => {
+    const today = new Date(new Date().toDateString())
+    const event = invite.events_id as GroupEvent
+    const eventDate = new Date(new Date(event.datetime).toDateString())
+    if (today.getTime() != eventDate.getTime()) delete invite.events_id.location
+
+    return invite
   })
 
   return (invites || []) as EventUser[]
