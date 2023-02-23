@@ -81,7 +81,7 @@ export default function EventAdmin({ event, error }: { event: EventDetail; error
               )}
             </HStack>
             <HStack spacing={4}>
-              <LinkButton colorScheme="secondary" href="/events" my={4}>
+              <LinkButton colorScheme="secondary" href="/event" my={4}>
                 Back to Events
               </LinkButton>
               {isStaff && isScheduled && (
