@@ -22,7 +22,7 @@ export default function useMemberSearch(
   sort: string,
   query: Record<string, any> = {}
 ) {
-  const key = `/api/members?limit=${size}&offset=${size * page}&sort=${sort}&${new URLSearchParams(
+  const key = `/api/members?limit=${size}&page=${page}&sort=${sort}&${new URLSearchParams(
     query
   ).toString()}`
   const { data: response, error } = useSWR<ManyItems<Partial<Profile>>>(key, JsonFetcher)

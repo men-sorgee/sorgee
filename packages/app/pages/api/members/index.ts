@@ -12,11 +12,13 @@ import {
 } from 'lib/models'
 import { ManyItems } from '@directus/sdk'
 import { normalize } from 'lib/utils'
+
 type MemberSearch = SearchableMember & {
   offset?: number
   limit?: number
   sort: string
-  photos: boolean
+  photos?: boolean
+  online?: boolean
 }
 
 export default async function FindMembers(
@@ -26,23 +28,39 @@ export default async function FindMembers(
   try {
     const member = await withMember(req, res)
     const level = MemberLevel[member.user_type]
-    const {
-      offset = 0,
-      limit = 10,
-      sort = '-last_login',
-      ...props
-    } = req.query as Record<keyof MemberSearch, any>
+    const { page: p = 1, limit: l = 10, sort = '-last_login', online, photos, ...props } = req.query
+    const page = Number(p)
+    const limit = Number(l)
+
     const allowedLevels = getAllowedUsers(level)
     const params = normalize<SearchableMember>(props)
     const postQueryParams = {}
 
     const orSearchItems = []
     const andSearchItems = []
+
     andSearchItems.push({ show_profile: { _eq: true } })
+
+    if (photos) {
+      andSearchItems.push({
+        my_photos: {
+          is_public: { _eq: true },
+        },
+      })
+    }
+
+    if (online) {
+      andSearchItems.push({
+        presence: {
+          _eq: 'online',
+        },
+      })
+    }
 
     Object.keys(params).forEach((key) => {
       if (Array.isArray(member[key])) {
-        postQueryParams[key].push(params[key])
+        let filter = params[key]
+        postQueryParams[key] = Array.isArray(filter) ? filter : [filter]
       } else if (key == 'nickname') {
         let nickname = params[key].join('')
         orSearchItems.push({
@@ -102,20 +120,21 @@ export default async function FindMembers(
         'date_created',
       ],
       limit,
-      offset,
+      page,
       sort
     )
 
     if (Object.keys(postQueryParams).length > 0) {
       const filtered = results.data.filter((user) => {
         return Object.keys(postQueryParams).every((key) => {
-          return postQueryParams[key].some((i: string) => user[key].includes(i))
+          return postQueryParams[key].some((i: string) => user[key] && user[key].includes(i))
         })
       })
 
       results.meta.filter_count = filtered.length
       results.data = filtered
     }
+    results.meta.filter_count = results.data.length
 
     return res.status(200).json(ApiResponse(results))
   } catch (e) {

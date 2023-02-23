@@ -66,19 +66,20 @@ export async function findUser<T = Profile>(
   return user as T
 }
 
-export async function searchUsers<T = Member>(
+export async function searchUsers<T = User>(
   filter: FieldFilter<T>,
   fields: UserFields = memberFields,
   limit: number = 20,
-  offset: number = 0,
+  page: number = 1,
   sort: any
 ) {
   const adminClient = await getAdminClient()
+
   const results = await adminClient.items('users').readByQuery({
     filter,
     fields,
     limit,
-    offset,
+    page,
     meta: '*',
     sort,
   })

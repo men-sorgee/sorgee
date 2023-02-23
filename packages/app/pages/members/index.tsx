@@ -46,10 +46,16 @@ import { JsonFetcher } from 'lib/utils'
 import { useRouter } from 'next/router'
 import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
-import { FieldCheckboxes, FieldInput } from 'components/forms'
+import { FieldCheckboxes, FieldInput, FieldCheckbox } from 'components/forms'
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/outline'
 
-export type QueryParams = Record<keyof SearchableMember, string[]>
+export type QueryParams = Record<keyof SearchableMember, string[]> & {
+  online: boolean
+  photos: boolean
+  page: number
+  size: number
+  sort: string
+}
 
 export type PageProps = {
   fieldMap: FieldMap
@@ -60,7 +66,7 @@ export type PageProps = {
 export async function getServerSideProps(context: NextPageContext): Promise<{ props: PageProps }> {
   const { getFields } = await import('lib/services/directus/server')
   const fieldMap = await getFields('users')
-  const params = (context.query as QueryParams) || ({} as QueryParams)
+  const params = (context.query as unknown as QueryParams) || ({} as QueryParams)
   return {
     props: {
       fieldMap,
@@ -129,17 +135,23 @@ export default function MemberListPage(props: PageProps) {
       setDescription('View and find other men.')
       setTimeout(() => {
         topRef.current?.scrollIntoView({ behavior: 'smooth' })
-      }, 1)
-      setKey(`/api/members?limit=${size}&offset=${size * (page - 1)}&sort=${sort}${filter}`)
+      }, 1000)
+      setKey(`/api/members?limit=${size}&page=${page}&sort=${sort}${filter}`)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, setId, page, size, sort, query, loading, currentMember])
 
   const methods = useForm<QueryParams>({
     mode: 'onBlur',
-    defaultValues: { ...query, ...normalize<SearchableMember>(q) },
+    defaultValues: {
+      ...query,
+      ...normalize<SearchableMember>(q),
+      online: q.online ? true : undefined,
+      photos: q.photos ? true : undefined,
+    },
   })
 
+  console.log(key)
   const { data: response } = useSWR<ManyItems<Partial<SearchableMember>>>(key, JsonFetcher)
 
   useEffect(() => {
@@ -185,6 +197,7 @@ export default function MemberListPage(props: PageProps) {
           ref={topRef}
           onSubmit={methods.handleSubmit((d) => {
             let newQuery = pruneUndefined(d, (v) => v !== false) as QueryParams
+
             setQuery(newQuery)
             setPage(1)
           })}
@@ -307,6 +320,8 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
             <SimpleGrid columns={[1, 1, 2]} spacing={4} mb={4}>
               <FieldInput field="nickname" label="Nickname" />
               <FieldInput field="biography" label="Keywords" />
+              <FieldCheckbox field="online" label="Is Online" />
+              <FieldCheckbox field="photos" label="Has Photos" />
             </SimpleGrid>
             <SimpleGrid columns={1} spacing={4} mb={4}>
               <FieldCheckboxes
