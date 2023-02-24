@@ -51,20 +51,18 @@ const Page = ({
       justifyItems="stretch"
       {...props}
     >
-      <PullToRefresh onRefresh={() => window.location.reload()}>
-        <div className="no-print">
-          <Heading textAlign="center" as="h1" size="4xl" mb={4}>
-            {title}
-          </Heading>
-        </div>
-        {header}
-        {(loading && (
-          <Loading size="xl">
-            <h2>hold please</h2>
-          </Loading>
-        )) ||
-          children}
-      </PullToRefresh>
+      <div className="no-print">
+        <Heading textAlign="center" as="h1" size="4xl" mb={4}>
+          {title}
+        </Heading>
+      </div>
+      {header}
+      {(loading && (
+        <Loading size="xl">
+          <h2>hold please</h2>
+        </Loading>
+      )) ||
+        children}
     </Box>
   )
 }
