@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Flex, Box, Spacer, Slide, useDisclosure } from '@chakra-ui/react'
+import { Flex, Box, Slide, useDisclosure, Spacer } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import Header from './Header'
 import Meta from './Meta'
 import Footer from './Footer'
 import Actions from './Actions'
 import { useUser } from 'hooks/use-user'
+import Splash from './Splash'
 
 export const constrained = {
   maxW: ['full', 'lg', '2xl', '3xl', '4xl', '5xl'],
@@ -24,7 +25,6 @@ function Layout({
   const { authenticated } = useUser()
   const router = useRouter()
   const [path] = useState<string>(router?.asPath)
-
   const height = authenticated ? '160px' : '85px'
   const { isOpen, onOpen } = useDisclosure()
 
@@ -51,11 +51,11 @@ function Layout({
           <Footer />
           <Spacer h={height} />
         </Flex>
-
         <Slide in={isOpen} direction="bottom">
           <Actions />
         </Slide>
       </Flex>
+      <Splash />
     </>
   )
 }

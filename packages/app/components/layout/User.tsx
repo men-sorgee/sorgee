@@ -24,6 +24,8 @@ import {
   CameraIcon,
   MoonIcon,
   SunIcon,
+  DatabaseIcon,
+  AdjustmentsIcon,
 } from '@heroicons/react/outline'
 import { useUser, useSite } from 'hooks'
 import { useEffect } from 'react'
@@ -152,6 +154,16 @@ export default function UserMenu(_props: Props) {
                   <>
                     <MenuDivider />
                     <MenuItem
+                      icon={<DatabaseIcon color={'white'} width={'1.5rem'} />}
+                      bg="black"
+                      _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                      as={Link}
+                      target="_blank"
+                      href="https://admin.guysnheat.com"
+                    >
+                      Administration
+                    </MenuItem>
+                    <MenuItem
                       icon={<CalendarIcon color={'white'} width={'1.5rem'} />}
                       bg="black"
                       _hover={{ bg: 'gray.400', textDecoration: 'none' }}
@@ -168,6 +180,15 @@ export default function UserMenu(_props: Props) {
                       href="/member/scan"
                     >
                       Scan
+                    </MenuItem>
+                    <MenuItem
+                      icon={<AdjustmentsIcon color={'white'} width={'1.5rem'} />}
+                      bg="black"
+                      _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                      as={Link}
+                      href="/styles"
+                    >
+                      Styles
                     </MenuItem>
                   </>
                 )}

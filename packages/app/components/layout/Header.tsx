@@ -133,7 +133,7 @@ function Header({ children, ...props }: Props) {
             variant="primary"
             aria-label="Toggle Navigation"
           />
-          <Flex flex={1} justify="center" ml={8}>
+          <Flex flex={1} justify="center">
             <Logo width="20px" />
           </Flex>
           <User />

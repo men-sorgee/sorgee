@@ -8,7 +8,7 @@ import {
   Text,
   Flex,
   Button,
-  Icon,
+  Image,
   useColorModeValue,
   createIcon,
   chakra,
@@ -44,24 +44,11 @@ export const SubscribeBox = chakra(({ ...props }) => {
 
   return (
     <>
-      <Stack
-        direction={['column', 'row']}
-        boxShadow={'2xl'}
-        rounded={'xl'}
-        p={3}
-        px={6}
-        bg={bg}
-        color="white"
-        align="center"
-        {...props}
-      >
-        <Flex align="center" gap={2}>
-          <Icon as={NotificationIcon} w={24} h={24} />
-        </Flex>
-        <Flex align="center">
+      <Stack boxShadow={'2xl'} rounded={'xl'} p={6} bg={bg} color="white" {...props}>
+        <Flex justify="space-between" gap={4}>
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <Flex direction="column" w="100%" justifyItems="stretch">
+              <Flex direction="column" w="100%" justifyItems="stretch" gap={4}>
                 <FieldInput
                   field="name"
                   registerOptions={{
@@ -100,7 +87,6 @@ export const SubscribeBox = chakra(({ ...props }) => {
                   type="submit"
                   size={'md'}
                   w={['full', 'full', '50%', 'full']}
-                  bg="primary.500"
                   color={'white'}
                 >
                   Subscribe
@@ -111,6 +97,7 @@ export const SubscribeBox = chakra(({ ...props }) => {
               </Flex>
             </form>
           </FormProvider>
+          <Image w="40%" rounded="lg" src="/images/guys-hugging-ai.jpg" alt="guys hugging" />
         </Flex>
       </Stack>
     </>
