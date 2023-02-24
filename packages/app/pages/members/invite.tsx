@@ -1,9 +1,9 @@
 import { useUser } from '@/hooks/use-user'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
-import { copyTextToClipboard, postJSON } from 'lib/utils'
+import { postJSON } from 'lib/utils'
 import { MemberLevel, UserInvite, FieldOptions, InviteLink, UserType } from 'lib/models'
-import { HStack, Button, Box, Text, VStack, useColorModeValue, useToast } from '@chakra-ui/react'
+import { HStack, Button, Box, Text, VStack, useClipboard, useToast } from '@chakra-ui/react'
 import { FieldInput, FieldSelect } from 'components/forms'
 import Page from 'components/Page'
 import { GetServerSideProps } from 'next'
@@ -37,6 +37,7 @@ function Invite({ userTypeOptions }: PageProps) {
 function Form({ userTypeOptions }: PageProps) {
   const { loading, member } = useUser()
   const toast = useToast()
+  const { setValue, hasCopied } = useClipboard('')
   const [link, setLink] = useState<string>()
   const methods = useForm<InviteLink & { t: MemberLevel }>({
     mode: 'onBlur',
@@ -58,7 +59,7 @@ function Form({ userTypeOptions }: PageProps) {
     e.preventDefault()
     const invite = getLink(e.target.dataset)
     if (!invite) return
-    copyTextToClipboard(invite)
+    setValue(invite)
     toast({
       title: 'Copied!',
       description: 'The invite link was copied to your clipboard.',
@@ -102,7 +103,7 @@ function Form({ userTypeOptions }: PageProps) {
     <>
       <Text mb={10}>
         {member?.first_name || 'Brother'}, enter your friend&apos;s email address and we will create
-        a special link for you to share.
+        a link that will allow them to apply to join.
       </Text>
 
       <FormProvider {...methods}>
@@ -134,7 +135,7 @@ function Form({ userTypeOptions }: PageProps) {
             </Button>
 
             <Button disabled={!email.isTouched} colorScheme="primary" onClick={onCopyClick}>
-              Copy Link
+              {hasCopied ? 'Copied!' : 'Copy'}
             </Button>
           </HStack>
         </form>
