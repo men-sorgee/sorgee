@@ -34,7 +34,7 @@ export const PullToRefresh = ({
   const handleTouchEnd = () => {
     if (startY !== null) {
       containerRef.current.style.transform = ''
-      if (containerRef.current.getBoundingClientRect().top > 50) {
+      if (containerRef.current.getBoundingClientRect().top > 100) {
         setIsRefreshing(true)
         wrapRefresh().then(() => setIsRefreshing(false))
       }
