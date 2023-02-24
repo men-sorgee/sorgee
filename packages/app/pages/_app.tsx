@@ -2,12 +2,13 @@ import { ErrorBoundary } from 'components/ErrorBoundary'
 import { AppProps } from 'next/app'
 import { SessionProvider } from 'next-auth/react'
 import { ChakraProvider, cookieStorageManager, extendTheme } from '@chakra-ui/react'
+
 import Layout from 'components/layout/index'
 import { theme } from '../theme'
 import { Manrope, Arvo, Roboto_Mono } from '@next/font/google'
 import { useRouter } from 'next/router'
 import { NotificationsProvider, UserProvider, MetaContextProvider } from 'hooks'
-import { Session } from 'next-auth'
+
 const heading = Arvo({
   variable: '--heading-font',
   weight: ['400', '700'],

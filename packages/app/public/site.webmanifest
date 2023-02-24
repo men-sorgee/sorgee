@@ -1,14 +1,17 @@
 {
-  "name": "Guys-N-Heat",
-  "short_name": "Guys-N-Heat",
+  "name": "GuysNHeat",
+  "short_name": "GuysNHeat",
   "icons": [
     {
-      "src": "/android-icon-192x192.png",
+      "src": "/icons/android-icon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
   "theme_color": "#7C3AED",
-  "background_color": "#000",
-  "display": "standalone"
+  "background_color": "#000000",
+  "display": "standalone",
+  "start_url": "/",
+  "orientation": "portrait"
 }

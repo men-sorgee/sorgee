@@ -172,10 +172,11 @@ export default function ThreeTierPricing() {
                 <Check />
               </Td>
             </Tr>
+
             <Tr>
               <Th>
                 <Text as="strong" color={useColorModeValue('gray.500', 'white')}>
-                  <em>Live Location *</em>
+                  <em>Live Chat *</em>
                 </Text>
               </Th>
               <Td></Td>
@@ -189,7 +190,7 @@ export default function ThreeTierPricing() {
             <Tr>
               <Th>
                 <Text as="strong" color={useColorModeValue('gray.500', 'white')}>
-                  <em>Live Chat *</em>
+                  <em>Live Location *</em>
                 </Text>
               </Th>
               <Td></Td>

@@ -1,4 +1,8 @@
 const { PHASE_DEVELOPMENT_SERVER } = require( 'next/constants' );
+const withPWA = require( 'next-pwa' )( {
+  dest: 'public'
+} );
+
 
 const getConfig = ( phase ) => {
   const dev = PHASE_DEVELOPMENT_SERVER === phase;
@@ -59,4 +63,4 @@ const getConfig = ( phase ) => {
   return nextConfig;
 };
 
-module.exports = getConfig;
+module.exports = withPWA( getConfig );

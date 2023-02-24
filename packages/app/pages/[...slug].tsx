@@ -6,7 +6,7 @@ import { listActivePages } from 'lib/services/directus/static'
 import { Page as PageModel } from 'lib/models'
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next'
 import { ParsedUrlQuery } from 'querystring'
-import { Stack, HStack } from '@chakra-ui/react'
+import { Flex, HStack } from '@chakra-ui/react'
 import { useSite } from '../hooks/use-site'
 import NotFound from '../components/NotFound'
 
@@ -73,9 +73,9 @@ export default function DynamicPage({ page }: Props) {
   }
   return (
     <Page id={id} title={title} description={description} image={image?.id}>
-      <Stack as="section" spacing={4} maxW={['lg', 'xl', '2xl']} w="full">
+      <Flex direction="column" as="section" gap={4} mx="auto">
         <Markdown content={markdown} />
-      </Stack>
+      </Flex>
       <HStack>
         {!site.invite_only && (
           <LinkButton my={8} colorScheme="accent" size="lg" href="/apply">
