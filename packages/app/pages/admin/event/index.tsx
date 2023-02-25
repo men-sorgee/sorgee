@@ -28,7 +28,7 @@ export async function getServerSideProps(
   if (!session || !session.user || level < MemberLevel.staff) {
     return {
       redirect: {
-        destination: '/events',
+        destination: '/calendar',
         permanent: false,
       },
     }
@@ -67,7 +67,7 @@ export default function AdminEventList({ events }: Props) {
             <TabPanel p={0}>
               <LinkBox cursor="pointer" my={4}>
                 <EventCard event={activeEvent} showDescription={false}>
-                  <LinkOverlay as={Link} href={`/event/${activeEvent.id}`}>
+                  <LinkOverlay as={Link} href={`/admin/event/${activeEvent.id}`}>
                     View Event
                   </LinkOverlay>
                 </EventCard>
@@ -79,7 +79,7 @@ export default function AdminEventList({ events }: Props) {
             {upcoming.map((event) => (
               <LinkBox key={event.id} cursor="pointer" mb={4}>
                 <EventCard event={event} showDescription={false}>
-                  <LinkOverlay as={Link} href={`/event/${event.id}`}>
+                  <LinkOverlay as={Link} href={`/admin/event/${event.id}`}>
                     View Event
                   </LinkOverlay>
                 </EventCard>
@@ -91,7 +91,7 @@ export default function AdminEventList({ events }: Props) {
             {past.map((event) => (
               <LinkBox key={event.id} cursor="pointer" mb={4}>
                 <EventCard event={event} showDescription={false}>
-                  <LinkOverlay as={Link} href={`/event/${event.id}`}>
+                  <LinkOverlay as={Link} href={`/admin/event/${event.id}`}>
                     View Event
                   </LinkOverlay>
                 </EventCard>

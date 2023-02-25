@@ -71,7 +71,9 @@ export default function InviteAdmin({ event, invite, user }: Props) {
   useEffect(() => {
     if (!loading && member) {
       if (event && level < MemberLevel.staff) {
-        router.push(`/event/${event?.id}?error=You+do+not+have+permission+to+view+admin+events.`)
+        router.push(
+          `/admin/event/${event?.id}?error=You+do+not+have+permission+to+view+admin+events.`
+        )
       }
     }
   }, [event, level, loading, member, router])
@@ -124,7 +126,7 @@ export default function InviteAdmin({ event, invite, user }: Props) {
           duration: 2000,
           isClosable: true,
           onCloseComplete: () => {
-            router.push('/event/' + event.id)
+            router.push('/admin/event/' + event.id)
             setWorking(false)
           },
         })
@@ -258,7 +260,7 @@ export default function InviteAdmin({ event, invite, user }: Props) {
               </Box>
             )}
             <HStack spacing={4}>
-              <LinkButton colorScheme="gray" href={'/event/' + event?.id} my={4}>
+              <LinkButton colorScheme="gray" href={'/admin/event/' + event?.id} my={4}>
                 Return to Event
               </LinkButton>
               <LinkButton colorScheme="primary" href="/member/scan" my={4}>
