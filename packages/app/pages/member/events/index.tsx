@@ -18,7 +18,7 @@ import Page from 'components/Page'
 import { useUser, useUserEvents } from 'hooks'
 import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
-import { EventUser, Member, GroupEvent } from 'lib/models'
+import { EventUser, Member, GroupEvent, MemberLevel } from 'lib/models'
 import { EventCard, EventRSVPCard, LinkButton, RateItem } from 'components/controls'
 
 type Props = {}
@@ -32,7 +32,7 @@ function EventPage({}: Props) {
 
   useEffect(() => {
     if (!loading && member && !allowed) {
-      setAllowed(level > 2)
+      setAllowed(level > MemberLevel.pledge)
     }
   }, [member, level, loading, allowed])
 
@@ -83,6 +83,7 @@ function EventPage({}: Props) {
                   onChange={onEventsChange}
                   name="Upcoming Events"
                   text="Check back later for upcoming events."
+                  showLink
                 />
               </TabPanel>
               <TabPanel p={0}>
@@ -123,12 +124,14 @@ function Events({
   name,
   text,
   onChange,
+  showLink = false,
 }: {
   list: EventUser[]
   member: Member
   name: string
   text?: string
   onChange: () => void
+  showLink?: boolean
 }) {
   if (list.length === 0) {
     return (
@@ -140,17 +143,23 @@ function Events({
       </Box>
     )
   }
-
+  const items = list.map((invite) => {
+    return {
+      invite: invite as EventUser,
+      event: invite.events_id as GroupEvent,
+    }
+  })
   return (
     <>
-      {list.map((invite) => (
+      {items.map(({ invite, event }) => (
         <EventRSVPCard
           key={invite.id}
           event={invite.events_id as GroupEvent}
           invite={invite}
           member={member}
-          mb={4}
+          mb={8}
           onChange={onChange}
+          href={showLink ? `/member/events/${event.id}` : null}
         />
       ))}
     </>

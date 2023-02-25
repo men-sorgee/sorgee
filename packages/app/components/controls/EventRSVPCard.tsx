@@ -34,6 +34,7 @@ type RSVPProps = CardProps & {
   event: GroupEvent
   invite?: EventUser
   full?: boolean
+  href?: string
   onChange?: () => void
 }
 
@@ -43,6 +44,7 @@ export const EventRSVPCard = ({
   invite: i,
   full = false,
   onChange,
+  href,
   ...props
 }: RSVPProps) => {
   const today = new Date(new Date().toDateString())
@@ -172,6 +174,7 @@ export const EventRSVPCard = ({
         showDescription={rsvp !== 'confirmed'}
         {...props}
         showLocation={rsvp == 'confirmed' && isToday}
+        href={href}
       >
         <>
           <form className="no-print" onSubmit={handleSubmit(respond)}>

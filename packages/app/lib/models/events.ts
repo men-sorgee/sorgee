@@ -1,18 +1,10 @@
 import { EventUser, GroupEvent } from './directus'
-import { MemberLevel } from './users'
+import { MemberLevel, SearchableMember } from './users'
 
 export type UserInvite = {
   e: string
   t: MemberLevel
   v: string
-}
-
-export type EventDetail = GroupEvent & {
-  invited_count: number
-  confirmed_count: number
-  maybe_count: number
-  attended_count: number
-  paid_count: number
 }
 
 export enum InviteRSVPType {

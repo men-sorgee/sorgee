@@ -44,46 +44,54 @@ export default function ActionsNav({ children, ...props }: Props) {
       bg={bgColor}
       borderTop="1px solid"
       borderTopColor={borderColor}
+      position="fixed"
+      zIndex="fixed"
+      bottom={0}
     >
       <Flex justify="center" w="full" gap={10} p={4} {...constrained}>
         <Link href="/members" as={NextLink}>
           <IconButton
             variant="primary"
             size="lg"
+            zIndex="fixed"
             icon={<UserGroupIcon />}
             color={path.startsWith('/members') ? 'accent.500' : 'white'}
             aria-label={'View Members'}
             title="View Members"
           />
         </Link>
-        {events.length > 0 && (
-          <Link href="/events" as={NextLink}>
-            <IconButton
-              variant="primary"
-              size="lg"
-              icon={<CalendarIcon />}
-              color={path.startsWith('/events') ? 'accent.500' : 'white'}
-              aria-label={'Events'}
-              title="Events"
-            />
 
+        <Link href="/calendar" as={NextLink}>
+          <IconButton
+            variant="primary"
+            zIndex="fixed"
+            size="lg"
+            icon={<CalendarIcon />}
+            color={path.startsWith('/calendar') ? 'accent.500' : 'white'}
+            aria-label={'Calendar'}
+            title="Calendar"
+          />
+          {events.length > 0 && (
             <Badge
               ml={-4}
-              zIndex={2}
+              zIndex="overlay"
               position="absolute"
               bg="accent.500"
               rounded="full"
               px={2}
               py={0.5}
               color="white"
+              title="Calendar Events"
             >
               {events.length}
             </Badge>
-          </Link>
-        )}
+          )}
+        </Link>
+
         <Link href="/member/events" as={NextLink}>
           <IconButton
             variant="primary"
+            zIndex="fixed"
             size="lg"
             icon={<InboxIcon />}
             color={path.startsWith('/member/events') ? 'accent.500' : 'white'}
@@ -93,7 +101,7 @@ export default function ActionsNav({ children, ...props }: Props) {
           {invitations.length > 0 && (
             <Badge
               ml={-4}
-              zIndex={2}
+              zIndex="overlay"
               position="absolute"
               bg="accent.500"
               rounded="full"

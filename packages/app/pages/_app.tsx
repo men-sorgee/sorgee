@@ -1,4 +1,3 @@
-import { ErrorBoundary } from 'components/ErrorBoundary'
 import { AppProps } from 'next/app'
 import { SessionProvider } from 'next-auth/react'
 import { ChakraProvider, cookieStorageManager, extendTheme } from '@chakra-ui/react'
@@ -48,11 +47,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
           <UserProvider>
             <NotificationsProvider>
-              <ErrorBoundary>
-                <Layout fonts={[heading.variable, body.variable, mono.variable]}>
-                  <Component key={router.asPath} {...pageProps} />
-                </Layout>
-              </ErrorBoundary>
+              <Layout fonts={[heading.variable, body.variable, mono.variable]}>
+                <Component key={router.asPath} {...pageProps} />
+              </Layout>
             </NotificationsProvider>
           </UserProvider>
         </ChakraProvider>

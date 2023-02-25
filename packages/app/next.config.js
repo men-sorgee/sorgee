@@ -1,11 +1,13 @@
 const { PHASE_DEVELOPMENT_SERVER } = require( 'next/constants' );
-const withPWA = require( 'next-pwa' )( {
-  dest: 'public'
-} );
 
+const withPWA = require( 'next-pwa' )( {
+  dest: 'public',
+  disable: process.env.PWA !== 'true',
+} );
 
 const getConfig = ( phase ) => {
   const dev = PHASE_DEVELOPMENT_SERVER === phase;
+
   /**
    * @type {import('next').NextConfig}
    */
@@ -26,6 +28,14 @@ const getConfig = ( phase ) => {
         'raw.githubusercontent.com'
       ],
 
+    },
+    async rewrites() {
+      return [
+        {
+          source: '/api/unsplash/:path*',
+          destination: `https://api.unsplash.com/photos?client_id=${ process.env.API_KEY_UNSPLASH }`
+        }
+      ];
     },
     async redirects() {
       return [

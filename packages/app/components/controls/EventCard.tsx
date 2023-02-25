@@ -12,6 +12,10 @@ import {
   LinkBox,
   LinkOverlay,
   Icon,
+  HStack,
+  Stat,
+  StatLabel,
+  StatNumber,
 } from '@chakra-ui/react'
 import { Markdown } from './Markdown'
 import { GroupEvent, Location } from 'lib/models'
@@ -22,7 +26,8 @@ type EventCardProps = CardProps & {
   showDescription?: boolean
   showLocation?: boolean
   children?: ReactNode | ReactNode[]
-  event: GroupEvent
+  event: Partial<GroupEvent>
+  href?: string
 }
 
 export const EventCard = ({
@@ -30,6 +35,7 @@ export const EventCard = ({
   showDescription = true,
   showLocation = false,
   children,
+  href,
   ...props
 }: EventCardProps) => {
   const [eventDate, setEventDate] = useState<{
@@ -52,51 +58,64 @@ export const EventCard = ({
   const location = event.location as Location
   return (
     <Card p={0} w="full" boxShadow="lg" rounded="md" {...props} _print={{ shadow: 'none' }}>
-      <CardHeader p={0}>
-        <Flex direction="row" alignItems="stretch" alignContent="center" gap={0}>
-          <Heading
-            borderRadius="5px 0 0 0"
-            bg="primary.400"
-            as="h3"
-            size="xl"
-            color="white!important"
-            textAlign="center"
-            w="75%"
-            m={0}
-            p={4}
-          >
-            {event.name}
-          </Heading>
+      <LinkBox>
+        <CardHeader p={0}>
+          <Flex direction="row" alignItems="stretch" alignContent="middle" gap={0}>
+            <Heading
+              borderRadius="5px 0 0 0"
+              bg="primary.400"
+              as="h3"
+              size="xl"
+              color="white!important"
+              textAlign="center"
+              w="75%"
+              m={0}
+              p={4}
+            >
+              {event.name}
+            </Heading>
 
-          <Heading
-            as="h4"
-            bg="primary.700"
-            borderRadius="0 5px 0  0"
-            m={0}
-            w="25%"
-            p={4}
-            textAlign="center"
-            justifyContent="middle"
-            color="white!important"
-            fontSize={['xl', '3xl']}
-          >
-            {eventDate?.month.toUpperCase()}
-            <br />
-            <Text size="4xl"> {eventDate?.date}</Text>
-          </Heading>
-        </Flex>
-      </CardHeader>
+            <Heading
+              as="h4"
+              bg="primary.700"
+              borderRadius="0 5px 0  0"
+              m={0}
+              w="25%"
+              p={4}
+              textAlign="center"
+              justifyContent="middle"
+              color="white!important"
+              fontSize={['xl', '3xl']}
+            >
+              {eventDate?.month.toUpperCase()}
+              <br />
+              <Text size="4xl"> {eventDate?.date}</Text>
+            </Heading>
+            {href && <LinkOverlay href={href} />}
+          </Flex>
+        </CardHeader>
+      </LinkBox>
       {isScheduled && (
         <CardBody w="full">
-          <Heading as="h5" size="md" textTransform="uppercase">
-            <span className="no-print">
-              Event Type: {event.invite_only ? 'Private ' : 'Public '} {capitalCase(event.type)}
-            </span>
-            <br />
-            Door Fee: ${event.cost}
-            <br />
-            Event Time: {eventDate?.time}
-          </Heading>
+          <HStack spacing={4} mb={4} align="start">
+            <Stat>
+              <StatLabel>Event Type</StatLabel>
+              <StatNumber>{capitalCase(event.type)}</StatNumber>
+            </Stat>
+            <Stat>
+              <StatLabel>Start Time</StatLabel>
+              <StatNumber>{eventDate?.time}</StatNumber>
+            </Stat>
+            <Stat>
+              <StatLabel>Invite Type</StatLabel>
+              <StatNumber>{event.invite_only ? 'Private ' : 'Public '}</StatNumber>
+            </Stat>
+            <Stat>
+              <StatLabel>Fee</StatLabel>
+              <StatNumber>${event.cost}</StatNumber>
+            </Stat>
+          </HStack>
+
           {showDescription && <Markdown content={event.description} />}
           {showLocation && location && (
             <>

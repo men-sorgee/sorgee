@@ -52,7 +52,7 @@ const Page = ({
       {...props}
     >
       <div className="no-print">
-        <Heading textAlign="center" as="h1" size="4xl" mb={4}>
+        <Heading textAlign="center" as="h1" size="4xl" mb={8}>
           {title}
         </Heading>
       </div>

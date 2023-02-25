@@ -21,9 +21,15 @@ export const useUserEvents = (authenticated: boolean): InvitesResults => {
   } = useSWR<EventUser[], Error>(`/api/member/events`, JsonFetcher, {
     refreshWhenHidden: false,
     refreshWhenOffline: false,
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+    refreshInterval: 1000 * 60 * 10,
     isPaused: () => !authenticated,
     fallbackData: [],
   })
+
+  if (!authenticated)
+    return { invitations: [], upcoming: [], past: [], loading: false, reload: () => {} }
 
   const upComing = ['scheduled', 'planned']
   const attending = ['confirmed', 'maybe']

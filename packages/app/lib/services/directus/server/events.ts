@@ -1,5 +1,14 @@
 import { getAdminClient } from '.'
-import { GroupEvent, EventDetail, EventUser, UserType, InviteRSVPType } from 'lib/models'
+import {
+  GroupEvent,
+  EventDetail,
+  EventUser,
+  UserType,
+  InviteRSVPType,
+  User,
+  SearchableMember,
+  EventStatusType,
+} from 'lib/models'
 
 export async function listUpcomingEvents(user_type: UserType): Promise<GroupEvent[]> {
   const client = await getAdminClient()
@@ -44,20 +53,49 @@ export async function registerForEvent(
   return invite as unknown as EventUser
 }
 
-export async function getEvent(id: string): Promise<EventDetail> {
+export async function getEvent(id: string): Promise<GroupEvent> {
+  const client = await getAdminClient()
+  const event: GroupEvent = (await client.items('events').readOne(id)) as any as GroupEvent
+  if (!event) return null
+  return event as GroupEvent
+}
+
+export async function getEventDetail(id: string): Promise<EventDetail> {
   const client = await getAdminClient()
   const event: GroupEvent = await client
     .items('events')
-    .readOne(id, { fields: ['*', 'users.*' as any] })
-  const { users: eventUsers, ...eventData } = event
-  const users = (eventUsers as EventUser[]) || []
-  return {
-    ...eventData,
-    users,
-    invited_count: users.length,
-    confirmed_count: users.filter((u) => u.rsvp === 'confirmed').length,
-    maybe_count: users.filter((u) => u.rsvp === 'maybe').length,
-    attended_count: users.filter((u) => u.attended).length,
-    paid_count: users.filter((u) => u.paid).length,
+    .readOne(id, { fields: ['*', 'users.*' as any, , 'users.users_ud.*' as any] })
+  const {
+    datetime,
+    name,
+    description,
+    status,
+    type,
+    visibility,
+    cost,
+    users: eventUsers,
+    invite_only,
+  } = event
+  const attendance = (eventUsers as EventUser[]) || []
+  const detail: EventDetail = {
+    id,
+    name,
+    description,
+    datetime,
+    status: status as EventStatusType,
+    type,
+    visibility,
+    cost,
+    attendance,
+    invite_only,
+    stats: {
+      invited_count: attendance.length,
+      confirmed_count: attendance.filter((u) => u.rsvp === 'confirmed').length,
+      maybe_count: attendance.filter((u) => u.rsvp === 'maybe').length,
+      attended_count: attendance.filter((u) => u.attended).length,
+      paid_count: attendance.filter((u) => u.paid).length,
+    },
+    members: attendance.map((u) => u.users_id as SearchableMember),
   }
+  return detail
 }

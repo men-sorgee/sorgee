@@ -74,9 +74,14 @@ export default function DynamicPage({ page }: Props) {
   return (
     <Page id={id} title={title} description={description} image={image?.id}>
       <Flex direction="column" as="section" gap={4} mx="auto">
+        <>
+          {content.map((s: any, i: Key) => (
+            <Section key={i} content={s} />
+          ))}
+        </>
         <Markdown content={markdown} />
       </Flex>
-      <HStack>
+      <HStack spacing={8}>
         {!site.invite_only && (
           <LinkButton my={8} colorScheme="accent" size="lg" href="/apply">
             Get Started
@@ -88,12 +93,6 @@ export default function DynamicPage({ page }: Props) {
           </LinkButton>
         )}
       </HStack>
-      <>
-        {content.map((s: any, i: Key) => (
-          <Section key={i} content={s} />
-        ))}
-      </>
-      <SubscribeBox />
     </Page>
   )
 }

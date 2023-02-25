@@ -44,13 +44,8 @@ const get_page = `query getPage($id: ID!) {
 }
 ` // require('./queries/get_page.gql');
 export async function getPageContentById(id: string) {
-  let page =
-    cachedPages.size > 0 ? Array.from(cachedPages.values()).find((page) => page.id === id) : null
-  if (page) return page
   return getPageContent(get_page, { id })
 }
-
-const cachedPages = new Map<string, Page>()
 
 const find_page = `query findPage($slug: String) {
   page: page(filter: { slug: { _eq: $slug } }) {
@@ -96,11 +91,7 @@ const find_page = `query findPage($slug: String) {
 `
 //const getPageContentByIdQuery = require('./queries/find_page.gql');
 export async function getPageContentByUrl(slug: string) {
-  let page = cachedPages.get(slug)
-  if (page) return page
-  page = await getPageContent(find_page, { slug })
-  cachedPages.set(slug, page)
-  return page
+  return await getPageContent(find_page, { slug })
 }
 
 export async function getPageContent(query: string, variables: any): Promise<Page> {
@@ -172,8 +163,6 @@ const all_pages = `
 // require('./queries/all_pages.gql');
 
 export async function listActivePages(): Promise<Page[]> {
-  if (cachedPages.size > 0) return Array.from(cachedPages.values())
-
   const { Directus } = await import('@directus/sdk')
   const directusDB = new Directus<DirectusTypes>(adminBaseUrl)
   const { data } = await directusDB.graphql.items<{ pages: Page[] }>(all_pages)
@@ -186,9 +175,5 @@ export async function listActivePages(): Promise<Page[]> {
     }
     return p
   })
-  pages.forEach((page) => {
-    cachedPages.set(page.slug, page)
-  })
-
   return data.pages
 }

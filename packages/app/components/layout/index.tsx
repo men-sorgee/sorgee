@@ -7,7 +7,7 @@ import Footer from './Footer'
 import Actions from './Actions'
 import { useUser } from 'hooks/use-user'
 import Splash from './Splash'
-
+import { ErrorBoundary } from 'components/ErrorBoundary'
 export const constrained = {
   maxW: ['full', 'lg', '2xl', '3xl', '4xl', '5xl'],
   mx: 'auto',
@@ -42,18 +42,20 @@ function Layout({
     <>
       <Meta />
       <Flex direction="column" flex="1" overflowX="clip">
-        <Header />
-        <Flex flex="1 100%" direction="column" maxH={`calc(100vh - ${height})`} overflowY="auto">
-          <Box w="full" flex="1 100%" {...constrained} className={` ${heading} ${body} ${mono}}`}>
-            {children}
-          </Box>
-          <Spacer />
-          <Footer />
-          <Spacer h={height} />
-        </Flex>
-        <Slide in={isOpen} direction="bottom">
-          <Actions />
-        </Slide>
+        <ErrorBoundary>
+          <Header />
+          <Flex flex="1 100%" direction="column" maxH={`calc(100vh - ${height})`} overflowY="auto">
+            <Box w="full" flex="1 100%" {...constrained} className={` ${heading} ${body} ${mono}}`}>
+              <ErrorBoundary>{children}</ErrorBoundary>
+            </Box>
+            <Spacer />
+            <Footer />
+            <Spacer h={height} />
+          </Flex>
+          <Slide in={isOpen} direction="bottom">
+            <Actions />
+          </Slide>
+        </ErrorBoundary>
       </Flex>
       <Splash />
     </>

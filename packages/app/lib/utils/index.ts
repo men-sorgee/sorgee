@@ -67,14 +67,6 @@ export async function fetchJSON<T = object | any>(
   }
 }
 
-export async function copyTextToClipboard(text: string) {
-  if ('clipboard' in navigator) {
-    return await navigator.clipboard.writeText(text)
-  } else {
-    return document.execCommand('copy', true, text)
-  }
-}
-
 export function pruneUndefined<T = Record<string, any>>(
   obj: T,
   and: (v: any) => boolean = () => true

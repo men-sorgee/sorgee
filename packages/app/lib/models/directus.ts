@@ -5,8 +5,22 @@ import {
   ApplicationStatusType,
   ContactPreferenceType,
   NotificationStatusType,
+  SearchableMember,
   UserType,
 } from './users'
+
+export type EventInfo = {
+  id: string
+  status: EventStatusType
+  datetime: string
+  name: string
+  location?: Location
+  description: string
+  cost: number
+  type: string
+  invite_only: boolean
+  visibility: UserType[]
+}
 
 export type GroupEvent = {
   id: string
@@ -15,11 +29,11 @@ export type GroupEvent = {
   name?: string
   location?: string | Location
   description?: string
-  users: string | EventUser[]
   cost: number
   type: string
   invite_only: boolean
   visibility: UserType[]
+  users: string | EventUser[]
   user_created?: string | DirectusUser
   date_created?: string
   user_updated?: string | DirectusUser
@@ -43,6 +57,20 @@ export type EventUser = {
   guest?: boolean
   reason?: string
   attendance?: string
+}
+
+export type EventStats = {
+  invited_count: number
+  confirmed_count: number
+  maybe_count: number
+  attended_count: number
+  paid_count: number
+}
+
+export type EventDetail = EventInfo & {
+  attendance: EventUser[]
+  stats: EventStats
+  members: SearchableMember[]
 }
 
 export type Promos = {

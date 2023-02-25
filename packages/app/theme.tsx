@@ -122,7 +122,7 @@ const custom: Partial<ChakraTheme> = {
   styles: {
     global: (props: StyleFunctionProps) => {
       const bg = mode(defaultTheme.colors.gray['200'], defaultTheme.colors.gray['700'])(props)
-      const fg = brand.colors.accent['500']
+      const fg = mode('black', defaultTheme.colors.gray['200'])
       return {
         body: {
           fontFamily: 'body',

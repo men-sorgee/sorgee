@@ -16,10 +16,12 @@ export default async function checkIn(
 
     const invite = await findInvite(event_id as string, user_id as string)
     if (!invite) {
-      return res.redirect(baseUrl + `/event/${event_id}?error=No+invite+found&user_id=${user_id}`)
+      return res.redirect(
+        baseUrl + `/admin/event/${event_id}?error=No+invite+found&user_id=${user_id}`
+      )
     }
 
-    return res.redirect(baseUrl + '/event/invite/' + invite.id)
+    return res.redirect(baseUrl + '/admin/event/invite/' + invite.id)
   } catch (e) {
     console.error(e)
     return res.redirect(baseUrl + '/500')

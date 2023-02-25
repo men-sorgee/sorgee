@@ -47,15 +47,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<Profile>(none as any)
   const authenticated = status === 'authenticated'
 
-  useEffect(() => {
-    if (authenticated && session?.user && user == none) {
-      setUser(session.user)
-      _mutate(session.user as Member, {
-        revalidate: true,
-      })
-    }
-  }, [status, session?.user, user, none, authenticated])
-
   const {
     data: member,
     mutate: _mutate,
@@ -64,6 +55,15 @@ export function UserProvider({ children }: { children: ReactNode }) {
   } = useSWR<Member, Error>(key, authenticatedFetcher(authenticated), {
     fallbackData: user as Member,
   })
+
+  useEffect(() => {
+    if (authenticated && session?.user && user == none) {
+      setUser(session.user)
+      _mutate(session.user as Member, {
+        revalidate: true,
+      })
+    }
+  }, [status, session?.user, user, none, authenticated, _mutate])
 
   useEffect(() => {
     if (!loading && member) {
@@ -117,4 +117,16 @@ export function UserProvider({ children }: { children: ReactNode }) {
   return <UserContext.Provider value={context}>{children}</UserContext.Provider>
 }
 
-export const useUser = () => useContext(UserContext)
+export const useUser = (
+  minLevel: MemberLevel = MemberLevel.pledge
+): UserContextData & {
+  authorized: boolean
+} => {
+  const { level, ...data } = useContext(UserContext)
+  let authorized = level > minLevel
+  return {
+    ...data,
+    level,
+    authorized,
+  }
+}

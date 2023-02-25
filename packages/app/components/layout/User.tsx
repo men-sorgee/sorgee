@@ -118,7 +118,7 @@ export default function UserMenu(_props: Props) {
                   bg="black"
                   _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                   as={Link}
-                  href="/events"
+                  href="/calendar"
                 >
                   Events
                 </MenuItem>
@@ -168,7 +168,7 @@ export default function UserMenu(_props: Props) {
                       bg="black"
                       _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                       as={Link}
-                      href="/event"
+                      href="/admin/event"
                     >
                       Event Admin
                     </MenuItem>

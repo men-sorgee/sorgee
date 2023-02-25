@@ -18,10 +18,10 @@ export class ErrorBoundary extends React.Component<{
   }
   componentDidCatch(error: any, errorInfo: any) {
     // You can use your own error logging service here
-    // postJSON('/api/errors', { error, errorInfo })
-    //   .then((res) => {})
-    //   .catch((err) => {})
-    // console.log({ error, errorInfo })
+    postJSON('/api/errors', { error, errorInfo })
+      .then((res) => {})
+      .catch((err) => {})
+    console.log({ error, errorInfo })
   }
   render() {
     // Check if the error is thrown
@@ -30,8 +30,8 @@ export class ErrorBoundary extends React.Component<{
       return (
         <section>
           <h2>Something went wrong!</h2>
-          <Button type="button" onClick={() => this.setState({ hasError: false })}>
-            Try again?
+          <Button type="button" onClick={() => window.location.reload()}>
+            Reload Page
           </Button>
         </section>
       )
