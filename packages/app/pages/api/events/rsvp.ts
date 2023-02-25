@@ -14,8 +14,7 @@ export default async function eventRSVP(
     const { event_id, rsvp, reason } = req.body as any
 
     if (!event_id || !rsvp) {
-      if (method == 'GET') return res.redirect(baseUrl + '/404')
-      else return res.status(400).json(ApiResponse(null, 'Missing event_id or rsvp'))
+      return res.status(400).json(ApiResponse(null, 'Missing event_id or rsvp'))
     }
 
     const event = (await getEvent(event_id as string)) as GroupEvent
