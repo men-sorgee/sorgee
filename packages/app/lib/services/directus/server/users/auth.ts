@@ -3,7 +3,7 @@ import { User, UserAccount, UserSession, UserVerificationToken } from 'lib/model
 import { addHours } from 'date-fns'
 
 const getNow = () => {
-  return addHours(new Date(), -7)
+  return addHours(new Date(), -(new Date().getTimezoneOffset() / 60))
 }
 export async function recordUserLogin(id: string) {
   const adminClient = await getAdminClient()
