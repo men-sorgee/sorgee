@@ -79,7 +79,7 @@ function Form({ userTypeOptions }: PageProps) {
       v: member?.id,
     })
     setLink(inviteLink)
-    const { success, error } = await postJSON('/api/member/invite', {
+    const { success, error } = await postJSON('/api/members/invite', {
       ...data,
       link: inviteLink,
     })

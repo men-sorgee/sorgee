@@ -62,7 +62,9 @@ function Review() {
       header={<ApplicationSteps status={'review'} />}
     >
       <Box>
-        <Heading as="h1">Watch your inbox!</Heading>
+        <Heading as="h1" size="h1">
+          Watch your inbox!
+        </Heading>
         <Heading as="h2" size="xl" pt={16}>
           One of our brothers will be in touch with you for final verification.{' '}
         </Heading>

@@ -180,7 +180,9 @@ function Form({ user, ...props }: PageProps & { user: Applicant }) {
     <>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="text-left">
-          <Heading as="h3">Private Information</Heading>
+          <Heading as="h3" size="h3">
+            Private Information
+          </Heading>
           <Text>
             We collect this information for verification purposes only. We will not share, show or
             sell this information to anyone.
@@ -208,7 +210,9 @@ function Form({ user, ...props }: PageProps & { user: Applicant }) {
               placeholder="000 456 7890"
             />
           </SimpleGrid>
-          <Heading as="h3">About You</Heading>
+          <Heading as="h3" size="h3">
+            About You
+          </Heading>
           <Text>
             <strong>Be as honest as possible.</strong> Honest answers will help your chances of
             approval and help our AI create the perfect group events!
@@ -271,7 +275,9 @@ function Form({ user, ...props }: PageProps & { user: Applicant }) {
             </GridItem>
           </SimpleGrid>
 
-          <Heading as="h3">Event Preferences</Heading>
+          <Heading as="h3" size="h3">
+            Event Preferences
+          </Heading>
           <Text>
             We currently coordinate events in Denver, for the following times bi-monthly. We try to
             create events that can include new members, however, we do not guarantee that you will
@@ -286,7 +292,9 @@ function Form({ user, ...props }: PageProps & { user: Applicant }) {
             options={timeOfDayOptions}
           />
 
-          <Heading as="h3">Sexual Preferences</Heading>
+          <Heading as="h3" size="h3">
+            Sexual Preferences
+          </Heading>
           <SimpleGrid gap={4} py={4} columns={1}>
             <FieldCheckboxes
               field="my_positions"
@@ -294,7 +302,9 @@ function Form({ user, ...props }: PageProps & { user: Applicant }) {
               help="What positions or acts are you interested in? We will use this to match you with compatible brothers. Select all that apply"
               options={positionsOptions}
             />
-            <Heading as="h3">Assistance</Heading>
+            <Heading as="h3" size="h3">
+              Assistance
+            </Heading>
             <Text>
               We want you to be comfortable. Check this and we will help guide you along the way.
               Unsure how to answer the above questions, or just new to this? Just check this box and

@@ -22,10 +22,10 @@ export default async function inviteRSVP(
     switch (method) {
       case 'GET': {
         if (!invite || event?.status !== 'scheduled') {
-          return res.redirect(baseUrl + '/member/events')
+          return res.redirect(baseUrl + '/member/invites')
         }
         await updateInvite(invite.id, { rsvp })
-        return res.redirect(baseUrl + '/member/events/' + event.id)
+        return res.redirect(baseUrl + '/member/invites/' + event.id)
         break
       }
       case 'POST': {

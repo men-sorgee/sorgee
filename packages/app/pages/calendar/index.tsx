@@ -5,49 +5,41 @@ import Page from 'components/Page'
 import { Box, Flex, Text, Show, Hide, Heading, useColorModeValue } from '@chakra-ui/react'
 import { useEvents, useMeta, useUser } from 'hooks'
 import { GroupEvent, Member } from 'lib/models'
-
-import brand from '../../theme'
+import { brand } from 'lib/config/brand'
 import { EventRSVPCard, ModalPopup, EventBadge, EventCard } from 'components/controls'
 import { useRouter } from 'next/router'
-import { pruneUndefined } from 'lib/utils'
-import { NextPageContext } from 'next'
 
-export type PageProps = {
-  id?: string
-}
-
-export async function getServerSideProps(context: NextPageContext): Promise<{ props: PageProps }> {
-  return {
-    props: pruneUndefined({
-      id: String(context.query.id),
-    }),
-  }
-}
-
-export default function CalendarPage({ id }: PageProps) {
+export default function CalendarPage() {
   const today = new Date()
   const minDate = addDays(today, -14)
   const maxDate = addDays(today, 120)
   const { setMeta } = useMeta()
   const router = useRouter()
-  const { id: i } = router.query
-  const [eventId, setEventId] = useState<string>(id || i ? String(i) : undefined)
+  const { id } = router.query
+  const [eventId, setEventId] = useState<string>()
   const [value, setValue] = useState(new Date())
   const { member, authenticated, loading } = useUser()
-  const { events } = useEvents(authenticated)
+  const { events, loading: eventsLoading } = useEvents()
 
   const onChange = useCallback((nextValue: SetStateAction<Date>) => {
     setValue(nextValue)
   }, [])
 
   useEffect(() => {
-    if (eventId && eventId !== 'undefined') {
+    if (id && !eventId) {
+      setEventId(String(id))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (eventId) {
       window.history.pushState({}, null, `/calendar/${eventId}`)
-    } else if (!loading) {
+    } else {
       window.history.pushState(null, 'Events', `/calendar`)
       setMeta('Calendar', 'All Events')
     }
-  }, [eventId, loading, setMeta])
+  }, [eventId, setMeta])
 
   const EventView = ({ event, full = false }: { event: GroupEvent; full?: boolean }) => {
     return (
@@ -109,7 +101,7 @@ export default function CalendarPage({ id }: PageProps) {
           width: '100%',
           minH: '50vh',
 
-          margin: '2rem 0 0 0',
+          margin: '2rem auto 0 auto',
         },
         '.react-calendar__navigation': {
           backgroundColor: line,
@@ -150,9 +142,6 @@ export default function CalendarPage({ id }: PageProps) {
         },
       }}
     >
-      {(events?.length > 0 && <Heading textAlign="center">{events.length} Events</Heading>) || (
-        <Heading textAlign="center">No Events</Heading>
-      )}
       <Show above="md">
         <Calendar
           className="calendar"
@@ -164,6 +153,9 @@ export default function CalendarPage({ id }: PageProps) {
         />
       </Show>
       <Hide above="md">
+        {(events?.length > 0 && <Heading textAlign="center">{events.length} Events</Heading>) || (
+          <Heading textAlign="center">No Events</Heading>
+        )}
         <Flex direction="column" width="100%">
           {events?.map((event) => (
             <EventView key={event.id} event={event} full />

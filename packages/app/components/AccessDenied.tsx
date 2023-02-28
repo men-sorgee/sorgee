@@ -14,9 +14,13 @@ const AccessDenied = () => {
   })
   return (
     <>
-      <Heading as="h1">Please Authenticate</Heading>
+      <Heading as="h1" size="h1">
+        Please Authenticate
+      </Heading>
       {status === 'authenticated' && (
-        <Heading as="h2">You do not have permission to view this page.</Heading>
+        <Heading as="h2" size="h2">
+          You do not have permission to view this page.
+        </Heading>
       )}
       {status === 'unauthenticated' && (
         <Box>

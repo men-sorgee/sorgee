@@ -98,7 +98,7 @@ function Survey({
         <Box>
           <Heading>Thank you for completing the survey!</Heading>
           <Flex gap={4} my={10}>
-            <LinkButton href="/member/events">Rate More Events</LinkButton>
+            <LinkButton href="/member/invites">Rate More Events</LinkButton>
             <LinkButton href="/calendar">Find Events</LinkButton>
             <LinkButton href="/members">Find Men</LinkButton>
           </Flex>
@@ -167,7 +167,7 @@ function Form({
         <form onSubmit={handleSubmit(onSubmit)}>
           {question && answer && (
             <Flex direction="column" gap={4} key={question.id}>
-              <Heading as="h5" size="md" py={2}>
+              <Heading as="h5" size="h5" py={2}>
                 {question.question}
               </Heading>
               <Text>{question.context}</Text>

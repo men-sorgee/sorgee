@@ -24,7 +24,7 @@ export const SubscribeBox = chakra(({ ...props }: Props) => {
   if (subscribed)
     return (
       <Box {...props}>
-        <Heading size={'md'} as="h4">
+        <Heading as="h4" size="h4">
           You got it.
         </Heading>
         <Text>Peep your spam folder, just in case we landed there.</Text>
@@ -33,7 +33,7 @@ export const SubscribeBox = chakra(({ ...props }: Props) => {
 
   return (
     <Box {...props}>
-      <Heading size={'md'} as="h4">
+      <Heading as="h4" size="md">
         Wanna get it in?
       </Heading>
       <Text>

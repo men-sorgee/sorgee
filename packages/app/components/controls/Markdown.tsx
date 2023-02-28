@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useRemark } from 'react-remark'
 import { Heading, Image, ListItem, OrderedList, Text, UnorderedList } from '@chakra-ui/react'
+
 export const Markdown = ({ content }: { content: string }) => {
   const [reactContent, setMarkdownSource] = useRemark({
     rehypeReactOptions: {
@@ -18,11 +19,11 @@ export const Markdown = ({ content }: { content: string }) => {
           )
         },
         p: ({ children }: { children: React.ReactNode }) => <Text>{children}</Text>,
-        // h1: ({ children }: { children: React.ReactNode }) => <Heading as="h1">{children}</Heading>,
-        // h2: ({ children }: { children: React.ReactNode }) => <Heading as="h2">{children}</Heading>,
-        // h3: ({ children }: { children: React.ReactNode }) => <Heading as="h3">{children}</Heading>,
-        // h4: ({ children }: { children: React.ReactNode }) => <Heading as="h4">{children}</Heading>,
-        // h5: ({ children }: { children: React.ReactNode }) => <Heading as="h5">{children}</Heading>,
+        // h1: ({ children }: { children: React.ReactNode }) => <Heading as="h1" size="h1">{children}</Heading>,
+        // h2: ({ children }: { children: React.ReactNode }) => <Heading as="h2" size="h2">{children}</Heading>,
+        // h3: ({ children }: { children: React.ReactNode }) => <Heading as="h3" size="h3">{children}</Heading>,
+        // h4: ({ children }: { children: React.ReactNode }) => <Heading as="h4" size="h4">{children}</Heading>,
+        // h5: ({ children }: { children: React.ReactNode }) => <Heading as="h5" size="h5">{children}</Heading>,
         ul: ({ children }: { children: React.ReactNode }) => (
           <UnorderedList>{children}</UnorderedList>
         ),

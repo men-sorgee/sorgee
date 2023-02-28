@@ -299,7 +299,7 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
         <AccordionItem w="full">
           <AccordionButton px={0} py={1} _expanded={{ bg: 'primary', color: 'white' }}>
             <Flex direction="row" pr={4} gap={[2, 4]} justify="space-between" align="left" w="full">
-              <Heading mt={1} ml={2} as="h3">
+              <Heading as="h3" size="h3" mt={1} ml={2}>
                 Filter
               </Heading>
               <StatGroup as={HStack} spacing={4}>

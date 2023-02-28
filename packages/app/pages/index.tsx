@@ -42,7 +42,7 @@ export default function HomePage({ page }: Props) {
         shadow="lg"
         bg={useColorModeValue('white', 'gray.700')}
       >
-        <Heading textAlign={['left', 'center']} as="h1" size={['2xl', '3xl']}>
+        <Heading as="h1" textAlign={['left', 'center']} size={['2xl', '3xl']}>
           <Text as={'div'} color={'accent.400'}>
             Group Play
           </Text>

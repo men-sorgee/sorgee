@@ -85,8 +85,31 @@ export default function Styles() {
 
   return (
     <Page title="Heading 1">
-      <h1>Heading 1</h1>
-      <h2>Heading 2</h2>
+      <h1>h1</h1>
+      <Heading as="h1" size="h1">
+        Heading as h1
+      </Heading>
+      <h2>h2</h2>
+      <Heading as="h2" size="h2">
+        Heading as h2
+      </Heading>
+      <h3>h3</h3>
+      <Heading as="h3" size="h3">
+        Heading as h3
+      </Heading>
+      <h4>h4</h4>
+      <Heading as="h4" size="h4">
+        Heading as h4
+      </Heading>
+      <h5>h5</h5>
+      <Heading as="h5" size="h5">
+        Heading as h5
+      </Heading>
+      <h6>h6</h6>
+      <Heading as="h6" size="h6">
+        Heading as h6
+      </Heading>
+
       <Text size="lg">Text LG {getText(2)}</Text>
       <h6>Ordered List</h6>
       <OrderedList>

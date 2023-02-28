@@ -22,10 +22,12 @@ function Approved() {
       header={<ApplicationSteps status={'approved'} />}
     >
       <>
-        <Heading as="h2" pt={10}>
+        <Heading as="h2" size="h2" pt={10}>
           Congratulations and Welcome!
         </Heading>
-        <Heading as="h3">Your membership was approved.</Heading>
+        <Heading as="h3" size="h3">
+          Your membership was approved.
+        </Heading>
 
         <VStack alignItems="center" justifyItems="middle" pt={10}>
           <Text>

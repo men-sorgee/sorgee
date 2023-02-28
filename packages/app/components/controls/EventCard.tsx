@@ -86,6 +86,7 @@ export const EventCard = ({
               justifyContent="middle"
               color="white!important"
               fontSize={['xl', '3xl']}
+              whiteSpace="nowrap"
             >
               {eventDate?.month.toUpperCase()}
               <br />
@@ -103,23 +104,28 @@ export const EventCard = ({
               <StatNumber>{capitalCase(event.type)}</StatNumber>
             </Stat>
             <Stat>
+              <StatLabel>Invite Type</StatLabel>
+              <StatNumber>{event.invite_only ? 'Invite Only' : 'Brothers Only'}</StatNumber>
+            </Stat>
+            <Stat>
               <StatLabel>Start Time</StatLabel>
               <StatNumber>{eventDate?.time}</StatNumber>
             </Stat>
-            <Stat>
-              <StatLabel>Invite Type</StatLabel>
-              <StatNumber>{event.invite_only ? 'Private ' : 'Public '}</StatNumber>
-            </Stat>
+
             <Stat>
               <StatLabel>Fee</StatLabel>
               <StatNumber>${event.cost}</StatNumber>
             </Stat>
           </HStack>
 
-          {showDescription && <Markdown content={event.description} />}
+          {showDescription && (
+            <Box maxH="10rem" overflowY="auto">
+              <Markdown content={event.description} />
+            </Box>
+          )}
           {showLocation && location && (
             <>
-              <Heading as="h5" size="md" textTransform="uppercase">
+              <Heading as="h5" textTransform="uppercase" size="md">
                 Location:
               </Heading>
               <LinkBox>

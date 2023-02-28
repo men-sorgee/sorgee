@@ -21,9 +21,9 @@ import { useCallback, useEffect, useState } from 'react'
 import { EventUser, Member, GroupEvent, MemberLevel } from 'lib/models'
 import { EventCard, EventRSVPCard, LinkButton, RateItem } from 'components/controls'
 
-type Props = {}
+export type PageProps = {}
 
-function EventPage({}: Props) {
+export default function EventsPage({}: PageProps) {
   const today = new Date(new Date().toDateString())
 
   const [allowed, setAllowed] = useState(false)
@@ -159,7 +159,7 @@ function Events({
           member={member}
           mb={8}
           onChange={onChange}
-          href={showLink ? `/member/events/${event.id}` : null}
+          href={showLink ? `/event/${event.id}` : null}
         />
       ))}
     </>
@@ -219,5 +219,3 @@ function PastEvents({ list }: { list: EventUser[] }) {
     </>
   )
 }
-
-export default EventPage

@@ -1,14 +1,22 @@
-'use client'
+import { ApiResponse } from 'lib/models'
+;('use client')
 
+/// Fetches a JSON response from the given URL, and returns the data field.
+/// This fetcher hides any errors, and returns null if the response is not ok.
 export async function JsonFetcher<T>(url: string) {
-  if (!url) throw new Error('No URL provided')
+  if (!url) return null as T
   const response = await fetch(url)
-  const body = await response.json()
   if (!response.ok) {
-    if (body.error) throw new Error(body.error)
-    throw new Error(response.statusText)
+    console.log(`Error fetching ${url}: ${response.status} ${response.statusText}`)
+    return null as T
+  } else {
+    try {
+      const body = (await response.json()) as ApiResponse<T>
+      return body?.data as T
+    } catch {
+      return null as T
+    }
   }
-  return body?.data as T
 }
 
 export function authenticatedFetcher<T>(authenticated: boolean): (url: string) => Promise<T> {

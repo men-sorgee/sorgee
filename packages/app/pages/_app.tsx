@@ -3,7 +3,7 @@ import { SessionProvider } from 'next-auth/react'
 import { ChakraProvider, cookieStorageManager, extendTheme } from '@chakra-ui/react'
 
 import Layout from 'components/layout/index'
-import { theme } from '../theme'
+import getTheme from '../theme'
 import { Manrope, Arvo, Roboto_Mono } from '@next/font/google'
 import { useRouter } from 'next/router'
 import { NotificationsProvider, UserProvider, MetaContextProvider } from 'hooks'
@@ -26,14 +26,7 @@ const mono = Roboto_Mono({
   subsets: ['latin'],
 })
 
-extendTheme({
-  ...theme,
-  fonts: {
-    body: body.style.fontFamily,
-    heading: heading.style.fontFamily,
-    mono: mono.style.fontFamily,
-  },
-})
+const theme = extendTheme(getTheme(body, heading, mono))
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()

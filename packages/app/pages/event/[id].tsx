@@ -1,27 +1,15 @@
-import { HStack, Stat, StatLabel, StatNumber, StatArrow, StatHelpText } from '@chakra-ui/react'
+import { HStack, Stat, StatLabel, StatNumber } from '@chakra-ui/react'
 import { EventCard, LinkButton } from 'components/controls'
-import { EventStats, MemberLevel } from 'lib/models'
+import { EventStats } from 'lib/models'
 import Page from 'components/Page'
 import { useEffect, useState } from 'react'
-import { useUser } from '../../../hooks'
+import { useUser, useEvent } from 'hooks'
 import { useRouter } from 'next/router'
-import { useEvent } from '../../../hooks/use-event'
-import { NextPageContext } from 'next'
-import { pruneUndefined } from '../../../lib/utils'
-import { PageProps } from '../../calendar'
 
-export async function getServerSideProps(context: NextPageContext): Promise<{ props: PageProps }> {
-  return {
-    props: pruneUndefined({
-      id: String(context.query.id),
-    }),
-  }
-}
-
-export default function EventPage({ id }: { id: string }) {
+export default function EventPage() {
   const router = useRouter()
-  const { id: i } = router.query
-  const [eventId, setEventId] = useState<string>(id || i ? String(i) : undefined)
+  const { id } = router.query
+  const [eventId] = useState<string>(String(id))
   const { event, loading: eventLoading } = useEvent(eventId)
   const { member, loading } = useUser()
   const [fees, setFees] = useState<number>(undefined)
@@ -80,8 +68,8 @@ export default function EventPage({ id }: { id: string }) {
         </EventCard>
       )}
       <HStack spacing={4}>
-        <LinkButton href="/member/events" my={4}>
-          Back to Events
+        <LinkButton href="/member/invites" my={4}>
+          Back to Invites
         </LinkButton>
       </HStack>
     </Page>

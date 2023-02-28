@@ -56,11 +56,6 @@ const getConfig = ( phase ) => {
           permanent: false
         },
         {
-          source: '/member/invites',
-          destination: '/member/events',
-          permanent: false
-        },
-        {
           source: '/api/admin/:path',
           destination: '/api/member/:path',
           permanent: true

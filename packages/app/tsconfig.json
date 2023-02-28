@@ -47,7 +47,7 @@
     "**/*.tsx",
     "next.config.ts",
     ".next/types/**/*.ts",
-    "theme.tsx"
+    "theme.ts"
   ],
   "exclude": [
     ".idea/*",

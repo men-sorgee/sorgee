@@ -14,7 +14,7 @@ import {
   Textarea,
   Box,
 } from '@chakra-ui/react'
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, ReactNode } from 'react'
 import { useForm } from 'react-hook-form'
 import { useUser } from 'hooks'
 import { Member, FieldOptions, GroupEvent, MemberLevel, EventUser } from '../../lib/models'
@@ -36,6 +36,7 @@ type RSVPProps = CardProps & {
   full?: boolean
   href?: string
   onChange?: () => void
+  children?: ReactNode | ReactNode[]
 }
 
 export const EventRSVPCard = ({
@@ -45,6 +46,7 @@ export const EventRSVPCard = ({
   full = false,
   onChange,
   href,
+  children,
   ...props
 }: RSVPProps) => {
   const today = new Date(new Date().toDateString())
@@ -54,9 +56,8 @@ export const EventRSVPCard = ({
   const [working, setWorking] = useState<boolean>(undefined)
   const [invite, setInvite] = useState<RSVPInfo>(undefined)
   const [registered, setRegistered] = useState<boolean>(undefined)
-  const toast = useToast()
   const [showTicket, setShowTicket] = useState<boolean>(undefined)
-
+  const toast = useToast()
   const {
     register,
     handleSubmit,
@@ -88,7 +89,8 @@ export const EventRSVPCard = ({
         setValue('rsvp', mi.rsvp)
       }
     }
-  }, [event, invite, i, member, setValue])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [invite, i, setValue])
 
   const respond = useCallback(
     async (data: RSVPInfo) => {
@@ -171,7 +173,7 @@ export const EventRSVPCard = ({
     <>
       <EventCard
         event={event}
-        showDescription={rsvp !== 'confirmed'}
+        showDescription={true}
         {...props}
         showLocation={rsvp == 'confirmed' && isToday}
         href={href}
@@ -283,6 +285,7 @@ export const EventRSVPCard = ({
               </div>
             </>
           )}
+          {children}
         </>
       </EventCard>
     </>

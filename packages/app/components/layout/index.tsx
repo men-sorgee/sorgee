@@ -11,7 +11,6 @@ import { ErrorBoundary } from 'components/ErrorBoundary'
 export const constrained = {
   maxW: ['full', 'lg', '2xl', '3xl', '4xl', '5xl'],
   mx: 'auto',
-  p: 4,
 }
 
 function Layout({
@@ -25,7 +24,7 @@ function Layout({
   const { authenticated } = useUser()
   const router = useRouter()
   const [path] = useState<string>(router?.asPath)
-  const height = authenticated ? '160px' : '85px'
+  const height = authenticated ? '146px' : '75px'
   const { isOpen, onOpen } = useDisclosure()
 
   useEffect(() => {
@@ -45,12 +44,17 @@ function Layout({
         <ErrorBoundary>
           <Header />
           <Flex flex="1 100%" direction="column" maxH={`calc(100vh - ${height})`} overflowY="auto">
-            <Box w="full" flex="1 100%" {...constrained} className={` ${heading} ${body} ${mono}}`}>
+            <Box
+              position="relative"
+              w="full"
+              flex="1 100%"
+              {...constrained}
+              className={` ${heading} ${body} ${mono}}`}
+            >
               <ErrorBoundary>{children}</ErrorBoundary>
+              <Spacer h="1rem" />
+              <Footer />
             </Box>
-            <Spacer />
-            <Footer />
-            <Spacer h={height} />
           </Flex>
           <Slide in={isOpen} direction="bottom">
             <Actions />

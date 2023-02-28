@@ -118,25 +118,25 @@ function Header({ children, ...props }: Props) {
         shadow="xl"
         bg={useColorModeValue('primary.800', 'black')}
         minH="60px"
+        p="0 16px 0 0"
       >
-        <HStack
-          alignItems="center"
-          justifyItems="space-between"
-          align="center"
-          spacing={4}
-          __css={constrained}
-        >
-          <IconButton
-            size="md"
-            onClick={onToggle}
-            icon={isOpen ? <CloseIcon /> : <MenuIcon />}
-            variant="primary"
-            aria-label="Toggle Navigation"
-          />
-          <Flex flex={1} justify="center">
-            <Logo width="20px" />
-          </Flex>
-          <User />
+        <HStack alignItems="center" alignContent="center" py={2} align="center" {...constrained}>
+          <Box w="50%">
+            <IconButton
+              size="md"
+              onClick={onToggle}
+              icon={isOpen ? <CloseIcon /> : <MenuIcon />}
+              variant="primary"
+              aria-label="Toggle Navigation"
+              m={0}
+              p={0}
+            />
+          </Box>
+
+          <Logo width="20px" border="1px solid red" />
+          <Box w="50%" textAlign="right">
+            <User />
+          </Box>
         </HStack>
         <Collapse in={isOpen} animateOpacity>
           <MobileNav navItems={navItems} {...constrained} />
