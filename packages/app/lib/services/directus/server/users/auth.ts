@@ -4,27 +4,29 @@ import { addHours } from 'date-fns'
 
 export async function recordUserLogin(id: string) {
   const adminClient = await getAdminClient()
+  const now = addHours(new Date(), new Date().getTimezoneOffset() / 60)
   return await adminClient.items('users').updateOne(id, {
     presence: 'online',
-    last_login: addHours(new Date(), -7).toISOString(),
-    session_expire: new Date().toISOString(),
+    last_login: now.toISOString(),
+    session_expire: addHours(now, 3).toISOString(),
   })
 }
 
 export async function extendUserPresence(id: string) {
+  const now = addHours(new Date(), new Date().getTimezoneOffset() / 60)
   await updateUser(id, {
     presence: 'online',
-    session_expire: new Date().toISOString(),
+    session_expire: addHours(now, 3).toISOString(),
   })
   await expireSessions()
 }
 
 export async function expireSessions() {
-  const expires = addHours(new Date(), +7)
+  const now = addHours(new Date(), new Date().getTimezoneOffset() / 60)
   const adminClient = await getAdminClient()
   const { data: expired } = await adminClient.items('users').readByQuery({
     filter: {
-      session_expire: { _lt: expires.toISOString() },
+      session_expire: { _lt: now.toISOString() },
       presence: { _eq: 'online' },
     },
     fields: ['id'],
@@ -35,7 +37,6 @@ export async function expireSessions() {
 
   return await adminClient.items('users').updateMany(ids, {
     presence: 'offline',
-    session_expire: null,
   })
 }
 
