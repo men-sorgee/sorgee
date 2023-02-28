@@ -2,9 +2,12 @@ import { getAdminClient, updateUser } from '..'
 import { User, UserAccount, UserSession, UserVerificationToken } from 'lib/models'
 import { addHours } from 'date-fns'
 
+const getNow = () => {
+  return addHours(new Date(), -7)
+}
 export async function recordUserLogin(id: string) {
   const adminClient = await getAdminClient()
-  const now = addHours(new Date(), new Date().getTimezoneOffset() / 60)
+  const now = getNow()
   return await adminClient.items('users').updateOne(id, {
     presence: 'online',
     last_login: now.toISOString(),
@@ -13,7 +16,7 @@ export async function recordUserLogin(id: string) {
 }
 
 export async function extendUserPresence(id: string) {
-  const now = addHours(new Date(), new Date().getTimezoneOffset() / 60)
+  const now = getNow()
   await updateUser(id, {
     presence: 'online',
     session_expire: addHours(now, 3).toISOString(),
@@ -22,11 +25,10 @@ export async function extendUserPresence(id: string) {
 }
 
 export async function expireSessions() {
-  const now = addHours(new Date(), new Date().getTimezoneOffset() / 60)
   const adminClient = await getAdminClient()
   const { data: expired } = await adminClient.items('users').readByQuery({
     filter: {
-      session_expire: { _lt: now.toISOString() },
+      session_expire: { _lt: '$NOW' },
       presence: { _eq: 'online' },
     },
     fields: ['id'],
