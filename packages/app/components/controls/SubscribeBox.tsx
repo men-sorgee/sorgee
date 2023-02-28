@@ -42,7 +42,7 @@ export const SubscribeBox = chakra(({ ...props }: Props) => {
 
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Flex justify="space-between" gap={4}>
+          <Flex direction={['column', 'column', 'row']} justify="space-between" gap={4} mt={4}>
             <FieldInput
               field="name"
               registerOptions={{

@@ -35,9 +35,10 @@ export default function HomePage({ page }: Props) {
   return (
     <>
       <Box
-        p={30}
+        p={[5, 10, 20, 30]}
         px={4}
-        mt={20}
+        mx={[4, 4, 0]}
+        mt={[5, 10, 20]}
         rounded="lg"
         shadow="lg"
         bg={useColorModeValue('white', 'gray.700')}
@@ -57,7 +58,7 @@ export default function HomePage({ page }: Props) {
         >
           A hot new approach to meeting men
         </Text>
-        <Center my={8} gap={4}>
+        <Center my={[4, 4, 8]} gap={4}>
           {site && !site.invite_only && (
             <LinkButton py={8} size="lg" fontSize="3xl" href="/apply">
               Get Started
@@ -65,14 +66,19 @@ export default function HomePage({ page }: Props) {
           )}
           {site && !site.invite_only && next_page && <>or</>}
           {next_page && (
-            <LinkButton py={8} size="lg" fontSize="3xl" href={next_page.slug}>
+            <LinkButton mt={[4, 4, 8]} size="lg" fontSize="3xl" href={next_page.slug}>
               {next_page.title}
             </LinkButton>
           )}
         </Center>
       </Box>
-      <Box p={4} mb={20}>
-        <Text fontStyle="italic" size="xs" color={useColorModeValue('gray.700', 'gray.100')}>
+      <Box mx={[4, 4, 0]}>
+        <Text
+          fontStyle="italic"
+          size="xs"
+          color={useColorModeValue('gray.700', 'gray.100')}
+          mb={[5, 10, 20]}
+        >
           {site && site.invite_only && (
             <>
               Access to this site is by invite-only while we build and test this site. If you would
@@ -88,14 +94,14 @@ export default function HomePage({ page }: Props) {
           </Link>
           .{' '}
         </Text>
+        <Flex direction="column" gap={8}>
+          <Markdown content={markdown} />
+          {content?.map((s, i) => (
+            <Section key={i} content={s} />
+          ))}
+        </Flex>
+        <SubscribeBox mt={[5, 10, 20]} />
       </Box>
-      <Flex m="auto" direction="column" gap={8}>
-        {content?.map((s, i) => (
-          <Section key={i} content={s} />
-        ))}
-        <Markdown content={markdown} />
-      </Flex>
-      <SubscribeBox mt={20} />
     </>
   )
 }

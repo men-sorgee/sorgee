@@ -118,7 +118,7 @@ function Header({ children, ...props }: Props) {
         shadow="xl"
         bg={useColorModeValue('primary.800', 'black')}
         minH="60px"
-        p="0 16px 0 0"
+        px={[4, 4, 0]}
       >
         <HStack alignItems="center" alignContent="center" py={2} align="center" {...constrained}>
           <Box w="50%">
