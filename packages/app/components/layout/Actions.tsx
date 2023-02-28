@@ -50,12 +50,12 @@ export default function ActionsNav({ children, ...props }: Props) {
         pr="16px"
       >
         <Flex justify="center" w="full" gap={10} p={4} {...constrained}>
-          <Link href="/members" as={NextLink}>
+          <Link href="/members" as={NextLink} zIndex="fixed">
             <IconButton
               variant="primary"
               size="lg"
               zIndex="fixed"
-              icon={<UserGroupIcon />}
+              icon={<UserGroupIcon height="50px" width="50px" />}
               color={path.startsWith('/members') ? 'accent.500' : 'white'}
               aria-label={'View Members'}
               title="View Members"
@@ -67,7 +67,7 @@ export default function ActionsNav({ children, ...props }: Props) {
               variant="primary"
               zIndex="fixed"
               size="lg"
-              icon={<CalendarIcon />}
+              icon={<CalendarIcon height="50px" width="50px" />}
               color={path.startsWith('/calendar') ? 'accent.500' : 'white'}
               aria-label={'Calendar'}
               title="Calendar"
@@ -94,7 +94,7 @@ export default function ActionsNav({ children, ...props }: Props) {
               variant="primary"
               zIndex="fixed"
               size="lg"
-              icon={<InboxIcon />}
+              icon={<InboxIcon height="50px" width="50px" />}
               color={path.startsWith('/member/invites') ? 'accent.500' : 'white'}
               aria-label={'Invites'}
               title="My Events"

@@ -125,7 +125,13 @@ function Header({ children, ...props }: Props) {
             <IconButton
               size="md"
               onClick={onToggle}
-              icon={isOpen ? <CloseIcon /> : <MenuIcon />}
+              icon={
+                isOpen ? (
+                  <CloseIcon height="30px" width="30px" />
+                ) : (
+                  <MenuIcon height="50px" width="50px" />
+                )
+              }
               variant="primary"
               aria-label="Toggle Navigation"
               m={0}

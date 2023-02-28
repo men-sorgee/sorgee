@@ -50,7 +50,7 @@ const Page = ({
       alignItems={'center'}
       justifyItems="stretch"
       {...props}
-      p={{ base: 2, md: 0 }}
+      px={[4, 4, 0]}
     >
       <div className="no-print">
         <Heading as="h1" size="h1" textAlign="center" mb={8}>

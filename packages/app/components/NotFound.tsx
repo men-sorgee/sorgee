@@ -5,7 +5,7 @@ import { Box, Heading, Text } from '@chakra-ui/react'
 const NotFound = () => {
   const { status } = useSession()
   return (
-    <>
+    <Box mx={[4, 4, 0]}>
       <Heading as="h1" size="h1">
         Not Found
       </Heading>
@@ -16,7 +16,7 @@ const NotFound = () => {
           Go Home
         </LinkButton>
       </Box>
-    </>
+    </Box>
   )
 }
 

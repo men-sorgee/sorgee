@@ -13,7 +13,7 @@ const AccessDenied = () => {
     }
   })
   return (
-    <>
+    <Box mx={[4, 4, 0]}>
       <Heading as="h1" size="h1">
         Please Authenticate
       </Heading>
@@ -37,7 +37,7 @@ const AccessDenied = () => {
           </LinkButton>
         </Box>
       )}
-    </>
+    </Box>
   )
 }
 

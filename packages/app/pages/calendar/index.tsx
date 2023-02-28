@@ -9,7 +9,7 @@ import { brand } from 'lib/config/brand'
 import { EventRSVPCard, ModalPopup, EventBadge, EventCard } from 'components/controls'
 import { useRouter } from 'next/router'
 
-export default function CalendarPage() {
+function CalendarPage() {
   const today = new Date()
   const minDate = addDays(today, -14)
   const maxDate = addDays(today, 120)
@@ -18,8 +18,8 @@ export default function CalendarPage() {
   const { id } = router.query
   const [eventId, setEventId] = useState<string>()
   const [value, setValue] = useState(new Date())
-  const { member, authenticated, loading } = useUser()
-  const { events, loading: eventsLoading } = useEvents()
+  const { member, loading } = useUser()
+  const { events = [], loading: eventsLoading } = useEvents()
 
   const onChange = useCallback((nextValue: SetStateAction<Date>) => {
     setValue(nextValue)
@@ -180,3 +180,7 @@ const CalendarPageItem = ({ event, member }: CalendarPageItemProps) => {
 
   return <EventRSVPCard event={event} member={member} />
 }
+
+CalendarPage.authLevel = 'member'
+
+export default CalendarPage
