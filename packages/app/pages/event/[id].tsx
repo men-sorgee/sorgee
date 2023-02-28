@@ -1,4 +1,4 @@
-import { HStack, Stat, StatLabel, StatNumber } from '@chakra-ui/react'
+import { HStack, Stat, StatLabel, StatNumber, SimpleGrid } from '@chakra-ui/react'
 import { EventCard, LinkButton } from 'components/controls'
 import { EventStats } from 'lib/models'
 import Page from 'components/Page'
@@ -27,7 +27,7 @@ export default function EventPage() {
     <Page title={event ? event.name : 'Event'} loading={loading || eventLoading} requireAuth={true}>
       {member && (
         <EventCard event={event} showDescription>
-          <HStack spacing={4} align="start">
+          <SimpleGrid columns={{ base: 2, md: 4 }} spacing={4} mb={4}>
             {stats && (
               <>
                 {stats.invited_count && (
@@ -64,7 +64,7 @@ export default function EventPage() {
                 )}
               </>
             )}
-          </HStack>
+          </SimpleGrid>
         </EventCard>
       )}
       <HStack spacing={4}>

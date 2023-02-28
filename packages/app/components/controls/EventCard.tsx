@@ -16,6 +16,7 @@ import {
   Stat,
   StatLabel,
   StatNumber,
+  SimpleGrid,
 } from '@chakra-ui/react'
 import { Markdown } from './Markdown'
 import { GroupEvent, Location } from 'lib/models'
@@ -98,7 +99,7 @@ export const EventCard = ({
       </LinkBox>
       {isScheduled && (
         <CardBody w="full">
-          <HStack spacing={4} mb={4} align="start">
+          <SimpleGrid columns={{ base: 2, md: 4 }} spacing={4} mb={4}>
             <Stat>
               <StatLabel>Event Type</StatLabel>
               <StatNumber>{capitalCase(event.type)}</StatNumber>
@@ -116,7 +117,7 @@ export const EventCard = ({
               <StatLabel>Fee</StatLabel>
               <StatNumber>${event.cost}</StatNumber>
             </Stat>
-          </HStack>
+          </SimpleGrid>
 
           {showDescription && (
             <Box maxH="10rem" overflowY="auto">
