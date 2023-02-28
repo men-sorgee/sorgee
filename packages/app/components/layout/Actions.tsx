@@ -21,7 +21,7 @@ export default function ActionsNav({ children, ...props }: Props) {
   const router = useRouter()
   const { authenticated } = useUser()
   const [path, setPath] = useState(router.asPath)
-  const { invitations } = useUserEvents(authenticated)
+  const { invitations } = useUserEvents()
   const { events } = useEvents()
   useEffect(() => {
     setPath(router.asPath)

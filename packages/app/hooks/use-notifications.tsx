@@ -1,10 +1,8 @@
 'use client'
 import useSWR from 'swr'
 import { AppNotification, NotificationStatusType } from 'lib/models'
-import { putJSON, JsonFetcher, authenticatedFetcher } from 'lib/utils'
+import { putJSON, JsonFetcher } from 'lib/utils'
 import { useState, useEffect, createContext, ReactNode, useContext } from 'react'
-import { UserContextData, useUser } from './use-user'
-import { useSession } from 'next-auth/react'
 
 export type NotificationsContextData = {
   notifications: AppNotification[]
@@ -34,21 +32,16 @@ export const NotificationsContext = createContext<NotificationsContextData>({
 })
 
 export function NotificationsProvider({ children }: { children: ReactNode }) {
-  const { authenticated } = useUser()
   const key = `/api/member/notifications`
   const {
     data: notifications = [],
     mutate,
     error,
     isLoading,
-  } = useSWR<AppNotification[], Error>(
-    key,
-    authenticatedFetcher<AppNotification[]>(authenticated),
-    {
-      refreshInterval: 1000 * 60 * 3, // 3 minutes
-      fallbackData: [],
-    }
-  )
+  } = useSWR<AppNotification[], Error>(key, JsonFetcher, {
+    refreshInterval: 1000 * 60 * 3, // 3 minutes
+    fallbackData: [],
+  })
   const [hasNewNotifications, setHasNewNotifications] = useState(false)
   const newNotifications = notifications?.filter((n) => n.status === 'new') || []
   useEffect(() => {

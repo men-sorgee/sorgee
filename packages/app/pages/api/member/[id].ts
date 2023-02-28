@@ -64,6 +64,7 @@ export default async function getMemberDetails(
         return res.status(200).json(ApiResponse(user))
     }
   } catch (e) {
+    if (e.message == 'Unauthorized') return res.status(200).json(ApiResponse(null, e))
     console.error(e.message || e, e.stack)
     res.status(405).json(ApiResponse(null, e.message || e))
   }

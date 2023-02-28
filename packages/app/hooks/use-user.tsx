@@ -43,9 +43,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const none = useMemo(() => {
     return {}
   }, [])
-  const { data: session, status } = useSession({
-    required: true,
-  })
+  const { data: session, status } = useSession()
   const [user, setUser] = useState<Profile>(none as any)
   const authenticated = status === 'authenticated'
 

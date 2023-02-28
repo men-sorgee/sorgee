@@ -28,7 +28,7 @@ export default function EventsPage({}: PageProps) {
 
   const [allowed, setAllowed] = useState(false)
   const { member, loading, level } = useUser()
-  const { invitations, upcoming, past, reload } = useUserEvents(member != null)
+  const { invitations, upcoming, past, reload } = useUserEvents()
 
   useEffect(() => {
     if (!loading && member && !allowed) {

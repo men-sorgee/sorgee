@@ -1,10 +1,7 @@
 'use client'
 import useSWR, { KeyedMutator } from 'swr'
-import { GroupEvent, Member, Site } from 'lib/models'
+import { GroupEvent } from 'lib/models'
 import { JsonFetcher } from 'lib/utils'
-import { useUser } from './use-user'
-import { useEffect, useState } from 'react'
-import { useSession } from 'next-auth/react'
 
 type EventsResults = {
   events: GroupEvent[]
@@ -15,15 +12,6 @@ type EventsResults = {
 }
 
 export const useEvents = (): EventsResults => {
-  const { status } = useSession()
-  const [authenticated, setAuthenticated] = useState(false)
-
-  useEffect(() => {
-    if (status == 'authenticated' && !authenticated) {
-      setAuthenticated(true)
-    }
-  }, [authenticated, status])
-
   const {
     data: events = [],
     mutate,

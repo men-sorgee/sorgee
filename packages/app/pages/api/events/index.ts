@@ -3,7 +3,7 @@ import { ApiResponse, GroupEvent } from 'lib/models'
 import { listUpcomingEvents } from 'lib/services/directus/server'
 import { withMember } from 'lib/utils/server'
 
-export default async function getSite(
+export default async function getEvents(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<GroupEvent[]>>
 ) {
@@ -13,7 +13,7 @@ export default async function getSite(
 
     return res.status(200).json(ApiResponse(events))
   } catch (e) {
-    if (e.message == 'Unauthorized') return res.status(200).json(ApiResponse(null))
+    if (e.message == 'Unauthorized') return res.status(200).json(ApiResponse(null, e))
     console.error(e)
     return res.status(401).json(ApiResponse(null, e))
   }

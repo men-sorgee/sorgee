@@ -1,6 +1,6 @@
 'use client'
 import useSWR from 'swr'
-import { EventUser, GroupEvent, Invite } from 'lib/models'
+import { EventUser, GroupEvent } from 'lib/models'
 import { JsonFetcher } from 'lib/utils'
 
 type InvitesResults = {
@@ -12,7 +12,7 @@ type InvitesResults = {
   reload: () => void
 }
 
-export const useUserEvents = (authenticated: boolean): InvitesResults => {
+export const useUserEvents = (): InvitesResults => {
   const {
     data: invites = [],
     mutate,
@@ -24,18 +24,14 @@ export const useUserEvents = (authenticated: boolean): InvitesResults => {
     revalidateOnFocus: true,
     revalidateOnReconnect: true,
     refreshInterval: 1000 * 60 * 10,
-    isPaused: () => !authenticated,
     fallbackData: [],
   })
 
-  if (!authenticated)
-    return { invitations: [], upcoming: [], past: [], loading: false, reload: () => {} }
+  if (invites == null || invites == undefined)
+    return { invitations: [], upcoming: [], past: [], loading: true, reload: () => {} }
 
   const upComing = ['scheduled', 'planned']
   const attending = ['confirmed', 'maybe']
-
-  if (invites == null || invites == undefined)
-    return { invitations: [], upcoming: [], past: [], loading: true, reload: () => {} }
 
   const getEvent = (e: EventUser) => {
     return e.events_id as GroupEvent
