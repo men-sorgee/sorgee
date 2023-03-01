@@ -62,9 +62,21 @@ export async function getEvent(id: string): Promise<GroupEvent> {
 
 export async function getEventDetail(id: string): Promise<EventDetail> {
   const client = await getAdminClient()
-  const event: GroupEvent = await client
-    .items('events')
-    .readOne(id, { fields: ['*', 'users.*' as any, , 'users.users_ud.*' as any] })
+  const event: GroupEvent = await client.items('events').readOne(id, {
+    filter: {
+      users: {
+        rsvp: { _in: ['confirmed', 'maybe'] },
+      },
+    },
+    fields: [
+      '*',
+      'users.*' as any,
+      'users.users_id.id' as any,
+      'users.users_id.picture' as any,
+      'users.users_id.nickname' as any,
+      'users.users_id.first_name' as any,
+    ],
+  })
   const {
     datetime,
     name,

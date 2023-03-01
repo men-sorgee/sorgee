@@ -1,6 +1,21 @@
-import { HStack, Stat, StatLabel, StatNumber, SimpleGrid } from '@chakra-ui/react'
-import { EventCard, LinkButton } from 'components/controls'
-import { EventStats } from 'lib/models'
+import {
+  HStack,
+  Stat,
+  StatLabel,
+  StatNumber,
+  SimpleGrid,
+  Avatar,
+  AvatarGroup,
+  Flex,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalOverlay,
+  useColorModeValue,
+} from '@chakra-ui/react'
+import { EventCard, LinkButton, MemberSpotlight } from 'components/controls'
+import { EventStats, EventUser, User } from 'lib/models'
 import Page from 'components/Page'
 import { useEffect, useState } from 'react'
 import { useUser, useEvent } from 'hooks'
@@ -23,6 +38,22 @@ export default function EventPage() {
       }
     }
   }, [event, eventLoading, stats])
+
+  const getAttendees = (rsvp) => {
+    return event?.attendance
+      ?.filter((u) => u.rsvp == rsvp)
+      .map(({ users_id: u }: EventUser) => u as User)
+      .map((u) => {
+        const picture = u.picture as string
+        const name = u.nickname || u.first_name || 'Brother'
+        const src = picture ? '/api/asset/' + picture : undefined
+        return {
+          id: u.id,
+          name,
+          src,
+        }
+      })
+  }
   return (
     <Page title={event ? event.name : 'Event'} loading={loading || eventLoading} requireAuth={true}>
       {member && (
@@ -36,14 +67,7 @@ export default function EventPage() {
                     <StatLabel>Invited</StatLabel>
                   </Stat>
                 )}
-                <Stat>
-                  <StatNumber>{stats.confirmed_count}</StatNumber>
-                  <StatLabel>Confirmed</StatLabel>
-                </Stat>
-                <Stat>
-                  <StatNumber>{stats.maybe_count}</StatNumber>
-                  <StatLabel>Maybe</StatLabel>
-                </Stat>
+
                 {stats.attended_count > 0 && (
                   <Stat>
                     <StatNumber>{stats.attended_count}</StatNumber>
@@ -65,6 +89,51 @@ export default function EventPage() {
               </>
             )}
           </SimpleGrid>
+          {stats && (
+            <Flex direction="column" gap={4}>
+              <HStack>
+                <Stat>
+                  <StatNumber>{stats.confirmed_count}</StatNumber>
+                  <StatLabel>Confirmed</StatLabel>
+                </Stat>
+                <AvatarGroup size="md" max={10}>
+                  {getAttendees('confirmed').map(({ id, name, src }) => (
+                    <Avatar
+                      key={id}
+                      name={name}
+                      src={src}
+                      title={name}
+                      cursor="pointer"
+                      onClick={() => {
+                        router.push('/members/' + id)
+                      }}
+                    />
+                  ))}
+                </AvatarGroup>
+              </HStack>
+
+              <HStack>
+                <Stat>
+                  <StatNumber>{stats.maybe_count}</StatNumber>
+                  <StatLabel>Maybe</StatLabel>
+                </Stat>
+                <AvatarGroup size="md" max={10}>
+                  {getAttendees('maybe').map(({ id, name, src }) => (
+                    <Avatar
+                      key={id}
+                      name={name}
+                      src={src}
+                      title={name}
+                      cursor="pointer"
+                      onClick={() => {
+                        router.push('/members/' + id)
+                      }}
+                    />
+                  ))}
+                </AvatarGroup>
+              </HStack>
+            </Flex>
+          )}
         </EventCard>
       )}
       <HStack spacing={4}>

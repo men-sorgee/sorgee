@@ -8,6 +8,7 @@ import {
   UserPhotoFieldType,
   UserPhoto,
   User,
+  DirectusFile,
 } from 'lib/models'
 import {
   uploadFile,
@@ -23,7 +24,7 @@ export default async function MemberImage(
   res: NextApiResponse<ApiResponse<Applicant> | ApiResponse>
 ) {
   try {
-    const method = withMethods(req, ['POST', 'DELETE'])
+    const method = withMethods(req, ['POST', 'DELETE', 'GET'])
     const member = await withUser(req, res)
 
     const { id, field, name, sort, description } = req.query
@@ -35,18 +36,26 @@ export default async function MemberImage(
     if (!member) {
       return res.status(401).json(ApiResponse(null, 'Unauthorized'))
     }
+
     let user = member
-    if (user_id != member.id) {
-      if (MemberLevel[member.user_type] <= MemberLevel.staff) {
-        return res.status(401).json(ApiResponse(null, 'Unauthorized'))
-      }
+    const self = user_id == member.id
+
+    if (!self) {
       user = await getUser(user_id)
       if (!user) {
         res.status(404).json(ApiResponse(null, 'Not Found'))
       }
     }
 
+    if (method != 'GET' && !self) {
+      return res.status(401).json(ApiResponse(null, 'Unauthorized'))
+    }
+
     switch (method) {
+      case 'GET': {
+        const image = user[image_field] as DirectusFile
+        return image ? res.status(200).redirect('/api/asset/' + image.id) : res.status(404).end()
+      }
       case 'POST': {
         const { private_folder, public_folder } = await getFolders(user)
         const folder = image_field == 'public' ? public_folder : private_folder
