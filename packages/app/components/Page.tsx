@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import AccessDenied from './AccessDenied'
 import { Flex, BoxProps, chakra, Box, Heading } from '@chakra-ui/react'
+import { MemberLevel } from '../lib/models'
 
 type Props = BoxProps & {
   id?: string
@@ -15,6 +16,7 @@ type Props = BoxProps & {
   description?: string
   sectionClass?: string
   requireAuth?: boolean
+  requiredLevel?: MemberLevel
 }
 
 const Page = ({
@@ -26,17 +28,31 @@ const Page = ({
   image,
   children,
   requireAuth = false,
+  requiredLevel,
   ...props
 }: Props) => {
   const { setMeta } = useMeta()
-  const { status } = useSession()
+  const { data: session, status } = useSession()
   const [denied, setDenied] = useState(false)
   useEffect(() => {
     setMeta(title, description, image)
-    if (status != 'loading' && requireAuth && status !== 'authenticated') {
-      setDenied(true)
+    if (status != 'loading' && requireAuth) {
+      if (status !== 'authenticated') setDenied(true)
+      else {
+        const level = MemberLevel[session.user.user_type]
+        setDenied(level < requiredLevel)
+      }
     }
-  }, [description, image, requireAuth, setMeta, status, title])
+  }, [
+    description,
+    image,
+    requireAuth,
+    requiredLevel,
+    session?.user.user_type,
+    setMeta,
+    status,
+    title,
+  ])
 
   if (denied) {
     return <AccessDenied />

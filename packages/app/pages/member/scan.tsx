@@ -80,30 +80,31 @@ export default function Scanner() {
             bgGradient="linear(to-r, accent.500, primary.400)"
             p={2}
             rounded="lg"
-            w="full"
-            maxW="560px"
             position="relative"
           >
-            <AspectRatio mx="auto" ratio={1}>
+            <AspectRatio ratio={1}>
               <BarcodeScannerComponent
                 width="100%"
+                height="90vh"
                 onUpdate={onScan}
                 stopStream={stopStream}
                 facingMode={facing}
                 torch={light}
               />
             </AspectRatio>
-            <HStack align="center" position="absolute" zIndex="1" spacing={4} mt={-12}>
+            <HStack align="center" position="absolute" zIndex="1" spacing={4} mt={-12} mx={'45%'}>
               <IconButton
-                colorScheme="ghost"
+                bg="white"
                 icon={<RefreshIcon />}
+                color="accent.500"
                 onClick={() => {
                   setFacing(facing == 'user' ? 'environment' : 'user')
                 }}
                 aria-label={''}
               />
               <IconButton
-                colorScheme="ghost"
+                bg="white"
+                color="accent.500"
                 icon={light ? <LightningBoltIconSolid /> : <LightningBoltIcon />}
                 onClick={() => {
                   setLight(!light)

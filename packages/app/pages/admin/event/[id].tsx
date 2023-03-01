@@ -1,65 +1,65 @@
-import { Alert, HStack, Flex, AlertIcon, Stat, StatLabel, StatNumber } from '@chakra-ui/react'
+import {
+  Alert,
+  HStack,
+  Flex,
+  AlertIcon,
+  Stat,
+  StatLabel,
+  StatNumber,
+  Avatar,
+  AvatarGroup,
+  SimpleGrid,
+} from '@chakra-ui/react'
 import { EventCard, LinkButton } from 'components/controls'
-import { MemberLevel, User, EventDetail, GroupEvent } from 'lib/models'
-import { GetServerSidePropsResult, NextPageContext } from 'next'
+import { EventStats, EventUser, MemberLevel, User } from 'lib/models'
 import Page from 'components/Page'
 import { useEffect, useState } from 'react'
-import { useUser } from '../../../hooks'
+import { useEvent, useUser } from '../../../hooks'
 import { useRouter } from 'next/router'
-import { getServerSession } from 'next-auth'
 
-type Props = {
-  event: EventDetail
-  user: User
-  error?: string
-}
-
-export async function getServerSideProps(
-  context: NextPageContext
-): Promise<GetServerSidePropsResult<Props>> {
-  const { authOptions } = await import('lib/auth/config')
-  const { req, res } = context
-  const session = await getServerSession(req as any, res, authOptions)
-  const level = MemberLevel[session.user.user_type]
-  if (!session || !session.user || level < MemberLevel.staff) {
-    return {
-      redirect: {
-        destination: '/calendar',
-        permanent: false,
-      },
-    }
-  }
-  const { getEventDetail } = await import('lib/services/directus/server/events')
-  const { getUser } = await import('lib/services/directus/server/users')
-  const { id, user_id, error } = context.query
-
-  let user = null
-  const event = (await getEventDetail(id as string)) as EventDetail
-
-  if (event && user_id) user = await getUser(user_id as string)
-
-  if (!event) {
-    return {
-      notFound: true,
-    }
-  }
-  if (error) return { props: { event, user, error: error as string } }
-  return { props: { event, user } }
-}
-
-export default function EventAdmin({ event, error }: Props) {
+export default function EventAdmin() {
   const router = useRouter()
   const { member, authorized, loading } = useUser(MemberLevel.staff)
 
+  const { id, error } = router.query
+  const [eventId] = useState<string>(String(id))
+  const { event, loading: eventLoading } = useEvent(eventId)
+  const [fees, setFees] = useState<number>(undefined)
+
+  const [stats, setStats] = useState<EventStats>(undefined)
+  const today = new Date()
   useEffect(() => {
-    if (!loading && !authorized) {
-      router.push('/calendar')
+    if (!eventLoading && event?.stats && !stats) {
+      setStats(event.stats)
+      if (event.stats.attended_count) {
+        setFees(event.stats.attended_count * event.cost)
+      }
     }
-  }, [authorized, loading, router])
+  }, [event, eventLoading, stats])
+  const getAttendees = (rsvp) => {
+    return event?.attendance
+      ?.filter((u) => u.rsvp == rsvp)
+      .map(({ users_id: u }: EventUser) => u as User)
+      .map((u) => {
+        const picture = u.picture as string
+        const name = u.nickname || u.first_name || 'Brother'
+        const src = picture ? '/api/asset/' + picture : undefined
+        return {
+          id: u.id,
+          name,
+          src,
+        }
+      })
+  }
   return (
-    <Page title={event.name + ' Admin'} loading={loading} requireAuth={true}>
-      {member && (
-        <EventCard event={event}>
+    <Page
+      title={event ? event.name + ' Admin' : 'Loading'}
+      loading={loading}
+      requireAuth={true}
+      requiredLevel={MemberLevel.staff}
+    >
+      {member && event && (
+        <EventCard event={event} showDescription={false}>
           <Flex direction="column" gap={4}>
             {error && (
               <Alert status="error" size="lg">
@@ -68,10 +68,86 @@ export default function EventAdmin({ event, error }: Props) {
               </Alert>
             )}
           </Flex>
+          <SimpleGrid columns={{ base: 2, md: 4 }} spacing={4} mb={4}>
+            {stats && (
+              <>
+                {stats.invited_count && (
+                  <Stat>
+                    <StatLabel>Invited</StatLabel>
+                    <StatNumber>{stats.invited_count}</StatNumber>
+                  </Stat>
+                )}
+
+                {stats.attended_count != undefined && (
+                  <Stat>
+                    <StatLabel>Attended</StatLabel>
+                    <StatNumber>{stats.attended_count}</StatNumber>
+                  </Stat>
+                )}
+                {stats.paid_count != undefined && (
+                  <Stat>
+                    <StatLabel>Paid</StatLabel>
+                    <StatNumber>{stats.paid_count}</StatNumber>
+                  </Stat>
+                )}
+                {fees != undefined && (
+                  <Stat>
+                    <StatLabel>Collected</StatLabel>
+                    <StatNumber>${fees}</StatNumber>
+                  </Stat>
+                )}
+              </>
+            )}
+          </SimpleGrid>
+          {stats && (
+            <Flex direction="column" gap={4}>
+              <HStack>
+                <Stat>
+                  <StatLabel>Confirmed</StatLabel>
+                  <StatNumber>{stats.confirmed_count}</StatNumber>
+                </Stat>
+                <AvatarGroup size="md" max={10}>
+                  {getAttendees('confirmed').map(({ id, name, src }) => (
+                    <Avatar
+                      key={id}
+                      name={name}
+                      src={src}
+                      title={name}
+                      cursor="pointer"
+                      onClick={() => {
+                        router.push('/members/' + id)
+                      }}
+                    />
+                  ))}
+                </AvatarGroup>
+              </HStack>
+
+              <HStack>
+                <Stat>
+                  <StatLabel>Maybe</StatLabel>
+                  <StatNumber>{stats.maybe_count}</StatNumber>
+                </Stat>
+                <AvatarGroup size="md" max={10}>
+                  {getAttendees('maybe').map(({ id, name, src }) => (
+                    <Avatar
+                      key={id}
+                      name={name}
+                      src={src}
+                      title={name}
+                      cursor="pointer"
+                      onClick={() => {
+                        router.push('/members/' + id)
+                      }}
+                    />
+                  ))}
+                </AvatarGroup>
+              </HStack>
+            </Flex>
+          )}
         </EventCard>
       )}
       <HStack spacing={4}>
-        <LinkButton href="/event" my={4}>
+        <LinkButton href="/admin/event" my={4}>
           Back to Events
         </LinkButton>
 

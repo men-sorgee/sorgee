@@ -24,15 +24,6 @@ export async function getServerSideProps(
   const { authOptions } = await import('lib/auth/config')
   const { req, res } = context
   const session = await getServerSession(req as any, res, authOptions)
-  const level = MemberLevel[session.user.user_type]
-  if (!session || !session.user || level < MemberLevel.staff) {
-    return {
-      redirect: {
-        destination: '/calendar',
-        permanent: false,
-      },
-    }
-  }
 
   const { listAdminEvents } = await import('lib/services/directus/server/events')
   const events = await listAdminEvents()
@@ -55,7 +46,12 @@ export default function AdminEventList({ events }: Props) {
   const activeEvent = eventList?.find((event) => Number(event.date) == Number(today))
 
   return (
-    <Page title="Event Admin" requireAuth={true} loading={loading}>
+    <Page
+      title="Event Admin"
+      requireAuth={true}
+      requiredLevel={MemberLevel.staff}
+      loading={loading}
+    >
       <Tabs isFitted m={0}>
         <TabList>
           {activeEvent && <Tab>Active</Tab>}

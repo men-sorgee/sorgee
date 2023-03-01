@@ -29,7 +29,7 @@ export default function EventPage() {
   const { member, loading } = useUser()
   const [fees, setFees] = useState<number>(undefined)
   const [stats, setStats] = useState<EventStats>(undefined)
-
+  const today = new Date()
   useEffect(() => {
     if (!eventLoading && event?.stats && !stats) {
       setStats(event.stats)
@@ -63,27 +63,27 @@ export default function EventPage() {
               <>
                 {stats.invited_count && (
                   <Stat>
-                    <StatNumber>{stats.invited_count}</StatNumber>
                     <StatLabel>Invited</StatLabel>
+                    <StatNumber>{stats.invited_count}</StatNumber>
                   </Stat>
                 )}
 
                 {stats.attended_count > 0 && (
                   <Stat>
-                    <StatNumber>{stats.attended_count}</StatNumber>
                     <StatLabel>Attended</StatLabel>
+                    <StatNumber>{stats.attended_count}</StatNumber>
                   </Stat>
                 )}
                 {stats.paid_count > 0 && (
                   <Stat>
-                    <StatNumber>{stats.paid_count}</StatNumber>
                     <StatLabel>Paid</StatLabel>
+                    <StatNumber>{stats.paid_count}</StatNumber>
                   </Stat>
                 )}
                 {stats.paid_count > 0 && fees > 0 && (
                   <Stat>
-                    <StatNumber>${fees}</StatNumber>
                     <StatLabel>Collected</StatLabel>
+                    <StatNumber>${fees}</StatNumber>
                   </Stat>
                 )}
               </>
@@ -93,8 +93,8 @@ export default function EventPage() {
             <Flex direction="column" gap={4}>
               <HStack>
                 <Stat>
-                  <StatNumber>{stats.confirmed_count}</StatNumber>
                   <StatLabel>Confirmed</StatLabel>
+                  <StatNumber>{stats.confirmed_count}</StatNumber>
                 </Stat>
                 <AvatarGroup size="md" max={10}>
                   {getAttendees('confirmed').map(({ id, name, src }) => (
@@ -114,8 +114,8 @@ export default function EventPage() {
 
               <HStack>
                 <Stat>
-                  <StatNumber>{stats.maybe_count}</StatNumber>
                   <StatLabel>Maybe</StatLabel>
+                  <StatNumber>{stats.maybe_count}</StatNumber>
                 </Stat>
                 <AvatarGroup size="md" max={10}>
                   {getAttendees('maybe').map(({ id, name, src }) => (

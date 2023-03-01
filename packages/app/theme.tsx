@@ -247,8 +247,8 @@ export default function getTheme(
             mt: '1rem',
           },
           ul: {
-            //margin: '0 auto',
-            //width: 'fit-content',
+            margin: '0 auto',
+            width: 'fit-content',
             listStylePosition: 'inside',
             padding: '0',
           },

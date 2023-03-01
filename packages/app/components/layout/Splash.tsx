@@ -29,6 +29,7 @@ export default function Splash({ authenticated }: { authenticated: boolean }) {
   useEffect(() => {
     let returningUser = authenticated || localStorage.getItem('seenPopUp')
     setDisplayPopUp(!returningUser)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

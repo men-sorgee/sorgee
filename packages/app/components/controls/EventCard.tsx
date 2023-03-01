@@ -120,7 +120,7 @@ export const EventCard = ({
           </SimpleGrid>
 
           {showDescription && (
-            <Box maxH="10rem" overflowY="auto">
+            <Box maxH="50vh" overflowY="auto">
               <Markdown content={event.description} />
             </Box>
           )}

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useRemark } from 'react-remark'
-import { Heading, Image, ListItem, OrderedList, Text, UnorderedList } from '@chakra-ui/react'
+import { Alert, Heading, Image, ListItem, OrderedList, Text, UnorderedList } from '@chakra-ui/react'
 
 export const Markdown = ({ content }: { content: string }) => {
   const [reactContent, setMarkdownSource] = useRemark({
@@ -29,6 +29,13 @@ export const Markdown = ({ content }: { content: string }) => {
         ),
         ol: ({ children }: { children: React.ReactNode }) => <OrderedList>{children}</OrderedList>,
         li: ({ children }: { children: React.ReactNode }) => <ListItem>{children}</ListItem>,
+        blockquote: ({ children }: { children: React.ReactNode }) => (
+          <Alert rounded="lg" shadow="lg" mt={4}>
+            <Heading size="md" m={0}>
+              {children}
+            </Heading>
+          </Alert>
+        ),
       },
     },
   })

@@ -123,7 +123,7 @@ export const useUser = (
   authorized: boolean
 } => {
   const { level, ...data } = useContext(UserContext)
-  let authorized = level > minLevel
+  let authorized = level >= minLevel
   return {
     ...data,
     level,
