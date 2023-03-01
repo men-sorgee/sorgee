@@ -82,8 +82,7 @@ export const NotificationCard = chakra(({ member, notification }: Props) => {
         flexDirection="column"
         alignItems="flex-start"
       >
-        {subject && <AlertTitle fontWeight="bold">{subject}</AlertTitle>}
-        {message && <AlertDescription textAlign={'left'}>{message}</AlertDescription>}
+        {subject && <AlertTitle fontWeight={isNew ? 'bold' : 'normal'}>{subject}</AlertTitle>}
       </Alert>
       <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
         <ModalOverlay />

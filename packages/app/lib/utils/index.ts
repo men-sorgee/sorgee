@@ -1,8 +1,8 @@
 import { ApiError, ApiResponse } from 'lib/models'
-import { format } from 'date-fns'
+import { format, addMinutes } from 'date-fns'
 
-export function toLocaleDate(value: string) {
-  return new Date(value)
+export function toLocalDate(value: string) {
+  return addMinutes(new Date(value), new Date().getTimezoneOffset())
 }
 
 export const getUTCNow = () => {
@@ -21,7 +21,7 @@ export const getUTCNow = () => {
 }
 
 export function getEventDate(eventStart: string) {
-  let date = new Date(eventStart)
+  let date = toLocalDate(eventStart)
   return {
     day: format(date, 'dddd'),
     short: format(date, 'MMM d'),

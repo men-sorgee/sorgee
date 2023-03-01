@@ -1,5 +1,13 @@
 import { UserInvite } from 'lib/models'
-import { DirectusFile, User, UserAccount, Notification, UserPhoto, EventUser } from './directus'
+import {
+  DirectusFile,
+  User,
+  UserAccount,
+  Notification,
+  UserPhoto,
+  EventUser,
+  Rating,
+} from './directus'
 
 type Color = {
   DEFAULT: string
@@ -185,6 +193,7 @@ export type Member = Applicant & {
   notifications: AppNotification[]
   signed_waiver: boolean
   presence: 'offline' | 'online' | 'away'
+  ratings: Rating[]
 
   video_consent: boolean
   photo_consent: boolean

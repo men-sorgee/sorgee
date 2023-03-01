@@ -27,9 +27,11 @@ export async function listInvites(user_id: string): Promise<EventUser[]> {
   const { data } = await client.items('events_users').readByQuery({
     filter: {
       users_id: { _eq: user_id },
-      events_id: { status: { _in: ['planned', 'scheduled', 'occurred'] } },
+      events_id: {
+        status: { _in: ['planned', 'scheduled', 'occurred'] },
+      },
     },
-    fields: ['*.*' as any],
+    fields: ['*.*' as any, 'events_id.*' as any, 'events_id.users.*' as any],
     sort: ['events_id.datetime' as any],
   })
 

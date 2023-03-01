@@ -15,6 +15,7 @@ import {
   UserPhoto,
 } from 'lib/models'
 import { FieldFilter } from '@directus/sdk'
+import { BreadcrumbLink } from '@chakra-ui/react'
 
 export async function createUser(member: Partial<User>): Promise<User> {
   const adminClient = await getAdminClient()
@@ -153,9 +154,15 @@ export async function getRating(user_id: string, collection: RatingCollection, i
       filter['event'] = {
         _eq: item_id,
       }
+      break
+    }
+    case 'users': {
+      filter['member'] = {
+        _eq: item_id,
+      }
+      break
     }
   }
-
   const { data: ratings } = await adminClient.items('rating').readByQuery({
     filter,
   })
@@ -183,6 +190,10 @@ export async function setRating(
     switch (collection) {
       case 'events': {
         value.event = item
+        break
+      }
+      case 'users': {
+        value.member = item
         break
       }
     }

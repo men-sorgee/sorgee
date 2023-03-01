@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { MemberBadge } from '.'
-import { getAssetUrl, toLocaleDate } from 'lib/utils'
+import { getAssetUrl, toLocalDate } from 'lib/utils'
 import { Member, SearchableMember } from 'lib/models'
 import { formatDistanceToNowStrict } from 'date-fns'
 import { ImageModal } from './ImageModal'
@@ -35,7 +35,7 @@ export const MemberCard = chakra(({ zoom = false, user, size = 'lg', ...props }:
 
       setLastLogin(
         user?.last_login
-          ? `Last login ${formatDistanceToNowStrict(toLocaleDate(user.last_login))} ago`
+          ? `Last login ${formatDistanceToNowStrict(toLocalDate(user.last_login))} ago`
           : undefined
       )
     }

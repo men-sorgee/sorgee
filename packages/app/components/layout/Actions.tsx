@@ -72,7 +72,7 @@ export default function ActionsNav({ children, ...props }: Props) {
               aria-label={'Calendar'}
               title="Calendar"
             />
-            {events.length > 0 && (
+            {events?.length > 0 && (
               <Badge
                 ml={-4}
                 zIndex="overlay"
@@ -84,7 +84,7 @@ export default function ActionsNav({ children, ...props }: Props) {
                 color="white"
                 title="Calendar Events"
               >
-                {events.length}
+                {events?.length}
               </Badge>
             )}
           </Link>
@@ -99,7 +99,7 @@ export default function ActionsNav({ children, ...props }: Props) {
               aria-label={'Invites'}
               title="My Events"
             />
-            {invitations.length > 0 && (
+            {invitations?.length > 0 && (
               <Badge
                 ml={-4}
                 zIndex="overlay"
@@ -110,7 +110,7 @@ export default function ActionsNav({ children, ...props }: Props) {
                 py={0.5}
                 color="white"
               >
-                {invitations.length}
+                {invitations?.length}
               </Badge>
             )}
           </Link>

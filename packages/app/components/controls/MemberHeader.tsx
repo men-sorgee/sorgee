@@ -1,4 +1,4 @@
-import { Flex, HStack, Badge, Box } from '@chakra-ui/react'
+import { Flex, HStack, Badge, Box, Spacer } from '@chakra-ui/react'
 import { SearchableMember } from 'lib/models'
 import { MemberCard } from './MemberCard'
 import { capitalCase } from 'change-case'
@@ -16,11 +16,16 @@ export const MemberHeader = ({
 }) => {
   return (
     <>
-      <Flex direction="column" justify="flex-between" align="center" alignItems="center">
-        <HStack>
+      <Flex direction="column" justify="space-between" align="center" alignItems="center">
+        <Flex justify="left" align="start" w="full">
           <MemberCard user={member} zoom={zoom} size="xl" />
-          {children && <Box>{children}</Box>}
-        </HStack>
+          {children && (
+            <>
+              <Spacer />
+              <Box>{children}</Box>
+            </>
+          )}
+        </Flex>
 
         <Flex justify="center" align="start" my={2} w="full">
           {member?.mannerisms && (

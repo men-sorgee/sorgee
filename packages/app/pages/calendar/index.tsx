@@ -89,7 +89,7 @@ function CalendarPage() {
     }
   }
 
-  const line = useColorModeValue(brand.colors.primary[500], '#000000')
+  const line = useColorModeValue(brand.colors.primary[700], '#000000')
   const bg = useColorModeValue('white', brand.colors.gray[300])
   return (
     <Page

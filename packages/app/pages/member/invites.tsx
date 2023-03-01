@@ -1,6 +1,7 @@
 import {
   Box,
   Heading,
+  Divider,
   Text,
   AlertIcon,
   Alert,
@@ -12,14 +13,23 @@ import {
   Badge,
   Spacer,
   Flex,
+  Avatar,
 } from '@chakra-ui/react'
 
 import Page from 'components/Page'
 import { useUser, useUserEvents } from 'hooks'
 import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
-import { EventUser, Member, GroupEvent, MemberLevel } from 'lib/models'
-import { EventCard, EventRSVPCard, LinkButton, RateItem } from 'components/controls'
+import { EventUser, Member, GroupEvent, MemberLevel, User } from 'lib/models'
+import {
+  EventCard,
+  EventRSVPCard,
+  LinkButton,
+  MemberSpotlight,
+  RateItem,
+  UserCard,
+} from 'components/controls'
+import { getAssetUrl } from '../../lib/utils'
 
 export type PageProps = {}
 
@@ -27,7 +37,7 @@ export default function EventsPage({}: PageProps) {
   const today = new Date(new Date().toDateString())
 
   const [allowed, setAllowed] = useState(false)
-  const { member, loading, level } = useUser()
+  const { member, loading, level, reload: reloadUser } = useUser()
   const { invitations, upcoming, past, reload } = useUserEvents()
 
   useEffect(() => {
@@ -49,7 +59,7 @@ export default function EventsPage({}: PageProps) {
     <Page loading={loading} title="Your Events" description="Upcoming events." requireAuth={true}>
       {allowed ? (
         <>
-          <Tabs isFitted m={0}>
+          <Tabs isFitted m={0} isLazy>
             <div className="no-print">
               <TabList>
                 {activeEvent && <Tab className="no-print">Active</Tab>}
@@ -101,7 +111,7 @@ export default function EventsPage({}: PageProps) {
 
               <TabPanel p={0}>
                 <Heading mb={4}>Past Events</Heading>
-                <PastEvents list={past} />
+                <PastEvents member={member} list={past} reloadUser={reloadUser} />
               </TabPanel>
             </TabPanels>
           </Tabs>
@@ -166,16 +176,33 @@ function Events({
   )
 }
 
-function PastEvents({ list }: { list: EventUser[] }) {
-  if (list.length === 0) {
+function PastEvents({
+  member,
+  list,
+  reloadUser,
+}: {
+  list: EventUser[]
+  member: Member
+  reloadUser: () => void
+}) {
+  if (list.length === 0 || !member?.ratings?.length) {
     return null
   }
+
+  const ratedUserIds =
+    member.ratings.filter((r) => r.collection == 'users').map((r) => r.member as string) || []
 
   const PastEventItem = ({ invite }: { invite: EventUser }) => {
     const event = invite.events_id as GroupEvent
     const surveyId = event.survey ? event.survey[0] : undefined
+    const users = event.users as EventUser[]
+    const attendees = users
+      .filter((u) => u.attended)
+      .map((u) => u.users_id as string)
+      .filter((u) => !ratedUserIds.includes(u))
+
     return (
-      <Box>
+      <Box key={invite.id}>
         <h5>
           RSVP: {invite.rsvp.toUpperCase()} | {invite.attended ? 'You attended!' : 'Did not attend'}
         </h5>
@@ -191,15 +218,40 @@ function PastEvents({ list }: { list: EventUser[] }) {
             You showed up, but did not RSVP.
           </Alert>
         )}
-        <Flex mt={4} gap={4} align="end" justify="space-between">
-          {(invite.attended && surveyId && (
+        <Flex mt={4} gap={4} align="start" justify="space-between">
+          <Heading as="h5" size="md" m={0}>
+            Rate Event:
+          </Heading>
+          <RateItem item_id={event.id} collection="events" />
+          <Spacer />
+          {invite.attended && surveyId && (
             <LinkButton size="lg" href={`/survey/${surveyId}`} colorScheme="accent">
               Take the Survey
             </LinkButton>
-          )) || <Spacer />}
-
-          <RateItem item_id={event.id} collection="events" />
+          )}
         </Flex>
+
+        {attendees.length > 0 && (
+          <>
+            <Divider my={4} />
+            <Heading as="h5" size="md" m={0}>
+              Rate Attendees:
+            </Heading>
+          </>
+        )}
+        {attendees.map((u: string) => (
+          <Box key={event.id + '-' + u}>
+            <MemberSpotlight id={u} full={false}>
+              <RateItem
+                onChange={() => {
+                  reloadUser()
+                }}
+                item_id={u}
+                collection="users"
+              />
+            </MemberSpotlight>
+          </Box>
+        ))}
       </Box>
     )
   }
