@@ -1,5 +1,17 @@
-import { Box, Tabs, TabList, Tab, TabPanels, TabPanel, Text, Wrap } from '@chakra-ui/react'
+import {
+  Box,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
+  Text,
+  Wrap,
+  Flex,
+  Spacer,
+} from '@chakra-ui/react'
 import { useMember, useMeta } from 'hooks'
+import { formatDistanceToNowStrict } from 'date-fns'
 import {
   DirectusField,
   memberProfileFields,
@@ -14,6 +26,7 @@ import { ImageGallery } from './ImageGallery'
 import { Loading } from './Loading'
 import { MemberHeader } from './MemberHeader'
 import { MemberPropertyGroup } from './MemberPropertyGroup'
+import { Rating } from './Rating'
 
 type Props = {
   id: string
@@ -29,20 +42,39 @@ export const MemberSpotlight = ({ id, fields }: Props) => {
   if (loading || !id || !member) return <Loading />
   const publicPhotos = member.my_photos?.filter((p) => p.is_public) || []
   return (
-    <>
-      <Box p={4}>
-        <MemberHeader member={member} zoom={true} />
+    <Flex direction="column" justify="space-between">
+      <Box p={4} bgGradient="linear(to-bl, primary.300, primary.700)" rounded="lg" color="white">
+        <MemberHeader member={member} zoom={true}></MemberHeader>
         <Text>{member?.biography}</Text>
-      </Box>
-      <Box>
-        <Wrap m={4}>
-          {publicPhotos.length > 0 && (
-            <ImageGallery
-              images={publicPhotos.map((p: UserPhoto) => `/api/asset/${p.directus_files_id}`)}
+        <Flex justify="space-between">
+          <Text fontSize="xs">
+            {member.last_login && (
+              <>
+                Last Login: {formatDistanceToNowStrict(new Date(member.last_login))} ago
+                <br />
+              </>
+            )}
+            Member Since: {new Date(member.date_created).toLocaleDateString()}
+          </Text>
+          {member?.rating > 0 && (
+            <Rating
+              value={member.rating || 0}
+              mt={2}
+              aria-label="User Rating"
+              size={['xs']}
+              simple
             />
           )}
-        </Wrap>
+        </Flex>
       </Box>
+      <Box my={4} flex="grow">
+        {publicPhotos.length > 0 && (
+          <ImageGallery
+            images={publicPhotos.map((p: UserPhoto) => `/api/asset/${p.directus_files_id}`)}
+          />
+        )}
+      </Box>
+
       <Tabs
         isFitted
         variant="enclosed"
@@ -50,6 +82,7 @@ export const MemberSpotlight = ({ id, fields }: Props) => {
         fontSize={['sm', 'md', 'lg']}
         w="full"
         px={2}
+        flex="grow"
       >
         <TabList>
           <Tab>General</Tab>
@@ -57,7 +90,7 @@ export const MemberSpotlight = ({ id, fields }: Props) => {
           <Tab>Interests</Tab>
           <Tab>Health</Tab>
         </TabList>
-        <TabPanels maxH={300} minH={200} overflowY="scroll" my={2}>
+        <TabPanels maxH="100%" overflowY="auto" my={2}>
           <TabPanel p={4}>
             <MemberPropertyGroup
               k="profile"
@@ -107,6 +140,6 @@ export const MemberSpotlight = ({ id, fields }: Props) => {
           </TabPanel>
         </TabPanels>
       </Tabs>
-    </>
+    </Flex>
   )
 }

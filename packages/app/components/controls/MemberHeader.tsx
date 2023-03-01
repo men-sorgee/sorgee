@@ -1,19 +1,28 @@
-import { Flex, Badge } from '@chakra-ui/react'
+import { Flex, HStack, Badge, Box } from '@chakra-ui/react'
 import { SearchableMember } from 'lib/models'
 import { MemberCard } from './MemberCard'
 import { capitalCase } from 'change-case'
+
+import { ReactNode } from 'react'
+
 export const MemberHeader = ({
+  children,
   member,
   zoom = false,
 }: {
+  children?: ReactNode
   member: Partial<SearchableMember>
   zoom?: boolean
 }) => {
   return (
     <>
-      <Flex direction="column" justify="flex-between" align="top">
-        <MemberCard user={member} zoom={zoom} size="xl" />
-        <Flex justify="start" align="start" my={2} w="full">
+      <Flex direction="column" justify="flex-between" align="center" alignItems="center">
+        <HStack>
+          <MemberCard user={member} zoom={zoom} size="xl" />
+          {children && <Box>{children}</Box>}
+        </HStack>
+
+        <Flex justify="center" align="start" my={2} w="full">
           {member?.mannerisms && (
             <Badge size="lg" colorScheme="orange" rounded={0}>
               {capitalCase(member.mannerisms)}

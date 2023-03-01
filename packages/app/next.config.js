@@ -33,7 +33,7 @@ const getConfig = ( phase ) => {
       return [
         {
           source: '/api/unsplash/:path*',
-          destination: `https://api.unsplash.com/photos?client_id=${ process.env.API_KEY_UNSPLASH }`
+          destination: `https://api.unsplash.com/photos/:path*?client_id=${ process.env.API_KEY_UNSPLASH }`
         }
       ];
     },

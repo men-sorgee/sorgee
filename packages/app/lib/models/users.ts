@@ -151,6 +151,9 @@ export type Applicant = Profile & {
   social_scenes: User['social_scenes']
   photo?: string | DirectusFile
   photo_denial_reason: string | null
+
+  date_created: string
+  date_updated: string
 }
 export const applicantFields: Array<keyof Applicant> = [
   ...profileFields,

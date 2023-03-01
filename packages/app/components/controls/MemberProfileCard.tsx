@@ -27,9 +27,10 @@ export const MemberProfileCard = chakra(({ member, onClick, ...props }: Props) =
         <Card
           w="full"
           h="full"
-          bg={useColorModeValue('gray.100', 'gray.700')}
+          bg={useColorModeValue('gray.200', 'gray.700')}
           border="1px solid transparent"
           borderColor="accent.400"
+          color="white"
           _hover={{ shadow: '2xl', borderColor: 'accent.500' }}
           {...props}
         >
@@ -49,11 +50,16 @@ export const MemberProfileCard = chakra(({ member, onClick, ...props }: Props) =
             </Text>
           </CardBody>
           <CardFooter justify="space-between" alignItems="end">
-            {member.last_login && (
-              <Text fontSize="xs">
-                Last Login: {formatDistanceToNowStrict(new Date(member.last_login))} ago
-              </Text>
-            )}
+            <Text fontSize="xs">
+              {member.last_login && (
+                <>
+                  Last Login: {formatDistanceToNowStrict(new Date(member.last_login))} ago
+                  <br />
+                </>
+              )}
+              Member Since: {new Date(member.date_created).toLocaleDateString()}
+            </Text>
+
             <Spacer />
             <Text display="none">
               Ratings are based on the number of stars a member has received from other members and

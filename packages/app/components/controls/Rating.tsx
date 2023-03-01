@@ -18,7 +18,7 @@ export const Rating = ({
   size = 'xs',
   icon = <StarIcon />,
   scale = 5,
-  fillColor = 'yellow.400',
+  fillColor = 'yellow.300',
   strokeColor = 'yellow.700',
   simple = false,
   mt,

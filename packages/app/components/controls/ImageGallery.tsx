@@ -14,8 +14,9 @@ export const ImageGallery = ({ images }: { images: string[] }) => {
     setOpenIndex(index)
   }, [])
 
+  const itemDisplayCount = useBreakpointValue([0, 0, 1, 3])
   return (
-    <Box position={'relative'} height="30vh" width={'full'} overflow={'hidden'}>
+    <Box position="relative" height="30vh" width={'full'} overflow={'hidden'}>
       {/* Left Icon */}
       {showScroll && (
         <IconButton
@@ -24,10 +25,10 @@ export const ImageGallery = ({ images }: { images: string[] }) => {
           colorScheme="messenger"
           borderRadius="full"
           position="absolute"
-          bg="black"
+          bg="transparent"
           color="accent.400"
-          left={side}
-          top={top}
+          left={'1%'}
+          top={'50%'}
           transform={'translate(0%, -50%)'}
           zIndex={2}
           hidden={viewIndex === 0}
@@ -44,9 +45,9 @@ export const ImageGallery = ({ images }: { images: string[] }) => {
           colorScheme="messenger"
           borderRadius="full"
           position="absolute"
-          right={side}
-          top={top}
-          bg="black"
+          right={'1%'}
+          top={'50%'}
+          bg="transparent"
           color="accent.400"
           transform={'translate(0%, -50%)'}
           zIndex={2}
@@ -63,13 +64,15 @@ export const ImageGallery = ({ images }: { images: string[] }) => {
             key={index}
             rounded="lg"
             shadow="lg"
-            height={'lg'}
+            maxW="lg"
+            mx="auto"
+            h="full"
             position="relative"
             backgroundPosition="center"
             backgroundRepeat="no-repeat"
             backgroundImage={`url(${url})`}
             backgroundSize="cover"
-            hidden={viewIndex !== index}
+            hidden={viewIndex > index + itemDisplayCount}
             onClick={() => {
               handleImageClick(index)
             }}

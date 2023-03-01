@@ -41,7 +41,7 @@ export const MemberPropertyGroup = ({
   return (
     <SimpleGrid key={k} columns={[minCols, 2, maxCols]} spacing={1} alignItems="start">
       {fieldList
-        ?.filter((f) => member[f] != undefined)
+        ?.filter((f) => member[f] != undefined && member[f]?.length > 0)
         ?.map(
           (field, i: number) =>
             member[field] != undefined && (
@@ -51,17 +51,18 @@ export const MemberPropertyGroup = ({
               >
                 {Array.isArray(member[field]) ? (
                   <>
-                    <Heading as="h4" size="sm">
+                    <Heading as="h4" size="sm" m={0}>
                       {capitalCase(fields[field].field)}:
                     </Heading>
-                    <Wrap gap={2} my={4}>
+                    <Wrap gap={2} mb={2}>
                       {member[field]?.map((item: any, d: number) => (
                         <Text
                           lineHeight={1}
                           color="primary.400"
                           key={`badge-${item}-${d}`}
-                          size="2xl"
+                          size="md"
                           fontWeight="bold"
+                          m={0}
                         >
                           {getValue(field, item)}
                           {d < member[field].length - 1 && ','}
@@ -70,13 +71,19 @@ export const MemberPropertyGroup = ({
                     </Wrap>
                   </>
                 ) : (
-                  <Box my={2}>
+                  <Box mb={2}>
                     <Heading as="h4" size="sm" m={0}>
                       {capitalCase(fields[field].field)}:
                     </Heading>
-                    <Heading as="h5" size="md" color="primary.400" textTransform="capitalize">
+                    <Text
+                      m={0}
+                      size="md"
+                      fontWeight="bold"
+                      color="primary.400"
+                      textTransform="capitalize"
+                    >
                       {getValue(field, member[field])}
-                    </Heading>
+                    </Text>
                   </Box>
                 )}
               </GridItem>

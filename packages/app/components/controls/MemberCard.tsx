@@ -8,6 +8,7 @@ import {
   AvatarBadge,
   Tooltip,
   chakra,
+  useColorModeValue,
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { MemberBadge } from '.'
@@ -25,6 +26,7 @@ export const MemberCard = chakra(({ zoom = false, user, size = 'lg', ...props }:
   const [loaded, setLoaded] = useState(false)
   const [pictureSrc, setPictureSrc] = useState<string | null>(null)
   const [lastLogin, setLastLogin] = useState<string | null>(null)
+  const textColor = useColorModeValue('gray.700', 'white')
   useEffect(() => {
     if (!loaded && user) {
       const picture = user.picture
@@ -74,11 +76,11 @@ export const MemberCard = chakra(({ zoom = false, user, size = 'lg', ...props }:
             imageSrc={pictureSrc}
           />
           <VStack spacing={1} align="flex-start">
-            <Heading size="md" textTransform="uppercase" m={0} color="white">
+            <Heading size="md" textTransform="uppercase" m={0} color={'white'}>
               {user?.nickname || user?.first_name}
             </Heading>
             <MemberBadge size="lg" user_type={user?.user_type} my={2} />
-            <Text fontSize="sm" color="text">
+            <Text fontSize="sm" color={'white'}>
               {user?.city || 'Nearby'} {user?.state}
             </Text>
           </VStack>

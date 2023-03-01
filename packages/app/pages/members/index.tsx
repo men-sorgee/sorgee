@@ -240,6 +240,7 @@ export default function MemberListPage(props: PageProps) {
               }}
             >
               <option value="last_login">Recently Online</option>
+              <option value="date_created">Registration Date</option>
               <option value="nickname">By Username</option>
               <option value="rating">Rating</option>
             </Select>
@@ -258,7 +259,7 @@ export default function MemberListPage(props: PageProps) {
           <Pager page={page} pageCount={pageCount} setPage={setPage} />
         </form>
       </FormProvider>
-      <Modal size="2xl" isOpen={isOpen} onClose={() => setId(undefined)}>
+      <Modal size="full" isOpen={isOpen} onClose={() => setId(undefined)}>
         <ModalOverlay backdropFilter="auto" backdropBlur="2px" />
         <ModalContent
           bg={useColorModeValue('white', 'black')}

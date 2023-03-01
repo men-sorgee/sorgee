@@ -5,7 +5,7 @@ export const ImageModal = ({ isOpen, onClose, imageSrc }) => {
     <Modal isOpen={isOpen} onClose={onClose} size="4xl" isCentered>
       <ModalOverlay />
 
-      <ModalContent>
+      <ModalContent m={4}>
         <ModalCloseButton />
         {/* eslint-disable-next-line react/jsx-no-undef */}
         <Image
