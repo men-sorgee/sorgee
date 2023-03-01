@@ -14,7 +14,7 @@ import {
   Heading,
 } from '@chakra-ui/react'
 
-export default function Splash() {
+export default function Splash({ authenticated }: { authenticated: boolean }) {
   const [displayPopUp, setDisplayPopUp] = useState(true)
 
   const closeAsAdult = () => {
@@ -23,12 +23,11 @@ export default function Splash() {
   }
 
   const closePopUp = () => {
-    localStorage.setItem('seenPopUp', 'true')
     setDisplayPopUp(false)
   }
 
   useEffect(() => {
-    let returningUser = localStorage.getItem('seenPopUp')
+    let returningUser = authenticated || localStorage.getItem('seenPopUp')
     setDisplayPopUp(!returningUser)
   }, [])
 
@@ -40,7 +39,7 @@ export default function Splash() {
         closeOnOverlayClick={false}
         isOpen={displayPopUp}
         onClose={closePopUp}
-        motionPreset="slideInBottom"
+        motionPreset="scale"
       >
         <ModalOverlay />
         <ModalContent

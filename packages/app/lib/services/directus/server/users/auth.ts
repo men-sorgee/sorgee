@@ -26,9 +26,10 @@ export async function extendUserPresence(id: string) {
 
 export async function expireSessions() {
   const adminClient = await getAdminClient()
+  const now = addHours(getNow(), -4)
   const { data: expired } = await adminClient.items('users').readByQuery({
     filter: {
-      session_expire: { _lt: '$NOW' },
+      session_expire: { _lt: now.toISOString() },
       presence: { _eq: 'online' },
     },
     fields: ['id'],
@@ -121,9 +122,10 @@ export async function addVerificationToken(
 
 export async function findVerificationToken(email: string, token?: string) {
   const adminClient = await getAdminClient()
+  const now = getNow()
   const filter = {
     email: { _eq: email },
-    expires: { _gt: '$NOW' },
+    expires: { _gt: now.toISOString },
   }
   if (token) filter['token'] = { _eq: token }
 
@@ -138,9 +140,10 @@ export async function findVerificationToken(email: string, token?: string) {
 
 export async function expireOldVerificationTokens() {
   const adminClient = await getAdminClient()
+  const now = getNow()
   const { data: expired } = await adminClient.items('user_verification_token').readByQuery({
     filter: {
-      expires: { _lt: '$NOW' },
+      expires: { _lt: now.toISOString() },
     },
     fields: ['id'],
   })

@@ -56,12 +56,14 @@ function Layout({
               <Footer />
             </Box>
           </Flex>
-          <Slide in={isOpen} direction="bottom">
-            <Actions />
-          </Slide>
+          {authenticated && (
+            <Slide in={isOpen} direction="bottom">
+              <Actions />
+            </Slide>
+          )}
         </ErrorBoundary>
       </Flex>
-      <Splash />
+      <Splash authenticated={authenticated} />
     </>
   )
 }
