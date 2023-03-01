@@ -1,13 +1,11 @@
 import { getAdminClient, updateUser } from '..'
 import { User, UserAccount, UserSession, UserVerificationToken } from 'lib/models'
 import { addHours } from 'date-fns'
+import { getUTCNow } from 'lib/utils'
 
-const getNow = () => {
-  return addHours(new Date(), -(new Date().getTimezoneOffset() / 60))
-}
 export async function recordUserLogin(id: string) {
   const adminClient = await getAdminClient()
-  const now = getNow()
+  const now = getUTCNow()
   return await adminClient.items('users').updateOne(id, {
     presence: 'online',
     last_login: now.toISOString(),
@@ -16,7 +14,7 @@ export async function recordUserLogin(id: string) {
 }
 
 export async function extendUserPresence(id: string) {
-  const now = getNow()
+  const now = getUTCNow()
   await updateUser(id, {
     presence: 'online',
     session_expire: addHours(now, 3).toISOString(),
@@ -26,7 +24,7 @@ export async function extendUserPresence(id: string) {
 
 export async function expireSessions() {
   const adminClient = await getAdminClient()
-  const now = addHours(getNow(), -4)
+  const now = addHours(getUTCNow(), -4)
   const { data: expired } = await adminClient.items('users').readByQuery({
     filter: {
       session_expire: { _lt: now.toISOString() },
@@ -103,7 +101,15 @@ export async function deleteSession(token: string) {
   console.log('deleteSession', token)
   const adminClient = await getAdminClient()
   const session = await findSession(token)
-  if (session) await adminClient.items('user_session').deleteOne(session.id)
+  if (!session) return
+
+  const userId = session.user as string
+
+  await adminClient.items('user_session').deleteOne(session.id)
+
+  await adminClient.items('users').updateOne(userId, {
+    presence: 'offline',
+  })
 }
 
 export async function addVerificationToken(
@@ -122,7 +128,7 @@ export async function addVerificationToken(
 
 export async function findVerificationToken(email: string, token?: string) {
   const adminClient = await getAdminClient()
-  const now = getNow()
+  const now = getUTCNow()
   const filter = {
     email: { _eq: email },
     expires: { _gt: now.toISOString },
@@ -140,7 +146,7 @@ export async function findVerificationToken(email: string, token?: string) {
 
 export async function expireOldVerificationTokens() {
   const adminClient = await getAdminClient()
-  const now = getNow()
+  const now = getUTCNow()
   const { data: expired } = await adminClient.items('user_verification_token').readByQuery({
     filter: {
       expires: { _lt: now.toISOString() },
