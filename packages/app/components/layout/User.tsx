@@ -8,6 +8,7 @@ import {
   useColorMode,
   MenuDivider,
   Link,
+  MenuGroup,
 } from '@chakra-ui/react'
 import { LinkButton, MemberAvatar, UserCard } from 'components/controls'
 import Notifications from './Notifications'
@@ -28,7 +29,6 @@ import {
   AdjustmentsIcon,
 } from '@heroicons/react/outline'
 import { useUser, useSite } from 'hooks'
-import { useEffect } from 'react'
 
 interface Props {}
 
@@ -38,6 +38,14 @@ export default function UserMenu(_props: Props) {
   const { authenticated, user, member, isApplicant, isMember, isStaff } = useUser()
   const showApply = !site?.invite_only
   const person = member || user
+
+  const memberMenu = [
+    {
+      icon: <UserGroupIcon color={'white'} width={'1.5rem'} />,
+      label: 'Members',
+      href: '/members',
+    },
+  ]
   return (
     <>
       {authenticated ? (
@@ -46,7 +54,7 @@ export default function UserMenu(_props: Props) {
             <MemberAvatar />
           </MenuButton>
 
-          <MenuList bg="black" alignItems={'center'}>
+          <MenuList bg="black" maxH="80vh" overflowY="auto">
             <Box p={4} m={2} mt={0} bgGradient="linear(to-bl, primary.300, accent.300)">
               <UserCard user={person} />
               <span id="account-email" hidden>
@@ -92,8 +100,9 @@ export default function UserMenu(_props: Props) {
                   as={Link}
                   href="/member/settings"
                 >
-                  Account Settings
+                  Settings
                 </MenuItem>
+
                 <MenuItem
                   icon={<UserIcon color={'white'} width={'1.5rem'} />}
                   bg="black"
@@ -101,7 +110,7 @@ export default function UserMenu(_props: Props) {
                   as={Link}
                   href="/member/profile"
                 >
-                  Edit Profile
+                  Profile
                 </MenuItem>
                 <MenuItem
                   icon={<CameraIcon color={'white'} width={'1.5rem'} />}

@@ -1,69 +1,89 @@
 import {
-  LinkBox,
-  Card,
-  useColorModeValue,
-  LinkOverlay,
-  CardBody,
-  CardFooter,
-  Spacer,
+  HStack,
+  Avatar,
+  VStack,
+  Heading,
   Text,
+  AvatarProps,
+  AvatarBadge,
+  Tooltip,
+  chakra,
 } from '@chakra-ui/react'
-import { SearchableMember } from 'lib/models'
-import { Rating } from './Rating'
-import { MemberHeader } from './MemberHeader'
-import NextLink from 'next/link'
+import { useEffect, useState } from 'react'
+import { MemberBadge } from '.'
+import { getAssetUrl, toLocaleDate } from 'lib/utils'
+import { Member, SearchableMember } from 'lib/models'
+import { formatDistanceToNowStrict } from 'date-fns'
+import { ImageModal } from './ImageModal'
 
-type Props = {
-  member: Partial<SearchableMember>
-  onClick?: () => void
+type Props = AvatarProps & {
+  zoom?: boolean
+  user: Partial<Member | SearchableMember>
 }
 
-export const MemberCard = ({ member, onClick }: Props) => {
+export const MemberCard = chakra(({ zoom = false, user, size = 'lg', ...props }: Props) => {
+  const [loaded, setLoaded] = useState(false)
+  const [pictureSrc, setPictureSrc] = useState<string | null>(null)
+  const [lastLogin, setLastLogin] = useState<string | null>(null)
+  useEffect(() => {
+    if (!loaded && user) {
+      const picture = user.picture
+      if (!pictureSrc && picture) setPictureSrc(getAssetUrl(picture))
+      setLoaded(true)
+
+      setLastLogin(
+        user?.last_login
+          ? `Last login ${formatDistanceToNowStrict(toLocaleDate(user.last_login))} ago`
+          : undefined
+      )
+    }
+  }, [user, pictureSrc, loaded, lastLogin])
+
+  const [isOpen, setOpen] = useState<boolean>(undefined)
   return (
     <>
-      <LinkBox key={member.id}>
-        <Card
-          w="full"
-          h="full"
-          bg={useColorModeValue('gray.100', 'gray.700')}
-          border="1px solid transparent"
-          borderColor="accent.400"
-          _hover={{ shadow: '2xl', borderColor: 'accent.500' }}
-        >
-          <CardBody>
-            <LinkOverlay
-              as={NextLink}
-              href={`/members/${member.id}`}
-              onClick={(e) => {
-                e.preventDefault()
-                onClick()
-              }}
-            >
-              <MemberHeader member={member} />
-            </LinkOverlay>
-            <Text noOfLines={2} py={0} my={0}>
-              {member.biography}
-            </Text>
-          </CardBody>
-          <CardFooter justify="space-between" alignItems="end">
-            <Spacer />
-            {member?.rating > 0 && (
-              <Rating
-                value={member.rating || 0}
-                mt={2}
-                aria-label="User Rating"
-                size={['xs']}
-                simple
-              />
+      {user && (
+        <HStack spacing={3} alignItems="center">
+          <Avatar
+            id={user?.id}
+            src={pictureSrc}
+            size={size}
+            color="white"
+            name={user?.nickname || user?.first_name}
+            bgGradient="linear(to-b, blue.500, accent.500)"
+            loading="lazy"
+            borderColor="accent.500"
+            borderWidth="thin"
+            {...props}
+            cursor="pointer"
+            onClick={() => {
+              if (zoom && pictureSrc) setOpen(true)
+            }}
+          >
+            {user?.presence == 'online' && (
+              <Tooltip label={lastLogin} placement="top">
+                <AvatarBadge borderWidth="thin" boxSize="1.5rem" bg="green.300" />
+              </Tooltip>
             )}
-            <Text display="none">
-              Ratings are based on the number of stars a member has received from other members and
-              event hosts. No-shows automatically receive 2-star ratings by the event. Members must
-              have an average of 4-stars to be eligible for events.
+          </Avatar>
+          <ImageModal
+            isOpen={isOpen}
+            onClose={() => {
+              setOpen(false)
+            }}
+            imageSrc={pictureSrc}
+          />
+          <VStack spacing={1} align="flex-start">
+            <Heading size="md" textTransform="uppercase" m={0} color="white">
+              {user?.nickname || user?.first_name}
+            </Heading>
+            <MemberBadge size="lg" user_type={user?.user_type} my={2} />
+            <Text fontSize="sm" color="text">
+              {user?.city || 'Nearby'} {user?.state}
             </Text>
-          </CardFooter>
-        </Card>
-      </LinkBox>
+          </VStack>
+        </HStack>
+      )}
     </>
   )
-}
+})

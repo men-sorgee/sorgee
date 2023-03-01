@@ -99,7 +99,7 @@ export default function MemberListPage(props: PageProps) {
     total: 0,
     filtered: 0,
   })
-
+  const topRef = createRef<HTMLDivElement>()
   useEffect(() => {
     let sz = Number(s || '20')
     let pg = Number(p || '1')
@@ -133,9 +133,7 @@ export default function MemberListPage(props: PageProps) {
       )
       setTitle('Men Nearby')
       setDescription('View and find other men.')
-      setTimeout(() => {
-        topRef.current?.scrollIntoView({ behavior: 'smooth' })
-      }, 1000)
+
       setKey(`/api/members?limit=${size}&page=${page}&sort=${sort}${filter}`)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -151,13 +149,12 @@ export default function MemberListPage(props: PageProps) {
     },
   })
 
-  console.log(key)
   const { data: response } = useSWR<ManyItems<Partial<SearchableMember>>>(key, JsonFetcher)
 
   useEffect(() => {
     setPage(1)
   }, [size])
-  const topRef = createRef<HTMLFormElement>()
+
   useEffect(() => {
     if (response?.data && response?.meta) {
       const { total_count, filter_count } = response.meta
@@ -167,6 +164,8 @@ export default function MemberListPage(props: PageProps) {
       })
       setPageCount(filter_count > 0 ? Math.ceil(filter_count / size) : 0)
       setMembers(response.data)
+
+      document.querySelector('main')?.scroll({ top: 0, behavior: 'smooth' })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [response?.data, response?.meta, key, size])
@@ -194,7 +193,6 @@ export default function MemberListPage(props: PageProps) {
       <FormProvider {...methods}>
         <form
           id="filter-form"
-          ref={topRef}
           onSubmit={methods.handleSubmit((d) => {
             let newQuery = pruneUndefined(d, (v) => v !== false) as QueryParams
 
@@ -203,6 +201,7 @@ export default function MemberListPage(props: PageProps) {
           })}
           style={{ width: '100%', display: 'block' }}
         >
+          <div ref={topRef}></div>
           <FilterFields fields={fields} currentMember={currentMember} meta={meta} />
 
           <Flex gap={4} mt={4} align="center">

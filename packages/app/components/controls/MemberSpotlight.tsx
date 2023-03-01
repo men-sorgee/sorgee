@@ -31,7 +31,7 @@ export const MemberSpotlight = ({ id, fields }: Props) => {
   return (
     <>
       <Box p={4}>
-        <MemberHeader member={member} />
+        <MemberHeader member={member} zoom={true} />
         <Text>{member?.biography}</Text>
       </Box>
       <Box>

@@ -68,12 +68,7 @@ type MemberFormData = Partial<Member>
 export default function SettingsPage(props: PageProps) {
   const { member, loading } = useUser()
   return (
-    <Page
-      title="Settings"
-      loading={loading}
-      requireAuth={true}
-      header={<UserCard user={member} size="xl" />}
-    >
+    <Page title="Settings" loading={loading} requireAuth={true}>
       {member && <Form {...props} />}
     </Page>
   )
@@ -392,7 +387,7 @@ function Form(props: PageProps) {
 
           <input type="hidden" {...register('id')} />
 
-          <Box backdropFilter="blur(1px)" position="sticky" h="80px" w="full" bottom={0}></Box>
+          <Box backdropFilter="blur(2px)" position="sticky" h="80px" w="full" bottom={0}></Box>
           <Button
             mt={-10}
             size="lg"
@@ -402,7 +397,6 @@ function Form(props: PageProps) {
             disabled={isSubmitting || !isDirty}
             position="sticky"
             bottom={4}
-            mx={2}
           >
             Update Settings
           </Button>

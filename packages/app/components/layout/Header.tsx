@@ -118,24 +118,30 @@ function Header({ children, ...props }: Props) {
         shadow="xl"
         bg={useColorModeValue('primary.800', 'black')}
         minH="60px"
-        px={[4, 4, 0]}
+        px={0}
       >
-        <HStack alignItems="center" alignContent="center" py={2} align="center" {...constrained}>
+        <HStack
+          alignItems="center"
+          alignContent="center"
+          py={2}
+          pr={[4, 6, 2]}
+          align="center"
+          {...constrained}
+        >
           <Box w="50%">
             <IconButton
               size="md"
               onClick={onToggle}
               icon={
                 isOpen ? (
-                  <CloseIcon height="30px" width="30px" />
+                  <CloseIcon height="20px" width="20px" />
                 ) : (
-                  <MenuIcon height="50px" width="50px" />
+                  <MenuIcon height="30px" width="30px" />
                 )
               }
               variant="primary"
+              ml={[0, 2, -4]}
               aria-label="Toggle Navigation"
-              m={0}
-              p={0}
             />
           </Box>
 

@@ -1,10 +1,8 @@
 import { ApiError, ApiResponse } from 'lib/models'
-import { format } from 'date-fns'
+import { format, addHours } from 'date-fns'
 
 export function toLocaleDate(value: string) {
-  const t = new Date()
-  const date = new Date(value)
-  return date.setMinutes(date.getMinutes() - t.getTimezoneOffset())
+  return new Date(value)
 }
 
 export function getEventDate(eventStart: string) {

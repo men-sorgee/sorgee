@@ -364,7 +364,7 @@ function Form(props: PageProps) {
           </Tabs>
 
           <input type="hidden" {...register('id')} />
-          <Box backdropFilter="blur(1px)" position="sticky" h="80px" w="full" bottom={0}></Box>
+          <Box backdropFilter="blur(2px)" position="sticky" h="80px" w="full" bottom={0}></Box>
           <Button
             mt={-10}
             size="lg"

@@ -41,6 +41,10 @@ export default async function FindMembers(
 
     andSearchItems.push({ show_profile: { _eq: true } })
 
+    if (sort.includes('last_login')) {
+      andSearchItems.push({ last_login: { _nnull: true } })
+    }
+
     if (photos) {
       andSearchItems.push({
         my_photos: {
@@ -133,6 +137,9 @@ export default async function FindMembers(
 
       results.meta.filter_count = filtered.length
       results.data = filtered
+    }
+    if (results.data.length < results.meta.filter_count && results.data.length < limit) {
+      results.meta.filter_count = results.data.length
     }
 
     return res.status(200).json(ApiResponse(results))

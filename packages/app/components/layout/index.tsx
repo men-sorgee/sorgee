@@ -43,7 +43,13 @@ function Layout({
       <Flex direction="column" flex="1" overflowX="clip">
         <ErrorBoundary>
           <Header />
-          <Flex flex="1 100%" direction="column" maxH={`calc(100vh - ${height})`} overflowY="auto">
+          <Flex
+            as="main"
+            flex="1 100%"
+            direction="column"
+            maxH={`calc(100vh - ${height})`}
+            overflowY="auto"
+          >
             <Box
               position="relative"
               w="full"
