@@ -7,8 +7,27 @@ declare module 'react' {
   interface InputHTMLAttributes<T> extends HTMLAttributes<T> {}
 }
 
-declare namespace JSX {
-  interface IntrinsicElements {
-    [elemName: string]: any
+declare namespace JSX {}
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'whereby-embed': React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement> & {
+          minimal?: boolean
+          room: string
+          displayName?: string
+          roomMode?: 'normal' | 'group'
+          topToolbar?: 'on' | 'off'
+          breakout?: 'on' | 'off'
+          avatarUrl?: string
+        },
+        HTMLElement
+      >
+    }
+
+    interface IntrinsicElements {
+      [elemName: string]: any
+    }
   }
 }

@@ -1,20 +1,56 @@
-import { EventStatusType, UserStatusType } from 'lib/models'
-import { Block } from 'editorjs-blocks-react-renderer'
-import { ProviderType } from 'next-auth/providers'
 import {
+  EventStatusType,
+  UserStatusType,
   ApplicationStatusType,
   ContactPreferenceType,
   NotificationStatusType,
   SearchableMember,
   UserType,
-} from './users'
+} from 'lib/models'
+import { Block } from 'editorjs-blocks-react-renderer'
+import { ProviderType } from 'next-auth/providers'
+
+export type Promos = {
+  id: number
+  user_created?: string | DirectusUser
+  date_created?: string
+  user_updated?: string | DirectusUser
+  date_updated?: string
+  code: string
+  expires?: string
+  override?: unknown
+  vouching_user?: string | User
+  description?: string
+  name?: string
+}
+
+export type Room = {
+  id: string
+  status: string
+  sort?: number
+  date_created?: string
+  date_updated?: string
+  name?: string
+  url?: string
+  user_count?: number
+  metadata?: Record<string, any>
+  events: RoomEvent[]
+}
+export type RoomEventType = 'Session Started' |  ' Session Ended' | 'User Joined' | 'User Left
+export type RoomEvent = {
+  id: string
+  type: RoomEventType & string
+  payload?: Record<string, any>
+  room?: Room
+  created_at?: string
+}
 
 export type EventInfo = {
   id: string
   status: EventStatusType
   datetime: string
   name: string
-  location?: Location
+  location?: string | Location
   description: string
   cost: number
   type: string
@@ -41,9 +77,6 @@ export type GroupEvent = {
   survey?: string[] | Survey[]
   ratings: string[] | Rating[]
 }
-export type UserPhotoFieldType = 'photo' | 'picture' | 'public' | 'private'
-
-export type UserFields = (string | keyof User)[] | '*' | '*.*' | any
 
 export type EventUser = {
   id: number
@@ -73,20 +106,6 @@ export type EventDetail = EventInfo & {
   members: SearchableMember[]
 }
 
-export type Promos = {
-  id: number
-  user_created?: string | DirectusUser
-  date_created?: string
-  user_updated?: string | DirectusUser
-  date_updated?: string
-  code: string
-  expires?: string
-  override?: unknown
-  vouching_user?: string | User
-  description?: string
-  name?: string
-}
-
 export type Location = {
   id: string
   user_created?: string | DirectusUser
@@ -103,6 +122,7 @@ export type Location = {
   notes?: string
   amenities?: unknown
   survey?: string | Survey
+  display_threshold: number
 }
 
 export type Notification = {
@@ -570,6 +590,8 @@ export type DirectusTypes = {
   users_files: UserFile
   users_photos: UserPhoto
   rating: Rating
+  rooms: Room
+  room_events: RoomEvent
   directus_collections: DirectusCollection
   directus_fields: DirectusField
   directus_files: DirectusFile
