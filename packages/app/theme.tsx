@@ -89,6 +89,11 @@ export default function getTheme(
           colorScheme: 'ghost',
         },
       },
+      Stats: {
+        defaultProps: {
+          colorScheme: 'primary',
+        },
+      },
     },
     colors: {
       ...brand.colors,

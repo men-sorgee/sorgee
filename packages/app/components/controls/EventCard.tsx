@@ -20,9 +20,11 @@ import {
 } from '@chakra-ui/react'
 import { Markdown } from './Markdown'
 import { GroupEvent, Location } from 'lib/models'
-import { getEventDate } from 'lib/utils'
+import { getEventDate, toLocalDate } from 'lib/utils'
 import { capitalCase } from 'change-case'
 import { LocationMarkerIcon } from '@heroicons/react/outline'
+import { differenceInDays, isBefore } from 'date-fns'
+
 type EventCardProps = CardProps & {
   showDescription?: boolean
   showLocation?: boolean
@@ -47,7 +49,7 @@ export const EventCard = ({
     time: string
   }>()
 
-  const isScheduled = event?.status && event.status !== 'occurred'
+  const isScheduled = event?.status && event.status == 'scheduled'
 
   useEffect(() => {
     if (event && !eventDate) {
@@ -57,6 +59,11 @@ export const EventCard = ({
 
   if (!event) return null
   const location = event.location as Location
+  const viewLocation =
+    location &&
+    showLocation &&
+    differenceInDays(toLocalDate(event.datetime), new Date()) < location.display_threshold
+
   return (
     <Card p={0} w="full" boxShadow="lg" rounded="md" {...props} _print={{ shadow: 'none' }}>
       <LinkBox>
@@ -124,11 +131,12 @@ export const EventCard = ({
               <Markdown content={event.description} />
             </Box>
           )}
-          {showLocation && location && (
-            <>
+          {showDescription && (
+            <Box>
               <Heading as="h5" textTransform="uppercase" size="md">
                 Location:
               </Heading>
+
               <LinkBox>
                 <Flex>
                   <Icon
@@ -138,22 +146,25 @@ export const EventCard = ({
                     color="primary.200"
                     fill="primary.500"
                   />
-                  <LinkOverlay
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={`https://www.google.com/maps/place/${location.street} ${location.city} ${location.state} ${location.zip}`}
-                  >
-                    <Text fontWeight="bold" ml={3} color="primary.500">
-                      {location.name}
-                      <br />
-                      {location.street} {location.unit}
-                      <br />
-                      {location.city}, {location.state} {location.zip}
-                    </Text>
-                  </LinkOverlay>
+                  {(viewLocation && (
+                    <LinkOverlay
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={`https://www.google.com/maps/place/${location.street} ${location.city} ${location.state} ${location.zip}`}
+                    >
+                      <Text fontWeight="bold" ml={3} color="primary.500">
+                        {location.name}
+                        <br />
+                        {location.street} {location.unit}
+                        <br />
+                        {location.city}, {location.state} {location.zip}
+                      </Text>
+                    </LinkOverlay>
+                  )) || <Text>The location will appear when we are closer to the event-date.</Text>}
                 </Flex>
               </LinkBox>
-            </>
+              {viewLocation && <Markdown content={location.notes} />}
+            </Box>
           )}
         </CardBody>
       )}

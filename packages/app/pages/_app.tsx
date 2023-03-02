@@ -41,7 +41,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           <UserProvider>
             <NotificationsProvider>
               <Layout fonts={[heading.variable, body.variable, mono.variable]}>
-                <Component key={router.asPath} {...pageProps} />
+                <Component {...pageProps} />
               </Layout>
             </NotificationsProvider>
           </UserProvider>

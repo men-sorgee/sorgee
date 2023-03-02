@@ -49,9 +49,8 @@ export const EventRSVPCard = ({
   children,
   ...props
 }: RSVPProps) => {
-  const today = new Date(new Date().toDateString())
   const eventDate = new Date(new Date(event.datetime).toDateString())
-  const isToday = today.getTime() == eventDate.getTime()
+
   const { reload } = useUser()
   const [working, setWorking] = useState<boolean>(undefined)
   const [invite, setInvite] = useState<RSVPInfo>(undefined)
@@ -171,13 +170,7 @@ export const EventRSVPCard = ({
 
   return (
     <>
-      <EventCard
-        event={event}
-        showDescription={true}
-        {...props}
-        showLocation={rsvp == 'confirmed' && isToday}
-        href={href}
-      >
+      <EventCard event={event} showDescription={true} {...props} href={href}>
         <>
           <form className="no-print" onSubmit={handleSubmit(respond)}>
             <SlideFade in={isDirty && rsvp == 'confirmed'} unmountOnExit>
@@ -278,8 +271,6 @@ export const EventRSVPCard = ({
                       alt="Ticket"
                       w="full"
                     />
-
-                    {checkinUrl}
                   </SlideFade>
                 </Flex>
               </div>

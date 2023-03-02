@@ -21,7 +21,7 @@ export const getUTCNow = () => {
 }
 
 export function getEventDate(eventStart: string) {
-  let date = toLocalDate(eventStart)
+  let date = new Date(eventStart)
   return {
     day: format(date, 'dddd'),
     short: format(date, 'MMM d'),

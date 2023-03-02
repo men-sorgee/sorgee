@@ -9,6 +9,11 @@ import {
   Wrap,
   Flex,
   Spacer,
+  Stat,
+  StatGroup,
+  StatLabel,
+  StatNumber,
+  StatHelpText,
 } from '@chakra-ui/react'
 import { useMember, useMeta } from 'hooks'
 import { formatDistanceToNowStrict } from 'date-fns'
@@ -20,6 +25,8 @@ import {
   memberHealthFields,
   memberProfileContactFields,
   UserPhoto,
+  MemberLevel,
+  MemberLevelColorMap,
 } from 'lib/models'
 import { ReactNode, useEffect } from 'react'
 import { ImageGallery } from './ImageGallery'
@@ -32,11 +39,12 @@ import { toLocalDate } from '../../lib/utils'
 type Props = {
   id: string
   full?: boolean
+  color?: string
   fields?: Record<string, DirectusField>
   children?: ReactNode
 }
 
-export const MemberSpotlight = ({ id, fields, full = true, children }: Props) => {
+export const MemberSpotlight = ({ id, fields, full = true, color, children }: Props) => {
   const { member, name, picture, loading } = useMember(id)
   const { setMeta } = useMeta()
   useEffect(() => {
@@ -44,16 +52,32 @@ export const MemberSpotlight = ({ id, fields, full = true, children }: Props) =>
   }, [full, member, name, picture, setMeta])
   if (loading || !id || !member) return <Loading />
   const publicPhotos = member.my_photos?.filter((p) => p.is_public) || []
+  const levelValue = MemberLevel[member?.user_type]
+  const levelColor = MemberLevelColorMap[levelValue]
+  const eventsAttended = member?.events.filter((e) => e.attended)?.length || 0
   return (
     <Flex direction="column" justify="space-between">
       <Box
-        p={4}
-        bgGradient={full ? 'linear(to-bl, primary.300, primary.700)' : null}
+        px={5}
+        py={4}
+        bgGradient={full ? `linear(to-bl, ${levelColor[1]}, ${levelColor[0]})` : null}
         rounded="lg"
         color="white"
       >
-        <MemberHeader member={member} zoom={true}>
+        <MemberHeader member={member} zoom={true} color={color}>
           {children}
+          <StatGroup mr={4}>
+            {eventsAttended > 0 && (
+              <Stat>
+                <StatLabel>
+                  Events
+                  <br />
+                  Attended
+                </StatLabel>
+                <StatNumber>{eventsAttended}</StatNumber>
+              </Stat>
+            )}
+          </StatGroup>
         </MemberHeader>
         {full && <Text>{member?.biography}</Text>}
         {full && (
@@ -100,10 +124,10 @@ export const MemberSpotlight = ({ id, fields, full = true, children }: Props) =>
           flex="grow"
         >
           <TabList>
-            <Tab>General</Tab>
-            <Tab>Sexual</Tab>
-            <Tab>Interests</Tab>
-            <Tab>Health</Tab>
+            <Tab fontWeight="bold">General</Tab>
+            <Tab fontWeight="bold">Sexual</Tab>
+            <Tab fontWeight="bold">Interests</Tab>
+            <Tab fontWeight="bold">Health</Tab>
           </TabList>
           <TabPanels maxH="100%" overflowY="auto" my={2}>
             <TabPanel p={4}>

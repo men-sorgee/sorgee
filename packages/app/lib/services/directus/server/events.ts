@@ -5,7 +5,7 @@ import {
   EventUser,
   UserType,
   InviteRSVPType,
-  User,
+  Location,
   SearchableMember,
   EventStatusType,
 } from 'lib/models'
@@ -62,20 +62,21 @@ export async function getEvent(id: string): Promise<GroupEvent> {
 
 export async function getEventDetail(id: string): Promise<EventDetail> {
   const client = await getAdminClient()
-  const event: GroupEvent = await client.items('events').readOne(id, {
+  const event = await client.items('events').readOne(id, {
     filter: {
       users: {
         rsvp: { _in: ['confirmed', 'maybe'] },
       },
     },
     fields: [
-      '*',
-      'users.*' as any,
-      'users.users_id.id' as any,
-      'users.users_id.picture' as any,
-      'users.users_id.nickname' as any,
-      'users.users_id.first_name' as any,
-    ],
+      '*.*',
+      'location.*',
+      'users.*',
+      'users.users_id.id',
+      'users.users_id.picture',
+      'users.users_id.nickname',
+      'users.users_id.first_name',
+    ] as any,
   })
   const {
     datetime,
@@ -87,6 +88,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
     cost,
     users: eventUsers,
     invite_only,
+    location,
   } = event
   const attendance = (eventUsers as EventUser[]) || []
   const detail: EventDetail = {
@@ -100,6 +102,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
     cost,
     attendance,
     invite_only,
+    location: location as Location,
     stats: {
       invited_count: attendance.length,
       confirmed_count: attendance.filter((u) => u.rsvp === 'confirmed').length,

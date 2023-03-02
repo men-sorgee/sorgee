@@ -266,7 +266,7 @@ export default function MemberListPage(props: PageProps) {
           border="1px solid transparent"
           borderColor="accent.700"
         >
-          <ModalCloseButton />
+          <ModalCloseButton color={'white'} />
           <ModalBody px={1}>
             <MemberSpotlight id={id as string} fields={fields} />
           </ModalBody>

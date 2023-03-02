@@ -10,7 +10,7 @@ import {
   chakra,
   CardProps,
 } from '@chakra-ui/react'
-import { SearchableMember } from 'lib/models'
+import { SearchableMember, MemberLevelColorMap, MemberLevel } from 'lib/models'
 import { Rating } from './Rating'
 import { MemberHeader } from './MemberHeader'
 import NextLink from 'next/link'
@@ -21,15 +21,18 @@ type Props = CardProps & {
 }
 
 export const MemberProfileCard = chakra(({ member, onClick, ...props }: Props) => {
+  const levelValue = MemberLevel[member?.user_type]
+  const levelColor = MemberLevelColorMap[levelValue]
   return (
     <>
       <LinkBox key={member.id}>
         <Card
           w="full"
           h="full"
-          bg={useColorModeValue('gray.200', 'gray.700')}
+          bgGradient={`linear(to-bl, ${levelColor[1]}, ${levelColor[0]})`}
+          rounded="lg"
           border="1px solid transparent"
-          borderColor="accent.400"
+          borderColor="primary"
           color="white"
           _hover={{ shadow: '2xl', borderColor: 'accent.500' }}
           {...props}

@@ -13,6 +13,7 @@ import {
   ModalContent,
   ModalOverlay,
   useColorModeValue,
+  useBreakpointValue,
 } from '@chakra-ui/react'
 import { EventCard, LinkButton, MemberSpotlight } from 'components/controls'
 import { EventStats, EventUser, User } from 'lib/models'
@@ -29,7 +30,6 @@ export default function EventPage() {
   const { member, loading } = useUser()
   const [fees, setFees] = useState<number>(undefined)
   const [stats, setStats] = useState<EventStats>(undefined)
-  const today = new Date()
   useEffect(() => {
     if (!eventLoading && event?.stats && !stats) {
       setStats(event.stats)
@@ -54,10 +54,11 @@ export default function EventPage() {
         }
       })
   }
+  const showCount = useBreakpointValue([4, 8, 10, 14])
   return (
-    <Page title={event ? event.name : 'Event'} loading={loading || eventLoading} requireAuth={true}>
+    <Page title="Event Details" loading={loading || eventLoading} requireAuth={true}>
       {member && (
-        <EventCard event={event} showDescription>
+        <EventCard event={event} showDescription showLocation={true}>
           <SimpleGrid columns={{ base: 2, md: 4 }} spacing={4} mb={4}>
             {stats && (
               <>
@@ -96,7 +97,7 @@ export default function EventPage() {
                   <StatLabel>Confirmed</StatLabel>
                   <StatNumber>{stats.confirmed_count}</StatNumber>
                 </Stat>
-                <AvatarGroup size="md" max={10}>
+                <AvatarGroup size="md" max={showCount}>
                   {getAttendees('confirmed').map(({ id, name, src }) => (
                     <Avatar
                       key={id}
@@ -117,7 +118,7 @@ export default function EventPage() {
                   <StatLabel>Maybe</StatLabel>
                   <StatNumber>{stats.maybe_count}</StatNumber>
                 </Stat>
-                <AvatarGroup size="md" max={10}>
+                <AvatarGroup size="md" max={showCount}>
                   {getAttendees('maybe').map(({ id, name, src }) => (
                     <Avatar
                       key={id}

@@ -14,6 +14,8 @@ import {
   Spacer,
   Flex,
   Avatar,
+  useColorModeValue,
+  Wrap,
 } from '@chakra-ui/react'
 
 import Page from 'components/Page'
@@ -201,6 +203,8 @@ function PastEvents({
       .map((u) => u.users_id as string)
       .filter((u) => !ratedUserIds.includes(u))
 
+    const color = useColorModeValue('gray.700', 'gray.200')
+
     return (
       <Box key={invite.id}>
         <h5>
@@ -239,9 +243,10 @@ function PastEvents({
             </Heading>
           </>
         )}
+
         {attendees.map((u: string) => (
-          <Box key={event.id + '-' + u}>
-            <MemberSpotlight id={u} full={false}>
+          <Box key={event.id + '-' + u} bg="gray.400" mb={4} rounded="lg">
+            <MemberSpotlight id={u} full={false} color={color}>
               <RateItem
                 onChange={() => {
                   reloadUser()

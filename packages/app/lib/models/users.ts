@@ -71,6 +71,19 @@ export enum MemberLevel {
   admin = 8,
 }
 
+export const MemberLevelColorMap = [
+  ['red.500', 'red.100'],
+  ['orange.500', 'orange.100'],
+  ['yellow.500', 'yellow.100'],
+  ['primary.100', 'primary.300'],
+  ['primary.200', 'primary.400'],
+  ['primary.300', 'primary.500'],
+  ['primary.400', 'primary.600'],
+  ['primary.500', 'primary.700'],
+  ['primary.600', 'primary.800'],
+  ['primary.700', 'primary.900'],
+]
+
 export type ApplicationStatusType =
   | 'apply'
   | 'verify'
@@ -97,6 +110,10 @@ export type AppNotification = Omit<
 }
 
 export type UserStatusType = 'new' | 'active' | 'inactive' | 'stale' | 'deleted' | 'banned'
+
+export type UserPhotoFieldType = 'photo' | 'picture' | 'public' | 'private'
+
+export type UserFields = (string | keyof User)[] | '*' | '*.*' | any
 
 export type Profile = {
   id: string
