@@ -24,6 +24,7 @@ import { getEventDate, toLocalDate } from 'lib/utils'
 import { capitalCase } from 'change-case'
 import { LocationMarkerIcon } from '@heroicons/react/outline'
 import { differenceInDays, isBefore } from 'date-fns'
+import Link from 'next/link'
 
 type EventCardProps = CardProps & {
   showDescription?: boolean
@@ -100,7 +101,7 @@ export const EventCard = ({
               <br />
               <Text size="4xl"> {eventDate?.date}</Text>
             </Heading>
-            {href && <LinkOverlay href={href} />}
+            {href && <LinkOverlay as={Link} href={href} />}
           </Flex>
         </CardHeader>
       </LinkBox>

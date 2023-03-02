@@ -1,6 +1,5 @@
+'use client'
 import { ApiResponse } from 'lib/models'
-;('use client')
-
 /// Fetches a JSON response from the given URL, and returns the data field.
 /// This fetcher hides any errors, and returns null if the response is not ok.
 export async function JsonFetcher<T>(url: string) {

@@ -7,12 +7,6 @@ import {
   Avatar,
   AvatarGroup,
   Flex,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalOverlay,
-  useColorModeValue,
   useBreakpointValue,
 } from '@chakra-ui/react'
 import { EventCard, LinkButton, MemberSpotlight } from 'components/controls'
@@ -22,14 +16,24 @@ import { useEffect, useState } from 'react'
 import { useUser, useEvent } from 'hooks'
 import { useRouter } from 'next/router'
 
-export default function EventPage() {
+export const getServerSideProps = (context) => {
+  return {
+    props: {
+      id: context.params.id,
+    },
+  }
+}
+
+export default function EventPage({ id }) {
   const router = useRouter()
-  const { id } = router.query
-  const [eventId] = useState<string>(String(id))
-  const { event, loading: eventLoading } = useEvent(eventId)
+  const { id: i } = router.query
   const { member, loading } = useUser()
+  const [eventId] = useState<string>(i || id)
+
+  const { event, loading: eventLoading } = useEvent(eventId)
   const [fees, setFees] = useState<number>(undefined)
   const [stats, setStats] = useState<EventStats>(undefined)
+
   useEffect(() => {
     if (!eventLoading && event?.stats && !stats) {
       setStats(event.stats)
