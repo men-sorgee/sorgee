@@ -151,7 +151,7 @@ export default function EventAdmin() {
           Back to Events
         </LinkButton>
 
-        <LinkButton colorScheme="primary" href="/member/scan" my={4}>
+        <LinkButton colorScheme="primary" href="/admin/scan" my={4}>
           Scan Invite
         </LinkButton>
       </HStack>

@@ -13,31 +13,25 @@ import {
   Badge,
   Spacer,
   Flex,
-  Avatar,
   useColorModeValue,
-  Wrap,
 } from '@chakra-ui/react'
-
+import { isToday } from 'date-fns'
 import Page from 'components/Page'
 import { useUser, useUserEvents } from 'hooks'
 import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
-import { EventUser, Member, GroupEvent, MemberLevel, User } from 'lib/models'
+import { EventUser, Member, GroupEvent, MemberLevel } from 'lib/models'
 import {
   EventCard,
   EventRSVPCard,
   LinkButton,
   MemberSpotlight,
   RateItem,
-  UserCard,
 } from 'components/controls'
-import { getAssetUrl } from '../../lib/utils'
 
 export type PageProps = {}
 
 export default function EventsPage({}: PageProps) {
-  const today = new Date(new Date().toDateString())
-
   const [allowed, setAllowed] = useState(false)
   const { member, loading, level, reload: reloadUser } = useUser()
   const { invitations, upcoming, past, reload } = useUserEvents()
@@ -52,10 +46,7 @@ export default function EventsPage({}: PageProps) {
     reload()
   }, [reload])
 
-  const activeEvent = upcoming.find(
-    (invite: any) =>
-      new Date(new Date(invite.events_id.datetime).toDateString()).getTime() == today.getTime()
-  )
+  const activeEvent = upcoming.find((invite: any) => isToday(new Date(invite.events_id.datetime)))
 
   return (
     <Page loading={loading} title="Your Events" description="Upcoming events." requireAuth={true}>
@@ -95,7 +86,6 @@ export default function EventsPage({}: PageProps) {
                   onChange={onEventsChange}
                   name="Upcoming Events"
                   text="Check back later for upcoming events."
-                  showLink
                 />
               </TabPanel>
               <TabPanel p={0}>
@@ -136,7 +126,6 @@ function Events({
   name,
   text,
   onChange,
-  showLink = false,
 }: {
   list: EventUser[]
   member: Member
@@ -163,7 +152,7 @@ function Events({
   })
   return (
     <>
-      {items.map(({ invite, event }) => (
+      {items.map(({ invite }) => (
         <EventRSVPCard
           key={invite.id}
           event={invite.events_id as GroupEvent}
@@ -171,7 +160,6 @@ function Events({
           member={member}
           mb={8}
           onChange={onChange}
-          href={showLink ? `/event/${event.id}` : null}
         />
       ))}
     </>

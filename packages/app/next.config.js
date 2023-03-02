@@ -25,7 +25,8 @@ const getConfig = ( phase ) => {
         'cdn.discordapp.com',
         's.gravatar.com',
         'static.guysnheat.com',
-        'raw.githubusercontent.com'
+        'raw.githubusercontent.com',
+        'guysnheat.whereby.com',
       ],
 
     },

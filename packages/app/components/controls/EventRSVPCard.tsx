@@ -34,7 +34,6 @@ type RSVPProps = CardProps & {
   event: GroupEvent
   invite?: EventUser
   full?: boolean
-  href?: string
   onChange?: () => void
   children?: ReactNode | ReactNode[]
 }
@@ -45,12 +44,9 @@ export const EventRSVPCard = ({
   invite: i,
   full = false,
   onChange,
-  href,
   children,
   ...props
 }: RSVPProps) => {
-  const eventDate = new Date(new Date(event.datetime).toDateString())
-
   const { reload } = useUser()
   const [working, setWorking] = useState<boolean>(undefined)
   const [invite, setInvite] = useState<RSVPInfo>(undefined)
@@ -170,7 +166,12 @@ export const EventRSVPCard = ({
 
   return (
     <>
-      <EventCard event={event} showDescription={true} {...props} href={href}>
+      <EventCard
+        event={event}
+        href={rsvp == 'confirmed' ? `/calendar/event/${event.id}` : null}
+        showDescription={true}
+        {...props}
+      >
         <>
           <form className="no-print" onSubmit={handleSubmit(respond)}>
             <SlideFade in={isDirty && rsvp == 'confirmed'} unmountOnExit>

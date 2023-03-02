@@ -1,4 +1,10 @@
-import { UserGroupIcon, InboxIcon, CalendarIcon, MailIcon } from '@heroicons/react/outline'
+import {
+  UserGroupIcon,
+  InboxIcon,
+  CalendarIcon,
+  MailIcon,
+  ChatIcon,
+} from '@heroicons/react/outline'
 import {
   useColorMode,
   useColorModeValue,
@@ -29,7 +35,7 @@ export default function ActionsNav({ children, ...props }: Props) {
 
   const bgColor = useColorModeValue('primary.800', 'black')
   const borderColor = useColorModeValue('primary.500', 'accent.400')
-
+  const user_count = 0
   if (!authenticated) return null
 
   return (
@@ -61,7 +67,32 @@ export default function ActionsNav({ children, ...props }: Props) {
               title="View Members"
             />
           </Link>
-
+          <Link href="/chat" as={NextLink} hidden>
+            <IconButton
+              variant="primary"
+              zIndex="fixed"
+              size="lg"
+              icon={<ChatIcon height="50px" width="50px" />}
+              color={path.startsWith('/chat') ? 'accent.500' : 'white'}
+              aria-label={'Chat'}
+              title="Member Chat"
+            />
+            {user_count > 0 && (
+              <Badge
+                ml={-4}
+                zIndex="overlay"
+                position="absolute"
+                bg="accent.500"
+                rounded="full"
+                px={2}
+                py={0.5}
+                color="white"
+                title="Calendar Events"
+              >
+                {user_count}
+              </Badge>
+            )}
+          </Link>
           <Link href="/calendar" as={NextLink}>
             <IconButton
               variant="primary"

@@ -263,7 +263,7 @@ export default function InviteAdmin({ event, invite, user }: Props) {
               <LinkButton colorScheme="gray" href={'/admin/event/' + event?.id} my={4}>
                 Return to Event
               </LinkButton>
-              <LinkButton colorScheme="primary" href="/member/scan" my={4}>
+              <LinkButton colorScheme="primary" href="/admin/scan" my={4}>
                 Scan Another
               </LinkButton>
             </HStack>
