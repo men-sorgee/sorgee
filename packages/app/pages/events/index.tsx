@@ -58,10 +58,19 @@ export default function EventsPage({}: PageProps) {
     <Page loading={loading} title="Events" description="Upcoming events." requireAuth={true}>
       {allowed ? (
         <>
+          {activeInvite && (
+            <Box mb={4}>
+              <Heading mb={4} className="no-print">
+                Active Event
+              </Heading>
+              <EventRSVPCard member={member} invite={activeInvite}>
+                <EventTicket event={activeInvite.event} member={member} />
+              </EventRSVPCard>
+            </Box>
+          )}
           <Tabs isFitted m={0} isLazy>
             <div className="no-print">
               <TabList>
-                {activeInvite && <Tab className="no-print">Active</Tab>}
                 <Tab className="no-print">Upcoming</Tab>
                 <Tab className="no-print">
                   Invitations
@@ -75,16 +84,6 @@ export default function EventsPage({}: PageProps) {
               </TabList>
             </div>
             <TabPanels>
-              {activeInvite && (
-                <TabPanel p={0}>
-                  <Heading mb={4} className="no-print">
-                    Active Event
-                  </Heading>
-                  <EventRSVPCard member={member} invite={activeInvite}>
-                    <EventTicket event={activeInvite.event} member={member} />
-                  </EventRSVPCard>
-                </TabPanel>
-              )}
               <TabPanel p={0}>
                 <Heading mb={4}>Your Upcoming Events</Heading>
 
