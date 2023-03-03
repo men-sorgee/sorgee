@@ -76,7 +76,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const picture = getAssetUrl(user?.picture)
   const approved = ApplicationStatus[application_status] >= ApplicationStatus.approved
   const level = MemberLevel[user_type]
-  const isMember = approved && level >= MemberLevel.pledge
+  const isMember = approved && level >= MemberLevel.inductee
   const isStaff = isMember && level >= MemberLevel.staff
   const isApplicant = !approved
 
