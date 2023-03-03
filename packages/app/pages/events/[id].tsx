@@ -17,6 +17,7 @@ import Page from 'components/Page'
 import { useEffect, useState } from 'react'
 import { useUser, useEvent } from 'hooks'
 import { useRouter } from 'next/router'
+import { isToday } from 'date-fns'
 
 export const getServerSideProps = (context) => {
   return {
@@ -31,7 +32,7 @@ export default function EventPage({ id }) {
   const { id: i } = router.query
   const { member, loading } = useUser()
   const [eventId] = useState<string>(i || id)
-
+  const [showTicket, setShowTicket] = useState<boolean>(false)
   const { event, loading: eventLoading } = useEvent(eventId)
   const [fees, setFees] = useState<number>(undefined)
   const [stats, setStats] = useState<EventStats>(undefined)
@@ -39,6 +40,7 @@ export default function EventPage({ id }) {
   useEffect(() => {
     if (!eventLoading && event?.stats && !stats) {
       setStats(event.stats)
+      setShowTicket(isToday(new Date(event.datetime)))
       if (event.stats.attended_count) {
         setFees(event.stats.attended_count * event.cost)
       }
@@ -69,7 +71,7 @@ export default function EventPage({ id }) {
     <Page title="Event Details" loading={loading || eventLoading} requireAuth={true}>
       {member && (
         <EventCard event={event} showDescription showLocation={true}>
-          {invite && invite.rsvp == 'confirmed' && (
+          {showTicket && invite && invite.rsvp == 'confirmed' && (
             <EventTicket open event={event} member={member} />
           )}
           <Divider my={4} />

@@ -1,47 +1,83 @@
 import useSWR from 'swr'
 import { JsonFetcher, postJSON } from 'lib/utils'
 import { Rating, RatingCollection } from 'lib/models'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, ReactNode } from 'react'
 import { Rating as RatingControl } from 'components/controls'
+import { Box, Flex } from '@chakra-ui/react'
+import { RatingControlProps } from './Rating'
+
+export type RateItemProps = RatingControlProps & {
+  item_id: string
+  collection: RatingCollection
+  onChange?: (rate: number) => void
+  children?: ReactNode
+}
+
+const itemMap = {
+  users: 'member',
+  events: 'event',
+}
 
 export const RateItem = ({
   item_id,
   collection,
   onChange = () => {},
-}: {
-  item_id: string
-  collection: RatingCollection
-  onChange?: (rate: number) => void
-}) => {
+  children,
+  ...props
+}: RateItemProps) => {
   const [value, setValue] = useState<number>(undefined)
-  const key = `/api/member/ratings?collection=${collection}&item=${item_id}`
-  const { data: rating, mutate } = useSWR<Rating, Error>(key, JsonFetcher)
-
+  const { data = [], mutate } = useSWR<Rating[], Error>(`/api/member/ratings`, JsonFetcher, {
+    fallbackData: [],
+  })
+  const ratings = data
+    .filter((r) => r.collection == collection)
+    .map((r) => {
+      return { ...r, item_id: r[itemMap[collection]] as string }
+    })
+  const [rating, setRating] = useState<Rating>(undefined)
   useEffect(() => {
+    if (ratings && !rating) {
+      const r = ratings.find((r) => r.item_id == item_id)
+      setRating(r)
+    }
     if (rating && value == undefined) {
       setValue(rating.rate)
     }
-  }, [rating, value])
+  }, [ratings, rating, value, item_id])
 
   const onRateChange = useCallback(
     async (rate: number) => {
-      const { success, data: r } = await postJSON<Rating>(key, { rate } as any)
+      const { success, data: r } = await postJSON<Rating>(
+        `/api/member/ratings/${collection}/${item_id}`,
+        { rate } as any
+      )
       if (!success) {
-        await mutate(r)
+        await mutate(
+          data.map((r) => {
+            if (r[itemMap[collection]] == item_id) {
+              return { ...r, rate }
+            }
+            return r
+          })
+        )
         setValue(rate)
         onChange(rate)
       }
     },
-    [key, mutate, onChange]
+    [collection, data, item_id, mutate, onChange]
   )
 
   return (
-    <RatingControl
-      value={value}
-      readonly={false}
-      simple
-      onRateChange={onRateChange as any}
-      aria-label={'Rating ' + collection}
-    />
+    <Flex direction={['column', 'row']} gap={4}>
+      <Box>{children}</Box>
+      <RatingControl
+        value={value}
+        readonly={false}
+        simple
+        onRateChange={onRateChange as any}
+        aria-label={'Rating ' + collection}
+        {...props}
+      />
+    </Flex>
   )
 }

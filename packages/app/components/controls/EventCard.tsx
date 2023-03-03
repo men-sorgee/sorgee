@@ -113,74 +113,72 @@ export const EventCard = ({
           </Flex>
         </CardHeader>
         <CardBody w="full" pb={0}>
-          {(event.status == 'planned' && (
+          {event.status == 'planned' && (
             <Text>
               This event is planned, but not yet scheduled. When enough brothers have confirmed that
               this date works for them, the event will be officially scheduled.
             </Text>
-          )) ||
-            (isScheduled && (
-              <>
-                <Flex mb={2} gap={4} justify="space-between" direction={['column', 'row']}>
-                  <Stat>
-                    <StatLabel>Event Type</StatLabel>
-                    <StatNumber>{capitalCase(event.type)}</StatNumber>
-                  </Stat>
-                  <Stat>
-                    <StatLabel>Invite Type</StatLabel>
-                    <StatNumber>{event.invite_only ? 'Invite Only' : 'Brothers Only'}</StatNumber>
-                  </Stat>
+          )}
 
-                  <Stat>
-                    <StatLabel>Start Time</StatLabel>
-                    <StatNumber>{eventDate?.time}</StatNumber>
-                  </Stat>
+          <Flex mb={2} gap={4} justify="space-between" direction={['column', 'row']}>
+            <Stat>
+              <StatLabel>Event Type</StatLabel>
+              <StatNumber>{capitalCase(event.type)}</StatNumber>
+            </Stat>
+            <Stat>
+              <StatLabel>Invite Type</StatLabel>
+              <StatNumber>{event.invite_only ? 'Invite Only' : 'Brothers Only'}</StatNumber>
+            </Stat>
 
-                  <Stat>
-                    <StatLabel>Fee</StatLabel>
-                    <StatNumber>${event.cost}</StatNumber>
-                  </Stat>
+            <Stat>
+              <StatLabel>Start Time</StatLabel>
+              <StatNumber>{eventDate?.time}</StatNumber>
+            </Stat>
+
+            <Stat>
+              <StatLabel>Fee</StatLabel>
+              <StatNumber>${event.cost}</StatNumber>
+            </Stat>
+          </Flex>
+          <Divider />
+
+          {showDescription && <Markdown content={event.description} size="md" />}
+          {viewLocation && (
+            <>
+              <Heading as="h5" textTransform="uppercase" size="md">
+                Location:
+              </Heading>
+
+              <LinkBox>
+                <Flex>
+                  <Icon
+                    h={20}
+                    w={20}
+                    as={LocationMarkerIcon}
+                    color="primary.200"
+                    fill="primary.500"
+                  />
+                  {viewLocation && (
+                    <LinkOverlay
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={`https://www.google.com/maps/place/${location.street} ${location.city} ${location.state} ${location.zip}`}
+                    >
+                      <Text fontWeight="bold" ml={3} colorScheme="primary">
+                        {location.name}
+                        <br />
+                        {location.street} {location.unit}
+                        <br />
+                        {location.city}, {location.state} {location.zip}
+                      </Text>
+                    </LinkOverlay>
+                  )}
                 </Flex>
-                <Divider />
+              </LinkBox>
+              <Markdown size="xs" content={location.notes} />
+            </>
+          )}
 
-                {showDescription && <Markdown content={event.description} size="md" />}
-                {showLocation && (
-                  <>
-                    <Heading as="h5" textTransform="uppercase" size="md">
-                      Location:
-                    </Heading>
-
-                    <LinkBox>
-                      <Flex>
-                        <Icon
-                          h={20}
-                          w={20}
-                          as={LocationMarkerIcon}
-                          color="primary.200"
-                          fill="primary.500"
-                        />
-                        {viewLocation && (
-                          <LinkOverlay
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            href={`https://www.google.com/maps/place/${location.street} ${location.city} ${location.state} ${location.zip}`}
-                          >
-                            <Text fontWeight="bold" ml={3} colorScheme="primary">
-                              {location.name}
-                              <br />
-                              {location.street} {location.unit}
-                              <br />
-                              {location.city}, {location.state} {location.zip}
-                            </Text>
-                          </LinkOverlay>
-                        )}
-                      </Flex>
-                    </LinkBox>
-                    {viewLocation && <Markdown size="xs" content={location.notes} />}
-                  </>
-                )}
-              </>
-            ))}
           {href && (
             <Heading as="h5" size="h5">
               Click for Details

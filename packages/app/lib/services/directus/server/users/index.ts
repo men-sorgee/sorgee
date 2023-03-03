@@ -163,14 +163,30 @@ export async function getRating(user_id: string, collection: RatingCollection, i
       break
     }
   }
+
   const { data: ratings } = await adminClient.items('rating').readByQuery({
     filter,
   })
-  if (ratings?.length) {
+
+  if (ratings && ratings.length > 0) {
     return ratings[0] as Rating
   } else {
     return null
   }
+}
+
+export async function getRatings(user_id: string) {
+  const adminClient = await getAdminClient()
+
+  const { data: ratings } = await adminClient.items('rating').readByQuery({
+    filter: {
+      user: {
+        _eq: user_id,
+      },
+    },
+  })
+
+  return ratings as Rating[]
 }
 
 export async function setRating(
