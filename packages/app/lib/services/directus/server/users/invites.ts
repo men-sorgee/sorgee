@@ -1,5 +1,15 @@
+import { listUpcomingEvents } from 'lib/services/directus/server'
 import { getAdminClient } from '..'
-import { Invite, InviteRSVPType, EventUser, GroupEvent, Location } from 'lib/models'
+import {
+  Invite,
+  InviteRSVPType,
+  EventUser,
+  GroupEvent,
+  Location,
+  EventInvite,
+  Member,
+  User,
+} from 'lib/models'
 
 export async function getInvite(inviteId: number): Promise<EventUser | null> {
   const client = await getAdminClient()
@@ -22,11 +32,11 @@ export async function findInvite(eventId: string, userId: string): Promise<Event
   return query.data[0] as EventUser
 }
 
-export async function listInvites(user_id: string): Promise<EventUser[]> {
+export async function listInvites(member: Member): Promise<EventUser[]> {
   const client = await getAdminClient()
   const { data } = await client.items('events_users').readByQuery({
     filter: {
-      users_id: { _eq: user_id },
+      users_id: { _eq: member.id },
       events_id: {
         status: { _in: ['planned', 'scheduled', 'occurred'] },
       },
@@ -35,15 +45,34 @@ export async function listInvites(user_id: string): Promise<EventUser[]> {
     sort: ['events_id.datetime' as any],
   })
 
-  const invites = data.map((invite: EventUser) => {
-    const today = new Date(new Date().toDateString())
+  const invites = data.map((invite: EventUser): Partial<EventInvite> => {
     const event = invite.events_id as GroupEvent
-    const eventDate = new Date(new Date(event.datetime).toDateString())
-    if (today.getTime() !== eventDate.getTime()) delete event.location
-
-    return invite
+    const member = invite.users_id as unknown as Member
+    const rsvp = invite.rsvp as InviteRSVPType
+    const { id, attended, paid, guest, reason } = invite
+    return {
+      id,
+      event,
+      member,
+      rsvp,
+      attended,
+      paid,
+      guest,
+      reason,
+    }
   })
 
+  const events = await listUpcomingEvents(member.user_type)
+  events.forEach((event) => {
+    const invite = invites.find((i) => i.event.id === event.id)
+    if (!invite) {
+      invites.push({
+        event,
+        rsvp: 'invited',
+        member: member,
+      })
+    }
+  })
   return (invites || []) as EventUser[]
 }
 

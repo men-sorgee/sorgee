@@ -9,7 +9,7 @@ export default async function eventRSVP(
   res: NextApiResponse<ApiResponse<Applicant> | ApiResponse>
 ) {
   try {
-    const method = withMethods(req, ['POST'])
+    withMethods(req, ['POST'])
     const member = await withMember(req, res)
     const { event_id, rsvp, reason } = req.body as any
 
@@ -19,7 +19,7 @@ export default async function eventRSVP(
 
     const event = (await getEvent(event_id as string)) as GroupEvent
     if (!event || !['planned', 'scheduled'].includes(event.status)) {
-      return res.status(404).json(ApiResponse(null, 'Event not found'))
+      return res.status(200).json(ApiResponse(null, 'Event not found'))
     }
 
     let invite = (await findInvite(event_id as string, member.id)) as EventUser

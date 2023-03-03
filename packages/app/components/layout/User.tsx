@@ -122,24 +122,17 @@ export default function UserMenu(_props: Props) {
                   Edit Photos
                 </MenuItem>
                 <MenuDivider />
+
                 <MenuItem
                   icon={<CalendarIcon color={'white'} width={'1.5rem'} />}
                   bg="black"
                   _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                   as={Link}
-                  href="/calendar"
+                  href="/events"
                 >
                   Events
                 </MenuItem>
-                <MenuItem
-                  icon={<InboxIcon color={'white'} width={'1.5rem'} />}
-                  bg="black"
-                  _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                  as={Link}
-                  href="/member/invites"
-                >
-                  Your Events
-                </MenuItem>
+
                 <MenuDivider />
                 <MenuItem
                   icon={<UserGroupIcon color={'white'} width={'1.5rem'} />}

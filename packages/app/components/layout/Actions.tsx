@@ -27,8 +27,8 @@ export default function ActionsNav({ children, ...props }: Props) {
   const router = useRouter()
   const { authenticated } = useUser()
   const [path, setPath] = useState(router.asPath)
-  const { invitations } = useUserEvents()
-  const { events } = useEvents()
+  const { newInvitationCount } = useUserEvents()
+
   useEffect(() => {
     setPath(router.asPath)
   }, [router, router.asPath, authenticated])
@@ -93,44 +93,17 @@ export default function ActionsNav({ children, ...props }: Props) {
               </Badge>
             )}
           </Link>
-          <Link href="/calendar" as={NextLink}>
+          <Link href="/events" as={NextLink}>
             <IconButton
               variant="primary"
               zIndex="fixed"
               size="lg"
               icon={<CalendarIcon height="50px" width="50px" />}
-              color={path.startsWith('/calendar') ? 'accent.500' : 'white'}
+              color={path.startsWith('/events') ? 'accent.500' : 'white'}
               aria-label={'Calendar'}
               title="Calendar"
             />
-            {events?.length > 0 && (
-              <Badge
-                ml={-4}
-                zIndex="overlay"
-                position="absolute"
-                bg="accent.500"
-                rounded="full"
-                px={2}
-                py={0.5}
-                color="white"
-                title="Calendar Events"
-              >
-                {events?.length}
-              </Badge>
-            )}
-          </Link>
-
-          <Link href="/member/invites" as={NextLink}>
-            <IconButton
-              variant="primary"
-              zIndex="fixed"
-              size="lg"
-              icon={<InboxIcon height="50px" width="50px" />}
-              color={path.startsWith('/member/invites') ? 'accent.500' : 'white'}
-              aria-label={'Invites'}
-              title="My Events"
-            />
-            {invitations?.length > 0 && (
+            {newInvitationCount > 0 && (
               <Badge
                 ml={-4}
                 zIndex="overlay"
@@ -141,7 +114,7 @@ export default function ActionsNav({ children, ...props }: Props) {
                 py={0.5}
                 color="white"
               >
-                {invitations?.length}
+                {newInvitationCount}
               </Badge>
             )}
           </Link>

@@ -98,8 +98,8 @@ function Survey({
         <Box>
           <Heading>Thank you for completing the survey!</Heading>
           <Flex gap={4} my={10}>
-            <LinkButton href="/member/invites">Rate More Events</LinkButton>
-            <LinkButton href="/calendar">Find Events</LinkButton>
+            <LinkButton href="/events">Rate More Events</LinkButton>
+            <LinkButton href="/events">Find Events</LinkButton>
             <LinkButton href="/members">Find Men</LinkButton>
           </Flex>
         </Box>

@@ -21,13 +21,15 @@ type Props = ModalProps & {
 export const ModalPopup = chakra(
   ({ header, footer, isOpen, onClose, children, ...props }: Props) => {
     return (
-      <Modal isOpen={isOpen} onClose={onClose} isCentered {...props}>
+      <Modal scrollBehavior="inside" isOpen={isOpen} onClose={onClose} isCentered {...props}>
         <ModalOverlay />
-        <ModalContent bg="transparent" shadow="none">
+        <ModalContent bg="transparent" m={0} p={0} shadow="none">
           <ModalCloseButton />
-          <ModalHeader>{header}</ModalHeader>
-          <ModalBody>{children}</ModalBody>
-          <ModalFooter>{footer}</ModalFooter>
+          {header && <ModalHeader>{header}</ModalHeader>}
+          <ModalBody m={0} p={0}>
+            {children}
+          </ModalBody>
+          {footer && <ModalFooter>{footer}</ModalFooter>}
         </ModalContent>
       </Modal>
     )

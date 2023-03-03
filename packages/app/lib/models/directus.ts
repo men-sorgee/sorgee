@@ -6,6 +6,7 @@ import {
   NotificationStatusType,
   SearchableMember,
   UserType,
+  Member,
 } from 'lib/models'
 import { Block } from 'editorjs-blocks-react-renderer'
 import { ProviderType } from 'next-auth/providers'
@@ -89,6 +90,18 @@ export type EventUser = {
   paid?: boolean
   guest?: boolean
   reason?: string
+  attendance?: string
+}
+
+export type EventInvite = {
+  id?: number
+  event: GroupEvent
+  member: Member
+  attended: boolean
+  rsvp: string
+  paid: boolean
+  guest: boolean
+  reason: string
   attendance?: string
 }
 

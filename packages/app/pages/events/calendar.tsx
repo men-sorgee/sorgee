@@ -1,77 +1,51 @@
 import { addDays, isSameDay } from 'date-fns'
-import { SetStateAction, useCallback, useEffect, useState } from 'react'
+import { SetStateAction, useCallback, useState } from 'react'
 import Calendar from 'react-calendar'
 import Page from 'components/Page'
-import { Box, Flex, Text, Show, Hide, Heading, useColorModeValue } from '@chakra-ui/react'
-import { useEvents, useMeta, useUser } from 'hooks'
-import { GroupEvent, Member } from 'lib/models'
+import {
+  Box,
+  Flex,
+  Text,
+  Show,
+  Hide,
+  Heading,
+  useColorModeValue,
+  LinkOverlay,
+  LinkBox,
+} from '@chakra-ui/react'
+import { useUser, useUserEvents } from 'hooks'
+import { GroupEvent, MemberLevel } from 'lib/models'
 import { brand } from 'lib/config/brand'
-import { EventRSVPCard, ModalPopup, EventBadge, EventCard } from 'components/controls'
-import { useRouter } from 'next/router'
+import { EventBadge, EventCard } from 'components/controls'
 
 function CalendarPage() {
   const today = new Date()
   const minDate = addDays(today, -14)
   const maxDate = addDays(today, 120)
-  const { setMeta } = useMeta()
-  const router = useRouter()
-  const { id } = router.query
-  const [eventId, setEventId] = useState<string>()
   const [value, setValue] = useState(new Date())
-  const { member, loading } = useUser()
-  const { events = [], loading: eventsLoading } = useEvents()
+  const { member, loading } = useUser(MemberLevel.pledge)
+  const { upcoming } = useUserEvents()
 
+  const events = upcoming.map((i) => i.event)
   const onChange = useCallback((nextValue: SetStateAction<Date>) => {
     setValue(nextValue)
   }, [])
-
-  useEffect(() => {
-    if (id && !eventId) {
-      setEventId(String(id))
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    if (eventId) {
-      window.history.pushState({}, null, `/calendar/${eventId}`)
-    } else {
-      window.history.pushState(null, 'Events', `/calendar`)
-      setMeta('Calendar', 'All Events')
-    }
-  }, [eventId, setMeta])
-
   const EventView = ({ event, full = false }: { event: GroupEvent; full?: boolean }) => {
     return (
       <>
-        <Box
-          m={1}
-          p={full ? 2 : 0}
-          color="primary.500"
-          onClick={() => {
-            setEventId(event.id)
-          }}
-          cursor="pointer"
-        >
-          {(full && <EventCard event={event} />) || (
+        <Box m={1} p={full ? 2 : 0} color="primary.500" cursor="pointer">
+          {(full && <EventCard href={`/events/${event.id}`} event={event} />) || (
             <Box>
-              <EventBadge type={event.type} status={event.status} />
-              <Text p={0} m={0}>
-                {event.name}
-              </Text>
+              <LinkBox>
+                <EventBadge type={event.type} status={event.status} />
+                <Text p={0} m={0}>
+                  {event.name}
+                  <LinkOverlay href={`/events/${event.id}`} />
+                </Text>
+              </LinkBox>
             </Box>
           )}
         </Box>
-
-        <ModalPopup
-          isOpen={eventId === event.id}
-          onClose={() => {
-            setEventId(null)
-          }}
-          size="lg"
-        >
-          <CalendarPageItem event={event} member={member} />
-        </ModalPopup>
       </>
     )
   }
@@ -94,7 +68,7 @@ function CalendarPage() {
   return (
     <Page
       title="Calendar"
-      description="All Events"
+      description="Your Event Calendar"
       loading={loading}
       css={{
         '.react-calendar ': {
@@ -145,8 +119,8 @@ function CalendarPage() {
       <Show above="md">
         <Calendar
           className="calendar"
-          onChange={onChange}
           value={value}
+          onChange={onChange}
           tileContent={tileContent}
           minDate={minDate}
           maxDate={maxDate}
@@ -165,22 +139,5 @@ function CalendarPage() {
     </Page>
   )
 }
-
-type CalendarPageItemProps = {
-  event: GroupEvent
-  member: Member
-}
-const CalendarPageItem = ({ event, member }: CalendarPageItemProps) => {
-  const { setMeta } = useMeta()
-
-  useEffect(() => {
-    setMeta(event.name, event.description)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  return <EventRSVPCard event={event} member={member} />
-}
-
-CalendarPage.authLevel = 'member'
 
 export default CalendarPage

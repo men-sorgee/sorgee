@@ -14,16 +14,18 @@ import {
   Spacer,
   Flex,
   useColorModeValue,
+  SlideFade,
 } from '@chakra-ui/react'
 import { isToday } from 'date-fns'
 import Page from 'components/Page'
 import { useUser, useUserEvents } from 'hooks'
 import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
-import { EventUser, Member, GroupEvent, MemberLevel } from 'lib/models'
+import { EventUser, Member, GroupEvent, MemberLevel, EventInvite } from 'lib/models'
 import {
   EventCard,
   EventRSVPCard,
+  EventTicket,
   LinkButton,
   MemberSpotlight,
   RateItem,
@@ -34,7 +36,7 @@ export type PageProps = {}
 export default function EventsPage({}: PageProps) {
   const [allowed, setAllowed] = useState(false)
   const { member, loading, level, reload: reloadUser } = useUser()
-  const { invitations, upcoming, past, reload } = useUserEvents()
+  const { invitations, newInvitationCount, upcoming, past, reload } = useUserEvents()
 
   useEffect(() => {
     if (!loading && member && !allowed) {
@@ -46,10 +48,12 @@ export default function EventsPage({}: PageProps) {
     reload()
   }, [reload])
 
-  const activeEvent = upcoming.find((invite: any) => isToday(new Date(invite.events_id.datetime)))
+  const activeEvent = upcoming.find((invite: EventInvite) =>
+    isToday(new Date(invite.event.datetime))
+  )
 
   return (
-    <Page loading={loading} title="Your Events" description="Upcoming events." requireAuth={true}>
+    <Page loading={loading} title="Events" description="Upcoming events." requireAuth={true}>
       {allowed ? (
         <>
           <Tabs isFitted m={0} isLazy>
@@ -59,9 +63,9 @@ export default function EventsPage({}: PageProps) {
                 <Tab className="no-print">Upcoming</Tab>
                 <Tab className="no-print">
                   Invitations
-                  {invitations.length > 0 && (
+                  {newInvitationCount > 0 && (
                     <Badge ml={1} bg="red.500" rounded="full" px={2} py={0.5} color="white">
-                      {invitations.length}
+                      {newInvitationCount}
                     </Badge>
                   )}
                 </Tab>
@@ -74,13 +78,19 @@ export default function EventsPage({}: PageProps) {
                   <Heading mb={4} className="no-print">
                     Active Event
                   </Heading>
-                  <EventRSVPCard member={member} event={activeEvent.events_id as GroupEvent} full />
+                  <EventRSVPCard member={member} invite={activeEvent}>
+                    <EventTicket
+                      event_id={activeEvent.event.id}
+                      member_id={member.id}
+                      invite_only={activeEvent.event.invite_only}
+                    />
+                  </EventRSVPCard>
                 </TabPanel>
               )}
               <TabPanel p={0}>
-                <Heading mb={4}>Upcoming Events</Heading>
+                <Heading mb={4}>Your Upcoming Events</Heading>
 
-                <Events
+                <Invitations
                   list={upcoming.filter((e) => e != activeEvent)}
                   member={member}
                   onChange={onEventsChange}
@@ -89,9 +99,9 @@ export default function EventsPage({}: PageProps) {
                 />
               </TabPanel>
               <TabPanel p={0}>
-                <Heading mb={4}>Event Invitations</Heading>
+                <Heading mb={4}>You&apos;re Invited</Heading>
 
-                <Events
+                <Invitations
                   list={invitations}
                   member={member}
                   onChange={onEventsChange}
@@ -102,7 +112,7 @@ export default function EventsPage({}: PageProps) {
               </TabPanel>
 
               <TabPanel p={0}>
-                <Heading mb={4}>Past Events</Heading>
+                <Heading mb={4}>Your Past Events</Heading>
                 <PastEvents member={member} list={past} reloadUser={reloadUser} />
               </TabPanel>
             </TabPanels>
@@ -120,14 +130,14 @@ export default function EventsPage({}: PageProps) {
   )
 }
 
-function Events({
+function Invitations({
   list,
   member,
   name,
   text,
   onChange,
 }: {
-  list: EventUser[]
+  list: EventInvite[]
   member: Member
   name: string
   text?: string
@@ -144,21 +154,22 @@ function Events({
       </Box>
     )
   }
-  const items = list.map((invite) => {
-    return {
-      invite: invite as EventUser,
-      event: invite.events_id as GroupEvent,
-    }
+
+  list.sort((a, b) => {
+    const dateA = new Date(a.event.datetime).getTime()
+    const dateB = new Date(b.event.datetime).getTime()
+    return dateA - dateB
   })
+
   return (
     <>
-      {items.map(({ invite }) => (
+      {list.map((invite, index) => (
         <EventRSVPCard
-          key={invite.id}
-          event={invite.events_id as GroupEvent}
+          key={index}
           invite={invite}
           member={member}
           mb={8}
+          full={false}
           onChange={onChange}
         />
       ))}
@@ -171,7 +182,7 @@ function PastEvents({
   list,
   reloadUser,
 }: {
-  list: EventUser[]
+  list: EventInvite[]
   member: Member
   reloadUser: () => void
 }) {
@@ -182,8 +193,8 @@ function PastEvents({
   const ratedUserIds =
     member.ratings.filter((r) => r.collection == 'users').map((r) => r.member as string) || []
 
-  const PastEventItem = ({ invite }: { invite: EventUser }) => {
-    const event = invite.events_id as GroupEvent
+  const PastEventItem = ({ invite }: { invite: EventInvite }) => {
+    const event = invite.event
     const surveyId = event.survey ? event.survey[0] : undefined
     const users = event.users as EventUser[]
     const attendees = users
@@ -254,7 +265,7 @@ function PastEvents({
       {list.map((invite) => (
         <EventCard
           key={invite.id}
-          event={invite.events_id as GroupEvent}
+          event={invite.event as GroupEvent}
           showDescription={false}
           mb={4}
         >

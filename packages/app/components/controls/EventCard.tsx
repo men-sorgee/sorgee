@@ -12,11 +12,13 @@ import {
   LinkBox,
   LinkOverlay,
   Icon,
-  HStack,
+  Divider,
   Stat,
   StatLabel,
   StatNumber,
+  Spacer,
   SimpleGrid,
+  Wrap,
 } from '@chakra-ui/react'
 import { Markdown } from './Markdown'
 import { GroupEvent, Location } from 'lib/models'
@@ -61,24 +63,30 @@ export const EventCard = ({
   if (!event) return null
   const location = event.location as Location
   const viewLocation =
-    location &&
     showLocation &&
+    location &&
     differenceInDays(toLocalDate(event.datetime), new Date()) < location.display_threshold
 
   return (
-    <Card p={0} w="full" boxShadow="lg" rounded="md" {...props} _print={{ shadow: 'none' }}>
+    <Card p={0} w="full" boxShadow="lg" borderRadius="15px" {...props} _print={{ shadow: 'none' }}>
       <LinkBox>
         <CardHeader p={0}>
-          <Flex direction="row" alignItems="stretch" alignContent="middle" gap={0}>
+          <Flex
+            direction="row"
+            alignItems="stretch"
+            alignContent="middle"
+            gap={0}
+            borderRadius="15px 15px 0 0"
+            bg="primary.400"
+          >
             <Heading
-              borderRadius="5px 0 0 0"
-              bg="primary.400"
               as="h3"
               size="xl"
               color="white!important"
               textAlign="center"
               w="75%"
-              m={0}
+              mx={0}
+              my="auto"
               p={4}
             >
               {event.name}
@@ -87,7 +95,7 @@ export const EventCard = ({
             <Heading
               as="h4"
               bg="primary.700"
-              borderRadius="0 5px 0  0"
+              borderRadius="0 15px 0  0"
               m={0}
               w="25%"
               p={4}
@@ -104,71 +112,82 @@ export const EventCard = ({
             {href && <LinkOverlay as={Link} href={href} />}
           </Flex>
         </CardHeader>
-      </LinkBox>
-      {isScheduled && (
         <CardBody w="full">
-          <SimpleGrid columns={{ base: 2, md: 4 }} spacing={4} mb={4}>
-            <Stat>
-              <StatLabel>Event Type</StatLabel>
-              <StatNumber>{capitalCase(event.type)}</StatNumber>
-            </Stat>
-            <Stat>
-              <StatLabel>Invite Type</StatLabel>
-              <StatNumber>{event.invite_only ? 'Invite Only' : 'Brothers Only'}</StatNumber>
-            </Stat>
-            <Stat>
-              <StatLabel>Start Time</StatLabel>
-              <StatNumber>{eventDate?.time}</StatNumber>
-            </Stat>
+          {(event.status == 'planned' && (
+            <Text>
+              This event is planned, but not yet scheduled. When enough brothers have confirmed that
+              this date works for them, the event will be officially scheduled.
+            </Text>
+          )) ||
+            (isScheduled && (
+              <>
+                <Flex mb={2} gap={4} justify="space-between" direction={['column', 'row']}>
+                  <Stat>
+                    <StatLabel>Event Type</StatLabel>
+                    <StatNumber>{capitalCase(event.type)}</StatNumber>
+                  </Stat>
+                  <Stat>
+                    <StatLabel>Invite Type</StatLabel>
+                    <StatNumber>{event.invite_only ? 'Invite Only' : 'Brothers Only'}</StatNumber>
+                  </Stat>
 
-            <Stat>
-              <StatLabel>Fee</StatLabel>
-              <StatNumber>${event.cost}</StatNumber>
-            </Stat>
-          </SimpleGrid>
+                  <Stat>
+                    <StatLabel>Start Time</StatLabel>
+                    <StatNumber>{eventDate?.time}</StatNumber>
+                  </Stat>
 
-          {showDescription && (
-            <Box maxH="50vh" overflowY="auto">
-              <Markdown content={event.description} />
-            </Box>
-          )}
-          {showDescription && (
-            <Box>
-              <Heading as="h5" textTransform="uppercase" size="md">
-                Location:
-              </Heading>
-
-              <LinkBox>
-                <Flex>
-                  <Icon
-                    h={20}
-                    w={20}
-                    as={LocationMarkerIcon}
-                    color="primary.200"
-                    fill="primary.500"
-                  />
-                  {(viewLocation && (
-                    <LinkOverlay
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={`https://www.google.com/maps/place/${location.street} ${location.city} ${location.state} ${location.zip}`}
-                    >
-                      <Text fontWeight="bold" ml={3} color="primary.500">
-                        {location.name}
-                        <br />
-                        {location.street} {location.unit}
-                        <br />
-                        {location.city}, {location.state} {location.zip}
-                      </Text>
-                    </LinkOverlay>
-                  )) || <Text>The location will appear when we are closer to the event-date.</Text>}
+                  <Stat>
+                    <StatLabel>Fee</StatLabel>
+                    <StatNumber>${event.cost}</StatNumber>
+                  </Stat>
                 </Flex>
-              </LinkBox>
-              {viewLocation && <Markdown content={location.notes} />}
-            </Box>
+                <Divider />
+
+                {showDescription && <Markdown content={event.description} size="md" />}
+                {showLocation && (
+                  <>
+                    <Heading as="h5" textTransform="uppercase" size="md">
+                      Location:
+                    </Heading>
+
+                    <LinkBox>
+                      <Flex>
+                        <Icon
+                          h={20}
+                          w={20}
+                          as={LocationMarkerIcon}
+                          color="primary.200"
+                          fill="primary.500"
+                        />
+                        {viewLocation && (
+                          <LinkOverlay
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href={`https://www.google.com/maps/place/${location.street} ${location.city} ${location.state} ${location.zip}`}
+                          >
+                            <Text fontWeight="bold" ml={3} colorScheme="primary">
+                              {location.name}
+                              <br />
+                              {location.street} {location.unit}
+                              <br />
+                              {location.city}, {location.state} {location.zip}
+                            </Text>
+                          </LinkOverlay>
+                        )}
+                      </Flex>
+                    </LinkBox>
+                    {viewLocation && <Markdown size="xs" content={location.notes} />}
+                  </>
+                )}
+              </>
+            ))}
+          {href && (
+            <Heading as="h5" size="h5">
+              Click for Details
+            </Heading>
           )}
         </CardBody>
-      )}
+      </LinkBox>
       <CardFooter flexDirection="column">{children}</CardFooter>
     </Card>
   )

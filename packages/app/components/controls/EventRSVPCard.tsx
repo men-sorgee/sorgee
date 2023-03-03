@@ -17,7 +17,14 @@ import {
 import { useState, useCallback, useEffect, ReactNode } from 'react'
 import { useForm } from 'react-hook-form'
 import { useUser } from 'hooks'
-import { Member, FieldOptions, GroupEvent, MemberLevel, EventUser } from '../../lib/models'
+import {
+  Member,
+  FieldOptions,
+  GroupEvent,
+  MemberLevel,
+  EventUser,
+  EventInvite,
+} from '../../lib/models'
 import { postJSON } from 'lib/utils'
 import { EventCard } from './EventCard'
 
@@ -31,8 +38,7 @@ type RSVPInfo = {
 
 type RSVPProps = CardProps & {
   member: Member
-  event: GroupEvent
-  invite?: EventUser
+  invite: EventInvite
   full?: boolean
   onChange?: () => void
   children?: ReactNode | ReactNode[]
@@ -40,52 +46,32 @@ type RSVPProps = CardProps & {
 
 export const EventRSVPCard = ({
   member,
-  event,
-  invite: i,
+  invite,
   full = false,
   onChange,
   children,
   ...props
 }: RSVPProps) => {
+  const event = invite.event
   const { reload } = useUser()
   const [working, setWorking] = useState<boolean>(undefined)
-  const [invite, setInvite] = useState<RSVPInfo>(undefined)
-  const [registered, setRegistered] = useState<boolean>(undefined)
-  const [showTicket, setShowTicket] = useState<boolean>(undefined)
+  const [registered, setRegistered] = useState<boolean>(invite.id != undefined)
   const toast = useToast()
   const {
     register,
     handleSubmit,
     setError,
     watch,
-    setValue,
     reset,
     formState: { errors, isDirty },
   } = useForm<RSVPInfo>({
     mode: 'onChange',
-    defaultValues: invite || {
-      user_id: member?.id,
+    defaultValues: {
       event_id: event.id,
+      invite_id: invite.id,
+      rsvp: invite.rsvp,
     },
   })
-
-  useEffect(() => {
-    if (member && invite == undefined) {
-      const mi = i || member.events?.find((i) => i.events_id === event?.id)
-      if (mi) {
-        setInvite({
-          user_id: member.id,
-          event_id: event.id,
-          invite_id: mi.id,
-          reason: mi.reason,
-          rsvp: mi.rsvp,
-        })
-        setRegistered(mi.rsvp != '<RSVP>')
-        setValue('rsvp', mi.rsvp)
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [invite, i, setValue])
 
   const respond = useCallback(
     async (data: RSVPInfo) => {
@@ -96,22 +82,12 @@ export const EventRSVPCard = ({
         })
       }
       setWorking(true)
-      const {
-        success,
-        data: invite,
-        error,
-      } = await postJSON<EventUser>('/api/events/rsvp', data as any)
+      const { success, data: i, error } = await postJSON<EventUser>('/api/events/rsvp', data as any)
       if (success) {
         reset(data)
-        setInvite({
-          user_id: String(invite.users_id),
-          event_id: String(invite.events_id),
-          invite_id: invite.id,
-          reason: invite.reason,
-          rsvp: invite.rsvp,
-        })
         setRegistered(true)
-        if (onChange) onChange()
+        invite.id = i.id
+
         reload()
         toast({
           title: 'RSVP Updated',
@@ -121,6 +97,7 @@ export const EventRSVPCard = ({
           duration: 5000,
           isClosable: true,
         })
+        if (onChange) onChange()
       } else if (error?.field) {
         setError(error!.field as any, error.message as any)
       } else {
@@ -135,14 +112,14 @@ export const EventRSVPCard = ({
       }
       setWorking(false)
     },
-    [onChange, reload, reset, setError, toast]
+    [invite, onChange, reload, reset, setError, toast]
   )
 
   const rsvp = watch('rsvp')
 
   const rsvpOptions = [
     {
-      text: '<RSVP>',
+      text: '',
       value: 'invited',
     },
     {
@@ -160,22 +137,20 @@ export const EventRSVPCard = ({
       value: 'cancelled',
     })
   }
-  const checkinUrl = `/api/${event.invite_only ? 'invite' : 'events'}/checkin?user_id=${
-    member?.id
-  }&event_id=${event?.id}`
 
   return (
     <>
       <EventCard
         event={event}
-        href={rsvp == 'confirmed' ? `/calendar/event/${event.id}` : null}
-        showDescription={true}
+        href={rsvp == 'confirmed' ? `/events/${event.id}` : null}
+        showDescription={full}
+        showLocation={full}
         {...props}
       >
         <>
           <form className="no-print" onSubmit={handleSubmit(respond)}>
             <SlideFade in={isDirty && rsvp == 'confirmed'} unmountOnExit>
-              <Alert status="info" mb={6} rounded="lg" shadow="lg">
+              <Alert status="info" mb={4} rounded="lg" shadow="lg">
                 <AlertIcon />
                 <Text>
                   <strong>Only confirm to events you are absolutely sure you can attend.</strong>{' '}
@@ -195,11 +170,11 @@ export const EventRSVPCard = ({
                 </Text>
               </Alert>
             </SlideFade>
-            <Box>
+            <Box mb={2}>
               <input type="hidden" {...register('event_id')} />
               <input type="hidden" {...register('user_id')} />
               <input type="hidden" {...register('invite_id')} />
-              <Flex gap={2} direction={['column', 'column', 'row']} w="full">
+              <Flex gap={4} direction={['column', 'column', 'row']} w="full">
                 <Select
                   w="full"
                   p={0}
@@ -216,67 +191,18 @@ export const EventRSVPCard = ({
                     </option>
                   ))}
                 </Select>
-
+                {rsvp == 'cancelled' && (
+                  <Textarea placeholder="Reason..." w="full" {...register('reason')} />
+                )}
                 <Button size="lg" colorScheme="gray" w="full" type="submit" disabled={working}>
                   {registered ? 'Change' : 'Register'} RSVP
                 </Button>
               </Flex>
-              {rsvp == 'cancelled' && (
-                <Textarea placeholder="Reason..." w="full" p={0} {...register('reason')} />
-              )}
+
               {errors?.reason && <Text color="red.500">{errors.reason.message}</Text>}
             </Box>
           </form>
-          {full && rsvp == 'confirmed' && (
-            <>
-              <Image
-                className="print-only"
-                rounded="xl"
-                shadow="lg"
-                maxW="sm"
-                mt={-8}
-                src={`/api/code${checkinUrl}`}
-                alt="Ticket"
-                w="full"
-              />
-              <div className="no-print">
-                <Flex direction="column">
-                  <Flex
-                    alignContent="center"
-                    justifyContent="center"
-                    align="center"
-                    bg="gray.200"
-                    color="white"
-                    mt={6}
-                    px={2}
-                    py={1}
-                    cursor="pointer"
-                    _hover={{ bg: 'primary' }}
-                    rounded="lg"
-                    onClick={() => setShowTicket(!showTicket)}
-                  >
-                    <Text color="white">{showTicket ? 'Hide' : 'Show'} Ticket</Text>
-                  </Flex>
-                  <SlideFade in={showTicket} unmountOnExit>
-                    <Text textAlign="center">
-                      <strong>Important:</strong> Present this ticket to the host when you arrive
-                      for access.
-                    </Text>
-                    <Image
-                      rounded="xl"
-                      shadow="lg"
-                      maxW="md"
-                      mt={4}
-                      mx="auto"
-                      src={`/api/code/${checkinUrl}`}
-                      alt="Ticket"
-                      w="full"
-                    />
-                  </SlideFade>
-                </Flex>
-              </div>
-            </>
-          )}
+
           {children}
         </>
       </EventCard>

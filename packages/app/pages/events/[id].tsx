@@ -7,6 +7,8 @@ import {
   Avatar,
   AvatarGroup,
   Flex,
+  Divider,
+  StatGroup,
   useBreakpointValue,
 } from '@chakra-ui/react'
 import { EventCard, LinkButton, MemberSpotlight } from 'components/controls'
@@ -63,9 +65,10 @@ export default function EventPage({ id }) {
     <Page title="Event Details" loading={loading || eventLoading} requireAuth={true}>
       {member && (
         <EventCard event={event} showDescription showLocation={true}>
+          <Divider mb={2} />
           <SimpleGrid columns={{ base: 2, md: 4 }} spacing={4} mb={4}>
             {stats && (
-              <>
+              <StatGroup>
                 {stats.invited_count && (
                   <Stat>
                     <StatLabel>Invited</StatLabel>
@@ -91,7 +94,7 @@ export default function EventPage({ id }) {
                     <StatNumber>${fees}</StatNumber>
                   </Stat>
                 )}
-              </>
+              </StatGroup>
             )}
           </SimpleGrid>
           {stats && (
@@ -142,8 +145,8 @@ export default function EventPage({ id }) {
         </EventCard>
       )}
       <HStack spacing={4}>
-        <LinkButton href="/member/invites" my={4}>
-          Back to Invites
+        <LinkButton href="/events" my={4}>
+          Back to Events
         </LinkButton>
       </HStack>
     </Page>

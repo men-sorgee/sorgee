@@ -1,5 +1,5 @@
-import { EventUser, GroupEvent } from './directus'
-import { MemberLevel, SearchableMember } from './users'
+import { EventUser } from './directus'
+import { MemberLevel } from './users'
 
 export type UserInvite = {
   e: string
@@ -31,8 +31,4 @@ export type Invite = EventUser & {
   status: EventStatusType
   type: string
   cost: number
-}
-
-export type EventInvite = EventUser & {
-  rsvp: InviteRSVPType
 }

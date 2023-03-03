@@ -1,12 +1,13 @@
 'use client'
 import useSWR from 'swr'
-import { EventUser, GroupEvent } from 'lib/models'
+import { EventInvite, EventUser, GroupEvent } from 'lib/models'
 import { JsonFetcher } from 'lib/utils'
 
 type InvitesResults = {
-  invitations: EventUser[]
-  upcoming: EventUser[]
-  past: EventUser[]
+  invitations: EventInvite[]
+  newInvitationCount: number
+  upcoming: EventInvite[]
+  past: EventInvite[]
   error?: any
   loading: boolean
   reload: () => void
@@ -18,7 +19,7 @@ export const useUserEvents = (): InvitesResults => {
     mutate,
     error,
     isLoading,
-  } = useSWR<EventUser[], Error>(`/api/member/invites`, JsonFetcher, {
+  } = useSWR<EventInvite[], Error>(`/api/member/invites`, JsonFetcher, {
     refreshWhenHidden: true,
     refreshWhenOffline: true,
     revalidateOnFocus: true,
@@ -28,24 +29,29 @@ export const useUserEvents = (): InvitesResults => {
   })
 
   if (invites == null || invites == undefined)
-    return { invitations: [], upcoming: [], past: [], loading: true, reload: () => {} }
+    return {
+      invitations: [],
+      newInvitationCount: 0,
+      upcoming: [],
+      past: [],
+      loading: true,
+      reload: () => {},
+    }
 
   const upComing = ['scheduled', 'planned']
   const attending = ['confirmed', 'maybe']
 
-  const getEvent = (e: EventUser) => {
-    return e.events_id as GroupEvent
-  }
   const invitations = invites?.filter(
-    (i) => !attending.includes(i.rsvp) && upComing.includes(getEvent(i).status)
+    (i) => !attending.includes(i.rsvp) && upComing.includes(i.event.status)
   )
   const upcoming = invites?.filter(
-    (i) => attending.includes(i.rsvp) && upComing.includes(getEvent(i).status)
+    (i) => attending.includes(i.rsvp) && upComing.includes(i.event.status)
   )
-  const past = invites?.filter((i) => getEvent(i).status == 'occurred')
-
+  const past = invites?.filter((i) => i.event.status == 'occurred')
+  const newInvitationCount = invitations?.filter((i) => i.rsvp == 'invited').length
   return {
     invitations,
+    newInvitationCount,
     upcoming,
     past,
     error,
