@@ -49,6 +49,7 @@ export const useUserEvents = (): InvitesResults => {
   )
   const past = invites?.filter((i) => i.event.status == 'occurred')
   const newInvitationCount = invitations?.filter((i) => i.rsvp == 'invited').length
+
   return {
     invitations,
     newInvitationCount,

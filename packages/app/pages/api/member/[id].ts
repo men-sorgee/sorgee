@@ -24,7 +24,7 @@ export default async function getMemberDetails(
 
     let user = viewer
     if (user_id !== viewer.id) {
-      user = await getUser<User>(user_id, ['*.*', 'my_photos.*', ...memberFields])
+      user = await getUser<User>(user_id, ['*.*', 'my_photos.*', 'ratings.*', ...memberFields])
       if (!user) {
         return res.status(404).json(ApiResponse(null, 'Not found'))
       }

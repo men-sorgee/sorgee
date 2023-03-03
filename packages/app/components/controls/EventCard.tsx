@@ -112,7 +112,7 @@ export const EventCard = ({
             {href && <LinkOverlay as={Link} href={href} />}
           </Flex>
         </CardHeader>
-        <CardBody w="full">
+        <CardBody w="full" pb={0}>
           {(event.status == 'planned' && (
             <Text>
               This event is planned, but not yet scheduled. When enough brothers have confirmed that

@@ -57,7 +57,9 @@ function Layout({
               {...constrained}
               className={` ${heading} ${body} ${mono}}`}
             >
-              <ErrorBoundary>{children}</ErrorBoundary>
+              <Box minH={`calc(80vh - ${height})`}>
+                <ErrorBoundary>{children}</ErrorBoundary>
+              </Box>
               <Spacer h="1rem" />
               <Footer />
             </Box>

@@ -11,7 +11,7 @@ import {
   StatGroup,
   useBreakpointValue,
 } from '@chakra-ui/react'
-import { EventCard, LinkButton, MemberSpotlight } from 'components/controls'
+import { EventCard, EventTicket, LinkButton, MemberSpotlight } from 'components/controls'
 import { EventStats, EventUser, User } from 'lib/models'
 import Page from 'components/Page'
 import { useEffect, useState } from 'react'
@@ -35,15 +35,19 @@ export default function EventPage({ id }) {
   const { event, loading: eventLoading } = useEvent(eventId)
   const [fees, setFees] = useState<number>(undefined)
   const [stats, setStats] = useState<EventStats>(undefined)
-
+  const [invite, setInvite] = useState<EventUser>(undefined)
   useEffect(() => {
     if (!eventLoading && event?.stats && !stats) {
       setStats(event.stats)
       if (event.stats.attended_count) {
         setFees(event.stats.attended_count * event.cost)
       }
+      let i = member.events.find((e) => e.events_id == event.id)
+      if (i) {
+        setInvite(i)
+      }
     }
-  }, [event, eventLoading, stats])
+  }, [event, eventLoading, member?.events, stats])
 
   const getAttendees = (rsvp) => {
     return event?.attendance
@@ -65,11 +69,14 @@ export default function EventPage({ id }) {
     <Page title="Event Details" loading={loading || eventLoading} requireAuth={true}>
       {member && (
         <EventCard event={event} showDescription showLocation={true}>
-          <Divider mb={2} />
+          {invite && invite.rsvp == 'confirmed' && (
+            <EventTicket open event={event} member={member} />
+          )}
+          <Divider my={4} />
           <SimpleGrid columns={{ base: 2, md: 4 }} spacing={4} mb={4}>
             {stats && (
               <StatGroup>
-                {stats.invited_count && (
+                {event?.invite_only && stats.invited_count && (
                   <Stat>
                     <StatLabel>Invited</StatLabel>
                     <StatNumber>{stats.invited_count}</StatNumber>

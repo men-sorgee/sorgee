@@ -4,7 +4,7 @@ import { ChakraProvider, cookieStorageManager, extendTheme } from '@chakra-ui/re
 
 import Layout from 'components/layout/index'
 import getTheme from '../theme'
-import { Manrope, Arvo, Roboto_Mono } from '@next/font/google'
+import { Manrope, Arvo, Roboto_Mono } from 'next/font/google'
 import { useRouter } from 'next/router'
 import { NotificationsProvider, UserProvider, MetaContextProvider } from 'hooks'
 

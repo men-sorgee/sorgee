@@ -133,7 +133,7 @@ export const EventRSVPCard = ({
   ] as FieldOptions
   if (registered) {
     rsvpOptions.push({
-      text: 'Cancel',
+      text: 'Cancelled',
       value: 'cancelled',
     })
   }

@@ -13,7 +13,7 @@ import {
   StatGroup,
   StatLabel,
   StatNumber,
-  StatHelpText,
+  AvatarProps,
 } from '@chakra-ui/react'
 import { useMember, useMeta } from 'hooks'
 import { formatDistanceToNowStrict } from 'date-fns'
@@ -36,7 +36,7 @@ import { MemberPropertyGroup } from './MemberPropertyGroup'
 import { Rating } from './Rating'
 import { toLocalDate } from '../../lib/utils'
 
-type Props = {
+type Props = AvatarProps & {
   id: string
   full?: boolean
   color?: string
@@ -44,7 +44,16 @@ type Props = {
   children?: ReactNode
 }
 
-export const MemberSpotlight = ({ id, fields, full = true, color, children }: Props) => {
+export const MemberSpotlight = ({
+  id,
+  fields,
+  full = true,
+  color,
+  size,
+  children,
+
+  ...props
+}: Props) => {
   const { member, name, picture, loading } = useMember(id)
   const { setMeta } = useMeta()
   useEffect(() => {
@@ -64,20 +73,22 @@ export const MemberSpotlight = ({ id, fields, full = true, color, children }: Pr
         rounded="lg"
         color="white"
       >
-        <MemberHeader member={member} zoom={true} color={color}>
+        <MemberHeader member={member} zoom={true} color={color} size={size} minimal={!full}>
           {children}
-          <StatGroup mr={4}>
-            {eventsAttended > 0 && (
-              <Stat>
-                <StatLabel>
-                  Events
-                  <br />
-                  Attended
-                </StatLabel>
-                <StatNumber>{eventsAttended}</StatNumber>
-              </Stat>
-            )}
-          </StatGroup>
+          {full && (
+            <StatGroup mr={4}>
+              {eventsAttended > 0 && (
+                <Stat>
+                  <StatLabel>
+                    Events
+                    <br />
+                    Attended
+                  </StatLabel>
+                  <StatNumber>{eventsAttended}</StatNumber>
+                </Stat>
+              )}
+            </StatGroup>
+          )}
         </MemberHeader>
         {full && <Text>{member?.biography}</Text>}
         {full && (

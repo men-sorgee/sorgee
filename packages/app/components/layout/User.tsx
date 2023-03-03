@@ -56,7 +56,7 @@ export default function UserMenu(_props: Props) {
 
           <MenuList bg="black" maxH="80vh" overflowY="auto">
             <Box p={4} m={2} mt={0} bgGradient="linear(to-bl, primary.300, accent.300)">
-              <UserCard user={person} />
+              <UserCard member={person} />
               <span id="account-email" hidden>
                 {person?.email}
               </span>

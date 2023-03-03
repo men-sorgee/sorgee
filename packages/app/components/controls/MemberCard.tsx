@@ -17,14 +17,14 @@ import { Member, SearchableMember } from 'lib/models'
 import { formatDistanceToNowStrict } from 'date-fns'
 import { ImageModal } from './ImageModal'
 
-type Props = AvatarProps & {
+export type MemberCardProps = AvatarProps & {
   zoom?: boolean
   color?: string
-  user: Partial<Member | SearchableMember>
+  member: Partial<Member | SearchableMember>
 }
 
 export const MemberCard = chakra(
-  ({ zoom = false, user, size = 'lg', color = 'white', ...props }: Props) => {
+  ({ zoom = false, member: user, size = 'lg', color = 'white', ...props }: MemberCardProps) => {
     const [loaded, setLoaded] = useState(false)
     const [pictureSrc, setPictureSrc] = useState<string | null>(null)
     const [lastLogin, setLastLogin] = useState<string | null>(null)
@@ -32,7 +32,8 @@ export const MemberCard = chakra(
     useEffect(() => {
       if (!loaded && user) {
         const picture = user.picture
-        if (!pictureSrc && picture) setPictureSrc(getAssetUrl(picture))
+        if (!pictureSrc && picture)
+          setPictureSrc(getAssetUrl(picture) + '?fit=cover&width=200&height=200&quality=80')
         setLoaded(true)
 
         setLastLogin(
