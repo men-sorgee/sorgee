@@ -18,6 +18,7 @@ export default async function event(
     if (level < MemberLevel.staff) {
       delete event.stats.paid_count
       delete event.stats.invited_count
+      delete event.stats.attended_count
     }
 
     return res.status(200).json(ApiResponse(event))

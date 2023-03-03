@@ -69,7 +69,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
       },
     },
     fields: [
-      '*.*',
+      '*',
       'location.*',
       'users.*',
       'users.users_id.id',
@@ -90,6 +90,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
     invite_only,
     location,
   } = event
+
   const attendance = (eventUsers as EventUser[]) || []
   const detail: EventDetail = {
     id,

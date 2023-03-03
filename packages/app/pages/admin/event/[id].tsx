@@ -45,19 +45,18 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
   const { member, authorized, loading } = useUser(MemberLevel.staff)
   const { id, error } = router.query
   const [fees, setFees] = useState<number>(undefined)
-  const [stats, setStats] = useState<EventStats>(undefined)
+  const [stats] = useState<EventStats>(event.stats)
 
   useEffect(() => {
-    if (!loading && event?.stats && !stats) {
-      if (!authorized) {
-        router.push(`/event/${event?.id}`)
-      }
-      setStats(event.stats)
-      if (event.stats.attended_count) {
-        setFees(event.stats.attended_count * event.cost)
-      }
+    //if (!loading && member) {
+    //  if (!authorized) {
+    //    router.push(`/events/${event?.id}`)
+    //  }
+    //}
+    if (event.stats && !fees) {
+      setFees(event.stats.paid_count * event.cost)
     }
-  }, [authorized, event, loading, router, stats])
+  }, [authorized, event, fees, loading, member, router, stats])
 
   return (
     <Page
@@ -76,7 +75,7 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
               </Alert>
             )}
           </Flex>
-          <SimpleGrid columns={[2, 4, 5]} spacing={4} mb={4}>
+          <SimpleGrid columns={[2, 4, 6]} spacing={4} mb={4}>
             {stats && (
               <>
                 {stats.invited_count && (

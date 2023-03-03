@@ -44,7 +44,7 @@ export default function EventPage({ id }) {
       if (event.stats.attended_count) {
         setFees(event.stats.attended_count * event.cost)
       }
-      let i = member.events.find((e) => e.events_id == event.id)
+      let i = member.events?.find((e) => e.events_id == event.id)
       if (i) {
         setInvite(i)
       }
