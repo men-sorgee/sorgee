@@ -128,10 +128,10 @@ export async function addVerificationToken(
 
 export async function findVerificationToken(email: string, token?: string) {
   const adminClient = await getAdminClient()
-  const now = getUTCNow()
+  const now = new Date().toISOString()
   const filter = {
     email: { _eq: email },
-    expires: { _gt: now.toISOString },
+    expires: { _gt: now },
   }
   if (token) filter['token'] = { _eq: token }
 

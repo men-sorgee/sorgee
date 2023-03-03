@@ -66,7 +66,7 @@ export default function EventPage({ id }) {
         }
       })
   }
-  const showCount = useBreakpointValue([4, 8, 10, 14])
+  const showCount = useBreakpointValue([2, 4, 8, 10, 14])
   return (
     <Page title="Event Details" loading={loading || eventLoading} requireAuth={true}>
       {member && (

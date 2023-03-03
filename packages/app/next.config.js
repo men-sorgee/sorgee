@@ -30,7 +30,7 @@ const getConfig = ( phase ) => {
       ],
 
     },
-    async rewrites() {
+    rewrites: async () => {
       return [
         {
           source: '/api/unsplash/:path*',
@@ -38,7 +38,7 @@ const getConfig = ( phase ) => {
         }
       ];
     },
-    async redirects() {
+    redirects: async () => {
       return [
         {
           source: '/:path*',
