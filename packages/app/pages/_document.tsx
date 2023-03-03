@@ -11,7 +11,6 @@ class MyDocument extends Document {
         <body
           style={{
             width: '100%',
-            minWidth: '370px',
             height: '100dvh',
             position: 'fixed',
             overflowY: 'hidden',
