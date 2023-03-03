@@ -1,15 +1,10 @@
 import { ChakraTheme, defineStyleConfig, extendTheme, StyleFunctionProps } from '@chakra-ui/react'
 import { default as defaultTheme } from '@chakra-ui/theme'
 import { mode } from '@chakra-ui/theme-tools'
-import { NextFontWithVariable } from '@next/font'
 import { StepsStyleConfig } from 'chakra-ui-steps'
 import { brand } from 'lib/config/brand'
 
-export default function getTheme(
-  body: NextFontWithVariable,
-  heading: NextFontWithVariable,
-  mono: NextFontWithVariable
-) {
+export default function getTheme(body: any, heading: any, mono: any) {
   return {
     fonts: {
       body: body.style.fontFamily,
