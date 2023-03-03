@@ -18,7 +18,7 @@ import { LinkButton, Loading, TakePhoto, MemberBadge } from 'components/controls
 import { FieldSwitch } from 'components/forms'
 import { useRouter } from 'next/router'
 import Page from 'components/Page'
-import { useMember, useUser } from 'hooks'
+import { useEvent, useMember, useUser } from 'hooks'
 
 type Props = {
   event: GroupEvent
@@ -59,10 +59,10 @@ export const getServerSideProps = async (context) => {
 
 export default function InviteAdmin({ event, invite, user }: Props) {
   const { member, loading, level } = useUser()
-  const { picture: p, name } = useMember(user?.id)
+  const { picture: p } = useMember(user.id)
   const [camera, setCamera] = useState(false)
-  const [picture, setPicture] = useState<string>(p)
-
+  const [picture, setPicture] = useState<string>()
+  const { reload } = useEvent(event.id)
   const toast = useToast()
 
   const [working, setWorking] = useState(false)
@@ -74,9 +74,13 @@ export default function InviteAdmin({ event, invite, user }: Props) {
         router.push(
           `/admin/event/${event?.id}?error=You+do+not+have+permission+to+view+admin+events.`
         )
+      } else {
+        if (picture == undefined && p) {
+          setPicture(p)
+        }
       }
     }
-  }, [event, level, loading, member, router])
+  }, [event, level, loading, member, p, picture, router])
 
   const methods = useForm<FormValues>({
     mode: 'onBlur',
@@ -126,6 +130,7 @@ export default function InviteAdmin({ event, invite, user }: Props) {
           duration: 2000,
           isClosable: true,
           onCloseComplete: () => {
+            reload()
             router.push('/admin/event/' + event.id)
             setWorking(false)
           },
@@ -145,7 +150,7 @@ export default function InviteAdmin({ event, invite, user }: Props) {
         setWorking(false)
       }
     },
-    [event?.id, invite?.id, picture, router, setError, toast, user?.email, user?.id]
+    [event.id, invite.id, picture, reload, router, setError, toast, user.email, user.id]
   )
   const paid = watch('paid')
   const signed_waiver = watch('signed_waiver')
@@ -213,14 +218,16 @@ export default function InviteAdmin({ event, invite, user }: Props) {
                       }}
                     />
                   )}
-                  <FieldSwitch
-                    field="signed_waiver"
-                    label="Signed"
-                    size="lg"
-                    registerOptions={{
-                      required: 'Waiver must be signed',
-                    }}
-                  />
+                  {user?.signed_waiver == false && (
+                    <FieldSwitch
+                      field="signed_waiver"
+                      label="Signed"
+                      size="lg"
+                      registerOptions={{
+                        required: 'Waiver must be signed',
+                      }}
+                    />
+                  )}
                 </Flex>
                 {(picture && (
                   <Button
