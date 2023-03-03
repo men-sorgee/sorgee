@@ -7,6 +7,7 @@ RUN yarn
 
 # Rebuild the source code only when needed
 FROM node:16-alpine AS builder
+ENV PWA=true
 WORKDIR /app
 COPY . .
 COPY --from=dependencies /app/node_modules ./node_modules

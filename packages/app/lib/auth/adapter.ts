@@ -1,5 +1,4 @@
 import { Adapter, AdapterUser, AdapterSession, VerificationToken } from 'next-auth/adapters'
-import { addHours } from 'date-fns'
 import { DirectusFile, UserVerificationToken, User, UserSession } from 'lib/models'
 import {
   createUser,
@@ -9,16 +8,15 @@ import {
   updateUser,
   deleteAccount,
   createAccount,
-} from '../services/directus/server/users'
+} from 'lib/services/directus/server/users'
 import {
   createSession,
   deleteSession,
   findSession,
   updateSession,
   addVerificationToken,
-  deleteVerificationToken,
   findVerificationToken,
-} from '../services/directus/server/users/auth'
+} from 'lib/services/directus/server/users/auth'
 import { importFile, UploadFolder } from '../services/directus/server/files'
 import { getAssetUrl } from '../utils'
 
@@ -169,6 +167,7 @@ const authAdapter: Adapter = {
     try {
       log('getSessionAndUser', sessionToken)
       const session = await findSession(sessionToken)
+      if (!session) return null
       return {
         user: mapUser(session.user as User),
         session: mapSession(session),

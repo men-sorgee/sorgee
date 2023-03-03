@@ -80,7 +80,8 @@ export async function findSession(token: string): Promise<UserSession> {
     filter: {
       session_token: { _eq: token },
     },
-    fields: '*, user.*' as any,
+    fields: ['*', 'user.*'] as any,
+    sort: ['-expires'],
   })
   return sessions?.data?.length ? (sessions.data[0] as UserSession) : null
 }
