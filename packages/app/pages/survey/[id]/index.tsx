@@ -1,7 +1,7 @@
 import { useUser } from 'hooks'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
-import { JsonFetcher, postJSON } from 'lib/utils'
+import { JsonFetcher, postJSON, pruneUndefined } from 'lib/utils'
 import useSWR from 'swr'
 import { SurveyAnswer, Survey, SurveyQuestion, Question, Member } from 'lib/models'
 import {
@@ -15,7 +15,6 @@ import {
   Spinner,
   Text,
 } from '@chakra-ui/react'
-import { LinkButton } from 'components/controls'
 import {
   FieldInput,
   FieldSelect,
@@ -28,22 +27,34 @@ import Page from 'components/Page'
 import { useRouter } from 'next/router'
 import { Steps, Step } from 'chakra-ui-steps'
 
-export default function SurveyPage({ step = 1 }: { step: number }) {
+export const getServerSideProps = (context) => {
+  const { id, step } = context.params
+  return {
+    props: pruneUndefined({
+      id,
+      step: Number(step),
+    }),
+  }
+}
+
+export default function SurveyPage({ id, step = 1 }: { id: string; step: number }) {
   const router = useRouter()
   const { id: i } = router.query
-  const [id] = useState<string>(String(i))
+  const [surveyId, setSurveyId] = useState<string>('')
 
   useEffect(() => {
-    if (id && step) {
-      window.history.replaceState(null, '', `/survey/${id}/${step}`)
+    if (surveyId != '' && step > 0) {
+      window.history.replaceState(null, '', `/survey/${surveyId}/${step}`)
+    } else if (i || id) {
+      setSurveyId(id || (i as string))
     }
-  }, [id, step])
+  }, [i, id, step, surveyId])
 
   const next = () => {
-    router.push(`/survey/${id}/${step + 1}`)
+    router.push(`/survey/${surveyId}/${step + 1}`)
   }
 
-  const key = `/api/survey/${id || ''}`
+  const key = `/api/survey/${surveyId}`
   const [survey, setSurvey] = useState<Survey>(undefined)
   const { loading, member } = useUser()
 
@@ -96,12 +107,10 @@ function Survey({
         />
       )) || (
         <Box>
-          <Heading>Thank you for completing the survey!</Heading>
-          <Flex gap={4} my={10}>
-            <LinkButton href="/events">Rate More Events</LinkButton>
-            <LinkButton href="/events">Find Events</LinkButton>
-            <LinkButton href="/members">Find Men</LinkButton>
-          </Flex>
+          <Heading textAlign="center">
+            Thank you
+            <br /> for completing the survey!
+          </Heading>
         </Box>
       )}
     </>
