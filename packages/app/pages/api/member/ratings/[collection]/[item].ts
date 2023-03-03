@@ -3,7 +3,7 @@ import { ApiResponse, Rating, RatingCollection } from 'lib/models'
 import { withMember, withMethods } from 'lib/utils/server'
 import { getRating, setRating } from 'lib/services/directus/server/users'
 
-export default async function memberRatings(
+export default async function MemberItemRating(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<Rating>>
 ) {

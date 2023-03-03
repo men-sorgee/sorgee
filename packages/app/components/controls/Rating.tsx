@@ -2,7 +2,7 @@ import { useState, forwardRef, useEffect } from 'react'
 import { StarIcon } from '@chakra-ui/icons'
 import { Box, Icon, IconButton, Stack, Text, IconButtonProps } from '@chakra-ui/react'
 
-type Props = IconButtonProps & {
+export type RatingControlProps = IconButtonProps & {
   onRateChange?: (rate: number) => void
   value?: number
   readonly?: boolean
@@ -24,7 +24,7 @@ export const Rating = ({
   mt,
   onRateChange,
   ...props
-}: Props) => {
+}: RatingControlProps) => {
   const [rating, setRating] = useState<number>(undefined)
   const [tooltip, setTooltip] = useState('')
   const buttons = []
