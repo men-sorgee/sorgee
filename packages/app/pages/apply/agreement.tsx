@@ -4,7 +4,7 @@ import { NextRouter, useRouter } from 'next/router'
 import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { AgreementData } from 'lib/models'
-import { Button, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Text, VStack } from '@chakra-ui/react'
 import FieldCheckbox from 'components/forms/FieldCheckbox'
 import { postJSON } from 'lib/utils'
 import Page from 'components/Page'
@@ -60,7 +60,7 @@ function Form() {
           onSubmit={handleSubmit(onSubmit)}
           style={{ maxWidth: 'xl', margin: '0 auto', textAlign: 'center' }}
         >
-          <Text fontSize="xl">
+          <Text textAlign="center" fontSize="xl">
             Please read and agree to our{' '}
             <a
               href="/terms"
@@ -77,19 +77,23 @@ function Form() {
               style={{ textDecoration: 'underline' }}
               className="link"
             >
-              privacy policy
+              privacy policy.
             </a>
+            By entering this site, you commit to keep all user information confidential and not to
+            share it with any third parties. You also agree to not use this site for any illegal
+            purposes.
           </Text>
-          <FieldCheckbox
-            textAlign="center"
-            field="agree"
-            maxWidth="fit-content"
-            registerOptions={{
-              required: 'You must agree to the terms and conditions',
-            }}
-          >
-            I agree
-          </FieldCheckbox>
+          <Box w="100px" mx="auto" mt={4}>
+            <FieldCheckbox
+              textAlign="center"
+              field="agree"
+              registerOptions={{
+                required: 'You must agree to the terms and conditions',
+              }}
+            >
+              I agree
+            </FieldCheckbox>
+          </Box>
 
           <Button colorScheme="primary" type="submit" mt={8} disabled={agree != true}>
             Agree & Continue
