@@ -142,9 +142,10 @@ export const EventRSVPCard = ({
     <>
       <EventCard
         event={event}
-        href={rsvp == 'confirmed' ? `/events/${event.id}` : null}
+        href={invite.rsvp == 'confirmed' ? `/events/${event.id}` : null}
         showDescription={full}
         showLocation={full}
+        isGuest={invite?.guest || false}
         {...props}
       >
         <>

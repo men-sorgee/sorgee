@@ -50,8 +50,8 @@ export default function EventsPage({}: PageProps) {
     reload()
   }, [reload])
 
-  const activeInvite = upcoming.find((invite: EventInvite) =>
-    isToday(new Date(invite.event.datetime))
+  const activeInvite = upcoming.find(
+    (invite: EventInvite) => isToday(new Date(invite.event.datetime)) && invite.rsvp == 'confirmed'
   )
 
   return (
@@ -63,8 +63,10 @@ export default function EventsPage({}: PageProps) {
               <Heading mb={4} className="no-print">
                 Active Event
               </Heading>
-              <EventRSVPCard member={member} invite={activeInvite}>
-                <EventTicket event={activeInvite.event} member={member} />
+              <EventRSVPCard member={member} invite={activeInvite} onChange={onEventsChange}>
+                {activeInvite.rsvp == 'confirmed' && (
+                  <EventTicket event={activeInvite.event} member={member} />
+                )}
               </EventRSVPCard>
             </Box>
           )}

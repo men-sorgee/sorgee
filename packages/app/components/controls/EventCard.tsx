@@ -19,6 +19,7 @@ import {
   Spacer,
   SimpleGrid,
   Wrap,
+  StatHelpText,
 } from '@chakra-ui/react'
 import { Markdown } from './Markdown'
 import { GroupEvent, Location } from 'lib/models'
@@ -32,6 +33,7 @@ type EventCardProps = CardProps & {
   showDescription?: boolean
   showLocation?: boolean
   children?: ReactNode | ReactNode[]
+  isGuest?: boolean
   event: Partial<GroupEvent>
   href?: string
 }
@@ -40,6 +42,7 @@ export const EventCard = ({
   event,
   showDescription = true,
   showLocation = false,
+  isGuest = false,
   children,
   href,
   ...props
@@ -137,7 +140,8 @@ export const EventCard = ({
 
             <Stat>
               <StatLabel>Fee</StatLabel>
-              <StatNumber>${event.cost}</StatNumber>
+              <StatNumber textDecoration={isGuest ? 'line-through' : ''}>${event.cost}</StatNumber>
+              {isGuest && <StatHelpText>WAIVED</StatHelpText>}
             </Stat>
           </Flex>
           <Divider />

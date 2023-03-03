@@ -16,7 +16,7 @@ export const EventTicket = ({ member, event, open = false }: EventTicketProps) =
     member?.id
   }&event_id=${event?.id}`
   return (
-    <Box borderTop="2px dotted">
+    <Box mt={4} borderTop="2px dotted">
       <Image
         className="print-only"
         rounded="xl"
