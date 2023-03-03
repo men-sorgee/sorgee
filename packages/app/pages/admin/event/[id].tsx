@@ -84,6 +84,14 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
                     <StatNumber>{stats.invited_count}</StatNumber>
                   </Stat>
                 )}
+                <Stat>
+                  <StatLabel>Confirmed</StatLabel>
+                  <StatNumber>{stats.confirmed_count}</StatNumber>
+                </Stat>
+                <Stat>
+                  <StatLabel>Maybe</StatLabel>
+                  <StatNumber>{stats.maybe_count}</StatNumber>
+                </Stat>
 
                 {stats.attended_count != undefined && (
                   <Stat>
@@ -103,14 +111,6 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
                     <StatNumber>${fees}</StatNumber>
                   </Stat>
                 )}
-                <Stat>
-                  <StatLabel>Confirmed</StatLabel>
-                  <StatNumber>{stats.confirmed_count}</StatNumber>
-                </Stat>
-                <Stat>
-                  <StatLabel>Maybe</StatLabel>
-                  <StatNumber>{stats.maybe_count}</StatNumber>
-                </Stat>
               </>
             )}
           </SimpleGrid>
