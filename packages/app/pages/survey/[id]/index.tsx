@@ -179,9 +179,14 @@ function Form({
               <Heading as="h5" size="h5" py={2}>
                 {question.question}
               </Heading>
-              <Text>{question.context}</Text>
+
               <QuestionField question={question} />
-              <FieldText mt={4} placeholder={'Anything to add?'} field="question_context" />
+              <Text>{question.context}</Text>
+              <FieldText
+                mt={4}
+                placeholder={question.context ? '' : 'Anything to add?'}
+                field="question_context"
+              />
             </Flex>
           )}
           <HStack spacing={4} mt={4}>
@@ -215,6 +220,7 @@ function QuestionField({ question }: { question: Question }) {
       return (
         <FieldCheckboxes
           field="answer_choose"
+          help={'Select all that apply.'}
           options={question.options.map((o) => {
             return { text: o.name, value: o.value }
           })}
@@ -223,7 +229,13 @@ function QuestionField({ question }: { question: Question }) {
     case 'number':
       return <FieldNumber label={question.question} field="answer_number" />
     case 'boolean':
-      return <FieldCheckbox label={question.question} field="answer_boolean" />
+      return (
+        <FieldCheckbox
+          label={question.question}
+          field="answer_boolean"
+          help={'Leave blank for no.'}
+        />
+      )
 
     default:
   }
