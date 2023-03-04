@@ -8,6 +8,7 @@ import {
   Location,
   SearchableMember,
   EventStatusType,
+  Survey,
 } from 'lib/models'
 
 export async function listUpcomingEvents(user_type: UserType): Promise<GroupEvent[]> {
@@ -76,6 +77,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
       'users.users_id.picture',
       'users.users_id.nickname',
       'users.users_id.first_name',
+      'survey.*',
     ] as any,
   })
   const {
@@ -89,6 +91,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
     users: eventUsers,
     invite_only,
     location,
+    survey,
   } = event
 
   const attendance = (eventUsers as EventUser[]) || []
@@ -112,6 +115,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
       paid_count: attendance.filter((u) => u.paid).length,
     },
     members: attendance.map((u) => u.users_id as SearchableMember),
+    surveys: survey as Survey[],
   }
   return detail
 }

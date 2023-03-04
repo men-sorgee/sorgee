@@ -26,7 +26,7 @@ import { GroupEvent, Location } from 'lib/models'
 import { getEventDate, toLocalDate } from 'lib/utils'
 import { capitalCase } from 'change-case'
 import { LocationMarkerIcon } from '@heroicons/react/outline'
-import { differenceInDays, isBefore } from 'date-fns'
+import { differenceInDays, isAfter } from 'date-fns'
 import Link from 'next/link'
 
 type EventCardProps = CardProps & {
@@ -55,7 +55,7 @@ export const EventCard = ({
     time: string
   }>()
 
-  const isScheduled = event?.status && event.status == 'scheduled'
+  const occurred = event?.status && event.status == 'occurred'
 
   useEffect(() => {
     if (event && !eventDate) {
@@ -68,7 +68,8 @@ export const EventCard = ({
   const viewLocation =
     showLocation &&
     location &&
-    differenceInDays(toLocalDate(event.datetime), new Date()) < location.display_threshold
+    differenceInDays(toLocalDate(event.datetime), new Date()) < location.display_threshold &&
+    !isAfter(new Date(), toLocalDate(event.datetime))
 
   return (
     <Card p={0} w="full" boxShadow="lg" borderRadius="15px" {...props} _print={{ shadow: 'none' }}>

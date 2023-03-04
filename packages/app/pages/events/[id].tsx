@@ -10,14 +10,23 @@ import {
   Divider,
   StatGroup,
   useBreakpointValue,
+  Box,
+  Text,
+  Heading,
+  Spacer,
+  useColorModeValue,
 } from '@chakra-ui/react'
-import { EventCard, EventTicket, LinkButton, MemberSpotlight } from 'components/controls'
-import { EventStats, EventUser, User } from 'lib/models'
+import useSWR from 'swr'
+import { EventCard, EventTicket, LinkButton, MemberSpotlight, RateItem } from 'components/controls'
+import { EventDetail, EventStats, EventUser, Member, Rating, User } from 'lib/models'
 import Page from 'components/Page'
 import { useEffect, useState } from 'react'
 import { useUser, useEvent } from 'hooks'
 import { useRouter } from 'next/router'
 import { isToday } from 'date-fns'
+import { JsonFetcher } from '../../lib/utils'
+import ratings from '../api/member/ratings'
+import invite from '../members/invite'
 
 export const getServerSideProps = (context) => {
   return {
@@ -30,7 +39,7 @@ export const getServerSideProps = (context) => {
 export default function EventPage({ id }) {
   const router = useRouter()
   const { id: i } = router.query
-  const { member, loading } = useUser()
+  const { member, loading, reload: reloadUser } = useUser()
   const [eventId] = useState<string>(i || id)
   const [showTicket, setShowTicket] = useState<boolean>(false)
   const { event, loading: eventLoading } = useEvent(eventId)
@@ -44,14 +53,14 @@ export default function EventPage({ id }) {
       if (event.stats.attended_count) {
         setFees(event.stats.attended_count * event.cost)
       }
-      let i = member.events?.find((e) => e.events_id == event.id)
-      if (i) {
-        setInvite(i)
-      }
     }
-  }, [event, eventLoading, member?.events, stats])
+    if (member?.events && !invite) {
+      const i = member.events.find((e) => e.events_id == eventId)
+      setInvite(i)
+    }
+  }, [event, eventId, eventLoading, invite, member?.events, member?.id, stats])
 
-  const getAttendees = (rsvp) => {
+  const getAttendees = (rsvp: string) => {
     return event?.attendance
       ?.filter((u) => u.rsvp == rsvp)
       .map(({ users_id: u }: EventUser) => u as User)
@@ -67,9 +76,10 @@ export default function EventPage({ id }) {
       })
   }
   const showCount = useBreakpointValue([2, 4, 8, 10, 14])
+
   return (
     <Page title="Event Details" loading={loading || eventLoading} requireAuth={true}>
-      {member && (
+      {member && event && (
         <EventCard event={event} showDescription showLocation={true}>
           {showTicket && invite && invite.rsvp == 'confirmed' && (
             <EventTicket open event={event} member={member} />
@@ -106,7 +116,7 @@ export default function EventPage({ id }) {
               </StatGroup>
             )}
           </SimpleGrid>
-          {stats && (
+          {stats && event.status != 'occurred' && (
             <Flex direction="column" gap={4}>
               <HStack>
                 <Stat>
@@ -151,6 +161,9 @@ export default function EventPage({ id }) {
               </HStack>
             </Flex>
           )}
+          {invite?.attended && (
+            <AttendedEvent event={event} member={member} invite={invite} reloadUser={reloadUser} />
+          )}
         </EventCard>
       )}
       <HStack spacing={4}>
@@ -159,5 +172,85 @@ export default function EventPage({ id }) {
         </LinkButton>
       </HStack>
     </Page>
+  )
+}
+
+const AttendedEvent = ({
+  event,
+  member,
+  invite,
+  reloadUser,
+}: {
+  event: EventDetail
+  member: Member
+  invite: EventUser
+  reloadUser: () => void
+}) => {
+  const { data: ratings = [], mutate } = useSWR<Rating[], Error>(
+    `/api/member/ratings`,
+    JsonFetcher,
+    {
+      fallbackData: [],
+    }
+  )
+
+  const attendees = event.attendance
+    .filter((u) => u.attended)
+    .map((u) => u.users_id as User)
+    .filter((u) => u.id != member.id)
+
+  const color = useColorModeValue('gray.700', 'gray.200')
+
+  return (
+    <>
+      <Flex
+        mt={4}
+        direction={['column', 'column', 'row']}
+        gap={2}
+        align="center"
+        justify="space-between"
+      >
+        <Heading as="h5" size="md" m={0}>
+          Rate Event:
+        </Heading>
+        <RateItem item_id={event.id} collection="events" aria-label={'Rate Event'} />
+        <Spacer />
+        {invite.attended &&
+          event.surveys?.map((s) => (
+            <LinkButton key={s.id} size="md" href={`/survey/${s.id}`} colorScheme="accent">
+              {s.title}
+            </LinkButton>
+          ))}
+      </Flex>
+
+      {attendees.length > 0 && (
+        <>
+          <Divider my={4} />
+          <Heading as="h5" size="md" my={2}>
+            Rate Attendees:
+          </Heading>
+          <Text>
+            Rate the behavior other attendees of this event. This is not anonymous, so please be
+            respectful.
+          </Text>
+          {attendees.map((u: User) => (
+            <Box key={event.id + '-' + u.id} bg="gray.400" mb={4} rounded="lg">
+              <MemberSpotlight size="md" id={u.id} full={false} color={color}>
+                <RateItem
+                  onChange={() => {
+                    reloadUser()
+                  }}
+                  item_id={u.id}
+                  collection="users"
+                  aria-label={'Rate this member'}
+                >
+                  Rate this member
+                </RateItem>
+              </MemberSpotlight>
+            </Box>
+          ))}
+        </>
+      )}
+    </>
   )
 }

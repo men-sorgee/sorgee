@@ -26,6 +26,7 @@ import {
 import Page from 'components/Page'
 import { useRouter } from 'next/router'
 import { Steps, Step } from 'chakra-ui-steps'
+import { LinkButton } from '../../../components/controls'
 
 export const getServerSideProps = (context) => {
   const { id, step = 1 } = context.params
@@ -111,6 +112,11 @@ function Survey({
             Thank you
             <br /> for completing the survey!
           </Heading>
+          {survey.event && (
+            <LinkButton href={`/events/${survey.event}`} mt={4}>
+              Rate Event Attendees
+            </LinkButton>
+          )}
         </Box>
       )}
     </>

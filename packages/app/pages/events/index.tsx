@@ -16,7 +16,7 @@ import {
   useColorModeValue,
   SlideFade,
 } from '@chakra-ui/react'
-import useSWR from 'swr'
+
 import { isToday } from 'date-fns'
 import Page from 'components/Page'
 import { useUser, useUserEvents } from 'hooks'
@@ -37,7 +37,7 @@ export type PageProps = {}
 
 export default function EventsPage({}: PageProps) {
   const [allowed, setAllowed] = useState(false)
-  const { member, loading, level, reload: reloadUser } = useUser()
+  const { member, loading, level } = useUser()
   const { invitations, newInvitationCount, upcoming, past, reload } = useUserEvents()
 
   useEffect(() => {
@@ -112,7 +112,7 @@ export default function EventsPage({}: PageProps) {
 
               <TabPanel p={0}>
                 <Heading mb={4}>Your Past Events</Heading>
-                <PastEvents member={member} list={past} reloadUser={onEventsChange} />
+                <PastEvents member={member} list={past} />
               </TabPanel>
             </TabPanels>
           </Tabs>
@@ -176,22 +176,7 @@ function Invitations({
   )
 }
 
-function PastEvents({
-  member,
-  list,
-  reloadUser,
-}: {
-  list: EventInvite[]
-  member: Member
-  reloadUser: () => void
-}) {
-  const { data: ratings = [], mutate } = useSWR<Rating[], Error>(
-    `/api/member/ratings`,
-    JsonFetcher,
-    {
-      fallbackData: [],
-    }
-  )
+function PastEvents({ member, list }: { list: EventInvite[]; member: Member }) {
   if (list.length === 0 || !member) {
     return (
       <Box>
@@ -202,20 +187,13 @@ function PastEvents({
     )
   }
 
-  const ratedUserIds =
-    ratings?.filter((r) => r.collection == 'users').map((r) => r.member as string) || []
+  list.sort((a, b) => {
+    const dateA = new Date(a.event.datetime).getTime()
+    const dateB = new Date(b.event.datetime).getTime()
+    return dateB - dateA
+  })
 
   const PastEventItem = ({ invite }: { invite: EventInvite }) => {
-    const event = invite.event
-    const surveyId = event.survey ? event.survey[0] : undefined
-    const users = event.users as EventUser[]
-    const attendees = users
-      .filter((u) => u.attended)
-      .map((u) => u.users_id as string)
-      .filter((u) => !ratedUserIds.includes(u) && u != member.id)
-
-    const color = useColorModeValue('gray.700', 'gray.200')
-
     return (
       <Box key={invite.id}>
         <Heading as="h5" fontSize="md" textAlign="center">
@@ -233,44 +211,6 @@ function PastEvents({
             You showed up, but did not RSVP.
           </Alert>
         )}
-        <Flex mt={4} direction={['column', 'row']} gap={2} align="center" justify="space-between">
-          <Heading as="h5" size="md" m={0}>
-            Rate Event:
-          </Heading>
-          <RateItem item_id={event.id} collection="events" aria-label={'Rate Event'} />
-          <Spacer />
-          {invite.attended && surveyId && (
-            <LinkButton size="lg" href={`/survey/${surveyId}`} colorScheme="accent">
-              Take the Survey
-            </LinkButton>
-          )}
-        </Flex>
-
-        {attendees.length > 0 && (
-          <>
-            <Divider my={4} />
-            <Heading as="h5" size="md" my={2}>
-              Rate Attendees:
-            </Heading>
-          </>
-        )}
-
-        {attendees.map((u: string) => (
-          <Box key={event.id + '-' + u} bg="gray.400" mb={4} rounded="lg">
-            <MemberSpotlight size="md" id={u} full={false} color={color}>
-              <RateItem
-                onChange={() => {
-                  reloadUser()
-                }}
-                item_id={u}
-                collection="users"
-                aria-label={'Rate this member'}
-              >
-                Rate this member
-              </RateItem>
-            </MemberSpotlight>
-          </Box>
-        ))}
       </Box>
     )
   }
@@ -282,6 +222,7 @@ function PastEvents({
           key={invite.id}
           event={invite.event as GroupEvent}
           showDescription={false}
+          href={invite.attended ? `/events/${invite.event.id}` : undefined}
           mb={4}
         >
           <PastEventItem invite={invite} />

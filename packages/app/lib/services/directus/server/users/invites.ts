@@ -41,7 +41,7 @@ export async function listInvites(member: Member): Promise<EventUser[]> {
         status: { _in: ['planned', 'scheduled', 'occurred'] },
       },
     },
-    fields: ['*.*' as any, 'events_id.*' as any, 'events_id.users.*' as any],
+    fields: ['*.*' as any, 'events_id.*' as any],
     sort: ['events_id.datetime' as any],
   })
 

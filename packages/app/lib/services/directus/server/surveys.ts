@@ -5,6 +5,7 @@ export async function getSurvey(id: string): Promise<Survey> {
   const client = await getAdminClient()
 
   const survey = await client.items('surveys').readOne(id, {
+    filter: { status: { _eq: 'published' } },
     fields: ['*.*', 'questions.*.*'],
     sort: ['questions.sort'],
   })
