@@ -28,7 +28,7 @@ import { useRouter } from 'next/router'
 import { Steps, Step } from 'chakra-ui-steps'
 
 export const getServerSideProps = (context) => {
-  const { id, step } = context.params
+  const { id, step = 1 } = context.params
   return {
     props: pruneUndefined({
       id,
@@ -202,32 +202,28 @@ function QuestionField({ question }: { question: Question }) {
       return (
         <FieldSelect
           field="answer_text"
-          help={question.context}
           options={question.options.map((o) => {
             return { text: o.name, value: o.value }
           })}
         />
       )
     case 'string':
-      return <FieldInput field="answer_text" help={question.context} />
+      return <FieldInput field="answer_text" />
     case 'text':
-      return <FieldText field="answer_text" help={question.context} />
+      return <FieldText field="answer_text" />
     case 'choose':
       return (
         <FieldCheckboxes
           field="answer_choose"
-          help={question.context}
           options={question.options.map((o) => {
             return { text: o.name, value: o.value }
           })}
         />
       )
     case 'number':
-      return <FieldNumber label={question.question} field="answer_number" help={question.context} />
+      return <FieldNumber label={question.question} field="answer_number" />
     case 'boolean':
-      return (
-        <FieldCheckbox label={question.question} field="answer_boolean" help={question.context} />
-      )
+      return <FieldCheckbox label={question.question} field="answer_boolean" />
 
     default:
   }
