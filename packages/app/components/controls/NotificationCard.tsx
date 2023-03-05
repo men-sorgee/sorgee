@@ -93,7 +93,7 @@ export const NotificationCard = chakra(({ member, notification }: Props) => {
             </ModalHeader>
           )}
           <ModalCloseButton />
-          <ModalBody>{body && <Markdown content={body} />}</ModalBody>
+          <ModalBody>{body && <Markdown content={body} size="md" />}</ModalBody>
           <ModalFooter>
             <HStack spacing={2} align="right">
               {notification?.link && (
