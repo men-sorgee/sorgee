@@ -65,6 +65,7 @@ export async function updateSendGrid(
     return data
   } catch (error) {
     console.error(error.message, error)
+    throw error
   }
 }
 
@@ -128,5 +129,6 @@ export async function sendNotificationEmail(
     return data
   } catch (error) {
     console.error(error.message, error)
+    throw error
   }
 }
