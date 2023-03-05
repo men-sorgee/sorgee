@@ -230,8 +230,11 @@ const AttendedEvent = ({
             Rate Attendees:
           </Heading>
           <Text>
-            Rate the behavior other attendees of this event. This is not anonymous, so please be
-            respectful.
+            Rate the vibe and behavior of your fellow attendees to this event.
+            <em>
+              This is not a personal attraction rating, but a rating of their behavior and attitude
+              at the event.
+            </em>
           </Text>
           {attendees.map((u: User) => (
             <Box key={event.id + '-' + u.id} bg="gray.400" mb={4} rounded="lg">
@@ -244,7 +247,7 @@ const AttendedEvent = ({
                   collection="users"
                   aria-label={'Rate this member'}
                 >
-                  Rate this member
+                  Rate
                 </RateItem>
               </MemberSpotlight>
             </Box>
