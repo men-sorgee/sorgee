@@ -80,11 +80,6 @@ async function convertMarkdownToHtml(markdown: string) {
 const hashSet = new Set<string>()
 
 const canSendEmail = (email: string, subject: string, body: string) => {
-  const hash = `${email}${subject}${body}`
-  if (hashSet.has(hash)) {
-    return false
-  }
-  hashSet.add(hash)
   return true
 }
 
@@ -99,7 +94,8 @@ export async function sendNotificationEmail(
 ) {
   body = await convertMarkdownToHtml(body)
 
-  if (!canSendEmail(to_email, subject, body)) {
+  const hash = Buffer.from(`${to_email}${subject}${body}`, 'base64').toString()
+  if (hashSet.has(hash)) {
     console.log(`SendGrid Email ${category} Skipped: ${to_email}`)
     return
   }
@@ -129,6 +125,7 @@ export async function sendNotificationEmail(
       throw new Error(`Sendgrid Email ${category} Error: ${data || response.body}`)
     }
     console.log(`SendGrid Email ${category} Sent: ${to_email}`)
+    hashSet.add(hash)
     return data
   } catch (error) {
     console.error(error)
