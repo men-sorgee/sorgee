@@ -64,7 +64,7 @@ export async function updateSendGrid(
     console.log('Contact synced: ' + email)
     return data
   } catch (error) {
-    console.error(error)
+    console.error(error.message, error)
   }
 }
 
@@ -78,10 +78,6 @@ async function convertMarkdownToHtml(markdown: string) {
 // hash email + subject + body and check this store
 // if it exists, don't send the email
 const hashSet = new Set<string>()
-
-const canSendEmail = (email: string, subject: string, body: string) => {
-  return true
-}
 
 export async function sendNotificationEmail(
   to_email: string,
@@ -122,12 +118,15 @@ export async function sendNotificationEmail(
   try {
     const [response, data] = await getMailer().send(email, false)
     if (response.statusCode > 202) {
-      throw new Error(`Sendgrid Email ${category} Error: ${data || response.body}`)
+      const { errors } = response.body as { errors: string[] }
+      throw new Error(
+        `Sendgrid Email ${category} Error: ${errors?.join(', ') || data || response.body}`
+      )
     }
     console.log(`SendGrid Email ${category} Sent: ${to_email}`)
     hashSet.add(hash)
     return data
   } catch (error) {
-    console.error(error)
+    console.error(error.message, error)
   }
 }
