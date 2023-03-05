@@ -14,7 +14,6 @@ export const ImageGallery = ({ images }: { images: string[] }) => {
     setOpenIndex(index)
   }, [])
 
-  const itemDisplayCount = useBreakpointValue([0, 0, 1, 3])
   return (
     <Box position="relative" height="30vh" width={'full'} overflow={'hidden'}>
       {/* Left Icon */}
@@ -72,7 +71,7 @@ export const ImageGallery = ({ images }: { images: string[] }) => {
             backgroundRepeat="no-repeat"
             backgroundImage={`url(${url})`}
             backgroundSize="cover"
-            hidden={viewIndex > index + itemDisplayCount}
+            hidden={viewIndex != index}
             onClick={() => {
               handleImageClick(index)
             }}
