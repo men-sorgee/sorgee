@@ -3,7 +3,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
 import { JsonFetcher, postJSON, pruneUndefined } from 'lib/utils'
 import useSWR from 'swr'
-import { SurveyAnswer, Survey, SurveyQuestion, Question, Member } from 'lib/models'
+import { SurveyAnswer, Survey, SurveyQuestion, Question, Member, GroupEvent } from 'lib/models'
 import {
   HStack,
   Button,
@@ -92,6 +92,7 @@ function Survey({
   next: () => void
 }) {
   useEffect(() => {}, [activeStep])
+  const event = survey?.event as GroupEvent
   return (
     <>
       <Steps activeStep={activeStep} my={8} colorScheme="primary" color="white" responsive={false}>
@@ -112,8 +113,8 @@ function Survey({
             Thank you
             <br /> for completing the survey!
           </Heading>
-          {survey.event && (
-            <LinkButton href={`/events/${survey.event.id}`} mt={4}>
+          {event && (
+            <LinkButton href={`/events/${event.id}`} mt={4}>
               Rate Event Attendees
             </LinkButton>
           )}
