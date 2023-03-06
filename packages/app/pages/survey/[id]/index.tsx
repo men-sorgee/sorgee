@@ -113,7 +113,7 @@ function Survey({
             <br /> for completing the survey!
           </Heading>
           {survey.event && (
-            <LinkButton href={`/events/${survey.event}`} mt={4}>
+            <LinkButton href={`/events/${survey.event.id}`} mt={4}>
               Rate Event Attendees
             </LinkButton>
           )}

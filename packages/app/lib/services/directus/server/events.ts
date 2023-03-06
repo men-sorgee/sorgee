@@ -74,6 +74,9 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
       'users.users_id.first_name',
       'survey.*',
     ] as any,
+    users: {
+      limit: -1,
+    },
   })
   const {
     datetime,

@@ -126,16 +126,12 @@ export default function EventsPage({}: PageProps) {
               vetting process, events will show up here.
             </Text>
           )) ||
-            (!member.event_invites && (
+            (member?.event_invites == false && (
               <Text>
                 You have event invitations off. Update{' '}
                 <Link href="/member/settings">your settings</Link> to change that.
               </Text>
-            )) || (
-              <Text>
-                Please complete your <Link href="/apply">membership application</Link>.
-              </Text>
-            )}
+            ))}
         </Box>
       )}
     </Page>
