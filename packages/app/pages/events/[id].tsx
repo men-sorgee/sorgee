@@ -203,6 +203,10 @@ const AttendedEvent = ({
 
   return (
     <>
+      <Divider mt={4} />
+      <Heading as="h5" size="md">
+        Rate Event:
+      </Heading>
       <Flex
         mt={4}
         direction={['column', 'column', 'row']}
@@ -210,9 +214,6 @@ const AttendedEvent = ({
         align="center"
         justify="space-between"
       >
-        <Heading as="h5" size="md" m={0}>
-          Rate Event:
-        </Heading>
         <RateItem item_id={event.id} collection="events" aria-label={'Rate Event'} />
         <Spacer />
         {invite.attended &&
@@ -225,16 +226,16 @@ const AttendedEvent = ({
 
       {attendees.length > 0 && (
         <>
-          <Divider my={4} />
-          <Heading as="h5" size="md" my={2}>
+          <Divider mt={4} />
+          <Heading as="h5" size="md">
             Rate Attendees:
           </Heading>
-          <Text>
+          <Text ml={0} mb={2}>
             Rate the vibe and behavior of your fellow attendees to this event.
-            <em>
+            <strong>
               This is not a personal attraction rating, but a rating of their behavior and attitude
-              at the event.
-            </em>
+              at the event!
+            </strong>
           </Text>
           {attendees.map((u: User) => (
             <Box key={event.id + '-' + u.id} bg="gray.400" mb={4} rounded="lg">

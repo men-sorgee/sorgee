@@ -1,5 +1,6 @@
 import {
   HStack,
+  Box,
   Avatar,
   VStack,
   Heading,
@@ -9,8 +10,10 @@ import {
   Tooltip,
   chakra,
   useColorModeValue,
+  Spacer,
+  Flex,
 } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, ReactNode } from 'react'
 import { MemberBadge } from '.'
 import { getAssetUrl, toLocalDate } from 'lib/utils'
 import { Member, SearchableMember } from 'lib/models'
@@ -21,10 +24,18 @@ export type MemberCardProps = AvatarProps & {
   zoom?: boolean
   color?: string
   member: Partial<Member | SearchableMember>
+  children?: ReactNode
 }
 
 export const MemberCard = chakra(
-  ({ zoom = false, member: user, size = 'lg', color = 'white', ...props }: MemberCardProps) => {
+  ({
+    zoom = false,
+    member: user,
+    size = 'lg',
+    color = 'white',
+    children,
+    ...props
+  }: MemberCardProps) => {
     const [loaded, setLoaded] = useState(false)
     const [pictureSrc, setPictureSrc] = useState<string | null>(null)
     const [lastLogin, setLastLogin] = useState<string | null>(null)
@@ -48,7 +59,7 @@ export const MemberCard = chakra(
     return (
       <>
         {user && (
-          <HStack spacing={3} alignItems="center">
+          <Flex gap={3} alignItems="center" w="full">
             <Avatar
               id={user?.id}
               src={pictureSrc}
@@ -78,16 +89,22 @@ export const MemberCard = chakra(
               }}
               imageSrc={pictureSrc}
             />
-            <VStack spacing={1} align="flex-start" mt={0}>
+            <Flex w="full" direction="column" gap={0} align="flex-start">
               <Heading size="md" textTransform="uppercase" m={0} color={color}>
                 {user?.nickname || user?.first_name}
               </Heading>
-              <MemberBadge size="lg" user_type={user?.user_type} my={2} />
-              <Text fontSize="sm" color={color}>
-                {user?.city || 'Nearby'} {user?.state}
-              </Text>
-            </VStack>
-          </HStack>
+              <Flex gap={1} align="flex-start" justify="space-between" w="full">
+                <Box>
+                  <MemberBadge size="lg" user_type={user?.user_type} my={2} />
+                  <Text fontSize="sm" color={color} mt={0}>
+                    {user?.city || 'Nearby'} {user?.state}
+                  </Text>
+                </Box>
+                <Spacer flex={'grow'} />
+                <Box>{children}</Box>
+              </Flex>
+            </Flex>
+          </Flex>
         )}
       </>
     )

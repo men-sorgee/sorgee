@@ -51,7 +51,6 @@ export const MemberSpotlight = ({
   color,
   size,
   children,
-
   ...props
 }: Props) => {
   const { member, name, picture, loading } = useMember(id)

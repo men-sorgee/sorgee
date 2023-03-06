@@ -25,13 +25,9 @@ export const MemberHeader = ({
     <>
       <Flex direction="column" justify="space-between" align="center" alignItems="center">
         <Flex direction={['column', 'row']} gap={2} justify="space-between" align="left" w="full">
-          <MemberCard member={member} size={size} {...props} />
-          {children && (
-            <>
-              <Spacer />
-              <Box>{children}</Box>
-            </>
-          )}
+          <MemberCard member={member} size={size} {...props}>
+            {children}
+          </MemberCard>
         </Flex>
         {!minimal && (
           <Flex justify="left" align="start" my={2} w="full">
