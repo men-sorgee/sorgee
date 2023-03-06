@@ -3,13 +3,13 @@ import { getInvite, getUser, updateInvite, updateUser } from 'lib/services/direc
 import { withStaff, withMethods } from 'lib/utils/server'
 import { ApiResponse, EventUser, MemberLevel } from 'lib/models'
 
-export default async function updateInviteHandler(
+export default async function InviteEndpoint(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<EventUser> | null>
 ) {
   try {
     withMethods(req, ['GET', 'POST'])
-    const staff = await withStaff(req, res)
+    await withStaff(req, res)
     const { id } = req.query
     console.log('id', id)
     if (id == undefined) {

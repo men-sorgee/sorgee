@@ -9,7 +9,6 @@ export default async function listUserInvites(
   try {
     const member = await withMember(req, res)
     const events = await listInvites(member)
-
     return res.status(200).json(ApiResponse(events))
   } catch (e) {
     if (e.message == 'Unauthorized') return res.status(200).json(ApiResponse([]))

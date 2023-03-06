@@ -119,10 +119,23 @@ export default function EventsPage({}: PageProps) {
         </>
       ) : (
         <Box>
-          <Heading>Nothing to see here</Heading>
-          <Text>
-            Please complete your <Link href="/apply">membership application</Link>.
-          </Text>
+          <Heading>No Events</Heading>
+          {(level <= MemberLevel.pledge && (
+            <Text>
+              You cannot see or attend events yet. Once you have completed the application and
+              vetting process, events will show up here.
+            </Text>
+          )) ||
+            (!member.event_invites && (
+              <Text>
+                You have event invitations off. Update{' '}
+                <Link href="/member/settings">your settings</Link> to change that.
+              </Text>
+            )) || (
+              <Text>
+                Please complete your <Link href="/apply">membership application</Link>.
+              </Text>
+            )}
         </Box>
       )}
     </Page>

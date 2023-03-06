@@ -45,7 +45,7 @@ export async function listInvites(member: Member): Promise<EventUser[]> {
     sort: ['events_id.datetime' as any],
   })
 
-  const invites = data.map((invite: EventUser): Partial<EventInvite> => {
+  let invites = data.map((invite: EventUser): Partial<EventInvite> => {
     const event = invite.events_id as GroupEvent
     const member = invite.users_id as unknown as Member
     const rsvp = invite.rsvp as InviteRSVPType
@@ -61,6 +61,11 @@ export async function listInvites(member: Member): Promise<EventUser[]> {
       reason,
     }
   })
+
+  if (member.event_invites == false) {
+    invites = invites.filter((i: EventInvite) => i.rsvp !== 'invited')
+    return invites as EventUser[]
+  }
 
   const events = await listUpcomingEvents(member.user_type)
   events.forEach((event) => {
