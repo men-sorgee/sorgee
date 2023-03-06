@@ -64,11 +64,6 @@ export async function getEvent(id: string): Promise<GroupEvent> {
 export async function getEventDetail(id: string): Promise<EventDetail> {
   const client = await getAdminClient()
   const event = await client.items('events').readOne(id, {
-    filter: {
-      users: {
-        rsvp: { _in: ['confirmed', 'maybe'] },
-      },
-    },
     fields: [
       '*',
       'location.*',
