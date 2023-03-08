@@ -15,11 +15,11 @@ type Props = CheckboxProps &
 
 const CheckboxField = (props: Props) => {
   const { field, label, help, registerOptions = {}, children, className, ...opts } = props
-  const { register } = useFormContext()
-
+  const { register, watch } = useFormContext()
+  const checked = watch(field)?.toString() === 'true'
   return (
     <FieldWrapper field={field} label={label} help={help} className={className}>
-      <Checkbox {...opts} {...register(field, registerOptions)}>
+      <Checkbox checked={checked} {...opts} {...register(field, registerOptions)}>
         {children || 'Yes'}
       </Checkbox>
     </FieldWrapper>

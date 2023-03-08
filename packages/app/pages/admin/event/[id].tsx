@@ -6,15 +6,13 @@ import {
   Stat,
   StatLabel,
   StatNumber,
-  Avatar,
-  AvatarGroup,
   SimpleGrid,
 } from '@chakra-ui/react'
 import { EventCard, LinkButton } from 'components/controls'
-import { EventDetail, EventStats, EventUser, MemberLevel, User } from 'lib/models'
+import { EventDetail, EventStats, MemberLevel } from 'lib/models'
 import Page from 'components/Page'
 import { useEffect, useState } from 'react'
-import { useEvent, useUser } from '../../../hooks'
+import { useUser } from '../../../hooks'
 import { useRouter } from 'next/router'
 
 export const getServerSideProps = async (context) => {

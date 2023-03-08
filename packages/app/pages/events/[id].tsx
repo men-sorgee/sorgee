@@ -25,8 +25,6 @@ import { useUser, useEvent } from 'hooks'
 import { useRouter } from 'next/router'
 import { isToday } from 'date-fns'
 import { JsonFetcher } from '../../lib/utils'
-import ratings from '../api/member/ratings'
-import invite from '../members/invite'
 
 export const getServerSideProps = (context) => {
   return {

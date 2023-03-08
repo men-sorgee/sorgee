@@ -10,13 +10,12 @@ export default async function survey(
   try {
     const method = withMethods(req, ['GET', 'POST'])
     const member = await withMember(req, res)
-    const { id: i, question: q } = req.query
+    const { id: i, qid: q } = req.query
     const survey_id = String(i)
     const question_id = String(q)
 
     switch (method) {
       case 'GET': {
-        //const survey = await getSurvey(survey_id)
         const answer = await getSurveyAnswer(survey_id, member.id, question_id)
         if (!answer) {
           return res.status(200).json(
@@ -31,8 +30,16 @@ export default async function survey(
         }
       }
       case 'POST': {
-        const answerData = req.body
-        const answer = await setSurveyAnswer(survey_id, member.id, question_id, answerData)
+        const { answer_text, answer_boolean, answer_number, answer_context, answer_choose } =
+          req.body
+
+        const answer = await setSurveyAnswer(survey_id, member.id, question_id, {
+          answer_text,
+          answer_boolean,
+          answer_number,
+          answer_context,
+          answer_choose,
+        })
         return res.status(200).json(ApiResponse(answer))
       }
     }

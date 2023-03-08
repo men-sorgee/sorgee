@@ -22,10 +22,9 @@ export async function getSurveyAnswer(surveyId: String, userId: string, question
       user: { _eq: userId },
       question: { _eq: questionId },
     },
-    fields: ['*' as any],
   })
-  if (!answers || !answers.length) return null
-  return answers[0] as SurveyAnswer
+  if (answers.length == 0) return null
+  return answers[answers.length - 1] as SurveyAnswer
 }
 
 export async function setSurveyAnswer(

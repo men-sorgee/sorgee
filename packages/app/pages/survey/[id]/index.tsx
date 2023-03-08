@@ -1,7 +1,7 @@
 import { useUser } from 'hooks'
 import { FormProvider, useForm } from 'react-hook-form'
-import { useEffect, useState } from 'react'
-import { JsonFetcher, postJSON, pruneUndefined } from 'lib/utils'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
+import { getJSON, JsonFetcher, postJSON, pruneUndefined } from 'lib/utils'
 import useSWR from 'swr'
 import { SurveyAnswer, Survey, SurveyQuestion, Question, Member, GroupEvent } from 'lib/models'
 import {
@@ -26,189 +26,161 @@ import {
 import Page from 'components/Page'
 import { useRouter } from 'next/router'
 import { Steps, Step } from 'chakra-ui-steps'
-import { LinkButton } from '../../../components/controls'
+import { LinkButton } from 'components/controls'
 
-export const getServerSideProps = (context) => {
-  const { id, step = 1 } = context.params
+type Props = {
+  survey: Survey
+  step: number
+  question: Question
+}
+
+export const getServerSideProps = async (context) => {
+  const { id: i, step: s } = context.params
+
+  if (s == undefined) {
+    return {
+      redirect: {
+        destination: `/survey/${i}/1`,
+        permanent: false,
+      },
+    }
+  }
+  const id = String(i)
+  const step = Number(s)
+  const { getSurvey } = await import('lib/services/directus/server/surveys')
+  const survey = await getSurvey(id)
+  const question = survey.questions[step - 1].survey_questions_id
+
   return {
     props: pruneUndefined({
-      id,
-      step: Number(step),
+      survey,
+      question,
+      step,
     }),
   }
 }
 
-export default function SurveyPage({ id, step = 1 }: { id: string; step: number }) {
+export default function SurveyPage({ survey, question, step }: Props) {
+  const { loading: userLoading, member } = useUser()
+  const event = survey?.event as GroupEvent
   const router = useRouter()
-  const { id: i } = router.query
-  const [surveyId, setSurveyId] = useState<string>('')
+  const [answer, setAnswer] = useState<SurveyAnswer>()
 
-  useEffect(() => {
-    if (surveyId != '' && step > 0) {
-      window.history.replaceState(null, '', `/survey/${surveyId}/${step}`)
-    } else if (i || id) {
-      setSurveyId(id || (i as string))
-    }
-  }, [i, id, step, surveyId])
-
-  const next = () => {
-    router.push(`/survey/${surveyId}/${step + 1}`)
-  }
-
-  const key = `/api/survey/${surveyId}`
-  const [survey, setSurvey] = useState<Survey>(undefined)
-  const { loading, member } = useUser()
-
-  const { data, isLoading } = useSWR<Survey, Error>(key, JsonFetcher, {
-    refreshWhenHidden: false,
-    refreshWhenOffline: false,
-    isPaused: () => loading || id == undefined,
+  const [working, setWorking] = useState<boolean>(false)
+  const toast = useToast()
+  const methods = useForm({
+    defaultValues: {
+      ...answer,
+    },
   })
 
+  const { handleSubmit, reset } = methods
+
   useEffect(() => {
-    if (id && member && data && !survey) {
-      setSurvey(data)
+    if (question.id != answer?.question) {
+      getJSON<SurveyAnswer>(`/api/survey/${survey.id}/${question.id}`)
+        .then((result) => {
+          if (result.success) {
+            setAnswer(result.data)
+            reset({
+              ...result.data,
+            })
+          } else {
+          }
+        })
+        .catch((error) => {
+          console.error(error)
+        })
     }
-  }, [data, survey, member, id, loading, isLoading])
+  }, [survey.id, question.id, answer?.question, answer, router.asPath, reset])
+
+  const next = useCallback(() => {
+    router.push(`/survey/${survey.id}/${step + 1}`)
+  }, [survey.id, step, router])
+
+  const onSubmit = useCallback(
+    async (data: any) => {
+      setWorking(true)
+      const { success, error } = await postJSON(`/api/survey/${survey.id}/${question.id}`, data)
+      setWorking(false)
+      if (success) {
+        next()
+        reset({
+          answer_boolean: false,
+          answer_number: 0,
+          answer_text: '',
+          answer_choose: [],
+          answer_context: '',
+        })
+      } else {
+        toast({
+          title: 'Error',
+          status: 'error',
+          description: error.message,
+          isClosable: true,
+        })
+        setWorking(false)
+      }
+    },
+    [survey.id, question.id, next, reset, toast]
+  )
 
   return (
-    <Page title={survey?.name || 'Survey'} loading={loading || isLoading} requireAuth={true}>
+    <Page title={survey.name} loading={userLoading} requireAuth={true}>
       {member && survey && (
-        <Survey member={member} survey={survey} activeStep={step - 1} next={next} />
+        <>
+          <Steps activeStep={step} my={8} colorScheme="primary" color="white" responsive={false}>
+            {survey.questions.map((q, index) => (
+              <Step color="white" key={index} />
+            ))}
+          </Steps>
+          {(step < survey.questions.length && (
+            <Box mt={4}>
+              {answer && (
+                <FormProvider {...methods}>
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    <Flex direction="column" gap={4} key={question.id}>
+                      <Heading as="h5" size="h5" py={2} title={`Question.id: ${question.id}`}>
+                        {question.question}
+                      </Heading>
+                      <InnerField question={question} />
+                      <Text>{question.context}</Text>
+                      <FieldText
+                        mt={4}
+                        placeholder={question.context ? '' : 'Anything to add?'}
+                        field="answer_context"
+                      />
+                    </Flex>
+                    <HStack spacing={4} mt={4}>
+                      <Spacer />
+                      <Button colorScheme="accent" type="submit" disabled={working}>
+                        {working ? <Spinner /> : 'Next'}
+                      </Button>
+                    </HStack>
+                  </form>
+                </FormProvider>
+              )}
+            </Box>
+          )) || (
+            <Box textAlign="center">
+              <Heading textAlign="center">
+                Thank you
+                <br /> for completing the survey!
+              </Heading>
+              {event && (
+                <LinkButton href={`/events/${event.id}`} mt={4}>
+                  Rate Event Attendees
+                </LinkButton>
+              )}
+            </Box>
+          )}
+        </>
       )}
     </Page>
   )
 }
 
-function Survey({
-  member,
-  survey,
-  activeStep,
-  next,
-}: {
-  member: Member
-  survey: Survey
-  activeStep: number
-  next: () => void
-}) {
-  useEffect(() => {}, [activeStep])
-  const event = survey?.event as GroupEvent
-  return (
-    <>
-      <Steps activeStep={activeStep} my={8} colorScheme="primary" color="white" responsive={false}>
-        {survey.questions.map((q, index) => (
-          <Step color="white" key={index} />
-        ))}
-      </Steps>
-      {(activeStep < survey.questions.length && (
-        <Form
-          member={member}
-          survey={survey}
-          surveyQuestion={survey.questions[activeStep]}
-          next={next}
-        />
-      )) || (
-        <Box>
-          <Heading textAlign="center">
-            Thank you
-            <br /> for completing the survey!
-          </Heading>
-          {event && (
-            <LinkButton href={`/events/${event.id}`} mt={4}>
-              Rate Event Attendees
-            </LinkButton>
-          )}
-        </Box>
-      )}
-    </>
-  )
-}
-
-function Form({
-  member,
-  survey,
-  surveyQuestion,
-  next,
-}: {
-  member: Member
-  survey: Survey
-  surveyQuestion: SurveyQuestion
-  next: () => void
-}) {
-  const question = surveyQuestion.survey_questions_id as Question
-  const key = `/api/survey/${survey.id}/answer/${question.id}`
-  const toast = useToast()
-  const [working, setWorking] = useState<boolean>(false)
-
-  const { data: answer, mutate } = useSWR<SurveyAnswer, Error>(key, JsonFetcher, {
-    revalidateOnMount: true,
-    fallbackData: {
-      question: question.id,
-      survey: survey.id,
-      user: member.id,
-    },
-  })
-
-  const methods = useForm<Partial<SurveyAnswer>>({
-    mode: 'onBlur',
-    defaultValues: answer,
-  })
-
-  const { handleSubmit, reset, register } = methods
-
-  const onSubmit = async (data: any) => {
-    setWorking(true)
-    const { success, data: response, error } = await postJSON(key, data)
-
-    if (success) {
-      mutate(response).then(() => {
-        reset()
-        next()
-        setWorking(false)
-      })
-    } else {
-      toast({
-        title: 'Error',
-        status: 'error',
-        description: error.message,
-        isClosable: true,
-      })
-      setWorking(false)
-    }
-  }
-
-  return (
-    <Box mt={4}>
-      <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          {question && answer && (
-            <Flex direction="column" gap={4} key={question.id}>
-              <Heading as="h5" size="h5" py={2}>
-                {question.question}
-              </Heading>
-
-              <QuestionField question={question} />
-              <Text>{question.context}</Text>
-              <FieldText
-                mt={4}
-                placeholder={question.context ? '' : 'Anything to add?'}
-                field="question_context"
-              />
-            </Flex>
-          )}
-          <HStack spacing={4} mt={4}>
-            <Spacer />
-            <Button colorScheme="accent" type="submit" disabled={working}>
-              {working ? <Spinner /> : 'Next'}
-            </Button>
-          </HStack>
-        </form>
-      </FormProvider>
-    </Box>
-  )
-}
-
-function QuestionField({ question }: { question: Question }) {
+const InnerField = ({ question }: { question: Question }) => {
   switch (question.answer_type) {
     case 'select':
       return (
