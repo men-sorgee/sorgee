@@ -58,16 +58,84 @@ export default function ProfilePage(props: PageProps) {
   )
 }
 
-type MemberFormData = Partial<User>
+type MemberFormData = Partial<Member>
 function Form(props: PageProps) {
   const toast = useToast()
   const { member, mutate } = useUser()
   const { fieldMap } = props
   const [tabValue, setTabValue] = useState(0)
 
+  const {
+    show_profile,
+    nickname,
+    spectrum,
+    mannerisms,
+    relationship_status,
+    biography,
+    age,
+    height,
+    weight,
+    build,
+    skin_tone,
+    hair_color,
+    eye_color,
+    hair_style,
+    body_hair,
+    facial_hair,
+    body_attributes,
+    show_explicit,
+    cock_length,
+    cock_girth,
+    cock_attributes,
+    ball_size,
+    ball_gravity,
+    cum_attributes,
+    sexual_scenes,
+    my_roles,
+    my_positions,
+    show_health,
+    hiv_status,
+    last_tested,
+    load_policy,
+    vaccinations,
+  } = member
+
   const methods = useForm<MemberFormData>({
     mode: 'onBlur',
-    defaultValues: member,
+    defaultValues: {
+      show_profile,
+      nickname,
+      spectrum,
+      mannerisms,
+      relationship_status,
+      biography,
+      age,
+      height,
+      weight,
+      build,
+      skin_tone,
+      hair_color,
+      eye_color,
+      hair_style,
+      body_hair,
+      facial_hair,
+      body_attributes,
+      show_explicit,
+      cock_length,
+      cock_girth,
+      cock_attributes,
+      ball_size,
+      ball_gravity,
+      cum_attributes,
+      sexual_scenes,
+      my_roles,
+      my_positions,
+      show_health,
+      hiv_status,
+      last_tested,
+      load_policy,
+      vaccinations,
+    },
   })
   const {
     register,
@@ -253,7 +321,7 @@ function Form(props: PageProps) {
                     />
                   </Alert>
                 </Collapse>
-                <SimpleGrid spacing={2} columns={[2]}>
+                <SimpleGrid spacing={4} columns={[2]}>
                   <FieldInput field="cock_length" label="Cock Length" type="number" />
                   <FieldSelect
                     field="cock_girth"
@@ -272,16 +340,18 @@ function Form(props: PageProps) {
                     options={getOptions('ball_gravity')}
                   />
                 </SimpleGrid>
-                <FieldCheckboxes
-                  field="cock_attributes"
-                  label="Cock Attributes"
-                  options={getOptions('cock_attributes')}
-                />
-                <FieldCheckboxes
-                  field="cum_attributes"
-                  label="Cum Attributes"
-                  options={getOptions('cum_attributes')}
-                />
+                <SimpleGrid mt={4} spacing={4} columns={1}>
+                  <FieldCheckboxes
+                    field="cock_attributes"
+                    label="Cock Attributes"
+                    options={getOptions('cock_attributes')}
+                  />
+                  <FieldCheckboxes
+                    field="cum_attributes"
+                    label="Cum Attributes"
+                    options={getOptions('cum_attributes')}
+                  />
+                </SimpleGrid>
               </TabPanel>
 
               <TabPanel p={0}>
@@ -303,22 +373,23 @@ function Form(props: PageProps) {
                     />
                   </Alert>
                 </Collapse>
-
-                <FieldCheckboxes
-                  field="my_positions"
-                  label="My Sexual Positions"
-                  options={getOptions('my_positions')}
-                />
-                <FieldCheckboxes
-                  field="my_roles"
-                  label="My Sexual Roles"
-                  options={getOptions('my_roles')}
-                />
-                <FieldCheckboxes
-                  field="sexual_scenes"
-                  label="Sexual Scenes"
-                  options={getOptions('sexual_scenes')}
-                />
+                <SimpleGrid spacing={4} columns={1}>
+                  <FieldCheckboxes
+                    field="my_positions"
+                    label="My Sexual Positions"
+                    options={getOptions('my_positions')}
+                  />
+                  <FieldCheckboxes
+                    field="my_roles"
+                    label="My Sexual Roles"
+                    options={getOptions('my_roles')}
+                  />
+                  <FieldCheckboxes
+                    field="sexual_scenes"
+                    label="Sexual Scenes"
+                    options={getOptions('sexual_scenes')}
+                  />
+                </SimpleGrid>
               </TabPanel>
 
               <TabPanel p={0}>
@@ -339,7 +410,7 @@ function Form(props: PageProps) {
                     />
                   </Alert>
                 </Collapse>
-                <SimpleGrid spacing={2} columns={{ base: 1, md: 2 }}>
+                <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
                   <FieldSelect
                     field="hiv_status"
                     label="HIV Status"
@@ -347,7 +418,7 @@ function Form(props: PageProps) {
                   />
                   <FieldInput field="last_tested" label="Last Tested" type="date" />
                 </SimpleGrid>
-                <SimpleGrid spacing={2}>
+                <SimpleGrid mt={4} spacing={4} columns={1}>
                   <FieldCheckboxes
                     field="load_policy"
                     label="Safety Policy"
