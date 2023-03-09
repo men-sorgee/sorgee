@@ -1,9 +1,8 @@
 import { useUser } from 'hooks'
 import { FormProvider, useForm } from 'react-hook-form'
-import { ReactNode, useCallback, useEffect, useState } from 'react'
-import { getJSON, JsonFetcher, postJSON, pruneUndefined } from 'lib/utils'
-import useSWR from 'swr'
-import { SurveyAnswer, Survey, SurveyQuestion, Question, Member, GroupEvent } from 'lib/models'
+import { useCallback, useEffect, useState } from 'react'
+import { getJSON, postJSON, pruneUndefined } from 'lib/utils'
+import { SurveyAnswer, Survey, Question, GroupEvent } from 'lib/models'
 import {
   HStack,
   Button,
