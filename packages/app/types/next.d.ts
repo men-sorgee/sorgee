@@ -5,4 +5,6 @@ declare global {
       server: any
     }
   }
+
+  function ga(...args: any[])
 }

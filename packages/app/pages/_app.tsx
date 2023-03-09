@@ -1,7 +1,7 @@
 import { AppProps } from 'next/app'
 import { SessionProvider } from 'next-auth/react'
 import { ChakraProvider, cookieStorageManager, extendTheme } from '@chakra-ui/react'
-
+import { onCLS, onFID, onLCP } from 'web-vitals'
 import Layout from 'components/layout/index'
 import getTheme from '../theme'
 import { Manrope, Arvo, Roboto_Mono } from 'next/font/google'
@@ -28,7 +28,7 @@ const mono = Roboto_Mono({
 
 const theme = extendTheme(getTheme(body, heading, mono))
 
-function MyApp({ Component, pageProps }: AppProps) {
+export default function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
   if (router?.pathname.startsWith('/code/')) {
     return <Component key={router.asPath} {...pageProps} />
@@ -51,16 +51,28 @@ function MyApp({ Component, pageProps }: AppProps) {
   )
 }
 
-export function reportWebVitals({ id, label, name, value }) {
-  if (typeof window !== 'undefined' && typeof window['gtag'] !== 'undefined')
-    // Use `window.gtag` if you initialized Google Analytics as this example:
-    // https://github.com/vercel/next.js/blob/canary/examples/with-google-analytics/pages/_app.js
-    window['gtag']('event', name, {
-      event_category: label === 'web-vital' ? 'Web Vitals' : 'Next.js custom metric',
-      value: Math.round(name === 'CLS' ? value * 1000 : value), // values must be integers
-      event_label: id, // id unique to current page load
-      non_interaction: true, // avoids affecting bounce rate.
-    })
+function sendToGoogleAnalytics({ name, delta, id }) {
+  // Assumes the global `ga()` function exists, see:
+  // https://developers.google.com/analytics/devguides/collection/analyticsjs
+  ga('send', 'event', {
+    eventCategory: 'Web Vitals',
+    eventAction: name,
+    // The `id` value will be unique to the current page load. When sending
+    // multiple values from the same page (e.g. for CLS), Google Analytics can
+    // compute a total by grouping on this ID (note: requires `eventLabel` to
+    // be a dimension in your report).
+    eventLabel: id,
+    // Google Analytics metrics must be integers, so the value is rounded.
+    // For CLS the value is first multiplied by 1000 for greater precision
+    // (note: increase the multiplier for greater precision if needed).
+    eventValue: Math.round(name === 'CLS' ? delta * 1000 : delta),
+    // Use a non-interaction event to avoid affecting bounce rate.
+    nonInteraction: true,
+    // Use `sendBeacon()` if the browser supports it.
+    transport: 'beacon',
+  })
 }
 
-export default MyApp
+onCLS(sendToGoogleAnalytics)
+onFID(sendToGoogleAnalytics)
+onLCP(sendToGoogleAnalytics)
