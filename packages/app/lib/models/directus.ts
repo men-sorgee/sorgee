@@ -281,7 +281,7 @@ export type UserRelationship = {
   id: number
   users_id: string | User
   related_users_id?: string | User
-  relation: string
+  relation: 'buddy' | 'block' | 'hottie' | 'partner'
 }
 
 export type User = {
@@ -580,6 +580,26 @@ export type SurveyAnswer = {
   answer_choose?: any[]
 }
 
+export type UserMessages = {
+  inbox: Message[]
+  sent: Message[]
+}
+
+export type MessageStatusType = 'new' | 'read' | 'archived'
+export type Message = {
+  id: string
+  status: string | MessageStatusType
+  user_created?: string | DirectusUser
+  date_created?: string
+  user_updated?: string | DirectusUser
+  date_updated?: string
+  to: string | User
+  from: string | User
+  expires?: string
+  body: string
+  edited: boolean
+}
+
 export type FieldMap = Record<string, DirectusField>
 
 export type DirectusTypes = {
@@ -606,6 +626,7 @@ export type DirectusTypes = {
   rating: Rating
   rooms: Room
   room_events: RoomEvent
+  messages: Message
   directus_collections: DirectusCollection
   directus_fields: DirectusField
   directus_files: DirectusFile

@@ -20,7 +20,6 @@ export default async function getMemberDetails(
     let user_id: string
     if (id == 'me') user_id = viewer.id
     else user_id = String(id)
-    const viewer_level = MemberLevel[viewer.user_type]
 
     let user = viewer
     if (user_id !== viewer.id) {

@@ -7,6 +7,7 @@ import {
   UserPhoto,
   EventUser,
   Rating,
+  UserRelationship,
 } from './directus'
 
 type Color = {
@@ -84,13 +85,13 @@ export const MemberLevelColorMap = [
   ['red.500', 'red.100'],
   ['orange.500', 'orange.100'],
   ['yellow.500', 'yellow.100'],
-  ['primary.100', 'primary.300'],
-  ['primary.200', 'primary.400'],
-  ['primary.300', 'primary.500'],
-  ['primary.400', 'primary.600'],
-  ['primary.500', 'primary.700'],
-  ['primary.600', 'primary.800'],
-  ['primary.700', 'primary.900'],
+  ['primary.200', 'primary.300'],
+  ['primary.300', 'primary.400'],
+  ['primary.400', 'primary.500'],
+  ['primary.500', 'primary.600'],
+  ['primary.600', 'primary.700'],
+  ['primary.700', 'primary.800'],
+  ['primary.800', 'primary.900'],
 ]
 
 export type ApplicationStatusType =
@@ -220,6 +221,8 @@ export type Member = Applicant & {
   signed_waiver: boolean
   presence: 'offline' | 'online' | 'away'
   ratings: Rating[]
+
+  users: UserRelationship[]
 
   video_consent: boolean
   photo_consent: boolean
@@ -392,7 +395,11 @@ export const searchableMemberFields: Array<keyof Member> = [
   'my_photos',
 ]
 
-export const memberFields: Array<keyof Member> = [...applicantFields, ...searchableMemberFields]
+export const memberFields: Array<keyof Member> = [
+  ...applicantFields,
+  ...searchableMemberFields,
+  'users.*.*' as any,
+]
 
 export const getAllowedUsers = (level: MemberLevel) => {
   let allowedLevels: UserType[] = ['brother', 'big_brother', 'staff', 'admin']

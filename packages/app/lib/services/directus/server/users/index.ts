@@ -12,10 +12,8 @@ import {
   applicantFields,
   UserEmailEvent,
   UserFields,
-  UserPhoto,
 } from 'lib/models'
 import { FieldFilter } from '@directus/sdk'
-import { BreadcrumbLink } from '@chakra-ui/react'
 
 export async function createUser(member: Partial<User>): Promise<User> {
   const adminClient = await getAdminClient()
@@ -39,7 +37,7 @@ export async function getUser<T = User>(
     fields: fields as any,
     filter: {
       status: {
-        _nin: ['deleted', 'banned'],
+        _nin: ['inactive', 'banned'],
       },
     },
   })
@@ -282,3 +280,5 @@ export async function getUserStats(): Promise<{
 export * from './auth'
 export * from './invites'
 export * from './notifications'
+export * from './relations'
+export * from './messages'
