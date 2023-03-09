@@ -580,11 +580,23 @@ export type SurveyAnswer = {
   answer_choose?: any[]
 }
 
-export type UserMessages = {
-  inbox: Message[]
-  sent: Message[]
-}
+export type UserMessages = Record<string, Message[]>
 
+export type Conversation = {
+  id: string
+  messages: Message[]
+  hasNewMessages: boolean
+  newMessageCount: number
+  lastMessage: Message
+  user: ChatUser
+}
+export type ChatUser = {
+  id: string
+  nickname: string
+  picture: string
+  last_login: string
+  presence: string
+}
 export type MessageStatusType = 'new' | 'read' | 'archived'
 export type Message = {
   id: string
@@ -598,6 +610,8 @@ export type Message = {
   expires?: string
   body: string
   edited: boolean
+  user?: ChatUser
+  direction: 'incoming' | 'outgoing'
 }
 
 export type FieldMap = Record<string, DirectusField>

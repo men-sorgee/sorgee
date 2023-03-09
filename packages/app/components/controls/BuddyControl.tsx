@@ -63,6 +63,7 @@ export const BuddyControl = ({ memberId }: { memberId: string }) => {
           <IconButton
             icon={<UserPlusIcon />}
             variant="ghost"
+            title="Add Buddy"
             aria-label="Add to buddy-list"
             cursor="pointer"
             onClick={toggleBuddy}

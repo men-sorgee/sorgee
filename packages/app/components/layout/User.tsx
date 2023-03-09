@@ -39,13 +39,6 @@ export default function UserMenu(_props: Props) {
   const showApply = !site?.invite_only
   const person = member || user
 
-  const memberMenu = [
-    {
-      icon: <UserGroupIcon color={'white'} width={'1.5rem'} />,
-      label: 'Members',
-      href: '/members',
-    },
-  ]
   return (
     <>
       {authenticated ? (

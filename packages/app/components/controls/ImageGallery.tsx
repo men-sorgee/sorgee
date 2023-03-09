@@ -1,13 +1,11 @@
 import { useCallback, useState } from 'react'
-import { Box, IconButton, useBreakpointValue } from '@chakra-ui/react'
+import { Box, IconButton } from '@chakra-ui/react'
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
 import { ImageModal } from './ImageModal'
 
 export const ImageGallery = ({ images }: { images: string[] }) => {
   const [openIndex, setOpenIndex] = useState<number>(undefined)
   const [viewIndex, setViewIndex] = useState<number>(0)
-  const top = useBreakpointValue({ base: '90%', md: '50%' })
-  const side = useBreakpointValue({ base: '30%', md: '10px' })
   const showScroll = images?.length > 0
 
   const handleImageClick = useCallback((index) => {

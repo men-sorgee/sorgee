@@ -9,12 +9,17 @@ import {
   DrawerCloseButton,
   MenuItem,
   IconButton,
+  Box,
 } from '@chakra-ui/react'
-import { BellIcon as NotificationsOffIcon } from '@heroicons/react/24/outline'
-import { BellIcon as NotificationsOnIcon } from '@heroicons/react/24/solid'
-import { NotificationsContext, NotificationsContextData } from 'hooks/use-notifications'
+import { BellIcon } from '@heroicons/react/24/outline'
+import {
+  NotificationsContext,
+  NotificationsContextData,
+  useNotifications,
+} from 'hooks/use-notifications'
 import { NotificationCard } from 'components/controls'
 import { Member } from 'lib/models'
+import { useEffect } from 'react'
 
 interface Props {
   member: Member
@@ -22,56 +27,55 @@ interface Props {
 
 const Notifications = ({ member }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
-
+  const { hasNewNotifications, notifications, newNotificationCount } = useNotifications()
   return (
-    <NotificationsContext.Consumer>
-      {({ hasNewNotifications, notifications, newNotificationCount }) => (
-        <>
-          <IconButton
-            aria-label="Notifications"
-            variant="primary"
-            zIndex="fixed"
-            color={isOpen ? 'accent.500' : 'white'}
-            size="lg"
-            icon={
-              hasNewNotifications ? (
-                <NotificationsOnIcon height="50px" width="50px" />
-              ) : (
-                <NotificationsOffIcon height="50px" width="50px" />
-              )
-            }
-            onClick={onOpen}
+    <>
+      <Box>
+        <IconButton
+          aria-label="Notifications"
+          variant="primary"
+          zIndex="fixed"
+          color={isOpen ? 'accent.500' : 'white'}
+          size="lg"
+          icon={<BellIcon height="50px" width="50px" />}
+          onClick={onOpen}
+        />
+        {hasNewNotifications && (
+          <Badge
+            bg="red"
+            color="white"
+            ml={-4}
+            zIndex="overlay"
+            position="absolute"
+            rounded="full"
+            px={2}
+            py={0.5}
           >
-            {hasNewNotifications && (
-              <Badge bg="red" color="white">
-                {newNotificationCount}
-              </Badge>
-            )}
-          </IconButton>
-
-          <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
-            <DrawerOverlay />
-            <DrawerContent>
-              <DrawerCloseButton />
-              <DrawerHeader bg="primary.800" color="white" m={0} p={2}>
-                Notifications
-              </DrawerHeader>
-              <DrawerBody p={4}>
-                <>
-                  {notifications?.map((notification) => (
-                    <NotificationCard
-                      key={notification.id}
-                      member={member}
-                      notification={notification}
-                    />
-                  ))}
-                </>
-              </DrawerBody>
-            </DrawerContent>
-          </Drawer>
-        </>
-      )}
-    </NotificationsContext.Consumer>
+            {newNotificationCount}
+          </Badge>
+        )}
+      </Box>
+      <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader bg="primary.900" color="white" m={0} p={2}>
+            Notifications
+          </DrawerHeader>
+          <DrawerBody p={4}>
+            <>
+              {notifications?.map((notification) => (
+                <NotificationCard
+                  key={notification.id}
+                  member={member}
+                  notification={notification}
+                />
+              ))}
+            </>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
+    </>
   )
 }
 

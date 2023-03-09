@@ -1,31 +1,18 @@
-import {
-  UserGroupIcon,
-  InboxIcon,
-  CalendarIcon,
-  MailIcon,
-  ChatIcon,
-} from '@heroicons/react/outline'
-import {
-  useColorMode,
-  useColorModeValue,
-  HStack,
-  IconButton,
-  Flex,
-  Collapse,
-  Link,
-  Badge,
-} from '@chakra-ui/react'
+import { UserGroupIcon, CalendarIcon, VideoCameraIcon } from '@heroicons/react/24/outline'
+import { useColorModeValue, IconButton, Spacer, Flex, Link, Badge } from '@chakra-ui/react'
 import { Box, BoxProps } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { constrained } from '.'
 import NextLink from 'next/link'
-import { useEvents, useUser, useUserEvents } from 'hooks'
+import { useUser, useUserEvents } from 'hooks'
+import Notifications from './Notifications'
+import Messages from './Messages'
 export type Props = BoxProps & {}
 
 export default function ActionsNav({ children, ...props }: Props) {
   const router = useRouter()
-  const { authenticated } = useUser()
+  const { authenticated, isMember, member } = useUser()
   const [path, setPath] = useState(router.asPath)
   const { newInvitationCount } = useUserEvents()
 
@@ -36,7 +23,7 @@ export default function ActionsNav({ children, ...props }: Props) {
   const bgColor = useColorModeValue('primary.800', 'black')
   const borderColor = useColorModeValue('primary.500', 'accent.400')
   const user_count = 0
-  if (!authenticated) return null
+  if (!authenticated || !isMember) return null
 
   return (
     <div className="no-print">
@@ -56,6 +43,8 @@ export default function ActionsNav({ children, ...props }: Props) {
         pr="16px"
       >
         <Flex justify="center" w="full" gap={10} p={4} {...constrained}>
+          {false && <Messages member={member} />}
+          <Spacer />
           <Link href="/members" as={NextLink} zIndex="fixed">
             <IconButton
               variant="primary"
@@ -67,15 +56,15 @@ export default function ActionsNav({ children, ...props }: Props) {
               title="View Members"
             />
           </Link>
-          <Link href="/chat" as={NextLink} hidden>
+          <Link href="/video" as={NextLink}>
             <IconButton
               variant="primary"
               zIndex="fixed"
               size="lg"
-              icon={<ChatIcon height="50px" width="50px" />}
-              color={path.startsWith('/chat') ? 'accent.500' : 'white'}
-              aria-label={'Chat'}
-              title="Member Chat"
+              icon={<VideoCameraIcon height="50px" width="50px" />}
+              color={path.startsWith('/video') ? 'accent.500' : 'white'}
+              aria-label={'Video Chat'}
+              title="Video Chat"
             />
             {user_count > 0 && (
               <Badge
@@ -118,6 +107,8 @@ export default function ActionsNav({ children, ...props }: Props) {
               </Badge>
             )}
           </Link>
+          <Spacer />
+          <Notifications member={member} />
         </Flex>
       </Box>
     </div>

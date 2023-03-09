@@ -6,7 +6,7 @@ import Layout from 'components/layout/index'
 import getTheme from '../theme'
 import { Manrope, Arvo, Roboto_Mono } from 'next/font/google'
 import { useRouter } from 'next/router'
-import { NotificationsProvider, UserProvider, MetaContextProvider } from 'hooks'
+import { MessagesProvider, NotificationsProvider, UserProvider, MetaContextProvider } from 'hooks'
 
 const heading = Arvo({
   variable: '--heading-font',
@@ -40,9 +40,11 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
           <UserProvider>
             <NotificationsProvider>
-              <Layout fonts={[heading.variable, body.variable, mono.variable]}>
-                <Component {...pageProps} />
-              </Layout>
+              <MessagesProvider>
+                  <Layout fonts={[heading.variable, body.variable, mono.variable]}>
+                    <Component {...pageProps} />
+                  </Layout>
+              </MessagesProvider>
             </NotificationsProvider>
           </UserProvider>
         </ChakraProvider>
