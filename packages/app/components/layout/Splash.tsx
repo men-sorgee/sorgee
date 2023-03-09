@@ -63,7 +63,7 @@ export default function Splash({ authenticated }: { authenticated: boolean }) {
                 color="white"
                 as="h1"
                 size="2xl"
-                mt="50%"
+                mt={20}
                 maxW="80%"
                 textAlign="center"
                 fontWeight="bold"
