@@ -217,7 +217,7 @@ function Form({ user, ...props }: PageProps & { user: Applicant }) {
             <strong>Be as honest as possible.</strong> Honest answers will help your chances of
             approval and help our AI create the perfect group events!
           </Text>
-          <SimpleGrid spacing={4} columns={[1, 2]}>
+          <SimpleGrid spacing={4} mt={4} columns={[1, 2]}>
             <GridItem colSpan={{ base: 1, sm: 2 }}>
               <FieldInput field="nickname" label="Nickname" />
             </GridItem>
@@ -228,7 +228,7 @@ function Form({ user, ...props }: PageProps & { user: Applicant }) {
               options={relationshipOptions}
             />
           </SimpleGrid>
-          <SimpleGrid spacing={4} columns={{ base: 1, sm: 2, md: 4 }}>
+          <SimpleGrid spacing={4} mt={4} columns={{ base: 1, sm: 2, md: 4 }}>
             <FieldSelect
               field="birth_month"
               label="Birth Month"
@@ -274,23 +274,6 @@ function Form({ user, ...props }: PageProps & { user: Applicant }) {
               />
             </GridItem>
           </SimpleGrid>
-
-          <Heading as="h3" size="h3">
-            Event Preferences
-          </Heading>
-          <Text>
-            We currently coordinate events in Denver, for the following times bi-monthly. We try to
-            create events that can include new members, however, we do not guarantee that you will
-            be included in every event. As the group grows, so too will the number of events we can
-            create.
-          </Text>
-
-          <FieldCheckboxes
-            field="event_availability"
-            label="Preferred Event Times"
-            help="We host events to meet the demands of our brothers. Let us know what times work best in general"
-            options={timeOfDayOptions}
-          />
 
           <Heading as="h3" size="h3">
             Sexual Preferences

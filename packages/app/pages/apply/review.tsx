@@ -16,7 +16,9 @@ function Review() {
 
   useEffect(() => {
     if (member && member?.application_status && member.application_status !== 'review') {
-      router.push('/apply/' + member?.application_status)
+      router.push('/apply/' + member?.application_status).then(() => {
+        return reload()
+      })
     }
     if (member?.contact_preference) {
       setComplete(true)

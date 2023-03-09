@@ -34,7 +34,7 @@ function Verification() {
       requireAuth={true}
       header={<ApplicationSteps status={'verify'} />}
     >
-      {member?.id && (
+      {member?.id && !completed && (
         <Form
           code={`${member.id.slice(0, 4)} ${member.id.slice(4, 8)}`}
           {...{ member, router, setCompleted }}
