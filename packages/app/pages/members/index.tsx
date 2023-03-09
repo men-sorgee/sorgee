@@ -47,7 +47,7 @@ import { useRouter } from 'next/router'
 import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
 import { FieldCheckboxes, FieldInput, FieldCheckbox } from 'components/forms'
-import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/outline'
+import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline'
 
 export type QueryParams = Record<keyof SearchableMember, string[]> & {
   online: boolean
