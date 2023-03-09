@@ -184,14 +184,6 @@ const AttendedEvent = ({
   invite: EventUser
   reloadUser: () => void
 }) => {
-  const { data: ratings = [], mutate } = useSWR<Rating[], Error>(
-    `/api/member/ratings`,
-    JsonFetcher,
-    {
-      fallbackData: [],
-    }
-  )
-
   const attendees = event.attendance
     .filter((u) => u.attended)
     .map((u) => u.users_id as User)
@@ -216,7 +208,7 @@ const AttendedEvent = ({
         <Spacer />
         {invite.attended &&
           event.surveys?.map((s) => (
-            <LinkButton key={s.id} size="md" href={`/survey/${s.id}`} colorScheme="accent">
+            <LinkButton key={s.id} size="md" href={`/survey/${s.id}/1`} colorScheme="accent">
               {s.title}
             </LinkButton>
           ))}
