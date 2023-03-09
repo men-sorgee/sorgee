@@ -91,10 +91,53 @@ function Form(props: PageProps) {
   } = props
   const [tabValue, setTabValue] = useState(0)
 
+  const {
+    first_name,
+    last_name,
+    email,
+    phone,
+    city,
+    state,
+    birth_month,
+    birth_year,
+    contact_preference,
+    photo_consent,
+    video_consent,
+    needs_guidance,
+    event_invites: invites,
+    social_scenes: scenes,
+    event_availability,
+    their_positions,
+    their_roles,
+    their_spectrum,
+    their_relationship_status,
+    show_interests: interests,
+    show_contact: contact,
+  } = member
   const methods = useForm<MemberFormData>({
     mode: 'onBlur',
     defaultValues: {
-      ...member,
+      first_name,
+      last_name,
+      email,
+      phone,
+      city,
+      state,
+      birth_month,
+      birth_year,
+      contact_preference,
+      photo_consent,
+      video_consent,
+      needs_guidance,
+      event_invites: invites,
+      social_scenes: scenes,
+      event_availability,
+      their_positions,
+      their_roles,
+      their_spectrum,
+      their_relationship_status,
+      show_interests: interests,
+      show_contact: contact,
     },
   })
   const {
@@ -161,7 +204,7 @@ function Form(props: PageProps) {
               <Tab fontWeight={tabValue == 2 ? 'bold' : null}>Interests </Tab>
             </TabList>
             <TabPanels>
-              <TabPanel p={0}>
+              <TabPanel p={0} pt={4}>
                 {show_profile && (
                   <Alert
                     bg="primary"
@@ -275,7 +318,7 @@ function Form(props: PageProps) {
                   I need assistance
                 </FieldCheckbox>
               </TabPanel>
-              <TabPanel p={0}>
+              <TabPanel p={0} pt={4}>
                 <Alert
                   bg="primary"
                   color="white"
@@ -303,6 +346,7 @@ function Form(props: PageProps) {
                     label="Social Activities"
                     help="We host events to meet the demands of our brothers. Tell us what kind of events you are interested in."
                     options={eventOptions}
+                    includeOther
                   />
 
                   <FieldCheckboxes
