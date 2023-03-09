@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react'
 import {
   Box,
+  Button,
   Card,
   CardHeader,
   CardBody,
@@ -21,6 +22,7 @@ import {
   Wrap,
   StatHelpText,
 } from '@chakra-ui/react'
+import Countdown from 'react-countdown'
 import { Markdown } from './Markdown'
 import { GroupEvent, Location } from 'lib/models'
 import { getEventDate, toLocalDate } from 'lib/utils'
@@ -28,7 +30,7 @@ import { capitalCase } from 'change-case'
 import { LocationMarkerIcon } from '@heroicons/react/outline'
 import { differenceInDays, isAfter } from 'date-fns'
 import Link from 'next/link'
-
+import { LinkButton } from './LinkButton'
 type EventCardProps = CardProps & {
   showDescription?: boolean
   showLocation?: boolean
@@ -54,6 +56,17 @@ export const EventCard = ({
     date: string
     time: string
   }>()
+
+  const renderer = ({ days, hours, completed }) => {
+    if (!completed && days < 7) {
+      // Render a countdown
+      return (
+        <h4>
+          {days} Days, {hours} hours to go!
+        </h4>
+      )
+    }
+  }
 
   const occurred = event?.status && event.status == 'occurred'
 
@@ -118,10 +131,13 @@ export const EventCard = ({
         </CardHeader>
         <CardBody w="full" pb={0}>
           {event.status == 'planned' && (
-            <Text>
-              This event is planned, but not yet scheduled. When enough brothers have confirmed that
-              this date works for them, the event will be officially scheduled.
-            </Text>
+            <Box>
+              <Text>
+                This event is planned, but not yet scheduled. When enough brothers have confirmed
+                that this date works for them, the event will be officially scheduled.
+              </Text>
+              <Divider my={2} />
+            </Box>
           )}
 
           <Flex mb={2} gap={4} justify="space-between" direction={['column', 'row']}>
@@ -185,13 +201,20 @@ export const EventCard = ({
           )}
 
           {href && (
-            <Heading as="h5" size="h5">
+            <LinkButton href={href} mt={4} size="lg" w="full" colorScheme="primary">
               Click for Details
-            </Heading>
+            </LinkButton>
           )}
         </CardBody>
       </LinkBox>
-      <CardFooter flexDirection="column">{children}</CardFooter>
+      <CardFooter flexDirection="column">
+        {children}
+        {event.datetime && (
+          <>
+            <Countdown date={new Date(event.datetime)} renderer={renderer} />
+          </>
+        )}
+      </CardFooter>
     </Card>
   )
 }
