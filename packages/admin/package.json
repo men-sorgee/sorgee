@@ -26,7 +26,6 @@
     "directus-extension-sparkline-display": "^1.0.5",
     "directus-extension-tags-m2m-interface": "^0.8.0",
     "directus-extension-vgrid-interface": "^1.0.15",
-    "directus-extension-websocket-subscribe": "^3.0.8",
     "pg": "^8.10.0",
     "typescript": "^4.9.5"
   }
