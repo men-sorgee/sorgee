@@ -27,7 +27,7 @@ import { Markdown } from './Markdown'
 import { GroupEvent, Location } from 'lib/models'
 import { getEventDate, toLocalDate } from 'lib/utils'
 import { capitalCase } from 'change-case'
-import { LocationMarkerIcon } from '@heroicons/react/outline'
+import { MapPinIcon } from '@heroicons/react/24/solid'
 import { differenceInDays, isAfter } from 'date-fns'
 import Link from 'next/link'
 import { LinkButton } from './LinkButton'
@@ -172,13 +172,7 @@ export const EventCard = ({
 
               <LinkBox>
                 <Flex>
-                  <Icon
-                    h={20}
-                    w={20}
-                    as={LocationMarkerIcon}
-                    color="primary.200"
-                    fill="primary.500"
-                  />
+                  <Icon h={20} w={20} as={MapPinIcon} color="primary.200" fill="primary.500" />
                   {viewLocation && (
                     <LinkOverlay
                       target="_blank"

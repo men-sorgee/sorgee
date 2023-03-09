@@ -8,9 +8,10 @@ import {
   DrawerContent,
   DrawerCloseButton,
   MenuItem,
+  IconButton,
 } from '@chakra-ui/react'
-import { BellIcon as NotificationsOffIcon } from '@heroicons/react/outline'
-import { BellIcon as NotificationsOnIcon } from '@heroicons/react/solid'
+import { BellIcon as NotificationsOffIcon } from '@heroicons/react/24/outline'
+import { BellIcon as NotificationsOnIcon } from '@heroicons/react/24/solid'
 import { NotificationsContext, NotificationsContextData } from 'hooks/use-notifications'
 import { NotificationCard } from 'components/controls'
 import { Member } from 'lib/models'
@@ -26,25 +27,27 @@ const Notifications = ({ member }: Props) => {
     <NotificationsContext.Consumer>
       {({ hasNewNotifications, notifications, newNotificationCount }) => (
         <>
-          <MenuItem
+          <IconButton
+            aria-label="Notifications"
+            variant="primary"
+            zIndex="fixed"
+            color={isOpen ? 'accent.500' : 'white'}
+            size="lg"
             icon={
               hasNewNotifications ? (
-                <NotificationsOnIcon color={'white'} width={'1.5rem'} />
+                <NotificationsOnIcon height="50px" width="50px" />
               ) : (
-                <NotificationsOffIcon color={'white'} width={'1.5rem'} />
+                <NotificationsOffIcon height="50px" width="50px" />
               )
             }
-            bg="black"
-            _hover={{ bg: 'gray.400' }}
             onClick={onOpen}
           >
-            Notifications{' '}
             {hasNewNotifications && (
               <Badge bg="red" color="white">
                 {newNotificationCount}
               </Badge>
             )}
-          </MenuItem>
+          </IconButton>
 
           <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
             <DrawerOverlay />

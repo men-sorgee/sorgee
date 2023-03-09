@@ -16,18 +16,18 @@ import {
   CalendarIcon,
   InboxIcon,
   CogIcon,
-  ArrowRightIcon,
-  ExternalLinkIcon,
+  PaperAirplaneIcon,
+  ArrowTopRightOnSquareIcon,
   UserGroupIcon,
-  LogoutIcon,
-  QrcodeIcon,
+  ArrowRightOnRectangleIcon,
+  ViewfinderCircleIcon,
   UserIcon,
   CameraIcon,
   MoonIcon,
   SunIcon,
-  DatabaseIcon,
-  AdjustmentsIcon,
-} from '@heroicons/react/outline'
+  ServerStackIcon,
+  PaintBrushIcon,
+} from '@heroicons/react/24/outline'
 import { useUser, useSite } from 'hooks'
 
 interface Props {}
@@ -77,22 +77,9 @@ export default function UserMenu(_props: Props) {
             >
               Set Theme To {colorMode === 'light' ? 'Dark' : 'Light'}
             </MenuItem>
-            {member && <Notifications member={member} />}
 
-            {isApplicant && (
-              <MenuItem
-                icon={<ExternalLinkIcon color={'white'} width={'1.5rem'} />}
-                bg="black"
-                _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                as={Link}
-                href="/apply"
-              >
-                Continue Application
-              </MenuItem>
-            )}
             {isMember && (
               <>
-                <MenuDivider />
                 <MenuItem
                   icon={<CogIcon color={'white'} width={'1.5rem'} />}
                   bg="black"
@@ -122,7 +109,6 @@ export default function UserMenu(_props: Props) {
                   Edit Photos
                 </MenuItem>
                 <MenuDivider />
-
                 <MenuItem
                   icon={<CalendarIcon color={'white'} width={'1.5rem'} />}
                   bg="black"
@@ -132,8 +118,6 @@ export default function UserMenu(_props: Props) {
                 >
                   Events
                 </MenuItem>
-
-                <MenuDivider />
                 <MenuItem
                   icon={<UserGroupIcon color={'white'} width={'1.5rem'} />}
                   bg="black"
@@ -141,10 +125,10 @@ export default function UserMenu(_props: Props) {
                   as={Link}
                   href="/members"
                 >
-                  Find Men
+                  Members
                 </MenuItem>
                 <MenuItem
-                  icon={<ArrowRightIcon color={'white'} width={'1.5rem'} />}
+                  icon={<PaperAirplaneIcon color={'white'} width={'1.5rem'} />}
                   bg="black"
                   _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                   as={Link}
@@ -156,7 +140,7 @@ export default function UserMenu(_props: Props) {
                   <>
                     <MenuDivider />
                     <MenuItem
-                      icon={<DatabaseIcon color={'white'} width={'1.5rem'} />}
+                      icon={<ServerStackIcon color={'white'} width={'1.5rem'} />}
                       bg="black"
                       _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                       as={Link}
@@ -175,7 +159,7 @@ export default function UserMenu(_props: Props) {
                       Event Admin
                     </MenuItem>
                     <MenuItem
-                      icon={<QrcodeIcon color={'white'} width={'1.5rem'} />}
+                      icon={<ViewfinderCircleIcon color={'white'} width={'1.5rem'} />}
                       bg="black"
                       _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                       as={Link}
@@ -184,7 +168,7 @@ export default function UserMenu(_props: Props) {
                       Scan
                     </MenuItem>
                     <MenuItem
-                      icon={<AdjustmentsIcon color={'white'} width={'1.5rem'} />}
+                      icon={<PaintBrushIcon color={'white'} width={'1.5rem'} />}
                       bg="black"
                       _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                       as={Link}
@@ -196,9 +180,25 @@ export default function UserMenu(_props: Props) {
                 )}
               </>
             )}
+
+            {isApplicant && (
+              <>
+                <MenuDivider />
+
+                <MenuItem
+                  icon={<ArrowTopRightOnSquareIcon color={'white'} width={'1.5rem'} />}
+                  bg="black"
+                  _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                  as={Link}
+                  href="/apply"
+                >
+                  Continue Application
+                </MenuItem>
+              </>
+            )}
             <MenuDivider />
             <MenuItem
-              icon={<LogoutIcon color={'white'} width={'1.5rem'} />}
+              icon={<ArrowRightOnRectangleIcon color={'white'} width={'1.5rem'} />}
               bg="black"
               _hover={{ bg: 'gray.400', textDecoration: 'none' }}
               as={Link}

@@ -1,6 +1,6 @@
 import { useState, forwardRef, useEffect } from 'react'
-import { StarIcon } from '@chakra-ui/icons'
-import { Box, Icon, IconButton, Stack, Text, IconButtonProps } from '@chakra-ui/react'
+import { StarIcon } from '@heroicons/react/24/solid'
+import { Box, Icon, Button, IconButton, Stack, Text, IconButtonProps } from '@chakra-ui/react'
 
 export type RatingControlProps = IconButtonProps & {
   onRateChange?: (rate: number) => void
@@ -63,10 +63,9 @@ export const Rating = ({
         _hover={{ bg: 'transparent', stroke: 'primary.500' }}
         aria-label={`Rate ${index}`}
         variant="ghost"
-        mx={1}
+        size={size}
         onClick={() => onClick(index)}
         _focus={{ outline: 0 }}
-        size={size}
         icon={icon}
         color={fillColor}
         stroke={strokeColor}
@@ -83,7 +82,7 @@ export const Rating = ({
   }
 
   return (
-    <Stack isInline mt={mt} justify="center">
+    <Stack isInline mt={mt} spacing={1}>
       {buttons}
       {!simple && (
         <Box textAlign="center">

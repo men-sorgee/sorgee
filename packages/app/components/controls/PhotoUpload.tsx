@@ -11,7 +11,7 @@ import {
   chakra,
   useToast,
 } from '@chakra-ui/react'
-import { UploadIcon, XIcon } from '@heroicons/react/outline'
+import { ArrowUpTrayIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useState, ChangeEvent, useEffect, useRef } from 'react'
 import { ApiResponse } from 'lib/models'
 
@@ -147,7 +147,7 @@ export const PhotoUpload = chakra(
                 h="3em"
                 w="3em"
                 p={3}
-                as={UploadIcon}
+                as={ArrowUpTrayIcon}
                 margin="auto"
               />
             </label>
@@ -157,7 +157,7 @@ export const PhotoUpload = chakra(
               bg="primary"
               h="3em"
               w="3em"
-              as={XIcon}
+              as={XMarkIcon}
               p={3}
               ml="2rem"
               margin="auto"
@@ -183,7 +183,7 @@ export const PhotoUpload = chakra(
               alt=""
             />
             <IconButton
-              icon={<UploadIcon />}
+              icon={<ArrowUpTrayIcon />}
               rounded="full"
               variant="ghost"
               position="absolute"
@@ -200,7 +200,7 @@ export const PhotoUpload = chakra(
               ml="1rem"
             />
             <IconButton
-              icon={<XIcon />}
+              icon={<XMarkIcon />}
               color="primary"
               rounded="full"
               margin="auto"

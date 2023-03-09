@@ -23,7 +23,7 @@ import {
   Link,
 } from '@chakra-ui/react'
 import Page from 'components/Page'
-import { UploadIcon, CameraIcon } from '@heroicons/react/outline'
+import { ArrowUpTrayIcon, CameraIcon } from '@heroicons/react/24/outline'
 import { UserPhoto } from 'lib/models'
 import { deleteJSON, getAssetUrl } from 'lib/utils'
 type Props = {}
@@ -226,7 +226,7 @@ function AddPhoto({ title, memberId, field, reload }: PhotoProps) {
         />
         <IconButton
           aria-label="Upload Photo"
-          icon={<UploadIcon />}
+          icon={<ArrowUpTrayIcon />}
           variant="ghost"
           onClick={uploadPhoto}
           color="white"

@@ -1,7 +1,7 @@
 import { AspectRatio, HStack, Button, Box, IconButton, Badge, Flex } from '@chakra-ui/react'
 import { useState } from 'react'
-import { RefreshIcon, LightningBoltIcon } from '@heroicons/react/outline'
-import { LightningBoltIcon as LightningBoltIconSolid } from '@heroicons/react/solid'
+import { ArrowPathRoundedSquareIcon, BoltIcon } from '@heroicons/react/24/outline'
+import { BoltIcon as LightningBoltIconSolid } from '@heroicons/react/24/solid'
 import { useUser } from 'hooks'
 import Page from 'components/Page'
 import dynamic from 'next/dynamic'
@@ -95,7 +95,7 @@ export default function Scanner() {
             <HStack align="center" position="absolute" zIndex="1" spacing={4} mt={-12} mx={'45%'}>
               <IconButton
                 bg="white"
-                icon={<RefreshIcon />}
+                icon={<ArrowPathRoundedSquareIcon />}
                 color="accent.500"
                 onClick={() => {
                   setFacing(facing == 'user' ? 'environment' : 'user')
@@ -105,7 +105,7 @@ export default function Scanner() {
               <IconButton
                 bg="white"
                 color="accent.500"
-                icon={light ? <LightningBoltIconSolid /> : <LightningBoltIcon />}
+                icon={light ? <LightningBoltIconSolid /> : <BoltIcon />}
                 onClick={() => {
                   setLight(!light)
                 }}

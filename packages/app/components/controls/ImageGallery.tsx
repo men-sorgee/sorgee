@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import { Box, IconButton, useBreakpointValue } from '@chakra-ui/react'
-import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/outline'
+import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
 import { ImageModal } from './ImageModal'
 
 export const ImageGallery = ({ images }: { images: string[] }) => {

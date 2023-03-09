@@ -11,7 +11,7 @@ import {
   Circle,
 } from '@chakra-ui/react'
 import { createRef, forwardRef, useCallback, useRef, useState } from 'react'
-import { CameraIcon } from '@heroicons/react/solid'
+import { CameraIcon } from '@heroicons/react/24/solid'
 import { Camera } from 'react-camera-pro'
 
 type Props = StackProps & {
