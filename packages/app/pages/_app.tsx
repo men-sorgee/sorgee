@@ -73,6 +73,8 @@ function sendToGoogleAnalytics({ name, delta, id }) {
   })
 }
 
-onCLS(sendToGoogleAnalytics)
-onFID(sendToGoogleAnalytics)
-onLCP(sendToGoogleAnalytics)
+// if (window && document != undefined) {
+//   onCLS(sendToGoogleAnalytics)
+//   onFID(sendToGoogleAnalytics)
+//   onLCP(sendToGoogleAnalytics)
+// }

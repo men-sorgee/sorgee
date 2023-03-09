@@ -45,6 +45,15 @@ export type InviteLink = {
   link: string
 }
 
+export type SignUpForm = {
+  first_name: string
+  last_name: string
+  birth_month: number
+  birth_year: number
+  email: string
+  promo: string
+}
+
 export type NotificationStatusType = 'new' | 'sent' | 'read' | 'deleted'
 
 export type UserType =

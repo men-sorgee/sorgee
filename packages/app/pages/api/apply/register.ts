@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { createUser, findUser, updateUser } from 'lib/services/directus/server/users'
 import { withMethods } from 'lib/utils/server'
-import { User, Applicant, ApiResponse } from 'lib/models'
+import { User, Applicant, ApiResponse, SignUpForm } from 'lib/models'
 import { findPromo } from '../../../lib/services/directus/server'
 
 export default async function getUserDetails(
@@ -18,7 +18,7 @@ export default async function getUserDetails(
       birth_year,
       email,
       promo: promoCode,
-    } = req.body as Partial<User> & { promo: string }
+    } = req.body as SignUpForm
 
     if (!first_name || !last_name || !birth_month || !birth_year || !email) {
       return res.status(400).json(ApiResponse(null, 'Missing required fields'))
