@@ -1,4 +1,4 @@
-import { signIn } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 import { Button, GridItem, Heading, SimpleGrid, useToast } from '@chakra-ui/react'
 import Page from 'components/Page'
 import { FieldOptions, Promo, SignUpForm, User } from 'lib/models'
@@ -26,6 +26,7 @@ export default function Register({ promo, birthMonthOptions }: Props) {
   const { site, loading } = useSite()
   const toast = useToast()
   const router = useRouter()
+  const { status } = useSession()
 
   useEffect(() => {
     if (!loading && site && site.invite_only && !promo) {
@@ -40,7 +41,10 @@ export default function Register({ promo, birthMonthOptions }: Props) {
         },
       })
     }
-  }, [loading, promo, router, site, toast])
+    if (status == 'authenticated') {
+      router.push('/apply')
+    }
+  }, [loading, promo, router, site, status, toast])
 
   const methods = useForm<SignUpForm>({
     mode: 'onBlur',
