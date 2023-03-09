@@ -1,8 +1,6 @@
 import Document, { Head, Html, Main, NextScript } from 'next/document'
 import Script from 'next/script'
-import getConfig from 'next/config'
-const { publicRuntimeConfig } = getConfig()
-const { dev } = publicRuntimeConfig
+
 class MyDocument extends Document {
   render() {
     return (
@@ -40,14 +38,7 @@ class MyDocument extends Document {
           />
           <Main />
           <NextScript />
-
-          {dev == false && (
-            <Script
-              async
-              src="https://api.buglog.io/website/80W58ZYWE9/code"
-              strategy="afterInteractive"
-            />
-          )}
+          <Script async src="https://api.buglog.io/website/80W58ZYWE9/code" strategy="lazyOnload" />
         </body>
       </Html>
     )
