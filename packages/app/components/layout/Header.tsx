@@ -15,8 +15,8 @@ import {
   StackProps,
   useColorModeValue,
 } from '@chakra-ui/react'
-import { CloseIcon, ChevronDownIcon } from '@chakra-ui/icons'
-import { MenuIcon } from '@heroicons/react/solid'
+import { ChevronDownIcon } from '@chakra-ui/icons'
+import { Bars4Icon, XMarkIcon } from '@heroicons/react/24/solid'
 import { Logo } from '../controls'
 import { useState, useEffect, useCallback } from 'react'
 import { Page, PageItem } from 'lib/models'
@@ -134,9 +134,9 @@ function Header({ children, ...props }: Props) {
               onClick={onToggle}
               icon={
                 isOpen ? (
-                  <CloseIcon height="20px" width="20px" />
+                  <XMarkIcon height="30px" width="30px" />
                 ) : (
-                  <MenuIcon height="30px" width="30px" />
+                  <Bars4Icon height="30px" width="30px" />
                 )
               }
               variant="primary"

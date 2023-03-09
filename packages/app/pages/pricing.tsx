@@ -17,7 +17,7 @@ import {
   Td,
   TableContainer,
 } from '@chakra-ui/react'
-import { CheckCircleIcon } from '@heroicons/react/solid'
+import { CheckCircleIcon } from '@heroicons/react/24/solid'
 import Page from 'components/Page'
 import { useSite } from '../hooks/use-site'
 import { LinkButton } from '../components/controls'
