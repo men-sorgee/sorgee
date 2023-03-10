@@ -31,7 +31,7 @@ export default function VideoChats({ meetings = [] }: { meetings: any[] }) {
       <UnorderedList>
         {meetings?.map((meeting) => (
           <ListItem key={meeting.meetingId}>
-            <Link href={`/chat/${meeting.meetingId}`}>{meeting.meetingId}</Link>
+            <Link href={`/video/${meeting.meetingId}`}>{meeting.meetingId}</Link>
           </ListItem>
         ))}
       </UnorderedList>
