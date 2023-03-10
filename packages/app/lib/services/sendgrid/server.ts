@@ -87,7 +87,8 @@ export async function sendNotificationEmail(
   body: string,
   data: Record<string, any>,
   templateId: SendGridTemplate = SendGridTemplate.AppNotification,
-  category: SendGridCategory = SendGridCategory.Notification
+  category: SendGridCategory = SendGridCategory.Notification,
+  notification_id: string = null
 ) {
   body = await convertMarkdownToHtml(body)
 
@@ -115,6 +116,9 @@ export async function sendNotificationEmail(
     subject,
     templateId,
     category,
+    customArgs: {
+      notification_id,
+    },
   }
   try {
     const [response, data] = await getMailer().send(email, false)

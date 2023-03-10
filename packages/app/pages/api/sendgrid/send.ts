@@ -26,7 +26,16 @@ async function SendNotification(req: NextApiRequest, res: NextApiResponse<ApiRes
       notification_id = null,
     } = req.body
 
-    await sendNotificationEmail(email, name, subject, body, data, template, category)
+    await sendNotificationEmail(
+      email,
+      name,
+      subject,
+      body,
+      data,
+      template,
+      category,
+      notification_id
+    )
 
     if (notification_id) await markNotification(notification_id, 'sent')
 
