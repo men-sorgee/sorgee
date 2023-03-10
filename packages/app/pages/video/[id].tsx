@@ -61,7 +61,7 @@ export default function VideoChat({ key, meeting }: { key: string; meeting: any 
       />
       {chatUrl && (
         <Box minH="60vh">
-          <Button onClick={handle.enter} variant="outline" color="white" mb="-9rem" ml={14}>
+          <Button onClick={handle.enter} variant="outline" color="white" mb="-9rem" ml="10rem">
             Full Screen
           </Button>
           <FullScreen handle={handle}>
