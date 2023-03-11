@@ -55,7 +55,14 @@ export type SignUpForm = {
   promo: string
 }
 
-export type NotificationStatusType = 'new' | 'sent' | 'read' | 'deleted'
+export type NotificationStatusType =
+  | 'new'
+  | 'sent'
+  | 'read'
+  | 'deleted'
+  | 'open'
+  | 'click'
+  | 'delivered'
 
 export type UserType =
   | 'reject'

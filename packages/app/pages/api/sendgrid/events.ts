@@ -1,9 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-
-import { storeEmailEvent } from 'lib/services/directus/server'
-
-import { withMethods } from 'lib/utils/server'
-import { ApiResponse, UserEmailEvent } from 'lib/models'
+import { markNotification, storeEmailEvent } from 'lib/services/directus/server'
+import { ApiResponse, NotificationStatusType, UserEmailEvent } from 'lib/models'
 
 type SendGridEvent = {
   sg_event_id: string
@@ -25,7 +22,7 @@ export default async function HandleEvents(req: NextApiRequest, res: NextApiResp
   try {
     const events: SendGridEvent[] = req.body
     await Promise.all(
-      events.map((sgEvent) => {
+      events.map(async (sgEvent) => {
         const {
           sg_event_id,
           sg_message_id,
@@ -57,7 +54,10 @@ export default async function HandleEvents(req: NextApiRequest, res: NextApiResp
           payload: sgEvent,
           notification_id,
         }
-        return storeEmailEvent(model)
+        await storeEmailEvent(model)
+        const statesWeCareAbout = ['delivered', 'open', 'click']
+        if (notification_id && statesWeCareAbout.includes(event))
+          await markNotification(notification_id, event as NotificationStatusType)
       })
     )
 
