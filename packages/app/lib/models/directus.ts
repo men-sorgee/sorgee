@@ -165,6 +165,7 @@ export type UserNotification = {
   notification_id?: string | Notification
   user_id?: string | User
   status: NotificationStatusType
+  email_events?: string[] | UserEmailEvent[]
 }
 
 export type Page = {
@@ -275,6 +276,7 @@ export type UserEmailEvent = {
   type?: string
   user?: string | User
   status?: string
+  notification_id?: string
 }
 
 export type UserRelationship = {

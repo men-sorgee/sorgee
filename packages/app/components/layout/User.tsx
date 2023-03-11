@@ -29,13 +29,13 @@ import {
   PaintBrushIcon,
 } from '@heroicons/react/24/outline'
 import { useUser, useSite } from 'hooks'
-
+import { MemberLevel } from 'lib/models'
 interface Props {}
 
 export default function UserMenu(_props: Props) {
   const { colorMode, toggleColorMode } = useColorMode()
   const { site } = useSite()
-  const { authenticated, user, member, isApplicant, isMember, isStaff } = useUser()
+  const { authenticated, user, member, isApplicant, isMember, isStaff, level } = useUser()
   const showApply = !site?.invite_only
   const person = member || user
 
@@ -102,33 +102,40 @@ export default function UserMenu(_props: Props) {
                   Edit Photos
                 </MenuItem>
                 <MenuDivider />
-                <MenuItem
-                  icon={<CalendarIcon color={'white'} width={'1.5rem'} />}
-                  bg="black"
-                  _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                  as={Link}
-                  href="/events"
-                >
-                  Events
-                </MenuItem>
-                <MenuItem
-                  icon={<UserGroupIcon color={'white'} width={'1.5rem'} />}
-                  bg="black"
-                  _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                  as={Link}
-                  href="/members"
-                >
-                  Members
-                </MenuItem>
-                <MenuItem
-                  icon={<PaperAirplaneIcon color={'white'} width={'1.5rem'} />}
-                  bg="black"
-                  _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                  as={Link}
-                  href="/members/invite"
-                >
-                  Invite Friend
-                </MenuItem>
+                {level > MemberLevel.pledge && (
+                  <>
+                    <MenuItem
+                      icon={<CalendarIcon color={'white'} width={'1.5rem'} />}
+                      bg="black"
+                      _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                      as={Link}
+                      href="/events"
+                    >
+                      Events
+                    </MenuItem>
+
+                    <MenuItem
+                      icon={<UserGroupIcon color={'white'} width={'1.5rem'} />}
+                      bg="black"
+                      _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                      as={Link}
+                      href="/members"
+                    >
+                      Members
+                    </MenuItem>
+                    {level > MemberLevel.inductee && (
+                      <MenuItem
+                        icon={<PaperAirplaneIcon color={'white'} width={'1.5rem'} />}
+                        bg="black"
+                        _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                        as={Link}
+                        href="/members/invite"
+                      >
+                        Invite Friend
+                      </MenuItem>
+                    )}
+                  </>
+                )}
                 {isStaff && (
                   <>
                     <MenuDivider />

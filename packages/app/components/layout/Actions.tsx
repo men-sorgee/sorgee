@@ -8,11 +8,13 @@ import NextLink from 'next/link'
 import { useUser, useUserEvents } from 'hooks'
 import Notifications from './Notifications'
 import Messages from './Messages'
+import { MemberLevel } from 'lib/models'
+
 export type Props = BoxProps & {}
 
 export default function ActionsNav({ children, ...props }: Props) {
   const router = useRouter()
-  const { authenticated, isMember, member } = useUser()
+  const { authenticated, isMember, member, level } = useUser()
   const [path, setPath] = useState(router.asPath)
   const { newInvitationCount } = useUserEvents()
 
@@ -45,68 +47,74 @@ export default function ActionsNav({ children, ...props }: Props) {
         <Flex justify="center" w="full" gap={10} p={4} {...constrained}>
           {false && <Messages member={member} />}
           <Spacer />
-          <Link href="/members" as={NextLink} zIndex="fixed">
-            <IconButton
-              variant="primary"
-              size="lg"
-              zIndex="fixed"
-              icon={<UserGroupIcon height="50px" width="50px" />}
-              color={path.startsWith('/members') ? 'accent.500' : 'white'}
-              aria-label={'View Members'}
-              title="View Members"
-            />
-          </Link>
-          <Link href="/video" as={NextLink}>
-            <IconButton
-              variant="primary"
-              zIndex="fixed"
-              size="lg"
-              icon={<VideoCameraIcon height="50px" width="50px" />}
-              color={path.startsWith('/video') ? 'accent.500' : 'white'}
-              aria-label={'Video Chat'}
-              title="Video Chat"
-            />
-            {user_count > 0 && (
-              <Badge
-                ml={-4}
-                zIndex="overlay"
-                position="absolute"
-                bg="accent.500"
-                rounded="full"
-                px={2}
-                py={0.5}
-                color="white"
-                title="Calendar Events"
-              >
-                {user_count}
-              </Badge>
-            )}
-          </Link>
-          <Link href="/events" as={NextLink}>
-            <IconButton
-              variant="primary"
-              zIndex="fixed"
-              size="lg"
-              icon={<CalendarIcon height="50px" width="50px" />}
-              color={path.startsWith('/events') ? 'accent.500' : 'white'}
-              aria-label={'Calendar'}
-              title="Calendar"
-            />
-            {newInvitationCount > 0 && (
-              <Badge
-                ml={-4}
-                zIndex="overlay"
-                position="absolute"
-                bg="accent.500"
-                rounded="full"
-                px={2}
-                py={0.5}
-                color="white"
-              >
-                {newInvitationCount}
-              </Badge>
-            )}
-          </Link>
+          {level > MemberLevel.pledge && (
+            <>
+              {level > MemberLevel.inductee && (
+                <Link href="/video" as={NextLink}>
+                  <IconButton
+                    variant="primary"
+                    zIndex="fixed"
+                    size="lg"
+                    icon={<VideoCameraIcon height="50px" width="50px" />}
+                    color={path.startsWith('/video') ? 'accent.500' : 'white'}
+                    aria-label={'Video Chat'}
+                    title="Video Chat"
+                  />
+                  {user_count > 0 && (
+                    <Badge
+                      ml={-4}
+                      zIndex="overlay"
+                      position="absolute"
+                      bg="accent.500"
+                      rounded="full"
+                      px={2}
+                      py={0.5}
+                      color="white"
+                      title="Calendar Events"
+                    >
+                      {user_count}
+                    </Badge>
+                  )}
+                </Link>
+              )}
+              <Link href="/events" as={NextLink}>
+                <IconButton
+                  variant="primary"
+                  zIndex="fixed"
+                  size="lg"
+                  icon={<CalendarIcon height="50px" width="50px" />}
+                  color={path.startsWith('/events') ? 'accent.500' : 'white'}
+                  aria-label={'Calendar'}
+                  title="Calendar"
+                />
+                {newInvitationCount > 0 && (
+                  <Badge
+                    ml={-4}
+                    zIndex="overlay"
+                    position="absolute"
+                    bg="accent.500"
+                    rounded="full"
+                    px={2}
+                    py={0.5}
+                    color="white"
+                  >
+                    {newInvitationCount}
+                  </Badge>
+                )}
+              </Link>
+              <Link href="/members" as={NextLink} zIndex="fixed">
+                <IconButton
+                  variant="primary"
+                  size="lg"
+                  zIndex="fixed"
+                  icon={<UserGroupIcon height="50px" width="50px" />}
+                  color={path.startsWith('/members') ? 'accent.500' : 'white'}
+                  aria-label={'View Members'}
+                  title="View Members"
+                />
+              </Link>
+            </>
+          )}
           <Spacer />
           <Notifications member={member} />
         </Flex>

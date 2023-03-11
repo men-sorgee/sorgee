@@ -18,6 +18,7 @@ type SendGridEvent = {
   status?: string
   type?: string
   timestamp: number
+  notification_id?: string
 }
 
 export default async function HandleEvents(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
@@ -38,6 +39,7 @@ export default async function HandleEvents(req: NextApiRequest, res: NextApiResp
           status,
           type,
           timestamp,
+          notification_id,
         } = sgEvent
         const model: UserEmailEvent = {
           sg_event_id,
@@ -53,6 +55,7 @@ export default async function HandleEvents(req: NextApiRequest, res: NextApiResp
           type,
           timestamp,
           payload: sgEvent,
+          notification_id,
         }
         return storeEmailEvent(model)
       })
