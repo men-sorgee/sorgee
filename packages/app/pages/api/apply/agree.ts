@@ -30,6 +30,7 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
       const user = await updateUser(applicant.id, {
         application_status: 'approved',
         user_type: applicant.vouched_by ? 'inductee' : 'pledge',
+        approved_date: new Date().toISOString(),
       })
 
       await updateSendGrid(user as Profile)

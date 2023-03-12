@@ -58,6 +58,7 @@ export type User = {
   first_name: string
   last_name?: string
   user_type: string | UserType
+  approved_date?: string
   phone?: string
   phone_verified?: boolean
   email?: string
@@ -431,6 +432,7 @@ export type Member = Applicant & {
   rating: number
   private_folder?: string
   public_folder?: string
+  approved_date?: string
 }
 
 export type SearchableMember = Omit<
@@ -547,6 +549,7 @@ export const searchableMemberFields: Array<keyof Member> = [
 export const memberFields: Array<keyof Member> = [
   ...applicantFields,
   ...searchableMemberFields,
+  'approved_date',
   'users.*.*' as any,
 ]
 
