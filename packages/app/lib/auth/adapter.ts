@@ -60,7 +60,7 @@ const authAdapter: Adapter = {
         image = await importFile(imageUrl, UploadFolder.members, `avatar-${user.email}`)
       }
       const newUser = await createUser({
-        email: user.email,
+        email: user.email.toLowerCase(),
         email_verified: user.emailVerified != null,
         nickname: user.name,
         first_name: user.name,
@@ -83,7 +83,7 @@ const authAdapter: Adapter = {
   async getUserByEmail(email) {
     try {
       log('getUserByEmail', email)
-      const user = await findUser<User>(email, '*.*')
+      const user = await findUser<User>(email.toLowerCase(), '*.*')
       if (!user) return null
       return mapUser(user)
     } catch (e) {

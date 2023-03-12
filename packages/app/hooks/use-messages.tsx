@@ -49,7 +49,7 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
   ///}, [messages, isLoading, newMessages?.length, hasNewMessages])
   const conversations: Conversation[] = []
 
-  Object.keys(messages).forEach((k) => {
+  Object.keys(messages || {}).forEach((k) => {
     const conversationMessages = messages[k]
     const hasNewMessages =
       conversationMessages.filter((m: { status: string }) => m.status === 'new').length > 0
