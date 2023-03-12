@@ -1,10 +1,11 @@
-import { storeRoomEvent } from 'lib/services/directus/server/users/rooms'
+import { storeRoomEvent } from '@/lib/services/directus/server/rooms'
 export default async function wherebyWebhook(req, res) {
   const { id, type, data, createdAt } = req.body
   const { meetingId, roomName } = data
 
   await storeRoomEvent({
     id,
+    meetingId,
     room: roomName,
     type,
     payload: data,

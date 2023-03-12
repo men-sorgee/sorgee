@@ -1,5 +1,5 @@
-import { getAdminClient } from '..'
-import { Message, UserMessages, MessageStatusType, User, ChatUser } from 'lib/models'
+import { getAdminClient } from '.'
+import { Message, UserMessages, User, ChatUser } from 'lib/models'
 
 export async function getMessages(user_id: string): Promise<UserMessages> {
   const adminClient = await getAdminClient()
@@ -36,6 +36,7 @@ export async function getMessages(user_id: string): Promise<UserMessages> {
   })
 
   const userMessages: Record<string, Message[]> = {}
+
   messages.forEach((message: Message) => {
     let { from, to } = message as { to: User; from: User }
     message.user = (from.id === user_id ? to : from) as ChatUser

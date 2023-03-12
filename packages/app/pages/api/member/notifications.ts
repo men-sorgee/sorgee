@@ -1,9 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse, AppNotification } from 'lib/models'
-import {
-  markNotification,
-  getNotifications,
-} from 'lib/services/directus/server/users/notifications'
+import { markNotification, getNotifications } from '@/lib/services/directus/server/notifications'
 
 import { withMethods, withUser } from 'lib/utils/server'
 

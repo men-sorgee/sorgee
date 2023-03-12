@@ -1,11 +1,7 @@
 import { pruneUndefined } from './../../../lib/utils/index'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse, User, UserMessages } from 'lib/models'
-import {
-  updateMessage,
-  getMessages,
-  sendMessage,
-} from 'lib/services/directus/server/users/messages'
+import { updateMessage, getMessages, sendMessage } from '@/lib/services/directus/server/messages'
 import { withMethods, withUser } from 'lib/utils/server'
 
 export default async function getUserMessages(

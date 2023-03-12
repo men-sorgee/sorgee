@@ -1,0 +1,70 @@
+import { User } from 'next-auth'
+import { DirectusUser } from './directus'
+import { GroupEvent } from './events'
+
+export type Rating = {
+  id: string
+  date_created?: string
+  date_updated?: string
+  user?: string | User
+  collection: RatingCollection
+  event?: string | GroupEvent
+  member?: string | User
+  rate: number
+}
+
+export type RatingCollection = string | 'users' | 'events' | 'photo' | 'location'
+
+export type Survey = {
+  id: string
+  status: string
+  type: 'event' | 'user' | 'location' | 'generic'
+  user_created?: string | DirectusUser
+  date_created?: string
+  user_updated?: string | DirectusUser
+  date_updated?: string
+  name?: string
+  title?: string
+  notification?: string | Notification
+  questions: SurveyQuestion[]
+  location?: string | Location
+  event?: string | GroupEvent
+}
+
+export type Surveyed = {
+  id: number
+  surveys_id?: string | Survey
+  item?: string | any
+  collection?: string
+}
+
+export type SurveyQuestion = {
+  id: number
+  surveys_id?: string | Survey
+  survey_questions_id: Question
+  sort?: number
+}
+
+export type Question = {
+  id: string
+  answer_type?: 'string' | 'number' | 'text' | 'boolean' | 'select' | 'choose'
+  question: string
+  context?: string
+  options?: { name: string; value: string }[]
+  user_created?: string | DirectusUser
+  date_created?: string
+  user_updated?: string | DirectusUser
+  date_updated?: string
+}
+
+export type SurveyAnswer = {
+  id?: string
+  user: string
+  survey: string
+  question: string
+  answer_text?: string
+  answer_number?: number
+  answer_boolean?: boolean
+  answer_context?: string
+  answer_choose?: any[]
+}

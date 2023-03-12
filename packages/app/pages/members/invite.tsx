@@ -7,6 +7,7 @@ import { HStack, Button, Box, Text, VStack, useClipboard, useToast } from '@chak
 import { FieldInput, FieldSelect } from 'components/forms'
 import Page from 'components/Page'
 import { GetServerSideProps } from 'next'
+import { baseUrl } from '../../lib/config'
 
 export const getServerSideProps: GetServerSideProps = async (_context) => {
   const { getFieldOptions } = await import('lib/services/directus/server')
@@ -50,7 +51,7 @@ function Form({ userTypeOptions }: PageProps) {
   const getLink = ({ e, t }: UserInvite) => {
     if (!member) return
     const data = Buffer.from(JSON.stringify({ e, t, v: member?.id })).toString('base64')
-    const invite = `${location.protocol}//${location.host}/apply/${data}`
+    const invite = `${baseUrl}/apply/${data}`
     setLink(invite)
     return invite
   }

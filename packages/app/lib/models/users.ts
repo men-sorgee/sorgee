@@ -1,14 +1,149 @@
-import { UserInvite } from 'lib/models'
 import {
+  AppNotification,
   DirectusFile,
-  User,
-  UserAccount,
-  Notification,
-  UserPhoto,
+  DirectusUser,
   EventUser,
+  Promo,
   Rating,
-  UserRelationship,
-} from './directus'
+  UserEmailEvent,
+  UserInvite,
+} from 'lib/models'
+import { ProviderType } from 'next-auth/providers'
+export type UserAccount = {
+  id?: string
+  user?: string | User
+  provider_id?: string
+  provider?: string
+  type?: ProviderType
+  refresh_token?: string
+  access_token?: string
+  expires_at?: number
+  token_type?: string
+  scope?: string
+  id_token?: string
+  session_state?: string
+  oath_token?: string
+  oath_token_secret?: string
+}
+
+export type UserSession = {
+  id: string
+  expires?: string
+  session_token?: string
+  user?: string | User
+}
+
+export type UserVerificationToken = {
+  id: string
+  email: string
+  token: string
+  expires: string
+}
+
+export type UserRelationship = {
+  id: number
+  users_id: string | User
+  related_users_id?: string | User
+  relation: 'buddy' | 'block' | 'hottie' | 'partner'
+}
+
+export type User = {
+  id: string
+  presence?: string
+  status: string | UserStatusType
+  last_login?: string
+  session_expire?: string
+  date_created?: string
+  date_updated?: string
+  first_name: string
+  last_name?: string
+  user_type: string | UserType
+  phone?: string
+  phone_verified?: boolean
+  email?: string
+  email_verified?: boolean
+  contact_preference: string | ContactPreferenceType
+  weight?: number
+  cock_length?: number
+  build?: string
+  cock_girth?: string
+  cock_attributes?: string[]
+  spectrum?: string
+  relationship_status?: string
+  skin_tone?: string
+  photo?: string | DirectusFile
+  notes?: string
+  flags?: string[]
+  birth_month: number
+  birth_year: number
+  age?: number
+  mannerisms?: string
+  height?: string
+  nickname?: string
+  auth_with_phone: boolean
+  vouched_by?: string | User
+  needs_guidance?: boolean
+  signed_waiver?: boolean
+  biography?: string
+  event_availability?: string[]
+  sexual_scenes?: string[]
+  my_positions?: string[]
+  my_roles?: string[]
+  their_spectrum?: string[]
+  their_roles?: string[]
+  their_relationship_status: string[]
+  their_positions?: string[]
+  body_hair?: string
+  facial_hair?: string
+  social_scenes?: string[]
+  hair_color?: string
+  hair_style?: string
+  body_attributes?: string[]
+  eye_color?: string
+  ball_size?: string
+  ball_gravity?: string
+  city?: string
+  cum_attributes?: string[]
+  load_policy?: string[]
+  hiv_status?: string
+  last_tested?: string
+  vaccinations?: unknown
+  approved_by?: string | DirectusUser
+  application_status: string | ApplicationStatusType
+  in_sendgrid?: boolean
+  picture?: string | DirectusFile
+  video_consent?: boolean
+  photo_consent?: boolean
+  photo_denial_reason?: string
+  tags?: string[]
+  location?: string
+  state: string
+  events: string | EventUser[]
+  my_photos: string | UserPhoto[]
+  email_events: string | UserEmailEvent[]
+  images: string | UserFile[]
+  users: string | UserRelationship[]
+  accounts: string | UserAccount[]
+  show_profile: boolean
+  show_explicit: boolean
+  show_location: boolean
+  show_contact: boolean
+  show_interests: boolean
+  show_health: boolean
+  show_events: boolean
+  show_images: boolean
+  show_photos: boolean
+  event_invites: boolean
+
+  can_host?: boolean
+  can_host_events: string[] | ('sex' | 'social' | 'individual')[]
+  promo: number | Promo
+  rating: number
+  ratings: (string | number)[] | Rating[]
+
+  private_folder?: string
+  public_folder?: string
+}
 
 type Color = {
   DEFAULT: string
@@ -118,12 +253,19 @@ export enum ApplicationStatus {
   denied = -1,
 }
 
-export type AppNotification = Omit<
-  Notification,
-  'id' | 'status' | 'users' | 'data' | 'template'
-> & {
+export type UserFile = {
   id: number
-  status: NotificationStatusType
+  users_id?: string | User
+  directus_files_id: DirectusFile
+}
+
+export type UserPhoto = {
+  id?: number
+  users_id?: string | User
+  directus_files_id: DirectusFile | string
+  sort?: number
+  is_public: boolean
+  status?: 'new' | 'approved' | 'rejected'
 }
 
 export type UserStatusType = 'new' | 'active' | 'inactive' | 'stale' | 'deleted' | 'banned'
