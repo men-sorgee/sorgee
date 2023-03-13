@@ -2,7 +2,7 @@ import { useUser } from 'hooks'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useCallback, useEffect, useState } from 'react'
 import { getJSON, postJSON, pruneUndefined } from 'lib/utils'
-import { SurveyAnswer, Survey, Question, GroupEvent } from 'lib/models'
+import { SurveyAnswer, Survey, Question, GroupEvent, AnswerType } from 'lib/models'
 import {
   HStack,
   Button,
@@ -21,11 +21,17 @@ import {
   FieldCheckboxes,
   FieldCheckbox,
   FieldNumber,
+  FieldRating,
+  FieldRadioButtons,
+  FieldImage,
+  FieldSwitch,
+  FieldDate,
 } from 'components/forms'
 import Page from 'components/Page'
 import { useRouter } from 'next/router'
 import { Steps, Step } from 'chakra-ui-steps'
 import { LinkButton } from 'components/controls'
+import FieldRange from '../../../components/forms/FieldRange'
 
 type Props = {
   survey: Survey
@@ -179,42 +185,96 @@ export default function SurveyPage({ survey, question, step }: Props) {
   )
 }
 
+const getFieldName = (type: string) => {
+  switch (type) {
+    case 'string':
+    case 'text':
+      return 'answer_text'
+    case 'number':
+      return 'answer_number'
+    case 'boolean':
+      return 'answer_boolean'
+    case 'string_array':
+    case 'number_array':
+      return 'answer_choose'
+    case 'image':
+      return 'answer_image'
+    case 'file':
+      return 'answer_file'
+    default:
+      return 'answer_text'
+  }
+}
+
 const InnerField = ({ question }: { question: Question }) => {
-  switch (question.answer_type) {
+  const { options, answer_type: type, control } = question
+  const field = getFieldName(type)
+
+  switch (control) {
+    case 'input':
+      return (
+        (type == 'string' && <FieldInput field={field} />) ||
+        (type == 'number' && (
+          <FieldNumber field={field} min={question.number_minimum} max={question.number_maximum} />
+        ))
+      )
     case 'select':
       return (
         <FieldSelect
-          field="answer_text"
-          options={question.options.map((o) => {
+          field={field}
+          options={options.map((o) => {
             return { text: o.name, value: o.value }
           })}
         />
       )
-    case 'string':
-      return <FieldInput field="answer_text" />
-    case 'text':
-      return <FieldText field="answer_text" />
-    case 'choose':
+    case 'radio':
+      return (
+        <FieldRadioButtons
+          field={field}
+          options={options.map((o) => {
+            return { text: o.name, value: o.value }
+          })}
+        />
+      )
+    case 'checkbox':
+      return <FieldCheckbox field={field} help={'Leave blank for no.'} />
+    case 'checkboxes':
       return (
         <FieldCheckboxes
-          field="answer_choose"
+          field={field}
           help={'Select all that apply.'}
           options={question.options.map((o) => {
             return { text: o.name, value: o.value }
           })}
         />
       )
-    case 'number':
-      return <FieldNumber label={question.question} field="answer_number" />
-    case 'boolean':
+    case 'rating':
+      return <FieldRating field={field} aria-label={''} />
+    case 'range':
       return (
-        <FieldCheckbox
-          label={question.question}
-          field="answer_boolean"
-          help={'Leave blank for no.'}
+        <FieldRange
+          min={question.number_minimum}
+          max={question.number_maximum}
+          field={field}
+          step={1}
         />
       )
-
+    case 'textarea':
+      return <FieldText field={field} />
+    case 'switch':
+      return <FieldSwitch field={field} />
+    case 'date':
+      return <FieldDate field={field} />
+    case 'image':
+      return (
+        <FieldImage
+          label={question.question}
+          field={field}
+          description={question.context}
+          name={field}
+          postUrl={''}
+        />
+      )
     default:
   }
 }

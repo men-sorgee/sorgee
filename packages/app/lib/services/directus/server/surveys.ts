@@ -1,5 +1,5 @@
 import { getAdminClient } from '.'
-import { Survey, SurveyAnswer, SurveyQuestion } from 'lib/models'
+import { Question, Survey, SurveyAnswer, SurveyQuestion } from 'lib/models'
 
 export async function getSurvey(id: string): Promise<Survey> {
   const client = await getAdminClient()
@@ -12,6 +12,14 @@ export async function getSurvey(id: string): Promise<Survey> {
   if (!survey) return null
 
   return survey as unknown as Survey
+}
+
+export async function getQuestion(id: string): Promise<Question> {
+  const client = await getAdminClient()
+  const question = await client.items('survey_questions').readOne(id)
+
+  if (!question) return null
+  return question as unknown as Question
 }
 
 export async function getSurveyAnswer(surveyId: String, userId: string, questionId: string) {

@@ -84,16 +84,7 @@ export const Rating = ({
   return (
     <Stack isInline mt={mt} spacing={1}>
       {buttons}
-      {!simple && (
-        <Box textAlign="center">
-          <Text fontSize="sm" textTransform="uppercase">
-            Rating
-          </Text>
-          <Text fontSize="2xl" fontWeight="semibold" lineHeight="1.2em">
-            {rating}
-          </Text>
-        </Box>
-      )}
+      {!simple && <Box textAlign="center">{rating} stars</Box>}
     </Stack>
   )
 }

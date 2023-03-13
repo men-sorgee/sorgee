@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse, SurveyAnswer } from 'lib/models'
 import { withMember, withMethods } from 'lib/utils/server'
-import { getSurveyAnswer, setSurveyAnswer } from 'lib/services/directus/server'
+import { getSurveyAnswer, getQuestion, setSurveyAnswer } from 'lib/services/directus/server'
 
 export default async function survey(
   req: NextApiRequest,
@@ -16,6 +16,7 @@ export default async function survey(
 
     switch (method) {
       case 'GET': {
+        const question = await getQuestion(question_id)
         const answer = await getSurveyAnswer(survey_id, member.id, question_id)
         if (!answer) {
           return res.status(200).json(
@@ -23,6 +24,10 @@ export default async function survey(
               survey: survey_id,
               user: member.id,
               question: question_id,
+              answer_choose:
+                question.control == 'range'
+                  ? [question.number_minimum, question.number_maximum]
+                  : [],
             })
           )
         } else {

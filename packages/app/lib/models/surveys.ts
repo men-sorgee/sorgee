@@ -44,10 +44,35 @@ export type SurveyQuestion = {
   survey_questions_id: Question
   sort?: number
 }
-
+export type AnswerType =
+  | 'string'
+  | 'number'
+  | 'text'
+  | 'boolean'
+  | 'string_array'
+  | 'number_array'
+  | 'date'
+  | 'file'
+  | 'image'
+export type AnswerControlType =
+  | 'input'
+  | 'select'
+  | 'radio'
+  | 'checkbox'
+  | 'checkboxes'
+  | 'rating'
+  | 'range'
+  | 'textarea'
+  | 'switch'
+  | 'date'
+  | 'image'
+  | 'file'
 export type Question = {
   id: string
-  answer_type?: 'string' | 'number' | 'text' | 'boolean' | 'select' | 'choose'
+  control?: AnswerControlType
+  answer_type?: AnswerType
+  number_minimum?: number
+  number_maximum?: number
   question: string
   context?: string
   options?: { name: string; value: string }[]
