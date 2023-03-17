@@ -138,9 +138,6 @@ export default async function FindMembers(
       results.meta.filter_count = filtered.length
       results.data = filtered
     }
-    if (results.data.length < results.meta.filter_count && results.data.length < limit) {
-      results.meta.filter_count = results.data.length
-    }
 
     return res.status(200).json(ApiResponse(results))
   } catch (e) {

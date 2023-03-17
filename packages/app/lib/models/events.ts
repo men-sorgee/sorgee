@@ -1,3 +1,4 @@
+import { DirectusFile } from 'lib/models'
 import { Survey, Rating } from './surveys'
 import { Member, MemberLevel, SearchableMember, User, UserType } from './users'
 
@@ -116,4 +117,5 @@ export type Location = {
   amenities?: unknown
   survey?: string | Survey
   display_threshold: number
+  logo?: string | DirectusFile
 }

@@ -40,6 +40,8 @@ export default async function MemberImage(
     let user = member
     const self = user_id == member.id
 
+    const isPublic = ['picture', 'public'].includes(image_field)
+
     if (!self) {
       user = await getUser(user_id)
       if (!user) {
@@ -57,17 +59,17 @@ export default async function MemberImage(
       }
       case 'POST': {
         const { private_folder, public_folder } = await getFolders(user)
-        const folder = image_field == 'public' ? public_folder : private_folder
+        const folder = isPublic ? public_folder : private_folder
         const fileInfo = await getFileInfo(req)
         const file = await uploadFile(fileInfo, folder, image_name, image_description)
         const list = user.my_photos as UserPhoto[]
-        const photoSort = list.filter((p) => p.is_public == (image_field == 'public')).length + 1
+        const photoSort = list.filter((p) => p.is_public == isPublic).length + 1
 
         if (['public', 'private'].includes(image_field)) {
           await addUserPhoto({
             users_id: user_id,
             directus_files_id: file.id,
-            is_public: image_field == 'public' ? true : false,
+            is_public: isPublic,
             sort: sort ? Number(sort) : photoSort,
             status: 'new',
           })

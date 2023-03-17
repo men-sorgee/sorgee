@@ -1,5 +1,6 @@
-import { Badge, BadgeProps, chakra } from '@chakra-ui/react'
+import { Badge, BadgeProps, chakra, HStack, Tooltip } from '@chakra-ui/react'
 import { MemberLevel, MemberLevelColorMap } from 'lib/models'
+import { CheckBadgeIcon, ShieldCheckIcon } from '@heroicons/react/24/solid'
 type Props = BadgeProps & {
   user_type: string
   size?: string
@@ -11,15 +12,23 @@ export const MemberBadge = chakra(({ user_type, size = 'md', ...props }: Props) 
   const levelColor = MemberLevelColorMap[levelValue]
   const levelName = user_type.split('_').join(' ')
   return (
-    <Badge
-      {...props}
-      rounded={size}
-      size={size}
-      textTransform={'uppercase'}
-      bg={levelColor[0]}
-      color="white"
-    >
-      {levelName}
-    </Badge>
+    <HStack spacing={2}>
+      <Badge
+        {...props}
+        rounded={size}
+        size={size}
+        textTransform={'uppercase'}
+        bg={levelColor[0]}
+        color="white"
+      >
+        {levelName}
+      </Badge>
+
+      {levelValue > MemberLevel.inductee && (
+        <Tooltip label="Verified" aria-label="Verified">
+          <CheckBadgeIcon style={{ color: 'white', width: '20px', height: '20px' }} />
+        </Tooltip>
+      )}
+    </HStack>
   )
 })
