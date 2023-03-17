@@ -201,7 +201,7 @@ function Form(props: PageProps) {
             rounded="lg"
             shadow="lg"
             border="1px solid transparent"
-            borderColor={showProfile ? 'accent.500' : ''}
+            borderColor={showProfile ? 'accent.500' : 'text'}
           >
             <Collapse animateOpacity in={showProfile}>
               <Flex direction="column" alignContent="center" p={4}>
@@ -234,17 +234,20 @@ function Form(props: PageProps) {
               </Flex>
             </GridItem>
           </SimpleGrid>
-          <Text fontSize="xs" as="em">
+          <Text fontSize="xs" as="em" mb={4}>
             * This does not affect this information being used to recommend you to other events and
             members.
           </Text>
-          <FieldInput
-            field="nickname"
-            label="Nickname"
-            help="This is the name that will be displayed on your profile."
-            className="col-span-2 sm:col-span-4"
-          />
-          <SimpleGrid spacing={2} columns={[1, 1, 3]} mt={10}>
+
+          <SimpleGrid spacing={4} columns={[1, 1, 3]} mt={10}>
+            <GridItem colSpan={[1, 1, 3]}>
+              <FieldInput
+                field="nickname"
+                label="Nickname"
+                help="This is the name that will be displayed on your profile."
+                className="col-span-2 sm:col-span-4"
+              />
+            </GridItem>
             <FieldSelect field="spectrum" label="Orientation" options={getOptions('spectrum')} />
             <FieldSelect field="mannerisms" label="Mannerisms" options={getOptions('mannerisms')} />
             <FieldSelect
@@ -262,7 +265,7 @@ function Form(props: PageProps) {
             </GridItem>
           </SimpleGrid>
 
-          <SimpleGrid spacing={2} columns={[2, 2, 4]}>
+          <SimpleGrid spacing={4} columns={[2, 2, 4]}>
             <FieldNumber field="age" label="Age" min={21} />
             <FieldInput field="height" label="Height" placeholder="5'11" />
             <FieldNumber field="weight" label="Weight" placeholder="185" />
@@ -290,20 +293,26 @@ function Form(props: PageProps) {
             </GridItem>
           </SimpleGrid>
 
-          <Tabs isFitted defaultIndex={tabValue} onChange={(index) => setTabValue(index)} mt={4}>
+          <Tabs
+            isFitted
+            defaultIndex={tabValue}
+            onChange={(index) => setTabValue(index)}
+            mt={4}
+            size={['sm', 'lg']}
+          >
             <TabList fontWeight="bold">
-              <Tab fontSize={['md', 'lg', 'xl']} fontWeight={tabValue == 0 ? 'bold' : null}>
+              <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 0 ? 'bold' : null}>
                 Below the Belt
               </Tab>
-              <Tab fontSize={['md', 'lg', 'xl']} fontWeight={tabValue == 1 ? 'bold' : null}>
+              <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 1 ? 'bold' : null}>
                 Role & Fetishes
               </Tab>
-              <Tab fontSize={['md', 'lg', 'xl']} fontWeight={tabValue == 2 ? 'bold' : null}>
+              <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 2 ? 'bold' : null}>
                 Health Info
               </Tab>
             </TabList>
             <TabPanels>
-              <TabPanel p={0}>
+              <TabPanel p={0} pt={showProfile ? 0 : 4}>
                 <Collapse animateOpacity in={showProfile}>
                   <Alert
                     bg={'primary.300'}
@@ -354,7 +363,7 @@ function Form(props: PageProps) {
                 </SimpleGrid>
               </TabPanel>
 
-              <TabPanel p={0}>
+              <TabPanel p={0} pt={showProfile ? 0 : 4}>
                 <Collapse animateOpacity in={showProfile}>
                   <Alert
                     bg={'primary.300'}
@@ -392,7 +401,7 @@ function Form(props: PageProps) {
                 </SimpleGrid>
               </TabPanel>
 
-              <TabPanel p={0}>
+              <TabPanel p={0} pt={showProfile ? 0 : 4}>
                 <Collapse animateOpacity in={showProfile}>
                   <Alert
                     bg={'primary.300'}

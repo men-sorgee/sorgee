@@ -185,7 +185,7 @@ export default function SurveyPage({ survey, question, step }: Props) {
   )
 }
 
-const getFieldName = (type: string) => {
+const getFieldName = (type: AnswerType) => {
   switch (type) {
     case 'string':
     case 'text':

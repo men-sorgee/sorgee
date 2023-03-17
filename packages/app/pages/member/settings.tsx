@@ -198,10 +198,16 @@ function Form(props: PageProps) {
             defaultIndex={tabValue}
             onChange={(index) => setTabValue(index)}
           >
-            <TabList fontWeight="bold">
-              <Tab fontWeight={tabValue == 0 ? 'bold' : null}>Contact</Tab>
-              <Tab fontWeight={tabValue == 1 ? 'bold' : null}>Event</Tab>
-              <Tab fontWeight={tabValue == 2 ? 'bold' : null}>Interests </Tab>
+            <TabList>
+              <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 0 ? 'bold' : null}>
+                Contact
+              </Tab>
+              <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 1 ? 'bold' : null}>
+                Event
+              </Tab>
+              <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 2 ? 'bold' : null}>
+                Interests{' '}
+              </Tab>
             </TabList>
             <TabPanels>
               <TabPanel p={0} pt={4}>
@@ -318,7 +324,7 @@ function Form(props: PageProps) {
                   I need assistance
                 </FieldCheckbox>
               </TabPanel>
-              <TabPanel p={0} pt={4}>
+              <TabPanel p={0}>
                 <Alert
                   bg="primary"
                   color="white"
@@ -378,7 +384,7 @@ function Form(props: PageProps) {
                   </Alert>
                 )}
               </TabPanel>
-              <TabPanel p={0}>
+              <TabPanel p={0} pt={4}>
                 {show_profile && (
                   <Alert
                     bg={'primary'}
@@ -401,7 +407,7 @@ function Form(props: PageProps) {
                     />
                   </Alert>
                 )}
-                <SimpleGrid spacing={2}>
+                <SimpleGrid spacing={4}>
                   <FieldCheckboxes
                     field="their_spectrum"
                     label="Their Orientation"
