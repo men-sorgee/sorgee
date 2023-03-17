@@ -65,10 +65,13 @@ export const EventTicket = ({ member, event, open = false }: EventTicketProps) =
               maxW="md"
               mt={4}
               mx="auto"
-              src={`/api/code/${checkinUrl}`}
+              src={`/api/code${checkinUrl}`}
               alt="Ticket"
               w="full"
             />
+            {location.hostname === 'localhost' && (
+              <input value={checkinUrl} style={{ width: '100%' }} />
+            )}
             <Text textAlign="center">
               <strong>Important:</strong> Present this ticket to the host when you arrive for
               access.
