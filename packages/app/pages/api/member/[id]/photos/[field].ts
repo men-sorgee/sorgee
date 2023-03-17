@@ -45,10 +45,9 @@ export default async function MemberImage(
       if (!user) {
         res.status(404).json(ApiResponse(null, 'Not Found'))
       }
-    }
-
-    if (method != 'GET' && !self) {
-      return res.status(401).json(ApiResponse(null, 'Unauthorized'))
+      if (method != 'GET' && member.user_type != 'staff') {
+        return res.status(401).json(ApiResponse(null, 'Unauthorized'))
+      }
     }
 
     switch (method) {
