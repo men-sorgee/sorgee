@@ -45,7 +45,7 @@ export default function ActionsNav({ children, ...props }: Props) {
         pr="16px"
       >
         <Flex justify="center" w="full" gap={10} p={4} {...constrained}>
-          {false && <Messages member={member} />}
+          <Messages member={member} />
           <Spacer />
           {level > MemberLevel.pledge && (
             <>

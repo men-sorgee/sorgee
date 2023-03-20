@@ -1,41 +1,60 @@
 import { pruneUndefined } from './../../../lib/utils/index'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { ApiResponse, User, UserMessages } from 'lib/models'
-import { updateMessage, getMessages, sendMessage } from '@/lib/services/directus/server/messages'
+import { ApiResponse, Message, User, UserMessages, MessageStatusType } from 'lib/models'
+import {
+  updateMessage,
+  getMessages,
+  sendMessage,
+  getMessage,
+  markAs,
+} from '@/lib/services/directus/server/messages'
 import { withMethods, withUser } from 'lib/utils/server'
 
 export default async function getUserMessages(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<UserMessages>>
+  res: NextApiResponse<ApiResponse<UserMessages | Message>>
 ) {
   let messages: UserMessages = {}
+  let message: Message = {} as any
   try {
     const method = withMethods(req, ['GET', 'POST', 'PUT'])
     const user = await withUser(req, res)
-    const { id: i, body: c, to: t, status: s } = req.query
-    const id = i ? String(i) : null
+    const { body: c, to: t, status: s, ids: messageIds } = req.body
+    const { id: i } = req.query
+    let id = i ? String(i) : null
+    let ids: string[] = null
+    if (Array.isArray(messageIds)) ids = Array.from(messageIds)
+
     const to = t ? String(t) : null
     const body = c ? String(c) : null
-    const status = s ? String(s) : null
+    const status = (s ? String(s) : null) as MessageStatusType
     switch (method) {
       case 'GET':
-        messages = await getMessages(user.id)
-        return res.status(200).json(ApiResponse(messages))
+        if (id) {
+          message = await getMessage(id)
+          return res.status(200).json(ApiResponse(message))
+        } else {
+          messages = await getMessages(user.id)
+          return res.status(200).json(ApiResponse(messages))
+        }
 
       case 'POST':
-        await sendMessage({
-          id,
+        message = await sendMessage({
           from: user.id,
           to,
           body,
         })
-        messages = await getMessages(user.id)
-        return res.status(200).json(ApiResponse(messages))
+        return res.status(200).json(ApiResponse(message))
 
       case 'PUT':
-        if (id) await updateMessage(id, pruneUndefined({ status, body }))
-        messages = await getMessages(user.id)
-        return res.status(200).json(ApiResponse(messages))
+        if (id) {
+          message = await updateMessage(id, pruneUndefined({ status, body }))
+          return res.status(200).json(ApiResponse(message))
+        } else if (ids) {
+          await markAs(ids, status)
+          messages = await getMessages(user.id)
+          return res.status(200).json(ApiResponse(messages))
+        }
 
       default:
         return res.status(404).end()
