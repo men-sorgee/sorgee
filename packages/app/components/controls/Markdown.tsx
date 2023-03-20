@@ -1,11 +1,19 @@
 import { useEffect } from 'react'
 import { useRemark } from 'react-remark'
 import { Alert, Heading, Image, ListItem, OrderedList, Text, UnorderedList } from '@chakra-ui/react'
+import Link from 'next/link'
 
 export const Markdown = ({ content, size }: { content: string; size?: string }) => {
   const [reactContent, setMarkdownSource] = useRemark({
     rehypeReactOptions: {
       components: {
+        a: ({ href, children }: { href: string; children: React.ReactNode }) => {
+          return (
+            <Link href={href} target={href.startsWith('http') ? '_blank' : '_self'}>
+              {children}
+            </Link>
+          )
+        },
         img: ({ height, src, width, alt, ...props }) => {
           return (
             // eslint-disable-next-line @next/next/no-img-element
