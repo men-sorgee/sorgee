@@ -13,13 +13,28 @@ type Props = SwitchProps & {
 }
 
 const SwitchField = (props: Props) => {
-  const { field, label, help, registerOptions = {}, children, className, size, ...opts } = props
+  const {
+    field,
+    label,
+    help,
+    registerOptions = {},
+    children,
+    className,
+    size,
+    mt,
+    mb,
+    mr,
+    ml,
+    my,
+    mx,
+    ...opts
+  } = props
   const { register, getFieldState, formState } = useFormContext()
   const { error } = getFieldState(field, formState)
   const classes = error ? 'error' : ''
 
   return (
-    <FieldWrapper size={size} field={field} className={className}>
+    <FieldWrapper size={size} field={field} className={className} {...{ mt, mb, mr, ml, my, mx }}>
       <HStack>
         <Switch
           textAlign="left"
@@ -29,7 +44,12 @@ const SwitchField = (props: Props) => {
           {...register(field, registerOptions)}
           className={classes}
         />
-        <Text as="label" htmlFor={field} size={size} style={{ fontWeight: 'bold' }}>
+        <Text
+          as="label"
+          htmlFor={field}
+          size={size}
+          style={{ fontWeight: 'bold', cursor: 'pointer' }}
+        >
           {label}
         </Text>
       </HStack>

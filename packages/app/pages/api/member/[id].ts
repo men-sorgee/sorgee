@@ -40,7 +40,7 @@ export default async function getMemberDetails(
     if (id == 'me') user_id = viewer.id
     else user_id = String(id)
 
-    let fields = ['users.*', ...searchableMemberFields]
+    let fields = searchableMemberFields
     if (viewer.id == user_id) {
       fields = memberFields
     }

@@ -28,75 +28,68 @@ export type MemberCardProps = AvatarProps & {
 }
 
 export const MemberCard = chakra(
-  ({
-    zoom = false,
-    member: user,
-    size = 'lg',
-    color = 'white',
-    children,
-    ...props
-  }: MemberCardProps) => {
-    const [loaded, setLoaded] = useState(false)
-    const [pictureSrc, setPictureSrc] = useState<string | null>(null)
+  ({ member, zoom = false, size = 'lg', color = 'white', children, ...props }: MemberCardProps) => {
     const [lastLogin, setLastLogin] = useState<string | null>(null)
-    const textColor = useColorModeValue('gray.700', 'white')
-    useEffect(() => {
-      if (!loaded && user) {
-        const picture = user.picture
-        if (!pictureSrc && picture) setPictureSrc(getAssetUrl(picture))
-        setLoaded(true)
 
+    useEffect(() => {
+      if (member && !lastLogin) {
         setLastLogin(
-          user?.last_login
-            ? `Last login ${formatDistanceToNowStrict(toLocalDate(user.last_login))} ago`
+          member?.last_login
+            ? `Last login ${formatDistanceToNowStrict(toLocalDate(member.last_login))} ago`
             : undefined
         )
       }
-    }, [user, pictureSrc, loaded, lastLogin])
+    }, [member, lastLogin])
 
     const [isOpen, setOpen] = useState<boolean>(undefined)
     return (
       <>
-        {user && (
+        {member && (
           <Flex gap={3} alignItems="center" w="full">
             <Avatar
-              id={user?.id}
-              src={`${pictureSrc}?width=100&height=100&quality=70`}
+              id={member?.id}
+              src={
+                member?.picture
+                  ? getAssetUrl(member?.picture) + '?width=100&height=100&quality=80'
+                  : null
+              }
               size={size}
               color={color}
-              name={user?.nickname || user?.first_name}
+              name={member?.nickname || member?.first_name}
               bgGradient="linear(to-b, primary.500, primary.800)"
               loading="lazy"
               borderColor="accent.500"
               borderWidth="thin"
               {...props}
-              cursor="pointer"
+              cursor={member?.picture ? 'pointer' : ''}
               onClick={() => {
-                if (zoom && pictureSrc) setOpen(true)
+                if (zoom && member?.picture) setOpen(true)
               }}
             >
-              {user?.presence == 'online' && (
+              {member?.presence == 'online' && (
                 <Tooltip label={lastLogin} placement="top">
                   <AvatarBadge borderWidth="thin" boxSize="1.5rem" bg="green.300" />
                 </Tooltip>
               )}
             </Avatar>
-            <ImageModal
-              isOpen={isOpen}
-              onClose={() => {
-                setOpen(false)
-              }}
-              imageSrc={`${pictureSrc}?quality=100`}
-            />
+            {member?.picture && (
+              <ImageModal
+                isOpen={isOpen}
+                onClose={() => {
+                  setOpen(false)
+                }}
+                imageSrc={`${getAssetUrl(member.picture)}?quality=100`}
+              />
+            )}
             <Flex w="full" direction="column" gap={0} align="flex-start">
               <Heading size="md" textTransform="uppercase" m={0} color={color}>
-                {user?.nickname || user?.first_name}
+                {member?.nickname || member?.first_name}
               </Heading>
               <Flex gap={1} align="flex-start" justify="space-between" w="full">
                 <Box>
-                  <MemberBadge size="lg" user_type={user?.user_type} my={2} />
+                  <MemberBadge size="lg" user_type={member?.user_type} my={2} />
                   <Text fontSize="sm" color={color} mt={0}>
-                    {user?.city || 'Nearby'} {user?.state}
+                    {member?.city || 'Nearby'} {member?.state}
                   </Text>
                 </Box>
                 <Spacer flex={'grow'} />

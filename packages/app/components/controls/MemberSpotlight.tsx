@@ -116,7 +116,7 @@ export const MemberSpotlight = ({
           </Flex>
         )}
       </Box>
-      {full && (
+      {full && member.show_photos && (
         <Box my={4} flex="grow">
           {publicPhotos.length > 0 && (
             <ImageGallery
@@ -144,7 +144,7 @@ export const MemberSpotlight = ({
           </TabList>
           <TabPanels maxH="100%" overflowY="auto" my={2}>
             <TabPanel p={4}>
-              <Heading as="h5" size="h5" mb={2} borderBottom="1px solid" borderColor="text">
+              <Heading as="h5" mt={0} size="h5" mb={2} borderBottom="1px solid" borderColor="text">
                 Features
               </Heading>
               <MemberPropertyGroup
@@ -156,7 +156,7 @@ export const MemberSpotlight = ({
               />
             </TabPanel>
             <TabPanel>
-              <Heading as="h5" size="h5" mb={2} borderBottom="1px solid" borderColor="text">
+              <Heading as="h5" size="h5" mt={0} mb={2} borderBottom="1px solid" borderColor="text">
                 Features
               </Heading>
               <MemberPropertyGroup
@@ -180,7 +180,7 @@ export const MemberSpotlight = ({
               />
             </TabPanel>
             <TabPanel>
-              <Heading as="h5" size="h5" mb={2} borderBottom="1px solid" borderColor="text">
+              <Heading as="h5" size="h5" mt={0} mb={2} borderBottom="1px solid" borderColor="text">
                 Events
               </Heading>
               <MemberPropertyGroup
@@ -190,7 +190,7 @@ export const MemberSpotlight = ({
                 show={member?.show_events}
                 fields={fields}
               />
-              <Heading as="h5" size="h5" mb={2} borderBottom="1px solid" borderColor="text">
+              <Heading as="h5" size="h5" mt={0} mb={2} borderBottom="1px solid" borderColor="text">
                 Sexual
               </Heading>
               <MemberPropertyGroup
@@ -202,7 +202,7 @@ export const MemberSpotlight = ({
               />
             </TabPanel>
             <TabPanel>
-              <Heading as="h5" size="h5" mb={2} borderBottom="1px solid" borderColor="text">
+              <Heading as="h5" size="h5" mt={0} mb={2} borderBottom="1px solid" borderColor="text">
                 Sexual Health
               </Heading>
               <MemberPropertyGroup

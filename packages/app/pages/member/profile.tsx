@@ -28,6 +28,7 @@ import {
   GridItem,
   useColorModeValue,
   Collapse,
+  HStack,
 } from '@chakra-ui/react'
 import Page from 'components/Page'
 import { useToast } from '@chakra-ui/react'
@@ -85,6 +86,7 @@ function Form(props: PageProps) {
     body_attributes,
     show_explicit,
     show_explicit_roles,
+    show_photos,
     cock_length,
     cock_girth,
     cock_attributes,
@@ -123,6 +125,7 @@ function Form(props: PageProps) {
       body_attributes,
       show_explicit,
       show_explicit_roles,
+      show_photos,
       cock_length,
       cock_girth,
       cock_attributes,
@@ -228,12 +231,22 @@ function Form(props: PageProps) {
                   You can choose to make your profile private if you do not wish to show up in
                   member searches.*
                 </Text>
-                <FieldSwitch
-                  mt={4}
-                  field="show_profile"
-                  label="Show Profile in Search"
-                  help="Turn this off, if do not wish to be searchable on the members page."
-                />
+                <Flex flexDirection={['column', 'row']} mt={4}>
+                  <FieldSwitch
+                    mb={4}
+                    field="show_profile"
+                    label="Show Profile in Search"
+                    help="Turn this off, if do not wish to be searchable on the members page."
+                  />
+                  {showProfile && (
+                    <FieldSwitch
+                      mt={4}
+                      field="show_photos"
+                      label="Show Photos on Profile"
+                      help="Turn this off, if do not wish to be searchable on the members page."
+                    />
+                  )}
+                </Flex>
               </Flex>
             </GridItem>
           </SimpleGrid>

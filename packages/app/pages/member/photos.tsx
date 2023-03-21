@@ -2,6 +2,8 @@ import { useUser } from '@/hooks/use-user'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { AssetImage, PhotoCapture, PhotoUpload, ConfirmButton } from 'components/controls'
 import {
+  Alert,
+  AlertIcon,
   HStack,
   Modal,
   ModalOverlay,
@@ -80,33 +82,41 @@ export default function PhotoAlbums({}: Props) {
               }}
             />
           </Flex>
-          <Tabs size="lg" align="center" variant="line" w="full" mb={10}>
-            <TabList>
-              <Tab>Public Album</Tab>
-              <Tab>Private Album</Tab>
-            </TabList>
+          {(member.show_photos && (
+            <Tabs size="lg" align="center" variant="line" w="full" mb={10}>
+              <TabList>
+                <Tab>Public Album</Tab>
+                <Tab>Private Album</Tab>
+              </TabList>
 
-            <TabPanels>
-              <TabPanel>
-                <PhotoList
-                  title="Public Album"
-                  images={publicImages}
-                  field="public"
-                  memberId={member.id}
-                  reload={reload}
-                />
-              </TabPanel>
-              <TabPanel>
-                <PhotoList
-                  title="Private Album"
-                  images={privateImages}
-                  field="private"
-                  memberId={member.id}
-                  reload={reload}
-                />
-              </TabPanel>
-            </TabPanels>
-          </Tabs>
+              <TabPanels>
+                <TabPanel>
+                  <PhotoList
+                    title="Public Album"
+                    images={publicImages}
+                    field="public"
+                    memberId={member.id}
+                    reload={reload}
+                  />
+                </TabPanel>
+                <TabPanel>
+                  <PhotoList
+                    title="Private Album"
+                    images={privateImages}
+                    field="private"
+                    memberId={member.id}
+                    reload={reload}
+                  />
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
+          )) || (
+            <Alert mt={4} status="warning" rounded="lg" shadow="lg">
+              <AlertIcon />
+              You have photo-sharing turned off. Update&nbsp;
+              <Link href="/member/profile">your profile</Link>&nbsp; to change that.
+            </Alert>
+          )}
         </>
       )}
     </Page>

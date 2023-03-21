@@ -49,6 +49,16 @@ export type UserRelationship = {
   relation: UserRelation
 }
 
+export type UserContactAttempt = {
+  id: string
+  user_created?: string | DirectusUser
+  date_created?: string
+  date_updated?: string
+  contact_method?: string
+  notes?: string
+  user?: string | User
+}
+
 export type User = {
   id: string
   presence?: string
@@ -65,6 +75,7 @@ export type User = {
   phone_verified?: boolean
   email?: string
   email_verified?: boolean
+  session: string | UserSession[]
   contact_preference: string | ContactPreferenceType
   weight?: number
   cock_length?: number
@@ -111,7 +122,7 @@ export type User = {
   hiv_status?: string
   last_tested?: string
   vaccinations?: unknown
-  approved_by?: string | DirectusUser
+  reviewed_by?: string | DirectusUser
   application_status: string | ApplicationStatusType
   in_sendgrid?: boolean
   picture?: string | DirectusFile
@@ -138,7 +149,7 @@ export type User = {
   show_images: boolean
   show_photos: boolean
   event_invites: boolean
-
+  contact_attempts: string[] | UserContactAttempt[]
   can_host?: boolean
   can_host_events: string[] | ('sex' | 'social' | 'individual')[]
   promo: number | Promo
@@ -444,7 +455,6 @@ export type Member = Applicant & {
 
 export type SearchableMember = Omit<
   User,
-  | 'invite'
   | 'promo'
   | 'accounts'
   | 'in_sendgrid'
@@ -459,12 +469,34 @@ export type SearchableMember = Omit<
   | 'photo_denial_reason'
 >
 
+export const userPrivateFields: Array<keyof User> = [
+  'promo',
+  'accounts',
+  'in_sendgrid',
+  'application_status',
+  'contact_attempts',
+  'accounts',
+  'session',
+  'notes',
+  'tags',
+  'flags',
+  'reviewed_by',
+  'photo_denial_reason',
+]
+
 export const memberProfilePrivateFields: Array<keyof Member> = [
+  'first_name',
   'last_name',
   'birth_month',
   'birth_year',
   'video_consent',
   'photo_consent',
+  'invite',
+  'accounts',
+  'in_sendgrid',
+  'application_status',
+  'accounts',
+  'photo_denial_reason',
 ]
 
 export const memberProfileContactFields: Array<keyof Member> = [
@@ -530,6 +562,7 @@ export const memberProfileHealthFields: Array<keyof Member> = [
 export const memberProfilePhotoFields: Array<keyof Member> = ['my_photos.*' as any]
 
 export const searchableMemberFields: Array<keyof Member> = [
+  'picture',
   'last_login',
   'date_created',
   'user_type',
@@ -540,8 +573,6 @@ export const searchableMemberFields: Array<keyof Member> = [
   'relationship_status',
   'spectrum',
   'mannerisms',
-  'private_folder',
-  'public_folder',
   ...memberProfilePrivateFields,
   'show_contact',
   ...memberProfileContactFields,
@@ -566,6 +597,8 @@ export const searchableMemberFields: Array<keyof Member> = [
 export const memberFields: Array<keyof Member> = [
   ...applicantFields,
   ...searchableMemberFields,
+  'private_folder',
+  'public_folder',
   'approved_date',
   'ratings',
   'users.*.*' as any,
