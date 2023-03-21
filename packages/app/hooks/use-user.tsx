@@ -3,7 +3,7 @@ import useSWR from 'swr'
 import { ApiError, ApplicationStatus, Member, MemberLevel, Profile, User } from 'lib/models'
 import { authenticatedFetcher, getAssetUrl, postJSON } from 'lib/utils'
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react'
-import { Session } from 'next-auth'
+import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 
 export type UserContextData = {
@@ -54,6 +54,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     isLoading: loading,
   } = useSWR<Member, Error>(key, authenticatedFetcher(authenticated), {
     fallbackData: user as Member,
+    refreshInterval: 1000 * 60 * 5,
   })
 
   useEffect(() => {
@@ -118,15 +119,28 @@ export function UserProvider({ children }: { children: ReactNode }) {
 }
 
 export const useUser = (
-  minLevel: MemberLevel = MemberLevel.pledge
+  minLevel: MemberLevel = MemberLevel.pledge,
+  minAppStatus: ApplicationStatus = ApplicationStatus.approved
 ): UserContextData & {
   authorized: boolean
 } => {
-  const { level, ...data } = useContext(UserContext)
+  const router = useRouter()
+  const { level, loading, member, ...data } = useContext(UserContext)
   let authorized = level >= minLevel
+
+  useEffect(() => {
+    if (!loading && member) {
+      if (ApplicationStatus[member.application_status] < minAppStatus) {
+        router.push('/apply/resume')
+      }
+    }
+  }, [authorized, loading, member, minAppStatus, router])
+
   return {
     ...data,
     level,
+    loading,
+    member,
     authorized,
   }
 }

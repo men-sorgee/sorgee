@@ -70,7 +70,7 @@ export async function searchUsers<T = User>(
   fields: UserFields = memberFields,
   limit: number = 20,
   page: number = 1,
-  sort: any
+  sort: any = '-last_login'
 ) {
   const adminClient = await getAdminClient()
 
@@ -227,7 +227,6 @@ export async function getUserStats(): Promise<{
   inductees: number
   brothers: number
   big_brothers: number
-  admins: number
   staff: number
 }> {
   const adminClient = await getAdminClient()
@@ -272,7 +271,6 @@ export async function getUserStats(): Promise<{
     inductees: stats.find((s) => s.group.user_type === 'inductee')?.count.id || 0,
     brothers: stats.find((s) => s.group.user_type === 'brother')?.count.id || 0,
     big_brothers: stats.find((s) => s.group.user_type === 'big_brother')?.count.id || 0,
-    admins: stats.find((s) => s.group.user_type === 'admin')?.count.id || 0,
     staff: stats.find((s) => s.group.user_type === 'staff')?.count.id || 0,
   }
 }

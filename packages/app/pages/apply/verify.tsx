@@ -1,6 +1,6 @@
 import { useUser } from '@/hooks/use-user'
-import { useRouter } from 'next/router'
-import { useState, ChangeEvent } from 'react'
+import { NextRouter, useRouter } from 'next/router'
+import { useState, ChangeEvent, Dispatch, SetStateAction } from 'react'
 import ApplicationSteps from './_steps'
 import {
   Button,
@@ -19,11 +19,11 @@ import Page from 'components/Page'
 import FieldCheckbox from 'components/forms/FieldCheckbox'
 import { FormProvider, useForm } from 'react-hook-form'
 import { ErrorMessage } from '@hookform/error-message'
-import { ApiResponse } from 'lib/models'
+import { ApiResponse, Member, MemberLevel, ApplicationStatus } from 'lib/models'
 import { getAssetUrl } from 'lib/utils'
 
 function Verification() {
-  const { member, loading } = useUser()
+  const { member, loading, reload } = useUser(MemberLevel.applicant, ApplicationStatus.verify)
   const [completed, setCompleted] = useState(false)
   const router = useRouter()
 
@@ -37,15 +37,26 @@ function Verification() {
       {member?.id && !completed && (
         <Form
           code={`${member.id.slice(0, 4)} ${member.id.slice(4, 8)}`}
-          {...{ member, router, setCompleted }}
+          {...{ member, router, reload, setCompleted }}
         />
       )}
     </Page>
   )
 }
 
-function Form({ code, router, setCompleted }): JSX.Element {
-  const { member, reload } = useUser()
+function Form({
+  code,
+  router,
+  setCompleted,
+  member,
+  reload,
+}: {
+  member: Member
+  reload: () => Promise<Member>
+  router: NextRouter
+  code: string
+  setCompleted: Dispatch<SetStateAction<boolean>>
+}): JSX.Element {
   const [previewUrl, setPreviewUrl] = useState<string | null>(
     member?.photo ? getAssetUrl(member.photo) : null
   )
@@ -93,7 +104,7 @@ function Form({ code, router, setCompleted }): JSX.Element {
 
   function skip() {
     reload().then(() => {
-      window.location.href = '/apply/review'
+      router.push('/apply/review')
     })
   }
 
@@ -110,7 +121,9 @@ function Form({ code, router, setCompleted }): JSX.Element {
 
       if (res.ok) {
         setCompleted(true)
-        router.push('/apply/review')
+        reload().then(() => {
+          router.push('/apply/review')
+        })
       } else {
         const body = (await res.json()) as ApiResponse
         if (body.error?.field) {

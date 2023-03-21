@@ -21,7 +21,7 @@ function Layout({
   className?: string
   fonts: any[]
 }) {
-  const { authenticated } = useUser()
+  const { authenticated, loading } = useUser()
   const router = useRouter()
   const [path] = useState<string>(router?.asPath)
   const height = authenticated ? '146px' : '75px'
@@ -71,7 +71,7 @@ function Layout({
           )}
         </ErrorBoundary>
       </Flex>
-      <Splash authenticated={authenticated} />
+      {!loading && !authenticated && <Splash />}
     </>
   )
 }

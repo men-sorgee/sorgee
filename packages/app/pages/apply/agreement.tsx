@@ -1,21 +1,16 @@
 import ApplicationSteps from './_steps'
 import { useUser } from '@/hooks/use-user'
-import { NextRouter, useRouter } from 'next/router'
 import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { AgreementData } from 'lib/models'
-import { Box, Button, Text, VStack } from '@chakra-ui/react'
+import { AgreementData, ApplicationStatus, Member, MemberLevel } from 'lib/models'
+import { Box, Button, Text } from '@chakra-ui/react'
 import FieldCheckbox from 'components/forms/FieldCheckbox'
 import { postJSON } from 'lib/utils'
 import Page from 'components/Page'
+import { useRouter } from 'next/router'
 
 function Agreement() {
-  const router = useRouter()
-  const { loading, member } = useUser()
-
-  if (member && member?.application_status && member.application_status !== 'agreement') {
-    router.push('/apply/' + member?.application_status)
-  }
+  const { loading, member, reload } = useUser(MemberLevel.applicant, ApplicationStatus.agreement)
 
   return (
     <Page
@@ -24,13 +19,12 @@ function Agreement() {
       requireAuth={true}
       header={<ApplicationSteps status={'agreement'} />}
     >
-      <Form />
+      <Form reload={reload} />
     </Page>
   )
 }
 
-function Form() {
-  const { reload } = useUser()
+function Form({ reload }: { reload: () => Promise<Member> }) {
   const router = useRouter()
   const [completed, setCompleted] = useState(false)
   const methods = useForm<AgreementData>({

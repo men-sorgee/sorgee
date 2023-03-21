@@ -27,6 +27,7 @@ import {
   UserPhoto,
   MemberLevel,
   MemberLevelColorMap,
+  memberProfileExplicitRolesFields,
 } from 'lib/models'
 import { ReactNode, useEffect } from 'react'
 import { ImageGallery } from './ImageGallery'
@@ -155,6 +156,15 @@ export const MemberSpotlight = ({
                 member={member}
                 fieldList={memberProfileExplicitFields}
                 show={member?.show_explicit}
+                fields={fields}
+                maxCols={2}
+              />
+
+              <MemberPropertyGroup
+                k="explicit_roles"
+                member={member}
+                fieldList={memberProfileExplicitRolesFields}
+                show={member?.show_explicit_roles}
                 fields={fields}
                 maxCols={2}
               />

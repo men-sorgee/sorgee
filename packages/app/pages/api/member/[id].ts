@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getUser, updateUser } from 'lib/services/directus/server/users'
-import { withMethods, withUser } from 'lib/utils/server'
-import { Applicant, ApiResponse, MemberLevel, User, memberFields } from 'lib/models'
+import { withMember, withMethods } from 'lib/utils/server'
+import { Applicant, ApiResponse, User, memberFields, Member } from 'lib/models'
 import { uploadFile, getFileInfo, UploadFolder } from 'lib/services/directus/server'
 
 interface UserUpdate extends Omit<Partial<User>, 'id'> {
@@ -14,7 +14,7 @@ export default async function getMemberDetails(
 ) {
   try {
     const method = withMethods(req, ['GET', 'POST'])
-    const viewer = await withUser(req, res)
+    const viewer = await withMember(req, res)
 
     const { id } = req.query
     let user_id: string
@@ -23,7 +23,7 @@ export default async function getMemberDetails(
 
     let user = viewer
     if (user_id !== viewer.id) {
-      user = await getUser<User>(user_id, ['*.*', 'my_photos.*', 'ratings.*', ...memberFields])
+      user = await getUser<Member>(user_id, ['*.*', 'my_photos.*', 'ratings.*', ...memberFields])
       if (!user) {
         return res.status(404).json(ApiResponse(null, 'Not found'))
       }

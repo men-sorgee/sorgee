@@ -8,23 +8,26 @@ import { useForm, FormProvider } from 'react-hook-form'
 import { postJSON } from 'lib/utils'
 import { useEffect, useState } from 'react'
 import { useToast } from '@chakra-ui/react'
+import { Member, MemberLevel, ApplicationStatus } from 'lib/models'
 
 function Review() {
   const router = useRouter()
   const [complete, setComplete] = useState<boolean>(false)
-  const { loading, member, reload } = useUser()
+  const { loading, member, reload } = useUser(MemberLevel.applicant, ApplicationStatus.review)
 
   useEffect(() => {
-    if (member && member?.application_status && member.application_status !== 'review') {
-      router.push('/apply/' + member?.application_status).then(() => {
-        return reload()
-      })
+    if (!loading && member) {
+      if (member.contact_preference) {
+        setComplete(true)
+      }
+      const status = ApplicationStatus[member.application_status]
+      if (status == ApplicationStatus.approved) {
+        router.push('/apply/approved')
+      } else if (status == ApplicationStatus.denied) {
+        router.push('/apply/denied')
+      }
     }
-    if (member?.contact_preference) {
-      setComplete(true)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [loading, member, router])
 
   const methods = useForm<{ contact_preference: string }>({
     mode: 'onBlur',
@@ -45,15 +48,9 @@ function Review() {
         isClosable: true,
       })
       setComplete(true)
-      return
     } else if (error?.field) {
       setError(error!.field as any, error.message as any)
     }
-  }
-
-  if (member && member?.application_status && member.application_status !== 'review') {
-    router.push('/apply/' + member?.application_status)
-    return null
   }
 
   return (

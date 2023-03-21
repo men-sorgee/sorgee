@@ -28,7 +28,7 @@ export default async function FindMembers(
   try {
     const member = await withMember(req, res)
     const level = MemberLevel[member.user_type]
-    const { page: p = 1, limit: l = 10, sort = '-last_login', online, photos, ...props } = req.query
+    const { page: p = 1, limit: l = 20, sort = '-last_login', online, photos, ...props } = req.query
     const page = Number(p)
     const limit = Number(l)
 

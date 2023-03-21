@@ -203,7 +203,7 @@ function Form(props: PageProps) {
                 Contact
               </Tab>
               <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 1 ? 'bold' : null}>
-                Event
+                Events
               </Tab>
               <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 2 ? 'bold' : null}>
                 Interests{' '}

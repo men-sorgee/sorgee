@@ -127,6 +127,7 @@ export type User = {
   accounts: string | UserAccount[]
   show_profile: boolean
   show_explicit: boolean
+  show_explicit_roles: boolean
   show_location: boolean
   show_contact: boolean
   show_interests: boolean
@@ -209,7 +210,6 @@ export type UserType =
   | 'brother'
   | 'big_brother'
   | 'staff'
-  | 'admin'
 
 export enum MemberLevel {
   reject = 0,
@@ -344,7 +344,6 @@ export const applicantFields: Array<keyof Applicant> = [
   ...profileFields,
   'vouched_by',
   'show_contact',
-
   'contact_preference',
   'biography',
   'needs_guidance',
@@ -414,6 +413,12 @@ export type Member = Applicant & {
   ball_size?: string
   ball_gravity?: string
   cum_attributes?: string[]
+
+  //-explicit roles
+  show_explicit_roles: boolean
+  my_positions?: string[]
+  my_roles?: string[]
+  sexual_scenes?: string[]
 
   //-health
   show_health?: boolean
@@ -489,6 +494,9 @@ export const memberProfileExplicitFields: Array<keyof Member> = [
   'cock_girth',
   'cock_attributes',
   'cum_attributes',
+]
+
+export const memberProfileExplicitRolesFields: Array<keyof Member> = [
   'my_positions',
   'my_roles',
   'sexual_scenes',
@@ -534,6 +542,8 @@ export const searchableMemberFields: Array<keyof Member> = [
   ...memberProfileFields,
   'show_explicit',
   ...memberProfileExplicitFields,
+  'show_explicit_roles',
+  ...memberProfileExplicitRolesFields,
   'show_health',
   ...memberHealthFields,
   'show_interests',
@@ -554,10 +564,11 @@ export const memberFields: Array<keyof Member> = [
 ]
 
 export const getAllowedUsers = (level: MemberLevel) => {
-  let allowedLevels: UserType[] = ['brother', 'big_brother', 'staff', 'admin']
+  let allowedLevels: UserType[] = ['brother', 'big_brother', 'staff']
   if (level >= MemberLevel.brother) allowedLevels = [...allowedLevels, 'inductee']
-  if (level >= MemberLevel.big_brother) allowedLevels = [...allowedLevels, 'pledge']
-  if (level >= MemberLevel.staff) allowedLevels = [...allowedLevels, 'applicant', 'subscriber']
+  if (level >= MemberLevel.big_brother) allowedLevels = [...allowedLevels, 'inductee', 'pledge']
+  if ((level = MemberLevel.staff))
+    allowedLevels = [...allowedLevels, 'inductee', 'applicant', 'subscriber']
 
   return allowedLevels
 }

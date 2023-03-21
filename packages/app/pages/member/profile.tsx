@@ -84,6 +84,7 @@ function Form(props: PageProps) {
     facial_hair,
     body_attributes,
     show_explicit,
+    show_explicit_roles,
     cock_length,
     cock_girth,
     cock_attributes,
@@ -121,6 +122,7 @@ function Form(props: PageProps) {
       facial_hair,
       body_attributes,
       show_explicit,
+      show_explicit_roles,
       cock_length,
       cock_girth,
       cock_attributes,
@@ -375,9 +377,9 @@ function Form(props: PageProps) {
                     shadow="md"
                   >
                     <FieldSwitch
-                      field="show_explicit"
+                      field="show_explicit_roles"
                       mx="auto"
-                      label="Show Explicit Details on Profile"
+                      label="Show Explicit Roles on Profile"
                       help="Turn this off, if would rather not show this information to other verified members."
                     />
                   </Alert>

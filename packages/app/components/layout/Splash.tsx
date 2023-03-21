@@ -14,7 +14,7 @@ import {
   Heading,
 } from '@chakra-ui/react'
 
-export default function Splash({ authenticated }: { authenticated: boolean }) {
+export default function Splash() {
   const [displayPopUp, setDisplayPopUp] = useState(true)
 
   const closeAsAdult = () => {
@@ -27,7 +27,7 @@ export default function Splash({ authenticated }: { authenticated: boolean }) {
   }
 
   useEffect(() => {
-    let returningUser = authenticated || localStorage.getItem('seenPopUp')
+    let returningUser = localStorage.getItem('seenPopUp')
     setDisplayPopUp(!returningUser)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
