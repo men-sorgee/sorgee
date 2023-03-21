@@ -229,6 +229,7 @@ function Form(props: PageProps) {
                   member searches.*
                 </Text>
                 <FieldSwitch
+                  mt={4}
                   field="show_profile"
                   label="Show Profile in Search"
                   help="Turn this off, if do not wish to be searchable on the members page."
@@ -326,6 +327,7 @@ function Form(props: PageProps) {
                     shadow="md"
                   >
                     <FieldSwitch
+                      mt={4}
                       field="show_explicit"
                       label="Show Explicit Details on Profile"
                       help="Turn this off, if would rather not show this information to other verified members."
@@ -377,6 +379,7 @@ function Form(props: PageProps) {
                     shadow="md"
                   >
                     <FieldSwitch
+                      mt={4}
                       field="show_explicit_roles"
                       mx="auto"
                       label="Show Explicit Roles on Profile"
@@ -415,6 +418,7 @@ function Form(props: PageProps) {
                     shadow="md"
                   >
                     <FieldSwitch
+                      mt={4}
                       field="show_health"
                       label="Show Health Information on Profile"
                       help="Turn this off, if you'd prefer to not display this information to other verified members."

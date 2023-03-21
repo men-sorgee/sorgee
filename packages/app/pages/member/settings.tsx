@@ -111,8 +111,10 @@ function Form(props: PageProps) {
     their_roles,
     their_spectrum,
     their_relationship_status,
+    show_profile: profile,
     show_interests: interests,
     show_contact: contact,
+    show_events: events,
   } = member
   const methods = useForm<MemberFormData>({
     mode: 'onBlur',
@@ -136,8 +138,10 @@ function Form(props: PageProps) {
       their_roles,
       their_spectrum,
       their_relationship_status,
+      show_profile: profile,
       show_interests: interests,
       show_contact: contact,
+      show_events: events,
     },
   })
   const {
@@ -221,11 +225,12 @@ function Form(props: PageProps) {
                     borderRadius="md"
                     shadow="md"
                   >
-                    <Text w={['full']}>
+                    <Text w="full">
                       This information is private by default, but you can opt to display it if you
                       choose.
                     </Text>
                     <FieldSwitch
+                      mt={4}
                       field="show_contact"
                       label="Show Contact Info"
                       help="Turn this on if you want display your contact information to other members."
@@ -302,7 +307,7 @@ function Form(props: PageProps) {
                       of our marketing efforts. We will never share your personal information with
                       anyone.
                     </Text>
-                    <Stack direction={{ base: 'column', md: 'row' }} spacing={2}>
+                    <Stack mt={4} direction={{ base: 'column', md: 'row' }} spacing={2}>
                       <FieldSwitch
                         field="photo_consent"
                         label="Photo Consent"
@@ -339,11 +344,20 @@ function Form(props: PageProps) {
                     system will auto-match you with events that meet your interests. You can also
                     manually RSVP to events that interest you.
                   </Text>
-                  <FieldSwitch
-                    field="event_invites"
-                    label="Get Invites to Events"
-                    help="Turn this on, if you want to be invited to events that meet your interests."
-                  />
+                  <Stack mt={4} direction={{ base: 'column', md: 'row' }} spacing={2}>
+                    <FieldSwitch
+                      field="event_invites"
+                      label="Get Invites to Events"
+                      help="Turn this on, if you want to be invited to events that meet your interests."
+                    />
+                    {show_profile && (
+                      <FieldSwitch
+                        field="show_events"
+                        label="Show Event Interests"
+                        help="Turn this on, if you want to show your event interests on your profile."
+                      />
+                    )}
+                  </Stack>
                 </Alert>
 
                 <SimpleGrid spacing={4}>
@@ -370,7 +384,7 @@ function Form(props: PageProps) {
                         <strong>Are you interested in hosting?</strong> If so, let us know by
                         checking the box below. We are always looking for new hosts.
                       </Text>
-                      <Stack direction="column" spacing={2}>
+                      <Stack direction="column" spacing={2} mt={4}>
                         <FieldSwitch field="can_host" label="Can Host Events" />
                         {can_host && (
                           <FieldCheckboxes
@@ -401,6 +415,7 @@ function Form(props: PageProps) {
                       members can find you based on these attributes.
                     </Text>
                     <FieldSwitch
+                      mt={4}
                       field="show_interests"
                       label="Show Interests "
                       help="Turn this off, if you'd prefer to not display this information to other verified members."

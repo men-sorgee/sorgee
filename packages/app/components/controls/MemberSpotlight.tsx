@@ -23,7 +23,7 @@ import {
   memberProfileFields,
   memberProfileExplicitFields,
   memberInterestsFields,
-  memberHealthFields,
+  memberProfileHealthFields,
   memberProfileContactFields,
   UserPhoto,
   MemberLevel,
@@ -208,7 +208,7 @@ export const MemberSpotlight = ({
               <MemberPropertyGroup
                 k="health"
                 member={member}
-                fieldList={memberHealthFields}
+                fieldList={memberProfileHealthFields}
                 show={member?.show_health}
                 fields={fields}
                 maxCols={2}

@@ -41,11 +41,12 @@ export type UserVerificationToken = {
   expires: string
 }
 
+export type UserRelation = 'buddy' | 'hottie' | 'partner'
 export type UserRelationship = {
   id: number
   users_id: string | User
   related_users_id?: string | User
-  relation: 'buddy' | 'block' | 'hottie' | 'partner'
+  relation: UserRelation
 }
 
 export type User = {
@@ -511,6 +512,7 @@ export const memberInterestsFields: Array<keyof Member> = [
 ]
 
 export const memberEventFields: Array<keyof Member> = [
+  'events.*' as any,
   'event_invites',
   'can_host',
   'event_availability',
@@ -518,14 +520,18 @@ export const memberEventFields: Array<keyof Member> = [
   'can_host_events',
 ]
 
-export const memberHealthFields: Array<keyof Member> = [
+export const memberProfileHealthFields: Array<keyof Member> = [
   'hiv_status',
   'last_tested',
   'load_policy',
   'vaccinations',
 ]
 
+export const memberProfilePhotoFields: Array<keyof Member> = ['my_photos.*' as any]
+
 export const searchableMemberFields: Array<keyof Member> = [
+  'last_login',
+  'date_created',
   'user_type',
   'presence',
   'rating',
@@ -546,7 +552,7 @@ export const searchableMemberFields: Array<keyof Member> = [
   'show_explicit_roles',
   ...memberProfileExplicitRolesFields,
   'show_health',
-  ...memberHealthFields,
+  ...memberProfileHealthFields,
   'show_interests',
   ...memberInterestsFields,
   'show_events',
@@ -554,13 +560,14 @@ export const searchableMemberFields: Array<keyof Member> = [
   'show_location',
   ...memberProfileLocationFields,
   'show_photos',
-  'my_photos',
+  ...memberProfilePhotoFields,
 ]
 
 export const memberFields: Array<keyof Member> = [
   ...applicantFields,
   ...searchableMemberFields,
   'approved_date',
+  'ratings',
   'users.*.*' as any,
 ]
 

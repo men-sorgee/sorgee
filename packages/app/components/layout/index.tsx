@@ -28,11 +28,11 @@ function Layout({
   const { isOpen, onOpen } = useDisclosure()
 
   useEffect(() => {
-    if (authenticated)
+    if (!loading && authenticated)
       setTimeout(() => {
         onOpen()
       }, 1000)
-  }, [authenticated, onOpen])
+  }, [authenticated, loading, onOpen])
 
   if (path?.startsWith('/code')) {
     return <>{children}</>
