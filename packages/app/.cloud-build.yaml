@@ -1,22 +1,30 @@
 steps:
-  - name: gcr.io/cloud-builders/docker
+  - name: gcr.io/kaniko-project/executor:latest
     args:
-      - build
-      - '--cache-from'
-      - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:latest'
-      - '-t'
-      - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
-      - packages/app
-      - '-f'
-      - packages/app/Dockerfile
-    id: Build
-    env:
-      - 'DOCKER_BUILDKIT=1'
-  - name: gcr.io/cloud-builders/docker
-    args:
-      - push
-      - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
-    id: Push
+      - --context=packages/app
+      - --dockerfile=packages/app/Dockerfile
+      - --destination=$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+      - --cache=true
+      - --cache-ttl=7d
+    id: BuildAndPush
+  #  - name: gcr.io/cloud-builders/docker
+  #    args:
+  #      - build
+  #      - '--cache-from'
+  #      - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:latest'
+  #      - '-t'
+  #      - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+  #      - packages/app
+  #      - '-f'
+  #      - packages/app/Dockerfile
+  #    id: Build
+  #    env:
+  #      - 'DOCKER_BUILDKIT=1'
+  #  - name: gcr.io/cloud-builders/docker
+  #    args:
+  #      - push
+  #      - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+  #    id: Push
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
     args:
       - run
