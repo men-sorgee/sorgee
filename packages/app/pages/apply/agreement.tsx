@@ -10,7 +10,7 @@ import Page from 'components/Page'
 import { useRouter } from 'next/router'
 
 function Agreement() {
-  const { loading, member, reload } = useUser(MemberLevel.applicant, ApplicationStatus.agreement)
+  const { loading, reload } = useUser(MemberLevel.applicant, ApplicationStatus.agreement)
 
   return (
     <Page

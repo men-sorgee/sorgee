@@ -21,10 +21,8 @@ function Review() {
         setComplete(true)
       }
       const status = ApplicationStatus[member.application_status]
-      if (status == ApplicationStatus.approved) {
-        router.push('/apply/approved')
-      } else if (status == ApplicationStatus.denied) {
-        router.push('/apply/denied')
+      if (status != ApplicationStatus.review) {
+        router.push('/apply/' + member.application_status)
       }
     }
   }, [loading, member, router])

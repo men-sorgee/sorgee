@@ -2,7 +2,16 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { postJSON, pruneUndefined } from 'lib/utils'
 import { useEffect, useState } from 'react'
 import { NextRouter, useRouter } from 'next/router'
-import { Applicant, FieldOptions, MemberLevel, Profile, Promo, UserInvite } from 'lib/models'
+import {
+  Applicant,
+  FieldOptions,
+  MemberLevel,
+  Profile,
+  Promo,
+  UserInvite,
+  ApplicationStatus,
+  Member,
+} from 'lib/models'
 import {
   FieldCheckbox,
   FieldInput,
@@ -66,7 +75,7 @@ function Apply({ promo, invite, ...props }: PageProps) {
       signIn()
     },
   })
-  const { member: user, loading } = useUser()
+  const { member: user, loading, reload } = useUser(MemberLevel.applicant, ApplicationStatus.apply)
 
   const [formError, setFormError] = useState<string>()
 
@@ -109,13 +118,17 @@ function Apply({ promo, invite, ...props }: PageProps) {
             {formError}
           </Alert>
         )) ||
-          (user && <Form {...data} user={user} />)}
+          (user && <Form {...data} user={user} reload={reload} />)}
       </>
     </Page>
   )
 }
 
-function Form({ user, ...props }: PageProps & { user: Applicant }) {
+function Form({
+  user,
+  reload,
+  ...props
+}: PageProps & { user: Applicant; reload: () => Promise<Member> }) {
   const router = useRouter()
   const {
     invite,
@@ -166,7 +179,9 @@ function Form({ user, ...props }: PageProps & { user: Applicant }) {
     const { success, data: d, error } = await postJSON('/api/apply', pruneUndefined(data))
     console.dir({ success, data: d, error })
     if (success) {
-      router.push('/apply/verify')
+      reload().then(() => {
+        router.push('/apply/verify')
+      })
     } else if (error?.field) {
       setError(error!.field as any, error.message as any)
     } else {

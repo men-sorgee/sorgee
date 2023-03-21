@@ -9,9 +9,8 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
     withMethods(req, ['POST'])
 
-    const { agree } = req.body as AgreementData
     const applicant = await withApplicant(req, res)
-
+    const { agree } = req.body as AgreementData
     if (applicant.application_status == 'approved') return res.status(200).end()
 
     if (applicant && applicant.application_status == 'agreement' && agree) {
@@ -33,7 +32,7 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
         approved_date: new Date().toISOString(),
       })
 
-      await updateSendGrid(user as Profile)
+      //await updateSendGrid(user as Profile)
 
       return res.status(200).json(ApiResponse(true))
     }

@@ -119,7 +119,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 }
 
 export const useUser = (
-  minLevel: MemberLevel = MemberLevel.pledge,
+  minLevel: MemberLevel = MemberLevel.brother,
   minAppStatus: ApplicationStatus = ApplicationStatus.approved
 ): UserContextData & {
   authorized: boolean
@@ -130,8 +130,10 @@ export const useUser = (
 
   useEffect(() => {
     if (!loading && member) {
-      if (ApplicationStatus[member.application_status] < minAppStatus) {
-        router.push('/apply/resume')
+      const status = ApplicationStatus[member.application_status]
+      if (status < minAppStatus) {
+        const destination = '/apply/' + member.application_status
+        if (router.asPath != destination) router.push(destination)
       }
     }
   }, [authorized, loading, member, minAppStatus, router])

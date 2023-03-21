@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getUser, updateUser } from 'lib/services/directus/server/users'
-import { withMember, withMethods } from 'lib/utils/server'
+import { withUser, withMethods } from 'lib/utils/server'
 import {
   ApiResponse,
   MemberLevel,
@@ -24,7 +24,7 @@ export default async function getMemberDetails(
 ) {
   try {
     const method = withMethods(req, ['GET', 'POST'])
-    const viewer = await withMember(req, res)
+    const viewer = await withUser(req, res)
     const level = MemberLevel[viewer.user_type]
 
     const { id } = req.query
