@@ -129,6 +129,7 @@ export const PhotoUpload = chakra(
             border="3px dotted"
             borderColor="primary.500"
             mx="auto"
+            gap={4}
             p={8}
           >
             <label>
@@ -159,10 +160,9 @@ export const PhotoUpload = chakra(
               w="3em"
               as={XMarkIcon}
               p={3}
-              ml="2rem"
-              margin="auto"
               onClick={() => {
                 setUpload(false)
+                onClear()
               }}
             />
           </Flex>
@@ -181,39 +181,6 @@ export const PhotoUpload = chakra(
               cursor="pointer"
               onClick={() => setUpload(true)}
               alt=""
-            />
-            <IconButton
-              icon={<ArrowUpTrayIcon />}
-              rounded="full"
-              variant="ghost"
-              position="absolute"
-              bg="white"
-              opacity=".15"
-              color="primary"
-              _hover={{ opacity: 1, bg: 'white' }}
-              aria-label={''}
-              p={2}
-              mt="-5rem"
-              onClick={() => {
-                setUpload(true)
-              }}
-              ml="1rem"
-            />
-            <IconButton
-              icon={<XMarkIcon />}
-              color="primary"
-              rounded="full"
-              margin="auto"
-              onClick={() => {
-                setUpload(false)
-              }}
-              bg="white"
-              opacity=".15"
-              _hover={{ opacity: 1, bg: 'white' }}
-              aria-label={''}
-              p={2}
-              mt="-9.5rem"
-              ml="5.5rem"
             />
           </Box>
         )}

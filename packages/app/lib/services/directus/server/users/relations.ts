@@ -1,5 +1,5 @@
 import { getAdminClient } from '..'
-import { UserRelationship } from 'lib/models'
+import { UserRelation, UserRelationship } from 'lib/models'
 
 export async function getRelationship(
   related_users_id: string,
@@ -26,7 +26,7 @@ export async function getRelationship(
 export async function setRelationship(
   related_users_id: string,
   users_id: string,
-  relation: 'buddy' | 'block' | 'partner' | 'hottie'
+  relation: UserRelation
 ): Promise<UserRelationship> {
   const admin = await getAdminClient()
   const relationship = await getRelationship(users_id, related_users_id)

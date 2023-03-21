@@ -11,10 +11,16 @@ function generateSiteMap(pages: Page[]) {
        <loc>${baseUrl}/</loc>
      </url>
      <url>
+       <loc>${baseUrl}/pricing</loc>
+     </url>
+     <url>
        <loc>${baseUrl}/privacy</loc>
      </url>
      <url>
        <loc>${baseUrl}/terms</loc>
+     </url>
+     <url>
+       <loc>${baseUrl}/cookies</loc>
      </url>
      ${pages
        .map((page) => {

@@ -22,15 +22,15 @@ function Approved() {
       header={<ApplicationSteps status={'approved'} />}
     >
       <>
-        <Heading as="h2" size="h2" pt={10}>
+        <Heading as="h2" size="h2" pt={10} textAlign="center">
           Congratulations and Welcome!
         </Heading>
-        <Heading as="h3" size="h3">
+        <Heading as="h3" size="h3" textAlign="center">
           Your membership was approved.
         </Heading>
 
         <VStack alignItems="center" justifyItems="middle" pt={10}>
-          <Text>
+          <Text textAlign="center">
             You will now get periodic event invites as well as access to our member-only content.
           </Text>
           <LinkButton colorScheme="primary" href="/members">

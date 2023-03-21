@@ -22,7 +22,7 @@ export async function listUpcomingEvents(user_type: UserType): Promise<GroupEven
     fields: ['*.*'],
     sort: ['datetime'],
   })
-  if (user_type == 'admin' || user_type == 'staff') return data as unknown as GroupEvent[]
+  if (user_type == 'staff') return data as unknown as GroupEvent[]
   return (data?.filter((e) => e.visibility?.includes(user_type)) || []) as unknown as GroupEvent[]
 }
 

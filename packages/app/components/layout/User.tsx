@@ -29,13 +29,16 @@ import {
   PaintBrushIcon,
 } from '@heroicons/react/24/outline'
 import { useUser, useSite } from 'hooks'
-import { MemberLevel } from 'lib/models'
+import { MemberLevel, ApplicationStatus } from 'lib/models'
 interface Props {}
 
 export default function UserMenu(_props: Props) {
   const { colorMode, toggleColorMode } = useColorMode()
   const { site } = useSite()
-  const { authenticated, user, member, isApplicant, isMember, isStaff, level } = useUser()
+  const { authenticated, user, member, isApplicant, isMember, isStaff, level } = useUser(
+    MemberLevel.applicant,
+    ApplicationStatus.apply
+  )
   const showApply = !site?.invite_only
   const person = member || user
 

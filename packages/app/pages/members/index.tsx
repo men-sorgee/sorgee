@@ -332,7 +332,7 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
                   allowedUserTypes.includes(item.value as UserType)
                 )}
               />
-              <FieldCheckboxes
+              {/**<FieldCheckboxes
                 field="spectrum"
                 label="Orientation"
                 options={fields['spectrum'].meta.options.choices}
@@ -351,7 +351,7 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
                 field="my_positions"
                 label="Positions"
                 options={fields['my_positions'].meta.options.choices}
-              />
+             />**/}
             </SimpleGrid>
 
             <AccordionButton as={'div'} mt={6} _hover={{ bg: 'transparent', cursor: 'default' }}>

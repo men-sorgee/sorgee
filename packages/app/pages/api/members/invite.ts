@@ -6,10 +6,8 @@ import { createUser } from 'lib/services/directus/server'
 
 async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
-    if (!withMethods(req, ['POST'])) return
-
+    withMethods(req, ['POST'])
     const member = await withMember(req, res)
-    if (!member) return res.status(401).end()
 
     const { email, link } = req.body as InviteLink
     await sendNotificationEmail(

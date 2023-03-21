@@ -1,10 +1,9 @@
 import { DirectusFile } from 'lib/models'
 import { Survey, Rating } from './surveys'
-import { Member, MemberLevel, SearchableMember, User, UserType } from './users'
+import { Member, SearchableMember, User, UserType } from './users'
 
 export type UserInvite = {
   e: string
-  t: MemberLevel
   v: string
 }
 

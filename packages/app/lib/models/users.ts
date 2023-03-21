@@ -8,6 +8,7 @@ import {
   UserEmailEvent,
   UserInvite,
 } from 'lib/models'
+
 import { ProviderType } from 'next-auth/providers'
 export type UserAccount = {
   id?: string
@@ -40,11 +41,22 @@ export type UserVerificationToken = {
   expires: string
 }
 
+export type UserRelation = 'buddy' | 'hottie' | 'partner'
 export type UserRelationship = {
   id: number
   users_id: string | User
   related_users_id?: string | User
-  relation: 'buddy' | 'block' | 'hottie' | 'partner'
+  relation: UserRelation
+}
+
+export type UserContactAttempt = {
+  id: string
+  user_created?: string | DirectusUser
+  date_created?: string
+  date_updated?: string
+  contact_method?: string
+  notes?: string
+  user?: string | User
 }
 
 export type User = {
@@ -63,6 +75,7 @@ export type User = {
   phone_verified?: boolean
   email?: string
   email_verified?: boolean
+  session: string | UserSession[]
   contact_preference: string | ContactPreferenceType
   weight?: number
   cock_length?: number
@@ -109,7 +122,7 @@ export type User = {
   hiv_status?: string
   last_tested?: string
   vaccinations?: unknown
-  approved_by?: string | DirectusUser
+  reviewed_by?: string | DirectusUser
   application_status: string | ApplicationStatusType
   in_sendgrid?: boolean
   picture?: string | DirectusFile
@@ -127,6 +140,7 @@ export type User = {
   accounts: string | UserAccount[]
   show_profile: boolean
   show_explicit: boolean
+  show_explicit_roles: boolean
   show_location: boolean
   show_contact: boolean
   show_interests: boolean
@@ -135,7 +149,7 @@ export type User = {
   show_images: boolean
   show_photos: boolean
   event_invites: boolean
-
+  contact_attempts: string[] | UserContactAttempt[]
   can_host?: boolean
   can_host_events: string[] | ('sex' | 'social' | 'individual')[]
   promo: number | Promo
@@ -209,7 +223,6 @@ export type UserType =
   | 'brother'
   | 'big_brother'
   | 'staff'
-  | 'admin'
 
 export enum MemberLevel {
   reject = 0,
@@ -344,7 +357,6 @@ export const applicantFields: Array<keyof Applicant> = [
   ...profileFields,
   'vouched_by',
   'show_contact',
-
   'contact_preference',
   'biography',
   'needs_guidance',
@@ -395,7 +407,7 @@ export type Member = Applicant & {
   events: EventUser[]
 
   //-profile
-  show_profile?: boolean
+  show_profile: boolean
   nickname: User['nickname']
   body_hair?: string
   facial_hair?: string
@@ -415,15 +427,21 @@ export type Member = Applicant & {
   ball_gravity?: string
   cum_attributes?: string[]
 
+  //-explicit roles
+  show_explicit_roles: boolean
+  my_positions?: string[]
+  my_roles?: string[]
+  sexual_scenes?: string[]
+
   //-health
-  show_health?: boolean
+  show_health: boolean
   hiv_status?: string
   last_tested?: string
   vaccinations?: string[]
   load_policy?: string[]
 
   //-them
-  show_interests?: boolean
+  show_interests: boolean
   their_positions?: string[]
   their_roles?: string[]
   their_spectrum?: OrientationType[]
@@ -437,7 +455,6 @@ export type Member = Applicant & {
 
 export type SearchableMember = Omit<
   User,
-  | 'invite'
   | 'promo'
   | 'accounts'
   | 'in_sendgrid'
@@ -452,12 +469,34 @@ export type SearchableMember = Omit<
   | 'photo_denial_reason'
 >
 
+export const userPrivateFields: Array<keyof User> = [
+  'promo',
+  'accounts',
+  'in_sendgrid',
+  'application_status',
+  'contact_attempts',
+  'accounts',
+  'session',
+  'notes',
+  'tags',
+  'flags',
+  'reviewed_by',
+  'photo_denial_reason',
+]
+
 export const memberProfilePrivateFields: Array<keyof Member> = [
+  'first_name',
   'last_name',
   'birth_month',
   'birth_year',
   'video_consent',
   'photo_consent',
+  'invite',
+  'accounts',
+  'in_sendgrid',
+  'application_status',
+  'accounts',
+  'photo_denial_reason',
 ]
 
 export const memberProfileContactFields: Array<keyof Member> = [
@@ -489,6 +528,9 @@ export const memberProfileExplicitFields: Array<keyof Member> = [
   'cock_girth',
   'cock_attributes',
   'cum_attributes',
+]
+
+export const memberProfileExplicitRolesFields: Array<keyof Member> = [
   'my_positions',
   'my_roles',
   'sexual_scenes',
@@ -502,6 +544,7 @@ export const memberInterestsFields: Array<keyof Member> = [
 ]
 
 export const memberEventFields: Array<keyof Member> = [
+  'events.*' as any,
   'event_invites',
   'can_host',
   'event_availability',
@@ -509,14 +552,19 @@ export const memberEventFields: Array<keyof Member> = [
   'can_host_events',
 ]
 
-export const memberHealthFields: Array<keyof Member> = [
+export const memberProfileHealthFields: Array<keyof Member> = [
   'hiv_status',
   'last_tested',
   'load_policy',
   'vaccinations',
 ]
 
+export const memberProfilePhotoFields: Array<keyof Member> = ['my_photos.*' as any]
+
 export const searchableMemberFields: Array<keyof Member> = [
+  'picture',
+  'last_login',
+  'date_created',
   'user_type',
   'presence',
   'rating',
@@ -525,17 +573,14 @@ export const searchableMemberFields: Array<keyof Member> = [
   'relationship_status',
   'spectrum',
   'mannerisms',
-  'private_folder',
-  'public_folder',
-  ...memberProfilePrivateFields,
-  'show_contact',
-  ...memberProfileContactFields,
   'show_profile',
   ...memberProfileFields,
   'show_explicit',
   ...memberProfileExplicitFields,
+  'show_explicit_roles',
+  ...memberProfileExplicitRolesFields,
   'show_health',
-  ...memberHealthFields,
+  ...memberProfileHealthFields,
   'show_interests',
   ...memberInterestsFields,
   'show_events',
@@ -543,21 +588,26 @@ export const searchableMemberFields: Array<keyof Member> = [
   'show_location',
   ...memberProfileLocationFields,
   'show_photos',
-  'my_photos',
+  ...memberProfilePhotoFields,
 ]
 
 export const memberFields: Array<keyof Member> = [
   ...applicantFields,
   ...searchableMemberFields,
+  ...memberProfilePrivateFields,
+  'show_contact',
+  ...memberProfileContactFields,
+  'private_folder',
+  'public_folder',
   'approved_date',
+  'ratings',
   'users.*.*' as any,
 ]
 
 export const getAllowedUsers = (level: MemberLevel) => {
-  let allowedLevels: UserType[] = ['brother', 'big_brother', 'staff', 'admin']
+  let allowedLevels: UserType[] = ['brother', 'big_brother', 'staff']
   if (level >= MemberLevel.brother) allowedLevels = [...allowedLevels, 'inductee']
   if (level >= MemberLevel.big_brother) allowedLevels = [...allowedLevels, 'pledge']
-  if (level >= MemberLevel.staff) allowedLevels = [...allowedLevels, 'applicant', 'subscriber']
 
   return allowedLevels
 }

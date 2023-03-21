@@ -1,6 +1,12 @@
-import { getFileInfo, updateUser, uploadFile, UploadFolder } from 'lib/services/directus/server'
+import {
+  deleteFile,
+  getFileInfo,
+  updateUser,
+  uploadFile,
+  UploadFolder,
+} from 'lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { ApiResponse, ApplicationStatus } from 'lib/models'
+import { ApiResponse, ApplicationStatus, DirectusFile } from 'lib/models'
 import { withApplicant, withMethods } from 'lib/utils/server'
 import { sendNotificationEmail } from 'lib/services/sendgrid/server'
 
@@ -9,6 +15,11 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     if (!withMethods(req, ['POST'])) return
 
     const applicant = await withApplicant(req, res)
+
+    let previousPhoto = null
+    if (applicant.photo) {
+      previousPhoto = applicant.photo as DirectusFile
+    }
 
     const fileInfo = await getFileInfo(req)
     const file = await uploadFile(
@@ -25,7 +36,7 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     })
 
     const status = ApplicationStatus[applicant.application_status]
-    if (status < 2)
+    if (status == ApplicationStatus.verify && previousPhoto == null)
       await sendNotificationEmail(
         applicant.email,
         applicant.nickname || applicant.first_name + ' ' + applicant.last_name,
@@ -36,6 +47,10 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
           button_url: 'https://guysnheat.com/apply',
         }
       )
+
+    if (previousPhoto) {
+      await deleteFile(previousPhoto.id)
+    }
 
     res.status(200).json(ApiResponse({}))
   } catch (e: any) {

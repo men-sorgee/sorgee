@@ -1,8 +1,8 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
-import { DirectusFile, FieldMap, Member, User } from 'lib/models'
+import { FieldMap, Member } from 'lib/models'
 import { useUser } from '@/hooks/use-user'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 import {
   FieldInput,
@@ -11,7 +11,6 @@ import {
   FieldText,
   FieldCheckboxes,
   FieldSwitch,
-  FieldImage,
 } from 'components/forms'
 import {
   Alert,
@@ -31,7 +30,6 @@ import {
 } from '@chakra-ui/react'
 import Page from 'components/Page'
 import { useToast } from '@chakra-ui/react'
-import { postJSON } from 'lib/utils'
 import { MemberHeader } from 'components/controls'
 import { useWarnIfUnsavedChanges } from 'hooks/use-warn-if-unsaved'
 
@@ -39,7 +37,7 @@ type PageProps = {
   fieldMap: FieldMap
 }
 
-export async function getServerSideProps(context: NextPageContext): Promise<{ props: PageProps }> {
+export async function getServerSideProps(): Promise<{ props: PageProps }> {
   const { getFields } = await import('lib/services/directus/server')
   const fieldMap = await getFields('users')
   return {
@@ -50,9 +48,9 @@ export async function getServerSideProps(context: NextPageContext): Promise<{ pr
 }
 
 export default function ProfilePage(props: PageProps) {
-  const { member, loading, reload } = useUser()
+  const { member, loading } = useUser()
   return (
-    <Page title={`Profile`} loading={loading} requireAuth={true}>
+    <Page title="Edit Profile" loading={loading} requireAuth={true}>
       {member && <Form {...props} />}
     </Page>
   )
@@ -84,6 +82,8 @@ function Form(props: PageProps) {
     facial_hair,
     body_attributes,
     show_explicit,
+    show_explicit_roles,
+    show_photos,
     cock_length,
     cock_girth,
     cock_attributes,
@@ -121,6 +121,8 @@ function Form(props: PageProps) {
       facial_hair,
       body_attributes,
       show_explicit,
+      show_explicit_roles,
+      show_photos,
       cock_length,
       cock_girth,
       cock_attributes,
@@ -226,11 +228,22 @@ function Form(props: PageProps) {
                   You can choose to make your profile private if you do not wish to show up in
                   member searches.*
                 </Text>
-                <FieldSwitch
-                  field="show_profile"
-                  label="Show Profile in Search"
-                  help="Turn this off, if do not wish to be searchable on the members page."
-                />
+                <Flex flexDirection={['column', 'row']} gap={4} mt={4}>
+                  <FieldSwitch
+                    mb={4}
+                    field="show_profile"
+                    label="Show Profile in Search"
+                    help="Turn this off, if do not wish to be searchable on the members page."
+                  />
+                  {showProfile && (
+                    <FieldSwitch
+                      mt={4}
+                      field="show_photos"
+                      label="Show Photos on Profile"
+                      help="Turn this off, if do not wish to be searchable on the members page."
+                    />
+                  )}
+                </Flex>
               </Flex>
             </GridItem>
           </SimpleGrid>
@@ -324,6 +337,7 @@ function Form(props: PageProps) {
                     shadow="md"
                   >
                     <FieldSwitch
+                      mt={4}
                       field="show_explicit"
                       label="Show Explicit Details on Profile"
                       help="Turn this off, if would rather not show this information to other verified members."
@@ -375,9 +389,10 @@ function Form(props: PageProps) {
                     shadow="md"
                   >
                     <FieldSwitch
-                      field="show_explicit"
+                      mt={4}
+                      field="show_explicit_roles"
                       mx="auto"
-                      label="Show Explicit Details on Profile"
+                      label="Show Explicit Roles on Profile"
                       help="Turn this off, if would rather not show this information to other verified members."
                     />
                   </Alert>
@@ -413,6 +428,7 @@ function Form(props: PageProps) {
                     shadow="md"
                   >
                     <FieldSwitch
+                      mt={4}
                       field="show_health"
                       label="Show Health Information on Profile"
                       help="Turn this off, if you'd prefer to not display this information to other verified members."

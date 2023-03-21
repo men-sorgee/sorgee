@@ -14,9 +14,9 @@ import {
   Heading,
 } from '@chakra-ui/react'
 
-export default function Splash({ authenticated }: { authenticated: boolean }) {
+export default function Splash() {
   const [displayPopUp, setDisplayPopUp] = useState(true)
-
+  const [loading, setLoading] = useState(true)
   const closeAsAdult = () => {
     localStorage.setItem('seenPopUp', 'true')
     setDisplayPopUp(false)
@@ -27,10 +27,14 @@ export default function Splash({ authenticated }: { authenticated: boolean }) {
   }
 
   useEffect(() => {
-    let returningUser = authenticated || localStorage.getItem('seenPopUp')
-    setDisplayPopUp(!returningUser)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    if (loading) {
+      let returningUser = localStorage.getItem('seenPopUp')
+      setDisplayPopUp(!returningUser)
+      setLoading(false)
+    }
+  }, [loading, displayPopUp])
+
+  if (loading) return null
 
   return (
     <>

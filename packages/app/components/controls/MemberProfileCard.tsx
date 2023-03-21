@@ -1,7 +1,6 @@
 import {
   LinkBox,
   Card,
-  useColorModeValue,
   LinkOverlay,
   CardBody,
   CardFooter,
@@ -10,12 +9,9 @@ import {
   chakra,
   CardProps,
   CardHeader,
-  Stack,
-  IconButton,
   Box,
 } from '@chakra-ui/react'
 import { SearchableMember, MemberLevelColorMap, MemberLevel } from 'lib/models'
-import { Rating } from './Rating'
 import { MemberHeader } from './MemberHeader'
 import NextLink from 'next/link'
 import { formatDistanceToNowStrict } from 'date-fns'

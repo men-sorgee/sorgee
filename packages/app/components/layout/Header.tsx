@@ -101,6 +101,12 @@ function Header({ children, ...props }: Props) {
           children: [],
         },
         {
+          title: 'Cookie Policy',
+          path: '/cookies',
+          reload: true,
+          children: [],
+        },
+        {
           title: 'Terms of Service',
           path: '/terms',
           reload: true,
