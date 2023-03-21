@@ -13,7 +13,7 @@ import { putJSON, JsonFetcher } from 'lib/utils'
 import { useState, useEffect, createContext, ReactNode, useContext } from 'react'
 
 export type MessagesContextData = {
-  conversations: Conversation[]
+  conversations: { [key: string]: Conversation }
   hasNewMessages: boolean
   newMessageCount: number
   error?: any
@@ -26,7 +26,7 @@ export type MessagesContextData = {
 }
 
 export const MessagesContext = createContext<MessagesContextData>({
-  conversations: [],
+  conversations: {},
   hasNewMessages: false,
   newMessageCount: 0,
   markAsRead: async (_) => {},
@@ -49,7 +49,7 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
     fallbackData: {},
   })
 
-  const conversations: Conversation[] = []
+  const conversations: { [key: string]: Conversation } = {}
 
   let newMessages = 0
   Object.keys(userMessages || {}).forEach((k) => {
@@ -66,7 +66,7 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
     newMessages += newMessageCount
     const lastMessage = messages[messages.length - 1]
     const user = lastMessage.user
-    conversations.push({
+    conversations[k] = {
       id: k,
       messages,
       newMessageCount,
@@ -76,7 +76,7 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
         ...user,
         picture: `/api/asset/${user.picture}?w=100&h=100&fit=crop`,
       },
-    })
+    }
   })
 
   const mark = async (ids: string[], status: MessageStatusType) => {

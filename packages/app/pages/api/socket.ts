@@ -23,6 +23,12 @@ const SocketHandler = (req, res) => {
         socket.emit('user-joined', userId)
       })
 
+      socket.on('user-typing', (msg: { to: string; from: string }) => {
+        if (msg.to) {
+          socket.to(msg.to).emit('user-typing', msg.from)
+        }
+      })
+
       socket.on('send-message', (msg: Message) => {
         if (msg.to) {
           socket.to(msg.to as string).emit('receive-message', msg)

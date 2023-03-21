@@ -2,7 +2,7 @@ import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css'
 import { postJSON } from 'lib/utils'
 import { useMessages } from 'hooks'
 import { Member, ChatMessage, Message, Conversation, UserMessages } from 'lib/models'
-import { useState, useMemo, useCallback, useEffect } from 'react'
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import {
   Avatar,
@@ -16,8 +16,10 @@ import {
   ConversationHeader,
   MessageList,
   MessageInput,
+  TypingIndicator,
 } from '@chatscope/chat-ui-kit-react'
 import io, { Socket } from 'socket.io-client'
+
 let socket: Socket
 
 const Chat = ({ currentUser }: { currentUser: Member }) => {
@@ -29,19 +31,15 @@ const Chat = ({ currentUser }: { currentUser: Member }) => {
   const [cId, setCid] = useState<string>()
   const [activeConversation, setActiveConversation] = useState<Conversation>()
   const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [inputValue, setInputValue] = useState('')
+  const [isTyping, setIsTyping] = useState(false)
+
   useEffect(() => {
-    if (!conversations || conversations.length == 0) return
-    if (cId == undefined) {
-      setCid(conversations[0].id)
-      setActiveConversation(conversations[0])
-      setMessages(conversations[0].messages)
-      markAsRead(conversations[0].messages.map((m) => m.id))
-    } else if (activeConversation && cId != activeConversation.id) {
-      reload()
-      const c = conversations.find((c) => c.id == cId)
-      setActiveConversation(c)
-      setMessages(c.messages)
-      markAsRead(c.messages.map((m) => m.id))
+    if (!conversations) return
+    if (cId !== undefined) {
+      setActiveConversation(conversations[cId])
+      setMessages(conversations[cId].messages)
+      markAsRead(conversations[cId].messages.map((m) => m.id))
     }
   }, [activeConversation, cId, conversations, markAsRead, reload])
 
@@ -54,23 +52,22 @@ const Chat = ({ currentUser }: { currentUser: Member }) => {
       socket.emit('join', currentUser.id)
     })
     socket.on('receive-message', (message: ChatMessage) => {
-      const convo = [...conversations[message.user.id].messages, message]
-      const userMessages: UserMessages = {
-        [message.user.id]: convo,
+      receiveMessage()
+    })
+    socket.on('user-typing', (from: string) => {
+      if (from == cId) {
+        setIsTyping(true)
+        setTimeout(() => {
+          setIsTyping(false)
+        }, 1000)
       }
-      Object.keys(conversations).forEach((k) => {
-        if (k != message.user.id) {
-          userMessages[k] = conversations[k].messages
-        }
-      })
-      mutate(userMessages, {
-        revalidate: true,
-      })
     })
     return () => {
       socket.disconnect()
     }
   }
+
+  const receiveMessage = useCallback(reload, [reload])
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => socketInitializer(), [])
@@ -85,9 +82,8 @@ const Chat = ({ currentUser }: { currentUser: Member }) => {
           <Avatar
             key={user?.id}
             id={user?.id}
-            src={user.picture}
+            src={user.picture ? user.picture : undefined}
             name={user?.nickname}
-            active={user.presence == 'online'}
           />,
           user.nickname,
         ]
@@ -96,6 +92,27 @@ const Chat = ({ currentUser }: { currentUser: Member }) => {
 
     return [undefined, undefined]
   }, [activeConversation])
+
+  const userTyping = useCallback(() => {
+    if (socket) {
+      socket.emit('user-typing', {
+        to: cId,
+        from: currentUser.id,
+      })
+    }
+  }, [cId, currentUser.id])
+
+  const handleInputChange = (e) => {
+    //setInputValue(e.target.value)
+    userTyping()
+  }
+
+  const typingIndicator = useMemo(() => {
+    if (isTyping) {
+      return <TypingIndicator content="Typing..." />
+    }
+    return null
+  }, [isTyping])
 
   const handleSend = (text: string) => {
     sendMessage({
@@ -121,7 +138,7 @@ const Chat = ({ currentUser }: { currentUser: Member }) => {
     //  body: formData,
     //})
   }
-
+  const inputRef = useRef()
   const sendMessage = useCallback(
     ({ body, image, type }: Partial<ChatMessage>) => {
       const user = {
@@ -145,21 +162,23 @@ const Chat = ({ currentUser }: { currentUser: Member }) => {
         body,
         image,
         type,
-        to: activeConversation?.user.id,
+        to: cId,
         from: currentUser.id,
-      } as Message).then((res) => {
-        const { type, body, image } = res.data
+      } as Message).then(({ data }) => {
+        const { type, body, image, date_created } = data
         socket.emit('send-message', {
           type,
           body,
           image,
           direction: 'outgoing',
           user,
+          timestamp: date_created,
         })
       })
+      setInputValue('')
     },
     [
-      activeConversation?.user.id,
+      cId,
       currentUser.id,
       currentUser.last_login,
       currentUser.nickname,
@@ -181,7 +200,7 @@ const Chat = ({ currentUser }: { currentUser: Member }) => {
     >
       <Sidebar position="left">
         <ConversationList>
-          {conversations?.map((c) => {
+          {Object.values(conversations).map((c) => {
             // Helper for getting the data of the first participant
             const {
               id,
@@ -204,44 +223,49 @@ const Chat = ({ currentUser }: { currentUser: Member }) => {
                 lastSenderName={nickname}
                 unreadDot={newMessageCount > 0}
               >
-                <Avatar key={id} id={id} src={picture} name={nickname} />
+                <Avatar key={id} id={id} src={picture ? picture : null} name={nickname} />
               </ConversationCtrl>
             )
           })}
         </ConversationList>
       </Sidebar>
 
-      <ChatContainer>
-        <ConversationHeader>
-          {currentUserAvatar}
-          <ConversationHeader.Content userName={currentUserName} />
-          <ConversationHeader.Actions></ConversationHeader.Actions>
-        </ConversationHeader>
+      {cId && (
+        <ChatContainer>
+          <ConversationHeader>
+            <ConversationHeader.Back onClick={() => setCid(null)} />
+            {currentUserAvatar}
+            <ConversationHeader.Content userName={currentUserName} />
+            <ConversationHeader.Actions></ConversationHeader.Actions>
+          </ConversationHeader>
 
-        <MessageList>
-          {messages.map((m, i) => (
-            <MessageGroup key={i} direction={m.direction}>
-              <MessageGroup.Messages>
-                <MessageCtrl
-                  model={{
-                    type: 'text',
-                    payload: m.body,
-                    direction: m.direction,
-                    position: 'single',
-                  }}
-                />
-              </MessageGroup.Messages>
-            </MessageGroup>
-          ))}
-        </MessageList>
+          <MessageList scrollBehavior="smooth" typingIndicator={typingIndicator}>
+            {messages.map((m, i) => (
+              <MessageGroup key={i} direction={m.direction}>
+                <MessageGroup.Messages>
+                  <MessageCtrl
+                    model={{
+                      type: 'text',
+                      payload: m.body,
+                      direction: m.direction,
+                      position: 'single',
+                    }}
+                  />
+                </MessageGroup.Messages>
+              </MessageGroup>
+            ))}
+          </MessageList>
 
-        <MessageInput
-          onAttachClick={handleAttachment}
-          onSend={handleSend}
-          autoFocus
-          placeholder="Type message here"
-        />
-      </ChatContainer>
+          <MessageInput
+            onAttachClick={handleAttachment}
+            onSend={handleSend}
+            onChange={handleInputChange}
+            ref={inputRef}
+            autoFocus
+            placeholder="Type message here"
+          />
+        </ChatContainer>
+      )}
     </MainContainer>
   )
 }
