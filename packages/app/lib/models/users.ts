@@ -407,7 +407,7 @@ export type Member = Applicant & {
   events: EventUser[]
 
   //-profile
-  show_profile?: boolean
+  show_profile: boolean
   nickname: User['nickname']
   body_hair?: string
   facial_hair?: string
@@ -434,14 +434,14 @@ export type Member = Applicant & {
   sexual_scenes?: string[]
 
   //-health
-  show_health?: boolean
+  show_health: boolean
   hiv_status?: string
   last_tested?: string
   vaccinations?: string[]
   load_policy?: string[]
 
   //-them
-  show_interests?: boolean
+  show_interests: boolean
   their_positions?: string[]
   their_roles?: string[]
   their_spectrum?: OrientationType[]
@@ -573,9 +573,6 @@ export const searchableMemberFields: Array<keyof Member> = [
   'relationship_status',
   'spectrum',
   'mannerisms',
-  ...memberProfilePrivateFields,
-  'show_contact',
-  ...memberProfileContactFields,
   'show_profile',
   ...memberProfileFields,
   'show_explicit',
@@ -597,6 +594,9 @@ export const searchableMemberFields: Array<keyof Member> = [
 export const memberFields: Array<keyof Member> = [
   ...applicantFields,
   ...searchableMemberFields,
+  ...memberProfilePrivateFields,
+  'show_contact',
+  ...memberProfileContactFields,
   'private_folder',
   'public_folder',
   'approved_date',

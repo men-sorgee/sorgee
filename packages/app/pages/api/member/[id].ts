@@ -2,9 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { getUser, updateUser } from 'lib/services/directus/server/users'
 import { withMember, withMethods } from 'lib/utils/server'
 import {
-  Applicant,
   ApiResponse,
-  User,
   MemberLevel,
   memberFields,
   Member,
@@ -18,17 +16,11 @@ import {
   memberProfilePrivateFields,
   searchableMemberFields,
   memberProfilePhotoFields,
-  UserRelationship,
 } from 'lib/models'
-import { uploadFile, getFileInfo, UploadFolder } from 'lib/services/directus/server'
 
-interface UserUpdate extends Omit<Partial<User>, 'id'> {
-  image_field?: string
-  image_name?: string
-}
 export default async function getMemberDetails(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<Applicant> | ApiResponse>
+  res: NextApiResponse<ApiResponse<Member> | ApiResponse>
 ) {
   try {
     const method = withMethods(req, ['GET', 'POST'])
@@ -40,49 +32,40 @@ export default async function getMemberDetails(
     if (id == 'me') user_id = viewer.id
     else user_id = String(id)
 
+    let me = viewer.id == user_id
     let fields = searchableMemberFields
-    if (viewer.id == user_id) {
+    if (me) {
       fields = memberFields
     }
-
     let user = await getUser<Member>(user_id, fields)
     if (!user) {
       return res.status(404).json(ApiResponse(null, 'Not found'))
     }
 
-    if (level < MemberLevel.staff && user_id !== viewer.id) {
-      if (!user.show_profile) {
-        return res.status(404).json(ApiResponse(null, 'Not found'))
-      }
-      filter(user)
-      user.my_photos = user.my_photos.filter((p) => p.is_public)
-
-      delete user.users
-    }
-
     switch (method) {
-      case 'GET':
-        return res.status(200).json(ApiResponse(user))
+      case 'GET': {
+        if (level < MemberLevel.staff && !me) {
+          if (!user.show_profile) {
+            return res.status(404).json(ApiResponse(null, 'Not found'))
+          }
+          filter(user)
+          user.my_photos = user.my_photos.filter((p) => p.is_public)
 
-      case 'POST': {
-        const { image_field, image_name, ...userDetails } = req.body as UserUpdate
-        if (image_field) {
-          await getFileInfo(req)
-            .then((fileInfo) =>
-              uploadFile(fileInfo, UploadFolder.verification, image_name || user.email)
-            )
-            .then((file) =>
-              updateUser(user_id, {
-                [image_field]: file.id,
-              })
-            )
-            .catch((e) => console.error(e.message || e, e.stack))
+          delete user.users
         }
+
+        return res.status(200).json(ApiResponse(user))
+      }
+      case 'POST': {
+        if (!me && level < MemberLevel.staff)
+          return res.status(401).json(ApiResponse(null, 'Unauthorized'))
+
+        const userDetails = req.body as Member
         const updated = await updateUser(user_id, userDetails)
         return res.status(200).json(ApiResponse(updated))
       }
       default:
-        return res.status(200).json(ApiResponse(user))
+        return res.status(401).json(ApiResponse(null, 'Unauthorized'))
     }
   } catch (e) {
     if (e.message == 'Unauthorized') return res.status(200).json(ApiResponse(null, e))

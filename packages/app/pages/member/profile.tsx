@@ -1,8 +1,8 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
-import { DirectusFile, FieldMap, Member, User } from 'lib/models'
+import { FieldMap, Member } from 'lib/models'
 import { useUser } from '@/hooks/use-user'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 import {
   FieldInput,
@@ -11,7 +11,6 @@ import {
   FieldText,
   FieldCheckboxes,
   FieldSwitch,
-  FieldImage,
 } from 'components/forms'
 import {
   Alert,
@@ -28,11 +27,9 @@ import {
   GridItem,
   useColorModeValue,
   Collapse,
-  HStack,
 } from '@chakra-ui/react'
 import Page from 'components/Page'
 import { useToast } from '@chakra-ui/react'
-import { postJSON } from 'lib/utils'
 import { MemberHeader } from 'components/controls'
 import { useWarnIfUnsavedChanges } from 'hooks/use-warn-if-unsaved'
 
@@ -40,7 +37,7 @@ type PageProps = {
   fieldMap: FieldMap
 }
 
-export async function getServerSideProps(context: NextPageContext): Promise<{ props: PageProps }> {
+export async function getServerSideProps(): Promise<{ props: PageProps }> {
   const { getFields } = await import('lib/services/directus/server')
   const fieldMap = await getFields('users')
   return {
@@ -51,9 +48,9 @@ export async function getServerSideProps(context: NextPageContext): Promise<{ pr
 }
 
 export default function ProfilePage(props: PageProps) {
-  const { member, loading, reload } = useUser()
+  const { member, loading } = useUser()
   return (
-    <Page title={`Profile`} loading={loading} requireAuth={true}>
+    <Page title="Edit Profile" loading={loading} requireAuth={true}>
       {member && <Form {...props} />}
     </Page>
   )
