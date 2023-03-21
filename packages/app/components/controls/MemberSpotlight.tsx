@@ -6,6 +6,7 @@ import {
   TabPanels,
   TabPanel,
   Text,
+  Heading,
   Wrap,
   Flex,
   Spacer,
@@ -28,6 +29,7 @@ import {
   MemberLevel,
   MemberLevelColorMap,
   memberProfileExplicitRolesFields,
+  memberEventFields,
 } from 'lib/models'
 import { ReactNode, useEffect } from 'react'
 import { ImageGallery } from './ImageGallery'
@@ -35,7 +37,7 @@ import { Loading } from './Loading'
 import { MemberHeader } from './MemberHeader'
 import { MemberPropertyGroup } from './MemberPropertyGroup'
 import { Rating } from './Rating'
-import { toLocalDate } from '../../lib/utils'
+import { toLocalDate } from 'lib/utils'
 
 type Props = AvatarProps & {
   id: string
@@ -63,7 +65,7 @@ export const MemberSpotlight = ({
   const publicPhotos = member.my_photos?.filter((p) => p.is_public) || []
   const levelValue = MemberLevel[member?.user_type]
   const levelColor = MemberLevelColorMap[levelValue]
-  const eventsAttended = member?.events.filter((e) => e.attended)?.length || 0
+  const eventsAttended = member?.events?.filter((e) => e.attended)?.length || 0
   return (
     <Flex direction="column" justify="space-between">
       <Box
@@ -142,6 +144,9 @@ export const MemberSpotlight = ({
           </TabList>
           <TabPanels maxH="100%" overflowY="auto" my={2}>
             <TabPanel p={4}>
+              <Heading as="h5" size="h5" mb={2} borderBottom="1px solid" borderColor="text">
+                Features
+              </Heading>
               <MemberPropertyGroup
                 k="profile"
                 member={member}
@@ -151,6 +156,9 @@ export const MemberSpotlight = ({
               />
             </TabPanel>
             <TabPanel>
+              <Heading as="h5" size="h5" mb={2} borderBottom="1px solid" borderColor="text">
+                Features
+              </Heading>
               <MemberPropertyGroup
                 k="explicit"
                 member={member}
@@ -159,7 +167,9 @@ export const MemberSpotlight = ({
                 fields={fields}
                 maxCols={2}
               />
-
+              <Heading as="h5" size="h5" mb={2} borderBottom="1px solid" borderColor="text">
+                Roles
+              </Heading>
               <MemberPropertyGroup
                 k="explicit_roles"
                 member={member}
@@ -170,6 +180,19 @@ export const MemberSpotlight = ({
               />
             </TabPanel>
             <TabPanel>
+              <Heading as="h5" size="h5" mb={2} borderBottom="1px solid" borderColor="text">
+                Events
+              </Heading>
+              <MemberPropertyGroup
+                k="events"
+                member={member}
+                fieldList={memberEventFields}
+                show={member?.show_events}
+                fields={fields}
+              />
+              <Heading as="h5" size="h5" mb={2} borderBottom="1px solid" borderColor="text">
+                Sexual
+              </Heading>
               <MemberPropertyGroup
                 k="interests"
                 member={member}
@@ -179,6 +202,9 @@ export const MemberSpotlight = ({
               />
             </TabPanel>
             <TabPanel>
+              <Heading as="h5" size="h5" mb={2} borderBottom="1px solid" borderColor="text">
+                Sexual Health
+              </Heading>
               <MemberPropertyGroup
                 k="health"
                 member={member}

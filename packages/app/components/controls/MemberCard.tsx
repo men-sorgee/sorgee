@@ -43,8 +43,7 @@ export const MemberCard = chakra(
     useEffect(() => {
       if (!loaded && user) {
         const picture = user.picture
-        if (!pictureSrc && picture)
-          setPictureSrc(getAssetUrl(picture) + '?fit=cover&width=200&height=200&quality=80')
+        if (!pictureSrc && picture) setPictureSrc(getAssetUrl(picture))
         setLoaded(true)
 
         setLastLogin(
@@ -62,7 +61,7 @@ export const MemberCard = chakra(
           <Flex gap={3} alignItems="center" w="full">
             <Avatar
               id={user?.id}
-              src={pictureSrc}
+              src={`${pictureSrc}?width=100&height=100&quality=70`}
               size={size}
               color={color}
               name={user?.nickname || user?.first_name}
@@ -87,7 +86,7 @@ export const MemberCard = chakra(
               onClose={() => {
                 setOpen(false)
               }}
-              imageSrc={pictureSrc}
+              imageSrc={`${pictureSrc}?quality=100`}
             />
             <Flex w="full" direction="column" gap={0} align="flex-start">
               <Heading size="md" textTransform="uppercase" m={0} color={color}>

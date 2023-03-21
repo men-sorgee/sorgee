@@ -9,7 +9,7 @@ export const ImageModal = ({ isOpen, onClose, imageSrc }) => {
         <ModalCloseButton />
         {/* eslint-disable-next-line react/jsx-no-undef */}
         <Image
-          src={imageSrc}
+          src={`${imageSrc}`}
           rounded="md"
           shadow="lg"
           alt="Large Image"

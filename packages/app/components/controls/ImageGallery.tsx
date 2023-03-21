@@ -24,7 +24,7 @@ export const ImageGallery = ({ images }: { images: string[] }) => {
           minW="200px"
           backgroundPosition="center"
           backgroundRepeat="no-repeat"
-          backgroundImage={`url(${url})`}
+          backgroundImage={`url('${url}?width=200&height=200&quality=60')`}
           backgroundSize="cover"
           onClick={() => {
             handleImageClick(index)
@@ -35,7 +35,7 @@ export const ImageGallery = ({ images }: { images: string[] }) => {
             key={'modal-' + index}
             isOpen={openIndex === index}
             onClose={() => setOpenIndex(-1)}
-            imageSrc={url}
+            imageSrc={`${url}?&quality=100`}
           />
         </Box>
       ))}
