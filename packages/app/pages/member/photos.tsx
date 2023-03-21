@@ -1,7 +1,20 @@
 import { useUser } from '@/hooks/use-user'
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { AssetImage, PhotoCapture, PhotoUpload, ConfirmButton } from 'components/controls'
 import {
+  AssetImage,
+  PhotoCapture,
+  PhotoUpload,
+  ConfirmButton,
+  MemberAvatar,
+} from 'components/controls'
+import {
+  AlertDialog,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogBody,
+  AlertDialogCloseButton,
+  AlertDialogFooter,
+  AlertDialogOverlay,
   Alert,
   AlertIcon,
   HStack,
@@ -19,10 +32,14 @@ import {
   TabPanels,
   Tab,
   TabPanel,
+  Text,
   Wrap,
   Box,
   Flex,
   Link,
+  chakra,
+  StackProps,
+  Button,
 } from '@chakra-ui/react'
 import Page from 'components/Page'
 import { ArrowUpTrayIcon, CameraIcon } from '@heroicons/react/24/outline'
@@ -62,26 +79,47 @@ export default function PhotoAlbums({}: Props) {
     <Page title="Your Photos" loading={loading} requireAuth={true}>
       {member && (
         <>
-          <Flex p={4} gap={4} justifyItems="center" alignContent="center" justify="center">
-            <PhotoUpload
-              name={`Avatar for ${member?.id}`}
-              description={`Uploaded on ${new Date().toLocaleDateString()}`}
-              postUrl={`/api/member/${member?.id}/photos/picture`}
-              photoUrl={pictureSrc}
-              width="150px"
-              height="150px"
-              rounded="full"
-              bgGradient="linear(to-b, blue.500, accent.500)"
-              loading="lazy"
-              borderColor="accent.500"
-              borderWidth="2px"
-              setCompleted={(success) => {
-                if (success) {
-                  reload()
-                }
-              }}
-            />
+          <Flex align="center" justify="center">
+            {(pictureSrc && (
+              <Flex direction="column" mb={4}>
+                <MemberAvatar width="150px" height="150px" rounded="full" />
+                <ConfirmButton
+                  title="Delete Avatar"
+                  confirmMessage="Are you sure you want to delete this photo?"
+                  request={() => deleteJSON(`/api/member/${member?.id}/photos/picture`)}
+                  complete={(success) => {
+                    if (success) {
+                      setPictureSrc(null)
+                      reload()
+                    }
+                  }}
+                  size="sm"
+                  maxW="fit-content"
+                  margin="auto"
+                  successMessage="Avatar deleted"
+                  failureMessage="Avatar not deleted"
+                  mt={'-3rem'}
+                  variant="ghost"
+                  bg="white"
+                  opacity=".15"
+                  color="black"
+                  _hover={{ opacity: 1, bg: 'white' }}
+                >
+                  Delete
+                </ConfirmButton>
+              </Flex>
+            )) || (
+              <AddPhoto
+                name={`Avatar for ${member?.id}`}
+                title={'Avatar Picture'}
+                field={'picture'}
+                memberId={member?.id}
+                reload={reload}
+                rounded="full"
+              />
+            )}
           </Flex>
+
           {(member.show_photos && (
             <Tabs size="lg" align="center" variant="line" w="full" mb={10}>
               <TabList>
@@ -148,7 +186,7 @@ function PhotoList({ title, field, images, memberId, reload }: PhotoListProps) {
             mt={'-6rem'}
             variant="ghost"
             bg="white"
-            opacity=".55"
+            opacity=".15"
             color="black"
             _hover={{ opacity: 1, bg: 'white' }}
           >
@@ -162,113 +200,120 @@ function PhotoList({ title, field, images, memberId, reload }: PhotoListProps) {
   )
 }
 
-type PhotoProps = {
+type PhotoProps = StackProps & {
   title: string
   field: 'picture' | 'private' | 'public'
   memberId: string
   reload: () => void
 }
-function AddPhoto({ title, memberId, field, reload }: PhotoProps) {
-  const [image, setImage] = useState<string>()
-  const [file, setFile] = useState<File>()
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const [camera, setCamera] = useState<boolean>()
+const AddPhoto = chakra(
+  ({ title, memberId, field, reload, rounded = 'lg', ...props }: PhotoProps) => {
+    const [image, setImage] = useState<string>()
+    const [file, setFile] = useState<File>()
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const [camera, setCamera] = useState<boolean>()
 
-  const acceptPhoto = useCallback(
-    (data: string) => {
-      setImage(null)
-      fetch(data)
-        .then((res) => res.blob())
-        .then((blob) => {
-          let file = new File([blob], 'photo.jpg', { type: 'image/jpeg' })
-          setFile(file)
-          setImage(data)
-          setCamera(false)
-        })
-    },
-    [setFile]
-  )
+    const acceptPhoto = useCallback(
+      (data: string) => {
+        setImage(null)
+        fetch(data)
+          .then((res) => res.blob())
+          .then((blob) => {
+            let file = new File([blob], 'photo.jpg', { type: 'image/jpeg' })
+            setFile(file)
+            setImage(data)
+            setCamera(false)
+          })
+      },
+      [setFile]
+    )
 
-  const takePhoto = useCallback(() => {
-    setCamera(true)
-    onOpen()
-  }, [onOpen])
+    const takePhoto = useCallback(() => {
+      setCamera(true)
+      onOpen()
+    }, [onOpen])
 
-  const uploadPhoto = useCallback(() => {
-    setCamera(false)
-    onOpen()
-  }, [onOpen])
+    const uploadPhoto = useCallback(() => {
+      setCamera(false)
+      onOpen()
+    }, [onOpen])
 
-  const setCompleted = useCallback(() => {
-    onClose()
-    setImage(undefined)
-    setFile(undefined)
-    reload()
-  }, [onClose, reload])
+    const setCompleted = useCallback(() => {
+      onClose()
+      setImage(undefined)
+      setFile(undefined)
+      reload()
+    }, [onClose, reload])
 
-  return (
-    <>
-      <HStack
-        p={2}
-        direction="column"
-        align="center"
-        justify="center"
-        border="2px dashed"
-        borderColor="primary"
-        overflow="clip"
-        padding={4}
-        rounded="lg"
-        h={150}
-        w={150}
-      >
-        <IconButton
-          aria-label="Take Photo"
-          icon={<CameraIcon />}
-          size="lg"
-          variant="ghost"
-          onClick={takePhoto}
-          color="white"
-          rounded="full"
-          bg="primary.500"
-          opacity=".15"
-          _hover={{ opacity: 1, bg: 'primary.500' }}
+    return (
+      <>
+        <HStack
           p={2}
-        />
-        <IconButton
-          aria-label="Upload Photo"
-          icon={<ArrowUpTrayIcon />}
-          variant="ghost"
-          onClick={uploadPhoto}
-          color="white"
-          rounded="full"
-          size="lg"
-          bg="primary.500"
-          opacity=".15"
-          _hover={{ opacity: 1, bg: 'primary.500' }}
-          p={2}
-        />
-      </HStack>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Add {title}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody as={Flex} direction="column">
-            {(camera && <PhotoCapture onAccept={acceptPhoto} />) || (
-              <PhotoUpload
-                file={file}
-                name={`${memberId} ${field}-photo`}
-                description={`Uploaded on ${new Date().toLocaleDateString()}`}
-                postUrl={`/api/member/${memberId}/photos/${field}`}
-                onClear={() => setImage(undefined)}
-                photoUrl={image}
-                setCompleted={setCompleted}
-              />
-            )}
-          </ModalBody>
-          <ModalFooter></ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
-  )
-}
+          align="center"
+          justify="center"
+          border="2px dashed"
+          borderColor="primary"
+          overflow="clip"
+          padding={4}
+          rounded={rounded}
+          h={150}
+          w={150}
+          {...props}
+        >
+          <IconButton
+            aria-label="Take Photo"
+            icon={<CameraIcon />}
+            size="lg"
+            variant="ghost"
+            onClick={takePhoto}
+            color="white"
+            rounded="full"
+            bg="primary.500"
+            opacity=".15"
+            _hover={{ opacity: 1, bg: 'primary.500' }}
+            p={2}
+          />
+          <IconButton
+            aria-label="Upload Photo"
+            icon={<ArrowUpTrayIcon />}
+            variant="ghost"
+            onClick={uploadPhoto}
+            color="white"
+            rounded="full"
+            size="lg"
+            bg="primary.500"
+            opacity=".15"
+            _hover={{ opacity: 1, bg: 'primary.500' }}
+            p={2}
+          />
+        </HStack>
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Add {title}</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody as={Flex} direction="column">
+              {(camera && <PhotoCapture onAccept={acceptPhoto} />) || (
+                <PhotoUpload
+                  file={file}
+                  name={`${memberId} ${field}-photo`}
+                  description={`Uploaded on ${new Date().toLocaleDateString()}`}
+                  postUrl={`/api/member/${memberId}/photos/${field}`}
+                  onClear={() => {
+                    setImage(undefined)
+                    onClose()
+                  }}
+                  photoUrl={image}
+                  setCompleted={setCompleted}
+                />
+              )}
+            </ModalBody>
+          </ModalContent>
+          <ModalFooter p={4}>
+            <Text></Text>
+          </ModalFooter>
+        </Modal>
+      </>
+    )
+  }
+)

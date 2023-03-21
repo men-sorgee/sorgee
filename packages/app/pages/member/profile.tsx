@@ -231,7 +231,7 @@ function Form(props: PageProps) {
                   You can choose to make your profile private if you do not wish to show up in
                   member searches.*
                 </Text>
-                <Flex flexDirection={['column', 'row']} mt={4}>
+                <Flex flexDirection={['column', 'row']} gap={4} mt={4}>
                   <FieldSwitch
                     mb={4}
                     field="show_profile"
