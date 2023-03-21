@@ -85,7 +85,7 @@ function Apply({ promo, invite, ...props }: PageProps) {
   }, [invite, loading, promo, user, router, site, status])
 
   const intro = invite
-    ? `You've been invited to join our community! While your application is pre-approved, we still need to perform a few verification steps.`
+    ? `You've been invited to join our community! You have been vouched for, but we still need to perform a few verification steps.`
     : 'To apply for membership, complete this application. A member of our team will review your application and contact you with next steps.'
 
   const data: PageProps = { invite, promo, ...props, setFormError }

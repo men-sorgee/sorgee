@@ -8,6 +8,7 @@ import {
   UserEmailEvent,
   UserInvite,
 } from 'lib/models'
+
 import { ProviderType } from 'next-auth/providers'
 export type UserAccount = {
   id?: string
@@ -566,9 +567,7 @@ export const memberFields: Array<keyof Member> = [
 export const getAllowedUsers = (level: MemberLevel) => {
   let allowedLevels: UserType[] = ['brother', 'big_brother', 'staff']
   if (level >= MemberLevel.brother) allowedLevels = [...allowedLevels, 'inductee']
-  if (level >= MemberLevel.big_brother) allowedLevels = [...allowedLevels, 'inductee', 'pledge']
-  if ((level = MemberLevel.staff))
-    allowedLevels = [...allowedLevels, 'inductee', 'applicant', 'subscriber']
+  if (level >= MemberLevel.big_brother) allowedLevels = [...allowedLevels, 'pledge']
 
   return allowedLevels
 }

@@ -13,14 +13,10 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     userDetails.email = user.email
     userDetails.user_type = 'applicant'
     if (userDetails?.invite) {
-      const { v: vid, t: user_type } = userDetails.invite
-
+      const { v: vid } = userDetails.invite
       const vouchingUser = await getUser(vid)
-      if (vouchingUser?.status === 'active') {
+      if (vouchingUser && vouchingUser?.status === 'active') {
         userDetails.vouched_by = vid
-        if (user_type && vouchingUser.user_type == 'staff') {
-          userDetails.user_type = user_type as any
-        }
       }
       delete userDetails.invite
     }
