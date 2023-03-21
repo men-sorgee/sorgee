@@ -15,36 +15,33 @@ import {
   Flex,
   useColorModeValue,
   SlideFade,
+  LinkBox,
+  LinkOverlay,
+  Show,
 } from '@chakra-ui/react'
 
-import { isToday } from 'date-fns'
+import { addDays, isSameDay, isToday } from 'date-fns'
 import Page from 'components/Page'
 import { useUser, useUserEvents } from 'hooks'
 import Link from 'next/link'
-import { useCallback, useEffect, useState } from 'react'
-import { EventUser, Member, GroupEvent, MemberLevel, EventInvite, Rating } from 'lib/models'
-import {
-  EventCard,
-  EventRSVPCard,
-  EventTicket,
-  LinkButton,
-  MemberSpotlight,
-  RateItem,
-} from 'components/controls'
-import { JsonFetcher } from '../../lib/utils'
+import { SetStateAction, useCallback, useEffect, useState } from 'react'
+import { Member, GroupEvent, MemberLevel, EventInvite, Rating } from 'lib/models'
+import { EventBadge, EventCard, EventRSVPCard, EventTicket } from 'components/controls'
+import Calendar from 'react-calendar'
+import { brand } from '../../lib/config/brand'
 
 export type PageProps = {}
 
 export default function EventsPage({}: PageProps) {
-  const [allowed, setAllowed] = useState(false)
-  const { member, loading, level } = useUser()
-  const { invitations, newInvitationCount, upcoming, past, reload } = useUserEvents()
-
-  useEffect(() => {
-    if (!loading && member && !allowed) {
-      setAllowed(level > MemberLevel.pledge)
-    }
-  }, [member, level, loading, allowed])
+  const { member, loading, authorized } = useUser(MemberLevel.inductee)
+  const {
+    invitations,
+    newInvitationCount,
+    upcoming,
+    past,
+    reload,
+    loading: eventsLoading,
+  } = useUserEvents()
 
   const onEventsChange = useCallback(() => {
     reload()
@@ -55,8 +52,13 @@ export default function EventsPage({}: PageProps) {
   )
 
   return (
-    <Page loading={loading} title="Events" description="Upcoming events." requireAuth={true}>
-      {allowed ? (
+    <Page
+      loading={loading || eventsLoading}
+      title="Events"
+      description="Upcoming events."
+      requireAuth={true}
+    >
+      {authorized ? (
         <>
           {activeInvite && (
             <Box mb={4}>
@@ -70,6 +72,8 @@ export default function EventsPage({}: PageProps) {
               </EventRSVPCard>
             </Box>
           )}
+          <EventCalendar events={[...upcoming, ...invitations].map((i) => i.event)} />
+
           <Tabs isFitted m={0} isLazy>
             <div className="no-print">
               <TabList>
@@ -98,7 +102,7 @@ export default function EventsPage({}: PageProps) {
                 />
               </TabPanel>
               <TabPanel p={0}>
-                <Heading mb={4}>You&apos;re Invited</Heading>
+                <Heading mb={4}>Your Invitations</Heading>
 
                 <Invitations
                   list={invitations}
@@ -120,18 +124,10 @@ export default function EventsPage({}: PageProps) {
       ) : (
         <Box>
           <Heading>No Events</Heading>
-          {(level <= MemberLevel.pledge && (
-            <Text>
-              You cannot see or attend events yet. Once you have completed the application and
-              vetting process, events will show up here.
-            </Text>
-          )) ||
-            (member?.event_invites == false && (
-              <Text>
-                You have event invitations off. Update{' '}
-                <Link href="/member/settings">your settings</Link> to change that.
-              </Text>
-            ))}
+          <Text>
+            You cannot see or attend events yet. Once you have completed the application and vetting
+            process, events will show up here.
+          </Text>
         </Box>
       )}
     </Page>
@@ -159,6 +155,13 @@ function Invitations({
           No {name}
         </Heading>
         <Text>{text}</Text>
+        {member?.event_invites == false && (
+          <Alert mt={4} status="warning" rounded="lg" shadow="lg">
+            <AlertIcon />
+            You have event invitations turned off. Update&nbsp;
+            <Link href="/member/settings">your event settings</Link>&nbsp; to change that.
+          </Alert>
+        )}
       </Box>
     )
   }
@@ -238,5 +241,106 @@ function PastEvents({ member, list }: { list: EventInvite[]; member: Member }) {
         </EventCard>
       ))}
     </>
+  )
+}
+
+function EventCalendar({ events }: { events: GroupEvent[] }) {
+  const today = new Date()
+  const minDate = events.map((e) => new Date(e.datetime)).sort()[0] || today
+  const maxDate = addDays(today, 120)
+  const [value, setValue] = useState(new Date())
+
+  const onChange = useCallback((nextValue: SetStateAction<Date>) => {
+    setValue(nextValue)
+  }, [])
+  const EventView = ({ event }: { event: GroupEvent; full?: boolean }) => {
+    return (
+      <Box height="full" width="full" p={0} color="primary.500" cursor="pointer">
+        <LinkBox>
+          <EventBadge type={event.type} status={event.status} />
+          <Text p={0} m={0}>
+            {event.name}
+            <LinkOverlay href={`/events/${event.id}`} />
+          </Text>
+        </LinkBox>
+      </Box>
+    )
+  }
+
+  const tileContent = ({ date, view }: { date: Date; view: string }) => {
+    if (!events?.length) return null
+    // Add class to tiles in month view only
+    if (view === 'month') {
+      const event: GroupEvent = events
+        ? events?.find((e: GroupEvent, i: any) => isSameDay(new Date(e.datetime), date))
+        : null
+      // Check if a date React-Calendar wants to check is on the list of dates to add class to
+      if (!event) return <Flex height="full" width="full"></Flex>
+      return <EventView event={event} />
+    }
+  }
+
+  const line = useColorModeValue(brand.colors.primary[700], '#000000')
+  const bg = useColorModeValue('white', brand.colors.gray[300])
+  return (
+    <Show above="md">
+      <Box
+        my={4}
+        css={{
+          '.react-calendar ': {
+            width: '100%',
+            minH: '50vh',
+
+            margin: '2rem auto 0 auto',
+          },
+          '.react-calendar__navigation': {
+            backgroundColor: line,
+            color: 'white',
+            padding: '0 .5em',
+            display: 'flex',
+            borderRadius: '15px 15px 0 0',
+            fontWeight: 'bold',
+            fontSize: '2.5em',
+            gap: '1rem',
+          },
+          '.react-calendar__tile': {
+            minHeight: '100px',
+            borderColor: line,
+            border: '1px solid',
+            margin: '0',
+            color: line,
+            backgroundColor: bg,
+          },
+          '.react-calendar__month-view': {
+            borderColor: line,
+            borderStyle: 'solid',
+            borderWidth: '1px 1px 20px 1px',
+            borderRadius: '0 0 15px 15px',
+            backgroundColor: line,
+          },
+          '.react-calendar__month-view__weekdays': {
+            backgroundColor: line,
+            color: 'white',
+            textTransform: 'uppercase',
+          },
+          '.react-calendar__month-view__weekdays__weekday': {
+            padding: '0.5em',
+            textAlign: 'center',
+          },
+          'react-calendar__month-view__days': {
+            justifyContent: 'end',
+          },
+        }}
+      >
+        <Calendar
+          className="calendar"
+          value={value}
+          onChange={onChange}
+          tileContent={tileContent}
+          minDate={minDate}
+          maxDate={maxDate}
+        />
+      </Box>
+    </Show>
   )
 }
