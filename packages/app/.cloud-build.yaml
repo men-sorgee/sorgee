@@ -1,6 +1,7 @@
 steps:
   - name: gcr.io/kaniko-project/executor:latest
     args:
+      - executor
       - --context=packages/app
       - --dockerfile=packages/app/Dockerfile
       - --destination=$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
