@@ -1,8 +1,8 @@
 import { ManyItems } from '@directus/sdk'
 import Page from 'components/Page'
-import { signIn } from 'next-auth/react'
+import { addDays } from 'date-fns'
 import { useUser } from 'hooks'
-import { pruneUndefined, normalize, serialize } from 'lib/utils'
+import { pruneUndefined, normalize, serialize, getJSON } from 'lib/utils'
 import { useEffect, useState, createRef } from 'react'
 import { MemberSpotlight, MemberCard } from 'components/controls'
 import { ArrowRightIcon, ArrowLeftIcon, ChevronRightIcon, ChevronLeftIcon } from '@chakra-ui/icons'
@@ -11,6 +11,8 @@ import {
   HStack,
   Stat,
   StatGroup,
+  StatHelpText,
+  StatArrow,
   Select,
   StatLabel,
   StatNumber,
@@ -31,7 +33,9 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalOverlay,
+  Spacer,
   Text,
+  Wrap,
 } from '@chakra-ui/react'
 import useSWR from 'swr'
 import {
@@ -48,6 +52,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
 import { FieldCheckboxes, FieldInput, FieldCheckbox } from 'components/forms'
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline'
+import { MemberStats } from '../../lib/services/directus/server/users'
 
 export type QueryParams = Record<keyof SearchableMember, string[]> & {
   online: boolean
@@ -284,10 +289,87 @@ type FilterProps = {
 }
 const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
   const [showItem, setShowItem] = useState<any>(undefined)
-  const allowedUserTypes = getAllowedUsers(MemberLevel[currentMember?.user_type || 'inductee'])
+  const level = MemberLevel[currentMember?.user_type || 'inductee']
+  const allowedUserTypes = getAllowedUsers(level)
   const router = useRouter()
+  const [stats, setStats] = useState<MemberStats>()
+  const [statsR, setStatsR] = useState<MemberStats>()
+
+  useEffect(() => {
+    getJSON(`/api/stats`).then(({ data }) => {
+      setStats(data)
+    })
+    getJSON(`/api/stats?start=${addDays(new Date(), -14).toISOString()}`).then(({ data }) => {
+      setStatsR(data)
+    })
+  }, [])
   return (
     <>
+      {level >= MemberLevel.big_brother && (
+        <StatGroup
+          alignContent="center"
+          justifyContent="space-between"
+          justifyItems="stretch"
+          as={Flex}
+          w="full"
+          flexWrap={'wrap'}
+          gap={4}
+          shadow={0}
+          p={[1, 2, 4]}
+        >
+          {stats && (
+            <>
+              <Stat textAlign="center">
+                <StatLabel>Applicants</StatLabel>
+                <StatNumber>{stats.applicants}</StatNumber>
+                {statsR.applicants > 0 && (
+                  <StatHelpText title="In the past 14 days">
+                    <StatArrow type="increase" />+ {statsR.applicants}
+                  </StatHelpText>
+                )}
+              </Stat>
+              <Stat textAlign="center">
+                <StatLabel>Pledges</StatLabel>
+                <StatNumber>{stats.pledges}</StatNumber>
+                {statsR.pledges > 0 && (
+                  <StatHelpText title="In the past 14 days">
+                    <StatArrow type="increase" />+ {statsR.pledges}
+                  </StatHelpText>
+                )}
+              </Stat>
+              <Stat textAlign="center">
+                <StatLabel>Inductees</StatLabel>
+                <StatNumber>{stats.inductees}</StatNumber>
+
+                {statsR.inductees > 0 && (
+                  <StatHelpText title="In the past 14 days">
+                    <StatArrow type="increase" />+ {statsR.inductees}
+                  </StatHelpText>
+                )}
+              </Stat>
+              <Stat textAlign="center">
+                <StatLabel>Brothers</StatLabel>
+                <StatNumber>{stats.brothers}</StatNumber>
+                {statsR.brothers > 0 && (
+                  <StatHelpText title="In the past 14 days">
+                    <StatArrow type="increase" />+ {statsR.brothers}
+                  </StatHelpText>
+                )}
+              </Stat>
+
+              <Stat textAlign="center">
+                <StatLabel whiteSpace="nowrap">Big-Brothers</StatLabel>
+                <StatNumber>{stats.big_brothers}</StatNumber>
+                {statsR.big_brothers > 0 && (
+                  <StatHelpText title="In the past 14 days">
+                    <StatArrow type="increase" />+ {statsR.big_brothers}
+                  </StatHelpText>
+                )}
+              </Stat>
+            </>
+          )}
+        </StatGroup>
+      )}
       <Accordion
         allowToggle
         w="full"
@@ -299,15 +381,12 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
       >
         <AccordionItem w="full">
           <AccordionButton px={0} py={1} _expanded={{ bg: 'primary', color: 'white' }}>
-            <Flex direction="row" pr={4} gap={[2, 4]} justify="space-between" align="left" w="full">
+            <Flex direction="row" pr={4} gap={[2, 4]} justify="space-between" w="full">
               <Heading as="h3" size="h3" mt={1} ml={2}>
                 Filter
               </Heading>
-              <StatGroup as={HStack} spacing={4}>
-                <Stat colorScheme="primary">
-                  <StatLabel>Total</StatLabel>
-                  <StatNumber>{meta.total}</StatNumber>
-                </Stat>
+              <Spacer />
+              <StatGroup mt={1}>
                 <Stat>
                   <StatLabel>Filtered</StatLabel>
                   <StatNumber>{meta.filtered}</StatNumber>

@@ -1,5 +1,5 @@
-import { Profile } from 'lib/models/users'
-import { updateUser } from 'lib/services/directus/server'
+import { Applicant, Profile } from 'lib/models/users'
+import { updateUser, getUserEvents } from 'lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { AgreementData, ApiResponse, ApplicationStatus, MemberLevel } from 'lib/models'
 import { sendNotificationEmail, updateSendGrid } from 'lib/services/sendgrid/server'
@@ -25,16 +25,18 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
           button_url: 'https://guysnheat.com/member/profile',
         }
       )
+      const userEvents = await getUserEvents(applicant.id)
+      const hasAttendedEvent = userEvents.some((e) => e.attended)
 
-      const user = await updateUser(applicant.id, {
+      const updatedUser = (await updateUser(applicant.id, {
         application_status: 'approved',
-        user_type: applicant.vouched_by ? 'inductee' : 'pledge',
+        user_type: hasAttendedEvent ? 'brother' : applicant.vouched_by ? 'inductee' : 'pledge',
         approved_date: new Date().toISOString(),
-      })
+      })) as Applicant
 
-      //await updateSendGrid(user as Profile)
+      await updateSendGrid(updatedUser as Profile)
 
-      return res.status(200).json(ApiResponse(true))
+      return res.status(200).json(ApiResponse(updatedUser))
     }
   } catch (e: any) {
     console.error(e)

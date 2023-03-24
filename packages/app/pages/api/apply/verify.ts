@@ -6,11 +6,11 @@ import {
   UploadFolder,
 } from 'lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { ApiResponse, ApplicationStatus, DirectusFile } from 'lib/models'
+import { ApiResponse, Applicant, ApplicationStatus, DirectusFile } from 'lib/models'
 import { withApplicant, withMethods } from 'lib/utils/server'
 import { sendNotificationEmail } from 'lib/services/sendgrid/server'
 
-async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
+async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse<Applicant>>) {
   try {
     if (!withMethods(req, ['POST'])) return
 
@@ -29,11 +29,11 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
       `Verification for ${applicant.email}: ${applicant.first_name} ${applicant.last_name} `
     )
 
-    await updateUser(applicant.id, {
+    const updatedUser = (await updateUser(applicant.id, {
       photo: file.id,
       application_status: 'review',
       user_type: 'pledge',
-    })
+    })) as Applicant
 
     const status = ApplicationStatus[applicant.application_status]
     if (status == ApplicationStatus.verify && previousPhoto == null)
@@ -52,7 +52,7 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
       await deleteFile(previousPhoto.id)
     }
 
-    res.status(200).json(ApiResponse({}))
+    res.status(200).json(ApiResponse(updatedUser))
   } catch (e: any) {
     console.error(e)
     res.status(500).json(ApiResponse(null, e.message || e))
