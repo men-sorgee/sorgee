@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { ApiResponse, SurveyAnswer } from 'lib/models'
+import { ApiResponse, Question, SurveyAnswer } from 'lib/models'
 import { withMember, withMethods } from 'lib/utils/server'
 import { getSurveyAnswer, getQuestion, setSurveyAnswer } from 'lib/services/directus/server'
 

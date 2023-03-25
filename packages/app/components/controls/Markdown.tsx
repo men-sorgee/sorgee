@@ -79,7 +79,7 @@ export const Markdown = ({ content, size }: { content: string; size?: string }) 
     },
   })
   useEffect(() => {
-    setMarkdownSource(content)
+    setMarkdownSource(content || '')
   }, [content, setMarkdownSource])
   return reactContent
 }

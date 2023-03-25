@@ -38,7 +38,7 @@ function RadioButtonsField(props: Props) {
         onChange={(v) => {
           setValue(field, v)
         }}
-        value={fieldValue}
+        value={fieldValue?.toString()}
         as={Flex}
         justifyContent={justifyContent}
       >

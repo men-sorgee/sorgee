@@ -23,25 +23,20 @@ export type Survey = {
   date_created?: string
   user_updated?: string | DirectusUser
   date_updated?: string
-  name?: string
-  title?: string
+  name: string
+  title: string
+  description?: string
+  closing?: string
   notification?: string | Notification
-  questions: SurveyQuestion[]
+  questions: Array<SurveyQuestion>
   location?: string | Location
   event?: string | GroupEvent
-}
-
-export type Surveyed = {
-  id: number
-  surveys_id?: string | Survey
-  item?: string | any
-  collection?: string
 }
 
 export type SurveyQuestion = {
   id: number
   surveys_id?: string | Survey
-  survey_questions_id: Question
+  survey_questions_id: string | Question
   sort?: number
 }
 export type AnswerType =
@@ -78,13 +73,13 @@ export type AnswerControlType =
   | 'file'
 export type Question = {
   id: string
-  control?: AnswerControlType
-  answer_type?: AnswerType
+  control: AnswerControlType
+  answer_type: AnswerType
   number_minimum?: number
   number_maximum?: number
   question: string
   context?: string
-  options?: { name: string; value: string }[]
+  options?: Array<{ name: string; value: string }>
   user_created?: string | DirectusUser
   date_created?: string
   user_updated?: string | DirectusUser

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse, Survey } from 'lib/models'
-import { withMember } from 'lib/utils/server'
+import { withUser } from 'lib/utils/server'
 import { getSurvey } from 'lib/services/directus/server'
 
 export default async function survey(
@@ -8,7 +8,7 @@ export default async function survey(
   res: NextApiResponse<ApiResponse<Survey>>
 ) {
   try {
-    await withMember(req, res)
+    await withUser(req, res)
     const { id: i } = req.query
     const id = String(i)
     const survey = await getSurvey(id)

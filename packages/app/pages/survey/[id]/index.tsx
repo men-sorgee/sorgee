@@ -13,6 +13,7 @@ import {
   Spacer,
   Spinner,
   Text,
+  useBreakpointValue,
 } from '@chakra-ui/react'
 import {
   FieldInput,
@@ -26,17 +27,17 @@ import {
   FieldImage,
   FieldSwitch,
   FieldDate,
+  FieldRange,
 } from 'components/forms'
 import Page from 'components/Page'
 import { useRouter } from 'next/router'
 import { Steps, Step } from 'chakra-ui-steps'
-import { LinkButton } from 'components/controls'
-import FieldRange from '../../../components/forms/FieldRange'
+import { LinkButton, Markdown } from 'components/controls'
 
 type Props = {
   survey: Survey
   step: number
-  question: Question
+  question?: Question
 }
 
 export const getServerSideProps = async (context) => {
@@ -54,7 +55,8 @@ export const getServerSideProps = async (context) => {
   const step = Number(s)
   const { getSurvey } = await import('lib/services/directus/server/surveys')
   const survey = await getSurvey(id)
-  const question = survey.questions[step - 1].survey_questions_id
+
+  const question = survey.questions[step - 1]?.survey_questions_id
 
   return {
     props: pruneUndefined({
@@ -66,11 +68,12 @@ export const getServerSideProps = async (context) => {
 }
 
 export default function SurveyPage({ survey, question, step }: Props) {
+  const router = useRouter()
   const { loading: userLoading, member } = useUser()
   const event = survey?.event as GroupEvent
-  const router = useRouter()
-  const [answer, setAnswer] = useState<SurveyAnswer>()
 
+  const [answer, setAnswer] = useState<SurveyAnswer>(undefined)
+  const index = step - 1
   const [working, setWorking] = useState<boolean>(false)
   const toast = useToast()
   const methods = useForm({
@@ -82,7 +85,7 @@ export default function SurveyPage({ survey, question, step }: Props) {
   const { handleSubmit, reset } = methods
 
   useEffect(() => {
-    if (question.id != answer?.question) {
+    if (question && question.id != answer?.question) {
       getJSON<SurveyAnswer>(`/api/survey/${survey.id}/${question.id}`)
         .then((result) => {
           if (result.success) {
@@ -90,18 +93,21 @@ export default function SurveyPage({ survey, question, step }: Props) {
             reset({
               ...result.data,
             })
-          } else {
           }
         })
         .catch((error) => {
           console.error(error)
         })
     }
-  }, [survey.id, question.id, answer?.question, answer, router.asPath, reset])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [survey, question])
 
-  const next = useCallback(() => {
-    router.push(`/survey/${survey.id}/${step + 1}`)
-  }, [survey.id, step, router])
+  const next = useCallback(
+    (i?: number) => {
+      router.push(`/survey/${survey.id}/${i || step + 1}`)
+    },
+    [survey.id, step, router]
+  )
 
   const onSubmit = useCallback(
     async (data: any) => {
@@ -127,59 +133,79 @@ export default function SurveyPage({ survey, question, step }: Props) {
         setWorking(false)
       }
     },
-    [survey.id, question.id, next, reset, toast]
+    [survey.id, question?.id, next, reset, toast]
   )
-
+  const orientation = useBreakpointValue<any>(['vertical', 'vertical', 'horizontal'])
   return (
     <Page title={survey.name} loading={userLoading} requireAuth={true}>
       {member && survey && (
-        <>
-          <Steps activeStep={step} my={8} colorScheme="primary" color="white" responsive={false}>
-            {survey.questions.map((q, index) => (
-              <Step color="white" key={index} />
+        <Flex gap={4} direction={['row', 'row', 'column']} align="start" justify="stretch">
+          <Steps
+            orientation={orientation}
+            activeStep={index}
+            my={8}
+            colorScheme="primary"
+            color="white"
+            responsive={false}
+          >
+            {survey.questions.map((q, i) => (
+              <Step
+                color="white"
+                key={i}
+                cursor="pointer"
+                onClick={() => {
+                  next(i + 1)
+                }}
+              />
             ))}
           </Steps>
-          {(step < survey.questions.length && (
-            <Box mt={4}>
-              {answer && (
-                <FormProvider {...methods}>
-                  <form onSubmit={handleSubmit(onSubmit)}>
-                    <Flex direction="column" gap={4} key={question.id}>
-                      <Heading as="h5" size="h5" py={2} title={`Question.id: ${question.id}`}>
-                        {question.question}
-                      </Heading>
-                      <InnerField question={question} />
-                      <Text>{question.context}</Text>
-                      <FieldText
-                        mt={4}
-                        placeholder={question.context ? '' : 'Anything to add?'}
-                        field="answer_context"
-                      />
-                    </Flex>
-                    <HStack spacing={4} mt={4}>
-                      <Spacer />
-                      <Button colorScheme="accent" type="submit" disabled={working}>
-                        {working ? <Spinner /> : 'Next'}
-                      </Button>
-                    </HStack>
-                  </form>
-                </FormProvider>
-              )}
-            </Box>
-          )) || (
-            <Box textAlign="center">
-              <Heading textAlign="center">
-                Thank you
-                <br /> for completing the survey!
-              </Heading>
-              {event && (
-                <LinkButton href={`/events/${event.id}`} mt={4}>
-                  Rate Event Attendees
-                </LinkButton>
-              )}
-            </Box>
-          )}
-        </>
+          <Box flex="shrink" w="full">
+            <Markdown content={survey.description} />
+            {(question && (
+              <Box mt={4}>
+                {answer && (
+                  <FormProvider {...methods}>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                      <Flex direction="column" gap={4} key={question.id}>
+                        <Heading as="h5" size="h5" py={2} title={`Question.id: ${question.id}`}>
+                          {question.question}
+                        </Heading>
+                        <InnerField question={question} />
+                        <Text>{question.context}</Text>
+                        {question.control != 'textarea' && (
+                          <FieldText
+                            mt={4}
+                            placeholder={question.context ? '' : 'Anything to add?'}
+                            field="answer_context"
+                          />
+                        )}
+                      </Flex>
+                      <HStack spacing={4} mt={4}>
+                        <Spacer />
+                        <Button colorScheme="accent" type="submit" disabled={working}>
+                          {working ? <Spinner /> : 'Next'}
+                        </Button>
+                      </HStack>
+                    </form>
+                  </FormProvider>
+                )}
+              </Box>
+            )) || (
+              <Box textAlign="center">
+                <Heading textAlign="center">
+                  Thank you
+                  <br /> for completing the survey!
+                </Heading>
+                <Markdown content={survey.closing} />
+                {event && (
+                  <LinkButton href={`/events/${event.id}`} mt={4}>
+                    Rate Event Attendees
+                  </LinkButton>
+                )}
+              </Box>
+            )}
+          </Box>
+        </Flex>
       )}
     </Page>
   )
@@ -271,7 +297,7 @@ const InnerField = ({ question }: { question: Question }) => {
     case 'textarea':
       return <FieldText field={field} />
     case 'switch':
-      return <FieldSwitch field={field} />
+      return <FieldSwitch field={field} label="Yes" />
     case 'date':
       return <FieldDate field={field} />
     case 'image':
