@@ -188,6 +188,16 @@ export default function SurveyPage({ survey, question, step }: Props) {
 const getFieldName = (type: AnswerType) => {
   switch (type) {
     case 'string':
+    case 'date':
+    case 'email':
+    case 'url':
+    case 'tel':
+    case 'password':
+    case 'time':
+    case 'datetime-local':
+    case 'month':
+    case 'week':
+    case 'color':
     case 'text':
       return 'answer_text'
     case 'number':
@@ -213,10 +223,9 @@ const InnerField = ({ question }: { question: Question }) => {
   switch (control) {
     case 'input':
       return (
-        (type == 'string' && <FieldInput field={field} />) ||
         (type == 'number' && (
           <FieldNumber field={field} min={question.number_minimum} max={question.number_maximum} />
-        ))
+        )) || <FieldInput field={field} type={type} />
       )
     case 'select':
       return (
@@ -275,6 +284,5 @@ const InnerField = ({ question }: { question: Question }) => {
           postUrl={''}
         />
       )
-    default:
   }
 }
