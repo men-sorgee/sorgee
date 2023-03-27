@@ -93,7 +93,7 @@ export async function sendNotificationEmail(
   body = await convertMarkdownToHtml(body)
 
   const hash = Buffer.from(`${to_email}${subject}${body}`, 'base64').toString()
-  if (hashSet.has(hash)) {
+  if (hashSet.has(hash) && !to_email.includes('thebrotherhoodgroup')) {
     console.log(`SendGrid Email ${category} Skipped: ${to_email}`)
     return
   }

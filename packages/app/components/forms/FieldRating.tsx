@@ -16,14 +16,14 @@ type Props = RatingControlProps &
 
 const RatingField = (props: Props) => {
   const { field, label, help, registerOptions = {}, children, className, ...opts } = props
-  const { register, watch, setValue } = useFormContext()
+  const { watch, setValue } = useFormContext()
   const rating = Number(watch(field) || 0)
 
   return (
     <FieldWrapper field={field} label={label} help={help} className={className}>
       <Rating
         readonly={false}
-        defaultValue={rating}
+        value={rating}
         {...opts}
         onRateChange={(r) => {
           setValue(field, r)

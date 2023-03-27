@@ -57,24 +57,24 @@ const CheckboxesField = (props: Props) => {
         setOtherChecked(true)
       }
     }
-  }, [val, options, other, includeOther, defaultValues, field])
+  }, [val, options, other, includeOther, field, defaultValues])
 
   return (
     <FieldWrapper field={field} help={help} label={label} className={className} {...opts}>
-      <SimpleGrid gap={4} columns={[2, 2, 3, 3, 4]}>
+      <SimpleGrid gap={4} columns={[1, 2, 2, 3, 3, 4]}>
         <CheckboxGroup name={field} {...opts} defaultValue={val}>
           {options?.map(({ text, value }, index) => (
             <Checkbox key={index.toString()} value={value} {...register(field, registerOptions)}>
               {text}
             </Checkbox>
           ))}
-          {includeOther && (
-            <Checkbox value={other} {...register(field)}>
+          {/**includeOther && (
+            <Checkbox value={other} checked={otherChecked} {...register(field)}>
               Other
             </Checkbox>
-          )}
+          )**/}
         </CheckboxGroup>
-        {val.includes(other) && (
+        {otherChecked && (
           <Input
             color="text"
             size="sm"

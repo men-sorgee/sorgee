@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes } from 'react'
+import React, { InputHTMLAttributes, useState } from 'react'
 import { useFormContext, RegisterOptions } from 'react-hook-form'
 import FieldWrapper from './FieldWrapper'
 import { chakra, Checkbox, CheckboxProps } from '@chakra-ui/react'
@@ -15,8 +15,13 @@ type Props = CheckboxProps &
 
 const CheckboxField = (props: Props) => {
   const { field, label, help, registerOptions = {}, children, className, ...opts } = props
-  const { register, watch } = useFormContext()
-  const checked = watch(field)?.toString() === 'true'
+  const {
+    register,
+    formState: { defaultValues },
+  } = useFormContext()
+  const [checked] = useState<boolean>(
+    Boolean((defaultValues ? defaultValues[field] : 'false') || 'false')
+  )
   return (
     <FieldWrapper field={field} label={label} help={help} className={className}>
       <Checkbox checked={checked} {...opts} {...register(field, registerOptions)}>
