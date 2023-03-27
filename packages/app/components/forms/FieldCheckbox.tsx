@@ -19,7 +19,9 @@ const CheckboxField = (props: Props) => {
     register,
     formState: { defaultValues },
   } = useFormContext()
-  const [checked] = useState<boolean>(Boolean(defaultValues[field] || 'false'))
+  const [checked] = useState<boolean>(
+    Boolean((defaultValues ? defaultValues[field] : 'false') || 'false')
+  )
   return (
     <FieldWrapper field={field} label={label} help={help} className={className}>
       <Checkbox checked={checked} {...opts} {...register(field, registerOptions)}>
