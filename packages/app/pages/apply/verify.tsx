@@ -179,7 +179,7 @@ function Form({
             >
               <Input hidden onChange={onFileUploadChange} type="file" />
               <Text fontSize="xl" textAlign="center">
-                Click to Upload Image Here
+                Click to Upload Image
               </Text>
             </Center>
           )}
