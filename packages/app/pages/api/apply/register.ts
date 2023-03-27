@@ -16,9 +16,11 @@ export default async function getUserDetails(
       last_name,
       birth_month,
       birth_year,
-      email,
+      email: e,
       promo: promoCode,
     } = req.body as SignUpForm
+
+    const email = e?.toLocaleLowerCase()
 
     if (!first_name || !last_name || !birth_month || !birth_year || !email) {
       return res.status(400).json(ApiResponse(null, 'Missing required fields'))

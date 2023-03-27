@@ -19,7 +19,7 @@ async function Subscribe(req: NextApiRequest, res: NextApiResponse<ApiResponse>)
       member = await createUser({
         first_name: name,
         nickname: name,
-        email,
+        email: email.toLocaleLowerCase(),
         user_type: 'subscriber',
         in_sendgrid: true,
       })

@@ -104,6 +104,7 @@ const authAdapter: Adapter = {
     try {
       log('updateUser', user)
       const updatedUser = await updateUser(user.id, {
+        email: user.email.toLowerCase(),
         email_verified: user.emailVerified != null,
         status: 'active',
       })

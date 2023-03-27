@@ -10,7 +10,7 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     if (!user) throw new Error('Unauthorized')
 
     const userDetails = req.body as Applicant & Partial<User>
-    userDetails.email = user.email
+    userDetails.email = user.email.toLocaleLowerCase()
     userDetails.user_type = 'applicant'
     if (userDetails?.invite) {
       const { v: vid } = userDetails.invite
