@@ -1,6 +1,7 @@
 import { useMeta } from 'hooks/use-meta'
 import Head from 'next/head'
 import { getAssetUrl } from 'lib/utils'
+import { baseUrl } from 'lib/config'
 interface Props {}
 const Meta = (_props: Props) => {
   const { title, description, url, image } = useMeta()
@@ -10,6 +11,7 @@ const Meta = (_props: Props) => {
     <Head>
       <title key="title">{title}</title>
       <link rel="icon" href="/favicon.ico" />
+      <link rel="canonical" href={`${baseUrl}${url}`} />
       <meta name="robots" content="follow, index" />
       <meta charSet="utf-8" />
       <meta
