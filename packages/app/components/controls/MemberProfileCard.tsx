@@ -26,20 +26,20 @@ export const MemberProfileCard = chakra(({ member, onClick, ...props }: Props) =
   const levelColor = MemberLevelColorMap[levelValue]
   return (
     <>
-      <Card
-        w="full"
-        h="full"
-        bgGradient={`linear(to-bl, ${levelColor[0]}, ${levelColor[1]})`}
-        rounded="lg"
-        border="1px solid transparent"
-        borderColor="primary"
-        color="white"
-        minW="full"
-        overflow="hidden"
-        _hover={{ shadow: '2xl', borderColor: 'accent.500' }}
-        {...props}
-      >
-        <LinkBox key={member.id}>
+      <LinkBox key={member.id}>
+        <Card
+          w="full"
+          h="full"
+          bgGradient={`linear(to-bl, ${levelColor[0]}, ${levelColor[1]})`}
+          rounded="lg"
+          border="1px solid transparent"
+          borderColor="primary"
+          color="white"
+          minW="full"
+          overflow="hidden"
+          _hover={{ shadow: '2xl', borderColor: 'accent.500' }}
+          {...props}
+        >
           <CardHeader>
             <LinkOverlay
               as={NextLink}
@@ -77,8 +77,8 @@ export const MemberProfileCard = chakra(({ member, onClick, ...props }: Props) =
               Member Since: {new Date(member.date_created).toLocaleDateString()}
             </Text>
           </CardFooter>
-        </LinkBox>
-      </Card>
+        </Card>
+      </LinkBox>
     </>
   )
 })
