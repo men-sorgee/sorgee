@@ -74,7 +74,8 @@ export const MemberProfileCard = chakra(({ member, onClick, ...props }: Props) =
                   <br />
                 </>
               )}
-              Member Since: {new Date(member.date_created).toLocaleDateString()}
+              Member Since:{' '}
+              {new Date(member.approved_date || member.date_created).toLocaleDateString()}
             </Text>
           </CardFooter>
         </Card>
