@@ -66,12 +66,8 @@
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "autoimport.absolute": true,
   "autoimport.filesToScan": "packages/app/**/*.{ts,tsx}",
-  "autoimport.higherOrderComponents": "connect|withRouter|useEffect|",
-  "autoimport.semicolon": false,
   "autoimport.showNotifications": true,
-  "autoimport.sourceRoot": "packages/app/",
   "cloudcode.kubeconfigs": [
     {
       "name": "/home/jason/.kube/config",
@@ -79,4 +75,8 @@
     }
   ],
   "cloudcode.active-kubeconfig": "/home/jason/.kube/config",
+  "vitest.enable": true,
+  "vitest.include": [
+    "**/*.{test,spec}.{ts,tsx}"
+  ],
 }

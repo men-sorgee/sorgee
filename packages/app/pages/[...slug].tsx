@@ -2,37 +2,55 @@ import { Key, useEffect, useState } from 'react'
 import { Markdown, LinkButton, SubscribeBox } from 'components/controls'
 import Section from 'components/Section'
 import Page from 'components/Page'
-import { listActivePages } from 'lib/services/directus/static'
 import { Page as PageModel } from 'lib/models'
-import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next'
 import { ParsedUrlQuery } from 'querystring'
-import { Flex, HStack } from '@chakra-ui/react'
-import { useSite } from '../hooks/use-site'
-import NotFound from '../components/NotFound'
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, Flex, HStack } from '@chakra-ui/react'
+import { useSite } from 'hooks/use-site'
+import NotFound from 'components/NotFound'
+import { ChevronRightIcon } from '@chakra-ui/icons'
+import NextLink from 'next/link'
 
 interface Params extends ParsedUrlQuery {
   slug: string[]
 }
 
-export const getStaticPaths: GetStaticPaths<Params> = async () => {
-  const pages = await listActivePages()
-  const paths = pages?.map((page) => ({
-    params: { slug: page.slug.split('/') },
-  }))
+export const getStaticPaths = async () => {
+  const { listPages } = await import('lib/services/directus/static')
+  const pages = await listPages()
+  const paths = pages
+    ?.filter((p) => !p.static && !p.blog_article)
+    .map((page) => ({
+      params: { slug: page.slug.split('/') },
+    }))
   return {
     paths,
     fallback: 'blocking',
   }
 }
 
+if (import.meta.vitest) {
+  const { it, expect } = import.meta.vitest
+  it('exported pages', () => {
+    expect(getStaticPaths).toBeDefined()
+    getStaticPaths().then(
+      ({
+        paths, // An array of all the paths that the plugin found
+        fallback, // The fallback object that the plugin generated
+      }) => {
+        expect(paths.length).toBeGreaterThan(0)
+        expect(fallback).toBe('blocking')
+      }
+    )
+  })
+}
+
 interface Props {
   page: PageModel
 }
 
-export const getStaticProps: GetStaticProps<Props> = async ({
-  params,
-}: GetStaticPropsContext<Params>) => {
-  const pages = await listActivePages()
+export const getStaticProps = async ({ params }: { params: Params }) => {
+  const { listPages } = await import('lib/services/directus/static')
+  const pages = await listPages()
   const { slug } = params
   const path = slug.join('/')
   const page = pages.find((p) => p.slug === path)
@@ -40,6 +58,14 @@ export const getStaticProps: GetStaticProps<Props> = async ({
     return {
       notFound: true,
     }
+  }
+  if (page.children?.length) {
+    const children = await listPages(page.id)
+    page.children = children.filter((c) => c.status === 'published')
+  }
+  if (page.parent?.id) {
+    const parent = pages.find((p) => p.id == page.parent.id)
+    page.parent = parent
   }
   return {
     props: {
@@ -53,7 +79,8 @@ export default function DynamicPage({ page }: Props) {
   const [nextText, setNextText] = useState<string>(null)
   const [nextUrl, setNextUrl] = useState<string>('')
 
-  const { title, id, description, image, markdown, content, next_page, next_page_params } = page
+  const { title, id, description, image, markdown, content, next_page, next_page_params, parent } =
+    page
 
   useEffect(() => {
     if (!loading && next_page) {
@@ -72,8 +99,33 @@ export default function DynamicPage({ page }: Props) {
     return <NotFound />
   }
   return (
-    <Page id={id} title={title} description={description} image={image?.id}>
-      <Flex direction="column" as="section" gap={4} mx="auto">
+    <Page
+      id={id}
+      title={title}
+      description={description}
+      image={image?.id}
+      header={
+        parent && (
+          <Breadcrumb
+            fontSize={['md', 'lg', '2xl']}
+            spacing="8px"
+            separator={<ChevronRightIcon color="text" />}
+            fontWeight="extrabold"
+            color="text"
+          >
+            <BreadcrumbItem>
+              <BreadcrumbLink as={NextLink} href="/blog">
+                {parent.title}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem isCurrentPage>
+              <BreadcrumbLink>{title}</BreadcrumbLink>
+            </BreadcrumbItem>
+          </Breadcrumb>
+        )
+      }
+    >
+      <Flex direction="column" as="section" gap={2} mx="auto">
         <>
           {content.map((s: any, i: Key) => (
             <Section key={i} content={s} />
@@ -81,7 +133,7 @@ export default function DynamicPage({ page }: Props) {
         </>
         <Markdown content={markdown} />
       </Flex>
-      <HStack spacing={8}>
+      <HStack spacing={4}>
         {!site.invite_only && (
           <LinkButton my={8} colorScheme="accent" size="lg" href="/apply">
             Get Started

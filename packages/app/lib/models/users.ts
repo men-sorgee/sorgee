@@ -31,7 +31,7 @@ export type UserSession = {
   id: string
   expires?: string
   session_token?: string
-  user?: string | User
+  user: User
 }
 
 export type UserVerificationToken = {

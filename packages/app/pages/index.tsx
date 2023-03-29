@@ -1,5 +1,4 @@
 import { useMeta } from 'hooks/use-meta'
-import { getPageContentById } from 'lib/services/directus/static'
 import { Markdown, SubscribeBox } from 'components/controls'
 import { signIn } from 'next-auth/react'
 import Section from 'components/Section'
@@ -9,13 +8,18 @@ import { LinkButton } from 'components/controls'
 import { useEffect } from 'react'
 import { useSite } from '../hooks'
 import Link from 'next/link'
+import { homePage } from '../lib/config'
 
 interface Props {
-  page: Page
+  page: Pick<
+    Page,
+    'title' | 'description' | 'content' | 'markdown' | 'image' | 'next_page' | 'next_page_params'
+  >
 }
 
 export const getStaticProps = async () => {
-  const page = await getPageContentById('ac330d1b-0340-4a61-9b42-996aa0936d2b')
+  const { getPageById } = await import('lib/services/directus/static')
+  const page = await getPageById(homePage)
 
   return {
     props: {

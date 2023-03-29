@@ -12,10 +12,12 @@ const getConfig = ( phase ) => {
    * @type {import('next').NextConfig}
    */
   const nextConfig = {
+
     publicRuntimeConfig: {
       dev
     },
     pageExtensions: ['ts', 'tsx'],
+
     images: {
       domains: [
         'guysnheat.com',
@@ -63,8 +65,8 @@ const getConfig = ( phase ) => {
         }
       ];
     },
-    poweredByHeader: false
-
+    poweredByHeader: false,
+    crossOrigin: false
   };
   return nextConfig;
 };

@@ -9,7 +9,7 @@ import Actions from './Actions'
 import Splash from './Splash'
 import { ErrorBoundary } from 'components/ErrorBoundary'
 import { useSession } from 'next-auth/react'
-import { MemberLevel } from '../../lib/models'
+import { MemberLevel } from 'lib/models'
 export const constrained = {
   maxW: ['full', 'lg', '2xl', '3xl', '4xl', '5xl'],
   mx: 'auto',
@@ -30,7 +30,7 @@ function Layout({
   const [path] = useState<string>(router?.asPath)
   const height = authenticated ? '146px' : '75px'
   const { isOpen, onOpen } = useDisclosure()
-  const level = MemberLevel[session?.user?.user_type || 'subscriber']
+
   useEffect(() => {
     if (!loading) {
       if (authenticated == undefined) {
@@ -42,17 +42,19 @@ function Layout({
         }, 1000)
       }
     }
-  }, [status, authenticated, loading, onOpen, isOpen])
+  }, [status, authenticated, loading, onOpen, isOpen, session?.user])
 
   if (path?.startsWith('/code')) {
     return <>{children}</>
   }
+  const userType = session?.user?.user_type || 'subscriber'
+  const level = MemberLevel[userType]
   return (
     <>
       <Meta />
       <Flex direction="column" flex="1" overflowX="clip">
         <ErrorBoundary>
-          <Header />
+          <Header userType={userType} />
           <Flex
             as="main"
             flex="1 100%"

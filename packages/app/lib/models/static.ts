@@ -1,3 +1,4 @@
+import { MemberLevel, UserType } from 'lib/models'
 import { Block } from 'editorjs-blocks-react-renderer'
 import { DirectusFile, DirectusUser } from './directus'
 import { User } from './users'
@@ -27,27 +28,32 @@ export type PageItem = {
   title: string
   path: string
   children: PageItem[]
+  isChild?: boolean
+  visibility?: UserType[]
 }
 
 export type Page = {
   id: string
-  status: string
-  user_created?: string
-  date_created?: string
-  user_updated?: string
-  date_updated?: string
   title?: string
   description?: string
-  slug?: string
-  in_menu?: boolean
+  slug: string
+  in_menu: boolean
+  blog_article: boolean
+  static: Boolean
   image?: DirectusFile
   sort: number
-  parent?: Partial<Page>
-  children?: Partial<Page>[]
+  visibility: UserType[]
+  parent?: Page
+  children?: Page[]
   markdown?: string
   content: PageContent[]
   next_page?: Page
   next_page_params?: string
+  status: 'published' | 'draft'
+  user_created?: string
+  date_created?: string
+  user_updated?: string
+  date_updated?: string
 }
 
 export type Promo = {
@@ -82,7 +88,7 @@ export type Promos = {
 
 export type PageContent = {
   id: string
-  status: string
+  status: 'published' | 'draft'
   sort?: number
   name?: string
   html?: string

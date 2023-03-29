@@ -1,14 +1,17 @@
 import {
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
   Box,
   Flex,
-  Text,
   IconButton,
   Stack,
   Collapse,
   Icon,
   Link,
   useDisclosure,
-  useColorMode,
   chakra,
   BoxProps,
   HStack,
@@ -19,78 +22,92 @@ import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Bars4Icon, XMarkIcon } from '@heroicons/react/24/solid'
 import { Logo } from '../controls'
 import { useState, useEffect, useCallback } from 'react'
-import { Page, PageItem } from 'lib/models'
+import { Page, PageItem, UserType } from 'lib/models'
 import NextLink from 'next/link'
-import { listActivePages } from 'lib/services/directus/static'
 import { constrained } from './index'
 import User from './User'
 import { useRouter } from 'next/router'
+
 export type Props = BoxProps & {
+  userType: UserType
   children?: React.ReactNode | React.ReactNode[]
 }
 
-const recursiveChildren = (parent: Page, pages: Page[]) => {
-  return pages
-    .filter((child) => (child.parent as string) === parent.id)
-    .map((child) => {
-      return {
-        title: child.title,
-        path: `/${parent.slug}/${child.slug}`,
-        children: recursiveChildren(child, pages),
-      }
-    })
-}
-
-function Header({ children, ...props }: Props) {
+function Header({ userType, children, ...props }: Props) {
   const router = useRouter()
   const { isOpen, onToggle, onClose } = useDisclosure()
   const [pages, setPages] = useState<PageItem[]>()
 
-  const routeStart = useCallback(() => {
-    onClose()
-  }, [onClose])
-
   useEffect(() => {
-    router.events.on('routeChangeStart', routeStart)
-
-    if (!pages) {
-      listActivePages().then((pages) => {
-        setPages(
-          pages
-            .filter((p) => p.in_menu)
-            .map((p) => {
-              return {
-                title: p.title,
-                path: `/${p.slug}`,
-                children: recursiveChildren(p, pages),
-              }
-            })
-        )
-      })
+    const routeStart = () => {
+      if (isOpen) onClose()
     }
+    router.events.on('routeChangeStart', routeStart)
     return () => {
       router.events.off('routeChangeStart', routeStart)
     }
-  }, [setPages, pages, router.events, routeStart])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const canSee = useCallback(
+    (visibility: UserType[] = []) => {
+      if (visibility.length == 0) return true
+      return visibility.includes(userType)
+    },
+    [userType]
+  )
+  const mapPage = useCallback(
+    (page: Page, isChild: boolean = false): PageItem => {
+      return {
+        title: page.title,
+        path: `/${page.slug}`,
+        children:
+          page.children?.filter((p) => canSee(p.visibility)).map((p) => mapPage(p, true)) || [],
+        isChild: isChild || page.parent?.id != undefined,
+        visibility: page.visibility || [],
+      }
+    },
+    [canSee]
+  )
+  useEffect(() => {
+    if (!pages) {
+      import('lib/services/directus/static')
+        .then(({ listPages }) => listPages())
+        .then((pages) => {
+          setPages(
+            pages
+              .filter((p) => !p.parent && p.status == 'published' && p.in_menu)
+              .map((p) => mapPage(p))
+          )
+        })
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pages, userType])
+
+  const mainPages = pages?.filter((p) => p.children.length == 0) || []
+  const menus = pages?.filter((p) => p.children.length > 0) || []
 
   const navItems: Array<NavItem> = [
     {
       title: 'INFORMATION',
       path: null,
       children: [
+        ...(mainPages.filter((p) => canSee(p.visibility)) || []),
         {
-          title: 'Home',
-          path: '/',
+          title: 'Health & Wellness',
+          path: '/blog',
           children: [],
         },
-        ...(pages || []),
         {
           title: 'Pricing',
           path: '/pricing',
           children: [],
+          visibility: ['staff'],
         },
       ],
     },
+    ...menus.filter((p) => canSee(p.visibility)),
     {
       title: 'LEGAL',
       children: [
@@ -115,17 +132,26 @@ function Header({ children, ...props }: Props) {
       ],
     },
   ]
+  const bg = useColorModeValue('primary.800', 'black')
+
+  const NavMenu = ({ navItems, ...props }: StackProps & { navItems: NavItem[] }) => {
+    return (
+      <Accordion allowToggle defaultIndex={[0]} as="nav" color={'white'} __css={props} mb={4}>
+        {navItems.map((navItem, index) => (
+          <NavMenuItem
+            key={navItem.title}
+            onClose={onClose}
+            item={navItem}
+            childrenOpen={index == 0}
+          />
+        ))}
+      </Accordion>
+    )
+  }
+
   return (
     <>
-      <Box
-        {...props}
-        as="header"
-        color="white"
-        shadow="xl"
-        bg={useColorModeValue('primary.800', 'black')}
-        minH="60px"
-        px={0}
-      >
+      <Box {...props} as="header" color="white" shadow="xl" bg={bg} minH="60px" px={0}>
         <HStack
           alignItems="center"
           alignContent="center"
@@ -157,65 +183,56 @@ function Header({ children, ...props }: Props) {
           </Box>
         </HStack>
         <Collapse in={isOpen} animateOpacity>
-          <MobileNav navItems={navItems} {...constrained} />
+          <NavMenu navItems={navItems} {...constrained} />
         </Collapse>
       </Box>
     </>
   )
 }
 
-const MobileNav = ({ navItems, ...props }: StackProps & { navItems: NavItem[] }) => {
+const NavMenuItem = ({
+  onClose,
+  childrenOpen = false,
+  item: { title: label, children, path },
+}: {
+  onClose: () => void
+  childrenOpen?: boolean
+  item: NavItem
+}) => {
   return (
-    <Stack as="nav" color={'white'} __css={props} mb={4}>
-      {navItems?.map((navItem, index) => (
-        <MobileNavItem key={navItem.title} {...navItem} childrenOpen={index == 0} />
-      ))}
-    </Stack>
-  )
-}
-
-const MobileNavItem = ({ title: label, children, path, childrenOpen = false }: NavItem) => {
-  const { isOpen, onToggle } = useDisclosure({
-    defaultIsOpen: childrenOpen,
-  })
-
-  return (
-    <Stack onClick={children && onToggle}>
-      <Flex
-        py={4}
-        as={Link}
-        href={path ?? '#'}
-        justify={'space-between'}
-        align={'center'}
-        _hover={{
-          textDecoration: 'none',
-        }}
-      >
-        <Text fontWeight={600} color={'white'} textTransform="uppercase">
-          {label}
-        </Text>
-        {children && (
-          <Icon
-            as={ChevronDownIcon}
-            transition={'all .25s ease-in-out'}
-            transform={isOpen ? 'rotate(180deg)' : ''}
-            w={6}
-            h={6}
-          />
-        )}
-      </Flex>
-
-      <Collapse in={isOpen} animateOpacity>
-        <Stack
-          spacing={2}
-          pl={4}
-          borderLeft={1}
-          borderStyle={'solid'}
-          borderColor={'white'}
-          align={'start'}
-        >
-          {children &&
-            children.map((child: NavItem, i: number) => (
+    <AccordionItem>
+      <AccordionButton>
+        <Box flex="1" textAlign="left">
+          <Link
+            as={path ? NextLink : 'div'}
+            _hover={{
+              textDecoration: 'none',
+            }}
+            onClick={() => {
+              onClose()
+            }}
+            href={path}
+            fontWeight={600}
+            color={'white'}
+            textTransform="uppercase"
+          >
+            {label}
+          </Link>
+        </Box>
+        <AccordionIcon />
+      </AccordionButton>
+      {children && (
+        <AccordionPanel>
+          <Stack
+            spacing={2}
+            pl={2}
+            ml={2}
+            align={'start'}
+            borderLeft={1}
+            borderStyle={'solid'}
+            borderColor={'white'}
+          >
+            {children.map((child: NavItem, i: number) => (
               <Box key={i} w="full" _hover={{ bg: 'primary.400' }} py={1} px={2}>
                 {(child.reload && (
                   <a style={{ display: 'block' }} href={child.path}>
@@ -223,9 +240,12 @@ const MobileNavItem = ({ title: label, children, path, childrenOpen = false }: N
                   </a>
                 )) || (
                   <Link
+                    as={NextLink}
                     display="block"
                     _hover={{ textDecoration: 'none' }}
-                    as={NextLink}
+                    onClick={() => {
+                      onClose()
+                    }}
                     py={2}
                     href={child.path}
                   >
@@ -234,9 +254,10 @@ const MobileNavItem = ({ title: label, children, path, childrenOpen = false }: N
                 )}
               </Box>
             ))}
-        </Stack>
-      </Collapse>
-    </Stack>
+          </Stack>
+        </AccordionPanel>
+      )}
+    </AccordionItem>
   )
 }
 
