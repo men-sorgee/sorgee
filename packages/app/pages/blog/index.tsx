@@ -168,7 +168,7 @@ export default function Blog({ page }: Props) {
       <Heading as="h3" size="md" mt={10} mb={0}>
         Recent Articles:
       </Heading>
-      <SimpleGrid spacing={6} mt="5" p={[0, 0, 4]} columns={[1, 2, 2, 3, 4]}>
+      <SimpleGrid spacing={6} mt="5" p={[0, 0, 4]} columns={[1, 2, 3, 4]}>
         {children
           .filter((p) => p.slug != latest.slug)
           .map((page) => (
