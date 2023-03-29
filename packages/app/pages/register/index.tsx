@@ -9,20 +9,25 @@ import { FieldInput, FieldSelect } from 'components/forms'
 import { postJSON } from 'lib/utils'
 import { Markdown } from 'components/controls'
 import { useRouter } from 'next/router'
+import { registrationPage } from 'lib/config'
 
 export type Props = {
   promo?: Promo
   birthMonthOptions: FieldOptions
+  markdown: string
 }
 
 export async function getServerSideProps() {
   const { getFieldOptions } = await import('lib/services/directus/server')
   const birthMonthOptions = await getFieldOptions<User>('birth_month')
+  const { getPageById } = await import('lib/services/directus/static')
+  const page = await getPageById(registrationPage)
+  const { markdown } = page
 
-  return { props: { birthMonthOptions } }
+  return { props: { birthMonthOptions, markdown } }
 }
 
-export default function Register({ promo, birthMonthOptions }: Props) {
+export default function Register({ promo, birthMonthOptions, markdown }: Props) {
   const { site, loading } = useSite()
   const toast = useToast()
   const router = useRouter()
@@ -83,7 +88,7 @@ export default function Register({ promo, birthMonthOptions }: Props) {
       <Heading size="lg" maxW="xl">
         Use the form below to enter your email address and basic info to register.
       </Heading>
-
+      <Markdown content={markdown} />
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <SimpleGrid columns={[1, 2]} spacing={4}>

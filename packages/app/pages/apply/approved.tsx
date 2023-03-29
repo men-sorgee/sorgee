@@ -33,10 +33,7 @@ function Approved() {
           <Text textAlign="center">
             You will now get periodic event invites as well as access to our member-only content.
           </Text>
-          <LinkButton colorScheme="primary" href="/members">
-            View Members
-          </LinkButton>
-          <Text>Or, manage your account:</Text>
+          <Text>Complete your account:</Text>
           <HStack spacing={4} textAlign="center" mt={4}>
             <LinkButton href="/member/settings" colorScheme="primary">
               Manage Account

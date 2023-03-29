@@ -8,8 +8,23 @@ import FieldCheckbox from 'components/forms/FieldCheckbox'
 import { postJSON } from 'lib/utils'
 import Page from 'components/Page'
 import { useRouter } from 'next/router'
+import { rulesPage } from 'lib/config'
+import { Markdown } from 'components/controls'
+interface Props {
+  markdown: string
+}
 
-function Agreement() {
+export const getStaticProps = async () => {
+  const { getPageById } = await import('lib/services/directus/static')
+  const page = await getPageById(rulesPage)
+  const { markdown } = page
+  return {
+    props: {
+      markdown,
+    },
+  }
+}
+export default function Agreement({ markdown }: Props) {
   const { loading, reload } = useUser(MemberLevel.applicant, ApplicationStatus.agreement)
 
   return (
@@ -19,12 +34,12 @@ function Agreement() {
       requireAuth={true}
       header={<ApplicationSteps status={'agreement'} />}
     >
-      <Form reload={reload} />
+      <Form reload={reload} markdown={markdown} />
     </Page>
   )
 }
 
-function Form({ reload }: { reload: () => Promise<Member> }) {
+function Form({ reload, markdown }: { markdown: string; reload: () => Promise<Member> }) {
   const router = useRouter()
   const [completed, setCompleted] = useState(false)
   const methods = useForm<AgreementData>({
@@ -50,39 +65,49 @@ function Form({ reload }: { reload: () => Promise<Member> }) {
   return (
     !completed && (
       <FormProvider {...methods}>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          style={{ maxWidth: 'xl', margin: '0 auto', textAlign: 'center' }}
-        >
-          <Text textAlign="center" fontSize="xl">
-            Please read and agree to our{' '}
-            <a
-              href="/terms"
-              target="_blank"
-              style={{ textDecoration: 'underline' }}
-              className="link"
-            >
-              terms
-            </a>{' '}
-            and{' '}
-            <a
-              href="/terms"
-              target="_blank"
-              style={{ textDecoration: 'underline' }}
-              className="link"
-            >
-              privacy policy.
-            </a>
-            By entering this site, you commit to keep all user information confidential and not to
-            share it with any third parties. You also agree to not use this site for any illegal
-            purposes.
-          </Text>
-          <Box w="100px" mx="auto" mt={4}>
+        <form onSubmit={handleSubmit(onSubmit)} style={{ maxWidth: 'xl', margin: '0 auto' }}>
+          <Box
+            css={{
+              h2: { display: 'none' },
+              img: { display: 'none' },
+            }}
+            mt={4}
+          >
+            <h3>Site Rules</h3>
+            <Markdown content={markdown} size="xl" />
+            <Text fontSize="xl">
+              Please read and agree to our rules,{' '}
+              <a
+                href="/terms"
+                target="_blank"
+                style={{ textDecoration: 'underline' }}
+                className="link"
+              >
+                terms
+              </a>{' '}
+              and{' '}
+              <a
+                href="/terms"
+                target="_blank"
+                style={{ textDecoration: 'underline' }}
+                className="link"
+              >
+                privacy policy.
+              </a>
+              By entering this site, you commit to keep all user information confidential and not to
+              share it with any third parties. You also agree to not use this site for any illegal
+              purposes.
+            </Text>
+          </Box>
+          <Box mt={4}>
             <FieldCheckbox
               textAlign="center"
               field="agree"
               registerOptions={{
-                required: 'You must agree to the terms and conditions',
+                required: {
+                  value: true,
+                  message: 'You must agree to the terms and conditions',
+                },
               }}
             >
               I agree
@@ -97,5 +122,3 @@ function Form({ reload }: { reload: () => Promise<Member> }) {
     )
   )
 }
-
-export default Agreement

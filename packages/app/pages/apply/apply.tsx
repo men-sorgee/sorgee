@@ -23,6 +23,7 @@ import {
 import {
   Alert,
   Button,
+  Box,
   AlertIcon,
   SimpleGrid,
   GridItem,
@@ -35,8 +36,9 @@ import {
 import ApplicationSteps from './_steps'
 import Page from 'components/Page'
 import { signIn, useSession } from 'next-auth/react'
-import { useSite } from '../../hooks/use-site'
-import { useUser } from '../../hooks/use-user'
+import { useSite, useUser } from 'hooks'
+import { applyPage } from 'lib/config'
+import { Markdown } from '../../components/controls'
 
 export type PageProps = {
   invite?: UserInvite
@@ -52,11 +54,14 @@ export type PageProps = {
   member: Profile
   setFormError: (error: string) => void
   promo?: Promo
+  markdown: string
 }
 
 export const getServerSideProps = async (_context) => {
   const { getFieldOptions } = await import('lib/services/directus/server')
-
+  const { getPageById } = await import('lib/services/directus/static')
+  const page = await getPageById(applyPage)
+  const { markdown } = page
   const props: Partial<PageProps> = {
     spectrumOptions: await getFieldOptions('spectrum'),
     relationshipOptions: await getFieldOptions('relationship_status'),
@@ -64,11 +69,12 @@ export const getServerSideProps = async (_context) => {
     positionsOptions: await getFieldOptions('my_positions'),
     skinToneOptions: await getFieldOptions('skin_tone'),
     birthMonthOptions: await getFieldOptions('birth_month'),
+    markdown,
   }
   return { props }
 }
 
-function Apply({ promo, invite, ...props }: PageProps) {
+function Apply({ promo, invite, markdown, ...props }: PageProps) {
   const { status } = useSession({
     required: true,
     onUnauthenticated: () => {
@@ -97,7 +103,7 @@ function Apply({ promo, invite, ...props }: PageProps) {
     ? `You've been invited to join our community! You have been vouched for, but we still need to perform a few verification steps.`
     : 'To apply for membership, complete this application. A member of our team will review your application and contact you with next steps.'
 
-  const data: PageProps = { invite, promo, ...props, setFormError }
+  const data: Omit<PageProps, 'markdown'> = { invite, promo, ...props, setFormError }
   return (
     <Page
       title="Registration"
@@ -107,11 +113,9 @@ function Apply({ promo, invite, ...props }: PageProps) {
     >
       <>
         <Text fontSize={'xl'}>{intro}</Text>
-        <Text fontSize={'xl'} pb={4}>
-          This is a private group, not open to the public. There is a vouching, vetting and
-          verification process for everyone. We do this to ensure the safety of our group and to
-          filter out liars, spammers, bots, and flakes.
-        </Text>
+        <Box pb={4}>
+          <Markdown content={markdown} size={'xl'} />
+        </Box>
         {(formError && (
           <Alert status="error">
             <AlertIcon />
@@ -128,7 +132,7 @@ function Form({
   user,
   reload,
   ...props
-}: PageProps & { user: Applicant; reload: () => Promise<Member> }) {
+}: Omit<PageProps, 'markdown'> & { user: Applicant; reload: () => Promise<Member> }) {
   const router = useRouter()
   const {
     invite,
