@@ -18,7 +18,7 @@ export const getStaticPaths = async () => {
   const { listPages } = await import('lib/services/directus/static')
   const pages = await listPages()
   const paths = pages
-    ?.filter((p) => !p.static && !p.blog_article)
+    ?.filter((p) => !p.static && !p.blog_article && !p.slug.startsWith('blog'))
     .map((page) => ({
       params: { slug: page.slug.split('/') },
     }))
