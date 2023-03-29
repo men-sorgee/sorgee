@@ -15,7 +15,9 @@ import {
   StatLabel,
   StatNumber,
   AvatarProps,
+  HStack,
 } from '@chakra-ui/react'
+import { BuddyControl } from './BuddyControl'
 import { useMember, useMeta } from 'hooks'
 import { formatDistanceToNowStrict } from 'date-fns'
 import {
@@ -72,7 +74,8 @@ export const MemberSpotlight = ({
         px={5}
         py={4}
         bgGradient={full ? `linear(to-bl, ${levelColor[1]}, ${levelColor[0]})` : null}
-        rounded="lg"
+        rounded="md"
+        borderRadius=".3rem .3rem 0 0"
         color="white"
       >
         <MemberHeader member={member} zoom={true} color={color} size={size} minimal={!full}>
@@ -117,7 +120,7 @@ export const MemberSpotlight = ({
         )}
       </Box>
       {full && member.show_photos && (
-        <Box my={4} flex="grow">
+        <Box my={4} p={2} flex="grow">
           {publicPhotos.length > 0 && (
             <ImageGallery
               images={publicPhotos.map((p: UserPhoto) => `/api/asset/${p.directus_files_id}`)}
@@ -135,6 +138,7 @@ export const MemberSpotlight = ({
           w="full"
           px={2}
           flex="grow"
+          my={4}
         >
           <TabList>
             <Tab fontWeight="bold">General</Tab>
@@ -144,7 +148,14 @@ export const MemberSpotlight = ({
           </TabList>
           <TabPanels maxH="100%" overflowY="auto" my={2}>
             <TabPanel p={4}>
-              <Heading as="h5" mt={0} size="h5" mb={2} borderBottom="1px solid" borderColor="text">
+              <Heading
+                as="h5"
+                mt={0}
+                size="h5"
+                mb={2}
+                borderBottom="1px solid"
+                borderColor="primary"
+              >
                 Features
               </Heading>
               <MemberPropertyGroup
@@ -156,7 +167,14 @@ export const MemberSpotlight = ({
               />
             </TabPanel>
             <TabPanel>
-              <Heading as="h5" size="h5" mt={0} mb={2} borderBottom="1px solid" borderColor="text">
+              <Heading
+                as="h5"
+                size="h5"
+                mt={0}
+                mb={2}
+                borderBottom="1px solid"
+                borderColor="primary"
+              >
                 Features
               </Heading>
               <MemberPropertyGroup
@@ -167,7 +185,7 @@ export const MemberSpotlight = ({
                 fields={fields}
                 maxCols={2}
               />
-              <Heading as="h5" size="h5" mb={2} borderBottom="1px solid" borderColor="text">
+              <Heading as="h5" size="h5" mb={2} borderBottom="1px solid" borderColor="primary">
                 Roles
               </Heading>
               <MemberPropertyGroup
@@ -180,7 +198,14 @@ export const MemberSpotlight = ({
               />
             </TabPanel>
             <TabPanel>
-              <Heading as="h5" size="h5" mt={0} mb={2} borderBottom="1px solid" borderColor="text">
+              <Heading
+                as="h5"
+                size="h5"
+                mt={0}
+                mb={2}
+                borderBottom="1px solid"
+                borderColor="primary"
+              >
                 Events
               </Heading>
               <MemberPropertyGroup
@@ -190,7 +215,7 @@ export const MemberSpotlight = ({
                 show={member?.show_events}
                 fields={fields}
               />
-              <Heading as="h5" size="h5" mt={0} mb={2} borderBottom="1px solid" borderColor="text">
+              <Heading as="h5" size="h5" mb={2} borderBottom="1px solid" borderColor="primary">
                 Sexual
               </Heading>
               <MemberPropertyGroup
@@ -202,7 +227,14 @@ export const MemberSpotlight = ({
               />
             </TabPanel>
             <TabPanel>
-              <Heading as="h5" size="h5" mt={0} mb={2} borderBottom="1px solid" borderColor="text">
+              <Heading
+                as="h5"
+                size="h5"
+                mt={0}
+                mb={2}
+                borderBottom="1px solid"
+                borderColor="primary"
+              >
                 Sexual Health
               </Heading>
               <MemberPropertyGroup
@@ -226,6 +258,9 @@ export const MemberSpotlight = ({
           </TabPanels>
         </Tabs>
       )}
+      <HStack spacing={4} p={4} justify="end">
+        <BuddyControl memberId={member.id} />
+      </HStack>
     </Flex>
   )
 }

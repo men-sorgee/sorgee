@@ -264,14 +264,14 @@ export default function MemberListPage(props: PageProps) {
           <Pager page={page} pageCount={pageCount} setPage={setPage} />
         </form>
       </FormProvider>
-      <Modal size="full" isOpen={isOpen} onClose={() => setId(undefined)}>
+      <Modal
+        size={['full', 'xl', '2xl', '3xl', '5xl']}
+        isOpen={isOpen}
+        onClose={() => setId(undefined)}
+      >
         <ModalOverlay backdropFilter="auto" backdropBlur="2px" />
-        <ModalContent
-          bg={useColorModeValue('white', 'black')}
-          border="1px solid transparent"
-          borderColor="accent.700"
-        >
-          <ModalBody px={1}>
+        <ModalContent bg={useColorModeValue('white', 'black')}>
+          <ModalBody p={0} rounded="md">
             <MemberSpotlight id={id as string} fields={fields}>
               <ModalCloseButton color={'white'} mt={2} />
             </MemberSpotlight>
