@@ -345,7 +345,7 @@ function Form(props: PageProps) {
                   </Alert>
                 </Collapse>
                 <SimpleGrid spacing={4} columns={[2]}>
-                  <FieldInput field="cock_length" label="Cock Length" type="number" />
+                  <FieldInput field="cock_length" label="Cock Length" type="number" step=".5" />
                   <FieldSelect
                     field="cock_girth"
                     label="Cock Girth"
