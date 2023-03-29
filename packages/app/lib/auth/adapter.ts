@@ -191,10 +191,10 @@ const authAdapter: Adapter = {
   },
   async deleteSession(sessionToken) {
     try {
-      log('deleteSession', sessionToken)
+      log('delete-session', sessionToken)
       await deleteSession(sessionToken)
     } catch (e) {
-      console.error(e.response?.body?.errors[0].message || e)
+      console.error(e?.config?.res?.body?.errors[0].message || e)
     }
   },
   async createVerificationToken(token) {

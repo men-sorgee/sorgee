@@ -104,8 +104,7 @@ export async function deleteSession(token: string) {
   const session = await findSession(token)
   if (!session) return
 
-  const userId = session.user as string
-
+  const { id: userId } = session.user as User
   await adminClient.items('user_session').deleteOne(session.id)
 
   await adminClient.items('users').updateOne(userId, {
