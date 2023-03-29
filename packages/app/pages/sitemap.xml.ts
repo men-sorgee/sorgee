@@ -45,7 +45,12 @@ export async function getServerSideProps({ res }) {
 
   // We generate the XML sitemap with the posts data
   const sitemap = generateSiteMap(
-    pages.filter((p) => p.status === 'published' && !p.visibility?.length && p.in_menu)
+    pages.filter(
+      (p) =>
+        p.status === 'published' &&
+        !p.visibility?.length &&
+        !['register', 'jacks', 'apply'].includes(p.slug)
+    )
   )
 
   res.setHeader('Content-Type', 'text/xml')
