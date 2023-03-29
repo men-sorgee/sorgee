@@ -15,7 +15,7 @@ import { SearchableMember, MemberLevelColorMap, MemberLevel } from 'lib/models'
 import { MemberHeader } from './MemberHeader'
 import NextLink from 'next/link'
 import { formatDistanceToNowStrict } from 'date-fns'
-import { BuddyControl } from './BuddyControl'
+
 type Props = CardProps & {
   member: Partial<SearchableMember>
   onClick?: () => void
@@ -26,20 +26,20 @@ export const MemberProfileCard = chakra(({ member, onClick, ...props }: Props) =
   const levelColor = MemberLevelColorMap[levelValue]
   return (
     <>
-      <Card
-        w="full"
-        h="full"
-        bgGradient={`linear(to-bl, ${levelColor[0]}, ${levelColor[1]})`}
-        rounded="lg"
-        border="1px solid transparent"
-        borderColor="primary"
-        color="white"
-        minW="full"
-        overflow="hidden"
-        _hover={{ shadow: '2xl', borderColor: 'accent.500' }}
-        {...props}
-      >
-        <LinkBox key={member.id}>
+      <LinkBox key={member.id}>
+        <Card
+          w="full"
+          h="full"
+          bgGradient={`linear(to-bl, ${levelColor[0]}, ${levelColor[1]})`}
+          rounded="lg"
+          border="1px solid transparent"
+          borderColor="primary"
+          color="white"
+          minW="full"
+          overflow="hidden"
+          _hover={{ shadow: '2xl', borderColor: 'accent.500' }}
+          {...props}
+        >
           <CardHeader>
             <LinkOverlay
               as={NextLink}
@@ -52,34 +52,34 @@ export const MemberProfileCard = chakra(({ member, onClick, ...props }: Props) =
               <MemberHeader member={member} zoom={false}></MemberHeader>{' '}
             </LinkOverlay>
           </CardHeader>
-        </LinkBox>
-        <CardBody>
-          <Text noOfLines={2} py={0} my={0}>
-            {member.biography}
-          </Text>
 
-          <Spacer />
-          <Text display="none">
-            Ratings are based on the number of stars a member has received from other members and
-            event hosts. No-shows automatically receive 2-star ratings by the event. Members must
-            have an average of 4-stars to be eligible for events.
-          </Text>
-        </CardBody>
-        <CardFooter justify="space-between" alignItems="end">
-          <Text fontSize="xs">
-            {member.last_login && (
-              <>
-                Last Login: {formatDistanceToNowStrict(new Date(member.last_login))} ago
-                <br />
-              </>
-            )}
-            Member Since: {new Date(member.date_created).toLocaleDateString()}
-          </Text>
-          <Box>
-            <BuddyControl memberId={member.id} />
-          </Box>
-        </CardFooter>
-      </Card>
+          <CardBody>
+            <Text noOfLines={2} py={0} my={0}>
+              {member.biography}
+            </Text>
+
+            <Spacer />
+            <Text display="none">
+              Ratings are based on the number of stars a member has received from other members and
+              event hosts. No-shows automatically receive 2-star ratings by the event. Members must
+              have an average of 4-stars to be eligible for events.
+            </Text>
+          </CardBody>
+
+          <CardFooter justify="space-between" alignItems="end">
+            <Text fontSize="xs">
+              {member.last_login && (
+                <>
+                  Last Login: {formatDistanceToNowStrict(new Date(member.last_login))} ago
+                  <br />
+                </>
+              )}
+              Member Since:{' '}
+              {new Date(member.approved_date || member.date_created).toLocaleDateString()}
+            </Text>
+          </CardFooter>
+        </Card>
+      </LinkBox>
     </>
   )
 })

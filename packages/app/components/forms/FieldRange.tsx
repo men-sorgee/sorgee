@@ -24,18 +24,21 @@ const InputField = (props: Props) => {
   const {
     register,
     formState: { defaultValues },
-    watch,
   } = useFormContext()
   const { onChange } = register(field, registerOptions)
-  const [values, setValues] = useState((defaultValues && defaultValues[field]) || [min, max])
+  const initialValues = [min, max]
+  const [values, setValues] = useState<number[]>(initialValues)
 
+  if (values?.length !== 2) {
+    return
+  }
   return (
     <FieldWrapper field={field} label={label} help={help}>
       <RangeSlider
         // eslint-disable-next-line jsx-a11y/aria-proptypes
         aria-label={['min', 'max']}
         orientation="horizontal"
-        defaultValue={defaultValues && defaultValues[field]}
+        defaultValue={values}
         {...opts}
         onChange={(val: number[]) => {
           onChange({

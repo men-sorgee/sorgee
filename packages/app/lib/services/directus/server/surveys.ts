@@ -1,17 +1,27 @@
 import { getAdminClient } from '.'
-import { Question, Survey, SurveyAnswer, SurveyQuestion } from 'lib/models'
+import { Question, Survey, SurveyAnswer } from 'lib/models'
 
 export async function getSurvey(id: string): Promise<Survey> {
   const client = await getAdminClient()
 
   const survey = await client.items('surveys').readOne(id, {
     filter: { status: { _eq: 'published' } },
-    fields: ['*.*', 'questions.*.*'],
+    fields: [
+      'id',
+      'name',
+      'title',
+      'description',
+      'type',
+      'closing',
+      'event.*',
+      'questions.survey_questions_id.*',
+      'questions.sort',
+    ],
     sort: ['questions.sort'],
   })
   if (!survey) return null
 
-  return survey as unknown as Survey
+  return survey as Survey
 }
 
 export async function getQuestion(id: string): Promise<Question> {
@@ -19,6 +29,7 @@ export async function getQuestion(id: string): Promise<Question> {
   const question = await client.items('survey_questions').readOne(id)
 
   if (!question) return null
+  // TODO: Figure out how to do this in the query
   return question as unknown as Question
 }
 

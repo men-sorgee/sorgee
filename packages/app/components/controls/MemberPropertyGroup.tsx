@@ -49,7 +49,7 @@ export const MemberPropertyGroup = ({
       const option = fields[field].meta.options.choices.find(
         (choice: any) => choice.value?.toLowerCase() == value?.toString()?.toLowerCase()
       )
-      return option?.text || value
+      return capitalCase(option?.text || value)
     }
     return value
   }
@@ -65,7 +65,7 @@ export const MemberPropertyGroup = ({
             >
               {Array.isArray(member[field]) ? (
                 <>
-                  <Heading as="h4" size="sm" m={0}>
+                  <Heading as="h4" size="sm" my={2}>
                     {capitalCase(fields[field].field)}:
                   </Heading>
                   <Wrap gap={2} mb={2}>
@@ -75,7 +75,6 @@ export const MemberPropertyGroup = ({
                         color="primary.400"
                         key={`badge-${item}-${d}`}
                         size="md"
-                        fontWeight="bold"
                         m={0}
                       >
                         {getValue(field, item)}
@@ -86,16 +85,10 @@ export const MemberPropertyGroup = ({
                 </>
               ) : (
                 <Box mb={2}>
-                  <Heading as="h4" size="sm" m={0}>
+                  <Heading as="h4" size="sm" my={2}>
                     {capitalCase(fields[field].field)}:
                   </Heading>
-                  <Text
-                    m={0}
-                    size="md"
-                    fontWeight="bold"
-                    color="primary.400"
-                    textTransform="capitalize"
-                  >
+                  <Text m={0} size="md" color="primary.400" textTransform="capitalize">
                     {getValue(field, member[field])}
                   </Text>
                 </Box>

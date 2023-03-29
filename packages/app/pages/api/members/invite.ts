@@ -21,7 +21,7 @@ async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
       }
     )
     await createUser({
-      email,
+      email: email.toLocaleLowerCase(),
       user_type: 'applicant',
       status: 'new',
       vouched_by: member.id,

@@ -8,6 +8,8 @@ const get_page = `query getPage($id: ID!) {
     description
     slug
     in_menu
+    visibility
+    static
     image {
       id
       height
@@ -16,7 +18,8 @@ const get_page = `query getPage($id: ID!) {
       description
     }
     markdown
-    content(filter: { status: { _eq: "published" } }) {
+    status
+    content (filter: { status: { _eq: "published" }}) {
       id
       name
       columns
@@ -38,12 +41,25 @@ const get_page = `query getPage($id: ID!) {
       id
       slug
       title
+      status
     }
     next_page_params
+    parent {
+      id
+      slug
+      title
+      status
+    }
+    children (filter: { status: { _eq: "published" }}) {
+      id
+      slug
+      title
+      status
+    }
   }
 }
 ` // require('./queries/get_page.gql');
-export async function getPageContentById(id: string) {
+export async function getPageById(id: string) {
   return getPageContent(get_page, { id })
 }
 
@@ -52,6 +68,8 @@ const find_page = `query findPage($slug: String) {
     id
     title
     description
+    visibility
+    static
     slug
     in_menu
     image {
@@ -62,7 +80,8 @@ const find_page = `query findPage($slug: String) {
       description
     }
     markdown
-    content(filter: { status: { _eq: "published" } }) {
+    status
+    content (filter: { status: { _eq: "published" }}) {
       id
       name
       columns
@@ -84,13 +103,36 @@ const find_page = `query findPage($slug: String) {
       id
       slug
       title
+      description
+      status
+      image {
+        id
+        title
+      }
     }
     next_page_params
+    parent {
+      id
+      slug
+      title
+      status
+    }
+    children (filter: { status: { _eq: "published" }}) {
+      id
+      slug
+      title
+      description
+      status
+      image {
+        id
+        title
+      }
+    }
   }
 }
 `
 //const getPageContentByIdQuery = require('./queries/find_page.gql');
-export async function getPageContentByUrl(slug: string) {
+export async function getPageBySlug(slug: string) {
   return await getPageContent(find_page, { slug })
 }
 
@@ -109,12 +151,14 @@ export async function getPageContent(query: string, variables: any): Promise<Pag
 
 const all_pages = `
 {
-  pages: page(filter: { status: { _eq: "published" }, static: { _eq: false } }) {
+  pages: page {
     id
     title
     description
     slug
     in_menu
+    static
+    visibility
     image {
       id
       height
@@ -122,9 +166,9 @@ const all_pages = `
       title
       description
     }
-
+    status
     markdown
-    content(filter: { status: { _eq: "published" } }) {
+    content {
       id
       name
       columns
@@ -141,39 +185,68 @@ const all_pages = `
       control
       markdown
       status
-      
     }
     next_page {
       id
       slug
       title
+      status
+      image {
+        id
+        title
+      }
     }
     next_page_params
     parent {
       id
       slug
+      title
+      status
     }
     children {
       id
       slug
+      title
+      status
+      parent {
+        id
+        slug
+        title
+        status
+      }
     }
   }
 }
 `
 // require('./queries/all_pages.gql');
 
-export async function listActivePages(): Promise<Page[]> {
+export async function listPages(parentId: string = null): Promise<Page[]> {
   const { Directus } = await import('@directus/sdk')
   const directusDB = new Directus<DirectusTypes>(adminBaseUrl)
-  const { data } = await directusDB.graphql.items<{ pages: Page[] }>(all_pages)
-  const { pages } = data
-  pages.map((p) => {
-    const { parent } = p
-    if (parent?.id) {
-      let base = pages.find((page) => page.id === parent.id)
-      p.slug = `${base.slug}/${p.slug}`
+  let {
+    data: { pages },
+  } = await directusDB.graphql.items<{ pages: Page[] }>(all_pages)
+
+  const mapParent = (page: Page): Page => {
+    const { parent } = page
+    let { slug } = page
+    if (slug == 'index') slug = ''
+    if (parent?.slug) {
+      mapParent(parent)
+      slug = parent.slug + '/' + slug
     }
-    return p
-  })
-  return data.pages
+    if (page.next_page?.slug) {
+      page.next_page = mapParent(page.next_page)
+    }
+    if (page.children?.length) {
+      page.children = page.children.map((c) => mapParent(c))
+    }
+    return {
+      ...page,
+      slug,
+    }
+  }
+  // map slug with parent
+  const fixedPages = pages.map((p) => mapParent(p))
+  return parentId ? fixedPages.filter((p) => p.parent?.id === parentId) : fixedPages
 }

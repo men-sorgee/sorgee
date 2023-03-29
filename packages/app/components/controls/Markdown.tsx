@@ -1,15 +1,32 @@
+'use client'
+
 import { useEffect } from 'react'
 import { useRemark } from 'react-remark'
-import { Alert, Heading, Image, ListItem, OrderedList, Text, UnorderedList } from '@chakra-ui/react'
+import {
+  Alert,
+  BoxProps,
+  Heading,
+  Image,
+  ListItem,
+  OrderedList,
+  Text,
+  UnorderedList,
+} from '@chakra-ui/react'
 import Link from 'next/link'
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
 
-export const Markdown = ({ content, size }: { content: string; size?: string }) => {
+type Props = {
+  content: string
+  size?: string
+}
+export const Markdown = ({ content, size }: Props) => {
   const [reactContent, setMarkdownSource] = useRemark({
     rehypeReactOptions: {
       components: {
         a: ({ href, children }: { href: string; children: React.ReactNode }) => {
           return (
             <Link href={href} target={href.startsWith('http') ? '_blank' : '_self'}>
+              {href.startsWith('http') && <ArrowTopRightOnSquareIcon width="1rem" />}
               {children}
             </Link>
           )
@@ -70,7 +87,7 @@ export const Markdown = ({ content, size }: { content: string; size?: string }) 
         ),
         blockquote: ({ children }: { children: React.ReactNode }) => (
           <Alert rounded="lg" shadow="lg" mt={4}>
-            <Heading w="full" as="h5" size={size} m={0} textAlign="center">
+            <Heading w="full" as="h5" size={size || 'h5'} m={0} textAlign="center">
               {children}
             </Heading>
           </Alert>
@@ -79,7 +96,7 @@ export const Markdown = ({ content, size }: { content: string; size?: string }) 
     },
   })
   useEffect(() => {
-    setMarkdownSource(content)
+    setMarkdownSource(content || '')
   }, [content, setMarkdownSource])
   return reactContent
 }

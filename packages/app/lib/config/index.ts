@@ -1,10 +1,39 @@
 const config = {
-  title: 'Guys in Heat',
+  title: `Guys 'N Heat`,
   description: "Denver's social events for bi, married and discrete men.",
   baseUrl: process.env.BASE_URL || 'https://guysnheat.com',
-  adminUrl: 'https://admin.guysnheat.com',
+  adminUrl: process.env.ADMIN_URL || 'https://admin.guysnheat.com',
   adminBaseUrl: process.env.ADMIN_URL || 'https://admin.guysnheat.com',
   memberCookie: 'gnh-id',
+  homePage: 'ac330d1b-0340-4a61-9b42-996aa0936d2b',
+  blogPage: 'e19c78ec-d804-4c77-af15-bb255f6aedac',
+  rulesPage: '21adb349-b96c-4234-9044-a825736f22f5',
+  registrationPage: 'c04e1b01-4487-46b5-a4c3-d8b1da49d53b',
+  applyPage: '640f6685-f4a8-4e76-a13a-358ddfac30ea',
 }
-const { title, description, baseUrl, adminUrl, adminBaseUrl, memberCookie } = config
-export { title, description, baseUrl, adminUrl, adminBaseUrl, memberCookie }
+const {
+  title,
+  description,
+  baseUrl,
+  adminUrl,
+  adminBaseUrl,
+  memberCookie,
+  blogPage,
+  homePage,
+  rulesPage,
+  registrationPage,
+  applyPage,
+} = config
+export {
+  title,
+  description,
+  baseUrl,
+  adminUrl,
+  adminBaseUrl,
+  memberCookie,
+  blogPage,
+  homePage,
+  rulesPage,
+  registrationPage,
+  applyPage,
+}

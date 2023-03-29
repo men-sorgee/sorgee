@@ -1,4 +1,10 @@
-import { Adapter, AdapterUser, AdapterSession, VerificationToken } from 'next-auth/adapters'
+import {
+  Adapter,
+  AdapterUser,
+  AdapterSession,
+  AdapterAccount,
+  VerificationToken,
+} from 'next-auth/adapters'
 import { DirectusFile, UserVerificationToken, User, UserSession } from 'lib/models'
 import {
   createUser,
@@ -31,8 +37,9 @@ function mapUser(user: User): AdapterUser {
 }
 
 function mapSession(session: UserSession): AdapterSession {
+  const user = session.user as User
   return {
-    userId: session.user as string,
+    userId: user.id,
     expires: new Date(session.expires),
     sessionToken: session.session_token,
   }
@@ -51,7 +58,7 @@ function log(...args) {
 }
 
 const authAdapter: Adapter = {
-  async createUser(user: AdapterUser | any) {
+  async createUser(user: AdapterUser & { picture: string }) {
     try {
       log('createUser', user)
       let image: DirectusFile = null
@@ -60,7 +67,7 @@ const authAdapter: Adapter = {
         image = await importFile(imageUrl, UploadFolder.members, `avatar-${user.email}`)
       }
       const newUser = await createUser({
-        email: user.email.toLowerCase(),
+        email: user.email?.toLowerCase(),
         email_verified: user.emailVerified != null,
         nickname: user.name,
         first_name: user.name,
@@ -71,7 +78,7 @@ const authAdapter: Adapter = {
       console.error(e.response?.body?.errors[0].message || e)
     }
   },
-  async getUser(id) {
+  async getUser(id: string) {
     try {
       log('getUser', id)
       const user = await getUser(id)
@@ -80,9 +87,10 @@ const authAdapter: Adapter = {
       console.error(e.response?.body?.errors[0].message || e)
     }
   },
-  async getUserByEmail(email) {
+  async getUserByEmail(email: string) {
     try {
       log('getUserByEmail', email)
+      if (!email) return null
       const user = await findUser<User>(email.toLowerCase(), '*.*')
       if (!user) return null
       return mapUser(user)
@@ -90,7 +98,7 @@ const authAdapter: Adapter = {
       console.error(e.response?.body?.errors[0].message || e)
     }
   },
-  async getUserByAccount({ providerAccountId, provider }) {
+  async getUserByAccount({ providerAccountId, provider }: AdapterAccount) {
     try {
       log('getUserByAccount', providerAccountId, provider)
       const user = await findUserByAccount(provider, providerAccountId)
@@ -100,7 +108,7 @@ const authAdapter: Adapter = {
       console.error(e.response?.body?.errors[0].message || e)
     }
   },
-  async updateUser(user) {
+  async updateUser(user: AdapterUser) {
     try {
       log('updateUser', user)
       const updatedUser = await updateUser(user.id, {
@@ -112,7 +120,7 @@ const authAdapter: Adapter = {
       console.error(e.response?.body?.errors[0].message || e)
     }
   },
-  async linkAccount(account) {
+  async linkAccount(account: AdapterAccount) {
     try {
       log('linkAccount', account)
 
@@ -142,7 +150,7 @@ const authAdapter: Adapter = {
       console.error(e.response?.body?.errors[0].message || e)
     }
   },
-  async unlinkAccount({ providerAccountId, provider }) {
+  async unlinkAccount({ providerAccountId, provider }: AdapterAccount) {
     try {
       log('unlinkAccount', providerAccountId, provider)
       await deleteAccount(provider, providerAccountId)
@@ -150,7 +158,7 @@ const authAdapter: Adapter = {
       console.error(e.response?.body?.errors[0].message || e)
     }
   },
-  async createSession(sessionData) {
+  async createSession(sessionData: AdapterSession) {
     try {
       log('createSession', sessionData)
       const session = await createSession({
@@ -163,7 +171,7 @@ const authAdapter: Adapter = {
       console.error(e.response?.body?.errors[0].message || e)
     }
   },
-  async getSessionAndUser(sessionToken) {
+  async getSessionAndUser(sessionToken: string) {
     try {
       log('getSessionAndUser', sessionToken)
       const session = await findSession(sessionToken)
@@ -176,7 +184,7 @@ const authAdapter: Adapter = {
       console.error(e.response?.body?.errors[0].message || e)
     }
   },
-  async updateSession(session) {
+  async updateSession(session: AdapterSession) {
     try {
       log('updateSession', session)
       const updatedSession = await updateSession({
@@ -188,15 +196,15 @@ const authAdapter: Adapter = {
       console.error(e.response?.body?.errors[0].message || e)
     }
   },
-  async deleteSession(sessionToken) {
+  async deleteSession(sessionToken: string) {
     try {
-      log('deleteSession', sessionToken)
+      log('delete-session', sessionToken)
       await deleteSession(sessionToken)
     } catch (e) {
-      console.error(e.response?.body?.errors[0].message || e)
+      console.error(e?.config?.res?.body?.errors[0].message || e)
     }
   },
-  async createVerificationToken(token) {
+  async createVerificationToken(token: VerificationToken) {
     try {
       const verificationToken = await addVerificationToken(
         token.identifier,
@@ -208,7 +216,7 @@ const authAdapter: Adapter = {
       console.error(e.response?.body?.errors[0].message)
     }
   },
-  async useVerificationToken({ identifier, token }) {
+  async useVerificationToken({ identifier, token }: VerificationToken) {
     try {
       log('useVerificationToken', identifier, token)
       const verificationToken = await findVerificationToken(identifier, token)

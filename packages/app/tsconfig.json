@@ -39,6 +39,9 @@
       {
         "name": "next"
       }
+    ],
+    "types": [
+      "vitest/importMeta"
     ]
   },
   "include": [
@@ -46,10 +49,11 @@
     "**/*.ts",
     "**/*.tsx",
     "next.config.ts",
-    ".next/types/**/*.ts",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     ".idea/*",
-    ".next/*"
+    ".next/*",
+    "vitest*"
   ]
 }

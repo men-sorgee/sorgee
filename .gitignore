@@ -38,3 +38,5 @@ certificates
 data
 
 .env*
+packages/app/results/*
+.tests/*

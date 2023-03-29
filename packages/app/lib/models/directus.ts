@@ -5,6 +5,7 @@ import {
   Page,
   PageContent,
   Promo,
+  Question,
   Rating,
   Room,
   RoomEvent,
@@ -152,7 +153,8 @@ export type DirectusTypes = {
   page_content: PageContent
   site: Site
   surveys: Survey
-  survey_questions: SurveyQuestion
+  survey_questions: Question
+  survey_survey_questions: SurveyQuestion
   survey_answers: SurveyAnswer
   user_account: UserAccount
   user_session: UserSession

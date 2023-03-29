@@ -38,6 +38,12 @@ class MyDocument extends Document {
           />
           <Main />
           <NextScript />
+          <Script
+            id="termly-consent"
+            src="https://app.termly.io/embed.min.js"
+            data-auto-block="on"
+            data-website-uuid="8fbb3f3c-9fc6-4256-ad1f-7c061dabb965"
+          />
           <Script async src="https://api.buglog.io/website/80W58ZYWE9/code" strategy="lazyOnload" />
         </body>
       </Html>

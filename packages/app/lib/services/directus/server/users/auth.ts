@@ -86,13 +86,18 @@ export async function findSession(token: string): Promise<UserSession> {
   return sessions?.data?.length ? (sessions.data[0] as UserSession) : null
 }
 
-export async function updateSession(session: Omit<UserSession, 'id'>) {
+export async function updateSession(session: Partial<Omit<UserSession, 'id'>>) {
   const adminClient = await getAdminClient()
   const existing = await findSession(session.session_token)
-  if (!existing) return createSession(session)
+  const user = session.user as User
+  if (!existing)
+    return createSession({
+      session_token: session.session_token,
+      user: user.id,
+      expires: session.expires,
+    })
   await adminClient.items('user_session').updateOne(existing.id, {
     session_token: session.session_token,
-    user: session.user,
     expires: session.expires,
   })
   return existing
@@ -104,8 +109,7 @@ export async function deleteSession(token: string) {
   const session = await findSession(token)
   if (!session) return
 
-  const userId = session.user as string
-
+  const { id: userId } = session.user as User
   await adminClient.items('user_session').deleteOne(session.id)
 
   await adminClient.items('users').updateOne(userId, {

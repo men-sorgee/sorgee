@@ -1,17 +1,17 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { searchUsers } from 'lib/services/directus/server/users'
-import { withMember } from 'lib/utils/server'
+
 import {
   ApiResponse,
   getAllowedUsers,
   MemberLevel,
   SearchableMember,
-  searchableMemberFields,
   User,
   UserType,
 } from 'lib/models'
 import { ManyItems } from '@directus/sdk'
 import { normalize } from 'lib/utils'
+import { withMember } from '../../../lib/utils/server'
 
 type MemberSearch = SearchableMember & {
   offset?: number
@@ -31,6 +31,8 @@ export default async function FindMembers(
     const { page: p = 1, limit: l = 20, sort = '-last_login', online, photos, ...props } = req.query
     const page = Number(p)
     const limit = Number(l)
+
+    
 
     const allowedLevels = getAllowedUsers(level)
     const params = normalize<SearchableMember>(props)

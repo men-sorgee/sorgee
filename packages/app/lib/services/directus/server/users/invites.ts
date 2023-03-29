@@ -110,3 +110,16 @@ export async function updateInvite(
 
   return invite
 }
+
+export async function getUserEvents(user_id: string) {
+  const client = await getAdminClient()
+  const { data } = await client.items('events_users').readByQuery({
+    filter: {
+      users_id: { _eq: user_id },
+    },
+    fields: ['*.*' as any, 'events_id.*' as any],
+    sort: ['events_id.datetime' as any],
+  })
+
+  return data as EventUser[]
+}

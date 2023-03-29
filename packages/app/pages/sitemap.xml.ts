@@ -1,5 +1,5 @@
 import { baseUrl } from 'lib/config'
-import { listActivePages } from 'lib/services/directus/static'
+import { listPages } from 'lib/services/directus/static'
 import { Page } from 'lib/models'
 import { cache } from 'react'
 
@@ -41,10 +41,17 @@ function SiteMap() {
 
 export async function getServerSideProps({ res }) {
   // We make an API call to gather the URLs for our site
-  const pages = await listActivePages()
+  const pages = await listPages()
 
   // We generate the XML sitemap with the posts data
-  const sitemap = generateSiteMap(pages)
+  const sitemap = generateSiteMap(
+    pages.filter(
+      (p) =>
+        p.status === 'published' &&
+        !p.visibility?.length &&
+        !['register', 'jacks', 'apply'].includes(p.slug)
+    )
+  )
 
   res.setHeader('Content-Type', 'text/xml')
   // we send the XML to the browser

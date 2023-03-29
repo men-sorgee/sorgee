@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getPageContentByUrl } from 'lib/services/directus/static'
+import { getPageBySlug } from 'lib/services/directus/static'
 
 export default async function Preview(req: NextApiRequest, res: NextApiResponse) {
   // Fetch the headless CMS to check if the provided `slug` exists
-  const post = await getPageContentByUrl(req.query.slug as string)
+  const post = await getPageBySlug(req.query.slug as string)
 
   // If the slug doesn't exist prevent preview mode from being enabled
   if (!post) {

@@ -220,7 +220,7 @@ export async function setRating(
   }
 }
 
-export async function getUserStats(): Promise<{
+export async function getUserStats(start: string): Promise<{
   subscribers: number
   applicants: number
   pledges: number
@@ -245,6 +245,9 @@ export async function getUserStats(): Promise<{
       filter: {
           status: {
               _eq: "active"
+          }
+          date_created: {
+              _gte: "${start}"
           }
       }
     ) {
@@ -272,7 +275,17 @@ export async function getUserStats(): Promise<{
     brothers: stats.find((s) => s.group.user_type === 'brother')?.count.id || 0,
     big_brothers: stats.find((s) => s.group.user_type === 'big_brother')?.count.id || 0,
     staff: stats.find((s) => s.group.user_type === 'staff')?.count.id || 0,
-  }
+  } as MemberStats
+}
+
+export type MemberStats = {
+  subscribers: number
+  applicants: number
+  pledges: number
+  inductees: number
+  brothers: number
+  big_brothers: number
+  staff: number
 }
 
 export * from './auth'

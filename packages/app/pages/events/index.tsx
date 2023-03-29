@@ -250,8 +250,8 @@ function EventCalendar({ events }: { events: GroupEvent[] }) {
   const maxDate = addDays(today, 120)
   const [value, setValue] = useState(new Date())
 
-  const onChange = useCallback((nextValue: SetStateAction<Date>) => {
-    setValue(nextValue)
+  const onChange = useCallback((value: Date, event: any) => {
+    setValue(value)
   }, [])
   const EventView = ({ event }: { event: GroupEvent; full?: boolean }) => {
     return (

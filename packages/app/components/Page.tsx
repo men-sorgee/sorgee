@@ -75,7 +75,7 @@ const Page = ({
       </div>
       {header}
       {(loading && (
-        <Loading size="xl">
+        <Loading size="xl" mt={10}>
           <h2>hold please</h2>
         </Loading>
       )) ||
