@@ -49,7 +49,7 @@ export default function ActionsNav({ children, ...props }: Props) {
           <Spacer />
           {level > MemberLevel.pledge && (
             <>
-              {level > MemberLevel.inductee && (
+              {level == MemberLevel.staff && (
                 <Link href="/video" as={NextLink}>
                   <IconButton
                     variant="primary"
@@ -70,7 +70,7 @@ export default function ActionsNav({ children, ...props }: Props) {
                       px={2}
                       py={0.5}
                       color="white"
-                      title="Calendar Events"
+                      title="Users on video chat"
                     >
                       {user_count}
                     </Badge>
