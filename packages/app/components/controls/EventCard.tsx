@@ -31,6 +31,7 @@ import { MapPinIcon } from '@heroicons/react/24/solid'
 import { differenceInDays, isAfter } from 'date-fns'
 import Link from 'next/link'
 import { LinkButton } from './LinkButton'
+
 type EventCardProps = CardProps & {
   showDescription?: boolean
   showLocation?: boolean
@@ -67,8 +68,6 @@ export const EventCard = ({
       )
     }
   }
-
-  const occurred = event?.status && event.status == 'occurred'
 
   useEffect(() => {
     if (event && !eventDate) {
@@ -147,7 +146,7 @@ export const EventCard = ({
             </Stat>
             <Stat>
               <StatLabel>Invite Type</StatLabel>
-              <StatNumber>{event.invite_only ? 'Invite Only' : 'Brothers Only'}</StatNumber>
+              <StatNumber>{event.invite_only ? 'Invite Only' : 'All Brothers'}</StatNumber>
             </Stat>
 
             <Stat>
