@@ -19,13 +19,15 @@ import {
   LinkBox,
   LinkOverlay,
 } from '@chakra-ui/react'
+import { format } from 'date-fns'
 import { getAssetUrl } from 'lib/utils'
 import { Page as PageModel } from 'lib/models'
-import { blogPage } from 'lib/config'
-import Page from '../../components/Page'
+import Page from 'components/Page'
 import { Markdown } from '../../components/controls'
 import NextLink from 'next/link'
-export async function getStaticProps(_context) {
+import { NextRouter, useRouter } from 'next/router'
+
+export async function getServerSideProps(_context) {
   const { getPageBySlug } = await import('lib/services/directus/static')
   const page = await getPageBySlug('blog')
 
@@ -41,38 +43,57 @@ export async function getStaticProps(_context) {
   }
 }
 
-const Article = ({ page }: { page: PageModel }) => {
+const Article = ({ page, router }: { page: PageModel; router: NextRouter }) => {
   return (
-    <LinkBox mb={4}>
+    <Box mb={4}>
       {page.image && (
         <Image
+          borderRadius="lg"
           transform="scale(1.0)"
           transition="0.3s ease-in-out"
           _hover={{
             transform: 'scale(1.05)',
+            cursor: 'pointer',
           }}
           src={getAssetUrl(page.image.id)}
           alt={page.image.title}
           objectFit="cover"
-          w="100%"
           h="10rem"
-          borderRadius="lg"
-          overflow="hidden"
+          w="full"
+          onClick={() => {
+            router.push(`/blog/${page.slug}`)
+          }}
         />
       )}
-      <Heading fontSize="xl" my={4}>
-        <LinkOverlay
-          as={NextLink}
-          textDecoration="none"
-          href={`/blog/${page.slug}`}
-          _hover={{ textDecoration: 'none' }}
+      <LinkBox>
+        <Text
+          textShadow="1px 1px #000000"
+          stroke="black"
+          fontSize="sm"
+          fontWeight="bold"
+          color="white"
+          mt="-24px"
+          ml="10px"
+          zIndex={10}
+          position="relative"
         >
-          {page.title}
-        </LinkOverlay>
-      </Heading>
-
-      <Markdown content={page.description} />
-    </LinkBox>
+          {format(new Date(page.published), 'MM YYY')}
+        </Text>
+        <Heading fontSize="xl" my={4}>
+          <LinkOverlay
+            as={NextLink}
+            textDecoration="none"
+            href={`/blog/${page.slug}`}
+            _hover={{ textDecoration: 'none' }}
+          >
+            <Text noOfLines={1} as="span">
+              {page.title}
+            </Text>
+          </LinkOverlay>
+        </Heading>
+        <Text noOfLines={5}>{page.description}</Text>
+      </LinkBox>
+    </Box>
   )
 }
 
@@ -81,27 +102,27 @@ type Props = {
 }
 
 export default function Blog({ page }: Props) {
-  const { title, description, image, markdown, content, next_page, children } = page
+  const { title, description, image, markdown, content, next_page, children: c } = page
+  const articles = (c as PageModel[])
+    .filter((p) => page.status === 'published')
+    .sort((a, b) => {
+      const dateA = new Date(a.published).getTime()
+      const dateB = new Date(b.published).getTime()
 
-  const latest = next_page as PageModel
-  const color = useColorModeValue('gray.700', 'gray.200')
+      // Compare the dates and sort in reverse order
+      return dateB - dateA
+    })
+  const router = useRouter()
+  const [latest, ...children] = articles
   const bg = useColorModeValue(
     'radial(orange.600 1px, transparent 1px)',
     'radial(orange.300 1px, transparent 1px)'
   )
   return (
     <Page title={title} description={description} image={getAssetUrl(image)}>
-      <Text fontSize="lg" textAlign="justify">
-        This is a blog on issues surrounding men&apos;s health. Introducing our Men&apos;s Sexual
-        Health Blog - your resource for men seeking information and advice on all aspects of sexual
-        health.{' '}
-      </Text>
-      <Text fontSize="lg" textAlign="justify">
-        <strong>
-          Our mission is to provide men with the knowledge and resources they need to make informed
-          decisions about their sexual health and wellbeing.
-        </strong>
-      </Text>
+      <Box>
+        <Markdown content={description} size="xl" />
+      </Box>
       {latest && (
         <LinkBox>
           <Heading as="h2" mt={8} mb={0}>
@@ -128,12 +149,29 @@ export default function Blog({ page }: Props) {
                     transition="0.3s ease-in-out"
                     _hover={{
                       transform: 'scale(1.05)',
+                      cursor: 'pointer',
                     }}
                     src={getAssetUrl(latest.image.id)}
                     alt={latest.image.title}
                     objectFit="cover"
+                    onClick={() => {
+                      router.push(`/blog/${latest.slug}`)
+                    }}
                   />
                 )}
+                <Text
+                  textShadow="2px 1px black"
+                  stroke="black"
+                  fontSize="sm"
+                  fontWeight="bold"
+                  color="white"
+                  mt="-24px"
+                  ml="10px"
+                  zIndex={10}
+                  position="relative"
+                >
+                  {format(new Date(latest.published), 'MMMM YYY')}
+                </Text>
               </Box>
               <Box zIndex="1" width="100%" position="absolute" height="100%">
                 <Box bgGradient={bg} backgroundSize="20px 20px" opacity="0.4" height="100%" />
@@ -172,7 +210,7 @@ export default function Blog({ page }: Props) {
         {children
           .filter((p) => p.slug != latest.slug)
           .map((page) => (
-            <Article key={page.slug} page={page} />
+            <Article key={page.slug} page={page} router={router} />
           ))}
       </SimpleGrid>
       <Divider my={6} />

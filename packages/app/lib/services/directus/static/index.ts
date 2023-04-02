@@ -105,6 +105,8 @@ const find_page = `query findPage($slug: String) {
       title
       description
       status
+      published
+      markdown
       image {
         id
         title
@@ -122,6 +124,8 @@ const find_page = `query findPage($slug: String) {
       slug
       title
       description
+      markdown
+      published
       status
       image {
         id
@@ -168,6 +172,7 @@ const all_pages = `
     }
     status
     markdown
+    published
     content {
       id
       name

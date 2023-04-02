@@ -50,6 +50,7 @@ export type Page = {
   next_page?: Page
   next_page_params?: string
   status: 'published' | 'draft'
+  published: string
   user_created?: string
   date_created?: string
   user_updated?: string

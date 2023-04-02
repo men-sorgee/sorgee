@@ -44,7 +44,7 @@ export const Markdown = ({ content, size }: Props) => {
             />
           )
         },
-        p: ({ children }: { children: React.ReactNode }) => <Text size={size}>{children}</Text>,
+        p: ({ children }: { children: React.ReactNode }) => <Text fontSize={size}>{children}</Text>,
         h1: ({ children }: { children: React.ReactNode }) => (
           <Heading as="h1" size={size || 'h1'}>
             {children}
