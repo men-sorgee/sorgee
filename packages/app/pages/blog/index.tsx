@@ -77,7 +77,7 @@ const Article = ({ page, router }: { page: PageModel; router: NextRouter }) => {
           zIndex={10}
           position="relative"
         >
-          {format(new Date(page.published), 'MM YYY')}
+          {format(new Date(page.published), 'MMMM YY')}
         </Text>
         <Heading fontSize="xl" my={4}>
           <LinkOverlay
@@ -170,7 +170,7 @@ export default function Blog({ page }: Props) {
                   zIndex={10}
                   position="relative"
                 >
-                  {format(new Date(latest.published), 'MMMM YYY')}
+                  {format(new Date(latest.published), 'MMMM YY')}
                 </Text>
               </Box>
               <Box zIndex="1" width="100%" position="absolute" height="100%">
