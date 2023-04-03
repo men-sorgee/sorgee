@@ -9,6 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "predocker:build": "cp ../../yarn.lock . && yarn install --frozen-lockfile",
     "docker:build": "docker build -t gcr.io/tbg-gnh/gnh-app .",
     "docker:push": "docker push gcr.io/tbg-gnh/gnh-app",
     "docker:run": "docker run --name gnh -p 3000:3000  gcr.io/tbg-gnh/gnh-app",
@@ -82,7 +83,7 @@
     "eslint-config-next": "^13.2.4",
     "jsdom": "^21.1.1",
     "prettier": "^2.8.7",
-    "typescript": "^4.9.4",
+    "typescript": "^4.9.5",
     "vite": "^4.2.1",
     "vitest": "^0.29.8"
   }

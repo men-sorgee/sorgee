@@ -2,7 +2,7 @@
 FROM node:16-alpine AS dependencies
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
-COPY package.json ./
+COPY package.json yarn.lock ./
 RUN yarn 
 
 # Rebuild the source code only when needed
