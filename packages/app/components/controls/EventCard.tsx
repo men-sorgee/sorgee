@@ -17,9 +17,6 @@ import {
   Stat,
   StatLabel,
   StatNumber,
-  Spacer,
-  SimpleGrid,
-  Wrap,
   StatHelpText,
 } from '@chakra-ui/react'
 import Countdown from 'react-countdown'
