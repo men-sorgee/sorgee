@@ -37,8 +37,9 @@ export type EventInfo = {
   id: string
   status: EventStatusType
   datetime: string
+  datetime_end: string
   name: string
-  location?: string | Location
+  location?: Location
   description: string
   cost: number
   type: string
@@ -49,8 +50,9 @@ export type EventInfo = {
 export type GroupEvent = {
   id: string
   status: string | EventStatusType
-  datetime?: string
-  name?: string
+  datetime: string
+  datetime_end: string
+  name: string
   location?: string | Location
   description?: string
   cost: number

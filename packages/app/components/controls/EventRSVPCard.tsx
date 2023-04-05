@@ -146,6 +146,7 @@ export const EventRSVPCard = ({
         showDescription={full}
         showLocation={full}
         isGuest={invite?.guest || false}
+        showAddToCalendar={invite.rsvp == 'confirmed' || invite.rsvp == 'maybe'}
         {...props}
       >
         <>

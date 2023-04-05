@@ -1,5 +1,5 @@
 import { ApiError, ApiResponse } from 'lib/models'
-import { format, addMinutes } from 'date-fns'
+import { format, addMinutes, getHours, getMinutes } from 'date-fns'
 
 export function toLocalDate(value: string) {
   return addMinutes(new Date(value), new Date().getTimezoneOffset())
@@ -26,8 +26,10 @@ export function getEventDate(eventStart: string) {
     day: format(date, 'dddd'),
     short: format(date, 'MMM d'),
     month: format(date, 'MMM'),
-    date: format(date, 'd'),
-    time: format(date, 'h:mm a'),
+    dateOnly: format(date, 'yyyy-MM-dd'),
+    dayOfMonth: format(date, 'd'),
+    date,
+    time: format(date, 'h:mm'),
   }
 }
 

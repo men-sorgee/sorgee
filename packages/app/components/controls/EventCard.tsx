@@ -18,6 +18,8 @@ import {
   StatLabel,
   StatNumber,
   StatHelpText,
+  Spacer,
+  HStack,
 } from '@chakra-ui/react'
 import Countdown from 'react-countdown'
 import { Markdown } from './Markdown'
@@ -25,14 +27,16 @@ import { GroupEvent, Location } from 'lib/models'
 import { getEventDate, toLocalDate } from 'lib/utils'
 import { capitalCase } from 'change-case'
 import { MapPinIcon } from '@heroicons/react/24/solid'
-import { differenceInDays, isAfter } from 'date-fns'
+import { differenceInDays, isAfter, isToday } from 'date-fns'
 import Link from 'next/link'
 import { LinkButton } from './LinkButton'
-
+import { AddToCalendarButton } from 'add-to-calendar-button-react'
 type EventCardProps = CardProps & {
   showDescription?: boolean
   showLocation?: boolean
+  showAddToCalendar?: boolean
   children?: ReactNode | ReactNode[]
+  footer?: ReactNode | ReactNode[]
   isGuest?: boolean
   event: Partial<GroupEvent>
   href?: string
@@ -42,6 +46,7 @@ export const EventCard = ({
   event,
   showDescription = true,
   showLocation = false,
+  showAddToCalendar = false,
   isGuest = false,
   children,
   href,
@@ -51,16 +56,22 @@ export const EventCard = ({
     day: string
     short: string
     month: string
-    date: string
+    dateOnly: string
+    dayOfMonth: string
+    date: Date
     time: string
   }>()
 
-  const renderer = ({ days, hours, completed }) => {
-    if (!completed && days < 7) {
+  let date = new Date(event.datetime)
+
+  const renderer = ({ days, hours, minutes, completed }) => {
+    if (completed) return isToday(date) ? <h4>Event has started!</h4> : null
+    if (days < 7) {
       // Render a countdown
       return (
         <h4>
-          {days} Days, {hours} hours to go!
+          {days} Days, {hours} hours
+          {days < 4 && <span>, {minutes} minutes</span>}&nbsp;to go!
         </h4>
       )
     }
@@ -73,6 +84,7 @@ export const EventCard = ({
   }, [event, eventDate])
 
   if (!event) return null
+
   const location = event.location as Location
   const viewLocation =
     showLocation &&
@@ -120,7 +132,7 @@ export const EventCard = ({
             >
               {eventDate?.month.toUpperCase()}
               <br />
-              <Text size="4xl"> {eventDate?.date}</Text>
+              <Text size="4xl"> {eventDate?.dayOfMonth}</Text>
             </Heading>
             {href && <LinkOverlay as={Link} href={href} />}
           </Flex>
@@ -199,11 +211,36 @@ export const EventCard = ({
       </LinkBox>
       <CardFooter flexDirection="column">
         {children}
-        {event.datetime && (
-          <>
-            <Countdown date={new Date(event.datetime)} renderer={renderer} />
-          </>
-        )}
+        <HStack spacing={4} mt={4}>
+          {date && <Countdown date={date} renderer={renderer} />}
+          <Spacer />
+          {eventDate?.dateOnly && showAddToCalendar && (
+            <AddToCalendarButton
+              uid={event.id}
+              name={event.name}
+              description={event.description}
+              startDate={event.datetime}
+              endDate={event.datetime_end}
+              location={
+                viewLocation
+                  ? [
+                      location?.street,
+                      location?.unit,
+                      location?.city,
+                      location?.state,
+                      location?.zip,
+                    ].join(' ')
+                  : ''
+              }
+              timeZone="America/Denver"
+              options={['Apple', 'Google', 'Outlook.com', 'Yahoo', 'iCal']}
+              buttonStyle="round"
+              trigger="click"
+              hideBackground
+              lightMode="system"
+            />
+          )}
+        </HStack>
       </CardFooter>
     </Card>
   )

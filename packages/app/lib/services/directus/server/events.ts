@@ -79,9 +79,10 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
     },
   })
   const {
-    datetime,
     name,
     description,
+    datetime,
+    datetime_end,
     status,
     type,
     visibility,
@@ -98,6 +99,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
     name,
     description,
     datetime,
+    datetime_end,
     status: status as EventStatusType,
     type,
     visibility,

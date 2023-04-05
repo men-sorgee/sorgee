@@ -1,7 +1,6 @@
 import {
   Box,
   Heading,
-  Divider,
   Text,
   AlertIcon,
   Alert,
@@ -11,21 +10,17 @@ import {
   TabPanels,
   TabPanel,
   Badge,
-  Spacer,
-  Flex,
   useColorModeValue,
-  SlideFade,
   LinkBox,
   LinkOverlay,
   Show,
 } from '@chakra-ui/react'
-
-import { addDays, isSameDay, isToday, isWeekend } from 'date-fns'
+import { addDays, isSameDay, isToday } from 'date-fns'
 import Page from 'components/Page'
 import { useUser, useUserEvents } from 'hooks'
 import Link from 'next/link'
-import { SetStateAction, useCallback, useEffect, useState } from 'react'
-import { Member, GroupEvent, MemberLevel, EventInvite, Rating } from 'lib/models'
+import { useCallback, useEffect, useState } from 'react'
+import { Member, GroupEvent, MemberLevel, EventInvite } from 'lib/models'
 import { EventBadge, EventCard, EventRSVPCard, EventTicket } from 'components/controls'
 import Calendar from 'react-calendar'
 import { brand } from 'lib/config/brand'
@@ -105,7 +100,7 @@ export default function EventsPage({}: PageProps) {
                 <Heading mb={4}>Your Invitations</Heading>
 
                 <Invitations
-                  list={invitations}
+                  list={invitations.filter((e) => e.rsvp != 'declined')}
                   member={member}
                   onChange={onEventsChange}
                   name="Invitations"
@@ -174,16 +169,18 @@ function Invitations({
 
   return (
     <>
-      {list.map((invite, index) => (
-        <EventRSVPCard
-          key={index}
-          invite={invite}
-          member={member}
-          mb={8}
-          full={false}
-          onChange={onChange}
-        />
-      ))}
+      {list.map((invite, index) => {
+        return (
+          <EventRSVPCard
+            key={index}
+            invite={invite}
+            member={member}
+            mb={8}
+            full={false}
+            onChange={onChange}
+          ></EventRSVPCard>
+        )
+      })}
     </>
   )
 }
@@ -236,6 +233,7 @@ function PastEvents({ member, list }: { list: EventInvite[]; member: Member }) {
           showDescription={false}
           href={invite.attended ? `/events/${invite.event.id}` : undefined}
           mb={4}
+          showAddToCalendar={false}
         >
           <PastEventItem invite={invite} />
         </EventCard>
