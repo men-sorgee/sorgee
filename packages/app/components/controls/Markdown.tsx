@@ -86,7 +86,7 @@ export const Markdown = ({ content, size }: Props) => {
           </ListItem>
         ),
         blockquote: ({ children }: { children: React.ReactNode }) => (
-          <Alert rounded="lg" shadow="lg" mt={4}>
+          <Alert rounded="lg" shadow="lg" my={4}>
             <Heading w="full" as="h5" size={size || 'h5'} m={0} textAlign="center">
               {children}
             </Heading>
