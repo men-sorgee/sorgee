@@ -21,15 +21,17 @@ export const getUTCNow = () => {
 }
 
 export function getEventDate(eventStart: string) {
+  const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
   let date = new Date(eventStart)
   return {
-    day: format(date, 'dddd'),
+    day: weekday[date.getDay()],
     short: format(date, 'MMM d'),
     month: format(date, 'MMM'),
     dateOnly: format(date, 'yyyy-MM-dd'),
     dayOfMonth: format(date, 'd'),
     date,
-    time: format(date, 'h:mm'),
+    time: format(date, 'p'),
   }
 }
 

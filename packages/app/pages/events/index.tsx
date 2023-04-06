@@ -19,11 +19,12 @@ import { addDays, isSameDay, isToday } from 'date-fns'
 import Page from 'components/Page'
 import { useUser, useUserEvents } from 'hooks'
 import Link from 'next/link'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Member, GroupEvent, MemberLevel, EventInvite } from 'lib/models'
 import { EventBadge, EventCard, EventRSVP, EventTicket, LinkButton } from 'components/controls'
 import Calendar from 'react-calendar'
 import { brand } from 'lib/config/brand'
+import { capitalCase } from 'change-case'
 
 export type PageProps = {}
 
@@ -255,8 +256,9 @@ function PastEvents({ member, list }: { list: EventInvite[]; member: Member }) {
         >
           Rate Event &amp; Attendees
         </LinkButton>
-        <Heading as="h5" fontSize="md" textAlign="center">
-          RSVP: {invite.rsvp.toUpperCase()} | {invite.attended ? 'You attended!' : 'Did not attend'}
+
+        <Heading as="h3" size="h3" textAlign="center">
+          {capitalCase(invite.rsvp)} and {invite.attended ? 'attended!' : 'did not attend'}
         </Heading>
         {!invite.attended && invite.rsvp == 'confirmed' && (
           <Alert status="warning" rounded="lg" mt={4} textAlign="center">

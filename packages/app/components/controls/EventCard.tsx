@@ -1,7 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react'
 import {
-  Box,
-  Button,
   Card,
   CardHeader,
   CardBody,
@@ -21,6 +19,8 @@ import {
   Spacer,
   HStack,
   useColorModeValue,
+  PinInput,
+  PinInputField,
 } from '@chakra-ui/react'
 import Countdown from 'react-countdown'
 import { Markdown } from './Markdown'
@@ -29,10 +29,8 @@ import { getEventDate, toLocalDate } from 'lib/utils'
 import { capitalCase } from 'change-case'
 import { MapPinIcon } from '@heroicons/react/24/solid'
 import { differenceInDays, isAfter, isToday } from 'date-fns'
-import Link from 'next/link'
-import { LinkButton } from './LinkButton'
 import { AddToCalendarButton } from 'add-to-calendar-button-react'
-import { EventBadge } from './EventBadge'
+
 type EventCardProps = CardProps & {
   showDescription?: boolean
   showLocation?: boolean
@@ -67,15 +65,36 @@ export const EventCard = ({
 
   let date = new Date(event.datetime)
 
-  const renderer = ({ days, hours, minutes, completed }) => {
+  const renderer = ({ days, hours, minutes, seconds, completed }) => {
     if (completed) return isToday(date) ? <h4>Event has started!</h4> : null
-    if (days < 7) {
-      // Render a countdown
+    if (days < 99) {
       return (
-        <Heading as="h4" size="h4" my={2}>
-          {days} Days, {hours} hours
-          {days < 4 && <span>, {minutes} minutes</span>}&nbsp;to go!
-        </Heading>
+        <Flex flex="shrink" gap={2} align="center">
+          <Stat>
+            <StatNumber textAlign="center" fontSize={['lg', 'xl', '2xl']}>
+              {days.toString().padStart(2, '0')}
+            </StatNumber>
+            <StatHelpText>Days</StatHelpText>
+          </Stat>
+          <Stat>
+            <StatNumber textAlign="center" fontSize={['lg', 'xl', '2xl']}>
+              {hours.toString().padStart(2, '0')}
+            </StatNumber>
+            <StatHelpText>Hours</StatHelpText>
+          </Stat>
+          <Stat>
+            <StatNumber textAlign="center" fontSize={['lg', 'xl', '2xl']}>
+              {minutes.toString().padStart(2, '0')}
+            </StatNumber>
+            <StatHelpText>Minutes</StatHelpText>
+          </Stat>
+          <Stat>
+            <StatNumber textAlign="center" fontSize={['lg', 'xl', '2xl']}>
+              {seconds.toString().padStart(2, '0')}
+            </StatNumber>
+            <StatHelpText>Seconds</StatHelpText>
+          </Stat>
+        </Flex>
       )
     }
   }
@@ -130,18 +149,24 @@ export const EventCard = ({
             p={4}
             w="25%"
           >
-            <Heading
-              as="h4"
+            <Text fontSize={['xs', 'sm', 'sm', 'md']} color="white" m={0} p={0}>
+              {eventDate?.day}
+            </Text>
+            <Text
               m={0}
+              p={0}
               color="white"
               justifyContent="middle"
-              fontSize={['xl', '3xl']}
+              fontSize={['2xl', '3xl']}
               whiteSpace="nowrap"
+              fontWeight="extrabold"
             >
               {eventDate?.month.toUpperCase()}
-            </Heading>
-            <Text fontSize="4xl" color="white" m={0}>
-              {eventDate?.dayOfMonth} {event.status == 'planned' && <>*</>}
+            </Text>
+            <Text fontSize="4xl" color="white" m={0} p={0}>
+              {event.status == 'planned' && <>&nbsp;</>}
+              {eventDate?.dayOfMonth}
+              {event.status == 'planned' && <>*</>}
             </Text>
           </Flex>
         </Flex>
@@ -178,16 +203,12 @@ export const EventCard = ({
           )}
         </Flex>
 
-        <Divider my={2} />
-        {event.status == 'planned' && (
+        {showDescription && (
           <>
-            <Text as="em">* This is date is subject to change.</Text>
-            <Divider my={2} />
+            <Divider my={4} />
+            <Markdown content={event.description} size="md" />
           </>
         )}
-        {showDescription && <Markdown content={event.description} size="md" />}
-
-        {date && <Countdown date={date} renderer={renderer} />}
 
         {viewLocation && (
           <>
@@ -230,33 +251,43 @@ export const EventCard = ({
         {children}
       </CardBody>
       <CardFooter>
-        {eventDate?.dateOnly && showAddToCalendar && (
-          <AddToCalendarButton
-            uid={event.id}
-            size="2"
-            trigger="click"
-            name={event.name}
-            description={event.description}
-            startDate={event.datetime}
-            endDate={event.datetime_end}
-            location={
-              viewLocation
-                ? [
-                    location?.street,
-                    location?.unit,
-                    location?.city,
-                    location?.state,
-                    location?.zip,
-                  ].join(' ')
-                : ''
-            }
-            timeZone="America/Denver"
-            options={['Apple', 'Google', 'Outlook.com', 'Yahoo', 'iCal']}
-            buttonStyle="text"
-            hideBackground
-            lightMode={mode}
-          />
-        )}
+        <Flex gap={4} w="full" align="center">
+          {eventDate?.dateOnly && showAddToCalendar && (
+            <AddToCalendarButton
+              uid={event.id}
+              size="2"
+              trigger="click"
+              name={event.name}
+              description={event.description}
+              startDate={event.datetime}
+              endDate={event.datetime_end}
+              location={
+                viewLocation
+                  ? [
+                      location?.street,
+                      location?.unit,
+                      location?.city,
+                      location?.state,
+                      location?.zip,
+                    ].join(' ')
+                  : ''
+              }
+              timeZone="America/Denver"
+              options={['Apple', 'Google', 'Outlook.com', 'Yahoo', 'iCal']}
+              buttonStyle="text"
+              hideBackground
+              lightMode={mode}
+            />
+          )}
+          <Spacer />
+          {footer}
+          <Spacer />
+          {(event.status == 'planned' && (
+            <>
+              <Text as="em">* This is date is subject to change.</Text>
+            </>
+          )) || <Countdown date={date} renderer={renderer} />}
+        </Flex>
       </CardFooter>
     </Card>
   )
