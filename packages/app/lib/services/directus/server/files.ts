@@ -146,7 +146,7 @@ export async function uploadFile(
     filepath: path,
     contentType: type,
   })
-  const file = adminClient.files.createOne(
+  const file = await adminClient.files.createOne(
     formData,
     {},
     {
