@@ -4,6 +4,7 @@ import {
   Flex,
   AlertIcon,
   Stat,
+  Link,
   StatLabel,
   StatNumber,
   SimpleGrid,
@@ -12,9 +13,10 @@ import { EventCard, LinkButton } from 'components/controls'
 import { EventDetail, EventStats, MemberLevel } from 'lib/models'
 import Page from 'components/Page'
 import { useEffect, useState } from 'react'
-import { useUser } from '../../../hooks'
+import { useUser } from 'hooks'
 import { useRouter } from 'next/router'
-
+import NextLink from 'next/link'
+import { ArrowBackIcon } from '@chakra-ui/icons'
 export const getServerSideProps = async (context) => {
   const { getEventDetail } = await import('lib/services/directus/server/events')
   const eventId = String(context.query.id)
@@ -58,13 +60,21 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
 
   return (
     <Page
-      title={event ? event.name + ' Admin' : 'Loading'}
+      title={'Event Admin'}
       loading={loading}
       requireAuth={true}
       requiredLevel={MemberLevel.staff}
     >
       {member && event && (
-        <EventCard event={event} showDescription={false}>
+        <EventCard
+          event={event}
+          showDescription={false}
+          footer={
+            <LinkButton colorScheme="primary" href="/admin/scan">
+              Scan Invite
+            </LinkButton>
+          }
+        >
           <Flex direction="column" gap={4}>
             {error && (
               <Alert status="error" size="lg">
@@ -112,23 +122,16 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
               </>
             )}
           </SimpleGrid>
-          {stats && (
-            <Flex direction="column" gap={4}>
-              <HStack></HStack>
-
-              <HStack></HStack>
-            </Flex>
-          )}
         </EventCard>
       )}
-      <HStack spacing={4}>
-        <LinkButton href="/admin/event" my={4}>
+      <HStack spacing={4} my={4}>
+        <Link as={NextLink} href="/admin/event">
+          <ArrowBackIcon mr={2} w="50" />
           Back to Events
-        </LinkButton>
-
-        <LinkButton colorScheme="primary" href="/admin/scan" my={4}>
-          Scan Invite
-        </LinkButton>
+        </Link>
+        <Link as={NextLink} href={`/events/${event?.id}`}>
+          Event Details
+        </Link>
       </HStack>
     </Page>
   )

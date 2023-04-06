@@ -21,7 +21,7 @@ import { useUser, useUserEvents } from 'hooks'
 import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
 import { Member, GroupEvent, MemberLevel, EventInvite } from 'lib/models'
-import { EventBadge, EventCard, EventRSVPCard, EventTicket } from 'components/controls'
+import { EventBadge, EventCard, EventRSVP, EventTicket, LinkButton } from 'components/controls'
 import Calendar from 'react-calendar'
 import { brand } from 'lib/config/brand'
 
@@ -60,11 +60,24 @@ export default function EventsPage({}: PageProps) {
               <Heading mb={4} className="no-print">
                 Active Event
               </Heading>
-              <EventRSVPCard member={member} invite={activeInvite} onChange={onEventsChange}>
+              <EventCard
+                key={activeInvite.id}
+                event={activeInvite.event as GroupEvent}
+                showDescription={false}
+                href={activeInvite.attended ? `/events/${activeInvite.event.id}` : undefined}
+                mb={4}
+                showAddToCalendar={false}
+              >
+                <EventRSVP
+                  memberId={member.id}
+                  eventId={activeInvite.event.id}
+                  rsvp={activeInvite.rsvp}
+                  onChange={onEventsChange}
+                />
                 {activeInvite.rsvp == 'confirmed' && (
                   <EventTicket event={activeInvite.event} member={member} />
                 )}
-              </EventRSVPCard>
+              </EventCard>
             </Box>
           )}
           <EventCalendar events={[...upcoming, ...invitations].map((i) => i.event)} />
@@ -93,6 +106,7 @@ export default function EventsPage({}: PageProps) {
                   member={member}
                   onChange={onEventsChange}
                   name="Upcoming Events"
+                  showLink={true}
                   text="Check back later for upcoming events."
                 />
               </TabPanel>
@@ -104,8 +118,10 @@ export default function EventsPage({}: PageProps) {
                   member={member}
                   onChange={onEventsChange}
                   name="Invitations"
-                  text="If you never see invitations, make sure
-          your account is set to receive invites and that you never no-show to an event."
+                  text={
+                    invitations.length == 0 &&
+                    'If you never see invitations, make sure your account is set to receive invites and that you never no-show to an event.'
+                  }
                 />
               </TabPanel>
 
@@ -135,6 +151,7 @@ function Invitations({
   name,
   text,
   onChange,
+  showLink = false,
 }: {
   list: EventInvite[]
   member: Member
@@ -143,6 +160,7 @@ function Invitations({
   onChange: () => void
   showLink?: boolean
 }) {
+  const linkColor = useColorModeValue('primary', 'gray')
   if (list.length === 0) {
     return (
       <Box>
@@ -166,19 +184,40 @@ function Invitations({
     const dateB = new Date(b.event.datetime).getTime()
     return dateA - dateB
   })
-
   return (
     <>
       {list.map((invite, index) => {
         return (
-          <EventRSVPCard
+          <EventCard
             key={index}
-            invite={invite}
-            member={member}
             mb={8}
-            full={false}
-            onChange={onChange}
-          ></EventRSVPCard>
+            event={invite.event}
+            href={`/events/${invite.event.id}`}
+            showDescription={false}
+            showLocation={false}
+            isGuest={invite.guest || false}
+            showAddToCalendar={invite.rsvp == 'confirmed' || invite.rsvp == 'maybe'}
+          >
+            {showLink && (
+              <LinkButton
+                gradient={false}
+                rounded="lg"
+                w="full"
+                colorScheme={linkColor}
+                href={`/events/${invite.event.id}`}
+                p={6}
+              >
+                View Details
+              </LinkButton>
+            )}
+            <EventRSVP
+              memberId={member.id}
+              eventId={invite.event.id}
+              rsvp={invite.rsvp}
+              onChange={onChange}
+              mt={4}
+            />
+          </EventCard>
         )
       })}
     </>
@@ -203,8 +242,19 @@ function PastEvents({ member, list }: { list: EventInvite[]; member: Member }) {
   })
 
   const PastEventItem = ({ invite }: { invite: EventInvite }) => {
+    const linkColor = useColorModeValue('primary', 'gray')
     return (
       <Box key={invite.id}>
+        <LinkButton
+          gradient={false}
+          rounded="lg"
+          w="full"
+          colorScheme={linkColor}
+          href={`/events/${invite.event.id}`}
+          p={6}
+        >
+          Rate Event &amp; Attendees
+        </LinkButton>
         <Heading as="h5" fontSize="md" textAlign="center">
           RSVP: {invite.rsvp.toUpperCase()} | {invite.attended ? 'You attended!' : 'Did not attend'}
         </Heading>

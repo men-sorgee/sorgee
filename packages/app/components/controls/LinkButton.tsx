@@ -13,6 +13,7 @@ type Props = ButtonProps & {
     | 'danger'
     | 'info'
     | 'gray'
+    | 'ghost'
   children: React.ReactNode | React.ReactNode[]
   onClick?: (e: any) => void
 }

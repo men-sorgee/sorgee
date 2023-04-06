@@ -1,24 +1,17 @@
-// TODO: merge this with events/rsvp.ts
 import { NextApiRequest, NextApiResponse } from 'next'
 import { baseUrl } from 'lib/config'
 import { findInvite, getEvent, registerForEvent, updateInvite } from 'lib/services/directus/server'
 import { withMethods } from 'lib/utils/server'
-import { ApiResponse, Applicant, EventUser, GroupEvent } from 'lib/models'
+import { EventUser } from 'lib/models'
 
-export default async function inviteRSVP(
-  req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<Applicant> | ApiResponse>
-) {
+export default async function inviteRSVP(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const method = withMethods(req, ['GET', 'POST'])
+    const method = withMethods(req, ['GET'])
     const { event_id, user_id, rsvp, reason } = (method == 'GET' ? req.query : req.body) as any
-    if (!event_id || !user_id || !rsvp) {
-      if (method == 'GET') return res.redirect(baseUrl + '/404')
-      else return res.status(400).json(ApiResponse(null, 'Missing event_id, user_id, or rsvp'))
-    }
+    if (!event_id || !user_id || !rsvp) return res.redirect(baseUrl + '/events')
+
     const event = await getEvent(event_id as string)
-    if (!event || event.status !== 'scheduled')
-      return res.status(404).json(ApiResponse(null, 'Event not found'))
+    if (!event || event.status !== 'scheduled') return res.redirect(baseUrl + '/events')
 
     const invite = (await findInvite(event_id as string, user_id as string)) as EventUser
 
@@ -32,19 +25,13 @@ export default async function inviteRSVP(
       await registerForEvent(event_id, user_id, rsvp)
       success = true
     }
-
-    switch (method) {
-      case 'GET': {
-        return res.redirect(baseUrl + '/events/' + event_id)
-      }
-      case 'POST': {
-        return res
-          .status(success ? 200 : 400)
-          .json(ApiResponse({}, success ? null : 'Failed to RSVP'))
-      }
-    }
+    return success
+      ? res.redirect(baseUrl + '/events/' + event_id)
+      : res.redirect(baseUrl + '/events')
   } catch (e) {
     console.error(e)
-    return res.status(500).json(ApiResponse(null, e))
+    res.redirect(baseUrl + '/events')
+  } finally {
+    res.end()
   }
 }
