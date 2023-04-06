@@ -317,7 +317,7 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
           shadow={0}
           p={[1, 2, 4]}
         >
-          {stats && (
+          {stats && statsR && (
             <>
               <Stat textAlign="center">
                 <StatLabel>Applicants</StatLabel>

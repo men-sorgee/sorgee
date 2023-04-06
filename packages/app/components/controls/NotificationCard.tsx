@@ -97,7 +97,7 @@ export const NotificationCard = chakra(({ member, notification }: Props) => {
           <ModalFooter>
             <HStack spacing={2} align="right">
               {notification?.link && (
-                <LinkButton onClick={onClose} href={notification?.link} colorScheme="purple">
+                <LinkButton onClick={onClose} href={notification?.link} colorScheme="accent">
                   {notification?.button_text || 'Check it Out!'}
                 </LinkButton>
               )}

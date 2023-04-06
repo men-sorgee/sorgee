@@ -24,7 +24,14 @@ export async function getServerSideProps(
   const { authOptions } = await import('lib/auth/config')
   const { req, res } = context
   const session = await getServerSession(req as any, res, authOptions)
-
+  if (!session || session.user.user_type != 'staff') {
+    return {
+      redirect: {
+        destination: '/auth/signin',
+        permanent: false,
+      },
+    }
+  }
   const { listAdminEvents } = await import('lib/services/directus/server/events')
   const events = await listAdminEvents()
   return { props: { events } }
@@ -73,7 +80,7 @@ export default function AdminEventList({ events }: Props) {
           <TabPanel p={0}>
             <Heading mb={4}>Upcoming Events</Heading>
             {upcoming.map((event) => (
-              <LinkBox key={event.id} cursor="pointer" mb={4}>
+              <LinkBox key={event.id} cursor="pointer" mb={4} title="Click for event admin">
                 <EventCard event={event} showDescription={false}>
                   <LinkOverlay as={Link} href={`/admin/event/${event.id}`}>
                     View Event

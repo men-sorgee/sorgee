@@ -11,20 +11,28 @@ import {
   StatGroup,
   useBreakpointValue,
   Box,
+  Link,
   Text,
   Heading,
   Spacer,
   useColorModeValue,
 } from '@chakra-ui/react'
-import useSWR from 'swr'
-import { EventCard, EventTicket, LinkButton, MemberSpotlight, RateItem } from 'components/controls'
+import {
+  EventCard,
+  EventTicket,
+  LinkButton,
+  MemberSpotlight,
+  RateItem,
+  EventRSVP,
+} from 'components/controls'
 import { EventDetail, EventStats, EventUser, Member, Rating, User } from 'lib/models'
 import Page from 'components/Page'
 import { useEffect, useState } from 'react'
 import { useUser, useEvent } from 'hooks'
 import { useRouter } from 'next/router'
 import { isToday } from 'date-fns'
-import { JsonFetcher } from '../../lib/utils'
+import { ArrowBackIcon } from '@chakra-ui/icons'
+import NextLink from 'next/link'
 
 export const getServerSideProps = (context) => {
   return {
@@ -37,7 +45,7 @@ export const getServerSideProps = (context) => {
 export default function EventPage({ id }) {
   const router = useRouter()
   const { id: i } = router.query
-  const { member, loading, reload: reloadUser } = useUser()
+  const { member, loading, isStaff, reload: reloadUser } = useUser()
   const [eventId] = useState<string>(i || id)
   const [showTicket, setShowTicket] = useState<boolean>(false)
   const { event, loading: eventLoading } = useEvent(eventId)
@@ -78,7 +86,7 @@ export default function EventPage({ id }) {
   return (
     <Page title="Event Details" loading={loading || eventLoading} requireAuth={true}>
       {member && event && (
-        <EventCard event={event} showDescription showLocation={true}>
+        <EventCard event={event} showDescription showLocation showAddToCalendar>
           {showTicket && invite && invite.rsvp == 'confirmed' && (
             <EventTicket open event={event} member={member} />
           )}
@@ -162,12 +170,21 @@ export default function EventPage({ id }) {
           {invite?.attended && (
             <AttendedEvent event={event} member={member} invite={invite} reloadUser={reloadUser} />
           )}
+          {event.status != 'occurred' && (invite || !event.invite_only) && (
+            <EventRSVP memberId={member.id} eventId={id} rsvp={invite.rsvp} />
+          )}
         </EventCard>
       )}
-      <HStack spacing={4}>
-        <LinkButton href="/events" my={4}>
+      <HStack spacing={4} mt={4}>
+        <Link as={NextLink} href="/events">
+          <ArrowBackIcon mr={2} w="50" />
           Back to Events
-        </LinkButton>
+        </Link>
+        {isStaff && (
+          <Link as={NextLink} href={`/admin/event/${eventId}`} my={4}>
+            Event Admin
+          </Link>
+        )}
       </HStack>
     </Page>
   )

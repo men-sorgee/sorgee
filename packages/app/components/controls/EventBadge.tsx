@@ -15,12 +15,13 @@ const statusMap = {
 
 /// background color, text color
 const typeMap = {
-  'Group Sex': ['accent.500', 'white'],
-  'Watch Sports': ['blue', 'white'],
-  'Outdoor Activity': ['green', 'white'],
-  Camping: ['orange', 'yellow'],
-  'Drinks Out': ['pink', 'black'],
-  'Game Night': ['yellow', 'black'],
+  group_sex: ['accent.500', 'white'],
+  watching_sports: ['blue', 'white'],
+  outdoors: ['green', 'white'],
+  dinner_party: ['red', 'white'],
+  cocktails: ['pink', 'black'],
+  game_night: ['yellow', 'black'],
+  cards: ['purple', 'white'],
   Cigars: ['brown', 'white'],
   default: ['gray', 'white'],
 }
@@ -34,7 +35,6 @@ export const EventBadge = chakra(({ status, type, size = 'md', ...props }: Props
     <Badge
       rounded={size}
       size={size}
-      textTransform={'uppercase'}
       bg={bgColor}
       color={textColor}
       title={status}

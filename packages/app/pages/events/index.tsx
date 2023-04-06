@@ -1,7 +1,6 @@
 import {
   Box,
   Heading,
-  Divider,
   Text,
   AlertIcon,
   Alert,
@@ -11,24 +10,20 @@ import {
   TabPanels,
   TabPanel,
   Badge,
-  Spacer,
-  Flex,
   useColorModeValue,
-  SlideFade,
   LinkBox,
   LinkOverlay,
   Show,
 } from '@chakra-ui/react'
-
 import { addDays, isSameDay, isToday } from 'date-fns'
 import Page from 'components/Page'
 import { useUser, useUserEvents } from 'hooks'
 import Link from 'next/link'
-import { SetStateAction, useCallback, useEffect, useState } from 'react'
-import { Member, GroupEvent, MemberLevel, EventInvite, Rating } from 'lib/models'
-import { EventBadge, EventCard, EventRSVPCard, EventTicket } from 'components/controls'
+import { useCallback, useEffect, useState } from 'react'
+import { Member, GroupEvent, MemberLevel, EventInvite } from 'lib/models'
+import { EventBadge, EventCard, EventRSVP, EventTicket, LinkButton } from 'components/controls'
 import Calendar from 'react-calendar'
-import { brand } from '../../lib/config/brand'
+import { brand } from 'lib/config/brand'
 
 export type PageProps = {}
 
@@ -65,11 +60,24 @@ export default function EventsPage({}: PageProps) {
               <Heading mb={4} className="no-print">
                 Active Event
               </Heading>
-              <EventRSVPCard member={member} invite={activeInvite} onChange={onEventsChange}>
+              <EventCard
+                key={activeInvite.id}
+                event={activeInvite.event as GroupEvent}
+                showDescription={false}
+                href={activeInvite.attended ? `/events/${activeInvite.event.id}` : undefined}
+                mb={4}
+                showAddToCalendar={false}
+              >
+                <EventRSVP
+                  memberId={member.id}
+                  eventId={activeInvite.event.id}
+                  rsvp={activeInvite.rsvp}
+                  onChange={onEventsChange}
+                />
                 {activeInvite.rsvp == 'confirmed' && (
                   <EventTicket event={activeInvite.event} member={member} />
                 )}
-              </EventRSVPCard>
+              </EventCard>
             </Box>
           )}
           <EventCalendar events={[...upcoming, ...invitations].map((i) => i.event)} />
@@ -98,6 +106,7 @@ export default function EventsPage({}: PageProps) {
                   member={member}
                   onChange={onEventsChange}
                   name="Upcoming Events"
+                  showLink={true}
                   text="Check back later for upcoming events."
                 />
               </TabPanel>
@@ -105,12 +114,14 @@ export default function EventsPage({}: PageProps) {
                 <Heading mb={4}>Your Invitations</Heading>
 
                 <Invitations
-                  list={invitations}
+                  list={invitations.filter((e) => e.rsvp != 'declined')}
                   member={member}
                   onChange={onEventsChange}
                   name="Invitations"
-                  text="If you never see invitations, make sure
-          your account is set to receive invites and that you never no-show to an event."
+                  text={
+                    invitations.length == 0 &&
+                    'If you never see invitations, make sure your account is set to receive invites and that you never no-show to an event.'
+                  }
                 />
               </TabPanel>
 
@@ -140,6 +151,7 @@ function Invitations({
   name,
   text,
   onChange,
+  showLink = false,
 }: {
   list: EventInvite[]
   member: Member
@@ -148,6 +160,7 @@ function Invitations({
   onChange: () => void
   showLink?: boolean
 }) {
+  const linkColor = useColorModeValue('primary', 'gray')
   if (list.length === 0) {
     return (
       <Box>
@@ -171,19 +184,42 @@ function Invitations({
     const dateB = new Date(b.event.datetime).getTime()
     return dateA - dateB
   })
-
   return (
     <>
-      {list.map((invite, index) => (
-        <EventRSVPCard
-          key={index}
-          invite={invite}
-          member={member}
-          mb={8}
-          full={false}
-          onChange={onChange}
-        />
-      ))}
+      {list.map((invite, index) => {
+        return (
+          <EventCard
+            key={index}
+            mb={8}
+            event={invite.event}
+            href={`/events/${invite.event.id}`}
+            showDescription={false}
+            showLocation={false}
+            isGuest={invite.guest || false}
+            showAddToCalendar={invite.rsvp == 'confirmed' || invite.rsvp == 'maybe'}
+          >
+            {showLink && (
+              <LinkButton
+                gradient={false}
+                rounded="lg"
+                w="full"
+                colorScheme={linkColor}
+                href={`/events/${invite.event.id}`}
+                p={6}
+              >
+                View Details
+              </LinkButton>
+            )}
+            <EventRSVP
+              memberId={member.id}
+              eventId={invite.event.id}
+              rsvp={invite.rsvp}
+              onChange={onChange}
+              mt={4}
+            />
+          </EventCard>
+        )
+      })}
     </>
   )
 }
@@ -206,8 +242,19 @@ function PastEvents({ member, list }: { list: EventInvite[]; member: Member }) {
   })
 
   const PastEventItem = ({ invite }: { invite: EventInvite }) => {
+    const linkColor = useColorModeValue('primary', 'gray')
     return (
       <Box key={invite.id}>
+        <LinkButton
+          gradient={false}
+          rounded="lg"
+          w="full"
+          colorScheme={linkColor}
+          href={`/events/${invite.event.id}`}
+          p={6}
+        >
+          Rate Event &amp; Attendees
+        </LinkButton>
         <Heading as="h5" fontSize="md" textAlign="center">
           RSVP: {invite.rsvp.toUpperCase()} | {invite.attended ? 'You attended!' : 'Did not attend'}
         </Heading>
@@ -236,6 +283,7 @@ function PastEvents({ member, list }: { list: EventInvite[]; member: Member }) {
           showDescription={false}
           href={invite.attended ? `/events/${invite.event.id}` : undefined}
           mb={4}
+          showAddToCalendar={false}
         >
           <PastEventItem invite={invite} />
         </EventCard>
@@ -248,22 +296,21 @@ function EventCalendar({ events }: { events: GroupEvent[] }) {
   const today = new Date()
   const minDate = events.map((e) => new Date(e.datetime)).sort()[0] || today
   const maxDate = addDays(today, 120)
-  const [value, setValue] = useState(new Date())
-
-  const onChange = useCallback((value: Date, event: any) => {
+  const [value, setValue] = useState(today)
+  const onChange = useCallback((value: Date) => {
     setValue(value)
   }, [])
+
+  const linkColor = useColorModeValue('primary.500', 'primary.200')
   const EventView = ({ event }: { event: GroupEvent; full?: boolean }) => {
     return (
-      <Box height="full" width="full" p={0} color="primary.500" cursor="pointer">
-        <LinkBox>
-          <EventBadge type={event.type} status={event.status} />
-          <Text p={0} m={0}>
-            {event.name}
-            <LinkOverlay href={`/events/${event.id}`} />
-          </Text>
-        </LinkBox>
-      </Box>
+      <LinkBox color={linkColor}>
+        <EventBadge type={event.type} status={event.status} />
+        <div>
+          {event.name}
+          <LinkOverlay href={`/events/${event.id}`} />
+        </div>
+      </LinkBox>
     )
   }
 
@@ -275,13 +322,19 @@ function EventCalendar({ events }: { events: GroupEvent[] }) {
         ? events?.find((e: GroupEvent, i: any) => isSameDay(new Date(e.datetime), date))
         : null
       // Check if a date React-Calendar wants to check is on the list of dates to add class to
-      if (!event) return <Flex height="full" width="full"></Flex>
-      return <EventView event={event} />
+      return (
+        <Box p={0} height="full" width="full">
+          {event && <EventView event={event} />}{' '}
+        </Box>
+      )
     }
   }
 
-  const line = useColorModeValue(brand.colors.primary[700], '#000000')
-  const bg = useColorModeValue('white', brand.colors.gray[300])
+  const line = useColorModeValue(brand.colors.primary[700], '#000')
+  const bg = useColorModeValue('#FFF', brand.colors.gray[300])
+  const lineWeekend = useColorModeValue(brand.colors.gray[300], '#FFF')
+  const bgWeekend = useColorModeValue(brand.colors.gray[100], brand.colors.gray[400])
+
   return (
     <Show above="md">
       <Box
@@ -292,6 +345,9 @@ function EventCalendar({ events }: { events: GroupEvent[] }) {
             minH: '50vh',
 
             margin: '2rem auto 0 auto',
+          },
+          '.react-calendar abbr': {
+            textDecoration: 'none',
           },
           '.react-calendar__navigation': {
             backgroundColor: line,
@@ -309,7 +365,20 @@ function EventCalendar({ events }: { events: GroupEvent[] }) {
             border: '1px solid',
             margin: '0',
             color: line,
+            cursor: 'default',
+          },
+          '.react-calendar__tile--active': {
+            fontWeight: 'bold',
+            border: '2px solid',
+          },
+          '.react-calendar__month-view__days__day': {
             backgroundColor: bg,
+          },
+
+          '.react-calendar__month-view__days__day--weekend': {
+            backgroundColor: bgWeekend,
+            color: lineWeekend,
+            borderColor: line,
           },
           '.react-calendar__month-view': {
             borderColor: line,

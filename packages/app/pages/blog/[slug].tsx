@@ -1,6 +1,5 @@
-import { Key, useEffect, useState } from 'react'
-import { Markdown, LinkButton, SubscribeBox } from 'components/controls'
-import Section from 'components/Section'
+import { Markdown } from 'components/controls'
+
 import Page from 'components/Page'
 
 import { Page as PageModel } from 'lib/models'
@@ -16,10 +15,9 @@ import {
   useBreakpointValue,
 } from '@chakra-ui/react'
 import NotFound from 'components/NotFound'
-import { blogPage } from '../../lib/config'
+import { blogPage } from 'lib/config'
 import { ChevronRightIcon } from '@chakra-ui/icons'
 import NextLink from 'next/link'
-import { getPageBySlug } from 'lib/services/directus/static'
 
 interface Params extends ParsedUrlQuery {
   slug: string

@@ -1,20 +1,11 @@
 import { listUpcomingEvents } from 'lib/services/directus/server'
 import { getAdminClient } from '..'
-import {
-  Invite,
-  InviteRSVPType,
-  EventUser,
-  GroupEvent,
-  Location,
-  EventInvite,
-  Member,
-  User,
-} from 'lib/models'
+import { Invite, InviteRSVPType, EventUser, GroupEvent, EventInvite, Member } from 'lib/models'
 
 export async function getInvite(inviteId: number): Promise<EventUser | null> {
   const client = await getAdminClient()
   const query = await client.items('events_users').readOne(inviteId, {
-    fields: ['*.*'],
+    fields: ['*', '*.*'],
   })
 
   return query as Invite
@@ -41,7 +32,7 @@ export async function listInvites(member: Member): Promise<EventUser[]> {
         status: { _in: ['planned', 'scheduled', 'occurred'] },
       },
     },
-    fields: ['*.*' as any, 'events_id.*' as any],
+    fields: ['*', '*.*' as any, 'events_id.*' as any],
     sort: ['events_id.datetime' as any],
   })
 
@@ -117,7 +108,7 @@ export async function getUserEvents(user_id: string) {
     filter: {
       users_id: { _eq: user_id },
     },
-    fields: ['*.*' as any, 'events_id.*' as any],
+    fields: ['*', '*.*' as any, 'events_id.*' as any],
     sort: ['events_id.datetime' as any],
   })
 

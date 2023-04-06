@@ -7,13 +7,15 @@ export type UserInvite = {
   v: string
 }
 
-export enum InviteRSVPType {
-  Invited = 'invited',
-  Maybe = 'maybe',
-  Confirmed = 'confirmed',
-  Cancelled = 'cancelled',
-  Declined = 'declined',
+export type RSVPInfo = {
+  user_id: string
+  event_id: string
+  invite_id?: number
+  reason?: string
+  rsvp?: InviteRSVPType
 }
+
+export type InviteRSVPType = 'invited' | 'maybe' | 'confirmed' | 'cancelled' | 'declined'
 
 export enum EventStatusType {
   Planned = 'planned',
@@ -37,8 +39,9 @@ export type EventInfo = {
   id: string
   status: EventStatusType
   datetime: string
+  datetime_end: string
   name: string
-  location?: string | Location
+  location?: Location
   description: string
   cost: number
   type: string
@@ -49,8 +52,9 @@ export type EventInfo = {
 export type GroupEvent = {
   id: string
   status: string | EventStatusType
-  datetime?: string
-  name?: string
+  datetime: string
+  datetime_end: string
+  name: string
   location?: string | Location
   description?: string
   cost: number
@@ -69,7 +73,7 @@ export type EventUser = {
   engagement?: unknown
   attended?: boolean
   flags?: unknown
-  rsvp?: string
+  rsvp?: InviteRSVPType
   paid?: boolean
   guest?: boolean
   reason?: string
@@ -81,7 +85,7 @@ export type EventInvite = {
   event: GroupEvent
   member: Member
   attended: boolean
-  rsvp: string
+  rsvp: InviteRSVPType
   paid: boolean
   guest: boolean
   reason: string
