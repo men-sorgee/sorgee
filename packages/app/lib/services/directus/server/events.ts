@@ -56,7 +56,21 @@ export async function registerForEvent(
 
 export async function getEvent(id: string): Promise<GroupEvent> {
   const client = await getAdminClient()
-  const event: GroupEvent = (await client.items('events').readOne(id)) as any as GroupEvent
+  const event: GroupEvent = (await client.items('events').readOne(id, {
+    fields: [
+      '*',
+      'location.*',
+      'users.*',
+      'users.users_id.id',
+      'users.users_id.picture',
+      'users.users_id.nickname',
+      'users.users_id.first_name',
+      'survey.*',
+    ] as any,
+    users: {
+      limit: -1,
+    },
+  })) as any as GroupEvent
   if (!event) return null
   return event as GroupEvent
 }
@@ -77,6 +91,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
     users: {
       limit: -1,
     },
+    limit: -1,
   })
   const {
     name,
