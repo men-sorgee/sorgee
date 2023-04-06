@@ -45,6 +45,7 @@ import Page from 'components/Page'
 import { ArrowUpTrayIcon, CameraIcon } from '@heroicons/react/24/outline'
 import { UserPhoto } from 'lib/models'
 import { deleteJSON, getAssetUrl } from 'lib/utils'
+import { da } from 'date-fns/locale'
 type Props = {}
 
 type PhotoItem = {
@@ -85,13 +86,17 @@ export default function PhotoAlbums({}: Props) {
                 <MemberAvatar width="150px" height="150px" rounded="full" />
                 <ConfirmButton
                   title="Delete Avatar"
-                  confirmMessage="Are you sure you want to delete this photo?"
-                  request={() => deleteJSON(`/api/member/${member?.id}/photos/picture`)}
-                  complete={(success) => {
-                    if (success) {
-                      setPictureSrc(null)
-                      reload()
-                    }
+                  buttonText="Delete"
+                  promise={async () => {
+                    const { success, data, error } = await deleteJSON(
+                      `/api/member/${member?.id}/photos/picture`
+                    )
+                    if (!success) throw new Error(error.message)
+                    return data
+                  }}
+                  complete={() => {
+                    setPictureSrc(null)
+                    reload()
                   }}
                   size="sm"
                   maxW="fit-content"
@@ -105,7 +110,7 @@ export default function PhotoAlbums({}: Props) {
                   color="black"
                   _hover={{ opacity: 1, bg: 'white' }}
                 >
-                  Delete
+                  Are you sure you want to delete this photo?
                 </ConfirmButton>
               </Flex>
             )) || (
@@ -174,8 +179,14 @@ function PhotoList({ title, field, images, memberId, reload }: PhotoListProps) {
           </Link>
           <ConfirmButton
             title="Delete Photo"
-            confirmMessage="Are you sure you want to delete this photo?"
-            request={() => deleteJSON(`/api/member/photo/${image.photoId}`)}
+            buttonText="Delete"
+            promise={async () => {
+              const { success, data, error } = await deleteJSON(
+                `/api/member/photo/${image.photoId}`
+              )
+              if (!success) throw new Error(error.message)
+              return data
+            }}
             complete={(success) => {
               if (success) {
                 reload()
@@ -190,7 +201,7 @@ function PhotoList({ title, field, images, memberId, reload }: PhotoListProps) {
             color="black"
             _hover={{ opacity: 1, bg: 'white' }}
           >
-            Delete
+            Are you sure you want to delete this photo?
           </ConfirmButton>
         </Box>
       ))}

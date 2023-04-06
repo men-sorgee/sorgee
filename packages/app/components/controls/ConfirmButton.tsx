@@ -11,81 +11,92 @@ import {
   AlertDialogBody,
   AlertDialogFooter,
 } from '@chakra-ui/react'
-import { useRef, useCallback } from 'react'
-import { ApiResult } from 'lib/utils'
+import { useRef, useCallback, ReactNode, RefObject } from 'react'
 
 export type ConfirmButtonProps = ButtonProps & {
-  request: () => Promise<ApiResult<any>>
-  complete: (bool: boolean, error?: string) => void
+  promise: () => Promise<any>
+  complete: (bool: boolean, data: any, error?: string) => void
   title: string
-  confirmMessage: string
+  buttonText: string
+  confirmColorScheme?: string
   successMessage: string
   failureMessage: string
-  children: React.ReactNode
+  focusRef?: RefObject<HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement>
+  children: ReactNode | ReactNode[]
 }
 
 export const ConfirmButton = chakra(
   ({
-    request,
+    promise,
     complete,
     title,
-    confirmMessage,
+    buttonText,
+    confirmColorScheme = 'red',
     successMessage,
     failureMessage,
     children,
+    focusRef,
     ...props
   }: ConfirmButtonProps) => {
     const toast = useToast()
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const cancelRef = useRef()
+    const cancelRef = useRef<HTMLButtonElement>()
+    const goRef = useRef<HTMLButtonElement>()
     const action = useCallback(() => {
-      request().then(({ success: ok, error }) => {
-        complete(ok, error?.message)
-        if (ok) {
+      return promise()
+        .then((data) => {
+          complete(true, data, null)
           toast({
             title,
             description: successMessage,
             status: 'success',
-            duration: 5000,
+            duration: 3000,
           })
-        } else {
+        })
+        .catch((err) => {
+          complete(false, null, err)
           toast({
             title,
-            description: failureMessage + ' ' + error.message,
+            description: failureMessage + ' ' + err?.message || err,
             status: 'error',
             duration: 5000,
           })
-        }
-      })
-    }, [complete, failureMessage, request, successMessage, title, toast])
+        })
+    }, [complete, failureMessage, promise, successMessage, title, toast])
     return (
       <>
         <Button onClick={onOpen} {...props}>
-          {children || 'Delete'}
+          {buttonText}
         </Button>
 
-        <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+        <AlertDialog
+          isOpen={isOpen}
+          leastDestructiveRef={focusRef || goRef}
+          onClose={onClose}
+          autoFocus
+        >
           <AlertDialogOverlay>
             <AlertDialogContent>
               <AlertDialogHeader fontSize="lg" fontWeight="bold">
                 {title}
               </AlertDialogHeader>
 
-              <AlertDialogBody>{confirmMessage}</AlertDialogBody>
+              <AlertDialogBody>{children}</AlertDialogBody>
 
               <AlertDialogFooter>
                 <Button ref={cancelRef} onClick={onClose}>
                   Cancel
                 </Button>
                 <Button
-                  colorScheme="red"
+                  ref={goRef}
+                  colorScheme={confirmColorScheme}
                   onClick={() => {
-                    action()
                     onClose()
+                    return action()
                   }}
                   ml={3}
                 >
-                  {children || 'Delete'}
+                  {buttonText}
                 </Button>
               </AlertDialogFooter>
             </AlertDialogContent>
