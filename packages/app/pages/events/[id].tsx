@@ -171,7 +171,7 @@ export default function EventPage({ id }) {
             <AttendedEvent event={event} member={member} invite={invite} reloadUser={reloadUser} />
           )}
           {event.status != 'occurred' && (invite || !event.invite_only) && (
-            <EventRSVP memberId={member.id} eventId={id} rsvp={invite.rsvp} />
+            <EventRSVP memberId={member.id} eventId={id} rsvp={invite?.rsvp} />
           )}
         </EventCard>
       )}
