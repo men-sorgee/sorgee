@@ -53,7 +53,16 @@ export const EventCard = ({
   href,
   ...props
 }: EventCardProps) => {
-  const [eventDate, setEventDate] = useState<{
+  const [eventStartDate, setEventStartDate] = useState<{
+    day: string
+    short: string
+    month: string
+    dateOnly: string
+    dayOfMonth: string
+    date: Date
+    time: string
+  }>()
+  const [eventEndDate, setEventEndDate] = useState<{
     day: string
     short: string
     month: string
@@ -100,10 +109,11 @@ export const EventCard = ({
   }
 
   useEffect(() => {
-    if (event && !eventDate) {
-      setEventDate(getEventDate(event.datetime))
+    if (event && !eventStartDate) {
+      setEventStartDate(getEventDate(event.datetime))
+      setEventEndDate(getEventDate(event.datetime_end))
     }
-  }, [event, eventDate])
+  }, [event, eventStartDate])
   const mode = useColorModeValue('light', 'dark')
   if (!event) return null
 
@@ -150,7 +160,7 @@ export const EventCard = ({
             w="25%"
           >
             <Text fontSize={['xs', 'sm', 'sm', 'md']} color="white" m={0} p={0}>
-              {eventDate?.day}
+              {eventStartDate?.day}
             </Text>
             <Text
               m={0}
@@ -161,11 +171,11 @@ export const EventCard = ({
               whiteSpace="nowrap"
               fontWeight="extrabold"
             >
-              {eventDate?.month.toUpperCase()}
+              {eventStartDate?.month.toUpperCase()}
             </Text>
             <Text fontSize="4xl" color="white" m={0} p={0}>
               {event.status == 'planned' && <>&nbsp;</>}
-              {eventDate?.dayOfMonth}
+              {eventStartDate?.dayOfMonth}
               {event.status == 'planned' && <>*</>}
             </Text>
           </Flex>
@@ -187,7 +197,11 @@ export const EventCard = ({
 
           <Stat>
             <StatLabel>Start Time</StatLabel>
-            <StatNumber fontSize={['lg', 'xl', '2xl']}>{eventDate?.time}</StatNumber>
+            <StatNumber fontSize={['lg', 'xl', '2xl']}>{eventStartDate?.time}</StatNumber>
+          </Stat>
+          <Stat>
+            <StatLabel>End Time</StatLabel>
+            <StatNumber fontSize={['lg', 'xl', '2xl']}>{eventEndDate?.time}</StatNumber>
           </Stat>
           {event.status == 'scheduled' && (
             <Stat flex="shrink">
@@ -252,7 +266,7 @@ export const EventCard = ({
       </CardBody>
       <CardFooter>
         <Flex gap={4} w="full" align="center">
-          {eventDate?.dateOnly && showAddToCalendar && (
+          {eventStartDate?.dateOnly && showAddToCalendar && (
             <AddToCalendarButton
               uid={event.id}
               size="2"
