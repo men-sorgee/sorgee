@@ -86,7 +86,12 @@ export default function EventPage({ id }) {
   return (
     <Page title="Event Details" loading={loading || eventLoading} requireAuth={true}>
       {member && event && (
-        <EventCard event={event} showDescription showLocation showAddToCalendar>
+        <EventCard
+          event={event}
+          showDescription
+          showLocation={invite != null}
+          showAddToCalendar={invite != null}
+        >
           {showTicket && invite && invite.rsvp == 'confirmed' && (
             <EventTicket open event={event} member={member} />
           )}
@@ -122,7 +127,7 @@ export default function EventPage({ id }) {
               </StatGroup>
             )}
           </SimpleGrid>
-          {stats && event.status != 'occurred' && (
+          {stats && event.status != 'occurred' && invite && (
             <Flex direction="column" gap={4}>
               <HStack>
                 <Stat>
@@ -171,7 +176,7 @@ export default function EventPage({ id }) {
             <AttendedEvent event={event} member={member} invite={invite} reloadUser={reloadUser} />
           )}
           {event.status != 'occurred' && (invite || !event.invite_only) && (
-            <EventRSVP memberId={member.id} eventId={id} rsvp={invite.rsvp} />
+            <EventRSVP memberId={member.id} eventId={id} rsvp={invite?.rsvp} />
           )}
         </EventCard>
       )}

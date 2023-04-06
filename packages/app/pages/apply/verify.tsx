@@ -114,6 +114,7 @@ function Form({
     try {
       let formData = new FormData()
       formData.append('media', file)
+
       const res = await fetch('/api/apply/verify', {
         method: 'POST',
         body: formData,
