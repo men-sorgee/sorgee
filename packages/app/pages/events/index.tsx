@@ -56,7 +56,7 @@ export default function EventsPage({}: PageProps) {
     >
       {authorized ? (
         <>
-          {activeInvite && (
+          {activeInvite && member && (
             <Box mb={4}>
               <Heading mb={4} className="no-print">
                 Active Event
@@ -70,7 +70,7 @@ export default function EventsPage({}: PageProps) {
                 showAddToCalendar={false}
               >
                 <EventRSVP
-                  memberId={member.id}
+                  memberId={member?.id}
                   eventId={activeInvite.event.id}
                   rsvp={activeInvite.rsvp}
                   onChange={onEventsChange}
@@ -185,6 +185,7 @@ function Invitations({
     const dateB = new Date(b.event.datetime).getTime()
     return dateA - dateB
   })
+  if (!member) return null
   return (
     <>
       {list.map((invite, index) => {

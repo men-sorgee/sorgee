@@ -40,6 +40,7 @@ import { MemberHeader } from './MemberHeader'
 import { MemberPropertyGroup } from './MemberPropertyGroup'
 import { Rating } from './Rating'
 import { toLocalDate } from 'lib/utils'
+import { MemberChat } from './MemberChat'
 
 type Props = AvatarProps & {
   id: string
@@ -260,6 +261,7 @@ export const MemberSpotlight = ({
       )}
       <HStack spacing={4} p={4} justify="end">
         <BuddyControl memberId={member.id} />
+        <MemberChat member={member} />
       </HStack>
     </Flex>
   )

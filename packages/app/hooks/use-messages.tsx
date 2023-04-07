@@ -10,9 +10,20 @@ import {
   UserMessages,
 } from 'lib/models'
 import { putJSON, JsonFetcher } from 'lib/utils'
-import { useState, useEffect, createContext, ReactNode, useContext } from 'react'
+import {
+  useState,
+  useEffect,
+  createContext,
+  ReactNode,
+  useContext,
+  useCallback,
+  useMemo,
+} from 'react'
 
 export type MessagesContextData = {
+  activeConversation?: string
+  setActiveConversation: (cid: string) => void
+  chatWith: (user: Partial<Member>) => void
   conversations: { [key: string]: Conversation }
   hasNewMessages: boolean
   newMessageCount: number
@@ -26,6 +37,9 @@ export type MessagesContextData = {
 }
 
 export const MessagesContext = createContext<MessagesContextData>({
+  activeConversation: null,
+  setActiveConversation: (_) => {},
+  chatWith: (_: Partial<Member>) => {},
   conversations: {},
   hasNewMessages: false,
   newMessageCount: 0,
@@ -49,49 +63,87 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
     fallbackData: {},
   })
 
-  const conversations: { [key: string]: Conversation } = {}
+  const [conversations, setConversations] = useState<Record<string, Conversation>>({})
 
-  let newMessages = 0
-  Object.keys(userMessages || {}).forEach((k) => {
-    const messages = userMessages[k].map((m: ChatMessage) => {
-      return {
-        ...m,
-        timestamp: new Date(m.timestamp as string),
+  const [hasNewMessages, setHasNewMessages] = useState(false)
+  const [activeConversation, setActiveConversation] = useState<string>()
+  const [newMessages, setNewMessages] = useState(0)
+  useEffect(() => {
+    Object.keys(userMessages || {}).forEach((k) => {
+      const messages = userMessages[k].map((m: ChatMessage) => {
+        return {
+          ...m,
+          timestamp: new Date(m.timestamp as string),
+        }
+      })
+      const hasNewMessages =
+        messages.filter((m: { status: string }) => m.status === 'new').length > 0
+      const newMessageCount = messages.filter(
+        (m: ChatMessage) => m.status === 'new' && m.direction === 'incoming'
+      ).length
+      setNewMessages(newMessageCount)
+      const lastMessage = messages[messages.length - 1]
+      const user = lastMessage.user
+      conversations[k] = {
+        id: k,
+        messages,
+        newMessageCount,
+        lastMessage,
+        hasNewMessages,
+        user: {
+          ...user,
+          picture: `/api/asset/${user.picture}?w=100&h=100&fit=crop`,
+        },
       }
     })
-    const hasNewMessages = messages.filter((m: { status: string }) => m.status === 'new').length > 0
-    const newMessageCount = messages.filter(
-      (m: ChatMessage) => m.status === 'new' && m.direction === 'incoming'
-    ).length
-    newMessages += newMessageCount
-    const lastMessage = messages[messages.length - 1]
-    const user = lastMessage.user
-    conversations[k] = {
-      id: k,
-      messages,
-      newMessageCount,
-      lastMessage,
-      hasNewMessages,
-      user: {
-        ...user,
-        picture: `/api/asset/${user.picture}?w=100&h=100&fit=crop`,
-      },
-    }
-  })
+    setHasNewMessages(newMessages > 0)
+  }, [conversations, hasNewMessages, newMessages, userMessages])
 
-  const mark = async (ids: string[], status: MessageStatusType) => {
-    const { success, data } = await putJSON<any, UserMessages>(key, {
-      ids,
-      status,
-    })
-    if (success) {
-      mutate(data)
-    }
-  }
+  const chatWith = useCallback(
+    (user: Partial<Member>) => {
+      // create empty conversation
+      if (!conversations[user.id])
+        setConversations({
+          [user.id]: {
+            id: user.id,
+            messages: [],
+            newMessageCount: 0,
+            lastMessage: null,
+            hasNewMessages: false,
+            user: {
+              id: user.id,
+              nickname: user.nickname,
+              presence: user.presence,
+              last_login: user.last_login,
+              picture: user.picture && `/api/asset/${user.picture}?w=100&h=100&fit=crop`,
+            },
+          },
+          ...conversations,
+        })
+      setActiveConversation(user.id)
+    },
+    [conversations]
+  )
+
+  const mark = useCallback(
+    async (ids: string[], status: MessageStatusType) => {
+      const { success, data } = await putJSON<any, UserMessages>(key, {
+        ids,
+        status,
+      })
+      if (success) {
+        mutate(data)
+      }
+    },
+    [key, mutate]
+  )
 
   const context: MessagesContextData = {
+    activeConversation,
+    setActiveConversation,
     conversations,
-    hasNewMessages: newMessages > 0,
+    chatWith,
+    hasNewMessages,
     newMessageCount: newMessages,
     error,
     markAsRead: (ids: string[]) => mark(ids, 'read'),

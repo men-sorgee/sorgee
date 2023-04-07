@@ -12,9 +12,10 @@ import {
   Box,
 } from '@chakra-ui/react'
 import { SearchableMember, MemberLevelColorMap, MemberLevel } from 'lib/models'
-import { MemberHeader } from './MemberHeader'
+import { MemberHeader, MemberChat } from '.'
 import NextLink from 'next/link'
 import { formatDistanceToNowStrict } from 'date-fns'
+import { ReactNode } from 'react'
 
 type Props = CardProps & {
   member: Partial<SearchableMember>
@@ -77,6 +78,7 @@ export const MemberProfileCard = chakra(({ member, onClick, ...props }: Props) =
               Member Since:{' '}
               {new Date(member.approved_date || member.date_created).toLocaleDateString()}
             </Text>
+            <MemberChat member={member as any} />
           </CardFooter>
         </Card>
       </LinkBox>

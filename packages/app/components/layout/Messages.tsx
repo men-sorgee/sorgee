@@ -1,4 +1,5 @@
 import {
+  Box,
   Drawer,
   DrawerOverlay,
   DrawerContent,
@@ -9,42 +10,71 @@ import {
   Badge,
   Text,
 } from '@chakra-ui/react'
-import { MessagesContext } from 'hooks'
+import { useMessages } from 'hooks'
 import { ChatBubbleBottomCenterIcon as ChatIcon } from '@heroicons/react/24/outline'
 import { Member } from 'lib/models'
 import Chat from './Chat'
+import { useEffect, useRef, useState } from 'react'
 
 export default function MessagesPane({ member }: { member: Member }) {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const {
+    conversations,
+    hasNewMessages,
+    newMessageCount,
+    activeConversation,
+    setActiveConversation,
+  } = useMessages()
+  const { isOpen, onOpen, onClose } = useDisclosure({
+    onClose: () => setActiveConversation(null),
+    isOpen: activeConversation != undefined,
+  })
+
+  const [prevMessagesCount, setPrevMessagesCount] = useState(newMessageCount)
+  const audioRef = useRef<HTMLAudioElement>(null)
+
+  useEffect(() => {
+    if (newMessageCount > prevMessagesCount && !isOpen) {
+      audioRef.current.volume = 0.5
+      audioRef.current?.play()
+      setPrevMessagesCount(newMessageCount)
+    }
+  }, [activeConversation, isOpen, newMessageCount, onOpen, prevMessagesCount])
+
   return (
     <>
-      <MessagesContext.Consumer>
-        {({ conversations, hasNewMessages, newMessageCount }) => (
-          <IconButton
-            aria-label="Messages"
-            variant="primary"
-            zIndex="fixed"
-            color={isOpen ? 'accent.500' : 'white'}
-            size="lg"
-            icon={<ChatIcon height="50px" width="50px" />}
-            onClick={onOpen}
+      <Box>
+        <IconButton
+          aria-label="Messages"
+          variant="primary"
+          zIndex="fixed"
+          color={isOpen ? 'accent.500' : 'white'}
+          size="lg"
+          icon={<ChatIcon height="50px" width="50px" />}
+          onClick={() => setActiveConversation(Object.keys(conversations)[0])}
+        />
+        {hasNewMessages && (
+          <Badge
+            bg="red"
+            color="white"
+            ml={-4}
+            zIndex="overlay"
+            position="absolute"
+            rounded="full"
+            px={2}
+            py={0.5}
           >
-            {hasNewMessages && (
-              <Badge bg="red" color="white">
-                {newMessageCount}
-              </Badge>
-            )}
-          </IconButton>
+            {newMessageCount}
+          </Badge>
         )}
-      </MessagesContext.Consumer>
-
+      </Box>
+      <audio ref={audioRef} src="/sounds/click.mp3" preload="auto" />
       <Drawer placement={'left'} onClose={onClose} isOpen={isOpen} size="lg">
         <DrawerOverlay />
         <DrawerContent>
           <DrawerHeader bg="primary.900" color="white" m={0} p={2}>
             Messages
           </DrawerHeader>
-          <DrawerBody>
+          <DrawerBody p={0} position="relative">
             <Chat currentUser={member} />
           </DrawerBody>
         </DrawerContent>

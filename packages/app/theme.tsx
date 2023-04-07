@@ -248,7 +248,7 @@ export default function getTheme(body: any, heading: any, mono: any) {
           },
           ul: {
             margin: '0 auto',
-            width: 'fit-content',
+
             listStylePosition: 'inside',
             padding: '0',
           },

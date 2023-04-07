@@ -52,7 +52,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
 import { FieldCheckboxes, FieldInput, FieldCheckbox } from 'components/forms'
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline'
-import { MemberStats } from '../../lib/services/directus/server/users'
+import { MemberStats } from 'lib/services/directus/server/users'
 
 export type QueryParams = Record<keyof SearchableMember, string[]> & {
   online: boolean
