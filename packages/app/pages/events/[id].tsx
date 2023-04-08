@@ -91,13 +91,14 @@ export default function EventPage({ id }) {
           showDescription
           showLocation={invite != null}
           showAddToCalendar={invite != null}
+          isGuest={invite?.guest}
         >
           {showTicket && invite && invite.rsvp == 'confirmed' && (
             <EventTicket open event={event} member={member} />
           )}
           <Divider my={4} />
           <SimpleGrid columns={{ base: 2, md: 4 }} spacing={4} mb={4}>
-            {stats && (
+            {stats && isStaff && (
               <StatGroup>
                 {event?.invite_only && stats.invited_count && (
                   <Stat>
@@ -110,18 +111,6 @@ export default function EventPage({ id }) {
                   <Stat>
                     <StatLabel>Attended</StatLabel>
                     <StatNumber>{stats.attended_count}</StatNumber>
-                  </Stat>
-                )}
-                {stats.paid_count > 0 && (
-                  <Stat>
-                    <StatLabel>Paid</StatLabel>
-                    <StatNumber>{stats.paid_count}</StatNumber>
-                  </Stat>
-                )}
-                {stats.paid_count > 0 && fees > 0 && (
-                  <Stat>
-                    <StatLabel>Collected</StatLabel>
-                    <StatNumber>${fees}</StatNumber>
                   </Stat>
                 )}
               </StatGroup>

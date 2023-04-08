@@ -65,10 +65,22 @@ export default function EventsPage({}: PageProps) {
                 key={activeInvite.id}
                 event={activeInvite.event as GroupEvent}
                 showDescription={false}
+                isGuest={activeInvite.guest}
                 href={activeInvite.attended ? `/events/${activeInvite.event.id}` : undefined}
                 mb={4}
                 showAddToCalendar={false}
+                showLocation={true}
               >
+                <LinkButton
+                  gradient={false}
+                  rounded="lg"
+                  w="full"
+                  colorScheme="accent"
+                  href={`/events/${activeInvite.event.id}`}
+                  p={6}
+                >
+                  View Location Details
+                </LinkButton>
                 <EventRSVP
                   memberId={member.id}
                   eventId={activeInvite.event.id}
