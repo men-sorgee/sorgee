@@ -15,7 +15,7 @@ import {
   LinkOverlay,
   Show,
 } from '@chakra-ui/react'
-import { addDays, isSameDay, isToday } from 'date-fns'
+import { addDays, isSameDay, isToday, isAfter } from 'date-fns'
 import Page from 'components/Page'
 import { useUser, useUserEvents } from 'hooks'
 import Link from 'next/link'
@@ -44,7 +44,10 @@ export default function EventsPage({}: PageProps) {
   }, [reload])
 
   const activeInvite = upcoming.find(
-    (invite: EventInvite) => isToday(new Date(invite.event.datetime)) && invite.rsvp == 'confirmed'
+    (invite: EventInvite) =>
+      isToday(new Date(invite.event.datetime)) &&
+      invite.rsvp == 'confirmed' &&
+      !isAfter(new Date(), new Date(invite.event.datetime_end))
   )
 
   return (

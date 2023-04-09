@@ -16,6 +16,8 @@ import {
   Heading,
   Spacer,
   useColorModeValue,
+  Alert,
+  AlertIcon,
 } from '@chakra-ui/react'
 import {
   EventCard,
@@ -30,7 +32,7 @@ import Page from 'components/Page'
 import { useEffect, useState } from 'react'
 import { useUser, useEvent } from 'hooks'
 import { useRouter } from 'next/router'
-import { isToday } from 'date-fns'
+import { isAfter, isToday } from 'date-fns'
 import { ArrowBackIcon } from '@chakra-ui/icons'
 import NextLink from 'next/link'
 
@@ -49,16 +51,14 @@ export default function EventPage({ id }) {
   const [eventId] = useState<string>(i || id)
   const [showTicket, setShowTicket] = useState<boolean>(false)
   const { event, loading: eventLoading } = useEvent(eventId)
-  const [fees, setFees] = useState<number>(undefined)
   const [stats, setStats] = useState<EventStats>(undefined)
   const [invite, setInvite] = useState<EventUser>(undefined)
   useEffect(() => {
     if (!eventLoading && event?.stats && !stats) {
       setStats(event.stats)
-      setShowTicket(isToday(new Date(event.datetime)))
-      if (event.stats.attended_count) {
-        setFees(event.stats.attended_count * event.cost)
-      }
+      setShowTicket(
+        isToday(new Date(event.datetime)) && !isAfter(new Date(), new Date(event.datetime_end))
+      )
     }
     if (member?.events && !invite) {
       const i = member.events.find((e) => e.events_id == eventId)
@@ -233,11 +233,14 @@ const AttendedEvent = ({
           </Heading>
           <Text ml={0} mb={2}>
             Rate the vibe and behavior of your fellow attendees to this event.
+          </Text>
+          <Alert mb={4} rounded="lg" status="error">
+            <AlertIcon />
             <strong>
               This is not a personal attraction rating, but a rating of their behavior and attitude
               at the event!
             </strong>
-          </Text>
+          </Alert>
           {attendees.map((u: User) => (
             <Box key={event.id + '-' + u.id} bg="gray.400" mb={4} rounded="lg">
               <MemberSpotlight size="md" id={u.id} full={false} color={color}>

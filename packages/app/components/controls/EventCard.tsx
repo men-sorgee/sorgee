@@ -266,7 +266,7 @@ export const EventCard = ({
       </CardBody>
       <CardFooter>
         <Flex gap={4} w="full" align="center">
-          {eventStartDate?.dateOnly && showAddToCalendar && (
+          {event.status == 'scheduled' && eventStartDate?.dateOnly && showAddToCalendar && (
             <AddToCalendarButton
               uid={event.id}
               size="2"
@@ -300,7 +300,8 @@ export const EventCard = ({
             <>
               <Text as="em">* This is date is subject to change.</Text>
             </>
-          )) || <Countdown date={date} renderer={renderer} />}
+          )) ||
+            (event.status == 'scheduled' && <Countdown date={date} renderer={renderer} />)}
         </Flex>
       </CardFooter>
     </Card>
