@@ -42,6 +42,12 @@ const get_page = `query getPage($id: ID!) {
       slug
       title
       status
+      parent {
+        id
+        slug
+        title
+        status
+      }
     }
     next_page_params
     parent {
@@ -107,6 +113,12 @@ const find_page = `query findPage($slug: String) {
       status
       published
       markdown
+      parent {
+        id
+        slug
+        title
+        status
+      }
       image {
         id
         title
@@ -199,6 +211,12 @@ const all_pages = `
       image {
         id
         title
+      }
+      parent {
+        id
+        slug
+        title
+        status
       }
     }
     next_page_params

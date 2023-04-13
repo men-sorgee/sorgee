@@ -66,6 +66,12 @@ export default function BlogPage({ page }: Props) {
     return <NotFound />
   }
 
+  const nextUrl = next_page
+    ? next_page.parent
+      ? `/${next_page.parent.slug}/${next_page.slug}`
+      : `/${next_page.slug}`
+    : null
+
   return (
     <Page
       css={{
@@ -86,7 +92,7 @@ export default function BlogPage({ page }: Props) {
           color="text"
         >
           <BreadcrumbItem>
-            <BreadcrumbLink as={NextLink} href="/blog">
+            <BreadcrumbLink as={NextLink} href={'/blog'}>
               {parent.title}
             </BreadcrumbLink>
           </BreadcrumbItem>
@@ -135,7 +141,7 @@ export default function BlogPage({ page }: Props) {
             textDecoration="underline"
             colorScheme="secondary"
             fontSize="xl"
-            href={next_page.slug}
+            href={nextUrl}
           >
             <ChevronRightIcon color="text" />
             Next article: {next_page.title}

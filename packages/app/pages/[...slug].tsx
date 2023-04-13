@@ -114,7 +114,7 @@ export default function DynamicPage({ page }: Props) {
             color="text"
           >
             <BreadcrumbItem>
-              <BreadcrumbLink as={NextLink} href="/blog">
+              <BreadcrumbLink as={NextLink} href={parent.slug}>
                 {parent.title}
               </BreadcrumbLink>
             </BreadcrumbItem>
