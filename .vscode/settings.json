@@ -45,6 +45,7 @@
     "supabase",
     "tanstack",
     "twind",
+    "typeorm",
     "uuidv",
     "wellenplan"
   ],
@@ -79,4 +80,5 @@
   "vitest.include": [
     "**/*.{test,spec}.{ts,tsx}"
   ],
+  "testing.automaticallyOpenPeekView": "never",
 }
