@@ -40,3 +40,4 @@ data
 .env*
 packages/app/results/*
 .tests/*
+packages/app/lib/services/db/ormconfig.json
