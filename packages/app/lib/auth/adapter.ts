@@ -5,16 +5,9 @@ import {
   AdapterAccount,
   VerificationToken,
 } from 'next-auth/adapters'
-import { DirectusFile, UserVerificationToken, User, UserSession } from 'lib/models'
-import {
-  createUser,
-  findUser,
-  findUserByAccount,
-  getUser,
-  updateUser,
-  deleteAccount,
-  createAccount,
-} from 'lib/services/directus/server/users'
+import { UserSession, UserVerificationToken } from 'lib/services/db/entities'
+import { DirectusFile, User } from 'lib/models'
+import { createUser, findUser, getUser, updateUser } from 'lib/services/directus/server/users'
 import {
   createSession,
   deleteSession,
@@ -22,13 +15,16 @@ import {
   updateSession,
   addVerificationToken,
   findVerificationToken,
-} from 'lib/services/directus/server/users/auth'
+  deleteAccount,
+  createAccount,
+  findUserByAccount,
+} from '@/lib/services/db/server/auth'
 import { importFile, UploadFolder } from '../services/directus/server/files'
-import { getAssetUrl } from '../utils'
+import { getAssetUrl } from 'lib/utils'
 
 function mapUser(user: User): AdapterUser {
   return {
-    id: user.id,
+    id: user?.id,
     email: user.email,
     emailVerified: new Date(user.date_created),
     name: user.first_name,
@@ -37,11 +33,11 @@ function mapUser(user: User): AdapterUser {
 }
 
 function mapSession(session: UserSession): AdapterSession {
-  const user = session.user as User
+  const user = session.user
   return {
     userId: user.id,
     expires: new Date(session.expires),
-    sessionToken: session.session_token,
+    sessionToken: session.sessionToken,
   }
 }
 
@@ -103,7 +99,13 @@ const authAdapter: Adapter = {
       log('getUserByAccount', providerAccountId, provider)
       const user = await findUserByAccount(provider, providerAccountId)
       if (!user) return null
-      return mapUser(user)
+      return mapUser({
+        id: user.id,
+        email: user.email,
+        email_verified: user.dateCreated != null,
+        first_name: user.firstName,
+        ...(user as any),
+      })
     } catch (e) {
       console.error(e.response?.body?.errors[0].message || e)
     }
@@ -126,25 +128,25 @@ const authAdapter: Adapter = {
 
       const {
         provider,
-        providerAccountId,
+        providerAccountId: providerId,
         type,
         userId,
-        access_token,
-        expires_at,
-        id_token,
-        refresh_token,
+        access_token: accessToken,
+        expires_at: expiresAt,
+        id_token: idToken,
+        refresh_token: refreshToken,
         scope,
       } = account
       await createAccount({
         provider,
-        provider_id: providerAccountId,
-        user: userId,
+        providerId,
+        user: { id: userId },
         type,
         scope,
-        access_token,
-        expires_at,
-        id_token,
-        refresh_token,
+        accessToken,
+        expiresAt,
+        idToken,
+        refreshToken,
       })
     } catch (e) {
       console.error(e.response?.body?.errors[0].message || e)
@@ -158,13 +160,13 @@ const authAdapter: Adapter = {
       console.error(e.response?.body?.errors[0].message || e)
     }
   },
-  async createSession(sessionData: AdapterSession) {
+  async createSession(sessionData: Partial<AdapterSession>) {
     try {
       log('createSession', sessionData)
       const session = await createSession({
-        session_token: sessionData.sessionToken,
-        user: sessionData.userId,
-        expires: sessionData.expires.toISOString(),
+        sessionToken: sessionData.sessionToken,
+        user: { id: sessionData.userId },
+        expires: sessionData.expires,
       } as any)
       return mapSession(session as UserSession)
     } catch (e) {
@@ -176,8 +178,10 @@ const authAdapter: Adapter = {
       log('getSessionAndUser', sessionToken)
       const session = await findSession(sessionToken)
       if (!session) return null
+      const user = await getUser(session.user.id)
+      if (!user) return null
       return {
-        user: mapUser(session.user as User),
+        user: mapUser(user),
         session: mapSession(session),
       }
     } catch (e) {
@@ -187,10 +191,7 @@ const authAdapter: Adapter = {
   async updateSession(session: AdapterSession) {
     try {
       log('updateSession', session)
-      const updatedSession = await updateSession({
-        session_token: session.sessionToken,
-        expires: session.expires.toISOString(),
-      })
+      const updatedSession = await updateSession(session.sessionToken, session.expires)
       return mapSession(updatedSession as UserSession)
     } catch (e) {
       console.error(e.response?.body?.errors[0].message || e)

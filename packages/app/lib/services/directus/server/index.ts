@@ -17,7 +17,6 @@ export async function findPromo(code: string): Promise<Promo | null> {
       code: { _eq: code },
     },
   })
-  console.dir(data)
   return data?.length ? (data[0] as Promo) : null
 }
 

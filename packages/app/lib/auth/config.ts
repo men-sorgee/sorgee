@@ -7,16 +7,11 @@ import EmailProvider from 'next-auth/providers/email'
 import { TwitterLegacy } from 'next-auth/providers/twitter'
 import { authAdapter } from './adapter'
 import { sendNotificationEmail, updateSendGrid } from 'lib/services/sendgrid/server'
-import {
-  extendUserPresence,
-  findUser,
-  findUserByAccount,
-  getUser,
-  recordUserLogin,
-} from 'lib/services/directus/server/users'
+import { findUser, getUser } from 'lib/services/directus/server/users'
 import { Member, memberFields, Profile, User, UserStatusType } from 'lib/models'
 import config from 'lib/config/server'
 import { sendNotification } from 'lib/services/twilio/server'
+import { findUserByAccount, extendUserPresence, recordUserLogin } from 'lib/services/db/server/auth'
 
 const { google, discord, twitter, yahoo, microsoft } = config
 const allowedStatuses: UserStatusType[] = ['new', 'active', 'inactive', 'stale']
@@ -38,7 +33,7 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async signIn(data) {
-      //console.dir(data)
+ 
       const { user, email, profile, account } = data
       //return true
       console.debug('callback:signIn')
@@ -77,8 +72,8 @@ export const authOptions: AuthOptions = {
   },
   events: {
     async createUser({ user }) {
-      //console.log('event:createUser')
-      //console.dir(user)
+      console.log('event:createUser')
+
       await updateSendGrid(user as Profile)
       await sendNotificationEmail(
         user.email,
