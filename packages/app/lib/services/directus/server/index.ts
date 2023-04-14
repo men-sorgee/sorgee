@@ -1,7 +1,8 @@
 import { Directus } from '@directus/sdk'
 import { DirectusField, DirectusTypes, Promo, User, FieldMap } from 'lib/models'
+import { adminUrl } from 'lib/config'
 
-const _adminDb = new Directus<DirectusTypes>(process.env.ADMIN_URL)
+const _adminDb = new Directus<DirectusTypes>(adminUrl)
 const cache: { [key: string]: any } = {}
 
 export async function getAdminClient(): Promise<Directus<DirectusTypes>> {

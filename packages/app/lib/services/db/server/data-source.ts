@@ -7,7 +7,7 @@ const AppDataSource = new DataSource(gnhDBConfig)
 let initialized = false
 
 export async function getRepository<T = ObjectLiteral>(type: EntityTarget<T>) {
-  if (!initialized) {
+  if (!initialized || !AppDataSource.isInitialized) {
     await AppDataSource.initialize()
     initialized = true
   }
