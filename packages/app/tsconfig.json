@@ -8,6 +8,8 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "strict": false,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,

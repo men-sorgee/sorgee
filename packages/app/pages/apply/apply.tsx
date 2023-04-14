@@ -181,7 +181,6 @@ function Form({
       data.height = `${data.height_feet} ${data.height_inches}`
     }
     const { success, data: d, error } = await postJSON('/api/apply', pruneUndefined(data))
-    console.dir({ success, data: d, error })
     if (success) {
       reload().then(() => {
         router.push('/apply/verify')

@@ -15,7 +15,7 @@ import {
   LinkOverlay,
   Show,
 } from '@chakra-ui/react'
-import { addDays, isSameDay, isToday } from 'date-fns'
+import { addDays, isSameDay, isToday, isAfter } from 'date-fns'
 import Page from 'components/Page'
 import { useUser, useUserEvents } from 'hooks'
 import Link from 'next/link'
@@ -44,7 +44,10 @@ export default function EventsPage({}: PageProps) {
   }, [reload])
 
   const activeInvite = upcoming.find(
-    (invite: EventInvite) => isToday(new Date(invite.event.datetime)) && invite.rsvp == 'confirmed'
+    (invite: EventInvite) =>
+      isToday(new Date(invite.event.datetime)) &&
+      invite.rsvp == 'confirmed' &&
+      !isAfter(new Date(), new Date(invite.event.datetime_end))
   )
 
   return (
@@ -65,10 +68,22 @@ export default function EventsPage({}: PageProps) {
                 key={activeInvite.id}
                 event={activeInvite.event as GroupEvent}
                 showDescription={false}
+                isGuest={activeInvite.guest}
                 href={activeInvite.attended ? `/events/${activeInvite.event.id}` : undefined}
                 mb={4}
                 showAddToCalendar={false}
+                showLocation={true}
               >
+                <LinkButton
+                  gradient={false}
+                  rounded="lg"
+                  w="full"
+                  colorScheme="accent"
+                  href={`/events/${activeInvite.event.id}`}
+                  p={6}
+                >
+                  View Location Details
+                </LinkButton>
                 <EventRSVP
                   memberId={member?.id}
                   eventId={activeInvite.event.id}
@@ -297,7 +312,7 @@ function PastEvents({ member, list }: { list: EventInvite[]; member: Member }) {
 
 function EventCalendar({ events }: { events: GroupEvent[] }) {
   const today = new Date()
-  const minDate = events.map((e) => new Date(e.datetime)).sort()[0] || today
+  const minDate = today
   const maxDate = addDays(today, 120)
   const [value, setValue] = useState(today)
   const onChange = useCallback((value: Date) => {
@@ -372,7 +387,8 @@ function EventCalendar({ events }: { events: GroupEvent[] }) {
           },
           '.react-calendar__tile--active': {
             fontWeight: 'bold',
-            border: '2px solid',
+            border: '4px dashed',
+            borderColor: brand.colors.accent[500],
           },
           '.react-calendar__month-view__days__day': {
             backgroundColor: bg,

@@ -4,7 +4,15 @@ import Section from 'components/Section'
 import Page from 'components/Page'
 import { Page as PageModel } from 'lib/models'
 import { ParsedUrlQuery } from 'querystring'
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, Flex, HStack } from '@chakra-ui/react'
+import {
+  Box,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  Flex,
+  HStack,
+  useBreakpointValue,
+} from '@chakra-ui/react'
 import { useSite } from 'hooks/use-site'
 import NotFound from 'components/NotFound'
 import { ChevronRightIcon } from '@chakra-ui/icons'
@@ -95,6 +103,7 @@ export default function DynamicPage({ page }: Props) {
       setNextUrl(slug[0] === '/' ? slug : `/${slug}` + (next_page_params || ''))
     }
   }, [nextText, site, loading, next_page, next_page_params])
+  const imageWidth = useBreakpointValue(['100%', '100%', '50%'])
   if (!page) {
     return <NotFound />
   }
@@ -107,14 +116,14 @@ export default function DynamicPage({ page }: Props) {
       header={
         parent && (
           <Breadcrumb
-            fontSize={['md', 'lg', '2xl']}
+            fontSize={['md', 'lg', 'xl']}
             spacing="8px"
             separator={<ChevronRightIcon color="text" />}
             fontWeight="extrabold"
             color="text"
           >
             <BreadcrumbItem>
-              <BreadcrumbLink as={NextLink} href="/blog">
+              <BreadcrumbLink as={NextLink} href={parent.slug}>
                 {parent.title}
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -126,12 +135,44 @@ export default function DynamicPage({ page }: Props) {
       }
     >
       <Flex direction="column" as="section" gap={2} mx="auto">
-        <>
-          {content.map((s: any, i: Key) => (
-            <Section key={i} content={s} />
-          ))}
-        </>
-        <Markdown content={markdown} />
+        <Box
+          css={{
+            a: {
+              padding: '0.25rem 0.5rem',
+              borderRadius: '0.25rem',
+              border: '1px solid',
+              borderColor: 'text',
+              color: 'text',
+              fontSize: '1.6rem',
+              marginTop: '1rem',
+              display: 'inline-block',
+              svg: {
+                display: 'inline-block',
+                verticalAlign: 'middle',
+                paddingBottom: '0.25rem',
+                marginRight: '0.5rem',
+              },
+            },
+            p: {
+              marginBottom: '1rem',
+            },
+
+            img: {
+              maxWidth: imageWidth,
+              display: 'inline-block',
+              float: 'left',
+              margin: '.5rem 1rem 1rem 0',
+            },
+            h2: {
+              clear: 'both',
+            },
+          }}
+        >
+          <Markdown content={markdown} />
+        </Box>
+        {content.map((s: any, i: Key) => (
+          <Section key={i} content={s} />
+        ))}
       </Flex>
       <HStack spacing={4}>
         {!site.invite_only && (

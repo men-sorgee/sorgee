@@ -40,6 +40,9 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
     isLoading,
   } = useSWR<AppNotification[], Error>(key, JsonFetcher, {
     refreshInterval: 1000 * 60 * 3, // 3 minutes
+    refreshWhenHidden: true,
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
     fallbackData: [],
   })
   const [hasNewNotifications, setHasNewNotifications] = useState(false)
@@ -61,7 +64,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
       state,
     })
     if (success) {
-      mutate(
+      await mutate(
         notifications.map((n) => {
           if (n.id === id) {
             n.status = state
@@ -72,6 +75,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
           revalidate: true,
         }
       )
+      setHasNewNotifications(newNotifications?.length > 0)
     }
   }
 

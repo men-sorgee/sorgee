@@ -28,6 +28,9 @@ export const EventTicket = ({ member, event, open = false }: EventTicketProps) =
         w="full"
       />
       <div className="no-print">
+        <Text textAlign="center">
+          <strong>Important:</strong> Present this ticket to the host when you arrive for access.
+        </Text>
         <Flex direction="column" my={4}>
           {!open && (
             <Flex
@@ -49,15 +52,9 @@ export const EventTicket = ({ member, event, open = false }: EventTicketProps) =
             </Flex>
           )}
           <SlideFade in={open || showTicket} unmountOnExit>
-            <Heading textAlign="center" m={0}>
+            <Heading textAlign="center" mb={0}>
               Admit: {member?.first_name} {member?.last_name}
             </Heading>
-            <Text textAlign="center" m={0}>
-              <br />
-              U: {member?.id}
-              <br />
-              e: {event?.id}
-            </Text>
 
             <Image
               rounded="xl"
@@ -69,12 +66,10 @@ export const EventTicket = ({ member, event, open = false }: EventTicketProps) =
               alt="Ticket"
               w="full"
             />
-            {location.hostname === 'localhost' && (
-              <input value={checkinUrl} style={{ width: '100%' }} />
-            )}
-            <Text textAlign="center">
-              <strong>Important:</strong> Present this ticket to the host when you arrive for
-              access.
+            <Text textAlign="center" my={1} color="gray.200">
+              U: {member?.id}
+              <br />
+              e: {event?.id}
             </Text>
           </SlideFade>
         </Flex>

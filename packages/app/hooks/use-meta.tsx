@@ -34,7 +34,7 @@ export function MetaContextProvider(props: any) {
     if (!loading && site?.site_title) {
       setSiteTitle(site.site_title)
     }
-  }, [site.site_title, title, loading, router])
+  }, [site?.site_title, title, loading, router])
 
   const meta: MetaContextData = {
     siteTitle,

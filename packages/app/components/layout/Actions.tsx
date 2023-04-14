@@ -3,7 +3,7 @@ import { useColorModeValue, IconButton, Spacer, Flex, Link, Badge } from '@chakr
 import { Box, BoxProps } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { constrained } from '.'
+import { constrained } from '..'
 import NextLink from 'next/link'
 import { useUser } from 'hooks'
 import Notifications from './Notifications'

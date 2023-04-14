@@ -21,7 +21,7 @@ type Props = {
 export async function getServerSideProps(
   context: NextPageContext
 ): Promise<GetServerSidePropsResult<Props>> {
-  const { authOptions } = await import('lib/auth/config')
+  const { authOptions } = await import('@/lib/auth/config')
   const { req, res } = context
   const session = await getServerSession(req as any, res, authOptions)
   if (!session || session.user.user_type != 'staff') {

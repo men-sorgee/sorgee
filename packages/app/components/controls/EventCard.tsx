@@ -266,41 +266,45 @@ export const EventCard = ({
       </CardBody>
       <CardFooter>
         <Flex gap={4} w="full" align="center">
-          {eventStartDate?.dateOnly && showAddToCalendar && (
-            <AddToCalendarButton
-              uid={event.id}
-              size="2"
-              trigger="click"
-              name={event.name}
-              description={event.description}
-              startDate={event.datetime}
-              endDate={event.datetime_end}
-              location={
-                viewLocation
-                  ? [
-                      location?.street,
-                      location?.unit,
-                      location?.city,
-                      location?.state,
-                      location?.zip,
-                    ].join(' ')
-                  : ''
-              }
-              timeZone="America/Denver"
-              options={['Apple', 'Google', 'Outlook.com', 'Yahoo', 'iCal']}
-              buttonStyle="text"
-              hideBackground
-              lightMode={mode}
-            />
-          )}
-          <Spacer />
           {footer}
           <Spacer />
+          {event.status == 'scheduled' && eventStartDate?.dateOnly && showAddToCalendar && (
+            <>
+              <AddToCalendarButton
+                uid={event.id}
+                size="2"
+                trigger="click"
+                name={event.name}
+                description={event.description}
+                startDate={event.datetime}
+                endDate={event.datetime_end}
+                location={
+                  viewLocation
+                    ? [
+                        location?.street,
+                        location?.unit,
+                        location?.city,
+                        location?.state,
+                        location?.zip,
+                      ].join(' ')
+                    : ''
+                }
+                timeZone="America/Denver"
+                options={['Apple', 'Google', 'Outlook.com', 'Yahoo', 'iCal']}
+                buttonStyle="text"
+                hideBackground
+                lightMode={mode}
+              />
+              <Spacer />
+            </>
+          )}
+
           {(event.status == 'planned' && (
             <>
               <Text as="em">* This is date is subject to change.</Text>
             </>
-          )) || <Countdown date={date} renderer={renderer} />}
+          )) ||
+            (event.status == 'scheduled' && <Countdown date={date} renderer={renderer} />)}
         </Flex>
       </CardFooter>
     </Card>

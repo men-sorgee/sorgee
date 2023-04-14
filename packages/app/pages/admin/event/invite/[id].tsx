@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { fetchJSON, postJSON } from 'lib/utils'
+import { getAssetUrl, postJSON } from 'lib/utils'
 import {
   Button,
   Heading,
@@ -13,12 +13,12 @@ import {
   AlertIcon,
   Box,
 } from '@chakra-ui/react'
-import { EventUser, Invite, GroupEvent, User, MemberLevel } from 'lib/models'
+import { EventUser, GroupEvent, User, MemberLevel } from 'lib/models'
 import { LinkButton, Loading, TakePhoto, MemberBadge } from 'components/controls'
 import { FieldSwitch } from 'components/forms'
 import { useRouter } from 'next/router'
 import Page from 'components/Page'
-import { useEvent, useMember, useUser } from 'hooks'
+import { useEvent, useUser } from 'hooks'
 
 type Props = {
   event: GroupEvent
@@ -59,7 +59,7 @@ export const getServerSideProps = async (context) => {
 
 export default function InviteAdmin({ event, invite, user }: Props) {
   const { member, loading, level } = useUser()
-  const { picture: p } = useMember(user.id)
+  const { photo: p } = user
   const [camera, setCamera] = useState(false)
   const [picture, setPicture] = useState<string>()
   const { reload } = useEvent(event.id)
@@ -76,7 +76,7 @@ export default function InviteAdmin({ event, invite, user }: Props) {
         )
       } else {
         if (picture == undefined && p) {
-          setPicture(p)
+          setPicture(getAssetUrl(p))
         }
       }
     }
@@ -109,7 +109,7 @@ export default function InviteAdmin({ event, invite, user }: Props) {
         const media = await fetch(picture!).then((res) => res.blob())
         let formData = new FormData()
         formData.append('media', media)
-        await fetch(`/api/member/${user.id}/photos/picture?name=${user.email}-face`, {
+        await fetch(`/api/member/${user.id}/photos/photo?name=${user.email}-face`, {
           method: 'POST',
           body: formData,
         })
@@ -208,7 +208,7 @@ export default function InviteAdmin({ event, invite, user }: Props) {
                   justifyItems="space-between"
                   mx="auto"
                 >
-                  {invite?.guest == false && (
+                  {!invite.attended && invite?.guest == false && (
                     <FieldSwitch
                       field="paid"
                       label="Paid"
@@ -254,9 +254,11 @@ export default function InviteAdmin({ event, invite, user }: Props) {
                   </Button>
                 )}
                 {invite?.attended && (
-                  <Alert size="xl" status="warning" justifyContent="center">
+                  <Alert size="xl" status="warning" rounded="lg" shadow="lg">
                     <AlertIcon />
-                    <Heading size="lg">Already checked in</Heading>
+                    <Text size="lg" m={0}>
+                      Already checked in
+                    </Text>
                   </Alert>
                 )}
               </Flex>

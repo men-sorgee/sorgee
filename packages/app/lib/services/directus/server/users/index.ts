@@ -288,6 +288,5 @@ export type MemberStats = {
   staff: number
 }
 
-export * from './auth'
 export * from './invites'
 export * from './relations'

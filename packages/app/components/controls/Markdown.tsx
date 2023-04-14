@@ -11,8 +11,11 @@ import {
   OrderedList,
   Text,
   UnorderedList,
+  Link,
+  HStack,
+  Icon,
 } from '@chakra-ui/react'
-import Link from 'next/link'
+import NextLink from 'next/link'
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
 
 type Props = {
@@ -25,9 +28,14 @@ export const Markdown = ({ content, size }: Props) => {
       components: {
         a: ({ href, children }: { href: string; children: React.ReactNode }) => {
           return (
-            <Link href={href} target={href.startsWith('http') ? '_blank' : '_self'}>
-              {href.startsWith('http') && <ArrowTopRightOnSquareIcon width="1rem" />}
-              {children}
+            <Link
+              as={NextLink}
+              href={href}
+              target={href.startsWith('http') ? '_blank' : '_self'}
+              color="accent"
+            >
+              {children}&nbsp;
+              {href.startsWith('http') && <Icon as={ArrowTopRightOnSquareIcon} width="1rem" />}
             </Link>
           )
         },

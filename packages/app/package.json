@@ -17,7 +17,8 @@
     "kill": "npx -y kill-port 3000",
     "test": "vitest --config ./vitest.config.ts",
     "coverage": "vitest run --coverage --config ./vitest.config.ts --outDir results",
-    "test:view": "vite preview --outDir results"
+    "test:view": "vite preview --outDir results",
+    "gen": "typeorm-model-generator -h localhost -d postgres -u postgres -x !Passw0rd -e postgres -o . -s public --ssl"
   },
   "dependencies": {
     "@chakra-ui/icon": "^3.0.15",
@@ -60,6 +61,7 @@
     "react-qrcode-svg": "^0.1.0",
     "react-remark": "^2.1.0",
     "react-webcam": "^7.0.1",
+    "reflect-metadata": "^0.1.13",
     "rehype-react": "^7.1.2",
     "remark": "^14.0.2",
     "remark-html": "^15.0.1",
@@ -87,6 +89,7 @@
     "eslint-config-next": "^13.2.4",
     "jsdom": "^21.1.1",
     "prettier": "^2.8.7",
+    "typeorm-model-generator": "^0.4.6",
     "typescript": "^4.9.5",
     "vite": "^4.2.1",
     "vitest": "^0.29.8"

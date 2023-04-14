@@ -6,6 +6,7 @@
     "Chakra",
     "chatscope",
     "checkin",
+    "cockroachdb",
     "Codegen",
     "Consolas",
     "convo",
@@ -31,6 +32,7 @@
     "nextjs",
     "nnull",
     "openapi",
+    "ormconfig",
     "Parens",
     "pexels",
     "pixabay",
@@ -46,6 +48,7 @@
     "supabase",
     "tanstack",
     "twind",
+    "typeorm",
     "uuidv",
     "wellenplan"
   ],
@@ -80,4 +83,5 @@
   "vitest.include": [
     "**/*.{test,spec}.{ts,tsx}"
   ],
+  "testing.automaticallyOpenPeekView": "never",
 }
