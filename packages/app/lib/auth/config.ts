@@ -33,7 +33,6 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async signIn(data) {
- 
       const { user, email, profile, account } = data
       //return true
       console.debug('callback:signIn')
@@ -73,18 +72,22 @@ export const authOptions: AuthOptions = {
   events: {
     async createUser({ user }) {
       console.log('event:createUser')
+      await recordUserLogin(user.id)
 
-      await updateSendGrid(user as Profile)
-      await sendNotificationEmail(
-        user.email,
-        user.name,
-        `Application Status`,
-        'Thank you for applying for membership!',
-        {
-          button_text: 'Complete Application',
-          button_url: 'https://guysnheat.com/apply',
-        }
-      )
+      const member = await findUser<User>(user.email)
+      if (member && !member.in_sendgrid) await updateSendGrid(user as Profile)
+
+      if (member && member.status == 'new')
+        await sendNotificationEmail(
+          user.email,
+          user.name,
+          `Application Status`,
+          'Thank you for applying for membership!',
+          {
+            button_text: 'Complete Application',
+            button_url: 'https://guysnheat.com/apply',
+          }
+        )
     },
     async signIn({ user }) {
       console.log('event:signIn')
