@@ -9,7 +9,7 @@ interface Props {
   active: boolean
 }
 
-const Events = ({ active }: Props) => {
+const EventsAction = ({ active }: Props) => {
   const { newInvitationCount } = useUserEvents()
 
   return (
@@ -43,4 +43,4 @@ const Events = ({ active }: Props) => {
   )
 }
 
-export default Events
+export default EventsAction

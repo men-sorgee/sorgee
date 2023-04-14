@@ -25,7 +25,7 @@ export type ConfirmButtonProps = ButtonProps & {
   children: ReactNode | ReactNode[]
 }
 
-export const ConfirmButton = chakra(
+export const ButtonConfirm = chakra(
   ({
     promise,
     complete,

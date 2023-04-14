@@ -1,104 +1,87 @@
 import {
-  HStack,
-  Box,
-  Avatar,
-  VStack,
-  Heading,
-  Text,
-  AvatarProps,
-  AvatarBadge,
-  Tooltip,
-  chakra,
-  useColorModeValue,
+  LinkBox,
+  Card,
+  LinkOverlay,
+  CardBody,
+  CardFooter,
   Spacer,
-  Flex,
+  Text,
+  chakra,
+  CardProps,
+  CardHeader,
+  Box,
 } from '@chakra-ui/react'
-import { useEffect, useState, ReactNode } from 'react'
-import { MemberBadge } from '.'
-import { getAssetUrl, toLocalDate } from 'lib/utils'
-import { Member, SearchableMember } from 'lib/models'
+import { SearchableMember, MemberLevelColorMap, MemberLevel } from 'lib/models'
+import { MemberHeader, MemberChat, MemberConnect } from '.'
+import NextLink from 'next/link'
 import { formatDistanceToNowStrict } from 'date-fns'
-import { ImageModal } from './ImageModal'
 
-export type MemberCardProps = AvatarProps & {
-  zoom?: boolean
-  color?: string
-  member: Partial<Member | SearchableMember>
-  children?: ReactNode
+type Props = CardProps & {
+  member: Partial<SearchableMember>
+  onClick?: () => void
 }
 
-export const MemberCard = chakra(
-  ({ member, zoom = false, size = 'lg', color = 'white', children, ...props }: MemberCardProps) => {
-    const [lastLogin, setLastLogin] = useState<string | null>(null)
-
-    useEffect(() => {
-      if (member && !lastLogin) {
-        setLastLogin(
-          member?.last_login
-            ? `Last login ${formatDistanceToNowStrict(toLocalDate(member.last_login))} ago`
-            : undefined
-        )
-      }
-    }, [member, lastLogin])
-
-    const [isOpen, setOpen] = useState<boolean>(undefined)
-    return (
-      <>
-        {member && (
-          <Flex gap={3} alignItems="center" w="full">
-            <Avatar
-              id={member?.id}
-              src={
-                member?.picture
-                  ? getAssetUrl(member?.picture) + '?width=100&height=100&quality=80'
-                  : null
-              }
-              size={size}
-              color={color}
-              name={member?.nickname || member?.first_name}
-              bgGradient="linear(to-b, primary.500, primary.800)"
-              loading="lazy"
-              borderColor="accent.500"
-              borderWidth="thin"
-              {...props}
-              cursor={member?.picture ? 'pointer' : ''}
-              onClick={() => {
-                if (zoom && member?.picture) setOpen(true)
+export const MemberCard = chakra(({ member, onClick, ...props }: Props) => {
+  const levelValue = MemberLevel[member?.user_type]
+  const levelColor = MemberLevelColorMap[levelValue]
+  return (
+    <>
+      <LinkBox key={member.id}>
+        <Card
+          w="full"
+          h="full"
+          bgGradient={`linear(to-bl, ${levelColor[0]}, ${levelColor[1]})`}
+          rounded="lg"
+          border="1px solid transparent"
+          borderColor="primary"
+          color="white"
+          minW="full"
+          overflow="hidden"
+          _hover={{ shadow: '2xl', borderColor: 'accent.500' }}
+          {...props}
+        >
+          <CardHeader>
+            <LinkOverlay
+              as={NextLink}
+              href={`/members/${member.id}`}
+              onClick={(e) => {
+                e.preventDefault()
+                onClick()
               }}
             >
-              {member?.presence == 'online' && (
-                <Tooltip label={lastLogin} placement="top">
-                  <AvatarBadge borderWidth="thin" boxSize="1.5rem" bg="green.300" />
-                </Tooltip>
+              <MemberHeader member={member} zoom={false}></MemberHeader>{' '}
+            </LinkOverlay>
+          </CardHeader>
+
+          <CardBody>
+            <Text noOfLines={2} py={0} my={0}>
+              {member.biography}
+            </Text>
+
+            <Spacer />
+            <Text display="none">
+              Ratings are based on the number of stars a member has received from other members and
+              event hosts. No-shows automatically receive 2-star ratings by the event. Members must
+              have an average of 4-stars to be eligible for events.
+            </Text>
+          </CardBody>
+
+          <CardFooter justify="space-between" alignItems="end">
+            <Text fontSize="xs">
+              {member.last_login && (
+                <>
+                  Last Login: {formatDistanceToNowStrict(new Date(member.last_login))} ago
+                  <br />
+                </>
               )}
-            </Avatar>
-            {member?.picture && (
-              <ImageModal
-                isOpen={isOpen}
-                onClose={() => {
-                  setOpen(false)
-                }}
-                imageSrc={`${getAssetUrl(member.picture)}?quality=100`}
-              />
-            )}
-            <Flex w="full" direction="column" gap={0} align="flex-start">
-              <Heading size="md" textTransform="uppercase" m={0} color={color}>
-                {member?.nickname || member?.first_name}
-              </Heading>
-              <Flex gap={1} align="flex-start" justify="space-between" w="full">
-                <Box>
-                  <MemberBadge size="lg" user_type={member?.user_type} my={2} />
-                  <Text fontSize="sm" color={color} mt={0}>
-                    {member?.city || 'Nearby'} {member?.state}
-                  </Text>
-                </Box>
-                <Spacer flex={'grow'} />
-                <Box>{children}</Box>
-              </Flex>
-            </Flex>
-          </Flex>
-        )}
-      </>
-    )
-  }
-)
+              Member Since:{' '}
+              {new Date(member.approved_date || member.date_created).toLocaleDateString()}
+            </Text>
+            <MemberChat member={member} />
+            <MemberConnect member={member} />
+          </CardFooter>
+        </Card>
+      </LinkBox>
+    </>
+  )
+})

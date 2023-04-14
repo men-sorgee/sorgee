@@ -4,11 +4,11 @@ import { Box, BoxProps } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { constrained } from '..'
-import NextLink from 'next/link'
 import { useUser } from 'hooks'
 import Notifications from './Notifications'
 import Messages from './Messages'
 import Events from './Events'
+import Members from './Members'
 import { MemberLevel } from 'lib/models'
 
 export type Props = BoxProps & {}
@@ -46,21 +46,8 @@ export default function ActionsNav({ children, ...props }: Props) {
       >
         <Flex justify="center" w="full" gap={10} p={4} {...constrained}>
           <Messages member={member} />
-
           <Events member={member} active={path.startsWith('/events')} />
-
-          <Link href="/members" as={NextLink} zIndex="fixed">
-            <IconButton
-              variant="primary"
-              size="lg"
-              zIndex="fixed"
-              icon={<UserGroupIcon height="50px" width="50px" />}
-              color={path.startsWith('/members') ? 'accent.500' : 'white'}
-              aria-label={'View Members'}
-              title="View Members"
-            />
-          </Link>
-
+          <Members member={member} active={path.startsWith('/members')} />
           <Notifications member={member} />
         </Flex>
       </Box>

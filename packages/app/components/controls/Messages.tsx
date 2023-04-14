@@ -22,7 +22,7 @@ import io, { Socket } from 'socket.io-client'
 
 let socket: Socket
 
-const Chat = ({ currentUser }: { currentUser: Member }) => {
+export const Messages = ({ currentUser }: { currentUser: Member }) => {
   // Message input value
 
   // Get all chat related values and methods from useChat hook
@@ -303,5 +303,3 @@ const Chat = ({ currentUser }: { currentUser: Member }) => {
     </>
   )
 }
-
-export default Chat

@@ -25,7 +25,7 @@ interface Props {
   member: Member
 }
 
-const Notifications = ({ member }: Props) => {
+const NotificationsAction = ({ member }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { hasNewNotifications, notifications, newNotificationCount } = useNotifications()
 
@@ -88,4 +88,4 @@ const Notifications = ({ member }: Props) => {
   )
 }
 
-export default Notifications
+export default NotificationsAction

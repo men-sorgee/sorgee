@@ -454,7 +454,7 @@ export type Member = Applicant & {
 }
 
 export type SearchableMember = Omit<
-  User,
+  Member,
   | 'promo'
   | 'accounts'
   | 'in_sendgrid'

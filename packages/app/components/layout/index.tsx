@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import Header from './Header'
 import Meta from './Meta'
 import Footer from './Footer'
-import Actions from './Actions'
+import Actions from './actions'
 
 import Splash from './Splash'
 import { ErrorBoundary } from 'components/ErrorBoundary'

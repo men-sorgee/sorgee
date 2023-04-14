@@ -18,7 +18,7 @@ type Props = ButtonProps & {
   onClick?: (e: any) => void
 }
 
-export const LinkButton = chakra(
+export const ButtonLink = chakra(
   ({ href, gradient = true, colorScheme = 'secondary', children, onClick, ...styles }: Props) => {
     return (
       <Link as={NextLink} href={href} onClick={onClick} _hover={{ textDecoration: 'none' }}>

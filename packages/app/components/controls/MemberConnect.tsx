@@ -3,22 +3,26 @@ import { UserIcon, UserMinusIcon, UserPlusIcon } from '@heroicons/react/24/solid
 import { useEffect, useState } from 'react'
 import { useUser } from 'hooks'
 import { deleteJSON, getJSON, postJSON } from '../../lib/utils'
-import { UserRelationship } from '../../lib/models'
+import { Member, SearchableMember, UserRelationship } from '../../lib/models'
 
-export const BuddyControl = ({ memberId }: { memberId: string }) => {
+type Props = {
+  member: Partial<Member | SearchableMember>
+}
+
+export const MemberConnect = ({ member }: Props) => {
   const { loading, member: me, reload } = useUser()
   const [isBuddy, setIsBuddy] = useState<boolean>(undefined)
   const [hover, setHover] = useState(false)
   const toggleBuddy = () => {
     if (isBuddy) {
       // remove buddy
-      deleteJSON(`/api/member/relationship/${memberId}`).then(() => {
+      deleteJSON(`/api/member/relationship/${member.id}`).then(() => {
         setIsBuddy(false)
         return reload()
       })
     } else {
       // add buddy
-      postJSON<Partial<UserRelationship>>(`/api/member/relationship/${memberId}`, {
+      postJSON<Partial<UserRelationship>>(`/api/member/relationship/${member.id}`, {
         relation: 'buddy',
       }).then(() => {
         setIsBuddy(true)
@@ -36,10 +40,10 @@ export const BuddyControl = ({ memberId }: { memberId: string }) => {
 
   useEffect(() => {
     if (!loading && me && isBuddy == undefined) {
-      const b = me.users.find((ur) => ur.users_id === memberId && ur.relation == 'buddy')
+      const b = me.users.find((ur) => ur.users_id === member?.id && ur.relation == 'buddy')
       setIsBuddy(b != undefined)
     }
-  }, [isBuddy, loading, me, memberId])
+  }, [isBuddy, loading, me, member?.id])
   return (
     <>
       <Stack isInline position="relative">

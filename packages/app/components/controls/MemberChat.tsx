@@ -12,11 +12,11 @@ import {
 } from '@chakra-ui/react'
 import { useMessages } from 'hooks'
 import { ChatBubbleBottomCenterIcon as ChatIcon } from '@heroicons/react/24/solid'
-import { Member } from 'lib/models'
+import { Member, SearchableMember } from 'lib/models'
 
 import { useEffect, useRef, useState } from 'react'
 
-export function MemberChat({ member }: { member: Partial<Member> }) {
+export function MemberChat({ member }: { member: Partial<SearchableMember> }) {
   const { conversations, chatWith } = useMessages()
 
   return (

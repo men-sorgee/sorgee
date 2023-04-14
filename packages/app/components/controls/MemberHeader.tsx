@@ -1,6 +1,6 @@
 import { Flex, Badge, Box, Spacer } from '@chakra-ui/react'
 import { SearchableMember } from 'lib/models'
-import { MemberCard, MemberCardProps } from './MemberCard'
+import { MemberIcon, MemberCardProps } from './MemberIcon'
 import { capitalCase } from 'change-case'
 
 import { ReactNode } from 'react'
@@ -25,9 +25,9 @@ export const MemberHeader = ({
     <>
       <Flex direction="column" justify="space-between" align="center" alignItems="center">
         <Flex direction={['column', 'row']} gap={2} justify="space-between" align="left" w="full">
-          <MemberCard member={member} size={size} {...props}>
+          <MemberIcon member={member} size={size} {...props}>
             {children}
-          </MemberCard>
+          </MemberIcon>
         </Flex>
         {!minimal && (
           <Flex justify="left" align="start" my={2} w="full">

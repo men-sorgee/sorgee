@@ -17,7 +17,7 @@ import {
   AvatarProps,
   HStack,
 } from '@chakra-ui/react'
-import { BuddyControl } from './BuddyControl'
+import { MemberConnect, MemberChat, MemberHeader, MemberPropertyGroup } from '.'
 import { useMember, useMeta } from 'hooks'
 import { formatDistanceToNowStrict } from 'date-fns'
 import {
@@ -36,11 +36,8 @@ import {
 import { ReactNode, useEffect } from 'react'
 import { ImageGallery } from './ImageGallery'
 import { Loading } from './Loading'
-import { MemberHeader } from './MemberHeader'
-import { MemberPropertyGroup } from './MemberPropertyGroup'
 import { Rating } from './Rating'
 import { toLocalDate } from 'lib/utils'
-import { MemberChat } from './MemberChat'
 
 type Props = AvatarProps & {
   id: string
@@ -50,15 +47,7 @@ type Props = AvatarProps & {
   children?: ReactNode
 }
 
-export const MemberSpotlight = ({
-  id,
-  fields,
-  full = true,
-  color,
-  size,
-  children,
-  ...props
-}: Props) => {
+export const MemberSpotlight = ({ id, fields, full = true, color, size, children }: Props) => {
   const { member, name, picture, loading } = useMember(id)
   const { setMeta } = useMeta()
   useEffect(() => {
@@ -260,7 +249,7 @@ export const MemberSpotlight = ({
         </Tabs>
       )}
       <HStack spacing={4} p={4} justify="end">
-        <BuddyControl memberId={member.id} />
+        <MemberConnect member={member} />
         <MemberChat member={member} />
       </HStack>
     </Flex>

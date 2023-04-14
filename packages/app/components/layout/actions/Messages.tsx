@@ -13,10 +13,11 @@ import {
 import { useMessages } from 'hooks'
 import { ChatBubbleBottomCenterIcon as ChatIcon } from '@heroicons/react/24/outline'
 import { Member } from 'lib/models'
-import Chat from './Chat'
+import Chat from '../../controls/Messages'
 import { useEffect, useRef, useState } from 'react'
 
-export default function MessagesPane({ member }: { member: Member }) {
+type Props = { member: Member }
+const MessagesActions = ({ member }: Props) => {
   const {
     conversations,
     hasNewMessages,
@@ -82,3 +83,5 @@ export default function MessagesPane({ member }: { member: Member }) {
     </>
   )
 }
+
+export default MessagesActions
