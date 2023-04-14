@@ -65,7 +65,7 @@ export const NotificationCard = chakra(({ member, notification }: Props) => {
     onOpen()
   }
   const markAsDeleted = async () => {
-    await mark(notification.id, 'deleted')
+    mark(notification.id, 'deleted')
     onClose()
   }
   return (

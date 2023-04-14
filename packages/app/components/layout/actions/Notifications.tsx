@@ -28,33 +28,42 @@ interface Props {
 const Notifications = ({ member }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { hasNewNotifications, notifications, newNotificationCount } = useNotifications()
+
+  useEffect(() => {
+    if (isOpen && notifications?.length == 0) {
+      onClose()
+    }
+  }, [notifications, isOpen, onClose])
+
   return (
     <>
-      <Box>
-        <IconButton
-          aria-label="Notifications"
-          variant="primary"
-          zIndex="fixed"
-          color={isOpen ? 'accent.500' : 'white'}
-          size="lg"
-          icon={<BellIcon height="50px" width="50px" />}
-          onClick={onOpen}
-        />
-        {hasNewNotifications && (
-          <Badge
-            bg="red"
-            color="white"
-            ml={-4}
-            zIndex="overlay"
-            position="absolute"
-            rounded="full"
-            px={2}
-            py={0.5}
-          >
-            {newNotificationCount}
-          </Badge>
-        )}
-      </Box>
+      {notifications?.length > 0 && (
+        <Box>
+          <IconButton
+            aria-label="Notifications"
+            variant="primary"
+            zIndex="fixed"
+            color={isOpen ? 'accent.500' : 'white'}
+            size="lg"
+            icon={<BellIcon height="50px" width="50px" />}
+            onClick={onOpen}
+          />
+          {hasNewNotifications && (
+            <Badge
+              bg="red"
+              color="white"
+              ml={-4}
+              zIndex="overlay"
+              position="absolute"
+              rounded="full"
+              px={2}
+              py={0.5}
+            >
+              {newNotificationCount}
+            </Badge>
+          )}
+        </Box>
+      )}
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>

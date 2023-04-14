@@ -11,7 +11,7 @@ export default async function InviteEndpoint(
     withMethods(req, ['GET', 'POST'])
     await withStaff(req, res)
     const { id } = req.query
-    console.log('id', id)
+
     if (id == undefined) {
       return res.status(404).json(ApiResponse(null, 'Not found'))
     }

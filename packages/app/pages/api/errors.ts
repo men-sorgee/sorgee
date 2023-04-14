@@ -9,7 +9,6 @@ export default function LogError(req: NextApiRequest, res: NextApiResponse) {
     const { error, errorInfo } = req.body
 
     console.error(error)
-    console.dir(errorInfo)
 
     res.status(200).end()
   } catch (e: any) {

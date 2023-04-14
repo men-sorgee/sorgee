@@ -16,7 +16,7 @@ export async function getServerSideProps(context: NextPageContext) {
       props.invite = parsedInvite
     }
   } catch (error) {
-    console.debug(error)
+    console.error(error)
   }
   return { props }
 }

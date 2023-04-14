@@ -5,11 +5,9 @@ import {
   AccordionPanel,
   AccordionIcon,
   Box,
-  Flex,
   IconButton,
   Stack,
   Collapse,
-  Icon,
   Link,
   useDisclosure,
   chakra,
@@ -17,11 +15,11 @@ import {
   HStack,
   StackProps,
   useColorModeValue,
+  useOutsideClick,
 } from '@chakra-ui/react'
-import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Bars4Icon, XMarkIcon } from '@heroicons/react/24/solid'
 import { Logo } from '../controls'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Page, PageItem, UserType } from 'lib/models'
 import NextLink from 'next/link'
 import { constrained } from './index'
@@ -37,17 +35,23 @@ function Header({ userType, children, ...props }: Props) {
   const router = useRouter()
   const { isOpen, onToggle, onClose } = useDisclosure()
   const [pages, setPages] = useState<PageItem[]>()
-
+  const ref = useRef()
+  useOutsideClick({
+    ref: ref,
+    handler: () => {
+      onClose()
+    },
+  })
   useEffect(() => {
-    const routeStart = () => {
+    const routeComplete = () => {
       if (isOpen) onClose()
     }
-    router.events.on('routeChangeStart', routeStart)
+    router.events.on('routeChangeComplete', routeComplete)
     return () => {
-      router.events.off('routeChangeStart', routeStart)
+      router.events.off('routeChangeComplete', routeComplete)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [router.events, isOpen])
 
   const canSee = useCallback(
     (visibility: UserType[] = []) => {
@@ -182,7 +186,7 @@ function Header({ userType, children, ...props }: Props) {
             <User />
           </Box>
         </HStack>
-        <Collapse in={isOpen} animateOpacity>
+        <Collapse in={isOpen} animateOpacity ref={ref}>
           <NavMenu navItems={navItems} {...constrained} />
         </Collapse>
       </Box>
@@ -192,7 +196,6 @@ function Header({ userType, children, ...props }: Props) {
 
 const NavMenuItem = ({
   onClose,
-  childrenOpen = false,
   item: { title: label, children, path },
 }: {
   onClose: () => void
@@ -207,9 +210,6 @@ const NavMenuItem = ({
             as={path ? NextLink : 'div'}
             _hover={{
               textDecoration: 'none',
-            }}
-            onClick={() => {
-              onClose()
             }}
             href={path}
             fontWeight={600}

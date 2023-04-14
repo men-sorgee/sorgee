@@ -1,4 +1,4 @@
-import React, { useEffect, useState, ReactNode } from 'react'
+import React, { useEffect, useState, ReactNode, useRef } from 'react'
 import { Flex, Box, Slide, useDisclosure, Spacer } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import Header from './Header'
@@ -43,12 +43,30 @@ function Layout({
       }
     }
   }, [status, authenticated, loading, onOpen, isOpen, session?.user])
+  const headerRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setTimeout(() => {
+        if (headerRef.current != null) {
+          headerRef.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          })
+        }
+      }, 100)
+    }
+    router.events.on('routeChangeComplete', handleRouteChange)
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange)
+    }
+  }, [router.events])
 
   if (path?.startsWith('/code')) {
     return <>{children}</>
   }
   const userType = session?.user?.user_type || 'subscriber'
   const level = MemberLevel[userType]
+
   return (
     <>
       <Meta />
@@ -69,8 +87,8 @@ function Layout({
               {...constrained}
               className={` ${heading} ${body} ${mono}}`}
             >
-              <Box minH={`calc(80vh - ${height})`}>
-                <ErrorBoundary>{children}</ErrorBoundary>
+              <Box minH={`calc(80vh - ${height})`} ref={headerRef}>
+                {children}
               </Box>
               <Spacer h="1rem" />
               <Footer />

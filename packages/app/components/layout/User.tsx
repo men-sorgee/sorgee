@@ -7,11 +7,10 @@ import {
   MenuList,
   useColorMode,
   MenuDivider,
-  Link,
-  MenuGroup,
 } from '@chakra-ui/react'
 import { LinkButton, MemberAvatar, UserCard } from 'components/controls'
-import Notifications from './Notifications'
+import Notifications from './actions/Notifications'
+import Link from 'next/link'
 import {
   CalendarIcon,
   InboxIcon,
@@ -206,8 +205,9 @@ export default function UserMenu(_props: Props) {
               _hover={{ bg: 'gray.400', textDecoration: 'none' }}
               as={Link}
               href={`/api/auth/signout`}
-              onClick={() => {
-                signOut({ callbackUrl: '/' })
+              onClick={(e) => {
+                e.preventDefault()
+                signOut({ redirect: true, callbackUrl: '/' })
               }}
             >
               Logout

@@ -33,11 +33,7 @@ export default async function MemberImage(
       }
       case 'POST': {
         const { relation } = req.body
-        console.dir({
-          me: me.id,
-          them: them.id,
-          relation,
-        })
+
         let relationship = await setRelationship(me.id, them.id, relation)
 
         return res.status(200).json(ApiResponse(relationship))

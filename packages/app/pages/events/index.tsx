@@ -311,7 +311,7 @@ function PastEvents({ member, list }: { list: EventInvite[]; member: Member }) {
 
 function EventCalendar({ events }: { events: GroupEvent[] }) {
   const today = new Date()
-  const minDate = events.map((e) => new Date(e.datetime)).sort()[0] || today
+  const minDate = today
   const maxDate = addDays(today, 120)
   const [value, setValue] = useState(today)
   const onChange = useCallback((value: Date) => {
@@ -386,7 +386,8 @@ function EventCalendar({ events }: { events: GroupEvent[] }) {
           },
           '.react-calendar__tile--active': {
             fontWeight: 'bold',
-            border: '2px solid',
+            border: '4px dashed',
+            borderColor: brand.colors.accent[500],
           },
           '.react-calendar__month-view__days__day': {
             backgroundColor: bg,

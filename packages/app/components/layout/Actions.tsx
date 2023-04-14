@@ -6,8 +6,8 @@ import { useEffect, useState } from 'react'
 import { constrained } from '.'
 import NextLink from 'next/link'
 import { useUser, useUserEvents } from 'hooks'
-import Notifications from './Notifications'
-import Messages from './Messages'
+import Notifications from './actions/Notifications'
+import Messages from './actions/Messages'
 import { MemberLevel } from 'lib/models'
 
 export type Props = BoxProps & {}

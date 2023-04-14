@@ -41,9 +41,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
           <UserProvider>
             <NotificationsProvider>
               <MessagesProvider>
-                  <Layout fonts={[heading.variable, body.variable, mono.variable]}>
-                    <Component {...pageProps} />
-                  </Layout>
+                <Layout fonts={[heading.variable, body.variable, mono.variable]}>
+                  <Component {...pageProps} />
+                </Layout>
               </MessagesProvider>
             </NotificationsProvider>
           </UserProvider>
