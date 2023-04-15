@@ -1,5 +1,5 @@
 import { signIn, useSession } from 'next-auth/react'
-import { LinkButton } from './controls'
+import { ButtonLink } from './controls'
 import { Box, Heading, Text } from '@chakra-ui/react'
 import { useEffect } from 'react'
 const AccessDenied = () => {
@@ -25,7 +25,7 @@ const AccessDenied = () => {
       {status === 'unauthenticated' && (
         <Box>
           <Text>You must be signed in to view this page.</Text>
-          <LinkButton
+          <ButtonLink
             colorScheme="primary"
             href="/api/auth/signin"
             onClick={async (e) => {
@@ -34,7 +34,7 @@ const AccessDenied = () => {
             }}
           >
             Sign in
-          </LinkButton>
+          </ButtonLink>
         </Box>
       )}
     </Box>

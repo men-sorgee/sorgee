@@ -1,5 +1,5 @@
 import { Key, useEffect, useState } from 'react'
-import { Markdown, LinkButton, SubscribeBox } from 'components/controls'
+import { Markdown, ButtonLink, SubscribeBox } from 'components/controls'
 import Section from 'components/Section'
 import Page from 'components/Page'
 import { Page as PageModel } from 'lib/models'
@@ -176,14 +176,14 @@ export default function DynamicPage({ page }: Props) {
       </Flex>
       <HStack spacing={4}>
         {!site.invite_only && (
-          <LinkButton my={8} colorScheme="accent" size="lg" href="/apply">
+          <ButtonLink my={8} colorScheme="accent" size="lg" href="/apply">
             Get Started
-          </LinkButton>
+          </ButtonLink>
         )}
         {nextUrl && (
-          <LinkButton my={8} colorScheme="secondary" size="lg" href={nextUrl}>
+          <ButtonLink my={8} colorScheme="secondary" size="lg" href={nextUrl}>
             {nextText}
-          </LinkButton>
+          </ButtonLink>
         )}
       </HStack>
     </Page>

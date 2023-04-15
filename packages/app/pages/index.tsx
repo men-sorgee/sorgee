@@ -4,7 +4,7 @@ import { signIn } from 'next-auth/react'
 import Section from 'components/Section'
 import { Page } from 'lib/models'
 import { Box, Heading, Text, Center, Flex, useColorModeValue } from '@chakra-ui/react'
-import { LinkButton } from 'components/controls'
+import { ButtonLink } from 'components/controls'
 import { useEffect } from 'react'
 import { useSite } from '../hooks'
 import Link from 'next/link'
@@ -64,15 +64,15 @@ export default function HomePage({ page }: Props) {
         </Text>
         <Center my={[4, 4, 8]} gap={4}>
           {site && !site.invite_only && (
-            <LinkButton py={8} size="lg" fontSize="3xl" href="/apply">
+            <ButtonLink py={8} size="lg" fontSize="3xl" href="/apply">
               Get Started
-            </LinkButton>
+            </ButtonLink>
           )}
           {site && !site.invite_only && next_page && <>or</>}
           {next_page && (
-            <LinkButton mt={[4, 4, 8]} size="lg" fontSize="3xl" href={next_page.slug}>
+            <ButtonLink mt={[4, 4, 8]} size="lg" fontSize="3xl" href={next_page.slug}>
               {next_page.title}
-            </LinkButton>
+            </ButtonLink>
           )}
         </Center>
       </Box>

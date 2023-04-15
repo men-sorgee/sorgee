@@ -8,8 +8,8 @@ import {
   useColorMode,
   MenuDivider,
 } from '@chakra-ui/react'
-import { LinkButton, MemberAvatar, UserCard } from 'components/controls'
-import Notifications from './actions/Notifications'
+import { ButtonLink, MemberAvatar, MemberIcon } from 'components/controls'
+
 import Link from 'next/link'
 import {
   CalendarIcon,
@@ -31,7 +31,7 @@ import { useUser, useSite } from 'hooks'
 import { MemberLevel, ApplicationStatus } from 'lib/models'
 interface Props {}
 
-export default function UserMenu(_props: Props) {
+export default function ButtonLink(_props: Props) {
   const { colorMode, toggleColorMode } = useColorMode()
   const { site } = useSite()
   const { authenticated, user, member, isApplicant, isMember, isStaff, level } = useUser(
@@ -51,7 +51,7 @@ export default function UserMenu(_props: Props) {
 
           <MenuList bg="black" maxH="80vh" overflowY="auto">
             <Box p={4} m={2} mt={0} bgGradient="linear(to-bl, primary.300, accent.300)">
-              <UserCard member={person} />
+              <MemberIcon member={person} />
               <span id="account-email" hidden>
                 {person?.email}
               </span>
@@ -216,7 +216,7 @@ export default function UserMenu(_props: Props) {
         </Menu>
       ) : (
         <>
-          <LinkButton
+          <ButtonLink
             href={`/api/auth/signin`}
             fontWeight={600}
             variant="ghost"
@@ -227,9 +227,9 @@ export default function UserMenu(_props: Props) {
             }}
           >
             members
-          </LinkButton>
+          </ButtonLink>
           {showApply && (
-            <LinkButton
+            <ButtonLink
               href={`/apply`}
               _hover={{ textDecoration: 'none' }}
               fontWeight={600}
@@ -240,7 +240,7 @@ export default function UserMenu(_props: Props) {
               }}
             >
               apply
-            </LinkButton>
+            </ButtonLink>
           )}
         </>
       )}

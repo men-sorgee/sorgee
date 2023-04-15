@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import ApplicationSteps from './_steps'
 import { Text, Heading, HStack, VStack } from '@chakra-ui/react'
 import Page from 'components/Page'
-import { LinkButton } from '../../components/controls'
+import { ButtonLink } from '../../components/controls'
 
 function Approved() {
   const router = useRouter()
@@ -35,12 +35,12 @@ function Approved() {
           </Text>
           <Text>Complete your account:</Text>
           <HStack spacing={4} textAlign="center" mt={4}>
-            <LinkButton href="/member/settings" colorScheme="primary">
+            <ButtonLink href="/member/settings" colorScheme="primary">
               Manage Account
-            </LinkButton>
-            <LinkButton href="/member/profile" colorScheme="primary">
+            </ButtonLink>
+            <ButtonLink href="/member/profile" colorScheme="primary">
               Manage Profile
-            </LinkButton>
+            </ButtonLink>
           </HStack>
         </VStack>
       </>

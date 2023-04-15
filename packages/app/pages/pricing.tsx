@@ -20,7 +20,7 @@ import {
 import { CheckCircleIcon } from '@heroicons/react/24/solid'
 import Page from 'components/Page'
 import { useSite } from '../hooks/use-site'
-import { LinkButton } from '../components/controls'
+import { ButtonLink } from '../components/controls'
 
 const Check = ({ available = false }) => {
   const style = useColorModeValue('gray.500', 'gray.300')
@@ -241,13 +241,13 @@ export default function ThreeTierPricing() {
         </Table>
       </TableContainer>
       {(!site.invite_only && (
-        <LinkButton my={8} colorScheme="accent" size="lg" href="/apply">
+        <ButtonLink my={8} colorScheme="accent" size="lg" href="/apply">
           Get Started
-        </LinkButton>
+        </ButtonLink>
       )) || (
-        <LinkButton my={8} colorScheme="accent" size="lg" href="/limited">
+        <ButtonLink my={8} colorScheme="accent" size="lg" href="/limited">
           Get Started
-        </LinkButton>
+        </ButtonLink>
       )}
     </Page>
   )

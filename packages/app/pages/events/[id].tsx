@@ -22,7 +22,7 @@ import {
 import {
   EventCard,
   EventTicket,
-  LinkButton,
+  ButtonLink,
   MemberSpotlight,
   RateItem,
   EventRSVP,
@@ -219,9 +219,9 @@ const AttendedEvent = ({
         <Spacer />
         {invite.attended &&
           event.surveys?.map((s) => (
-            <LinkButton key={s.id} size="md" href={`/survey/${s.id}/1`} colorScheme="accent">
+            <ButtonLink key={s.id} size="md" href={`/survey/${s.id}/1`} colorScheme="accent">
               {s.title}
-            </LinkButton>
+            </ButtonLink>
           ))}
       </Flex>
 

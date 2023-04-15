@@ -16,12 +16,12 @@ export default function ApplicationSteps({ status }: { status: string }) {
         <Steps
           activeStep={activeStep}
           my={8}
-          colorScheme="primary"
-          color="white"
+          colorScheme={'primary'}
+          color={'white'}
           responsive={false}
         >
           {steps.map((step, index) => (
-            <Step key={index} label={step} color="white" />
+            <Step key={index} color={'white'} label={step} />
           ))}
         </Steps>
       </Show>
@@ -34,7 +34,7 @@ export default function ApplicationSteps({ status }: { status: string }) {
           responsive={false}
         >
           {steps.map((step, index) => (
-            <Step key={index} color="white" title={step} />
+            <Step key={index} color={'white'} title={step} />
           ))}
         </Steps>
       </Hide>

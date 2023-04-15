@@ -29,7 +29,7 @@ import {
 } from '../components/forms'
 import FieldRange from '../components/forms/FieldRange'
 import Page from '../components/Page'
-import { LinkButton, Loading } from '../components/controls'
+import { ButtonLink, Loading } from '../components/controls'
 
 const Form = () => {
   const methods = useForm()
@@ -146,19 +146,19 @@ export default function Styles() {
           <Link>Some Links</Link>
         </CardBody>
         <CardFooter as={HStack} spacing={2}>
-          <LinkButton href="#">Link Button</LinkButton>
-          <LinkButton href="#" colorScheme="primary">
+          <ButtonLink href="#">Link Button</ButtonLink>
+          <ButtonLink href="#" colorScheme="primary">
             Link Button Primary
-          </LinkButton>
-          <LinkButton href="#" colorScheme="secondary">
+          </ButtonLink>
+          <ButtonLink href="#" colorScheme="secondary">
             Link Button Secondary
-          </LinkButton>
-          <LinkButton href="#" colorScheme="accent">
+          </ButtonLink>
+          <ButtonLink href="#" colorScheme="accent">
             Link Button Accent
-          </LinkButton>
-          <LinkButton href="#" colorScheme="ghost">
+          </ButtonLink>
+          <ButtonLink href="#" colorScheme="ghost">
             Link Button Ghost
-          </LinkButton>
+          </ButtonLink>
         </CardFooter>
       </Card>
 

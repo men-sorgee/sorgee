@@ -14,7 +14,7 @@ import {
   Box,
 } from '@chakra-ui/react'
 import { EventUser, GroupEvent, User, MemberLevel } from 'lib/models'
-import { LinkButton, Loading, TakePhoto, MemberBadge } from 'components/controls'
+import { ButtonLink, Loading, TakePhoto, MemberBadge } from 'components/controls'
 import { FieldSwitch } from 'components/forms'
 import { useRouter } from 'next/router'
 import Page from 'components/Page'
@@ -269,12 +269,12 @@ export default function InviteAdmin({ event, invite, user }: Props) {
               </Box>
             )}
             <HStack spacing={4}>
-              <LinkButton colorScheme="gray" href={'/admin/event/' + event?.id} my={4}>
+              <ButtonLink colorScheme="gray" href={'/admin/event/' + event?.id} my={4}>
                 Return to Event
-              </LinkButton>
-              <LinkButton colorScheme="primary" href="/admin/scan" my={4}>
+              </ButtonLink>
+              <ButtonLink colorScheme="primary" href="/admin/scan" my={4}>
                 Scan Another
-              </LinkButton>
+              </ButtonLink>
             </HStack>
           </form>
         </FormProvider>

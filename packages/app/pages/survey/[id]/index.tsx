@@ -32,7 +32,7 @@ import {
 import Page from 'components/Page'
 import { useRouter } from 'next/router'
 import { Steps, Step } from 'chakra-ui-steps'
-import { LinkButton, Markdown } from 'components/controls'
+import { ButtonLink, Markdown } from 'components/controls'
 
 type Props = {
   survey: Survey
@@ -198,9 +198,9 @@ export default function SurveyPage({ survey, question, step }: Props) {
                 </Heading>
                 <Markdown content={survey.closing} />
                 {event && (
-                  <LinkButton href={`/events/${event.id}`} mt={4}>
+                  <ButtonLink href={`/events/${event.id}`} mt={4}>
                     Rate Event Attendees
-                  </LinkButton>
+                  </ButtonLink>
                 )}
               </Box>
             )}

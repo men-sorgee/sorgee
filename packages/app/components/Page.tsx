@@ -1,5 +1,5 @@
 import { useMeta } from 'hooks/use-meta'
-import { Loading, PullToRefresh } from 'components/controls'
+import { Loading } from 'components/controls'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import AccessDenied from './AccessDenied'
@@ -65,8 +65,8 @@ const Page = ({
       as="article"
       alignItems={'center'}
       justifyItems="stretch"
-      {...props}
       px={[4, 4, 0]}
+      {...props}
     >
       <div className="no-print">
         <Heading as="h1" size="h1" textAlign="center" mb={8}>
