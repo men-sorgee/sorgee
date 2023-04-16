@@ -44,6 +44,7 @@ export async function getServerSideProps(_context) {
 }
 
 const Article = ({ page, router }: { page: PageModel; router: NextRouter }) => {
+  const date = new Date(page.published)
   return (
     <Box mb={4}>
       {page.image && (
@@ -65,19 +66,24 @@ const Article = ({ page, router }: { page: PageModel; router: NextRouter }) => {
           }}
         />
       )}
-      <LinkBox>
+      <LinkBox rounded="lg" mt={2}>
         <Text
-          textShadow="1px 1px #000000"
+          as="span"
+          textShadow="2px 2px 1px #000000"
           stroke="black"
           fontSize="sm"
           fontWeight="bold"
           color="white"
-          mt="-24px"
-          ml="10px"
+          mt="-3rem"
+          ml=".5rem"
           zIndex={10}
-          position="relative"
+          position="absolute"
+          bg="blackAlpha.600"
+          py={1}
+          px={2}
+          rounded="full"
         >
-          {format(new Date(page.published), 'MMMM yy')}
+          {format(date, `MMMM`) + ` '` + format(date, 'yy')}
         </Text>
         <Heading fontSize="xl" my={4}>
           <LinkOverlay
@@ -118,6 +124,7 @@ export default function Blog({ page }: Props) {
     'radial(orange.600 1px, transparent 1px)',
     'radial(orange.300 1px, transparent 1px)'
   )
+  const date = new Date(latest.published)
   return (
     <Page title={title} description={description} image={getAssetUrl(image)}>
       <Box>
@@ -160,17 +167,22 @@ export default function Blog({ page }: Props) {
                   />
                 )}
                 <Text
-                  textShadow="2px 1px black"
+                  as="span"
+                  textShadow="2px 2px 1px #000000"
                   stroke="black"
                   fontSize="sm"
                   fontWeight="bold"
                   color="white"
-                  mt="-24px"
-                  ml="10px"
+                  mt="-2rem"
+                  ml=".5rem"
                   zIndex={10}
-                  position="relative"
+                  position="absolute"
+                  bg="blackAlpha.600"
+                  py={1}
+                  px={2}
+                  rounded="full"
                 >
-                  {format(new Date(latest.published), 'MMMM yy')}
+                  {format(date, 'MMMM') + ` '` + format(date, 'yy')}
                 </Text>
               </Box>
               <Box zIndex="1" width="100%" position="absolute" height="100%">
@@ -206,7 +218,7 @@ export default function Blog({ page }: Props) {
       <Heading as="h3" size="md" mt={10} mb={0}>
         Recent Articles:
       </Heading>
-      <SimpleGrid spacing={6} mt="5" p={[0, 0, 4]} columns={[1, 2, 3, 4]}>
+      <SimpleGrid spacing={6} mt="5" p={[0, 0, 4]} columns={[1, 2, 3]}>
         {children
           .filter((p) => p.slug != latest.slug)
           .map((page) => (
