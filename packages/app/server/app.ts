@@ -9,13 +9,12 @@ const handle = app.getRequestHandler()
 app.prepare().then(() => {
   const server = http.createServer((req, res) => {
     handle(req, res)
+    initSocketIO(req, res)
   })
 
   // Attach socket.io to the HTTP server
-  initSocketIO(server)
 
-  server.listen(3000, (err) => {
-    if (err) throw err
+  server.listen(3000, () => {
     console.log('> Ready on http://localhost:3000')
   })
 })

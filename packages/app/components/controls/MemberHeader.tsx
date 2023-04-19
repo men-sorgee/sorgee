@@ -1,11 +1,11 @@
 import { Flex, Badge, Box, Spacer } from '@chakra-ui/react'
 import { SearchableMember } from 'lib/models'
-import { MemberIcon, MemberCardProps } from './MemberIcon'
+import { MemberIcon, MemberIconProps } from './MemberIcon'
 import { capitalCase } from 'change-case'
 
 import { ReactNode } from 'react'
 
-export type MemberHeaderProps = MemberCardProps & {
+export type MemberHeaderProps = MemberIconProps & {
   children?: ReactNode
   member: Partial<SearchableMember>
   color?: string

@@ -31,7 +31,7 @@ import { useUser, useSite } from 'hooks'
 import { MemberLevel, ApplicationStatus } from 'lib/models'
 interface Props {}
 
-export default function ButtonLink(_props: Props) {
+export default function UserMenu(_props: Props) {
   const { colorMode, toggleColorMode } = useColorMode()
   const { site } = useSite()
   const { authenticated, user, member, isApplicant, isMember, isStaff, level } = useUser(
@@ -46,7 +46,7 @@ export default function ButtonLink(_props: Props) {
       {authenticated ? (
         <Menu placement="bottom">
           <MenuButton cursor={'pointer'}>
-            <MemberAvatar />
+            <MemberAvatar member={person} />
           </MenuButton>
 
           <MenuList bg="black" maxH="80vh" overflowY="auto">

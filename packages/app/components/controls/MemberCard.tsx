@@ -7,9 +7,9 @@ import {
   Spacer,
   Text,
   chakra,
-  CardProps,
+  ButtonGroup,
   CardHeader,
-  Box,
+  CardProps,
 } from '@chakra-ui/react'
 import { SearchableMember, MemberLevelColorMap, MemberLevel } from 'lib/models'
 import { MemberHeader, MemberChat, MemberConnect } from '.'
@@ -49,7 +49,7 @@ export const MemberCard = chakra(({ member, onClick, ...props }: Props) => {
                 onClick()
               }}
             >
-              <MemberHeader member={member} zoom={false}></MemberHeader>{' '}
+              <MemberHeader member={member} zoom={false} />
             </LinkOverlay>
           </CardHeader>
 
@@ -77,8 +77,10 @@ export const MemberCard = chakra(({ member, onClick, ...props }: Props) => {
               Member Since:{' '}
               {new Date(member.approved_date || member.date_created).toLocaleDateString()}
             </Text>
-            <MemberChat member={member} />
-            <MemberConnect member={member} />
+            <ButtonGroup>
+              <MemberChat member={member} />
+              <MemberConnect member={member} />
+            </ButtonGroup>
           </CardFooter>
         </Card>
       </LinkBox>

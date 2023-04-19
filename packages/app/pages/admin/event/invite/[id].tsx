@@ -14,7 +14,7 @@ import {
   Box,
 } from '@chakra-ui/react'
 import { EventUser, GroupEvent, User, MemberLevel } from 'lib/models'
-import { ButtonLink, Loading, TakePhoto, MemberBadge } from 'components/controls'
+import { ButtonLink, Loading, PhotoCapture, MemberBadge } from 'components/controls'
 import { FieldSwitch } from 'components/forms'
 import { useRouter } from 'next/router'
 import Page from 'components/Page'
@@ -256,7 +256,7 @@ export default function InviteAdmin({ event, invite, user }: Props) {
                 {invite?.attended && (
                   <Alert size="xl" status="warning" rounded="lg" shadow="lg">
                     <AlertIcon />
-                    <Text size="lg" m={0}>
+                    <Text fontSize="lg" m={0}>
                       Already checked in
                     </Text>
                   </Alert>
@@ -265,7 +265,7 @@ export default function InviteAdmin({ event, invite, user }: Props) {
             )) || <Loading />}
             {camera && (
               <Box display={visible(camera)} w="full">
-                <TakePhoto onAccept={takePhoto} facingMode="environment" />
+                <PhotoCapture onAccept={takePhoto} facingMode="environment" />
               </Box>
             )}
             <HStack spacing={4}>

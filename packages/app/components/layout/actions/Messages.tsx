@@ -13,7 +13,7 @@ import {
 import { useMessages } from 'hooks'
 import { ChatBubbleBottomCenterIcon as ChatIcon } from '@heroicons/react/24/outline'
 import { Member } from 'lib/models'
-import Chat from '../../controls/Messages'
+import { Messages } from '../../controls/Messages'
 import { useEffect, useRef, useState } from 'react'
 
 type Props = { member: Member }
@@ -76,7 +76,7 @@ const MessagesActions = ({ member }: Props) => {
             Messages
           </DrawerHeader>
           <DrawerBody p={0} position="relative">
-            <Chat currentUser={member} />
+            <Messages currentUser={member} />
           </DrawerBody>
         </DrawerContent>
       </Drawer>

@@ -98,13 +98,7 @@ export const MemberSpotlight = ({ id, fields, full = true, color, size, children
               Member Since: {new Date(member.date_created).toLocaleDateString()}
             </Text>
             {member?.rating > 0 && (
-              <Rating
-                value={member.rating || 0}
-                mt={2}
-                aria-label="User Rating"
-                size={['xs']}
-                simple
-              />
+              <Rating value={member.rating || 0} mt={2} aria-label="User Rating" size="xs" simple />
             )}
           </Flex>
         )}

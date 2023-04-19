@@ -38,7 +38,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
     if (!conversations) return
     if (cId !== undefined) {
       setActiveConversation(conversations[cId])
-      setMessages(conversations[cId].messages)
+      setMessages(conversations[cId]?.messages)
     } else {
       const keys = Object.keys(conversations)
       if (keys.length > 0) {
@@ -218,16 +218,13 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
     <>
       <audio ref={audioRef} src="/sounds/click.mp3" preload="auto" />
 
-      <MainContainer
-        responsive={true}
-        className="bg"
-        css={{
-          svg: {
-            minHeight: '1.5rem',
-            color: 'black',
-          },
-        }}
-      >
+      <MainContainer responsive={true} className="bg">
+        <style>
+          {`svg {
+            min-height: 1.5rem;
+            color: black;
+          }`}
+        </style>
         <Sidebar position="left">
           <ConversationList>
             {Object.values(conversations).map((c) => {

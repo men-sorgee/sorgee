@@ -15,8 +15,12 @@
     "email": "yarn workspace email ",
     "start": "docker-compose up -d",
     "stop": "docker-compose down",
+    "clean": "rm -rf .next && rm -rf node_modules && yarn app clean",
     "postinstall": "chmod +x .devcontainer/.bashrc && bash -c 'source .devcontainer/.bashrc'",
     "admin:secrets": "kubectl create secret generic gnh-admin --from-env-file=packages/admin/.env.production -n gnh",
     "app:secrets": "kubectl create secret generic gnh-app --from-env-file=packages/app/.env.production -n gnh"
+  },
+  "devDependencies": {
+    "typescript": "5.0.4"
   }
 }

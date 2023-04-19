@@ -20,7 +20,7 @@ import { Member, SearchableMember } from 'lib/models'
 import { formatDistanceToNowStrict } from 'date-fns'
 import { ImageModal } from './ImageModal'
 
-export type MemberCardProps = AvatarProps & {
+export type MemberIconProps = AvatarProps & {
   zoom?: boolean
   color?: string
   member: Partial<Member | SearchableMember>
@@ -28,7 +28,7 @@ export type MemberCardProps = AvatarProps & {
 }
 
 export const MemberIcon = chakra(
-  ({ member, zoom = false, size = 'lg', color = 'white', children, ...props }: MemberCardProps) => {
+  ({ member, zoom = false, size = 'lg', color = 'white', children, ...props }: MemberIconProps) => {
     const [lastLogin, setLastLogin] = useState<string | null>(null)
 
     useEffect(() => {
@@ -68,7 +68,7 @@ export const MemberIcon = chakra(
             >
               {member?.presence == 'online' && (
                 <Tooltip label={lastLogin} placement="top">
-                  <AvatarBadge borderWidth="thin" boxSize="1.5rem" bg="green.300" />
+                  <AvatarBadge borderWidth="thin" boxSize="1rem" bg="green.300" />
                 </Tooltip>
               )}
             </Avatar>

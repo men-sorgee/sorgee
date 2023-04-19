@@ -74,7 +74,7 @@ export const MemberPropertyGroup = ({
                         lineHeight={1}
                         color="primary.400"
                         key={`badge-${item}-${d}`}
-                        size="md"
+                        fontSize="md"
                         m={0}
                       >
                         {getValue(field, item)}
@@ -88,7 +88,7 @@ export const MemberPropertyGroup = ({
                   <Heading as="h4" size="sm" my={2}>
                     {capitalCase(fields[field].field)}:
                   </Heading>
-                  <Text m={0} size="md" color="primary.400" textTransform="capitalize">
+                  <Text m={0} fontSize="md" color="primary.400" textTransform="capitalize">
                     {getValue(field, member[field])}
                   </Text>
                 </Box>

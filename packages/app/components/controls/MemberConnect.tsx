@@ -1,9 +1,9 @@
 import { Stack, IconButton, Badge } from '@chakra-ui/react'
-import { UserIcon, UserMinusIcon, UserPlusIcon } from '@heroicons/react/24/solid'
+import { UserIcon, UserMinusIcon, UserPlusIcon } from '@heroicons/react/24/outline'
 import { useEffect, useState } from 'react'
 import { useUser } from 'hooks'
-import { deleteJSON, getJSON, postJSON } from '../../lib/utils'
-import { Member, SearchableMember, UserRelationship } from '../../lib/models'
+import { deleteJSON, getJSON, postJSON } from 'lib/utils'
+import { Member, SearchableMember, UserRelationship } from 'lib/models'
 
 type Props = {
   member: Partial<Member | SearchableMember>
@@ -46,35 +46,39 @@ export const MemberConnect = ({ member }: Props) => {
   }, [isBuddy, loading, me, member?.id])
   return (
     <>
-      <Stack isInline position="relative">
-        {(isBuddy && (
-          <IconButton
-            color="primary.800"
-            icon={hover ? <UserMinusIcon /> : <UserIcon />}
-            onMouseOver={() => {
-              setHover(true)
-            }}
-            onMouseOut={() => {
-              setHover(false)
-            }}
-            variant="ghost"
-            aria-label="Add to buddy-list"
-            cursor="pointer"
-            onClick={toggleBuddy}
-            title="Remove Buddy"
-          ></IconButton>
-        )) || (
-          <IconButton
-            icon={<UserPlusIcon />}
-            variant="ghost"
-            title="Add Buddy"
-            aria-label="Add to buddy-list"
-            cursor="pointer"
-            onClick={toggleBuddy}
-            color="primary.400"
-          ></IconButton>
-        )}
-      </Stack>
+      {(isBuddy && (
+        <IconButton
+          color="white"
+          icon={hover ? <UserMinusIcon width="30px" /> : <UserIcon width="30px" />}
+          onMouseOver={() => {
+            setHover(true)
+          }}
+          onMouseOut={() => {
+            setHover(false)
+          }}
+          variant="ghost"
+          aria-label="Add to buddy-list"
+          cursor="pointer"
+          onClick={toggleBuddy}
+          title="Remove Buddy"
+        ></IconButton>
+      )) || (
+        <IconButton
+          icon={hover ? <UserPlusIcon height="30px" /> : <UserIcon height="30px" />}
+          onMouseOver={() => {
+            setHover(true)
+          }}
+          onMouseOut={() => {
+            setHover(false)
+          }}
+          variant="ghost"
+          title="Add Buddy"
+          aria-label="Add to buddy-list"
+          cursor="pointer"
+          onClick={toggleBuddy}
+          color="white"
+        ></IconButton>
+      )}
     </>
   )
 }

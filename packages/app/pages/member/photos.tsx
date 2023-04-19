@@ -1,10 +1,10 @@
 import { useUser } from '@/hooks/use-user'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import {
-  AssetImage,
+  ImageAsset,
   PhotoCapture,
   PhotoUpload,
-  ConfirmButton,
+  ButtonConfirm,
   MemberAvatar,
 } from 'components/controls'
 import {
@@ -83,8 +83,8 @@ export default function PhotoAlbums({}: Props) {
           <Flex align="center" justify="center">
             {(pictureSrc && (
               <Flex direction="column" mb={4}>
-                <MemberAvatar width="150px" height="150px" rounded="full" />
-                <ConfirmButton
+                <MemberAvatar member={member} width="150px" height="150px" rounded="full" />
+                <ButtonConfirm
                   title="Delete Avatar"
                   buttonText="Delete"
                   promise={async () => {
@@ -111,7 +111,7 @@ export default function PhotoAlbums({}: Props) {
                   _hover={{ opacity: 1, bg: 'white' }}
                 >
                   Are you sure you want to delete this photo?
-                </ConfirmButton>
+                </ButtonConfirm>
               </Flex>
             )) || (
               <AddPhoto
@@ -175,9 +175,9 @@ function PhotoList({ title, field, images, memberId, reload }: PhotoListProps) {
       {images?.map((image: PhotoItem) => (
         <Box key={image.fileId}>
           <Link href={`/api/asset/${image.fileId}`} target="_blank">
-            <AssetImage fileId={image.fileId} rounded="md" shadow="md" />
+            <ImageAsset fileId={image.fileId} rounded="md" shadow="md" />
           </Link>
-          <ConfirmButton
+          <ButtonConfirm
             title="Delete Photo"
             buttonText="Delete"
             promise={async () => {
@@ -202,7 +202,7 @@ function PhotoList({ title, field, images, memberId, reload }: PhotoListProps) {
             _hover={{ opacity: 1, bg: 'white' }}
           >
             Are you sure you want to delete this photo?
-          </ConfirmButton>
+          </ButtonConfirm>
         </Box>
       ))}
 
