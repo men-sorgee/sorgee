@@ -55,16 +55,16 @@ export const MemberIcon = chakra(
               }
               size={size}
               color={color}
-              name={member?.nickname || member?.first_name}
+              name={member?.nickname || 'Brother'}
               bgGradient="linear(to-b, primary.500, primary.800)"
               loading="lazy"
               borderColor="accent.500"
-              borderWidth="thin"
-              {...props}
+              borderWidth="2px"
               cursor={member?.picture ? 'pointer' : ''}
               onClick={() => {
                 if (zoom && member?.picture) setOpen(true)
               }}
+              {...props}
             >
               {member?.presence == 'online' && (
                 <Tooltip label={lastLogin} placement="top">
@@ -83,7 +83,7 @@ export const MemberIcon = chakra(
             )}
             <Flex w="full" direction="column" gap={0} align="flex-start">
               <Heading size="md" textTransform="uppercase" m={0} color={color}>
-                {member?.nickname || member?.first_name}
+                {member?.nickname || 'Brother'}
               </Heading>
               <Flex gap={1} align="flex-start" justify="space-between" w="full">
                 <Box>

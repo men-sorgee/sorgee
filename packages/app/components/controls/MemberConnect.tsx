@@ -4,13 +4,13 @@ import { UserIcon as BuddyIcon, UserMinusIcon as BuddyIconMinus } from '@heroico
 import { useEffect, useState } from 'react'
 import { useUser } from 'hooks'
 import { deleteJSON, postJSON } from 'lib/utils'
-import { Member, SearchableMember, UserBuddy } from 'lib/models'
+import { Member, MemberLevel, SearchableMember, UserBuddy } from 'lib/models'
 type Props = {
   member: Partial<Member | SearchableMember>
 }
 
 export const MemberConnect = ({ member }: Props) => {
-  const { loading: userLoading, member: me, reload } = useUser()
+  const { loading: userLoading, member: me, level, reload } = useUser()
   const [hover, setHover] = useState(false)
   const [isBuddy, setIsBuddy] = useState<boolean | undefined>(undefined)
 
@@ -37,6 +37,8 @@ export const MemberConnect = ({ member }: Props) => {
       setIsBuddy(b)
     }
   }, [isBuddy, me, member.id, userLoading])
+
+  if (level < MemberLevel.brother) return <></>
   if (userLoading || isBuddy == undefined) return <></>
   if (me?.id === member.id) return <></>
   return (

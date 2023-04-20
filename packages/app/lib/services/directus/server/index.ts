@@ -1,6 +1,8 @@
+import { NotificationsUsers } from './../../db/entities/NotificationsUsers'
 import { Directus } from '@directus/sdk'
 import { DirectusField, DirectusTypes, Promo, User, FieldMap } from 'lib/models'
 import { adminUrl } from 'lib/config'
+import { FieldDate } from '../../../../components/forms'
 
 const _adminDb = new Directus<DirectusTypes>(adminUrl)
 const cache: { [key: string]: any } = {}
@@ -32,6 +34,14 @@ export async function getFields(collection: string = 'users'): Promise<FieldMap>
 
   const fieldMap = data.reduce((acc: any, field: DirectusField): any => {
     field.options = field.meta?.options?.choices || []
+    delete field.translations
+    delete field.note
+    delete field.collection
+    delete field.special
+    delete field.group
+    delete field.conditions
+    delete field.validation
+
     cache[`${collection}:${field.field}`] = field
     acc[field.field] = field
     return acc

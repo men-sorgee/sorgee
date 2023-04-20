@@ -64,11 +64,11 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
   })
 
   const [conversations, setConversations] = useState<Record<string, Conversation>>({})
-
-  const [hasNewMessages, setHasNewMessages] = useState(false)
-  const [activeConversation, setActiveConversation] = useState<string>()
-  const [newMessages, setNewMessages] = useState(0)
+  const [hasNewMessages, setHasNewMessages] = useState(undefined)
+  const [activeConversation, setActiveConversation] = useState<string>(undefined)
+  const [newMessages, setNewMessages] = useState<number>(undefined)
   useEffect(() => {
+    let totalNewMessages = []
     Object.keys(userMessages || {}).forEach((k) => {
       const messages = userMessages[k].map((m: ChatMessage) => {
         return {
@@ -76,12 +76,12 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
           timestamp: new Date(m.timestamp as string),
         }
       })
-      const hasNewMessages =
-        messages.filter((m: { status: string }) => m.status === 'new').length > 0
-      const newMessageCount = messages.filter(
+
+      const newMessages = messages.filter(
         (m: ChatMessage) => m.status === 'new' && m.direction === 'incoming'
-      ).length
-      setNewMessages(newMessageCount)
+      )
+      const hasNewMessages = newMessages.length > 0
+      const newMessageCount = newMessages.length
       const lastMessage = messages[messages.length - 1]
       const user = lastMessage.user
       conversations[k] = {
@@ -95,8 +95,11 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
           picture: `/api/asset/${user.picture}?w=100&h=100&fit=crop`,
         },
       }
+      totalNewMessages.push(...newMessages)
     })
-    setHasNewMessages(newMessages > 0)
+
+    setNewMessages(totalNewMessages.length)
+    setHasNewMessages(totalNewMessages.length > 0)
   }, [conversations, hasNewMessages, newMessages, userMessages])
 
   const chatWith = useCallback(

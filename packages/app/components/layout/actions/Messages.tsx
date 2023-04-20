@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react'
 import { useMessages } from 'hooks'
 import { ChatBubbleBottomCenterIcon as ChatIcon } from '@heroicons/react/24/outline'
-import { Member } from 'lib/models'
+import { Member, MemberLevel } from 'lib/models'
 import { Messages } from '../../controls/Messages'
 import { useEffect, useRef, useState } from 'react'
 
@@ -29,21 +29,37 @@ const MessagesActions = ({ member }: Props) => {
     onClose: () => setActiveConversation(null),
     isOpen: activeConversation != undefined,
   })
-
-  const [prevMessagesCount, setPrevMessagesCount] = useState(newMessageCount)
+  const [show, setShow] = useState<boolean>(undefined)
+  const [prevMessagesCount, setPrevMessagesCount] = useState<number>(undefined)
   const audioRef = useRef<HTMLAudioElement>(null)
 
   useEffect(() => {
-    if (newMessageCount > prevMessagesCount && !isOpen) {
+    if (prevMessagesCount == undefined) {
+      setPrevMessagesCount(newMessageCount)
+    }
+    if (newMessageCount > prevMessagesCount) {
       audioRef.current.volume = 0.5
       audioRef.current?.play()
       setPrevMessagesCount(newMessageCount)
     }
-  }, [activeConversation, isOpen, newMessageCount, onOpen, prevMessagesCount])
+    if (show == undefined) {
+      setShow(MemberLevel[member.user_type] >= MemberLevel.brother)
+    }
+    if (show == false && hasNewMessages) setShow(true)
+  }, [
+    activeConversation,
+    hasNewMessages,
+    isOpen,
+    member.user_type,
+    newMessageCount,
+    onOpen,
+    prevMessagesCount,
+    show,
+  ])
 
   return (
     <>
-      <Box>
+      <Box hidden={!show}>
         <IconButton
           aria-label="Messages"
           variant="primary"

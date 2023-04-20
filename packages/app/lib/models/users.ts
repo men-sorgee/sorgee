@@ -10,6 +10,7 @@ import {
 } from 'lib/models'
 
 import { ProviderType } from 'next-auth/providers'
+import { deprecate } from 'util'
 export type UserAccount = {
   id?: string
   user?: string | User
@@ -41,12 +42,11 @@ export type UserVerificationToken = {
   expires: string
 }
 
-export type UserRelation = 'buddy' | 'hottie' | 'partner'
-export type UserRelationship = {
-  id: number
-  users_id: string | User
-  related_users_id?: string | User
-  relation: UserRelation
+export type UserBuddy = {
+  id: string
+  user_id: string | User
+  buddy_id: string | User
+  sort: number
 }
 
 export type UserContactAttempt = {
@@ -75,7 +75,7 @@ export type User = {
   phone_verified?: boolean
   email?: string
   email_verified?: boolean
-  session: string | UserSession[]
+  sessions: string[] | UserSession[]
   contact_preference: string | ContactPreferenceType
   weight?: number
   cock_length?: number
@@ -132,12 +132,11 @@ export type User = {
   tags?: string[]
   location?: string
   state: string
-  events: string | EventUser[]
-  my_photos: string | UserPhoto[]
-  email_events: string | UserEmailEvent[]
-  images: string | UserFile[]
-  users: string | UserRelationship[]
-  accounts: string | UserAccount[]
+  events: string[] | EventUser[]
+  my_photos: string[] | UserPhoto[]
+  email_events: string[] | UserEmailEvent[]
+  images: string[] | UserFile[]
+  accounts: string[] | UserAccount[]
   show_profile: boolean
   show_explicit: boolean
   show_explicit_roles: boolean
@@ -154,8 +153,10 @@ export type User = {
   can_host_events: string[] | ('sex' | 'social' | 'individual')[]
   promo: number | Promo
   rating: number
-  ratings: (string | number)[] | Rating[]
-
+  ratings: string[] | Rating[]
+  allow_messages: 'anyone' | 'buddies' | 'none'
+  buddies: string[] | UserBuddy[]
+  buddy_of: string[] | UserBuddy[]
   private_folder?: string
   public_folder?: string
 }
@@ -304,7 +305,8 @@ export type Profile = {
   user_type: UserType
   application_status: string
   status: UserStatusType
-  accounts: UserAccount[]
+  sessions: string[] | UserSession[]
+  accounts: string[] | UserAccount[]
   auth_with_phone: boolean
 }
 export const profileFields: Array<keyof Profile> = [
@@ -321,6 +323,8 @@ export const profileFields: Array<keyof Profile> = [
   'user_type',
   'application_status',
   'status',
+  'accounts',
+  'sessions',
   'auth_with_phone',
 ]
 
@@ -336,17 +340,17 @@ export type Applicant = Profile & {
   needs_guidance: boolean
   spectrum: string
   relationship_status: string
-  event_availability: User['event_availability']
+  event_availability: string[]
   birth_month: number
   birth_year: number
   age: number
   height: string
   weight: number
-  skin_tone: User['skin_tone']
-  my_positions: User['my_positions']
-  my_roles: User['my_roles']
-  sexual_scenes: User['sexual_scenes']
-  social_scenes: User['social_scenes']
+  skin_tone: string[]
+  my_positions: string[]
+  my_roles: string[]
+  sexual_scenes: string[]
+  social_scenes: string[]
   photo?: string | DirectusFile
   photo_denial_reason: string | null
 
@@ -384,8 +388,6 @@ export type Member = Applicant & {
   presence: 'offline' | 'online' | 'away'
   ratings: Rating[]
 
-  users: UserRelationship[]
-
   video_consent: boolean
   photo_consent: boolean
 
@@ -408,7 +410,7 @@ export type Member = Applicant & {
 
   //-profile
   show_profile: boolean
-  nickname: User['nickname']
+  nickname: string
   body_hair?: string
   facial_hair?: string
   hair_color?: string
@@ -447,6 +449,10 @@ export type Member = Applicant & {
   their_spectrum?: OrientationType[]
   their_relationship_status?: string[]
 
+  allow_messages: 'anyone' | 'buddies' | 'none'
+  buddies: string[] | UserBuddy[]
+  buddy_of: string[] | UserBuddy[]
+
   rating: number
   private_folder?: string
   public_folder?: string
@@ -467,6 +473,18 @@ export type SearchableMember = Omit<
   | 'flags'
   | 'reviewed_by'
   | 'photo_denial_reason'
+  | 'first_name'
+  | 'last_name'
+  | 'birth_month'
+  | 'birth_year'
+  | 'video_consent'
+  | 'photo_consent'
+  | 'invite'
+  | 'accounts'
+  | 'in_sendgrid'
+  | 'application_status'
+  | 'accounts'
+  | 'photo_denial_reason'
 >
 
 export const userPrivateFields: Array<keyof User> = [
@@ -475,8 +493,7 @@ export const userPrivateFields: Array<keyof User> = [
   'in_sendgrid',
   'application_status',
   'contact_attempts',
-  'accounts',
-  'session',
+  'sessions',
   'notes',
   'tags',
   'flags',
@@ -497,6 +514,11 @@ export const memberProfilePrivateFields: Array<keyof Member> = [
   'application_status',
   'accounts',
   'photo_denial_reason',
+  'private_folder',
+  'public_folder',
+  'approved_date',
+  'ratings',
+  'buddy_of',
 ]
 
 export const memberProfileContactFields: Array<keyof Member> = [
@@ -562,17 +584,35 @@ export const memberProfileHealthFields: Array<keyof Member> = [
 export const memberProfilePhotoFields: Array<keyof Member> = ['my_photos.*' as any]
 
 export const searchableMemberFields: Array<keyof Member> = [
-  'picture',
-  'last_login',
-  'date_created',
-  'user_type',
-  'presence',
-  'rating',
+  'id',
+  'status',
   'nickname',
   'biography',
-  'relationship_status',
+  'first_name',
+  'picture',
+  'user_type',
+  'presence',
+  'location',
+  'city',
+  'state',
+  'rating',
   'spectrum',
+  'my_positions',
+  'show_profile',
+  'relationship_status',
   'mannerisms',
+  'allow_messages',
+  'last_login',
+  'date_created',
+  'buddies.*' as any,
+]
+
+export const memberFields: Array<keyof Member> = [
+  ...applicantFields,
+  ...searchableMemberFields,
+  ...memberProfilePrivateFields,
+  'show_contact',
+  ...memberProfileContactFields,
   'show_profile',
   ...memberProfileFields,
   'show_explicit',
@@ -589,19 +629,6 @@ export const searchableMemberFields: Array<keyof Member> = [
   ...memberProfileLocationFields,
   'show_photos',
   ...memberProfilePhotoFields,
-]
-
-export const memberFields: Array<keyof Member> = [
-  ...applicantFields,
-  ...searchableMemberFields,
-  ...memberProfilePrivateFields,
-  'show_contact',
-  ...memberProfileContactFields,
-  'private_folder',
-  'public_folder',
-  'approved_date',
-  'ratings',
-  'users.*.*' as any,
 ]
 
 export const getAllowedUsers = (level: MemberLevel) => {

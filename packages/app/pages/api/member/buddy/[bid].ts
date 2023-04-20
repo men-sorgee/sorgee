@@ -1,16 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { withMethods, withMember } from 'lib/utils/server'
-import { ApiResponse, UserRelationship } from 'lib/models'
-import {
-  getUser,
-  getRelationship,
-  setRelationship,
-  removeRelationship,
-} from 'lib/services/directus/server/users'
+import { ApiResponse, UserBuddy } from 'lib/models'
+import { getUser, getBuddy, addBuddy, removeBuddy } from 'lib/services/directus/server/users'
 
-export default async function MemberImage(
+export default async function MemberBuddy(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<UserRelationship> | ApiResponse>
+  res: NextApiResponse<ApiResponse<UserBuddy> | ApiResponse>
 ) {
   try {
     const method = withMethods(req, ['POST', 'DELETE', 'GET'])
@@ -19,28 +14,26 @@ export default async function MemberImage(
     const { bid } = req.query
     const user_id = String(bid)
 
+    console.log('Member Buddy', method, user_id)
+
     const them = await getUser(user_id)
-    if (!them) {
+    if (them == null) {
       res.status(404).json(ApiResponse(null, 'Not Found'))
     }
 
     switch (method) {
       case 'GET': {
-        const relation = await getRelationship(me.id, them.id)
-        return relation
-          ? res.status(200).json(ApiResponse(relation))
-          : res.status(404).json(ApiResponse(null, 'Not Found'))
+        const buddy = await getBuddy(me.id, them.id)
+        return buddy
+          ? res.status(200).json(ApiResponse(buddy))
+          : res.status(200).json(ApiResponse(null))
       }
       case 'POST': {
-        const { relation } = req.body
-
-        let relationship = await setRelationship(me.id, them.id, relation)
-
-        return res.status(200).json(ApiResponse(relationship))
+        const buddy = await addBuddy(me.id, them.id)
+        return res.status(200).json(ApiResponse(buddy))
       }
-
       case 'DELETE': {
-        await removeRelationship(me.id, them.id)
+        await removeBuddy(me.id, them.id)
         return res.status(200).json(ApiResponse('ok'))
       }
     }

@@ -6,11 +6,13 @@
   "author": "Jason <jason@guysnheat.com>",
   "license": "MIT",
   "workspaces": [
-    "packages/app"
+    "packages/app",
+    "packages/app-chat-styles"
   ],
   "scripts": {
     "admin": "yarn workspace admin ",
     "app": "yarn workspace app ",
+    "chat": "yarn workspace app-chat-styles ",
     "gcp": "yarn workspace gcp ",
     "email": "yarn workspace email ",
     "start": "docker-compose up -d",

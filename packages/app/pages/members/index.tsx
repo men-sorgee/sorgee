@@ -270,11 +270,10 @@ export default function MemberListPage(props: PageProps) {
         onClose={() => setId(undefined)}
       >
         <ModalOverlay backdropFilter="auto" backdropBlur="2px" />
-        <ModalContent bg={useColorModeValue('white', 'black')}>
+        <ModalContent ml={-4} bg={useColorModeValue('white', 'black')}>
           <ModalBody p={0} rounded="md">
-            <MemberSpotlight id={id as string} fields={fields}>
-              <ModalCloseButton color={'white'} mt={2} />
-            </MemberSpotlight>
+            <ModalCloseButton color={'white'} mt={2} />
+            <MemberSpotlight id={id as string} fields={fields}></MemberSpotlight>
           </ModalBody>
         </ModalContent>
       </Modal>

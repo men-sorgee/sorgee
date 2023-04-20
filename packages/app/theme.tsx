@@ -1,4 +1,4 @@
-import { ChakraTheme, defineStyleConfig, extendTheme, StyleFunctionProps } from '@chakra-ui/react'
+import { defineStyleConfig, extendTheme, StyleFunctionProps } from '@chakra-ui/react'
 import { default as defaultTheme } from '@chakra-ui/theme'
 import { mode } from '@chakra-ui/theme-tools'
 import { StepsTheme as Steps } from 'chakra-ui-steps'

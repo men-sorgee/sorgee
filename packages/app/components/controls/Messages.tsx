@@ -1,4 +1,4 @@
-import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css'
+//import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css'
 import { postJSON } from 'lib/utils'
 import { useMessages } from 'hooks'
 import { Member, ChatMessage, Message, Conversation, UserMessages } from 'lib/models'
@@ -19,20 +19,73 @@ import {
   TypingIndicator,
 } from '@chatscope/chat-ui-kit-react'
 import io, { Socket } from 'socket.io-client'
+import MessagesStyles from './MessagesStyles'
 
 let socket: Socket
 
 export const Messages = ({ currentUser }: { currentUser: Member }) => {
-  // Message input value
-
-  // Get all chat related values and methods from useChat hook
-
   const { conversations, markAsRead, reload, mutate, activeConversation: a } = useMessages()
   const [cId, setCid] = useState<string>(a)
   const [activeConversation, setActiveConversation] = useState<Conversation>()
   const [messages, setMessages] = useState<ChatMessage[]>([])
-
   const [isTyping, setIsTyping] = useState(false)
+  const [sidebarVisible, setSidebarVisible] = useState(false)
+  const [sidebarStyle, setSidebarStyle] = useState({})
+  const [chatContainerStyle, setChatContainerStyle] = useState({})
+  const [conversationContentStyle, setConversationContentStyle] = useState({})
+  const [conversationAvatarStyle, setConversationAvatarStyle] = useState({})
+
+  const handleBackClick = () => {
+    setSidebarVisible(!sidebarVisible)
+    setCid(null)
+  }
+
+  const handleConversationClick = useCallback(
+    (cid: string) => {
+      if (sidebarVisible) {
+        setSidebarVisible(false)
+      }
+      setCid(cid)
+    },
+    [sidebarVisible, setSidebarVisible]
+  )
+
+  useEffect(() => {
+    if (sidebarVisible) {
+      setSidebarStyle({
+        display: 'flex',
+        flexBasis: 'auto',
+        width: '100%',
+        maxWidth: '100%',
+      })
+      setConversationContentStyle({
+        display: 'flex',
+      })
+      setConversationAvatarStyle({
+        marginRight: '1em',
+      })
+      setChatContainerStyle({
+        display: 'none',
+      })
+    } else {
+      setSidebarStyle({})
+      setConversationContentStyle({})
+      setConversationAvatarStyle({})
+      setChatContainerStyle({})
+    }
+  }, [
+    sidebarVisible,
+    setSidebarVisible,
+    setConversationContentStyle,
+    setConversationAvatarStyle,
+    setSidebarStyle,
+    setChatContainerStyle,
+  ])
+
+  useEffect(() => {
+    if (socket == undefined) return socketInitializer()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (!conversations) return
@@ -45,7 +98,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
         setCid(keys[0])
       }
     }
-  }, [activeConversation, cId, conversations, markAsRead, reload])
+  }, [activeConversation, cId, conversations])
 
   const audioRef = useRef<HTMLAudioElement>(null)
 
@@ -53,7 +106,10 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
     fetch('/api/socket').catch((err) => {
       console.log(err)
     })
-    socket = io()
+    socket = io({
+      path: '/api/socket.io',
+      addTrailingSlash: false,
+    })
     socket.on('connect', () => {
       socket.emit('join', currentUser.id)
     })
@@ -89,11 +145,8 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
     [cId]
   )
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => socketInitializer(), [])
-
   // Get current user data
-  const [currentUserAvatar, currentUserName] = useMemo(() => {
+  const [convoUserAvatar, convoUserName] = useMemo(() => {
     if (activeConversation) {
       const { user } = activeConversation
 
@@ -216,16 +269,11 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
 
   return (
     <>
+      <MessagesStyles />
       <audio ref={audioRef} src="/sounds/click.mp3" preload="auto" />
 
-      <MainContainer responsive={true} className="bg">
-        <style>
-          {`svg {
-            min-height: 1.5rem;
-            color: black;
-          }`}
-        </style>
-        <Sidebar position="left">
+      <MainContainer responsive className="bg" style={{}}>
+        <Sidebar position="left" style={sidebarStyle}>
           <ConversationList>
             {Object.values(conversations).map((c) => {
               // Helper for getting the data of the first participant
@@ -244,32 +292,45 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
                   key={id}
                   name={nickname}
                   active={activeConversation?.id === id}
-                  onClick={(e) => setCid(c.id)}
+                  onClick={() => {
+                    handleConversationClick(id)
+                  }}
                   lastActivityTime={lastMessageDate ? lastMessageDate : 'Just now'}
                   unreadDot={newMessageCount > 0}
                 >
-                  <Avatar key={id} id={id} src={picture ? picture : null} name={nickname} />
+                  <Avatar
+                    key={id}
+                    id={id}
+                    src={picture ? picture : null}
+                    name={nickname}
+                    style={conversationAvatarStyle}
+                  />
                 </ConversationCtrl>
               )
             })}
           </ConversationList>
         </Sidebar>
-
-        {cId && (
-          <ChatContainer
-            onFocus={() => {
-              messagesSeen()
-            }}
-          >
+        <ChatContainer
+          onFocus={() => {
+            messagesSeen()
+          }}
+          style={chatContainerStyle}
+        >
+          {cId && (
             <ConversationHeader>
-              <ConversationHeader.Back onClick={() => setCid(null)} />
-              {currentUserAvatar}
-              <ConversationHeader.Content userName={currentUserName} />
+              <ConversationHeader.Back onClick={handleBackClick} />
+              {convoUserAvatar}
+              <ConversationHeader.Content
+                userName={convoUserName}
+                style={conversationContentStyle}
+              />
               <ConversationHeader.Actions></ConversationHeader.Actions>
             </ConversationHeader>
+          )}
 
-            <MessageList scrollBehavior="auto" typingIndicator={typingIndicator}>
-              {messages.map((m, i) => (
+          <MessageList scrollBehavior="auto" typingIndicator={typingIndicator}>
+            {cId &&
+              messages?.map((m, i) => (
                 <MessageGroup key={i} direction={m.direction}>
                   <MessageGroup.Messages>
                     <MessageCtrl
@@ -283,19 +344,18 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
                   </MessageGroup.Messages>
                 </MessageGroup>
               ))}
-            </MessageList>
+          </MessageList>
 
-            <MessageInput
-              attachButton={false}
-              onAttachClick={handleAttachment}
-              onSend={handleSend}
-              onChange={handleInputChange}
-              ref={inputRef}
-              autoFocus
-              placeholder="Type message here"
-            />
-          </ChatContainer>
-        )}
+          <MessageInput
+            attachButton={false}
+            onAttachClick={handleAttachment}
+            onSend={handleSend}
+            onChange={handleInputChange}
+            ref={inputRef}
+            autoFocus
+            placeholder="Type message here"
+          />
+        </ChatContainer>
       </MainContainer>
     </>
   )

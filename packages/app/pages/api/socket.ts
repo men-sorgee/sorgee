@@ -1,15 +1,19 @@
 import { Server } from 'socket.io'
-import { Message } from '../../lib/models'
+import { Message } from 'lib/models'
 
 const SocketHandler = (req, res) => {
+  let io = null
   if (res.socket.server.io) {
-    console.log('Socket is already running')
+    io = res.socket.server.io
+    console.log('sockets are already running')
   } else {
-    console.log('Socket is initializing')
-    const io = new Server(res.socket.server, {
+    console.log('socket is initializing')
+    io = new Server(res.socket.server, {
       cors: {
         origin: '*',
       },
+      addTrailingSlash: false,
+      path: '/api/socket.io',
     })
     res.socket.server.io = io
 

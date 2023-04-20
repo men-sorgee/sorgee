@@ -18,7 +18,7 @@
     "test": "vitest --config ./vitest.config.ts",
     "coverage": "vitest run --coverage --config ./vitest.config.ts --outDir results",
     "test:view": "vite preview --outDir results",
-    "gen": "typeorm-model-generator -h localhost -d postgres -u postgres -x !Passw0rd -e postgres -o . -s public --ssl"
+    "gen": "bash types.sh"
   },
   "dependencies": {
     "@chakra-ui/icon": "^3.0.15",

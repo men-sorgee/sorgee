@@ -16,6 +16,7 @@ export const MemberAvatar = chakra(({ member: { nickname, picture }, ...props }:
       borderWidth="2px"
       borderColor={'accent.300'}
       color="white"
+      loading="lazy"
       {...props}
     ></Avatar>
   )

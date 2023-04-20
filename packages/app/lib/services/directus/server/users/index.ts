@@ -22,10 +22,10 @@ export async function createUser(member: Partial<User>): Promise<User> {
   return user as User
 }
 
-export async function updateUser(id: string, member: Partial<User>): Promise<User> {
+export async function updateUser<T = User>(id: string, userData: Partial<User>) {
   const adminClient = await getAdminClient()
-  const user = await adminClient.items('users').updateOne(id!, member)
-  return user as User
+  const user = await adminClient.items('users').updateOne(id, userData)
+  return user as T
 }
 
 export async function getUser<T = User>(
@@ -88,7 +88,7 @@ export async function searchUsers<T = User>(
 export async function getApplicant(id: string): Promise<Applicant | null> {
   const adminClient = await getAdminClient()
   const applicant = await adminClient.items('users').readOne(id, { fields: applicantFields as any })
-  return (applicant as Applicant) || null
+  return (applicant as unknown as Applicant) || null
 }
 
 export async function getMember(id: string): Promise<Member | null> {
@@ -289,4 +289,4 @@ export type MemberStats = {
 }
 
 export * from './invites'
-export * from './relations'
+export * from './buddies'

@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { getUser, updateUser } from 'lib/services/directus/server/users'
 import { withUser, withMethods } from 'lib/utils/server'
 import {
+  User,
   ApiResponse,
   MemberLevel,
   memberFields,
@@ -14,11 +15,10 @@ import {
   memberProfileHealthFields,
   memberEventFields,
   memberProfilePrivateFields,
-  searchableMemberFields,
   memberProfilePhotoFields,
 } from 'lib/models'
 
-export default async function getMemberDetails(
+export default async function MemberEndpoint(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<Member> | ApiResponse>
 ) {
@@ -33,10 +33,11 @@ export default async function getMemberDetails(
     else user_id = String(id)
 
     let me = viewer.id == user_id
-    let fields = searchableMemberFields
+    let fields = memberFields
     if (me) {
       fields = memberFields
     }
+
     let user = await getUser<Member>(user_id, fields)
     if (!user) {
       return res.status(404).json(ApiResponse(null, 'Not found'))
@@ -51,7 +52,7 @@ export default async function getMemberDetails(
           filter(user)
           user.my_photos = user.my_photos.filter((p) => p.is_public)
 
-          delete user.users
+          delete user.buddies
         }
 
         return res.status(200).json(ApiResponse(user))
@@ -60,7 +61,7 @@ export default async function getMemberDetails(
         if (!me && level < MemberLevel.staff)
           return res.status(401).json(ApiResponse(null, 'Unauthorized'))
 
-        const userDetails = req.body as Member
+        const userDetails = req.body as Partial<User>
         const updated = await updateUser(user_id, userDetails)
         return res.status(200).json(ApiResponse(updated))
       }
