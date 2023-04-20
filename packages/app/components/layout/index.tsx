@@ -7,7 +7,8 @@ import Footer from './Footer'
 import Actions from './actions'
 import Splash from './Splash'
 import { ErrorBoundary } from 'components/ErrorBoundary'
-import { useSession } from 'next-auth/react'
+import { useUser } from 'hooks'
+import { MemberLevel } from '../../lib/models'
 
 export const constrained = {
   maxW: ['full', 'xl', '3xl', '4xl', '5xl'],
@@ -22,26 +23,23 @@ function Layout({
   className?: string
   fonts: any[]
 }) {
-  const { data: session, status } = useSession()
-  const [authenticated, setAuthenticated] = useState<boolean>(undefined)
-  const loading = status == 'loading'
+  const { authenticated, user, level, loading } = useUser()
   const router = useRouter()
   const [path] = useState<string>(router?.asPath)
-  const height = authenticated ? '146px' : '75px'
+
+  const [showActions, setShowActions] = useState<boolean>(undefined)
   const { isOpen, onOpen } = useDisclosure()
 
   useEffect(() => {
-    if (!loading) {
-      if (authenticated == undefined) {
-        setAuthenticated(status == 'authenticated')
-      }
-      if (authenticated && !isOpen) {
+    if (!loading && authenticated) {
+      if (showActions == undefined) setShowActions(level > MemberLevel.pledge)
+      if (showActions && !isOpen) {
         setTimeout(() => {
           onOpen()
         }, 1000)
       }
     }
-  }, [status, authenticated, loading, onOpen, isOpen, session?.user])
+  }, [authenticated, loading, onOpen, isOpen, showActions, level])
   const headerRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     const handleRouteChange = () => {
@@ -58,26 +56,25 @@ function Layout({
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange)
     }
-  }, [router.events])
+  }, [router.events, loading, authenticated, level, showActions, isOpen])
 
   if (path?.startsWith('/code')) {
     return <>{children}</>
   }
-  const userType = session?.user?.user_type || 'subscriber'
 
   return (
     <>
       <Meta />
       <Flex direction="column" flex="1" overflowX="clip">
         <ErrorBoundary>
-          <Header userType={userType} />
+          <Header userType={user?.user_type} />
           <Flex
             as="main"
             flex="1 100%"
             direction="column"
-            maxH={`calc(100vh - ${height})`}
+            maxH={`calc(100vh - ${showActions ? '146px' : '75px'})`}
             overflowY="auto"
-            overflowX="hidden"
+            w="full"
           >
             <Box
               position="relative"
@@ -87,14 +84,14 @@ function Layout({
               className={` ${heading} ${body} ${mono}}`}
               overflowX="hidden"
             >
-              <Box minH={`calc(80vh - ${height})`} ref={headerRef}>
+              <Box minH={`calc(80vh - ${showActions ? '146px' : '75px'})`} ref={headerRef}>
                 {children}
               </Box>
               <Spacer h="1rem" />
               <Footer />
             </Box>
           </Flex>
-          {authenticated && (
+          {showActions && (
             <Slide in={isOpen} direction="bottom">
               <Actions />
             </Slide>
