@@ -5,11 +5,10 @@ import Header from './Header'
 import Meta from './Meta'
 import Footer from './Footer'
 import Actions from './actions'
-
 import Splash from './Splash'
 import { ErrorBoundary } from 'components/ErrorBoundary'
 import { useSession } from 'next-auth/react'
-import { MemberLevel } from 'lib/models'
+
 export const constrained = {
   maxW: ['full', 'xl', '3xl', '4xl', '5xl'],
   mx: [2, 'auto'],
@@ -78,6 +77,7 @@ function Layout({
             direction="column"
             maxH={`calc(100vh - ${height})`}
             overflowY="auto"
+            overflowX="hidden"
           >
             <Box
               position="relative"
@@ -85,6 +85,7 @@ function Layout({
               flex="1 100%"
               {...constrained}
               className={` ${heading} ${body} ${mono}}`}
+              overflowX="hidden"
             >
               <Box minH={`calc(80vh - ${height})`} ref={headerRef}>
                 {children}

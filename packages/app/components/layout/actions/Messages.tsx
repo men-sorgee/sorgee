@@ -2,6 +2,7 @@ import {
   Box,
   Drawer,
   DrawerOverlay,
+  DrawerCloseButton,
   DrawerContent,
   DrawerHeader,
   DrawerBody,
@@ -77,7 +78,7 @@ const MessagesActions = ({ member }: Props) => {
         />
         {hasNewMessages && (
           <Badge
-            bg="red"
+            bg="accent.500"
             color="white"
             ml={-4}
             zIndex="overlay"
@@ -93,9 +94,11 @@ const MessagesActions = ({ member }: Props) => {
       <audio ref={audioRef} src="/sounds/click.mp3" preload="auto" />
       <Drawer placement={'left'} onClose={onClose} isOpen={isOpen} size="lg">
         <DrawerOverlay />
+
         <DrawerContent>
           <DrawerHeader bg="primary.900" color="white" m={0} p={2}>
             Messages
+            <DrawerCloseButton />
           </DrawerHeader>
           <DrawerBody p={0} position="relative">
             <Messages currentUser={member} />

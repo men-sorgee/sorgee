@@ -50,7 +50,7 @@ const NotificationsAction = ({ member }: Props) => {
           />
           {hasNewNotifications && (
             <Badge
-              bg="red"
+              bg="accent.500"
               color="white"
               ml={-4}
               zIndex="overlay"
@@ -67,9 +67,9 @@ const NotificationsAction = ({ member }: Props) => {
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerCloseButton />
           <DrawerHeader bg="primary.900" color="white" m={0} p={2}>
             Notifications
+            <DrawerCloseButton />
           </DrawerHeader>
           <DrawerBody p={4}>
             <>

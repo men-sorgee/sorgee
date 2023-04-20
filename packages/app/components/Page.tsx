@@ -66,7 +66,8 @@ const Page = ({
       as="article"
       alignItems={'center'}
       justifyItems="stretch"
-      px={[4, 4, 0]}
+      px={0}
+      w="full"
       {...props}
     >
       <div className="no-print">

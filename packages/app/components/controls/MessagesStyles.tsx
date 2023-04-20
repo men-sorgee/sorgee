@@ -1131,7 +1131,7 @@ export default function MessagesStyles() {
         display: flex;
         flex-direction: row;
         align-items: center;
-        color: ${color};
+        color: ${colorInverse};
         background-color: transparent;
         margin: 0 0 0 0.5em;
         order: 4;

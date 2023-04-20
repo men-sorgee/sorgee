@@ -74,12 +74,12 @@ export const MemberIcon = chakra(
             </Avatar>
 
             <Flex w="full" direction="column" gap={1} textAlign="left">
-              <Heading size="md" textTransform="uppercase" m={0} color={color} w="full">
+              <Heading size={size} textTransform="uppercase" m={0} color={color} w="full">
                 {member?.nickname || 'Anon'}
               </Heading>
               <Flex gap={4} align="start" justify="space-between" w="full">
                 <Box>
-                  <MemberBadge size="lg" user_type={member?.user_type} my={2} />
+                  <MemberBadge size={size as any} user_type={member?.user_type} my={2} />
                   <Text fontSize="sm" color={color} mt={0}>
                     {member?.city || 'Nearby'} {member?.state}
                   </Text>
@@ -88,7 +88,7 @@ export const MemberIcon = chakra(
                 <Box>{children}</Box>
               </Flex>
             </Flex>
-            {member?.picture && (
+            {zoom && member?.picture && (
               <ImageModal
                 isOpen={isOpen}
                 onClose={() => {

@@ -43,7 +43,7 @@ export default function ActionsNav({ children, ...props }: Props) {
         bottom={0}
         pr="16px"
       >
-        <Flex justify="center" w="full" gap={10} p={4} {...constrained}>
+        <Flex justify="center" w="full" gap={[4, 6, 8, 10]} p={4} {...constrained}>
           <Messages member={member} />
           <Members member={member} active={path.startsWith('/members')} />
           <Buddies member={member} active={path.startsWith('/member/buddies')} />

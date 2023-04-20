@@ -203,9 +203,10 @@ export default function InviteAdmin({ event, invite, user }: Props) {
                 </Flex>
 
                 <Flex
-                  direction="row"
-                  w={['100%', '50%', '30%']}
+                  direction={['column', 'column', 'row']}
+                  w={[null, '50%', '30%']}
                   justifyItems="space-between"
+                  align="center"
                   mx="auto"
                 >
                   {!invite.attended && invite?.guest == false && (
@@ -254,7 +255,7 @@ export default function InviteAdmin({ event, invite, user }: Props) {
                   </Button>
                 )}
                 {invite?.attended && (
-                  <Alert size="xl" status="warning" rounded="lg" shadow="lg">
+                  <Alert size="xl" status="warning" rounded="lg" shadow="lg" mt={4}>
                     <AlertIcon />
                     <Text fontSize="lg" m={0}>
                       Already checked in
@@ -267,6 +268,14 @@ export default function InviteAdmin({ event, invite, user }: Props) {
               <Box display={visible(camera)} w="full">
                 <PhotoCapture onAccept={takePhoto} facingMode="environment" />
               </Box>
+            )}
+            {user?.needs_guidance && (
+              <Alert size="xl" status="warning" rounded="lg" shadow="lg">
+                <AlertIcon />
+                <Text fontSize="lg" m={0}>
+                  User needs guidance
+                </Text>
+              </Alert>
             )}
             <HStack spacing={4}>
               <ButtonLink colorScheme="gray" href={'/admin/event/' + event?.id} my={4}>

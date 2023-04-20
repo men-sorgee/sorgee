@@ -92,7 +92,7 @@ export const EventRSVP = ({ memberId, rsvp: r, eventId, onChange }: RSVPProps) =
     </ButtonConfirm>
   )
 
-  const ConfirmRSVPButton = ({ children = 'Can Attend' }) => (
+  const ConfirmRSVPButton = ({ children = 'Confirm' }) => (
     <ButtonConfirm
       title="Event RSVP"
       buttonText={children}
@@ -114,7 +114,7 @@ export const EventRSVP = ({ memberId, rsvp: r, eventId, onChange }: RSVPProps) =
     </ButtonConfirm>
   )
 
-  const MaybeRSVPButton = ({ children = 'May Attend' }) => (
+  const MaybeRSVPButton = ({ children = 'Maybe' }) => (
     <ButtonConfirm
       title="Event RSVP"
       buttonText={children}

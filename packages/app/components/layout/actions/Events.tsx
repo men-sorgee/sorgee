@@ -29,11 +29,11 @@ const EventsAction = ({ active }: Props) => {
             ml={-4}
             zIndex="overlay"
             position="absolute"
-            bg="accent.500"
             rounded="full"
             px={2}
             py={0.5}
-            color="white"
+            bg={active ? 'accent.500' : 'white'}
+            color={active ? 'white' : 'accent.500'}
           >
             {newInvitationCount}
           </Badge>
