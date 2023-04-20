@@ -18,7 +18,7 @@ const SocketHandler = (req, res) => {
     res.socket.server.io = io
 
     io.on('connection', (socket) => {
-      console.log('User connected:', socket.id)
+      console.log('user connected:', socket.id)
 
       let userId = null
       socket.on('join', (id: string) => {

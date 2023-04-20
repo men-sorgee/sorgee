@@ -1,23 +1,15 @@
-import {
-  Box,
-  Drawer,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerHeader,
-  DrawerBody,
-  useDisclosure,
-  IconButton,
-  Badge,
-  Text,
-} from '@chakra-ui/react'
+import { IconButton, Badge, Text, IconButtonProps, chakra } from '@chakra-ui/react'
 import { useMessages, useUser } from 'hooks'
 import { ChatBubbleBottomCenterIcon as ChatIconOff } from '@heroicons/react/24/outline'
 import { ChatBubbleBottomCenterIcon as ChatIconOn } from '@heroicons/react/24/solid'
-import { MemberLevel, SearchableMember, UserBuddy } from 'lib/models'
-
+import { MemberLevel, SearchableMember, UserBuddy, Member } from 'lib/models'
 import { useEffect, useState } from 'react'
 
-export function MemberChat({ member }: { member: Partial<SearchableMember> }) {
+type Props = Omit<IconButtonProps, 'aria-label'> & {
+  member: Partial<Member | SearchableMember>
+}
+
+export const MemberChat = chakra(({ member, size = 'lg', ...props }: Props) => {
   const { loading: userLoading, level, member: me } = useUser()
   const { conversations, chatWith, loading } = useMessages()
   const [hasConversation, setHasConversation] = useState<boolean>(undefined)
@@ -52,10 +44,11 @@ export function MemberChat({ member }: { member: Partial<SearchableMember> }) {
         onClick={() => {
           chatWith(member)
         }}
-        size="lg"
         aria-label={`Chat with ${member.nickname || 'this member'}`}
         title={`Chat with ${member.nickname || 'this member'}`}
         icon={hasConversation ? <ChatIconOn width="30px" /> : <ChatIconOff width="30px" />}
+        size={size}
+        {...props}
       />
       {hasNewMessages && (
         <Badge
@@ -73,4 +66,4 @@ export function MemberChat({ member }: { member: Partial<SearchableMember> }) {
       )}
     </>
   )
-}
+})

@@ -8,7 +8,6 @@ import {
   useDisclosure,
   IconButton,
   Badge,
-  Text,
 } from '@chakra-ui/react'
 import { useMessages } from 'hooks'
 import { ChatBubbleBottomCenterIcon as ChatIcon } from '@heroicons/react/24/outline'
@@ -17,6 +16,7 @@ import { Messages } from '../../controls/Messages'
 import { useEffect, useRef, useState } from 'react'
 
 type Props = { member: Member }
+
 const MessagesActions = ({ member }: Props) => {
   const {
     conversations,
@@ -42,15 +42,20 @@ const MessagesActions = ({ member }: Props) => {
       audioRef.current?.play()
       setPrevMessagesCount(newMessageCount)
     }
-    if (show == undefined) {
-      setShow(MemberLevel[member.user_type] >= MemberLevel.brother)
+    if (show == undefined && member) {
+      setShow(
+        MemberLevel[member.user_type] >= MemberLevel.brother ||
+          Object.keys(conversations).length > 0
+      )
     }
     if (show == false && hasNewMessages) setShow(true)
   }, [
     activeConversation,
+    conversations,
     hasNewMessages,
     isOpen,
-    member.user_type,
+    member,
+    member?.user_type,
     newMessageCount,
     onOpen,
     prevMessagesCount,

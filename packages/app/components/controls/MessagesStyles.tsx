@@ -146,7 +146,6 @@ export default function MessagesStyles() {
       .cs-message {
         box-sizing: border-box;
         font-size: 1em;
-        font-family: Helvetica Neue, Segoe UI, Helvetica, Arial, sans-serif;
         color: ${color};
         display: flex;
         flex-direction: row;
@@ -1164,7 +1163,6 @@ export default function MessagesStyles() {
         flex-direction: row;
         box-sizing: border-box;
         position: relative;
-        font-family: Helvetica Neue, Segoe UI, Helvetica, Arial, sans-serif;
         padding: 0.6em 0.8em 0.6em 0.8em;
         cursor: pointer;
         justify-content: flex-start;
@@ -1175,7 +1173,7 @@ export default function MessagesStyles() {
                 user-select: none;
         border-top: 0;
         border-right: 0;
-        border-bottom: 0;
+        border-bottom: 1px solid ${borderColor};
         border-left: 0;
       }
       .cs-conversation:hover {
@@ -1350,7 +1348,7 @@ export default function MessagesStyles() {
         border-radius: 0.3em;
         font-size: 0.75em;
         font-weight: 600;
-        color: ${bg};
+        color: white;
         background-color: ${secondary};
         max-width: 30em;
         overflow: hidden;

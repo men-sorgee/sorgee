@@ -202,7 +202,6 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
   }
 
   const handleAttachment = async (args) => {
-    console.dir(args)
     //let formData = new FormData()
     //formData.append('media', file)
     //const query = `?name=messaged-from-${currentUser.email}&title=to-${currentUserName}`
@@ -323,6 +322,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
               <ConversationHeader.Content
                 userName={convoUserName}
                 style={conversationContentStyle}
+                info={activeConversation?.user?.presence}
               />
               <ConversationHeader.Actions></ConversationHeader.Actions>
             </ConversationHeader>
