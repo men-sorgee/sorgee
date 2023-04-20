@@ -12,6 +12,15 @@ import {
   User,
 } from 'lib/models'
 
+function count<T>(ary: T[], classifier: (i: T) => any) {
+  classifier = classifier || String
+  return ary.reduce(function (counter, item) {
+    var p = classifier(item)
+    counter[p] = counter.hasOwnProperty(p) ? counter[p] + 1 : 1
+    return counter
+  }, {})
+}
+
 export async function listUpcomingEvents(user_type: UserType): Promise<GroupEvent[]> {
   const client = await getAdminClient()
   const { data } = await client.items('events').readByQuery({
@@ -89,8 +98,10 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
       'users.users_id.first_name',
       'survey.*',
     ] as any,
-    users: {
-      limit: 1000,
+    deep: {
+      users: {
+        _limit: -1,
+      },
     },
     limit: -1,
   })
@@ -110,6 +121,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
   } = event
 
   const attendance = (eventUsers as EventUser[]) || []
+
   const detail: EventDetail = {
     id,
     name,

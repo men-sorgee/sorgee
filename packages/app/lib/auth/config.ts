@@ -39,7 +39,7 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async signIn(data) {
       const { user, email, profile, account } = data
-      //return true
+
       console.debug('callback:signIn')
 
       if (email?.verificationRequest) {
@@ -66,11 +66,11 @@ export const authOptions: AuthOptions = {
       return false
     },
     async session({ session, user }) {
-      //console.debug('callback:session')
+      console.debug('callback:session')
       const fullUser = await findUser(user.email)
       session.user = fullUser
 
-      // await extendUserPresence(fullUser.id)
+      await extendUserPresence(fullUser.id)
       return session
     },
   },

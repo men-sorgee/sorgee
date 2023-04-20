@@ -11,8 +11,8 @@ import { ErrorBoundary } from 'components/ErrorBoundary'
 import { useSession } from 'next-auth/react'
 import { MemberLevel } from 'lib/models'
 export const constrained = {
-  maxW: ['full', 'lg', '2xl', '3xl', '4xl', '5xl'],
-  mx: 'auto',
+  maxW: ['full', 'xl', '3xl', '4xl', '5xl'],
+  mx: [2, 'auto'],
 }
 
 function Layout({
@@ -65,7 +65,6 @@ function Layout({
     return <>{children}</>
   }
   const userType = session?.user?.user_type || 'subscriber'
-  const level = MemberLevel[userType]
 
   return (
     <>

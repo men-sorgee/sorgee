@@ -1,7 +1,7 @@
 import { defineStyleConfig, extendTheme, StyleFunctionProps } from '@chakra-ui/react'
 import { default as defaultTheme } from '@chakra-ui/theme'
 import { mode } from '@chakra-ui/theme-tools'
-import { StepsTheme as Steps } from 'chakra-ui-steps'
+import { StepsTheme } from 'chakra-ui-steps'
 import { brand } from 'lib/config/brand'
 
 export default function getTheme(body: any, heading: any, mono: any) {
@@ -31,12 +31,12 @@ export default function getTheme(body: any, heading: any, mono: any) {
         },
       },
       Steps: {
-        ...Steps,
+        ...StepsTheme,
         baseStyle: (props) => {
           return {
-            ...Steps.baseStyle(props),
+            ...StepsTheme.baseStyle(props),
             iconLabel: {
-              ...Steps.baseStyle(props).iconLabel,
+              ...StepsTheme.baseStyle(props).iconLabel,
               color: 'white',
             },
           }
