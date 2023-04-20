@@ -241,7 +241,7 @@ export enum MemberLevel {
 export const MemberLevelColorMap = [
   ['red.500', 'red.100'],
   ['orange.500', 'orange.100'],
-  ['yellow.500', 'yellow.100'],
+  ['primary.100', 'primary.200'],
   ['primary.200', 'primary.300'],
   ['primary.300', 'primary.400'],
   ['primary.400', 'primary.500'],

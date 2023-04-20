@@ -196,7 +196,7 @@ export default function SurveyPage({ survey, question, step }: Props) {
                   Thank you
                   <br /> for completing the survey!
                 </Heading>
-                <Markdown content={survey.closing} />
+                <Markdown content={survey.closing?.replaceAll('$NAME$', member.nickname)} />
                 {event && (
                   <ButtonLink href={`/events/${event.id}`} mt={4}>
                     Rate Event Attendees

@@ -30,6 +30,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { useUser, useSite } from 'hooks'
 import { MemberLevel, ApplicationStatus } from 'lib/models'
+import { pledgeSurvey } from '../../lib/config'
 interface Props {}
 
 export default function UserMenu(_props: Props) {
@@ -104,9 +105,21 @@ export default function UserMenu(_props: Props) {
                 >
                   Edit Photos
                 </MenuItem>
-                <MenuDivider />
+                {level === MemberLevel.pledge && (
+                  <MenuItem
+                    icon={<ArrowRightOnRectangleIcon color={'white'} width={'1.5rem'} />}
+                    bg="black"
+                    _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                    as={Link}
+                    href={`/survey/${pledgeSurvey}`}
+                  >
+                    Pledge Survey
+                  </MenuItem>
+                )}
+
                 {level > MemberLevel.pledge && (
                   <>
+                    <MenuDivider />
                     <MenuItem
                       icon={<CalendarIcon color={'white'} width={'1.5rem'} />}
                       bg="black"
