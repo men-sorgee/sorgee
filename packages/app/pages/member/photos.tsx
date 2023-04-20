@@ -8,13 +8,6 @@ import {
   MemberAvatar,
 } from 'components/controls'
 import {
-  AlertDialog,
-  AlertDialogHeader,
-  AlertDialogContent,
-  AlertDialogBody,
-  AlertDialogCloseButton,
-  AlertDialogFooter,
-  AlertDialogOverlay,
   Alert,
   AlertIcon,
   HStack,
@@ -39,7 +32,6 @@ import {
   Link,
   chakra,
   StackProps,
-  Button,
 } from '@chakra-ui/react'
 import Page from 'components/Page'
 import { ArrowUpTrayIcon, CameraIcon } from '@heroicons/react/24/outline'
@@ -320,9 +312,6 @@ const AddPhoto = chakra(
               )}
             </ModalBody>
           </ModalContent>
-          <ModalFooter p={4}>
-            <Text></Text>
-          </ModalFooter>
         </Modal>
       </>
     )

@@ -74,15 +74,15 @@ function Layout({
             direction="column"
             maxH={`calc(100vh - ${showActions ? '146px' : '75px'})`}
             overflowY="auto"
+            overflowX="hidden"
             w="full"
           >
             <Box
               position="relative"
               w="full"
               flex="1 100%"
-              {...constrained}
               className={` ${heading} ${body} ${mono}}`}
-              overflowX="hidden"
+              {...constrained}
             >
               <Box minH={`calc(80vh - ${showActions ? '146px' : '75px'})`} ref={headerRef}>
                 {children}

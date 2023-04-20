@@ -1,9 +1,9 @@
 import ApplicationSteps from './_steps'
-import { useUser } from '@/hooks/use-user'
+import { useUser } from 'hooks/use-user'
 import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { AgreementData, ApplicationStatus, Member, MemberLevel } from 'lib/models'
-import { Box, Button, Text } from '@chakra-ui/react'
+import { Box, Button, Text, Heading } from '@chakra-ui/react'
 import FieldCheckbox from 'components/forms/FieldCheckbox'
 import { postJSON } from 'lib/utils'
 import Page from 'components/Page'
@@ -68,13 +68,17 @@ function Form({ reload, markdown }: { markdown: string; reload: () => Promise<Me
         <form onSubmit={handleSubmit(onSubmit)} style={{ maxWidth: 'xl', margin: '0 auto' }}>
           <Box
             css={{
-              h2: { display: 'none' },
               img: { display: 'none' },
             }}
             mt={4}
           >
-            <h3>Site Rules</h3>
-            <Markdown content={markdown} size="xl" />
+            <Heading as="h2" size="xl">
+              Site Rules
+            </Heading>
+            <Markdown content={markdown} size="lg" />
+            <Heading as="h2" size="xl">
+              Legal Agreement
+            </Heading>
             <Text fontSize="xl">
               Please read and agree to our rules,{' '}
               <a

@@ -1,8 +1,17 @@
-import { useUser } from '@/hooks/use-user'
+import { useUser } from 'hooks/use-user'
 import { NextRouter, useRouter } from 'next/router'
-import { useState, ChangeEvent, Dispatch, SetStateAction } from 'react'
+import {
+  useState,
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useCallback,
+  useRef,
+} from 'react'
 import ApplicationSteps from './_steps'
 import {
+  Icon,
   Button,
   Center,
   Stack,
@@ -14,30 +23,40 @@ import {
   Heading,
   Image,
   AlertIcon,
+  Box,
+  IconButton,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  VStack,
+  chakra,
 } from '@chakra-ui/react'
 import Page from 'components/Page'
-import FieldCheckbox from 'components/forms/FieldCheckbox'
+import { FieldCheckbox } from 'components/forms'
 import { FormProvider, useForm } from 'react-hook-form'
 import { ErrorMessage } from '@hookform/error-message'
 import { ApiResponse, Member, MemberLevel, ApplicationStatus } from 'lib/models'
 import { getAssetUrl } from 'lib/utils'
+import { PhotoCapture } from 'components/controls'
+import { ArrowUpTrayIcon, CameraIcon } from '@heroicons/react/24/outline'
 
 function Verification() {
   const { member, loading, reload } = useUser(MemberLevel.applicant, ApplicationStatus.verify)
-  const [completed, setCompleted] = useState(false)
+  const [complete, setComplete] = useState(false)
   const router = useRouter()
 
   return (
     <Page
       title="Identification"
-      loading={loading || completed}
+      loading={loading || complete}
       requireAuth={true}
       header={<ApplicationSteps status={'verify'} />}
     >
-      {member?.id && !completed && (
+      {member?.id && !complete && (
         <Form
           code={`${member.id.slice(0, 4)} ${member.id.slice(4, 8)}`}
-          {...{ member, router, reload, setCompleted }}
+          {...{ member, router, reload, setComplete }}
         />
       )}
     </Page>
@@ -47,7 +66,7 @@ function Verification() {
 function Form({
   code,
   router,
-  setCompleted,
+  setComplete,
   member,
   reload,
 }: {
@@ -55,12 +74,13 @@ function Form({
   reload: () => Promise<Member>
   router: NextRouter
   code: string
-  setCompleted: Dispatch<SetStateAction<boolean>>
+  setComplete: Dispatch<SetStateAction<boolean>>
 }): JSX.Element {
   const [previewUrl, setPreviewUrl] = useState<string | null>(
     member?.photo ? getAssetUrl(member.photo) : null
   )
   const [file, setFile] = useState<File | null>(null)
+  const [camera, setCamera] = useState<boolean>()
 
   const methods = useForm<{ file: File; verify: boolean }>({
     defaultValues: { verify: false },
@@ -108,6 +128,24 @@ function Form({
     })
   }
 
+  const acceptPhoto = useCallback(
+    (data: string) => {
+      fetch(data)
+        .then((res) => res.blob())
+        .then((blob) => {
+          let file = new File([blob], 'verification-photo.jpg', { type: 'image/jpeg' })
+          setFile(file)
+          setPreviewUrl(data)
+          setCamera(false)
+        })
+    },
+    [setFile]
+  )
+
+  const takePhoto = useCallback(() => {
+    setCamera(true)
+  }, [])
+
   async function onSubmit({ verify }: { verify: boolean }) {
     if (!file || !verify) return
 
@@ -121,7 +159,7 @@ function Form({
       })
 
       if (res.ok) {
-        setCompleted(true)
+        setComplete(true)
         reload().then(() => {
           router.push('/apply/review')
         })
@@ -141,7 +179,7 @@ function Form({
   const hasPhoto = previewUrl != null || file != null
 
   const canUpload = isVerified && hasPhoto
-
+  const fileInput = useRef<HTMLInputElement>(null)
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -155,6 +193,13 @@ function Form({
           <Heading size="3xl" mb={3}>
             {code}
           </Heading>
+
+          {camera && (
+            <Box w={['full', '75%']}>
+              <PhotoCapture onAccept={acceptPhoto} />
+            </Box>
+          )}
+
           {previewUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <Image
@@ -165,27 +210,54 @@ function Form({
               borderColor="gray.200"
               alt="file uploader preview"
               src={previewUrl}
-              width={300}
-              height={350}
+              w={['full', '75%']}
               style={{ margin: '0 auto' }}
             />
           ) : (
-            <Center
-              as="label"
-              py={3}
-              px={100}
-              border={'1px dashed'}
-              borderColor="primary"
-              minH={350}
-            >
-              <Input hidden onChange={onFileUploadChange} type="file" />
-              <Text fontSize="xl" textAlign="center">
-                Click to Upload Image
-              </Text>
-            </Center>
+            !camera && (
+              <Center
+                as="label"
+                py={3}
+                px={100}
+                border={'1px dashed'}
+                borderColor="primary"
+                w={['full', '75%']}
+                minH={350}
+              >
+                <Input hidden onChange={onFileUploadChange} type="file" ref={fileInput} />
+                <IconButton
+                  aria-label="Take Photo"
+                  icon={<CameraIcon />}
+                  size="lg"
+                  variant="ghost"
+                  onClick={takePhoto}
+                  color="white"
+                  rounded="full"
+                  bg="primary.500"
+                  opacity=".15"
+                  _hover={{ opacity: 1, bg: 'primary.500' }}
+                  p={2}
+                />
+                <IconButton
+                  onClick={() => {
+                    fileInput.current?.click()
+                  }}
+                  icon={<ArrowUpTrayIcon />}
+                  aria-label="Upload Photo"
+                  bg="primary.500"
+                  opacity=".15"
+                  size="lg"
+                  variant="ghost"
+                  color="white"
+                  rounded="full"
+                  _hover={{ opacity: 1, bg: 'primary.500' }}
+                  p={2}
+                ></IconButton>
+              </Center>
+            )
           )}
           {member?.photo_denial_reason && (
-            <Alert status="error" bg="red.200" size="lg" maxW="lg" mx="auto">
+            <Alert status="error" bg="red.200" size="lg" w={['full', '75%']} mx="auto">
               <AlertIcon />
               <Text>
                 Your verification photo was denied.
@@ -194,7 +266,7 @@ function Form({
               </Text>
             </Alert>
           )}
-          <Alert rounded="lg" shadow="lg" status="warning">
+          <Alert rounded="lg" shadow="lg" status="warning" w={['full', '75%']}>
             <AlertIcon />
             <Text fontSize="xl" textAlign="left">
               <strong>
