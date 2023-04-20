@@ -253,7 +253,13 @@ export default function MemberListPage(props: PageProps) {
           <Pager page={page} pageCount={pageCount} setPage={setPage} />
           <SimpleGrid my={4} columns={[1, 1, 1, 2]} spacing={4} w="full" justifyItems="stretch">
             {members?.map((member: SearchableMember) => (
-              <MemberCard key={member.id} member={member} onClick={() => setId(member.id)} />
+              <MemberCard
+                full
+                size="xl"
+                key={member.id}
+                member={member}
+                onClick={() => setId(member.id)}
+              />
             ))}
           </SimpleGrid>
           {meta.filtered == 0 && (

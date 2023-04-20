@@ -15,6 +15,7 @@ import {
   StatNumber,
   AvatarProps,
   Spacer,
+  Tooltip,
 } from '@chakra-ui/react'
 import { MemberConnect, MemberChat, MemberHeader, MemberPropertyGroup } from '.'
 import { useMember, useMeta } from 'hooks'

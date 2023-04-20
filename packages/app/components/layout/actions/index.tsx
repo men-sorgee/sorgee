@@ -6,10 +6,10 @@ import { useEffect, useState } from 'react'
 import { constrained } from '..'
 import { useUser } from 'hooks'
 import Notifications from './Notifications'
+import Buddies from './Buddies'
 import Messages from './Messages'
 import Events from './Events'
 import Members from './Members'
-import { MemberLevel } from 'lib/models'
 
 export type Props = BoxProps & {}
 
@@ -24,7 +24,6 @@ export default function ActionsNav({ children, ...props }: Props) {
 
   const bgColor = useColorModeValue('primary.800', 'black')
   const borderColor = useColorModeValue('primary.500', 'accent.400')
-  const user_count = 0
   if (!authenticated || !isMember) return null
 
   return (
@@ -46,8 +45,9 @@ export default function ActionsNav({ children, ...props }: Props) {
       >
         <Flex justify="center" w="full" gap={10} p={4} {...constrained}>
           <Messages member={member} />
-          <Events member={member} active={path.startsWith('/events')} />
           <Members member={member} active={path.startsWith('/members')} />
+          <Buddies member={member} active={path.startsWith('/member/buddies')} />
+          <Events member={member} active={path.startsWith('/events')} />
           <Notifications member={member} />
         </Flex>
       </Box>

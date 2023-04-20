@@ -45,7 +45,7 @@ export const MemberIcon = chakra(
     return (
       <>
         {member && (
-          <Flex gap={3} w="full" alignItems="start">
+          <Flex gap={3} w="full" align="start">
             <Avatar
               id={member?.id}
               src={
@@ -73,7 +73,7 @@ export const MemberIcon = chakra(
               )}
             </Avatar>
 
-            <Flex w="full" direction="column" gap={1} align="flex-start">
+            <Flex w="full" direction="column" gap={1} textAlign="left">
               <Heading size="md" textTransform="uppercase" m={0} color={color} w="full">
                 {member?.nickname || 'Anon'}
               </Heading>

@@ -33,8 +33,12 @@ export default async function MemberEndpoint(
     else user_id = String(id)
 
     let me = viewer.id == user_id
+    let fields = memberFields
+    if (me) {
+      fields = [...memberFields, 'buddies.buddy_id.*' as any]
+    }
 
-    let user = await getUser<Member>(user_id)
+    let user = await getUser<Member>(user_id, fields)
     if (!user) {
       return res.status(404).json(ApiResponse(null, 'Not found'))
     }

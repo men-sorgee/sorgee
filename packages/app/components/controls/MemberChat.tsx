@@ -1,8 +1,8 @@
 import { IconButton, Badge, Text, IconButtonProps, chakra } from '@chakra-ui/react'
-import { useMessages, useUser } from 'hooks'
+import { useMember, useMessages, useUser } from 'hooks'
 import { ChatBubbleBottomCenterIcon as ChatIconOff } from '@heroicons/react/24/outline'
 import { ChatBubbleBottomCenterIcon as ChatIconOn } from '@heroicons/react/24/solid'
-import { MemberLevel, SearchableMember, UserBuddy, Member } from 'lib/models'
+import { MemberLevel, SearchableMember, User, UserBuddy, Member } from 'lib/models'
 import { useEffect, useState } from 'react'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
@@ -11,6 +11,7 @@ type Props = Omit<IconButtonProps, 'aria-label'> & {
 
 export const MemberChat = chakra(({ member, size = 'lg', ...props }: Props) => {
   const { loading: userLoading, level, member: me } = useUser()
+  const { member: them, loading: memberLoading } = useMember(member.id)
   const { conversations, chatWith, loading } = useMessages()
   const [hasConversation, setHasConversation] = useState<boolean>(undefined)
   const [newMessageCount, setNewMessageCount] = useState<number>(undefined)
@@ -30,9 +31,14 @@ export const MemberChat = chakra(({ member, size = 'lg', ...props }: Props) => {
   if (loading || userLoading || level < MemberLevel.brother) return <></>
   if (me?.id === member.id) return <></>
   if (member.allow_messages == 'none') return <></>
-  if (member.allow_messages == 'buddies') {
-    const memberBuddies = member.buddies as UserBuddy[]
-    if (!memberBuddies?.some((b) => b.buddy_id == me?.id)) return <></>
+  if (member.allow_messages == 'buddies' && them?.buddies) {
+    const memberBuddies = them.buddies as UserBuddy[]
+    if (
+      !memberBuddies?.some((b: UserBuddy) => {
+        return b.buddy_id == me.id
+      })
+    )
+      return <></>
   }
 
   return (

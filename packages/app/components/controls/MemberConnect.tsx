@@ -4,7 +4,7 @@ import { UserIcon as BuddyIcon, UserMinusIcon as BuddyIconMinus } from '@heroico
 import { useEffect, useState } from 'react'
 import { useUser } from 'hooks'
 import { deleteJSON, postJSON } from 'lib/utils'
-import { Member, MemberLevel, SearchableMember, UserBuddy } from 'lib/models'
+import { Member, MemberLevel, SearchableMember, User, UserBuddy } from 'lib/models'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
   member: Partial<Member | SearchableMember>
@@ -35,7 +35,10 @@ export const MemberConnect = chakra(({ member, size = 'lg', ...props }: Props) =
   useEffect(() => {
     if (!userLoading && me && isBuddy == undefined && me.buddies) {
       const buddies = me.buddies as UserBuddy[]
-      const b = buddies.some((ur: UserBuddy) => ur.buddy_id === member.id)
+      const b = buddies.some((ur: UserBuddy) => {
+        const buddy = ur.buddy_id as User
+        return buddy.id === member.id
+      })
       setIsBuddy(b)
     }
   }, [isBuddy, me, member.id, userLoading])

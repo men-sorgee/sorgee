@@ -67,6 +67,7 @@ const MessagesActions = ({ member }: Props) => {
       <Box hidden={!show}>
         <IconButton
           aria-label="Messages"
+          title="Messages"
           variant="primary"
           zIndex="fixed"
           color={isOpen ? 'accent.500' : 'white'}
