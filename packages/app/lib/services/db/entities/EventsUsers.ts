@@ -1,10 +1,10 @@
 import * as typeorm from 'typeorm'
 import { Events } from './Events'
-import { User } from './Users'
+import { User } from './User'
 
 @typeorm.Index('events_users_pkey', ['id'], { unique: true })
 @typeorm.Entity('events_users', { schema: 'public' })
-export class EventsUsers {
+export class EventsUser {
   @typeorm.PrimaryGeneratedColumn({ type: 'integer', name: 'id' })
   id: number
 
@@ -40,7 +40,7 @@ export class EventsUsers {
   @typeorm.JoinColumn([{ name: 'events_id', referencedColumnName: 'id' }])
   events: typeorm.Relation<Events>
 
-  @typeorm.ManyToOne(() => User, (users) => users.eventsUsers, { onDelete: 'CASCADE' })
+  @typeorm.ManyToOne(() => User, (users) => users.events, { onDelete: 'CASCADE' })
   @typeorm.JoinColumn([{ name: 'users_id', referencedColumnName: 'id' }])
-  users: typeorm.Relation<User>
+  user: typeorm.Relation<User>
 }

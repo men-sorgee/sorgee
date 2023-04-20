@@ -1,5 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany } from 'typeorm'
-import { DirectusFiles } from './DirectusFiles'
+import { DirectusFile } from './DirectusFiles'
 
 @Index('directus_folders_pkey', ['id'], { unique: true })
 @Entity('directus_folders', { schema: 'public' })
@@ -10,8 +10,8 @@ export class DirectusFolders {
   @Column('character varying', { name: 'name', length: 255 })
   name: string
 
-  @OneToMany(() => DirectusFiles, (directusFiles) => directusFiles.folder)
-  directusFiles: DirectusFiles[]
+  @OneToMany(() => DirectusFile, (directusFiles) => directusFiles.folder)
+  directusFiles: DirectusFile[]
 
   @ManyToOne(() => DirectusFolders, (directusFolders) => directusFolders.directusFolders)
   @JoinColumn([{ name: 'parent', referencedColumnName: 'id' }])

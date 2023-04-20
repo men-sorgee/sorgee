@@ -14,13 +14,13 @@ import { Messages } from './Messages'
 import { Page } from './Page'
 import { PageContent } from './PageContent'
 import { SurveyAnswers } from './SurveyAnswers'
-import { User } from './Users'
+import { User } from './User'
 import { UsersFiles } from './UsersFiles'
 import { UsersPhotos } from './UsersPhotos'
 
 @Index('directus_files_pkey', ['id'], { unique: true })
 @Entity('directus_files', { schema: 'public' })
-export class DirectusFiles {
+export class DirectusFile {
   @PrimaryGeneratedColumn('uuid', { name: 'id' })
   id: string
 
@@ -90,37 +90,4 @@ export class DirectusFiles {
   })
   @JoinColumn([{ name: 'folder', referencedColumnName: 'id' }])
   folder: DirectusFolders
-
-  @OneToMany(() => Location, (location) => location.logo)
-  locations: Location[]
-
-  @OneToMany(() => Messages, (messages) => messages.image)
-  messages: Messages[]
-
-  @OneToMany(() => Page, (page) => page.image)
-  pages: Page[]
-
-  @OneToMany(() => PageContent, (pageContent) => pageContent.image)
-  pageContents: PageContent[]
-
-  @OneToMany(() => SurveyAnswers, (surveyAnswers) => surveyAnswers.answerFile)
-  surveyAnswers: SurveyAnswers[]
-
-  @OneToMany(() => SurveyAnswers, (surveyAnswers) => surveyAnswers.answerImage)
-  surveyAnswers2: SurveyAnswers[]
-
-  @OneToMany(() => User, (users) => users.photo)
-  users: User[]
-
-  @OneToMany(() => User, (users) => users.picture)
-  users2: User[]
-
-  @OneToMany(() => User, (users) => users.waiver)
-  users3: User[]
-
-  @OneToMany(() => UsersFiles, (usersFiles) => usersFiles.directusFiles)
-  usersFiles: UsersFiles[]
-
-  @OneToMany(() => UsersPhotos, (usersPhotos) => usersPhotos.directusFiles)
-  usersPhotos: UsersPhotos[]
 }

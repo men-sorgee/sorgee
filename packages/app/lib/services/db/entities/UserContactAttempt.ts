@@ -1,5 +1,5 @@
 import * as typeorm from 'typeorm'
-import { User } from './Users'
+import { User } from './User'
 import { DirectusUsers } from './DirectusUsers'
 
 @typeorm.Index('user_contact_attempt_pkey', ['id'], { unique: true })

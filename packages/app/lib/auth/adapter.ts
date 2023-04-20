@@ -5,10 +5,13 @@ import {
   AdapterAccount,
   VerificationToken,
 } from 'next-auth/adapters'
-import { UserSession, UserVerificationToken } from 'lib/services/db/entities'
-import { DirectusFile, User } from 'lib/models'
-import { createUser, findUser, getUser, updateUser } from 'lib/services/directus/server/users'
+import { User, UserSession, UserVerificationToken } from 'lib/services/db/entities'
+
 import {
+  createUser,
+  findUser,
+  getUser,
+  updateUser,
   createSession,
   deleteSession,
   findSession,
@@ -20,15 +23,16 @@ import {
   findUserByAccount,
 } from '@/lib/services/db/server/auth'
 import { importFile, UploadFolder } from '../services/directus/server/files'
+import { DirectusFile } from 'lib/models'
 import { getAssetUrl } from 'lib/utils'
 
 function mapUser(user: User): AdapterUser {
   return {
     id: user?.id,
     email: user.email,
-    emailVerified: new Date(user.date_created),
-    name: user.first_name,
-    image: user.picture ? getAssetUrl(user.picture as string) : null,
+    emailVerified: new Date(user.dateCreated),
+    name: user.firstName,
+    image: user.picture ? getAssetUrl(user.picture.id) : null,
   }
 }
 
@@ -50,7 +54,7 @@ function mapToken(token: UserVerificationToken): VerificationToken {
 }
 
 function log(...args) {
-  // console.debug(...args)
+  //console.debug(...args)
 }
 
 const authAdapter: Adapter = {
@@ -64,10 +68,10 @@ const authAdapter: Adapter = {
       }
       const newUser = await createUser({
         email: user.email?.toLowerCase(),
-        email_verified: user.emailVerified != null,
+        emailVerified: user.emailVerified != null,
         nickname: user.name,
-        first_name: user.name,
-        picture: image,
+        firstName: user.name,
+        picture: image as any,
       })
       return mapUser(newUser)
     } catch (e) {
@@ -87,7 +91,7 @@ const authAdapter: Adapter = {
     try {
       log('getUserByEmail', email)
       if (!email) return null
-      const user = await findUser<User>(email.toLowerCase(), '*.*')
+      const user = await findUser(email.toLowerCase())
       if (!user) return null
       return mapUser(user)
     } catch (e) {
@@ -99,13 +103,7 @@ const authAdapter: Adapter = {
       log('getUserByAccount', providerAccountId, provider)
       const user = await findUserByAccount(provider, providerAccountId)
       if (!user) return null
-      return mapUser({
-        id: user.id,
-        email: user.email,
-        email_verified: user.dateCreated != null,
-        first_name: user.firstName,
-        ...(user as any),
-      })
+      return mapUser(user)
     } catch (e) {
       console.error(e.response?.body?.errors[0].message || e)
     }
@@ -114,7 +112,7 @@ const authAdapter: Adapter = {
     try {
       log('updateUser', user)
       const updatedUser = await updateUser(user.id, {
-        email_verified: user.emailVerified != null,
+        emailVerified: user.emailVerified != null,
         status: 'active',
       })
       return mapUser(updatedUser)

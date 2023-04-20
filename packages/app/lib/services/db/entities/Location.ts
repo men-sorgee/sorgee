@@ -1,7 +1,7 @@
 import * as typeorm from 'typeorm'
 import { Events } from './Events'
-import { DirectusFiles } from './DirectusFiles'
-import { User } from './Users'
+import { DirectusFile } from './DirectusFiles'
+import { User } from './User'
 import { Surveys } from './Surveys'
 
 @typeorm.Index('location_pkey', ['id'], { unique: true })
@@ -47,11 +47,11 @@ export class Location {
   @typeorm.OneToMany(() => Events, (events) => events.location)
   events: Events[]
 
-  @typeorm.ManyToOne(() => DirectusFiles, (directusFiles) => directusFiles.locations, {
+  @typeorm.ManyToOne(() => DirectusFile, (directusFiles) => directusFiles.locations, {
     onDelete: 'SET NULL',
   })
   @typeorm.JoinColumn([{ name: 'logo', referencedColumnName: 'id' }])
-  logo: typeorm.Relation<DirectusFiles>
+  logo: typeorm.Relation<DirectusFile>
 
   @typeorm.ManyToOne(() => User, (users) => users.locations, { onDelete: 'SET NULL' })
   @typeorm.JoinColumn([{ name: 'owner', referencedColumnName: 'id' }])

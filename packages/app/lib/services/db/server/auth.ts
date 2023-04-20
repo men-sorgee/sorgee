@@ -5,6 +5,35 @@ import { LessThan, MoreThan } from 'typeorm'
 import { getUTCNow } from 'lib/utils'
 import { randomUUID } from 'crypto'
 
+export async function createUser(userData: Partial<User>) {
+  const repo = await getRepository(User)
+  return await repo.save(userData)
+}
+
+export async function findUser(email: string) {
+  const repo = await getRepository(User)
+  return await repo.findOne({
+    where: {
+      email,
+    },
+  })
+}
+
+export async function getUser(id: string) {
+  const repo = await getRepository(User)
+  return await repo.findOne({
+    where: {
+      id,
+    },
+  })
+}
+
+export async function updateUser(id: string, userData: Partial<User>) {
+  const repo = await getRepository(User)
+  await repo.update({ id }, userData)
+  return await getUser(id)
+}
+
 export async function recordUserLogin(id: string) {
   const repo = await getRepository(User)
   const now = getUTCNow()
@@ -50,12 +79,15 @@ export async function expireSessions() {
   })
 }
 
-export async function findUserByAccount(provider: string, id: string): Promise<User | null> {
+export async function findUserByAccount(
+  provider: string,
+  providerId: string
+): Promise<User | null> {
   const repo = await getRepository(UserAccount)
   const account = await repo.findOne({
     where: {
-      provider: provider,
-      providerId: id,
+      provider,
+      providerId,
     },
     relations: ['user'],
   })
@@ -82,11 +114,11 @@ export async function createSession(session: UserSession) {
   })
 }
 
-export async function findSession(token: string): Promise<UserSession> {
+export async function findSession(sessionToken: string): Promise<UserSession> {
   const repo = await getRepository(UserSession)
   const session = await repo.findOne({
     where: {
-      sessionToken: token,
+      sessionToken,
     },
     relations: ['user'],
   })
@@ -109,9 +141,9 @@ export async function updateSession(sessionToken: string, expires: Date) {
   })
 }
 
-export async function deleteSession(token: string) {
+export async function deleteSession(sessionToken: string) {
   const repo = await getRepository(UserSession)
-  const session = await findSession(token)
+  const session = await findSession(sessionToken)
   if (!session) return
 
   const { id: userId } = session.user as User

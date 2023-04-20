@@ -1,8 +1,8 @@
 import * as typeorm from 'typeorm'
-import { DirectusFiles } from './DirectusFiles'
+import { DirectusFile } from './DirectusFiles'
 import { SurveyQuestions } from './SurveyQuestions'
 import { Surveys } from './Surveys'
-import { User } from './Users'
+import { User } from './User'
 
 @typeorm.Index('survey_answers_pkey', ['id'], { unique: true })
 @typeorm.Entity('survey_answers', { schema: 'public' })
@@ -36,17 +36,17 @@ export class SurveyAnswers {
   @typeorm.Column('timestamp with time zone', { name: 'answer_date', nullable: true })
   answerDate: Date | null
 
-  @typeorm.ManyToOne(() => DirectusFiles, (directusFiles) => directusFiles.surveyAnswers, {
+  @typeorm.ManyToOne(() => DirectusFile, (directusFiles) => directusFiles.surveyAnswers, {
     onDelete: 'SET NULL',
   })
   @typeorm.JoinColumn([{ name: 'answer_file', referencedColumnName: 'id' }])
-  answerFile: typeorm.Relation<DirectusFiles>
+  answerFile: typeorm.Relation<DirectusFile>
 
-  @typeorm.ManyToOne(() => DirectusFiles, (directusFiles) => directusFiles.surveyAnswers2, {
+  @typeorm.ManyToOne(() => DirectusFile, (directusFiles) => directusFiles.surveyAnswers2, {
     onDelete: 'SET NULL',
   })
   @typeorm.JoinColumn([{ name: 'answer_image', referencedColumnName: 'id' }])
-  answerImage: typeorm.Relation<DirectusFiles>
+  answerImage: typeorm.Relation<DirectusFile>
 
   @typeorm.ManyToOne(() => SurveyQuestions, (surveyQuestions) => surveyQuestions.surveyAnswers)
   @typeorm.JoinColumn([{ name: 'question', referencedColumnName: 'id' }])
