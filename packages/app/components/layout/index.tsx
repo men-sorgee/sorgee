@@ -94,7 +94,7 @@ function Layout({
               <Footer />
             </Box>
           </Flex>
-          {authenticated && level >= MemberLevel.pledge && (
+          {authenticated && (
             <Slide in={isOpen} direction="bottom">
               <Actions />
             </Slide>

@@ -1,55 +1,50 @@
-import { Stack, IconButton, Badge } from '@chakra-ui/react'
-import { UserIcon, UserMinusIcon, UserPlusIcon } from '@heroicons/react/24/outline'
+import { IconButton, Badge } from '@chakra-ui/react'
+import { UserIcon, UserPlusIcon } from '@heroicons/react/24/outline'
+import { UserIcon as BuddyIcon, UserMinusIcon as BuddyIconMinus } from '@heroicons/react/24/solid'
 import { useEffect, useState } from 'react'
 import { useUser } from 'hooks'
-import { deleteJSON, getJSON, postJSON } from 'lib/utils'
-import { Member, SearchableMember, UserRelationship } from 'lib/models'
-
+import { deleteJSON, postJSON } from 'lib/utils'
+import { Member, SearchableMember, UserBuddy } from 'lib/models'
 type Props = {
   member: Partial<Member | SearchableMember>
 }
 
 export const MemberConnect = ({ member }: Props) => {
-  const { loading, member: me, reload } = useUser()
-  const [isBuddy, setIsBuddy] = useState<boolean>(undefined)
+  const { loading: userLoading, member: me, reload } = useUser()
   const [hover, setHover] = useState(false)
+  const [isBuddy, setIsBuddy] = useState<boolean | undefined>(undefined)
+
   const toggleBuddy = () => {
     if (isBuddy) {
       // remove buddy
-      deleteJSON(`/api/member/relationship/${member.id}`).then(() => {
+      deleteJSON(`/api/member/buddy/${member.id}`).then(() => {
         setIsBuddy(false)
         return reload()
       })
     } else {
       // add buddy
-      postJSON<Partial<UserRelationship>>(`/api/member/relationship/${member.id}`, {
-        relation: 'buddy',
-      }).then(() => {
+      postJSON<Partial<UserBuddy>>(`/api/member/buddy/${member.id}`, {}).then(() => {
         setIsBuddy(true)
         return reload()
       })
     }
     setIsBuddy(!isBuddy)
   }
-  //useEffect(() => {
-  //  getJSON<UserRelationship>(`/api/member/relationship/${memberId}`).then(({ data }) => {
-  //    setIsBuddy(data.relation == 'buddy')
-  //  })
-  //  // eslint-disable-next-line react-hooks/exhaustive-deps
-  //}, [])
 
   useEffect(() => {
-    if (!loading && me && isBuddy == undefined) {
-      const b = me.users.find((ur) => ur.users_id === member?.id && ur.relation == 'buddy')
-      setIsBuddy(b != undefined)
+    if (!userLoading && me && isBuddy == undefined && me.buddies) {
+      const b = me.buddies?.some((ur) => ur.buddy_id === member.id)
+      setIsBuddy(b)
     }
-  }, [isBuddy, loading, me, member?.id])
+  }, [isBuddy, me, member.id, userLoading])
+  if (userLoading || isBuddy == undefined) return <></>
+  if (me?.id === member.id) return <></>
   return (
     <>
       {(isBuddy && (
         <IconButton
           color="white"
-          icon={hover ? <UserMinusIcon width="30px" /> : <UserIcon width="30px" />}
+          icon={hover ? <BuddyIconMinus width="30px" /> : <BuddyIcon width="30px" />}
           onMouseOver={() => {
             setHover(true)
           }}
@@ -57,14 +52,15 @@ export const MemberConnect = ({ member }: Props) => {
             setHover(false)
           }}
           variant="ghost"
-          aria-label="Add to buddy-list"
           cursor="pointer"
           onClick={toggleBuddy}
           title="Remove Buddy"
+          aria-label="Remove Buddy"
+          size="lg"
         ></IconButton>
       )) || (
         <IconButton
-          icon={hover ? <UserPlusIcon height="30px" /> : <UserIcon height="30px" />}
+          icon={hover ? <UserPlusIcon width="30px" /> : <UserIcon width="30px" />}
           onMouseOver={() => {
             setHover(true)
           }}
@@ -72,11 +68,12 @@ export const MemberConnect = ({ member }: Props) => {
             setHover(false)
           }}
           variant="ghost"
+          aria-label="Add Buddy"
           title="Add Buddy"
-          aria-label="Add to buddy-list"
           cursor="pointer"
           onClick={toggleBuddy}
           color="white"
+          size="lg"
         ></IconButton>
       )}
     </>

@@ -1,18 +1,14 @@
-import { Badge, IconButton, Link } from '@chakra-ui/react'
-import { CalendarIcon, UserGroupIcon } from '@heroicons/react/24/outline'
+import { IconButton, Link } from '@chakra-ui/react'
+import { UserGroupIcon } from '@heroicons/react/24/outline'
 import NextLink from 'next/link'
-import { useUserEvents } from 'hooks'
 import { Member } from 'lib/models'
-import path from 'path'
 
 interface Props {
   member: Member
   active: boolean
 }
 
-const MembersAction = ({ active, member }: Props) => {
-  const { newInvitationCount } = useUserEvents()
-
+const MembersAction = ({ active }: Props) => {
   return (
     <>
       <Link href="/members" as={NextLink} zIndex="fixed">
@@ -25,21 +21,6 @@ const MembersAction = ({ active, member }: Props) => {
           aria-label={'View Members'}
           title="View Members"
         />
-
-        {newInvitationCount > 0 && (
-          <Badge
-            ml={-4}
-            zIndex="overlay"
-            position="absolute"
-            bg="accent.500"
-            rounded="full"
-            px={2}
-            py={0.5}
-            color="white"
-          >
-            {newInvitationCount}
-          </Badge>
-        )}
       </Link>
     </>
   )
