@@ -2,6 +2,7 @@ import Page from 'components/Page'
 import { useUser } from 'hooks'
 import { MemberLevel, SearchableMember, User, UserBuddy, FieldMap } from 'lib/models'
 import {
+  Flex,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -10,16 +11,22 @@ import {
   SimpleGrid,
   useColorModeValue,
   useDisclosure,
+  Text,
+  Alert,
+  Switch,
+  Spacer,
+  Link,
 } from '@chakra-ui/react'
 import { MemberCard, MemberSpotlight } from 'components/controls'
 import { useEffect, useState } from 'react'
-import { NextPageContext } from 'next'
+import NextLink from 'next/link'
+import { FieldSwitch } from 'components/forms'
 
 export type PageProps = {
   fieldMap: FieldMap
 }
 
-export async function getServerSideProps(context: NextPageContext): Promise<{ props: PageProps }> {
+export async function getServerSideProps(): Promise<{ props: PageProps }> {
   const { getFields } = await import('lib/services/directus/server')
   const fieldMap = await getFields('users')
   return {
@@ -30,10 +37,17 @@ export async function getServerSideProps(context: NextPageContext): Promise<{ pr
 }
 
 export default function BuddiesPage({ fieldMap }: PageProps) {
+  const [onlineOnly, setOnlineOnly] = useState(false)
+  const [id, setId] = useState<string>(undefined)
+
   const { member, loading } = useUser(MemberLevel.brother)
   const buddies = member?.buddies as UserBuddy[]
-  const members = buddies?.map((buddy) => buddy.buddy_id as User)
-  const [id, setId] = useState<string>(undefined)
+  let members = buddies?.map((buddy) => buddy.buddy_id as User)
+
+  let onlineMembers = members?.filter((m) => m.presence == 'online')
+  if (onlineOnly) {
+    members = onlineMembers
+  }
   const { isOpen, onOpen, onClose } = useDisclosure()
   useEffect(() => {
     if (id) {
@@ -45,6 +59,39 @@ export default function BuddiesPage({ fieldMap }: PageProps) {
 
   return (
     <Page title="Buddies" loading={loading}>
+      <Alert
+        bg={'primary.300'}
+        color="white"
+        flexDirection={['column', 'row']}
+        alignItems="start"
+        justifyItems="space-between"
+        my={4}
+        p={4}
+        borderRadius="md"
+        shadow="md"
+        gap={4}
+      >
+        <Text mt={0} fontSize="xl">
+          These are your buddies. They are the people you added to your buddy list. You can add
+          buddies from the{' '}
+          <Link textDecoration="underline" as={NextLink} href="/members">
+            members directory
+          </Link>
+          . You have {buddies?.length} buddies, with {onlineMembers?.length} online.
+        </Text>
+        <Spacer />
+        <Flex direction="column" align="center" justify="space-around" minWidth={['full', '15%']}>
+          <Text as="label" htmlFor="onlineOnly" fontWeight="bold" m={0}>
+            Online Only
+          </Text>
+          <Switch
+            id="onlineOnly"
+            mt={4}
+            defaultChecked={onlineOnly}
+            onChange={(e) => setOnlineOnly(e.target.checked)}
+          />
+        </Flex>
+      </Alert>
       <SimpleGrid my={4} columns={[1, 1, 1, 2]} spacing={4} w="full" justifyItems="stretch">
         {members &&
           members?.map((u: User) => (
