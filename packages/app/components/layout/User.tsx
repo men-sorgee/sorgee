@@ -8,8 +8,8 @@ import {
   useColorMode,
   MenuDivider,
 } from '@chakra-ui/react'
-import { LinkButton, MemberAvatar, UserCard } from 'components/controls'
-import Notifications from './actions/Notifications'
+import { ButtonLink, MemberAvatar, MemberIcon } from 'components/controls'
+
 import Link from 'next/link'
 import {
   CalendarIcon,
@@ -18,6 +18,7 @@ import {
   PaperAirplaneIcon,
   ArrowTopRightOnSquareIcon,
   UserGroupIcon,
+  UsersIcon,
   ArrowRightOnRectangleIcon,
   ViewfinderCircleIcon,
   UserIcon,
@@ -29,6 +30,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { useUser, useSite } from 'hooks'
 import { MemberLevel, ApplicationStatus } from 'lib/models'
+import { pledgeSurvey } from '../../lib/config'
 interface Props {}
 
 export default function UserMenu(_props: Props) {
@@ -46,12 +48,12 @@ export default function UserMenu(_props: Props) {
       {authenticated ? (
         <Menu placement="bottom">
           <MenuButton cursor={'pointer'}>
-            <MemberAvatar />
+            <MemberAvatar member={person} />
           </MenuButton>
 
           <MenuList bg="black" maxH="80vh" overflowY="auto">
             <Box p={4} m={2} mt={0} bgGradient="linear(to-bl, primary.300, accent.300)">
-              <UserCard member={person} />
+              <MemberIcon member={person} />
               <span id="account-email" hidden>
                 {person?.email}
               </span>
@@ -103,9 +105,21 @@ export default function UserMenu(_props: Props) {
                 >
                   Edit Photos
                 </MenuItem>
-                <MenuDivider />
+                {level === MemberLevel.pledge && (
+                  <MenuItem
+                    icon={<ArrowRightOnRectangleIcon color={'white'} width={'1.5rem'} />}
+                    bg="black"
+                    _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                    as={Link}
+                    href={`/survey/${pledgeSurvey}`}
+                  >
+                    Pledge Survey
+                  </MenuItem>
+                )}
+
                 {level > MemberLevel.pledge && (
                   <>
+                    <MenuDivider />
                     <MenuItem
                       icon={<CalendarIcon color={'white'} width={'1.5rem'} />}
                       bg="black"
@@ -124,6 +138,15 @@ export default function UserMenu(_props: Props) {
                       href="/members"
                     >
                       Members
+                    </MenuItem>
+                    <MenuItem
+                      icon={<UsersIcon color={'white'} width={'1.5rem'} />}
+                      bg="black"
+                      _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                      as={Link}
+                      href="/member/buddies"
+                    >
+                      Buddies
                     </MenuItem>
                     {level > MemberLevel.inductee && (
                       <MenuItem
@@ -216,7 +239,7 @@ export default function UserMenu(_props: Props) {
         </Menu>
       ) : (
         <>
-          <LinkButton
+          <ButtonLink
             href={`/api/auth/signin`}
             fontWeight={600}
             variant="ghost"
@@ -227,9 +250,9 @@ export default function UserMenu(_props: Props) {
             }}
           >
             members
-          </LinkButton>
+          </ButtonLink>
           {showApply && (
-            <LinkButton
+            <ButtonLink
               href={`/apply`}
               _hover={{ textDecoration: 'none' }}
               fontWeight={600}
@@ -240,7 +263,7 @@ export default function UserMenu(_props: Props) {
               }}
             >
               apply
-            </LinkButton>
+            </ButtonLink>
           )}
         </>
       )}

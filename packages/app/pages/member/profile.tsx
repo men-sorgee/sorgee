@@ -1,6 +1,5 @@
 import { FormProvider, useForm } from 'react-hook-form'
-import { NextPageContext } from 'next'
-import { FieldMap, Member } from 'lib/models'
+import { FieldMap, User } from 'lib/models'
 import { useUser } from '@/hooks/use-user'
 import { useState } from 'react'
 
@@ -56,7 +55,8 @@ export default function ProfilePage(props: PageProps) {
   )
 }
 
-type MemberFormData = Partial<Member>
+type MemberFormData = Partial<User>
+
 function Form(props: PageProps) {
   const toast = useToast()
   const { member, mutate } = useUser()

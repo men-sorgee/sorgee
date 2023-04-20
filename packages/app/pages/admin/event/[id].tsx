@@ -9,7 +9,7 @@ import {
   StatNumber,
   SimpleGrid,
 } from '@chakra-ui/react'
-import { EventCard, LinkButton } from 'components/controls'
+import { EventCard, ButtonLink } from 'components/controls'
 import { EventDetail, EventStats, MemberLevel } from 'lib/models'
 import Page from 'components/Page'
 import { useEffect, useState } from 'react'
@@ -70,9 +70,9 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
           event={event}
           showDescription={false}
           footer={
-            <LinkButton colorScheme="primary" href="/admin/scan">
+            <ButtonLink colorScheme="primary" href="/admin/scan">
               Scan Invite
-            </LinkButton>
+            </ButtonLink>
           }
         >
           <Flex direction="column" gap={4}>

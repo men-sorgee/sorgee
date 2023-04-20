@@ -7,13 +7,18 @@ import EmailProvider from 'next-auth/providers/email'
 import { TwitterLegacy } from 'next-auth/providers/twitter'
 import { authAdapter } from './adapter'
 import { sendNotificationEmail, updateSendGrid } from 'lib/services/sendgrid/server'
-import { findUser, getUser } from 'lib/services/directus/server/users'
 import { Member, memberFields, Profile, User, UserStatusType } from 'lib/models'
 import config from 'lib/config/server'
 import { sendNotification } from 'lib/services/twilio/server'
-import { findUserByAccount, extendUserPresence, recordUserLogin } from 'lib/services/db/server/auth'
-
+import {
+  findUser,
+  getUser,
+  findUserByAccount,
+  extendUserPresence,
+  recordUserLogin,
+} from 'lib/services/db/server/auth'
 const { google, discord, twitter, yahoo, microsoft } = config
+
 const allowedStatuses: UserStatusType[] = ['new', 'active', 'inactive', 'stale']
 
 export const authOptions: AuthOptions = {
@@ -33,9 +38,8 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async signIn(data) {
- 
       const { user, email, profile, account } = data
-      //return true
+
       console.debug('callback:signIn')
 
       if (email?.verificationRequest) {
@@ -63,7 +67,7 @@ export const authOptions: AuthOptions = {
     },
     async session({ session, user }) {
       console.debug('callback:session')
-      const fullUser = await findUser<Member>(user.email, memberFields)
+      const fullUser = await findUser(user.email)
       session.user = fullUser
 
       await extendUserPresence(fullUser.id)
@@ -73,18 +77,22 @@ export const authOptions: AuthOptions = {
   events: {
     async createUser({ user }) {
       console.log('event:createUser')
+      await recordUserLogin(user.id)
 
-      await updateSendGrid(user as Profile)
-      await sendNotificationEmail(
-        user.email,
-        user.name,
-        `Application Status`,
-        'Thank you for applying for membership!',
-        {
-          button_text: 'Complete Application',
-          button_url: 'https://guysnheat.com/apply',
-        }
-      )
+      const member = await findUser(user.email)
+      if (member && !member.inSendgrid) await updateSendGrid(user as Profile)
+
+      if (member && member.status == 'new')
+        await sendNotificationEmail(
+          user.email,
+          user.name,
+          `Application Status`,
+          'Thank you for applying for membership!',
+          {
+            button_text: 'Complete Application',
+            button_url: 'https://guysnheat.com/apply',
+          }
+        )
     },
     async signIn({ user }) {
       console.log('event:signIn')
@@ -129,11 +137,11 @@ export const authOptions: AuthOptions = {
     EmailProvider({
       maxAge: 60 * 60, // 1 hour
       async sendVerificationRequest({ identifier: email, url }) {
-        const user = await findUser<User>(email)
+        const user = await findUser(email)
 
         if (user && user.status == 'active') {
           // check if the user needs to sign in with their phone
-          if (user.phone && user.phone_verified && user.auth_with_phone) {
+          if (user.phone && user.phoneVerified && user.authWithPhone) {
             try {
               await sendNotification(user.phone, `Sign in:  ${url}`)
               console.log(`Sent sign in notification to ${user.phone} for ${user.email} `)

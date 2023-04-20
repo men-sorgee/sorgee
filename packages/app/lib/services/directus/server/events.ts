@@ -9,6 +9,7 @@ import {
   SearchableMember,
   EventStatusType,
   Survey,
+  User,
 } from 'lib/models'
 
 function count<T>(ary: T[], classifier: (i: T) => any) {
@@ -120,7 +121,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
   } = event
 
   const attendance = (eventUsers as EventUser[]) || []
-  console.dir({ le: attendance.length })
+
   const detail: EventDetail = {
     id,
     name,
@@ -141,9 +142,8 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
       attended_count: attendance.filter((u) => u.attended).length,
       paid_count: attendance.filter((u) => u.paid).length,
     },
-    members: attendance.map((u) => u.users_id as SearchableMember),
+    members: attendance.map((u) => u.users_id as any as SearchableMember),
     surveys: survey as Survey[],
   }
-  console.dir(detail.stats, attendance)
   return detail
 }

@@ -1,4 +1,4 @@
-import { DirectusUser } from './directus'
+import { DirectusFile, DirectusUser } from './directus'
 import { User } from './users'
 
 export type Room = {
@@ -23,14 +23,14 @@ export type RoomEvent = {
   created_at?: string
 }
 
-export type UserMessages = Record<string, Message[]>
+//export type UserMessages = Record<string, Message[]>
 
 export type Conversation = {
   id: string
-  messages: Message[]
+  messages: ChatMessage[]
   hasNewMessages: boolean
   newMessageCount: number
-  lastMessage: Message
+  lastMessage: ChatMessage
   user: ChatUser
 }
 export type ChatUser = {
@@ -41,8 +41,26 @@ export type ChatUser = {
   presence: string
 }
 export type MessageStatusType = 'new' | 'read' | 'archived'
-export type Message = {
+export type MessageType = 'text' | 'image'
+export type MessageDirection = 'incoming' | 'outgoing'
+
+export type ChatMessage = {
   id: string
+  status: string
+  timestamp: Date | string
+  edited: boolean
+  body: string
+  image?: string
+  expires?: string
+  user: ChatUser
+  direction: MessageDirection
+  type: MessageType
+}
+
+export type UserMessages = Record<string, ChatMessage[]>
+
+export type Message = {
+  id?: string
   status: string | MessageStatusType
   user_created?: string | DirectusUser
   date_created?: string
@@ -50,9 +68,11 @@ export type Message = {
   date_updated?: string
   to: string | User
   from: string | User
+  type: MessageType
+  image?: string | DirectusFile
   expires?: string
   body: string
-  edited: boolean
+  edited?: boolean
   user?: ChatUser
-  direction: 'incoming' | 'outgoing'
+  direction?: MessageDirection
 }

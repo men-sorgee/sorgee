@@ -20,7 +20,7 @@ import {
 import { useEffect, useState } from 'react'
 import { AppNotification, Member } from 'lib/models'
 import { Markdown } from './Markdown'
-import { LinkButton } from './LinkButton'
+import { ButtonLink } from './ButtonLink'
 
 type Props = {
   notification: AppNotification
@@ -97,9 +97,9 @@ export const NotificationCard = chakra(({ member, notification }: Props) => {
           <ModalFooter>
             <HStack spacing={2} align="right">
               {notification?.link && (
-                <LinkButton onClick={onClose} href={notification?.link} colorScheme="accent">
+                <ButtonLink onClick={onClose} href={notification?.link} colorScheme="accent">
                   {notification?.button_text || 'Check it Out!'}
-                </LinkButton>
+                </ButtonLink>
               )}
               <Button onClick={markAsDeleted} colorScheme="red">
                 Delete

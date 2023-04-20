@@ -21,7 +21,7 @@ import { useUser, useUserEvents } from 'hooks'
 import Link from 'next/link'
 import { useCallback, useState } from 'react'
 import { Member, GroupEvent, MemberLevel, EventInvite } from 'lib/models'
-import { EventBadge, EventCard, EventRSVP, EventTicket, LinkButton } from 'components/controls'
+import { EventBadge, EventCard, EventRSVP, EventTicket, ButtonLink } from 'components/controls'
 import Calendar from 'react-calendar'
 import { brand } from 'lib/config/brand'
 import { capitalCase } from 'change-case'
@@ -59,7 +59,7 @@ export default function EventsPage({}: PageProps) {
     >
       {authorized ? (
         <>
-          {activeInvite && (
+          {activeInvite && member && (
             <Box mb={4}>
               <Heading mb={4} className="no-print">
                 Active Event
@@ -74,7 +74,7 @@ export default function EventsPage({}: PageProps) {
                 showAddToCalendar={false}
                 showLocation={true}
               >
-                <LinkButton
+                <ButtonLink
                   gradient={false}
                   rounded="lg"
                   w="full"
@@ -83,9 +83,9 @@ export default function EventsPage({}: PageProps) {
                   p={6}
                 >
                   View Location Details
-                </LinkButton>
+                </ButtonLink>
                 <EventRSVP
-                  memberId={member.id}
+                  memberId={member?.id}
                   eventId={activeInvite.event.id}
                   rsvp={activeInvite.rsvp}
                   onChange={onEventsChange}
@@ -200,6 +200,7 @@ function Invitations({
     const dateB = new Date(b.event.datetime).getTime()
     return dateA - dateB
   })
+  if (!member) return null
   return (
     <>
       {list.map((invite, index) => {
@@ -215,7 +216,7 @@ function Invitations({
             showAddToCalendar={invite.rsvp == 'confirmed' || invite.rsvp == 'maybe'}
           >
             {showLink && (
-              <LinkButton
+              <ButtonLink
                 gradient={false}
                 rounded="lg"
                 w="full"
@@ -224,7 +225,7 @@ function Invitations({
                 p={6}
               >
                 View Details
-              </LinkButton>
+              </ButtonLink>
             )}
             <EventRSVP
               memberId={member.id}
@@ -261,7 +262,7 @@ function PastEvents({ member, list }: { list: EventInvite[]; member: Member }) {
     const linkColor = useColorModeValue('primary', 'gray')
     return (
       <Box key={invite.id}>
-        <LinkButton
+        <ButtonLink
           gradient={false}
           rounded="lg"
           w="full"
@@ -270,7 +271,7 @@ function PastEvents({ member, list }: { list: EventInvite[]; member: Member }) {
           p={6}
         >
           Rate Event &amp; Attendees
-        </LinkButton>
+        </ButtonLink>
 
         <Heading as="h3" size="h3" textAlign="center">
           {capitalCase(invite.rsvp)} and {invite.attended ? 'attended!' : 'did not attend'}

@@ -1,6 +1,15 @@
 import { useState, forwardRef, useEffect } from 'react'
 import { StarIcon } from '@heroicons/react/24/solid'
-import { Box, Icon, Button, IconButton, Stack, Text, IconButtonProps } from '@chakra-ui/react'
+import {
+  Box,
+  Icon,
+  Button,
+  IconButton,
+  Stack,
+  Text,
+  IconButtonProps,
+  Tooltip,
+} from '@chakra-ui/react'
 
 export type RatingControlProps = IconButtonProps & {
   onRateChange?: (rate: number) => void
@@ -82,9 +91,14 @@ export const Rating = ({
   }
 
   return (
-    <Stack isInline mt={mt} spacing={1}>
-      {buttons}
-      {!simple && <Box textAlign="center">{rating} stars</Box>}
-    </Stack>
+    <Tooltip
+      label="Ratings are based on the number of stars a member has received from other members and event hosts. No-shows automatically receive -1 star ratings by the event."
+      aria-label="User Rating"
+    >
+      <Stack isInline mt={mt} spacing={1}>
+        {buttons}
+        {!simple && <Box textAlign="center">{rating} stars</Box>}
+      </Stack>
+    </Tooltip>
   )
 }

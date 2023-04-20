@@ -16,17 +16,17 @@ export const MemberBadge = chakra(({ user_type, size = 'md', ...props }: Props) 
       <Badge
         {...props}
         rounded={size}
-        size={size}
+        fontSize={size}
         textTransform={'uppercase'}
-        bg={levelColor[0]}
-        color="white"
+        color={levelColor[1]}
+        bg="white"
       >
         {levelName}
       </Badge>
 
-      {levelValue > MemberLevel.inductee && (
+      {levelValue >= MemberLevel.brother && (
         <Tooltip label="Verified" aria-label="Verified">
-          <CheckBadgeIcon style={{ color: 'white', width: '20px', height: '20px' }} />
+          <CheckBadgeIcon width="30px" style={{ color: 'white' }} />
         </Tooltip>
       )}
     </HStack>

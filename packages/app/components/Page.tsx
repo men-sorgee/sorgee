@@ -1,5 +1,5 @@
 import { useMeta } from 'hooks/use-meta'
-import { Loading, PullToRefresh } from 'components/controls'
+import { Loading } from 'components/controls'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import AccessDenied from './AccessDenied'
@@ -38,8 +38,8 @@ const Page = ({
     setMeta(title, description, image)
     if (status != 'loading' && requireAuth) {
       if (status !== 'authenticated') setDenied(true)
-      else {
-        const level = MemberLevel[session.user.user_type]
+      else if (session.user) {
+        const level = MemberLevel[session.user.user_type as string]
         setDenied(level < requiredLevel)
       }
     }
@@ -48,6 +48,7 @@ const Page = ({
     image,
     requireAuth,
     requiredLevel,
+    session?.user,
     session?.user.user_type,
     setMeta,
     status,
@@ -65,8 +66,9 @@ const Page = ({
       as="article"
       alignItems={'center'}
       justifyItems="stretch"
+      pr={[2, 0]}
+      w="full"
       {...props}
-      px={[4, 4, 0]}
     >
       <div className="no-print">
         <Heading as="h1" size="h1" textAlign="center" mb={8}>

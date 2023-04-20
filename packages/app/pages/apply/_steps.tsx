@@ -3,12 +3,12 @@ import { ApplicationStatus } from 'lib/models'
 import { useEffect } from 'react'
 import { Show, Hide } from '@chakra-ui/react'
 export default function ApplicationSteps({ status }: { status: string }) {
-  const steps = ['Registration', 'Identification', 'Verification', 'Agreement']
+  const steps = ['Registration', 'Identification', 'Verification', 'Review', 'Agreement']
   const { activeStep, setStep } = useSteps({
     initialStep: -1,
   })
   useEffect(() => {
-    if (status && activeStep == -1) setStep(ApplicationStatus[status])
+    if (status && activeStep == -1) setStep(ApplicationStatus[status] + 1)
   }, [activeStep, setStep, status])
   return (
     <>
@@ -16,12 +16,12 @@ export default function ApplicationSteps({ status }: { status: string }) {
         <Steps
           activeStep={activeStep}
           my={8}
-          colorScheme="primary"
-          color="white"
+          colorScheme={'primary'}
+          color={'white'}
           responsive={false}
         >
           {steps.map((step, index) => (
-            <Step key={index} label={step} color="white" />
+            <Step key={index} color={'white'} label={step} />
           ))}
         </Steps>
       </Show>
@@ -34,7 +34,7 @@ export default function ApplicationSteps({ status }: { status: string }) {
           responsive={false}
         >
           {steps.map((step, index) => (
-            <Step key={index} color="white" title={step} />
+            <Step key={index} color={'white'} title={step} />
           ))}
         </Steps>
       </Hide>

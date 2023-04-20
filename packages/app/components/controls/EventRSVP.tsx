@@ -13,7 +13,7 @@ import { ReactNode, useCallback, useRef, useState } from 'react'
 import { EventUser, EventInvite, GroupEvent, RSVPInfo, Member, InviteRSVPType } from 'lib/models'
 import { JsonFetcher, postJSON } from 'lib/utils'
 import useSWR from 'swr'
-import { ConfirmButton } from './ConfirmButton'
+import { ButtonConfirm } from './ButtonConfirm'
 
 type RSVPProps = BoxProps & {
   memberId: string
@@ -71,7 +71,7 @@ export const EventRSVP = ({ memberId, rsvp: r, eventId, onChange }: RSVPProps) =
   const rsvp = invite?.rsvp || 'invited'
 
   const CancelRSVPButton = ({ children = 'Something Came Up' }) => (
-    <ConfirmButton
+    <ButtonConfirm
       title="Event RSVP"
       buttonText={children}
       failureMessage="Unable to cancel."
@@ -89,11 +89,11 @@ export const EventRSVP = ({ memberId, rsvp: r, eventId, onChange }: RSVPProps) =
         <Text>Are you sure you want to cancel your RSVP?</Text>
         <Textarea ref={reasonRef} placeholder="Reason..." w="full" required />
       </>
-    </ConfirmButton>
+    </ButtonConfirm>
   )
 
-  const ConfirmRSVPButton = ({ children = 'Can Attend' }) => (
-    <ConfirmButton
+  const ConfirmRSVPButton = ({ children = 'Confirm' }) => (
+    <ButtonConfirm
       title="Event RSVP"
       buttonText={children}
       failureMessage="Unable to confirm."
@@ -111,11 +111,11 @@ export const EventRSVP = ({ memberId, rsvp: r, eventId, onChange }: RSVPProps) =
         on confirmed attendees to help cover the cost of the event. You can cancel up to 24 hours
         before the event without affecting your rating.
       </Text>
-    </ConfirmButton>
+    </ButtonConfirm>
   )
 
-  const MaybeRSVPButton = ({ children = 'May Attend' }) => (
-    <ConfirmButton
+  const MaybeRSVPButton = ({ children = 'Maybe' }) => (
+    <ButtonConfirm
       title="Event RSVP"
       buttonText={children}
       failureMessage="Unable to RSVP."
@@ -134,11 +134,11 @@ export const EventRSVP = ({ memberId, rsvp: r, eventId, onChange }: RSVPProps) =
         </strong>{' '}
         Be sure to update your RSVP as soon as you are sure if you can attend or not.
       </Text>
-    </ConfirmButton>
+    </ButtonConfirm>
   )
 
   const DeclineRSVPButton = ({ children = 'Cannot Attend' }) => (
-    <ConfirmButton
+    <ButtonConfirm
       title="Event RSVP"
       buttonText={children}
       failureMessage="Unable to RSVP."
@@ -157,7 +157,7 @@ export const EventRSVP = ({ memberId, rsvp: r, eventId, onChange }: RSVPProps) =
         </strong>{' '}
         Are you sure you want to decline this event?
       </Text>
-    </ConfirmButton>
+    </ButtonConfirm>
   )
 
   const RSVPView = ({

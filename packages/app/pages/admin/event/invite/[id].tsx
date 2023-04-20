@@ -14,7 +14,7 @@ import {
   Box,
 } from '@chakra-ui/react'
 import { EventUser, GroupEvent, User, MemberLevel } from 'lib/models'
-import { LinkButton, Loading, TakePhoto, MemberBadge } from 'components/controls'
+import { ButtonLink, Loading, PhotoCapture, MemberBadge } from 'components/controls'
 import { FieldSwitch } from 'components/forms'
 import { useRouter } from 'next/router'
 import Page from 'components/Page'
@@ -203,9 +203,10 @@ export default function InviteAdmin({ event, invite, user }: Props) {
                 </Flex>
 
                 <Flex
-                  direction="row"
-                  w={['100%', '50%', '30%']}
+                  direction={['column', 'column', 'row']}
+                  w={[null, '50%', '30%']}
                   justifyItems="space-between"
+                  align="center"
                   mx="auto"
                 >
                   {!invite.attended && invite?.guest == false && (
@@ -254,9 +255,9 @@ export default function InviteAdmin({ event, invite, user }: Props) {
                   </Button>
                 )}
                 {invite?.attended && (
-                  <Alert size="xl" status="warning" rounded="lg" shadow="lg">
+                  <Alert size="xl" status="warning" rounded="lg" shadow="lg" mt={4}>
                     <AlertIcon />
-                    <Text size="lg" m={0}>
+                    <Text fontSize="lg" m={0}>
                       Already checked in
                     </Text>
                   </Alert>
@@ -265,16 +266,24 @@ export default function InviteAdmin({ event, invite, user }: Props) {
             )) || <Loading />}
             {camera && (
               <Box display={visible(camera)} w="full">
-                <TakePhoto onAccept={takePhoto} facingMode="environment" />
+                <PhotoCapture onAccept={takePhoto} facingMode="environment" />
               </Box>
             )}
+            {user?.needs_guidance && (
+              <Alert size="xl" status="warning" rounded="lg" shadow="lg">
+                <AlertIcon />
+                <Text fontSize="lg" m={0}>
+                  User needs guidance
+                </Text>
+              </Alert>
+            )}
             <HStack spacing={4}>
-              <LinkButton colorScheme="gray" href={'/admin/event/' + event?.id} my={4}>
+              <ButtonLink colorScheme="gray" href={'/admin/event/' + event?.id} my={4}>
                 Return to Event
-              </LinkButton>
-              <LinkButton colorScheme="primary" href="/admin/scan" my={4}>
+              </ButtonLink>
+              <ButtonLink colorScheme="primary" href="/admin/scan" my={4}>
                 Scan Another
-              </LinkButton>
+              </ButtonLink>
             </HStack>
           </form>
         </FormProvider>

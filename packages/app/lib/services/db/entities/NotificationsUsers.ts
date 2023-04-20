@@ -1,6 +1,6 @@
 import * as typeorm from 'typeorm'
 import { Notifications } from './Notifications'
-import { User } from './Users'
+import { User } from './User'
 
 @typeorm.Index('notifications_users_pkey', ['id'], { unique: true })
 @typeorm.Entity('notifications_users', { schema: 'public' })

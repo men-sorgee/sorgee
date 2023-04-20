@@ -1,6 +1,5 @@
 import * as typeorm from 'typeorm'
-import { PrimaryGeneratedColumn } from 'typeorm'
-import { User } from './Users'
+import { User } from './User'
 
 @typeorm.Index('user_account_pkey', ['id'], { unique: true })
 @typeorm.Entity('user_account', { schema: 'public' })
@@ -10,19 +9,19 @@ export class UserAccount {
 
   @typeorm.Column('character varying', {
     name: 'provider_id',
-    nullable: true,
+    nullable: false,
     length: 255,
   })
   providerId: string | null
 
   @typeorm.Column('character varying', {
     name: 'provider',
-    nullable: true,
+    nullable: false,
     length: 255,
   })
   provider: string | null
 
-  @typeorm.Column('character varying', { name: 'type', nullable: true, length: 255 })
+  @typeorm.Column('character varying', { name: 'type', nullable: false, length: 255 })
   type: string | null
 
   @typeorm.Column('integer', { name: 'expires_at', nullable: true })
@@ -70,9 +69,9 @@ export class UserAccount {
   @typeorm.Column('text', { name: 'oauth_token', nullable: true })
   oauthToken: string | null
 
-  @typeorm.ManyToOne(() => User, (users) => users.userAccounts, {
-    onDelete: 'SET NULL',
+  @typeorm.ManyToOne(() => User, (user) => user.userAccounts, {
+    onDelete: 'CASCADE',
   })
   @typeorm.JoinColumn([{ name: 'user', referencedColumnName: 'id' }])
-  user: typeorm.Relation<Partial<User>>
+  user: typeorm.Relation<User | Partial<User>>
 }

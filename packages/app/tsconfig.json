@@ -22,7 +22,7 @@
     "baseUrl": ".",
     "incremental": true,
     "jsx": "preserve",
-    "jsxImportSource": "@emotion/react",
+    //"jsxImportSource": "@emotion/react",
     "paths": {
       "@/components/*": [
         "components/*"

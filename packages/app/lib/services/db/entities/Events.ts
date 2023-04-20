@@ -6,13 +6,13 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-} from "typeorm";
-import { Notifications } from "./Notifications";
-import { Location } from "./Location";
-import { DirectusUsers } from "./DirectusUsers";
-import { EventsUsers } from "./EventsUsers";
-import { Rating } from "./Rating";
-import { Surveys } from "./Surveys";
+} from 'typeorm'
+import { Notifications } from './Notifications'
+import { Location } from './Location'
+import { DirectusUsers } from './DirectusUsers'
+import { EventsUser } from './EventsUsers'
+import { Rating } from './Rating'
+import { Surveys } from './Surveys'
 
 @Index('events_pkey', ['id'], { unique: true })
 @Entity('events', { schema: 'public' })
@@ -89,8 +89,8 @@ export class Events {
   @JoinColumn([{ name: 'user_updated', referencedColumnName: 'id' }])
   userUpdated: DirectusUsers
 
-  @OneToMany(() => EventsUsers, (eventsUsers) => eventsUsers.events)
-  eventsUsers: EventsUsers[]
+  @OneToMany(() => EventsUser, (eventsUsers) => eventsUsers.events)
+  eventsUsers: EventsUser[]
 
   @OneToMany(() => Rating, (rating) => rating.event)
   ratings: Rating[]

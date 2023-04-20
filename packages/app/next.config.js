@@ -16,7 +16,7 @@ const getConfig = ( phase ) => {
     publicRuntimeConfig: {
       dev
     },
-    pageExtensions: ['ts', 'tsx'],
+    pageExtensions: ['tsx'],
 
     images: {
       domains: [
@@ -46,21 +46,6 @@ const getConfig = ( phase ) => {
           source: '/:path*',
           has: [{ type: 'host', value: 'www.guysnheat.com' }],
           destination: 'https://guysnheat.com/:path*',
-          permanent: true
-        },
-        {
-          source: '/invite',
-          destination: '/members/invite',
-          permanent: true
-        },
-        {
-          source: '/member/account',
-          destination: '/member/settings',
-          permanent: false
-        },
-        {
-          source: '/api/admin/:path',
-          destination: '/api/member/:path',
           permanent: true
         }
       ];

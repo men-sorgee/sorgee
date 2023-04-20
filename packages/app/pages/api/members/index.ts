@@ -6,12 +6,13 @@ import {
   getAllowedUsers,
   MemberLevel,
   SearchableMember,
+  searchableMemberFields,
   User,
   UserType,
 } from 'lib/models'
 import { ManyItems } from '@directus/sdk'
 import { normalize } from 'lib/utils'
-import { withMember } from '../../../lib/utils/server'
+import { withMember } from 'lib/utils/server'
 
 type MemberSearch = SearchableMember & {
   offset?: number
@@ -32,8 +33,6 @@ export default async function FindMembers(
     const page = Number(p)
     const limit = Number(l)
 
-    
-
     const allowedLevels = getAllowedUsers(level)
     const params = normalize<SearchableMember>(props)
     const postQueryParams = {}
@@ -41,7 +40,14 @@ export default async function FindMembers(
     const orSearchItems = []
     const andSearchItems = []
 
-    andSearchItems.push({ show_profile: { _eq: true } })
+    andSearchItems.push({
+      show_profile: {
+        _eq: true,
+      },
+      id: {
+        _neq: member.id,
+      },
+    })
 
     if (sort.includes('last_login')) {
       andSearchItems.push({ last_login: { _nnull: true } })
@@ -69,10 +75,7 @@ export default async function FindMembers(
         postQueryParams[key] = Array.isArray(filter) ? filter : [filter]
       } else if (key == 'nickname') {
         let nickname = params[key].join('')
-        orSearchItems.push({
-          first_name: { _contains: nickname },
-        })
-        orSearchItems.push({
+        andSearchItems.push({
           nickname: { _contains: nickname },
         })
       } else {
@@ -103,28 +106,7 @@ export default async function FindMembers(
 
     const results = await searchUsers<Partial<User>>(
       searchParams as any,
-      [
-        'id',
-        'status',
-        'nickname',
-        'biography',
-        'first_name',
-        'picture',
-        'user_type',
-        'show_health',
-        'show_interests',
-        'presence',
-        'location',
-        'city',
-        'state',
-        'rating',
-        'spectrum',
-        'my_positions',
-        'relationship_status',
-        'mannerisms',
-        'last_login',
-        'date_created',
-      ],
+      searchableMemberFields,
       limit,
       page,
       sort

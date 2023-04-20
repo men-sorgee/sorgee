@@ -1,6 +1,6 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
-import { FieldOptions, Member, User } from 'lib/models'
+import { FieldMap, User } from 'lib/models'
 import { useUser } from '@/hooks/use-user'
 import { useState } from 'react'
 import {
@@ -26,44 +26,26 @@ import {
   Input,
   InputGroup,
   Box,
+  useToast,
 } from '@chakra-ui/react'
 import Page from 'components/Page'
-import { useToast } from '@chakra-ui/react'
-import { postJSON } from 'lib/utils'
-import { UserCard } from 'components/controls'
-import { useWarnIfUnsavedChanges } from '../../hooks/use-warn-if-unsaved'
+import { useWarnIfUnsavedChanges } from 'hooks/use-warn-if-unsaved'
 
 type PageProps = {
-  timeOfDayOptions: FieldOptions
-  eventOptions: FieldOptions
-  contactPreferenceOptions: FieldOptions
-  hostEventOptions: FieldOptions
-  birthMonthOptions: FieldOptions
-  stateOptions: FieldOptions
-  theirRolesOptions: FieldOptions
-  theirSpectrumOptions: FieldOptions
-  theirPositionsOptions: FieldOptions
-  relationshipOptions: FieldOptions
+  fieldMap: FieldMap
 }
 
 export async function getServerSideProps(_context: NextPageContext) {
-  const { getFieldOptions } = await import('lib/services/directus/server')
-  const props: PageProps = {
-    timeOfDayOptions: await getFieldOptions<User>('event_availability'),
-    eventOptions: await getFieldOptions<User>('social_scenes'),
-    contactPreferenceOptions: await getFieldOptions<User>('contact_preference'),
-    hostEventOptions: await getFieldOptions<User>('can_host_events'),
-    birthMonthOptions: await getFieldOptions<User>('birth_month'),
-    stateOptions: await getFieldOptions<User>('state'),
-    relationshipOptions: await getFieldOptions<User>('relationship_status'),
-    theirRolesOptions: await getFieldOptions<User>('their_roles'),
-    theirSpectrumOptions: await getFieldOptions<User>('their_spectrum'),
-    theirPositionsOptions: await getFieldOptions<User>('their_positions'),
+  const { getFields } = await import('lib/services/directus/server')
+  const fieldMap = await getFields('users')
+  return {
+    props: {
+      fieldMap,
+    },
   }
-  return { props }
 }
 
-type MemberFormData = Partial<Member>
+type MemberFormData = Partial<User>
 
 export default function SettingsPage(props: PageProps) {
   const { member, loading } = useUser()
@@ -74,21 +56,14 @@ export default function SettingsPage(props: PageProps) {
   )
 }
 
-function Form(props: PageProps) {
+function Form({ fieldMap }: PageProps) {
   const toast = useToast()
   const { member, mutate } = useUser()
-  const {
-    timeOfDayOptions,
-    eventOptions,
-    contactPreferenceOptions,
-    hostEventOptions,
-    birthMonthOptions,
-    stateOptions,
-    theirRolesOptions,
-    theirSpectrumOptions,
-    theirPositionsOptions,
-    relationshipOptions,
-  } = props
+
+  const getOptions = (field: string) => {
+    return fieldMap[field]?.meta.options.choices
+  }
+
   const [tabValue, setTabValue] = useState(0)
 
   const {
@@ -169,7 +144,7 @@ function Form(props: PageProps) {
         duration: 9000,
         isClosable: true,
         onCloseComplete: () => {
-          reset(r)
+          reset(r as any)
         },
       })
     } else if (error?.field) {
@@ -225,7 +200,7 @@ function Form(props: PageProps) {
                     borderRadius="md"
                     shadow="md"
                   >
-                    <Text w="full">
+                    <Text w="full" mb={2}>
                       This information is private by default, but you can opt to display it if you
                       choose.
                     </Text>
@@ -264,7 +239,7 @@ function Form(props: PageProps) {
                   />
 
                   <FieldInput field="city" label="City" />
-                  <FieldSelect field="state" label="State" options={stateOptions} />
+                  <FieldSelect field="state" label="State" options={getOptions('state')} />
 
                   <FieldWrapper field="birth_month" label="Birth Month/Year">
                     <InputGroup>
@@ -274,7 +249,7 @@ function Form(props: PageProps) {
                           required: 'You must provide your month of birth',
                         })}
                       >
-                        {birthMonthOptions.map((option) => (
+                        {getOptions('birth_month').map((option) => (
                           <option key={option.value} value={option.value}>
                             {option.text}
                           </option>
@@ -296,7 +271,7 @@ function Form(props: PageProps) {
                     w="full"
                     field="contact_preference"
                     label="Contact Preference"
-                    options={contactPreferenceOptions}
+                    options={getOptions('contact_preference')}
                   />
                 </SimpleGrid>
 
@@ -321,13 +296,21 @@ function Form(props: PageProps) {
                     </Stack>
                   </Stack>
                 </Alert>
-                <FieldCheckbox
-                  field="needs_guidance"
-                  help="Our staff will reach out to you to help guide you along the way."
-                  label="Request Guidance"
-                >
-                  I need assistance
-                </FieldCheckbox>
+                <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
+                  <FieldCheckbox
+                    field="needs_guidance"
+                    help="Our staff will reach out to you to help guide you along the way."
+                    label="Request Guidance"
+                  >
+                    I need assistance
+                  </FieldCheckbox>
+                  <FieldSelect
+                    mt={4}
+                    field="allow_messages"
+                    label="Allow Direct Messages"
+                    options={getOptions('allow_messages')}
+                  />
+                </SimpleGrid>
               </TabPanel>
               <TabPanel p={0}>
                 <Alert
@@ -365,7 +348,7 @@ function Form(props: PageProps) {
                     field="social_scenes"
                     label="Social Activities"
                     help="We host events to meet the demands of our brothers. Tell us what kind of events you are interested in."
-                    options={eventOptions}
+                    options={getOptions('social_scenes')}
                     includeOther
                   />
 
@@ -373,7 +356,7 @@ function Form(props: PageProps) {
                     field="event_availability"
                     label="Preferred Event Times"
                     help="We host events to meet the demands of our brothers. Let us know what times work best in general"
-                    options={timeOfDayOptions}
+                    options={getOptions('event_availability')}
                   />
                 </SimpleGrid>
 
@@ -390,7 +373,7 @@ function Form(props: PageProps) {
                           <FieldCheckboxes
                             field="can_host_events"
                             label="Events"
-                            options={hostEventOptions}
+                            options={getOptions('can_host_events')}
                           />
                         )}
                       </Stack>
@@ -426,24 +409,24 @@ function Form(props: PageProps) {
                   <FieldCheckboxes
                     field="their_spectrum"
                     label="Their Orientation"
-                    options={theirSpectrumOptions}
+                    options={getOptions('their_spectrum')}
                   />
                   <FieldCheckboxes
                     field="their_relationship_status"
                     label="Their Relationship Status"
-                    options={relationshipOptions}
+                    options={getOptions('their_relationship_status')}
                   />
 
                   <FieldCheckboxes
                     field="their_positions"
                     label="Their Sexual Positions"
-                    options={theirPositionsOptions}
+                    options={getOptions('their_positions')}
                   />
 
                   <FieldCheckboxes
                     field="their_roles"
                     label="Their Sexual Roles"
-                    options={theirRolesOptions}
+                    options={getOptions('their_roles')}
                   />
                 </SimpleGrid>
               </TabPanel>

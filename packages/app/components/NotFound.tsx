@@ -1,5 +1,5 @@
 import { signIn, useSession } from 'next-auth/react'
-import { LinkButton } from './controls'
+import { ButtonLink } from './controls'
 import { Box, Heading, Text } from '@chakra-ui/react'
 
 const NotFound = () => {
@@ -12,9 +12,9 @@ const NotFound = () => {
 
       <Box>
         <Text>Check the URL and try again.</Text>
-        <LinkButton colorScheme="primary" href="/">
+        <ButtonLink colorScheme="primary" href="/">
           Go Home
-        </LinkButton>
+        </ButtonLink>
       </Box>
     </Box>
   )

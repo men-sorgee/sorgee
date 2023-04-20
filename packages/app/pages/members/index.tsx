@@ -52,7 +52,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
 import { FieldCheckboxes, FieldInput, FieldCheckbox } from 'components/forms'
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline'
-import { MemberStats } from '../../lib/services/directus/server/users'
+import { MemberStats } from 'lib/services/directus/server/users'
 
 export type QueryParams = Record<keyof SearchableMember, string[]> & {
   online: boolean
@@ -253,7 +253,13 @@ export default function MemberListPage(props: PageProps) {
           <Pager page={page} pageCount={pageCount} setPage={setPage} />
           <SimpleGrid my={4} columns={[1, 1, 1, 2]} spacing={4} w="full" justifyItems="stretch">
             {members?.map((member: SearchableMember) => (
-              <MemberCard key={member.id} member={member} onClick={() => setId(member.id)} />
+              <MemberCard
+                full
+                size="xl"
+                key={member.id}
+                member={member}
+                onClick={() => setId(member.id)}
+              />
             ))}
           </SimpleGrid>
           {meta.filtered == 0 && (
@@ -270,11 +276,10 @@ export default function MemberListPage(props: PageProps) {
         onClose={() => setId(undefined)}
       >
         <ModalOverlay backdropFilter="auto" backdropBlur="2px" />
-        <ModalContent bg={useColorModeValue('white', 'black')}>
+        <ModalContent ml={[0, 0, -4]} bg={useColorModeValue('white', 'black')}>
           <ModalBody p={0} rounded="md">
-            <MemberSpotlight id={id as string} fields={fields}>
-              <ModalCloseButton color={'white'} mt={2} />
-            </MemberSpotlight>
+            <ModalCloseButton color={'white'} mt={2} />
+            <MemberSpotlight id={id as string} fields={fields}></MemberSpotlight>
           </ModalBody>
         </ModalContent>
       </Modal>

@@ -25,7 +25,7 @@ interface Props {
   member: Member
 }
 
-const Notifications = ({ member }: Props) => {
+const NotificationsAction = ({ member }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { hasNewNotifications, notifications, newNotificationCount } = useNotifications()
 
@@ -50,7 +50,7 @@ const Notifications = ({ member }: Props) => {
           />
           {hasNewNotifications && (
             <Badge
-              bg="red"
+              bg="accent.500"
               color="white"
               ml={-4}
               zIndex="overlay"
@@ -67,9 +67,9 @@ const Notifications = ({ member }: Props) => {
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerCloseButton />
           <DrawerHeader bg="primary.900" color="white" m={0} p={2}>
             Notifications
+            <DrawerCloseButton />
           </DrawerHeader>
           <DrawerBody p={4}>
             <>
@@ -88,4 +88,4 @@ const Notifications = ({ member }: Props) => {
   )
 }
 
-export default Notifications
+export default NotificationsAction

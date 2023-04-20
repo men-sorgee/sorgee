@@ -7,7 +7,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm'
-import { EventsUsers } from './EventsUsers'
+import { EventsUser } from './EventsUsers'
 import { Location } from './Location'
 import { Messages } from './Messages'
 import { NotificationsUsers } from './NotificationsUsers'
@@ -20,9 +20,10 @@ import { UserEmailEvents } from './UserEmailEvents'
 import { UserRelationships } from './UserRelationships'
 import { UserSession } from './UserSession'
 import { DirectusUsers } from './DirectusUsers'
-import { DirectusFiles } from './DirectusFiles'
+import { DirectusFile } from './DirectusFiles'
 import { UsersFiles } from './UsersFiles'
 import { UsersPhotos } from './UsersPhotos'
+import { UserBuddy } from './UserBuddy'
 
 @Index('users_email_unique', ['email'], { unique: true })
 @Index('users_pkey', ['id'], { unique: true })
@@ -467,8 +468,8 @@ export class User {
   })
   showExplicitRoles: boolean | null
 
-  @OneToMany(() => EventsUsers, (eventsUsers) => eventsUsers.users)
-  eventsUsers: EventsUsers[]
+  @OneToMany(() => EventsUser, (eventsUsers) => eventsUsers.user)
+  events: EventsUser[]
 
   @OneToMany(() => Location, (location) => location.owner)
   locations: Location[]
@@ -494,6 +495,9 @@ export class User {
   @OneToMany(() => UserAccount, (userAccount) => userAccount.user)
   userAccounts: UserAccount[]
 
+  @OneToMany(() => UserSession, (userSession) => userSession.user)
+  userSessions: UserSession[]
+
   @OneToMany(() => UserContactAttempt, (userContactAttempt) => userContactAttempt.user)
   userContactAttempts: UserContactAttempt[]
 
@@ -503,44 +507,35 @@ export class User {
   @OneToMany(() => UserRelationships, (userRelationships) => userRelationships.relatedUsers)
   userRelationships: UserRelationships[]
 
-  @OneToMany(() => UserSession, (userSession) => userSession.user)
-  userSessions: UserSession[]
-
   @JoinColumn([{ name: 'approved_by', referencedColumnName: 'id' }])
   approvedBy: DirectusUsers
 
-  @ManyToOne(() => DirectusFiles, (directusFiles) => directusFiles.users, {
-    onDelete: 'SET NULL',
-  })
   @JoinColumn([{ name: 'photo', referencedColumnName: 'id' }])
-  photo: DirectusFiles
+  photo: DirectusFile
 
-  @ManyToOne(() => DirectusFiles, (directusFiles) => directusFiles.users2, {
-    onDelete: 'SET NULL',
-  })
   @JoinColumn([{ name: 'picture', referencedColumnName: 'id' }])
-  picture: DirectusFiles
+  picture: DirectusFile
 
   @ManyToOne(() => Promos, (promos) => promos.users, { onDelete: 'SET NULL' })
   @JoinColumn([{ name: 'promo', referencedColumnName: 'id' }])
   promo: Promos
 
-  @ManyToOne(() => User, (users) => users.users)
+  @ManyToOne(() => User, (users) => users)
   @JoinColumn([{ name: 'vouched_by', referencedColumnName: 'id' }])
   vouchedBy: User
 
-  @OneToMany(() => User, (users) => users.vouchedBy)
-  users: User[]
+  @OneToMany(() => UserBuddy, (userBuddy) => userBuddy.buddy)
+  buddy_of: UserBuddy[]
 
-  @ManyToOne(() => DirectusFiles, (directusFiles) => directusFiles.users3, {
-    onDelete: 'SET NULL',
-  })
+  @OneToMany(() => UserBuddy, (userBuddy) => userBuddy.user)
+  buddies: UserBuddy[]
+
   @JoinColumn([{ name: 'waiver', referencedColumnName: 'id' }])
-  waiver: DirectusFiles
+  waiver: DirectusFile
 
-  @OneToMany(() => UsersFiles, (usersFiles) => usersFiles.users)
+  @OneToMany(() => UsersFiles, (usersFiles) => usersFiles.user)
   usersFiles: UsersFiles[]
 
-  @OneToMany(() => UsersPhotos, (usersPhotos) => usersPhotos.users)
+  @OneToMany(() => UsersPhotos, (usersPhotos) => usersPhotos.user)
   usersPhotos: UsersPhotos[]
 }

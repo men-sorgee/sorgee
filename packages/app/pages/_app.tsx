@@ -1,7 +1,6 @@
 import { AppProps } from 'next/app'
 import { SessionProvider } from 'next-auth/react'
 import { ChakraProvider, cookieStorageManager, extendTheme } from '@chakra-ui/react'
-import { onCLS, onFID, onLCP } from 'web-vitals'
 import Layout from 'components/layout/index'
 import getTheme from '../theme'
 import { Manrope, Arvo, Roboto_Mono } from 'next/font/google'

@@ -1,11 +1,11 @@
 import { Flex, Badge, Box, Spacer } from '@chakra-ui/react'
 import { SearchableMember } from 'lib/models'
-import { MemberCard, MemberCardProps } from './MemberCard'
+import { MemberIcon, MemberIconProps } from './MemberIcon'
 import { capitalCase } from 'change-case'
 
 import { ReactNode } from 'react'
 
-export type MemberHeaderProps = MemberCardProps & {
+export type MemberHeaderProps = MemberIconProps & {
   children?: ReactNode
   member: Partial<SearchableMember>
   color?: string
@@ -23,26 +23,35 @@ export const MemberHeader = ({
 }: MemberHeaderProps) => {
   return (
     <>
-      <Flex direction="column" justify="space-between" align="center" alignItems="center">
-        <Flex direction={['column', 'row']} gap={2} justify="space-between" align="left" w="full">
-          <MemberCard member={member} size={size} {...props}>
-            {children}
-          </MemberCard>
-        </Flex>
+      <Flex direction="column" justify="space-between" align="center" alignItems="center" gap={2}>
+        <MemberIcon member={member} size={size} {...props}>
+          {children}
+        </MemberIcon>
+
         {!minimal && (
           <Flex justify="left" align="start" my={2} w="full">
             {member?.mannerisms && (
-              <Badge size="lg" bg="primary.700" color="white" borderRadius="3px 0 0 3px">
+              <Badge
+                fontSize={['xs', 'sm']}
+                bg="primary.700"
+                color="white"
+                borderRadius="3px 0 0 3px"
+              >
                 {capitalCase(member.mannerisms)}
               </Badge>
             )}
             {member?.relationship_status && (
-              <Badge size="lg" bg="primary.500" color="white" rounded={0}>
+              <Badge fontSize={['xs', 'sm']} bg="primary.500" color="white" rounded={0}>
                 {capitalCase(member.relationship_status)}
               </Badge>
             )}
             {member?.spectrum && (
-              <Badge size={'lg'} bg="primary.300" color="white" borderRadius="0 3px 3px 0">
+              <Badge
+                fontSize={['xs', 'sm']}
+                bg="primary.300"
+                color="white"
+                borderRadius="0 3px 3px 0"
+              >
                 {capitalCase(member.spectrum)}
               </Badge>
             )}

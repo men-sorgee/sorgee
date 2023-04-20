@@ -7,17 +7,17 @@ import {
   TabPanel,
   Text,
   Heading,
-  Wrap,
   Flex,
-  Spacer,
+  ButtonGroup,
   Stat,
   StatGroup,
   StatLabel,
   StatNumber,
   AvatarProps,
-  HStack,
+  Spacer,
+  Tooltip,
 } from '@chakra-ui/react'
-import { BuddyControl } from './BuddyControl'
+import { MemberConnect, MemberChat, MemberHeader, MemberPropertyGroup } from '.'
 import { useMember, useMeta } from 'hooks'
 import { formatDistanceToNowStrict } from 'date-fns'
 import {
@@ -36,8 +36,6 @@ import {
 import { ReactNode, useEffect } from 'react'
 import { ImageGallery } from './ImageGallery'
 import { Loading } from './Loading'
-import { MemberHeader } from './MemberHeader'
-import { MemberPropertyGroup } from './MemberPropertyGroup'
 import { Rating } from './Rating'
 import { toLocalDate } from 'lib/utils'
 
@@ -49,15 +47,7 @@ type Props = AvatarProps & {
   children?: ReactNode
 }
 
-export const MemberSpotlight = ({
-  id,
-  fields,
-  full = true,
-  color,
-  size,
-  children,
-  ...props
-}: Props) => {
+export const MemberSpotlight = ({ id, fields, full = true, color, children }: Props) => {
   const { member, name, picture, loading } = useMember(id)
   const { setMeta } = useMeta()
   useEffect(() => {
@@ -65,35 +55,28 @@ export const MemberSpotlight = ({
   }, [full, member, name, picture, setMeta])
   if (loading || !id || !member) return <Loading />
   const publicPhotos = member.my_photos?.filter((p) => p.is_public) || []
-  const levelValue = MemberLevel[member?.user_type]
+  const levelValue = MemberLevel[member?.user_type || 'subscriber']
   const levelColor = MemberLevelColorMap[levelValue]
   const eventsAttended = member?.events?.filter((e) => e.attended)?.length || 0
+  const eventsFlaked =
+    member?.events?.filter((e) => e.rsvp == 'confirmed' && e.attended == false)?.length || 0
+  const size = ['md', 'lg', 'xl']
   return (
     <Flex direction="column" justify="space-between">
       <Box
         px={5}
         py={4}
         bgGradient={full ? `linear(to-bl, ${levelColor[1]}, ${levelColor[0]})` : null}
-        rounded="md"
-        borderRadius=".3rem .3rem 0 0"
+        borderRadius={['none', '.3rem .3rem 0 0', '1rem 1rem 0 0']}
         color="white"
       >
         <MemberHeader member={member} zoom={true} color={color} size={size} minimal={!full}>
           {children}
-          {full && (
-            <StatGroup mr={4}>
-              {eventsAttended > 0 && (
-                <Stat>
-                  <StatLabel>
-                    Events
-                    <br />
-                    Attended
-                  </StatLabel>
-                  <StatNumber>{eventsAttended}</StatNumber>
-                </Stat>
-              )}
-            </StatGroup>
-          )}
+          <Spacer />
+          <ButtonGroup>
+            <MemberChat member={member} />
+            <MemberConnect member={member} />
+          </ButtonGroup>
         </MemberHeader>
         {full && <Text>{member?.biography}</Text>}
         {full && (
@@ -108,19 +91,13 @@ export const MemberSpotlight = ({
               Member Since: {new Date(member.date_created).toLocaleDateString()}
             </Text>
             {member?.rating > 0 && (
-              <Rating
-                value={member.rating || 0}
-                mt={2}
-                aria-label="User Rating"
-                size={['xs']}
-                simple
-              />
+              <Rating value={member.rating || 0} mt={2} aria-label="User Rating" size="xs" simple />
             )}
           </Flex>
         )}
       </Box>
       {full && member.show_photos && (
-        <Box my={4} p={2} flex="grow">
+        <Box p={2} flex="grow">
           {publicPhotos.length > 0 && (
             <ImageGallery
               images={publicPhotos.map((p: UserPhoto) => `/api/asset/${p.directus_files_id}`)}
@@ -134,17 +111,25 @@ export const MemberSpotlight = ({
           isFitted
           variant="enclosed"
           colorScheme="primary"
-          fontSize={['sm', 'md', 'lg']}
+          fontSize={['xs', 'sm', 'md', 'lg']}
           w="full"
           px={2}
           flex="grow"
-          my={4}
+          size={['sm', 'md', 'lg']}
         >
           <TabList>
-            <Tab fontWeight="bold">General</Tab>
-            <Tab fontWeight="bold">Sexual</Tab>
-            <Tab fontWeight="bold">Interests</Tab>
-            <Tab fontWeight="bold">Health</Tab>
+            <Tab p={1} fontWeight="bold">
+              General
+            </Tab>
+            <Tab p={1} fontWeight="bold">
+              Sexual
+            </Tab>
+            <Tab p={1} fontWeight="bold">
+              Interests
+            </Tab>
+            <Tab p={1} fontWeight="bold">
+              Health
+            </Tab>
           </TabList>
           <TabPanels maxH="100%" overflowY="auto" my={2}>
             <TabPanel p={4}>
@@ -258,9 +243,37 @@ export const MemberSpotlight = ({
           </TabPanels>
         </Tabs>
       )}
-      <HStack spacing={4} p={4} justify="end">
-        <BuddyControl memberId={member.id} />
-      </HStack>
+      <Flex justify="space-between" gap={4} p={4} align="flex-end">
+        {member.buddies.length > 0 && (
+          <Stat>
+            <StatLabel>
+              Added <br />
+              Buddies
+            </StatLabel>
+            <StatNumber>{member.buddies.length}</StatNumber>
+          </Stat>
+        )}
+        {eventsAttended > 0 && (
+          <Stat>
+            <StatLabel>
+              Events
+              <br />
+              Attended
+            </StatLabel>
+            <StatNumber>{eventsAttended}</StatNumber>
+          </Stat>
+        )}
+        {eventsFlaked > 0 && (
+          <Stat color="accent.500">
+            <StatLabel fontWeight="bold" whiteSpace="nowrap">
+              Event
+              <br />
+              No-Shows
+            </StatLabel>
+            <StatNumber>{eventsFlaked}</StatNumber>
+          </Stat>
+        )}
+      </Flex>
     </Flex>
   )
 }

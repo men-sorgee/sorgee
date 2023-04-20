@@ -1,5 +1,5 @@
 import { Heading, Text } from '@chakra-ui/react'
-import { LinkButton } from 'components/controls'
+import { ButtonLink } from 'components/controls'
 import Page from 'components/Page'
 
 export default function NotFound() {
@@ -7,7 +7,7 @@ export default function NotFound() {
     <Page title="500" textAlign="center">
       <Heading>Server Error</Heading>
       <Text my={20}>This cannot be viewed at this time.</Text>
-      <LinkButton href="/">Go Home</LinkButton>
+      <ButtonLink href="/">Go Home</ButtonLink>
     </Page>
   )
 }

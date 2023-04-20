@@ -17,7 +17,7 @@ import {
   StatNumber,
   StatHelpText,
   Spacer,
-  HStack,
+  Show,
   useColorModeValue,
   PinInput,
   PinInputField,
@@ -183,18 +183,23 @@ export const EventCard = ({
       </CardHeader>
 
       <CardBody w="full" pb={0}>
-        <Flex mb={2} gap={4} justify="space-between" wrap={['wrap', 'nowrap']}>
+        <Flex my={2} gap={4} justify="space-between" wrap={['wrap', 'nowrap']}>
+          <Show above={'md'}>
+            <Stat>
+              <StatLabel>Event Type</StatLabel>
+              <StatNumber fontSize={['lg', 'xl', '2xl']}>{capitalCase(event.type)}</StatNumber>
+            </Stat>
+            <Stat>
+              <StatLabel>Invite Type</StatLabel>
+              <StatNumber fontSize={['lg', 'xl', '2xl']}>
+                {event.invite_only ? 'Exclusive' : 'Open'}
+              </StatNumber>
+            </Stat>
+          </Show>
           <Stat>
-            <StatLabel>Event Type</StatLabel>
-            <StatNumber fontSize={['lg', 'xl', '2xl']}>{capitalCase(event.type)}</StatNumber>
+            <StatLabel>Where</StatLabel>
+            <StatNumber fontSize={['lg', 'xl', '2xl']}>Denver</StatNumber>
           </Stat>
-          <Stat>
-            <StatLabel>Invite Type</StatLabel>
-            <StatNumber fontSize={['lg', 'xl', '2xl']}>
-              {event.invite_only ? 'Exclusive' : 'Open'}
-            </StatNumber>
-          </Stat>
-
           <Stat>
             <StatLabel>Start Time</StatLabel>
             <StatNumber fontSize={['lg', 'xl', '2xl']}>{eventStartDate?.time}</StatNumber>
@@ -265,9 +270,7 @@ export const EventCard = ({
         {children}
       </CardBody>
       <CardFooter>
-        <Flex gap={4} w="full" align="center">
-          {footer}
-          <Spacer />
+        <Flex direction={['column', 'row']} gap={4} w="full" align="center">
           {event.status == 'scheduled' && eventStartDate?.dateOnly && showAddToCalendar && (
             <>
               <AddToCalendarButton
@@ -298,7 +301,8 @@ export const EventCard = ({
               <Spacer />
             </>
           )}
-
+          {footer}
+          <Spacer />
           {(event.status == 'planned' && (
             <>
               <Text as="em">* This is date is subject to change.</Text>

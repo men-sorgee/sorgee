@@ -61,7 +61,7 @@ export async function updateSendGrid(
     if (response.statusCode > 202) {
       throw new Error('Sendgrid Error:' + JSON.stringify(data))
     }
-    console.log('Contact synced: ' + email)
+    console.log('contact synced: ' + email)
     return data
   } catch (error) {
     console.error(error.message, error)

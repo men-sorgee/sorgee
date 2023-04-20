@@ -9,6 +9,7 @@
     "cockroachdb",
     "Codegen",
     "Consolas",
+    "convo",
     "daisyui",
     "datetime",
     "editorjs",
@@ -24,6 +25,7 @@
     "headlessui",
     "heroicons",
     "hookform",
+    "hypertheme",
     "jssdk",
     "KHTML",
     "mapbox",
@@ -56,6 +58,7 @@
   },
   "typescript.tsdk": "./node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.preferences.importModuleSpecifier": "relative",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnPaste": true, // required
   "editor.formatOnType": true, // required

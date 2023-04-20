@@ -6,7 +6,7 @@ export async function JsonFetcher<T>(url: string) {
   if (!url) return null as T
   const response = await fetch(url)
   if (!response.ok) {
-    console.log(`Error fetching ${url}: ${response.status} ${response.statusText}`)
+    console.log(`error fetching ${url}: ${response.status} ${response.statusText}`)
     return null as T
   } else {
     try {

@@ -15,11 +15,11 @@ import {
   SurveyQuestion,
   User,
   UserAccount,
+  UserBuddy,
   UserEmailEvent,
   UserFile,
   UserNotification,
   UserPhoto,
-  UserRelationship,
   UserSession,
   UserVerificationToken,
 } from 'lib/models'
@@ -160,7 +160,7 @@ export type DirectusTypes = {
   user_session: UserSession
   user_verification_token: UserVerificationToken
   user_email_events: UserEmailEvent
-  user_relationships: UserRelationship
+  user_buddy: UserBuddy
   users: User
   users_files: UserFile
   users_photos: UserPhoto

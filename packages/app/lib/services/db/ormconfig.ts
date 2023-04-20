@@ -10,6 +10,8 @@ const config: DataSourceOptions = {
   database: process.env.DB_DATABASE || 'guysnheat',
   synchronize: false,
   entities: types,
+  useUTC: true,
+  poolSize: 10,
 }
 
 export default config

@@ -1,6 +1,6 @@
 import * as typeorm from 'typeorm'
-import { DirectusFiles } from './DirectusFiles'
-import { User } from './Users'
+import { DirectusFile } from './DirectusFiles'
+import { User } from './User'
 
 @typeorm.Index('users_photos_pkey', ['id'], { unique: true })
 @typeorm.Entity('users_photos', { schema: 'public' })
@@ -26,13 +26,9 @@ export class UsersPhotos {
   })
   status: string | null
 
-  @typeorm.ManyToOne(() => DirectusFiles, (directusFiles) => directusFiles.usersPhotos, {
-    onDelete: 'CASCADE',
-  })
   @typeorm.JoinColumn([{ name: 'directus_files_id', referencedColumnName: 'id' }])
-  directusFiles: typeorm.Relation<DirectusFiles>
+  directusFile: typeorm.Relation<DirectusFile>
 
-  @typeorm.ManyToOne(() => User, (users) => users.usersPhotos, { onDelete: 'CASCADE' })
   @typeorm.JoinColumn([{ name: 'users_id', referencedColumnName: 'id' }])
-  users: typeorm.Relation<User>
+  user: typeorm.Relation<User>
 }

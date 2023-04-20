@@ -1,6 +1,6 @@
 import * as typeorm from 'typeorm'
-import { User } from './Users'
-import { DirectusFiles } from './DirectusFiles'
+import { User } from './User'
+import { DirectusFile } from './DirectusFiles'
 import { DirectusUsers } from './DirectusUsers'
 
 @typeorm.Index('messages_pkey', ['id'], { unique: true })
@@ -45,7 +45,7 @@ export class Messages {
   from: typeorm.Relation<User>
 
   @typeorm.JoinColumn([{ name: 'image', referencedColumnName: 'id' }])
-  image: typeorm.Relation<DirectusFiles>
+  image: typeorm.Relation<DirectusFile>
 
   @typeorm.JoinColumn([{ name: 'to', referencedColumnName: 'id' }])
   to: typeorm.Relation<User>

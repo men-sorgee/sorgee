@@ -42,30 +42,43 @@ export type ApiResult<T = any> = {
 }
 export type HttpMethod = (string & 'GET') | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
 
-export async function getJSON<T = never | any>(url: string): Promise<ApiResult<T>> {
-  return await fetchJSON<T>(url)
+export async function getJSON<T = never | any, R = DefaultTo<null, T>>(
+  url: string
+): Promise<ApiResult<R>> {
+  return await fetchJSON<T, R>(url)
 }
 
-export async function postJSON<T = never | any>(url: string, data: T): Promise<ApiResult<T>> {
-  return await fetchJSON<T>(url, data, 'POST')
+export async function postJSON<T = never | any, R = DefaultTo<null, T>>(
+  url: string,
+  data: T
+): Promise<ApiResult<R>> {
+  return await fetchJSON<T, R>(url, data, 'POST')
 }
 
-export async function putJSON<T = never | any>(url: string, data: T): Promise<ApiResult<T>> {
-  return await fetchJSON<T>(url, data, 'PUT')
+export async function putJSON<T = never | any, R = DefaultTo<null, T>>(
+  url: string,
+  data: T
+): Promise<ApiResult<R>> {
+  return await fetchJSON<T, R>(url, data, 'PUT')
 }
 
-export async function deleteJSON<T = never | any>(url: string, data?: T): Promise<ApiResult<T>> {
-  return await fetchJSON<T>(url, data, 'DELETE')
+type DefaultTo<T, Fallback> = T extends null | undefined ? Fallback : T
+
+export async function deleteJSON<T = never | any, R = DefaultTo<null, T>>(
+  url: string,
+  data?: T
+): Promise<ApiResult<R>> {
+  return await fetchJSON<T, R>(url, data, 'DELETE')
 }
 
-export async function fetchJSON<T = object | any>(
+export async function fetchJSON<T = object | any, R = DefaultTo<null, T>>(
   url: string,
   data?: T,
   method: HttpMethod = 'GET',
   headers: Record<string, string> = {
     'Content-Type': 'application/json',
   }
-): Promise<ApiResult<T>> {
+): Promise<ApiResult<R>> {
   const response = await fetch(url, {
     method,
     headers,
@@ -73,12 +86,12 @@ export async function fetchJSON<T = object | any>(
   })
   const { ok: success } = response
   try {
-    const body = (await response.json()) as ApiResponse<T>
+    const body = (await response.json()) as ApiResponse<R>
     if (!body) {
       return { success, error: { message: 'No response body' } }
     }
     const { data, error } = body
-    return { success, data, error } as ApiResult<T>
+    return { success, data, error } as ApiResult<R>
   } catch (error) {
     return { success, error: { message: error.message || error } }
   }

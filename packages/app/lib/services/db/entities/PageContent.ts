@@ -1,5 +1,5 @@
 import * as typeorm from 'typeorm'
-import { DirectusFiles } from './DirectusFiles'
+import { DirectusFile } from './DirectusFiles'
 import { Page } from './Page'
 import { DirectusUsers } from './DirectusUsers'
 
@@ -50,11 +50,8 @@ export class PageContent {
   @typeorm.Column('integer', { name: 'columns', nullable: true, default: () => '1' })
   columns: number | null
 
-  @typeorm.ManyToOne(() => DirectusFiles, (directusFiles) => directusFiles.pageContents, {
-    onDelete: 'SET NULL',
-  })
   @typeorm.JoinColumn([{ name: 'image', referencedColumnName: 'id' }])
-  image: typeorm.Relation<DirectusFiles>
+  image: typeorm.Relation<DirectusFile>
 
   @typeorm.ManyToOne(() => Page, (page) => page.pageContents, { onDelete: 'SET NULL' })
   @typeorm.JoinColumn([{ name: 'page', referencedColumnName: 'id' }])

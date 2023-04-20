@@ -5,7 +5,7 @@ type Props = ImageProps & {
   fileId: string | DirectusFile
 }
 
-export const AssetImage = chakra(({ fileId, height, width = '150px', alt, ...props }: Props) => {
+export const ImageAsset = chakra(({ fileId, height, width = '150px', alt, ...props }: Props) => {
   if (!fileId) return null
   return (
     <Image
