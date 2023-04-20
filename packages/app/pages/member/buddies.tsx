@@ -39,11 +39,9 @@ export async function getServerSideProps(): Promise<{ props: PageProps }> {
 export default function BuddiesPage({ fieldMap }: PageProps) {
   const [onlineOnly, setOnlineOnly] = useState(false)
   const [id, setId] = useState<string>(undefined)
-
   const { member, loading } = useUser(MemberLevel.brother)
   const buddies = member?.buddies as UserBuddy[]
   let members = buddies?.map((buddy) => buddy.buddy_id as User)
-
   let onlineMembers = members?.filter((m) => m.presence == 'online')
   if (onlineOnly) {
     members = onlineMembers
@@ -77,7 +75,7 @@ export default function BuddiesPage({ fieldMap }: PageProps) {
           <Link textDecoration="underline" as={NextLink} href="/members">
             members directory
           </Link>
-          . You have {buddies?.length} buddies, with {onlineMembers?.length} online.
+          . You have {members?.length} buddies with {onlineMembers?.length} online.
         </Text>
         <Spacer />
         <Flex direction="column" align="center" justify="space-around" minWidth={['full', '15%']}>
@@ -97,7 +95,7 @@ export default function BuddiesPage({ fieldMap }: PageProps) {
           members?.map((u: User) => (
             <MemberCard
               key={u.id}
-              size="2xl"
+              size={['md', 'lg', 'xl']}
               member={u as unknown as SearchableMember}
               onClick={() => {
                 setId(u.id)

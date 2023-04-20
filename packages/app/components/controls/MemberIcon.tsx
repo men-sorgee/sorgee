@@ -53,7 +53,7 @@ export const MemberIcon = chakra(
                   ? getAssetUrl(member?.picture) + '?width=100&height=100&quality=80'
                   : null
               }
-              size={size}
+              size={['lg', 'xl']}
               color={color}
               name={member?.nickname || 'Brother'}
               bgGradient="linear(to-b, primary.500, primary.800)"
@@ -74,7 +74,7 @@ export const MemberIcon = chakra(
             </Avatar>
 
             <Flex w="full" direction="column" gap={1} textAlign="left">
-              <Heading size={size} textTransform="uppercase" m={0} color={color} w="full">
+              <Heading size={['md', 'lg']} textTransform="uppercase" m={0} color={color} w="full">
                 {member?.nickname || 'Anon'}
               </Heading>
               <Flex gap={4} align="start" justify="space-between" w="full">

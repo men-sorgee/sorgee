@@ -60,7 +60,7 @@ export const MemberSpotlight = ({ id, fields, full = true, color, children }: Pr
   const eventsAttended = member?.events?.filter((e) => e.attended)?.length || 0
   const eventsFlaked =
     member?.events?.filter((e) => e.rsvp == 'confirmed' && e.attended == false)?.length || 0
-  const size = ['md', 'lg', 'xl']
+
   return (
     <Flex direction="column" justify="space-between">
       <Box
@@ -70,7 +70,13 @@ export const MemberSpotlight = ({ id, fields, full = true, color, children }: Pr
         borderRadius={['none', '.3rem .3rem 0 0', '1rem 1rem 0 0']}
         color="white"
       >
-        <MemberHeader member={member} zoom={true} color={color} size={size} minimal={!full}>
+        <MemberHeader
+          member={member}
+          zoom={true}
+          color={color}
+          size={['sm', 'md']}
+          minimal={member?.show_profile == false || full == false}
+        >
           {children}
           <Spacer />
           <ButtonGroup>

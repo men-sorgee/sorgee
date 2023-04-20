@@ -17,7 +17,7 @@ export const MemberHeader = ({
   children,
   member,
   color,
-  size = 'xl',
+  size = 'lg',
   minimal,
   ...props
 }: MemberHeaderProps) => {
@@ -28,7 +28,7 @@ export const MemberHeader = ({
           {children}
         </MemberIcon>
 
-        {!minimal && (
+        {minimal == false && (
           <Flex justify="left" align="start" my={2} w="full">
             {member?.mannerisms && (
               <Badge

@@ -5,16 +5,19 @@ import {
   CardBody,
   CardFooter,
   Spacer,
+  Flex,
   Text,
   chakra,
   ButtonGroup,
   CardHeader,
   CardProps,
+  Heading,
 } from '@chakra-ui/react'
 import { SearchableMember, MemberLevelColorMap, MemberLevel } from 'lib/models'
 import { MemberHeader, MemberChat, MemberConnect } from '.'
 import NextLink from 'next/link'
 import { formatDistanceToNowStrict } from 'date-fns'
+import { LockIcon } from '@chakra-ui/icons'
 
 type Props = CardProps & {
   member: Partial<SearchableMember>
@@ -48,14 +51,32 @@ export const MemberCard = chakra(
                 href={`/members/${member.id}`}
                 onClick={(e) => {
                   e.preventDefault()
-                  onClick()
+                  if (member.show_profile) onClick()
                 }}
               >
-                <MemberHeader member={member} zoom={false} size={size} />
+                <MemberHeader member={member} zoom={false} size={size}>
+                  {!member.show_profile && (
+                    <>
+                      <Flex
+                        px={4}
+                        mt={-8}
+                        direction="column"
+                        w="25%"
+                        align="start"
+                        justify="center"
+                      >
+                        <LockIcon color="primary.500" h={20} w={20} mx={'auto'} />
+                        <Heading as="h3" mt={-10} size="sm" p={0} textAlign="center">
+                          PRIVATE PROFILE
+                        </Heading>
+                      </Flex>
+                    </>
+                  )}
+                </MemberHeader>
               </LinkOverlay>
             </CardHeader>
 
-            {full && (
+            {full && member?.show_profile && (
               <CardBody>
                 <Text noOfLines={2} py={0} my={0}>
                   {member.biography}
@@ -65,7 +86,7 @@ export const MemberCard = chakra(
 
             <CardFooter justify="space-between" alignItems="end">
               <Text fontSize="xs">
-                {member.last_login && (
+                {member?.show_profile && member.last_login && (
                   <>
                     Last Login: {formatDistanceToNowStrict(new Date(member.last_login))} ago
                     <br />
@@ -74,6 +95,7 @@ export const MemberCard = chakra(
                 Member Since:{' '}
                 {new Date(member.approved_date || member.date_created).toLocaleDateString()}
               </Text>
+
               <ButtonGroup>
                 <MemberChat member={member} />
                 <MemberConnect member={member} />
