@@ -50,9 +50,6 @@ export class PageContent {
   @typeorm.Column('integer', { name: 'columns', nullable: true, default: () => '1' })
   columns: number | null
 
-  @typeorm.ManyToOne(() => DirectusFile, (directusFiles) => directusFiles.pageContents, {
-    onDelete: 'SET NULL',
-  })
   @typeorm.JoinColumn([{ name: 'image', referencedColumnName: 'id' }])
   image: typeorm.Relation<DirectusFile>
 

@@ -1,15 +1,16 @@
-import { IconButton, Badge } from '@chakra-ui/react'
+import { IconButton, IconButtonProps, chakra } from '@chakra-ui/react'
 import { UserIcon, UserPlusIcon } from '@heroicons/react/24/outline'
 import { UserIcon as BuddyIcon, UserMinusIcon as BuddyIconMinus } from '@heroicons/react/24/solid'
 import { useEffect, useState } from 'react'
 import { useUser } from 'hooks'
 import { deleteJSON, postJSON } from 'lib/utils'
 import { Member, MemberLevel, SearchableMember, UserBuddy } from 'lib/models'
-type Props = {
+
+type Props = Omit<IconButtonProps, 'aria-label'> & {
   member: Partial<Member | SearchableMember>
 }
 
-export const MemberConnect = ({ member }: Props) => {
+export const MemberConnect = chakra(({ member, size = 'lg', ...props }: Props) => {
   const { loading: userLoading, member: me, level, reload } = useUser()
   const [hover, setHover] = useState(false)
   const [isBuddy, setIsBuddy] = useState<boolean | undefined>(undefined)
@@ -33,7 +34,8 @@ export const MemberConnect = ({ member }: Props) => {
 
   useEffect(() => {
     if (!userLoading && me && isBuddy == undefined && me.buddies) {
-      const b = me.buddies?.some((ur) => ur.buddy_id === member.id)
+      const buddies = me.buddies as UserBuddy[]
+      const b = buddies.some((ur: UserBuddy) => ur.buddy_id === member.id)
       setIsBuddy(b)
     }
   }, [isBuddy, me, member.id, userLoading])
@@ -58,8 +60,9 @@ export const MemberConnect = ({ member }: Props) => {
           onClick={toggleBuddy}
           title="Remove Buddy"
           aria-label="Remove Buddy"
-          size="lg"
-        ></IconButton>
+          size={size}
+          {...props}
+        />
       )) || (
         <IconButton
           icon={hover ? <UserPlusIcon width="30px" /> : <UserIcon width="30px" />}
@@ -75,9 +78,10 @@ export const MemberConnect = ({ member }: Props) => {
           cursor="pointer"
           onClick={toggleBuddy}
           color="white"
-          size="lg"
-        ></IconButton>
+          size={size}
+          {...props}
+        />
       )}
     </>
   )
-}
+})

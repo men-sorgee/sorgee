@@ -7,15 +7,14 @@ import {
   TabPanel,
   Text,
   Heading,
-  Wrap,
   Flex,
-  Spacer,
+  ButtonGroup,
   Stat,
   StatGroup,
   StatLabel,
   StatNumber,
   AvatarProps,
-  HStack,
+  Spacer,
 } from '@chakra-ui/react'
 import { MemberConnect, MemberChat, MemberHeader, MemberPropertyGroup } from '.'
 import { useMember, useMeta } from 'hooks'
@@ -55,9 +54,11 @@ export const MemberSpotlight = ({ id, fields, full = true, color, size, children
   }, [full, member, name, picture, setMeta])
   if (loading || !id || !member) return <Loading />
   const publicPhotos = member.my_photos?.filter((p) => p.is_public) || []
-  const levelValue = MemberLevel[member?.user_type]
+  const levelValue = MemberLevel[member?.user_type || 'subscriber']
   const levelColor = MemberLevelColorMap[levelValue]
   const eventsAttended = member?.events?.filter((e) => e.attended)?.length || 0
+  const eventsFlaked =
+    member?.events?.filter((e) => e.rsvp == 'confirmed' && e.attended == false)?.length || 0
   return (
     <Flex direction="column" justify="space-between">
       <Box
@@ -70,20 +71,11 @@ export const MemberSpotlight = ({ id, fields, full = true, color, size, children
       >
         <MemberHeader member={member} zoom={true} color={color} size={size} minimal={!full}>
           {children}
-          {full && (
-            <StatGroup mr={4}>
-              {eventsAttended > 0 && (
-                <Stat>
-                  <StatLabel>
-                    Events
-                    <br />
-                    Attended
-                  </StatLabel>
-                  <StatNumber>{eventsAttended}</StatNumber>
-                </Stat>
-              )}
-            </StatGroup>
-          )}
+          <Spacer />
+          <ButtonGroup>
+            <MemberChat member={member} />
+            <MemberConnect member={member} />
+          </ButtonGroup>
         </MemberHeader>
         {full && <Text>{member?.biography}</Text>}
         {full && (
@@ -242,10 +234,39 @@ export const MemberSpotlight = ({ id, fields, full = true, color, size, children
           </TabPanels>
         </Tabs>
       )}
-      <HStack spacing={4} p={4} justify="end">
-        <MemberConnect member={member} />
-        <MemberChat member={member} />
-      </HStack>
+      <Flex justify="right" p={4} align="flex-end">
+        <StatGroup gap={[2, 2, 4]}>
+          {member.buddies.length > 0 && (
+            <Stat>
+              <StatLabel>
+                Added <br />
+                Buddies
+              </StatLabel>
+              <StatNumber>{member.buddies.length}</StatNumber>
+            </Stat>
+          )}
+          {eventsAttended > 0 && (
+            <Stat>
+              <StatLabel>
+                Events
+                <br />
+                Attended
+              </StatLabel>
+              <StatNumber>{eventsAttended}</StatNumber>
+            </Stat>
+          )}
+          {eventsFlaked > 0 && (
+            <Stat color="accent.500">
+              <StatLabel fontWeight="bold" whiteSpace="nowrap">
+                Event
+                <br />
+                No-Shows
+              </StatLabel>
+              <StatNumber>{eventsFlaked}</StatNumber>
+            </Stat>
+          )}
+        </StatGroup>
+      </Flex>
     </Flex>
   )
 }

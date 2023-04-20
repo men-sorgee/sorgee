@@ -346,7 +346,7 @@ export type Applicant = Profile & {
   age: number
   height: string
   weight: number
-  skin_tone: string[]
+  skin_tone: string
   my_positions: string[]
   my_roles: string[]
   sexual_scenes: string[]
@@ -633,8 +633,7 @@ export const memberFields: Array<keyof Member> = [
 
 export const getAllowedUsers = (level: MemberLevel) => {
   let allowedLevels: UserType[] = ['brother', 'big_brother', 'staff']
-  if (level >= MemberLevel.brother) allowedLevels = [...allowedLevels, 'inductee']
-  if (level >= MemberLevel.big_brother) allowedLevels = [...allowedLevels, 'pledge']
+  if (level >= MemberLevel.brother) allowedLevels = [...allowedLevels, 'inductee', 'pledge']
 
   return allowedLevels
 }

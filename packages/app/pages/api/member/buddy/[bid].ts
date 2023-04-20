@@ -14,8 +14,6 @@ export default async function MemberBuddy(
     const { bid } = req.query
     const user_id = String(bid)
 
-    console.log('Member Buddy', method, user_id)
-
     const them = await getUser(user_id)
     if (them == null) {
       res.status(404).json(ApiResponse(null, 'Not Found'))

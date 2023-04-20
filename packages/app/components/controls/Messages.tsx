@@ -1,4 +1,3 @@
-//import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css'
 import { postJSON } from 'lib/utils'
 import { useMessages } from 'hooks'
 import { Member, ChatMessage, Message, Conversation, UserMessages } from 'lib/models'

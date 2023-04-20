@@ -38,8 +38,8 @@ const Page = ({
     setMeta(title, description, image)
     if (status != 'loading' && requireAuth) {
       if (status !== 'authenticated') setDenied(true)
-      else {
-        const level = MemberLevel[session.user.user_type]
+      else if (session.user) {
+        const level = MemberLevel[session.user.user_type as string]
         setDenied(level < requiredLevel)
       }
     }
@@ -48,6 +48,7 @@ const Page = ({
     image,
     requireAuth,
     requiredLevel,
+    session?.user,
     session?.user.user_type,
     setMeta,
     status,

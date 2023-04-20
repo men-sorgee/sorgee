@@ -75,9 +75,6 @@ export class Page {
   })
   blogArticle: boolean | null
 
-  @typeorm.ManyToOne(() => DirectusFile, (directusFiles) => directusFiles.pages, {
-    onDelete: 'SET NULL',
-  })
   @typeorm.JoinColumn([{ name: 'image', referencedColumnName: 'id' }])
   image: typeorm.Relation<DirectusFile>
 

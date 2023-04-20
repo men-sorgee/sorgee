@@ -45,7 +45,7 @@ export const MemberIcon = chakra(
     return (
       <>
         {member && (
-          <Flex gap={3} alignItems="center" w="full">
+          <Flex gap={3} w="full" alignItems="start">
             <Avatar
               id={member?.id}
               src={
@@ -68,10 +68,26 @@ export const MemberIcon = chakra(
             >
               {member?.presence == 'online' && (
                 <Tooltip label={lastLogin} placement="top">
-                  <AvatarBadge borderWidth="thin" boxSize="1rem" bg="green.300" />
+                  <AvatarBadge borderWidth="thin" boxSize="1.5rem" bg="green.300" />
                 </Tooltip>
               )}
             </Avatar>
+
+            <Flex w="full" direction="column" gap={1} align="flex-start">
+              <Heading size="md" textTransform="uppercase" m={0} color={color} w="full">
+                {member?.nickname || 'Anon'}
+              </Heading>
+              <Flex gap={4} align="start" justify="space-between" w="full">
+                <Box>
+                  <MemberBadge size="lg" user_type={member?.user_type} my={2} />
+                  <Text fontSize="sm" color={color} mt={0}>
+                    {member?.city || 'Nearby'} {member?.state}
+                  </Text>
+                </Box>
+                <Spacer flex="grow" />
+                <Box>{children}</Box>
+              </Flex>
+            </Flex>
             {member?.picture && (
               <ImageModal
                 isOpen={isOpen}
@@ -81,21 +97,6 @@ export const MemberIcon = chakra(
                 imageSrc={`${getAssetUrl(member.picture)}?quality=100`}
               />
             )}
-            <Flex w="full" direction="column" gap={0} align="flex-start">
-              <Heading size="md" textTransform="uppercase" m={0} color={color}>
-                {member?.nickname || 'Brother'}
-              </Heading>
-              <Flex gap={1} align="flex-start" justify="space-between" w="full">
-                <Box>
-                  <MemberBadge size="lg" user_type={member?.user_type} my={2} />
-                  <Text fontSize="sm" color={color} mt={0}>
-                    {member?.city || 'Nearby'} {member?.state}
-                  </Text>
-                </Box>
-                <Spacer flex={'grow'} />
-                <Box>{children}</Box>
-              </Flex>
-            </Flex>
           </Flex>
         )}
       </>

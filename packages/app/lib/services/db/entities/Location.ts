@@ -47,9 +47,6 @@ export class Location {
   @typeorm.OneToMany(() => Events, (events) => events.location)
   events: Events[]
 
-  @typeorm.ManyToOne(() => DirectusFile, (directusFiles) => directusFiles.locations, {
-    onDelete: 'SET NULL',
-  })
   @typeorm.JoinColumn([{ name: 'logo', referencedColumnName: 'id' }])
   logo: typeorm.Relation<DirectusFile>
 

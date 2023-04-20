@@ -40,7 +40,14 @@ export default async function FindMembers(
     const orSearchItems = []
     const andSearchItems = []
 
-    andSearchItems.push({ show_profile: { _eq: true } })
+    andSearchItems.push({
+      show_profile: {
+        _eq: true,
+      },
+      id: {
+        _neq: member.id,
+      },
+    })
 
     if (sort.includes('last_login')) {
       andSearchItems.push({ last_login: { _nnull: true } })
@@ -68,10 +75,7 @@ export default async function FindMembers(
         postQueryParams[key] = Array.isArray(filter) ? filter : [filter]
       } else if (key == 'nickname') {
         let nickname = params[key].join('')
-        orSearchItems.push({
-          first_name: { _contains: nickname },
-        })
-        orSearchItems.push({
+        andSearchItems.push({
           nickname: { _contains: nickname },
         })
       } else {

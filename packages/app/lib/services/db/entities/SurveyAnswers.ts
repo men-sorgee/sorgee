@@ -36,15 +36,9 @@ export class SurveyAnswers {
   @typeorm.Column('timestamp with time zone', { name: 'answer_date', nullable: true })
   answerDate: Date | null
 
-  @typeorm.ManyToOne(() => DirectusFile, (directusFiles) => directusFiles.surveyAnswers, {
-    onDelete: 'SET NULL',
-  })
   @typeorm.JoinColumn([{ name: 'answer_file', referencedColumnName: 'id' }])
   answerFile: typeorm.Relation<DirectusFile>
 
-  @typeorm.ManyToOne(() => DirectusFile, (directusFiles) => directusFiles.surveyAnswers2, {
-    onDelete: 'SET NULL',
-  })
   @typeorm.JoinColumn([{ name: 'answer_image', referencedColumnName: 'id' }])
   answerImage: typeorm.Relation<DirectusFile>
 

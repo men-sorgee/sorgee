@@ -33,12 +33,8 @@ export default async function MemberEndpoint(
     else user_id = String(id)
 
     let me = viewer.id == user_id
-    let fields = memberFields
-    if (me) {
-      fields = memberFields
-    }
 
-    let user = await getUser<Member>(user_id, fields)
+    let user = await getUser<Member>(user_id)
     if (!user) {
       return res.status(404).json(ApiResponse(null, 'Not found'))
     }
@@ -49,10 +45,9 @@ export default async function MemberEndpoint(
           if (!user.show_profile) {
             return res.status(404).json(ApiResponse(null, 'Not found'))
           }
-          filter(user)
-          user.my_photos = user.my_photos.filter((p) => p.is_public)
 
-          delete user.buddies
+          user.my_photos = user.my_photos.filter((p) => p.is_public)
+          filter(user)
         }
 
         return res.status(200).json(ApiResponse(user))
