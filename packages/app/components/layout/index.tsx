@@ -26,13 +26,10 @@ function Layout({
   const { authenticated, user, level, loading } = useUser()
   const router = useRouter()
   const [path] = useState<string>(router?.asPath)
-
-  const [showActions, setShowActions] = useState<boolean>(undefined)
   const { isOpen, onOpen } = useDisclosure()
-
+  const showActions = authenticated && level > MemberLevel.pledge
   useEffect(() => {
     if (!loading && authenticated) {
-      if (showActions == undefined) setShowActions(level > MemberLevel.pledge)
       if (showActions && !isOpen) {
         setTimeout(() => {
           onOpen()
