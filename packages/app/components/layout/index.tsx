@@ -27,7 +27,7 @@ function Layout({
   const router = useRouter()
   const [path] = useState<string>(router?.asPath)
   const { isOpen, onOpen } = useDisclosure()
-  const showActions = authenticated && level > MemberLevel.pledge
+  const showActions = authenticated && level >= MemberLevel.pledge
   useEffect(() => {
     if (!loading && authenticated) {
       if (showActions && !isOpen) {
