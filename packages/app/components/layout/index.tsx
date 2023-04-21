@@ -23,7 +23,7 @@ function Layout({
   className?: string
   fonts: any[]
 }) {
-  const { authenticated, user, level, loading } = useUser()
+  const { authenticated, member, level, loading } = useUser()
   const router = useRouter()
   const [path] = useState<string>(router?.asPath)
   const { isOpen, onOpen } = useDisclosure()
@@ -64,7 +64,7 @@ function Layout({
       <Meta />
       <Flex direction="column" flex="1" overflowX="clip">
         <ErrorBoundary>
-          <Header userType={user?.user_type} />
+          <Header userType={member?.user_type} />
           <Flex
             as="main"
             flex="1 100%"

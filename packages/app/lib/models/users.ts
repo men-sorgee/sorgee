@@ -154,7 +154,7 @@ export type User = {
   promo: number | Promo
   rating: number
   ratings: string[] | Rating[]
-  allow_messages: 'anyone' | 'buddies' | 'none'
+  allow_messages: 'anyone' | 'buddies' | 'staff'
   buddies: string[] | UserBuddy[]
   buddy_of: string[] | UserBuddy[]
   private_folder?: string
@@ -449,7 +449,7 @@ export type Member = Applicant & {
   their_spectrum?: OrientationType[]
   their_relationship_status?: string[]
 
-  allow_messages: 'anyone' | 'buddies' | 'none'
+  allow_messages: 'anyone' | 'buddies' | 'staff'
   buddies: string[] | UserBuddy[]
   buddy_of: string[] | UserBuddy[]
 

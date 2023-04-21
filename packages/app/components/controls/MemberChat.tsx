@@ -32,9 +32,10 @@ export const MemberChat = chakra(({ member, size = 'lg', ...props }: Props) => {
 
   if (loading || userLoading || level < MemberLevel.brother) return <></>
   if (me?.id === member.id) return <></>
-  if (member.allow_messages == 'none') return <></>
-  if (member.allow_messages == 'buddies' && them?.buddies) {
-    const memberBuddies = them.buddies as UserBuddy[]
+  if (me?.allow_messages == 'staff' && them?.user_type != 'staff') return <></>
+  if (them?.allow_messages == 'staff' && me?.user_type != 'staff') return <></>
+  if (them?.allow_messages == 'buddies' && them?.buddies) {
+    const memberBuddies = them?.buddies as UserBuddy[]
     if (
       !memberBuddies?.some((b: UserBuddy) => {
         return b.buddy_id == me.id

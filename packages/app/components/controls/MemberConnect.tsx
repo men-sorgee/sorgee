@@ -50,7 +50,7 @@ export const MemberConnect = chakra(({ member, size = 'lg', ...props }: Props) =
     <>
       {(isBuddy && (
         <IconButton
-          color="white"
+          color="accent.300"
           icon={hover ? <BuddyIconMinus width="30px" /> : <BuddyIcon width="30px" />}
           onMouseOver={() => {
             setHover(true)

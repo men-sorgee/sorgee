@@ -1,5 +1,5 @@
 import { useFormContext } from 'react-hook-form'
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
 import {
   FormHelperText,
   FormControl,
@@ -8,6 +8,7 @@ import {
   FormErrorMessage,
   Flex,
   chakra,
+  Fade,
 } from '@chakra-ui/react'
 import { InfoIcon } from '../icons'
 
@@ -20,21 +21,43 @@ type Props = FormControlProps & {
 }
 
 const FieldWrapper = (props: Props) => {
+  const [showHelp, setShowHelp] = useState(false)
   const { field, label, help, className, children, size, align = 'left', w, ...opts } = props
   const { getFieldState } = useFormContext()
   const { error, isDirty } = getFieldState(field)
   return (
-    <FormControl w={w} size={size} align={align} isInvalid={!!error} {...opts}>
+    <FormControl
+      w={w}
+      size={size}
+      align={align}
+      isInvalid={!!error}
+      {...opts}
+      onMouseOver={() => setShowHelp(true)}
+      onMouseOut={() => setShowHelp(false)}
+      position="relative"
+    >
       {label && (
         <FormLabel size={size} fontWeight="bold" htmlFor={field}>
           {label}
         </FormLabel>
       )}
       {children}
-      {!isDirty && help && (
-        <FormHelperText as={Flex} cursor={'help'}>
-          <InfoIcon color="primary" mr={2} /> {help}
-        </FormHelperText>
+      {showHelp && help && (
+        <Fade in={showHelp}>
+          <FormHelperText
+            as={Flex}
+            cursor={'help'}
+            position="absolute"
+            zIndex="popover"
+            bg="black"
+            color="white"
+            p={2}
+            borderRadius="md"
+            shadow={'lg'}
+          >
+            <InfoIcon color="primary" mr={2} /> {help}
+          </FormHelperText>
+        </Fade>
       )}
       {error && <FormErrorMessage>{error.message}</FormErrorMessage>}
     </FormControl>

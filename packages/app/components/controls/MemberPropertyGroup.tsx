@@ -1,5 +1,14 @@
 import { LockIcon } from '@chakra-ui/icons'
-import { SimpleGrid, GridItem, Wrap, Text, Flex, Heading, Box } from '@chakra-ui/react'
+import {
+  SimpleGrid,
+  GridItem,
+  Wrap,
+  Text,
+  Flex,
+  Heading,
+  Box,
+  useColorModeValue,
+} from '@chakra-ui/react'
 import { capitalCase } from 'change-case'
 import { Member, DirectusField } from 'lib/models'
 
@@ -24,11 +33,11 @@ export const MemberPropertyGroup = ({
 }: Props) => {
   const populatedFields =
     fieldList?.filter((f) => member[f] != undefined && member[f]?.length > 0) || []
-
+  const color = useColorModeValue('primary.500', 'white')
   if (!show)
     return (
       <Flex direction="column" textAlign="center" align="center">
-        <LockIcon color="primary.500" h={30} w={30} mt={4} />
+        <LockIcon color={color} h={30} w={30} mt={4} />
         <Heading as="h3" size="sm">
           Private
         </Heading>
@@ -68,27 +77,28 @@ export const MemberPropertyGroup = ({
                   <Heading as="h4" size="sm" my={2}>
                     {capitalCase(fields[field].field)}:
                   </Heading>
-                  <Wrap gap={2} mb={2}>
+                  <Box gap={2} mb={2}>
                     {member[field]?.map((item: any, d: number) => (
                       <Text
-                        lineHeight={1}
-                        color="primary.400"
-                        key={`badge-${item}-${d}`}
+                        as="span"
+                        color={color}
+                        key={`${item}-${d}`}
                         fontSize="md"
                         m={0}
+                        textTransform="capitalize"
                       >
                         {getValue(field, item)}
-                        {d < member[field].length - 1 && ','}
+                        {d < member[field].length - 1 && ','}{' '}
                       </Text>
                     ))}
-                  </Wrap>
+                  </Box>
                 </>
               ) : (
                 <Box mb={2}>
                   <Heading as="h4" size="sm" my={2}>
                     {capitalCase(fields[field].field)}:
                   </Heading>
-                  <Text m={0} fontSize="md" color="primary.400" textTransform="capitalize">
+                  <Text m={0} fontSize="md" color={color} textTransform="capitalize">
                     {getValue(field, member[field])}
                   </Text>
                 </Box>

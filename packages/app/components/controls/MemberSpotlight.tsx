@@ -16,6 +16,7 @@ import {
   AvatarProps,
   Spacer,
   Tooltip,
+  useColorModeValue,
 } from '@chakra-ui/react'
 import { MemberConnect, MemberChat, MemberHeader, MemberPropertyGroup } from '.'
 import { useMember, useMeta } from 'hooks'
@@ -47,12 +48,13 @@ type Props = AvatarProps & {
   children?: ReactNode
 }
 
-export const MemberSpotlight = ({ id, fields, full = true, color, children }: Props) => {
+export const MemberSpotlight = ({ id, fields, full = false, color, children }: Props) => {
   const { member, name, picture, loading } = useMember(id)
   const { setMeta } = useMeta()
   useEffect(() => {
     if (full) setMeta(name || 'Brother', member?.biography, picture)
   }, [full, member, name, picture, setMeta])
+  const headingColor = useColorModeValue('primary.700', 'primary.300')
   if (loading || !id || !member) return <Loading />
   const publicPhotos = member.my_photos?.filter((p) => p.is_public) || []
   const levelValue = MemberLevel[member?.user_type || 'subscriber']
@@ -119,9 +121,10 @@ export const MemberSpotlight = ({ id, fields, full = true, color, children }: Pr
           colorScheme="primary"
           fontSize={['xs', 'sm', 'md', 'lg']}
           w="full"
-          px={2}
+          p={0}
           flex="grow"
           size={['sm', 'md', 'lg']}
+          mt={4}
         >
           <TabList>
             <Tab p={1} fontWeight="bold">
@@ -137,15 +140,17 @@ export const MemberSpotlight = ({ id, fields, full = true, color, children }: Pr
               Health
             </Tab>
           </TabList>
-          <TabPanels maxH="100%" overflowY="auto" my={2}>
-            <TabPanel p={4}>
+          <TabPanels maxH="100%" overflowY="auto" my={2} mx={0}>
+            <TabPanel>
               <Heading
-                as="h5"
+                as="h3"
                 mt={0}
-                size="h5"
+                size="sm"
                 mb={2}
                 borderBottom="1px solid"
-                borderColor="primary"
+                borderColor={headingColor}
+                color={headingColor}
+                textTransform="uppercase"
               >
                 Features
               </Heading>
@@ -159,12 +164,14 @@ export const MemberSpotlight = ({ id, fields, full = true, color, children }: Pr
             </TabPanel>
             <TabPanel>
               <Heading
-                as="h5"
-                size="h5"
+                as="h3"
                 mt={0}
+                size="sm"
                 mb={2}
                 borderBottom="1px solid"
-                borderColor="primary"
+                borderColor={headingColor}
+                color={headingColor}
+                textTransform="uppercase"
               >
                 Features
               </Heading>
@@ -176,7 +183,16 @@ export const MemberSpotlight = ({ id, fields, full = true, color, children }: Pr
                 fields={fields}
                 maxCols={2}
               />
-              <Heading as="h5" size="h5" mb={2} borderBottom="1px solid" borderColor="primary">
+              <Heading
+                as="h3"
+                mt={2}
+                size="sm"
+                mb={0}
+                borderBottom="1px solid"
+                borderColor={headingColor}
+                color={headingColor}
+                textTransform="uppercase"
+              >
                 Roles
               </Heading>
               <MemberPropertyGroup
@@ -190,12 +206,14 @@ export const MemberSpotlight = ({ id, fields, full = true, color, children }: Pr
             </TabPanel>
             <TabPanel>
               <Heading
-                as="h5"
-                size="h5"
+                as="h3"
                 mt={0}
+                size="sm"
                 mb={2}
                 borderBottom="1px solid"
-                borderColor="primary"
+                borderColor={headingColor}
+                color={headingColor}
+                textTransform="uppercase"
               >
                 Events
               </Heading>
@@ -206,7 +224,16 @@ export const MemberSpotlight = ({ id, fields, full = true, color, children }: Pr
                 show={member?.show_events}
                 fields={fields}
               />
-              <Heading as="h5" size="h5" mb={2} borderBottom="1px solid" borderColor="primary">
+              <Heading
+                as="h3"
+                mt={2}
+                size="sm"
+                mb={0}
+                borderBottom="1px solid"
+                borderColor={headingColor}
+                color={headingColor}
+                textTransform="uppercase"
+              >
                 Sexual
               </Heading>
               <MemberPropertyGroup
@@ -219,12 +246,14 @@ export const MemberSpotlight = ({ id, fields, full = true, color, children }: Pr
             </TabPanel>
             <TabPanel>
               <Heading
-                as="h5"
-                size="h5"
+                as="h3"
                 mt={0}
+                size="sm"
                 mb={2}
                 borderBottom="1px solid"
-                borderColor="primary"
+                borderColor={headingColor}
+                color={headingColor}
+                textTransform="uppercase"
               >
                 Sexual Health
               </Heading>
