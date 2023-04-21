@@ -1,6 +1,6 @@
 import { IconButton, IconButtonProps, chakra } from '@chakra-ui/react'
-import { UserIcon, UserPlusIcon } from '@heroicons/react/24/outline'
-import { UserIcon as BuddyIcon, UserMinusIcon as BuddyIconMinus } from '@heroicons/react/24/solid'
+import { UserIcon, UserMinusIcon as BuddyIconMinus } from '@heroicons/react/24/outline'
+import { UserIcon as BuddyIcon, UserPlusIcon } from '@heroicons/react/24/solid'
 import { useEffect, useState } from 'react'
 import { useUser } from 'hooks'
 import { deleteJSON, postJSON } from 'lib/utils'
@@ -50,7 +50,7 @@ export const MemberConnect = chakra(({ member, size = 'lg', ...props }: Props) =
     <>
       {(isBuddy && (
         <IconButton
-          color="accent.300"
+          color={hover ? 'white' : 'accent.300'}
           icon={hover ? <BuddyIconMinus width="30px" /> : <BuddyIcon width="30px" />}
           onMouseOver={() => {
             setHover(true)
@@ -64,6 +64,7 @@ export const MemberConnect = chakra(({ member, size = 'lg', ...props }: Props) =
           title="Remove Buddy"
           aria-label="Remove Buddy"
           size={size}
+          _hover={{ bg: 'primary.500' }}
           {...props}
         />
       )) || (
@@ -82,6 +83,7 @@ export const MemberConnect = chakra(({ member, size = 'lg', ...props }: Props) =
           onClick={toggleBuddy}
           color="white"
           size={size}
+          _hover={{ bg: 'primary.500' }}
           {...props}
         />
       )}

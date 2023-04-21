@@ -1,5 +1,5 @@
 import { Box, Stack, HStack, Link, useColorModeValue, VisuallyHidden, Text } from '@chakra-ui/react'
-import { DiscordIcon, InstagramIcon, TwitterIcon } from '../icons'
+import { DiscordIcon, InstagramIcon, TwitterIcon } from '../components/icons'
 
 export default function Footer() {
   return (

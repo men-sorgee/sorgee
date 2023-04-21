@@ -13,7 +13,7 @@ import {
 import { useMessages } from 'hooks'
 import { ChatBubbleBottomCenterIcon as ChatIcon } from '@heroicons/react/24/outline'
 import { Member, MemberLevel } from 'lib/models'
-import { Messages } from '../../controls/Messages'
+import { Messages } from '../../components/controls/Messages'
 import { useEffect, useRef, useState } from 'react'
 
 type Props = { member: Member }

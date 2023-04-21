@@ -18,7 +18,7 @@ import {
   useOutsideClick,
 } from '@chakra-ui/react'
 import { Bars4Icon, XMarkIcon } from '@heroicons/react/24/solid'
-import { Logo } from '../controls'
+import { Logo } from '../components/controls'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { Page, PageItem, UserType } from 'lib/models'
 import NextLink from 'next/link'

@@ -2,6 +2,7 @@ import { ManyItems } from '@directus/sdk'
 import Page from 'components/Page'
 import { addDays } from 'date-fns'
 import { useUser } from 'hooks'
+import { brand } from 'lib/config/brand'
 import { pruneUndefined, normalize, serialize, getJSON } from 'lib/utils'
 import { useEffect, useState, createRef } from 'react'
 import { MemberSpotlight, MemberCard } from 'components/controls'
@@ -270,14 +271,17 @@ export default function MemberListPage(props: PageProps) {
           <Pager page={page} pageCount={pageCount} setPage={setPage} />
         </form>
       </FormProvider>
-      <Modal
-        size={['full', 'xl', '2xl', '3xl', '5xl']}
-        isOpen={isOpen}
-        onClose={() => setId(undefined)}
-      >
+      <Modal size={brand.breakPoints} isOpen={isOpen} onClose={() => setId(undefined)}>
         <ModalOverlay backdropFilter="auto" backdropBlur="2px" />
-        <ModalContent ml={[0, 0, -4]} bg={useColorModeValue('white', 'black')}>
-          <ModalBody p={0} rounded="md">
+        <ModalContent ml={[0, 0, -4]}>
+          <ModalBody
+            p={0}
+            rounded="lg"
+            overflow="clip"
+            border="1px solid"
+            borderColor="primary"
+            bg={useColorModeValue('white', 'black')}
+          >
             <ModalCloseButton color={'white'} mt={2} />
             <MemberSpotlight id={id as string} fields={fields} full></MemberSpotlight>
           </ModalBody>

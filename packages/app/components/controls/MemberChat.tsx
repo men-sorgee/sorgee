@@ -57,6 +57,7 @@ export const MemberChat = chakra(({ member, size = 'lg', ...props }: Props) => {
         title={`Chat with ${member.nickname || 'this member'}`}
         icon={hasConversation ? <ChatIconOn width="30px" /> : <ChatIconOff width="30px" />}
         size={size}
+        _hover={{ bg: 'primary.500' }}
         {...props}
       />
       {hasNewMessages && (

@@ -8,10 +8,11 @@ import Actions from './actions'
 import Splash from './Splash'
 import { ErrorBoundary } from 'components/ErrorBoundary'
 import { useUser } from 'hooks'
-import { MemberLevel } from '../../lib/models'
+import { MemberLevel } from '../lib/models'
+import { brand } from '../lib/config/brand'
 
 export const constrained = {
-  maxW: ['full', 'xl', '3xl', '4xl', '5xl'],
+  maxW: brand.breakPoints,
   mx: [2, 'auto'],
 }
 

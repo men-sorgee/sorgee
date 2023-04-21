@@ -30,7 +30,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { useUser, useSite } from 'hooks'
 import { MemberLevel, ApplicationStatus } from 'lib/models'
-import { pledgeSurvey } from '../../lib/config'
+import { pledgeSurvey } from '../lib/config'
 interface Props {}
 
 export default function UserMenu(_props: Props) {

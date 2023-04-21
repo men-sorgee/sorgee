@@ -1,4 +1,5 @@
 export const brand = {
+  breakPoints: ['full', 'xl', '3xl', '4xl', '5xl'],
   colors: {
     gray: {
       DEFAULT: '#333c4e',
