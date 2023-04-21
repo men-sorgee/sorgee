@@ -1,7 +1,7 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { FieldMap, User } from 'lib/models'
 import { useUser } from '@/hooks/use-user'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import {
   FieldInput,
@@ -62,6 +62,12 @@ function Form(props: PageProps) {
   const { member, mutate } = useUser()
   const { fieldMap } = props
   const [tabValue, setTabValue] = useState(0)
+  const [defaultValues, setDefaultValues] = useState<MemberFormData>(undefined)
+
+  useEffect(() => {
+    if (member && defaultValues == undefined) {
+    }
+  }, [member, defaultValues])
 
   const {
     show_profile,
@@ -147,6 +153,46 @@ function Form(props: PageProps) {
     reset,
     formState: { isSubmitting, isDirty },
   } = methods
+
+  useEffect(() => {
+    reset({
+      show_profile,
+      nickname,
+      spectrum,
+      mannerisms,
+      relationship_status,
+      biography,
+      age,
+      height,
+      weight,
+      build,
+      skin_tone,
+      hair_color,
+      eye_color,
+      hair_style,
+      body_hair,
+      facial_hair,
+      body_attributes,
+      show_explicit,
+      show_explicit_roles,
+      show_photos,
+      cock_length,
+      cock_girth,
+      cock_attributes,
+      ball_size,
+      ball_gravity,
+      cum_attributes,
+      sexual_scenes,
+      my_roles,
+      my_positions,
+      show_health,
+      hiv_status,
+      last_tested,
+      load_policy,
+      vaccinations,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [member, reset])
 
   useWarnIfUnsavedChanges(isDirty, () => {
     return window.confirm('Are you sure you want to leave? You have unsaved changes.')

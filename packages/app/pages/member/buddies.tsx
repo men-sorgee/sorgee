@@ -40,6 +40,7 @@ export default function BuddiesPage({ fieldMap }: PageProps) {
   const [onlineOnly, setOnlineOnly] = useState(false)
   const [id, setId] = useState<string>(undefined)
   const { member, loading } = useUser(MemberLevel.brother)
+
   const buddies = member?.buddies as UserBuddy[]
   let members = buddies?.map((buddy) => buddy.buddy_id as User)
   let onlineMembers = members?.filter((m) => m.presence == 'online')
@@ -56,7 +57,7 @@ export default function BuddiesPage({ fieldMap }: PageProps) {
   }, [id, setId, onOpen, onClose])
 
   return (
-    <Page title="Buddies" loading={loading}>
+    <Page title="Buddies" loading={loading} requireAuth={true}>
       <Alert
         bg={'primary.300'}
         color="white"

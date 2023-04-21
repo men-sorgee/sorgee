@@ -2,17 +2,17 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { NextPageContext } from 'next'
 import { FieldMap, User } from 'lib/models'
 import { useUser } from '@/hooks/use-user'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   FieldInput,
   FieldSelect,
   FieldWrapper,
   FieldCheckboxes,
-  FieldCheckbox,
   FieldSwitch,
 } from 'components/forms'
 import {
   Alert,
+  AlertIcon,
   Button,
   Tabs,
   TabList,
@@ -76,20 +76,21 @@ function Form({ fieldMap }: PageProps) {
     birth_month,
     birth_year,
     contact_preference,
+    allow_messages,
     photo_consent,
     video_consent,
     needs_guidance,
-    event_invites: invites,
-    social_scenes: scenes,
+    social_scenes,
+    event_invites,
     event_availability,
     their_positions,
     their_roles,
     their_spectrum,
     their_relationship_status,
-    show_profile: profile,
-    show_interests: interests,
-    show_contact: contact,
-    show_events: events,
+    show_profile,
+    show_interests,
+    show_contact,
+    show_events,
   } = member
   const methods = useForm<MemberFormData>({
     mode: 'onBlur',
@@ -103,20 +104,21 @@ function Form({ fieldMap }: PageProps) {
       birth_month,
       birth_year,
       contact_preference,
+      allow_messages,
       photo_consent,
       video_consent,
       needs_guidance,
-      event_invites: invites,
-      social_scenes: scenes,
+      event_invites,
+      social_scenes,
       event_availability,
       their_positions,
       their_roles,
       their_spectrum,
       their_relationship_status,
-      show_profile: profile,
-      show_interests: interests,
-      show_contact: contact,
-      show_events: events,
+      show_profile,
+      show_interests,
+      show_contact,
+      show_events,
     },
   })
   const {
@@ -127,6 +129,36 @@ function Form({ fieldMap }: PageProps) {
     reset,
     formState: { isSubmitting, isDirty },
   } = methods
+
+  useEffect(() => {
+    reset({
+      first_name,
+      last_name,
+      email,
+      phone,
+      city,
+      state,
+      birth_month,
+      birth_year,
+      contact_preference,
+      allow_messages,
+      photo_consent,
+      video_consent,
+      needs_guidance,
+      event_invites,
+      social_scenes,
+      event_availability,
+      their_positions,
+      their_roles,
+      their_spectrum,
+      their_relationship_status,
+      show_profile,
+      show_interests,
+      show_contact,
+      show_events,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [member, reset])
 
   useWarnIfUnsavedChanges(isDirty, () => {
     return window.confirm('Are you sure you want to leave? You have unsaved changes.')
@@ -164,9 +196,10 @@ function Form({ fieldMap }: PageProps) {
   const required = { value: true, message: 'Required' }
   const minYear = new Date().getFullYear() - 100
   const maxYear = new Date().getFullYear() - 21
-  const can_host = watch('can_host')
-  const event_invites = watch('event_invites')
-  const show_profile = watch('show_profile')
+  const canHost = watch('can_host')
+  const eventInvites = watch('event_invites')
+  const showProfile = watch('show_profile')
+  const allowMessages = watch('allow_messages')
   return (
     <>
       <FormProvider {...methods}>
@@ -190,7 +223,7 @@ function Form({ fieldMap }: PageProps) {
             </TabList>
             <TabPanels>
               <TabPanel p={0} pt={4}>
-                {show_profile && (
+                {showProfile && (
                   <Alert
                     bg="primary"
                     color="white"
@@ -266,51 +299,33 @@ function Form({ fieldMap }: PageProps) {
                       />
                     </InputGroup>
                   </FieldWrapper>
-
+                </SimpleGrid>
+                <SimpleGrid spacing={4} my={4} columns={[1, 2]}>
                   <FieldSelect
                     w="full"
                     field="contact_preference"
-                    label="Contact Preference"
+                    label="Staff Contact Preference"
                     options={getOptions('contact_preference')}
+                    help="This is your preference for how the staff may contact you."
                   />
-                </SimpleGrid>
 
-                <Alert bg="primary.300" color="white" my={4} borderRadius="md" shadow="md">
-                  <Stack direction={'column'} spacing={2}>
-                    <Text>
-                      <strong>Are you an exhibitionist?</strong> If so, you can opt-in to be a part
-                      of our marketing efforts. We will never share your personal information with
-                      anyone.
-                    </Text>
-                    <Stack mt={4} direction={{ base: 'column', md: 'row' }} spacing={2}>
-                      <FieldSwitch
-                        field="photo_consent"
-                        label="Photo Consent"
-                        help="I would be willing to be photographed and featured in our promotional materials."
-                      />
-                      <FieldSwitch
-                        field="video_consent"
-                        label="Video Consent"
-                        help="I would be willing to filmed for a video testimonial."
-                      />
-                    </Stack>
-                  </Stack>
-                </Alert>
-                <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
-                  <FieldCheckbox
-                    field="needs_guidance"
-                    help="Our staff will reach out to you to help guide you along the way."
-                    label="Request Guidance"
-                  >
-                    I need assistance
-                  </FieldCheckbox>
                   <FieldSelect
                     mt={4}
                     field="allow_messages"
-                    label="Allow Direct Messages"
+                    label="Member Messaging Preference"
                     options={getOptions('allow_messages')}
+                    help="This is your preference for how other members may contact you via in-app messaging."
                   />
                 </SimpleGrid>
+                {allowMessages == 'staff' && (
+                  <Alert status="warning" flexDirection="row" my={4} p={4} borderRadius="md">
+                    <AlertIcon />
+                    <Text>
+                      If you choose to only receive messages from staff, you will not be able to
+                      send messages to other members.
+                    </Text>
+                  </Alert>
+                )}
               </TabPanel>
               <TabPanel p={0}>
                 <Alert
@@ -333,11 +348,18 @@ function Form({ fieldMap }: PageProps) {
                       label="Get Invites to Events"
                       help="Turn this on, if you want to be invited to events that meet your interests."
                     />
-                    {show_profile && (
+                    {showProfile && (
                       <FieldSwitch
                         field="show_events"
                         label="Show Event Interests"
                         help="Turn this on, if you want to show your event interests on your profile."
+                      />
+                    )}
+                    {eventInvites && (
+                      <FieldSwitch
+                        field="needs_guidance"
+                        help="Nervous, New or Differently-abled? Our staff will reach out to you to help guide you at your first event."
+                        label="Request Guidance"
                       />
                     )}
                   </Stack>
@@ -351,7 +373,27 @@ function Form({ fieldMap }: PageProps) {
                     options={getOptions('social_scenes')}
                     includeOther
                   />
-
+                  <Alert bg="primary.300" color="white" my={4} borderRadius="md" shadow="md">
+                    <Stack direction={'column'} spacing={2}>
+                      <Text>
+                        <strong>Are you an exhibitionist?</strong> If so, you can opt-in to be a
+                        part of our marketing efforts. We will never share your personal information
+                        with anyone.
+                      </Text>
+                      <Stack mt={4} direction={{ base: 'column', md: 'row' }} spacing={2}>
+                        <FieldSwitch
+                          field="photo_consent"
+                          label="Photo Consent"
+                          help="I would be willing to be photographed and featured in our promotional materials."
+                        />
+                        <FieldSwitch
+                          field="video_consent"
+                          label="Video Consent"
+                          help="I would be willing to filmed for a video testimonial."
+                        />
+                      </Stack>
+                    </Stack>
+                  </Alert>
                   <FieldCheckboxes
                     field="event_availability"
                     label="Preferred Event Times"
@@ -360,7 +402,7 @@ function Form({ fieldMap }: PageProps) {
                   />
                 </SimpleGrid>
 
-                {event_invites && (
+                {eventInvites && (
                   <Alert bg="primary.300" color="white" my={4} borderRadius="md" shadow="md">
                     <Stack direction={'column'} spacing={2}>
                       <Text>
@@ -369,7 +411,7 @@ function Form({ fieldMap }: PageProps) {
                       </Text>
                       <Stack direction="column" spacing={2} mt={4}>
                         <FieldSwitch field="can_host" label="Can Host Events" />
-                        {can_host && (
+                        {canHost && (
                           <FieldCheckboxes
                             field="can_host_events"
                             label="Events"
@@ -382,7 +424,7 @@ function Form({ fieldMap }: PageProps) {
                 )}
               </TabPanel>
               <TabPanel p={0} pt={4}>
-                {show_profile && (
+                {showProfile && (
                   <Alert
                     bg={'primary'}
                     color="white"
