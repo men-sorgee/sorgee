@@ -15,7 +15,13 @@ export type RSVPInfo = {
   rsvp?: InviteRSVPType
 }
 
-export type InviteRSVPType = 'invited' | 'maybe' | 'confirmed' | 'cancelled' | 'declined'
+export type InviteRSVPType =
+  | 'invited'
+  | 'maybe'
+  | 'confirmed'
+  | 'cancelled'
+  | 'declined'
+  | 'not_invited'
 
 export enum EventStatusType {
   Planned = 'planned',

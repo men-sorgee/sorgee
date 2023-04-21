@@ -77,8 +77,10 @@ export async function getEvent(id: string): Promise<GroupEvent> {
       'users.users_id.first_name',
       'survey.*',
     ] as any,
-    users: {
-      limit: -1,
+    deep: {
+      users: {
+        _limit: -1,
+      },
     },
   })) as any as GroupEvent
   if (!event) return null
@@ -96,6 +98,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
       'users.users_id.picture',
       'users.users_id.nickname',
       'users.users_id.first_name',
+      'users.users_id.last_name',
       'survey.*',
     ] as any,
     deep: {
@@ -103,7 +106,6 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
         _limit: -1,
       },
     },
-    limit: -1,
   })
   const {
     name,

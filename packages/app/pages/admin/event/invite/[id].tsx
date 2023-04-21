@@ -193,7 +193,8 @@ export default function InviteAdmin({ event, invite, user }: Props) {
                   />
                   <Box>
                     <Heading size={['sm', 'sm', 'md']} textTransform="uppercase" m={0}>
-                      {user?.first_name} {user?.last_name}
+                      {user?.first_name} {user?.last_name} <br />
+                      RSVP: {invite.rsvp}
                     </Heading>
                     <MemberBadge size="lg" user_type={user?.user_type} />
                     <Text fontSize="xs" color="gray.500">

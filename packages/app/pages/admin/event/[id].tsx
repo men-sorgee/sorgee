@@ -1,22 +1,27 @@
 import {
   Alert,
   HStack,
-  Flex,
+  Box,
+  Heading,
   AlertIcon,
   Stat,
   Link,
   StatLabel,
   StatNumber,
   SimpleGrid,
+  Wrap,
+  Avatar,
+  Input,
+  Button,
 } from '@chakra-ui/react'
 import { EventCard, ButtonLink } from 'components/controls'
-import { EventDetail, EventStats, MemberLevel } from 'lib/models'
+import { EventDetail, EventStats, MemberLevel, User } from 'lib/models'
 import Page from 'components/Page'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useUser } from 'hooks'
 import { useRouter } from 'next/router'
 import NextLink from 'next/link'
-import { ArrowBackIcon } from '@chakra-ui/icons'
+import { ArrowBackIcon, CheckIcon } from '@chakra-ui/icons'
 export const getServerSideProps = async (context) => {
   const { getEventDetail } = await import('lib/services/directus/server/events')
   const eventId = String(context.query.id)
@@ -41,22 +46,43 @@ export const getServerSideProps = async (context) => {
 
 export default function EventAdmin({ event }: { event: EventDetail }) {
   const router = useRouter()
-
   const { member, authorized, loading } = useUser(MemberLevel.staff)
-  const { id, error } = router.query
   const [fees, setFees] = useState<number>(undefined)
   const [stats] = useState<EventStats>(event.stats)
-
+  const { error } = router.query
   useEffect(() => {
-    //if (!loading && member) {
-    //  if (!authorized) {
-    //    router.push(`/events/${event?.id}`)
-    //  }
-    //}
     if (event.stats && !fees) {
       setFees(event.stats.paid_count * event.cost)
     }
   }, [authorized, event, fees, loading, member, router, stats])
+
+  const getAttendees = (rsvp: string) => {
+    return event.attendance
+      ?.filter((u) => u.rsvp == rsvp)
+
+      .map((u) => {
+        const user = u.users_id as User
+        const picture = user.picture as string
+        const name = `${user.first_name} ${user.last_name} (${user.nickname})`
+        const src = picture ? '/api/asset/' + picture : undefined
+        return {
+          id: u.id,
+          name,
+          rsvp: u.rsvp,
+          attended: u.attended,
+          src,
+        }
+      })
+  }
+  let checkinLink
+  const emailRef = useRef<HTMLInputElement>(null)
+  const emailCheckin = () => {
+    const email = emailRef.current.value
+    if (email) {
+      checkinLink = `/api/events/checkin?event_id=${event.id}&email=${email}`
+      router.push(checkinLink)
+    }
+  }
 
   return (
     <Page
@@ -65,24 +91,30 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
       requireAuth={true}
       requiredLevel={MemberLevel.staff}
     >
+      {error && (
+        <Alert status="error" size="lg">
+          <AlertIcon />
+          {error}
+        </Alert>
+      )}
       {member && event && (
         <EventCard
           event={event}
           showDescription={false}
           footer={
-            <ButtonLink colorScheme="primary" href="/admin/scan">
-              Scan Invite
-            </ButtonLink>
+            <>
+              <ButtonLink colorScheme="primary" href="/admin/scan">
+                Scan Invite
+              </ButtonLink>
+              {(checkinLink && <ButtonLink href={checkinLink}>Check In</ButtonLink>) || (
+                <>
+                  <Input ref={emailRef} size="sm" placeholder="Email" w="30%" />
+                  <Button onClick={emailCheckin}>Email Checkin</Button>
+                </>
+              )}
+            </>
           }
         >
-          <Flex direction="column" gap={4}>
-            {error && (
-              <Alert status="error" size="lg">
-                <AlertIcon />
-                {error}
-              </Alert>
-            )}
-          </Flex>
           <SimpleGrid columns={[2, 4, 6]} spacing={4} mb={4}>
             {stats && (
               <>
@@ -122,6 +154,28 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
               </>
             )}
           </SimpleGrid>
+          <Heading as="h3" size="h3">
+            Confirmed
+          </Heading>
+          <Wrap>
+            {getAttendees('confirmed').map(({ id, name, src, attended }) => (
+              <Box key={id} position="relative">
+                <Avatar opacity={attended ? 1 : 0.5} name={name} src={src} title={name} />
+                {attended && <CheckIcon color="green" boxSize={8} position="absolute" ml={-6} />}
+              </Box>
+            ))}
+          </Wrap>
+          <Heading as="h3" size="h3">
+            Maybe
+          </Heading>
+          <Wrap>
+            {getAttendees('maybe').map(({ id, name, src, attended }) => (
+              <Box key={id} position="relative">
+                <Avatar key={id} opacity={attended ? 1 : 0.5} name={name} src={src} title={name} />
+                {attended && <CheckIcon boxSize={6} />}
+              </Box>
+            ))}
+          </Wrap>
         </EventCard>
       )}
       <HStack spacing={4} my={4}>
