@@ -18,6 +18,15 @@ import {
   useColorModeValue,
   Alert,
   AlertIcon,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverAnchor,
 } from '@chakra-ui/react'
 import {
   EventCard,
@@ -26,6 +35,7 @@ import {
   MemberSpotlight,
   RateItem,
   EventRSVP,
+  ModalPopup,
 } from 'components/controls'
 import { EventDetail, EventStats, EventUser, Member, Rating, User } from 'lib/models'
 import Page from 'components/Page'
@@ -53,6 +63,7 @@ export default function EventPage({ id }) {
   const { event, loading: eventLoading } = useEvent(eventId)
   const [stats, setStats] = useState<EventStats>(undefined)
   const [invite, setInvite] = useState<EventUser>(undefined)
+  const [memberId, setMemberId] = useState<string>(undefined)
   useEffect(() => {
     if (!eventLoading && event?.stats && !stats) {
       setStats(event.stats)
@@ -81,7 +92,7 @@ export default function EventPage({ id }) {
         }
       })
   }
-  const showCount = useBreakpointValue([2, 4, 8, 10, 14])
+  const showCount = useBreakpointValue([4, 8, 15, 20, 24])
 
   return (
     <Page title="Event Details" loading={loading || eventLoading} requireAuth={true}>
@@ -132,7 +143,7 @@ export default function EventPage({ id }) {
                       title={name}
                       cursor="pointer"
                       onClick={() => {
-                        router.push('/members/' + id)
+                        setMemberId(id)
                       }}
                     />
                   ))}
@@ -153,7 +164,7 @@ export default function EventPage({ id }) {
                       title={name}
                       cursor="pointer"
                       onClick={() => {
-                        router.push('/members/' + id)
+                        setMemberId(id)
                       }}
                     />
                   ))}
@@ -180,6 +191,11 @@ export default function EventPage({ id }) {
           </Link>
         )}
       </HStack>
+      <ModalPopup isOpen={memberId != undefined} onClose={() => setMemberId(undefined)}>
+        <Box bg={'bg'} rounded="lg">
+          <MemberSpotlight id={memberId} />
+        </Box>
+      </ModalPopup>
     </Page>
   )
 }
@@ -243,7 +259,7 @@ const AttendedEvent = ({
           </Alert>
           {attendees.map((u: User) => (
             <Box key={event.id + '-' + u.id} bg="gray.400" mb={4} rounded="lg">
-              <MemberSpotlight size="md" id={u.id} full={false} color={color}>
+              <MemberSpotlight size="md" id={u.id} color={color}>
                 <RateItem
                   onChange={() => {
                     reloadUser()
