@@ -138,13 +138,8 @@ export default function DynamicPage({ page }: Props) {
         <Box
           css={{
             a: {
-              padding: '0.25rem 0.5rem',
-              borderRadius: '0.25rem',
-              border: '1px solid',
-              borderColor: 'text',
               color: 'text',
-              fontSize: '1.6rem',
-              marginTop: '1rem',
+
               display: 'inline-block',
               svg: {
                 display: 'inline-block',
@@ -168,7 +163,7 @@ export default function DynamicPage({ page }: Props) {
             },
           }}
         >
-          <Markdown content={markdown} />
+          <Markdown content={markdown} size="lg" />
         </Box>
         {content.map((s: any, i: Key) => (
           <Section key={i} content={s} />

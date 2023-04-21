@@ -44,7 +44,8 @@ export const Markdown = ({ content, size }: Props) => {
             // eslint-disable-next-line @next/next/no-img-element
             <Image
               src={src}
-              width="100%"
+              h={height}
+              w={width}
               rounded="lg"
               boxShadow="lg"
               alt={alt || 'guysnheat image'}
