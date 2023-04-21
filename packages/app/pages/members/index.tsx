@@ -279,7 +279,7 @@ export default function MemberListPage(props: PageProps) {
         <ModalContent ml={[0, 0, -4]} bg={useColorModeValue('white', 'black')}>
           <ModalBody p={0} rounded="md">
             <ModalCloseButton color={'white'} mt={2} />
-            <MemberSpotlight id={id as string} fields={fields}></MemberSpotlight>
+            <MemberSpotlight id={id as string} fields={fields} full></MemberSpotlight>
           </ModalBody>
         </ModalContent>
       </Modal>
