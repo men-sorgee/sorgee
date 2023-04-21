@@ -2,12 +2,15 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { baseUrl } from 'lib/config'
 import { findInvite, getEvent } from 'lib/services/directus/server'
 import { ApiResponse, Applicant } from 'lib/models'
+import { withMethods, withStaff } from '../../../lib/utils/server'
 
 export default async function checkIn(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<Applicant> | ApiResponse>
 ) {
   try {
+    withMethods(req, ['GET'])
+    await withStaff(req, res)
     const { event_id, user_id } = req.query
     const event = await getEvent(event_id as string)
     if (!event) {
