@@ -260,7 +260,11 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
 
   const messagesSeen = useCallback(() => {
     if (activeConversation) {
-      markAsRead(conversations[cId].messages.map((m) => m.id))
+      markAsRead(
+        conversations[cId].messages
+          .filter((m) => m.direction == 'incoming' && m.status == 'new')
+          .map((m) => m.id)
+      )
       mutate()
     }
   }, [activeConversation, cId, conversations, markAsRead, mutate])
