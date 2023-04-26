@@ -27,6 +27,15 @@ export type RoomEvent = {
 
 export type Conversation = {
   id: string
+  status: 'active' | 'archived'
+  date_created?: string
+  date_updated?: string
+  owner?: string | User
+  messages: string | Message[]
+}
+
+export type ChatConversation = {
+  id: string
   messages: ChatMessage[]
   hasNewMessages: boolean
   newMessageCount: number
@@ -40,7 +49,7 @@ export type ChatUser = {
   last_login: string
   presence: string
 }
-export type MessageStatusType = 'new' | 'read' | 'archived'
+export type MessageStatusType = 'new' | 'read' | 'edited' | 'archived'
 export type MessageType = 'text' | 'image'
 export type MessageDirection = 'incoming' | 'outgoing'
 
@@ -61,7 +70,8 @@ export type UserMessages = Record<string, ChatMessage[]>
 
 export type Message = {
   id?: string
-  status: string | MessageStatusType
+  conversation: string | Conversation
+  status: MessageStatusType
   user_created?: string | DirectusUser
   date_created?: string
   user_updated?: string | DirectusUser
