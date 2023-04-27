@@ -11,6 +11,7 @@ const config = {
   registrationPage: 'c04e1b01-4487-46b5-a4c3-d8b1da49d53b',
   applyPage: '640f6685-f4a8-4e76-a13a-358ddfac30ea',
   pledgeSurvey: '118dc4ac-356e-4349-a35c-3013679e655b',
+  userImageId: 'b063b5ac-fcec-46ae-8225-bbfb4a0184b5'
 }
 const {
   title,
@@ -25,6 +26,7 @@ const {
   registrationPage,
   applyPage,
   pledgeSurvey,
+  userImageId
 } = config
 export {
   title,
@@ -39,4 +41,5 @@ export {
   registrationPage,
   applyPage,
   pledgeSurvey,
+  userImageId
 }

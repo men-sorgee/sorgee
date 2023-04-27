@@ -97,7 +97,7 @@ const MessagesActions = ({ member }: Props) => {
 
         <DrawerContent>
           <DrawerHeader bg="primary.900" color="white" m={0} p={2}>
-            Messages
+            Messages (beta)
             <DrawerCloseButton />
           </DrawerHeader>
           <DrawerBody p={0} position="relative">

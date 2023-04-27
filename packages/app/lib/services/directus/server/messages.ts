@@ -18,11 +18,6 @@ export async function getMessages(user_id: string) {
           },
         },
       ],
-      _and: {
-        status: {
-          _neq: 'archived',
-        },
-      },
     },
     sort: ['date_created'],
     limit: 100,
