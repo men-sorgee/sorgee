@@ -1,6 +1,6 @@
 import { postJSON } from 'lib/utils'
 import { useMessages } from 'hooks'
-import { Member, ChatMessage, Message, Conversation, UserMessages } from 'lib/models'
+import { Member, ChatMessage, Message, ChatConversation, UserMessages } from 'lib/models'
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import {
@@ -25,7 +25,7 @@ let socket: Socket
 export const Messages = ({ currentUser }: { currentUser: Member }) => {
   const { conversations, markAsRead, reload, mutate, activeConversation: a } = useMessages()
   const [cId, setCid] = useState<string>(a)
-  const [activeConversation, setActiveConversation] = useState<Conversation>()
+  const [activeConversation, setActiveConversation] = useState<ChatConversation>()
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isTyping, setIsTyping] = useState(false)
   const [sidebarVisible, setSidebarVisible] = useState(false)
@@ -188,7 +188,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
 
   const handleSend = (text: string) => {
     sendMessage({
-      body: text,
+      body: text.trim(),
       type: 'text',
       user: {
         id: currentUser.id,

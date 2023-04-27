@@ -1,14 +1,6 @@
 'use client'
 import useSWR, { KeyedMutator } from 'swr'
-import {
-  ChatMessage,
-  Conversation,
-  Member,
-  Message,
-  MessageStatusType,
-  User,
-  UserMessages,
-} from 'lib/models'
+import { ChatMessage, ChatConversation, Member, MessageStatusType, UserMessages } from 'lib/models'
 import { putJSON, JsonFetcher } from 'lib/utils'
 import {
   useState,
@@ -24,7 +16,7 @@ export type MessagesContextData = {
   activeConversation?: string
   setActiveConversation: (cid: string) => void
   chatWith: (user: Partial<Member>) => void
-  conversations: { [key: string]: Conversation }
+  conversations: { [key: string]: ChatConversation }
   hasNewMessages: boolean
   newMessageCount: number
   error?: any
@@ -63,7 +55,7 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
     fallbackData: {},
   })
 
-  const [conversations, setConversations] = useState<Record<string, Conversation>>({})
+  const [conversations, setConversations] = useState<Record<string, ChatConversation>>({})
   const [hasNewMessages, setHasNewMessages] = useState(undefined)
   const [activeConversation, setActiveConversation] = useState<string>(undefined)
   const [newMessages, setNewMessages] = useState<number>(undefined)
