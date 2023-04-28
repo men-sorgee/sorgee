@@ -44,6 +44,7 @@ import { toLocalDate } from 'lib/utils'
 type Props = FlexProps & {
   id: string
   full?: boolean
+  updateMeta?: boolean
   color?: string
   size?: AvatarProps['size']
   fields?: Record<string, DirectusField>
@@ -51,12 +52,22 @@ type Props = FlexProps & {
 }
 
 export const MemberSpotlight = chakra(
-  ({ id, fields, full = false, color, size = ['sm', 'md'], children, ...props }: Props) => {
+  ({
+    id,
+    fields,
+    full = false,
+    color,
+    size = ['sm', 'md'],
+    updateMeta = false,
+    children,
+    ...props
+  }: Props) => {
     const { member, name, picture, loading } = useMember(id)
     const { setMeta } = useMeta()
     useEffect(() => {
-      if (full) setMeta(name || 'Brother', member?.biography, picture)
-    }, [full, member, name, picture, setMeta])
+      if (full && updateMeta) setMeta(name || 'Brother', member?.biography, picture)
+    }, [full, member, name, picture, setMeta, updateMeta])
+
     const headingColor = useColorModeValue('primary.700', 'primary.300')
     if (loading || !id || !member) return <Loading />
     const publicPhotos = member.my_photos?.filter((p) => p.is_public) || []

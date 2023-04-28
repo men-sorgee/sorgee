@@ -263,7 +263,7 @@ export default function MemberListPage({ fields, id: i }: PageProps) {
         </form>
       </FormProvider>
       <ModalPopup size={brand.breakPoints} isOpen={isOpen} onClose={() => setId(undefined)}>
-        <MemberSpotlight id={id as string} fields={fields} full />
+        <MemberSpotlight id={id as string} fields={fields} full updateMeta />
       </ModalPopup>
     </Page>
   )

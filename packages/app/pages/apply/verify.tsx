@@ -151,7 +151,7 @@ function Form({
 
     try {
       let formData = new FormData()
-      formData.append('media', file)
+      formData.append('media', file, 'verification-photo.jpg')
 
       const res = await fetch('/api/apply/verify', {
         method: 'POST',
