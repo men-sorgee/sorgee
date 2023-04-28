@@ -5,7 +5,7 @@ import { useUser } from 'hooks'
 import { brand } from 'lib/config/brand'
 import { pruneUndefined, normalize, serialize, getJSON } from 'lib/utils'
 import { useEffect, useState, createRef } from 'react'
-import { MemberSpotlight, MemberCard } from 'components/controls'
+import { MemberSpotlight, MemberCard, ModalPopup } from 'components/controls'
 import { ArrowRightIcon, ArrowLeftIcon, ChevronRightIcon, ChevronLeftIcon } from '@chakra-ui/icons'
 import {
   Flex,
@@ -25,18 +25,11 @@ import {
   AccordionItem,
   AccordionPanel,
   Container,
-  useColorModeValue,
   useDisclosure,
   Button,
   IconButton,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalOverlay,
   Spacer,
   Text,
-  Wrap,
 } from '@chakra-ui/react'
 import useSWR from 'swr'
 import {
@@ -64,19 +57,18 @@ export type QueryParams = Record<keyof SearchableMember, string[]> & {
 }
 
 export type PageProps = {
-  fieldMap: FieldMap
+  fields: FieldMap
   id?: string
-  params?: QueryParams
 }
 
 export async function getServerSideProps(context: NextPageContext): Promise<{ props: PageProps }> {
   const { getFields } = await import('lib/services/directus/server')
-  const fieldMap = await getFields('users')
-  const params = (context.query as unknown as QueryParams) || ({} as QueryParams)
+  const fields = await getFields('users')
+  const { id } = context.query
   return {
     props: {
-      fieldMap,
-      params,
+      fields,
+      id: id as string,
     },
   }
 }
@@ -85,11 +77,10 @@ type Meta = {
   total: number
   filtered: number
 }
-export default function MemberListPage(props: PageProps) {
+export default function MemberListPage({ fields, id: i }: PageProps) {
   const { member: currentMember, loading } = useUser()
   const router = useRouter()
-  const { fieldMap: fields, id: i, params } = props
-  const { page: p, size: s, sort: o, id: _, ...q } = router.query || params
+  const { page: p, size: s, sort: o, id: _, ...q } = router.query
 
   const [id, setId] = useState(i)
   const [page, setPage] = useState<number>(undefined)
@@ -271,22 +262,9 @@ export default function MemberListPage(props: PageProps) {
           <Pager page={page} pageCount={pageCount} setPage={setPage} />
         </form>
       </FormProvider>
-      <Modal size={brand.breakPoints} isOpen={isOpen} onClose={() => setId(undefined)}>
-        <ModalOverlay backdropFilter="auto" backdropBlur="2px" />
-        <ModalContent ml={[0, 0, -4]}>
-          <ModalBody
-            p={0}
-            rounded="lg"
-            overflow="clip"
-            border="1px solid"
-            borderColor="primary"
-            bg={useColorModeValue('white', 'black')}
-          >
-            <ModalCloseButton color={'white'} mt={2} />
-            <MemberSpotlight id={id as string} fields={fields} full></MemberSpotlight>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+      <ModalPopup size={brand.breakPoints} isOpen={isOpen} onClose={() => setId(undefined)}>
+        <MemberSpotlight id={id as string} fields={fields} full />
+      </ModalPopup>
     </Page>
   )
 }

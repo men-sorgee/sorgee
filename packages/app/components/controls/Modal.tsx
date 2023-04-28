@@ -8,6 +8,7 @@ import {
   ModalBody,
   ModalHeader,
   ModalFooter,
+  useColorModeValue,
 } from '@chakra-ui/react'
 import { ReactNode } from 'react'
 
@@ -20,11 +21,12 @@ type Props = ModalProps & {
 }
 export const ModalPopup = chakra(
   ({ header, footer, isOpen, onClose, children, ...props }: Props) => {
+    const bg = useColorModeValue('white', 'gray.800')
     return (
       <Modal scrollBehavior="inside" isOpen={isOpen} onClose={onClose} isCentered {...props}>
-        <ModalOverlay />
-        <ModalContent bg="transparent" m={0} p={0} shadow="none">
-          <ModalCloseButton />
+        <ModalOverlay backdropFilter="auto" backdropBlur="2px" />
+        <ModalContent bg={bg} m={0} p={0} rounded="lg" shadow="lg">
+          <ModalCloseButton color="white" />
           {header && <ModalHeader>{header}</ModalHeader>}
           <ModalBody m={0} p={0}>
             {children}

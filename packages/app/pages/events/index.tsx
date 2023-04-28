@@ -29,6 +29,7 @@ import { capitalCase } from 'change-case'
 export type PageProps = {}
 
 export default function EventsPage({}: PageProps) {
+  const [tabValue, setTabValue] = useState(0)
   const { member, loading, authorized } = useUser(MemberLevel.inductee)
   const {
     invitations,
@@ -98,11 +99,20 @@ export default function EventsPage({}: PageProps) {
           )}
           <EventCalendar events={[...upcoming, ...invitations].map((i) => i.event)} />
 
-          <Tabs isFitted m={0} isLazy>
+          <Tabs
+            isFitted
+            variant="enclosed"
+            defaultIndex={tabValue}
+            onChange={(index) => setTabValue(index)}
+            isLazy
+            size={['sm', 'lg']}
+          >
             <div className="no-print">
               <TabList>
-                <Tab className="no-print">Upcoming</Tab>
-                <Tab className="no-print">
+                <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 0 ? 'bold' : null}>
+                  Upcoming
+                </Tab>
+                <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 1 ? 'bold' : null}>
                   Invitations
                   {newInvitationCount > 0 && (
                     <Badge ml={1} bg="red.500" rounded="full" px={2} py={0.5} color="white">
@@ -110,7 +120,9 @@ export default function EventsPage({}: PageProps) {
                     </Badge>
                   )}
                 </Tab>
-                <Tab className="no-print">Past</Tab>
+                <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 2 ? 'bold' : null}>
+                  Past
+                </Tab>
               </TabList>
             </div>
             <TabPanels>
@@ -217,7 +229,7 @@ function Invitations({
           >
             {showLink && (
               <ButtonLink
-                gradient={false}
+                gradient={true}
                 rounded="lg"
                 w="full"
                 colorScheme={linkColor}
@@ -259,14 +271,13 @@ function PastEvents({ member, list }: { list: EventInvite[]; member: Member }) {
   })
 
   const PastEventItem = ({ invite }: { invite: EventInvite }) => {
-    const linkColor = useColorModeValue('primary', 'gray')
     return (
-      <Box key={invite.id}>
+      <Box key={invite.id} pt={4}>
         <ButtonLink
-          gradient={false}
+          gradient={true}
           rounded="lg"
           w="full"
-          colorScheme={linkColor}
+          colorScheme="primary"
           href={`/events/${invite.event.id}`}
           p={6}
         >

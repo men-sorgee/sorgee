@@ -73,6 +73,8 @@ export const MemberSpotlight = chakra(
           py={4}
           bgGradient={full ? `linear(to-bl, ${levelColor[1]}, ${levelColor[0]})` : null}
           color="white"
+          borderTopRightRadius="lg"
+          borderTopLeftRadius="lg"
         >
           <MemberHeader
             member={member}
@@ -122,7 +124,7 @@ export const MemberSpotlight = chakra(
           </Box>
         )}
 
-        {fields && (
+        {full && fields && (
           <Tabs
             isFitted
             variant="enclosed"

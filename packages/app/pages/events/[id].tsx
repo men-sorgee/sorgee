@@ -27,6 +27,7 @@ import {
   PopoverArrow,
   PopoverCloseButton,
   PopoverAnchor,
+  Wrap,
 } from '@chakra-ui/react'
 import {
   EventCard,
@@ -37,7 +38,7 @@ import {
   EventRSVP,
   ModalPopup,
 } from 'components/controls'
-import { EventDetail, EventStats, EventUser, Member, Rating, User } from 'lib/models'
+import { EventDetail, EventStats, EventUser, FieldMap, Member, Rating, User } from 'lib/models'
 import Page from 'components/Page'
 import { useEffect, useState } from 'react'
 import { useUser, useEvent } from 'hooks'
@@ -45,16 +46,26 @@ import { useRouter } from 'next/router'
 import { isAfter, isToday } from 'date-fns'
 import { ArrowBackIcon } from '@chakra-ui/icons'
 import NextLink from 'next/link'
+import { brand } from '../../lib/config/brand'
+import { NextPageContext } from 'next'
 
-export const getServerSideProps = (context) => {
+export type PageProps = {
+  fields: FieldMap
+  id?: string
+}
+
+export const getServerSideProps = async (context: NextPageContext) => {
+  const { getFields } = await import('lib/services/directus/server')
+  const fields = await getFields('users')
   return {
     props: {
-      id: context.params.id,
+      fields,
+      id: context.query.id,
     },
   }
 }
 
-export default function EventPage({ id }) {
+export default function EventPage({ id, fields }) {
   const router = useRouter()
   const { id: i } = router.query
   const { member, loading, isStaff, reload: reloadUser } = useUser()
@@ -129,12 +140,12 @@ export default function EventPage({ id }) {
           </SimpleGrid>
           {stats && event.status != 'occurred' && invite && (
             <Flex direction="column" gap={4}>
-              <HStack>
+              <HStack align="start" justify="end">
                 <Stat>
                   <StatLabel>Confirmed</StatLabel>
                   <StatNumber>{stats.confirmed_count}</StatNumber>
                 </Stat>
-                <AvatarGroup size="md" max={showCount}>
+                <Wrap spacing={-2}>
                   {getAttendees('confirmed').map(({ id, name, src }) => (
                     <Avatar
                       key={id}
@@ -143,19 +154,19 @@ export default function EventPage({ id }) {
                       title={name}
                       cursor="pointer"
                       onClick={() => {
-                        setMemberId(id)
+                        if (invite?.rsvp == 'confirmed') setMemberId(id)
                       }}
                     />
                   ))}
-                </AvatarGroup>
+                </Wrap>
               </HStack>
 
-              <HStack>
+              <HStack align="start" justify="right">
                 <Stat>
                   <StatLabel>Maybe</StatLabel>
                   <StatNumber>{stats.maybe_count}</StatNumber>
                 </Stat>
-                <AvatarGroup size="md" max={showCount}>
+                <Wrap spacing={-2}>
                   {getAttendees('maybe').map(({ id, name, src }) => (
                     <Avatar
                       key={id}
@@ -164,11 +175,11 @@ export default function EventPage({ id }) {
                       title={name}
                       cursor="pointer"
                       onClick={() => {
-                        setMemberId(id)
+                        if (invite?.rsvp == 'confirmed') setMemberId(id)
                       }}
                     />
                   ))}
-                </AvatarGroup>
+                </Wrap>
               </HStack>
             </Flex>
           )}
@@ -191,10 +202,12 @@ export default function EventPage({ id }) {
           </Link>
         )}
       </HStack>
-      <ModalPopup isOpen={memberId != undefined} onClose={() => setMemberId(undefined)}>
-        <Box bg={'bg'} rounded="lg">
-          <MemberSpotlight id={memberId} />
-        </Box>
+      <ModalPopup
+        size={brand.breakPoints}
+        isOpen={memberId != undefined}
+        onClose={() => setMemberId(undefined)}
+      >
+        <MemberSpotlight id={memberId} fields={fields} full />
       </ModalPopup>
     </Page>
   )
@@ -259,7 +272,7 @@ const AttendedEvent = ({
           </Alert>
           {attendees.map((u: User) => (
             <Box key={event.id + '-' + u.id} bg="gray.400" mb={4} rounded="lg">
-              <MemberSpotlight size="md" id={u.id} color={color}>
+              <MemberSpotlight size="md" id={u.id} color="white" full>
                 <RateItem
                   onChange={() => {
                     reloadUser()
@@ -268,7 +281,7 @@ const AttendedEvent = ({
                   collection="users"
                   aria-label={'Rate this member'}
                 >
-                  Rate
+                  Your Rating:
                 </RateItem>
               </MemberSpotlight>
             </Box>
