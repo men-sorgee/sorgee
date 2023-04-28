@@ -36,19 +36,14 @@ interface Props {}
 export default function UserMenu(_props: Props) {
   const { colorMode, toggleColorMode } = useColorMode()
   const { site } = useSite()
-  const { member, isApplicant, isMember, isStaff, level } = useUser(
-    MemberLevel.applicant,
-    ApplicationStatus.apply
-  )
+  const { member, authenticated, isApplicant, isMember, isStaff, level } = useUser()
   const showApply = !site?.invite_only
 
   return (
     <>
-      {member ? (
+      {authenticated ? (
         <Menu placement="bottom">
-          <MenuButton cursor={'pointer'}>
-            <MemberAvatar member={member} />
-          </MenuButton>
+          <MenuButton cursor={'pointer'}>{member && <MemberAvatar member={member} />}</MenuButton>
 
           <MenuList bg="black" maxH="80vh" overflowY="auto">
             <Box p={4} m={2} mt={0} bgGradient="linear(to-bl, primary.300, accent.300)">

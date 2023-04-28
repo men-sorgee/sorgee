@@ -605,6 +605,7 @@ export const searchableMemberFields: Array<keyof Member> = [
   'last_login',
   'date_created',
   'buddies.*' as any,
+  'buddy_of.*' as any,
 ]
 
 export const memberFields: Array<keyof Member> = [

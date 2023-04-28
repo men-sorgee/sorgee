@@ -37,7 +37,15 @@ export async function getUser<T = User>(
     fields: fields as any,
     filter: {
       status: {
-        _nin: ['inactive', 'banned'],
+        _eq: 'active',
+      },
+    },
+    deep: {
+      buddies: {
+        _limit: -1,
+      },
+      buddy_of: {
+        _limit: -1,
       },
     },
   })

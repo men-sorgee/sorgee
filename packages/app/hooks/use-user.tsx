@@ -44,6 +44,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (status === 'authenticated') {
       setAuthenticated(true)
+    } else {
+      setAuthenticated(false)
     }
   }, [status])
 

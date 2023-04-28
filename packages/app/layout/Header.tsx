@@ -27,7 +27,7 @@ import User from './User'
 import { useRouter } from 'next/router'
 
 export type Props = BoxProps & {
-  userType: UserType
+  userType?: UserType
   children?: React.ReactNode | React.ReactNode[]
 }
 

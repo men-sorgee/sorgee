@@ -76,7 +76,7 @@ export default function BuddiesPage({ fieldMap }: PageProps) {
           <Link textDecoration="underline" as={NextLink} href="/members">
             members directory
           </Link>
-          . You have {members?.length} buddies with {onlineMembers?.length} online.
+          . You have {buddies?.length} buddies with {onlineMembers?.length} online.
         </Text>
         <Spacer />
         <Flex direction="column" align="center" justify="space-around" minWidth={['full', '15%']}>
