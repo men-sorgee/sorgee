@@ -1,19 +1,18 @@
 'use client'
 import useSWR from 'swr'
 import { ApiError, ApplicationStatus, Member, MemberLevel, Profile, User } from 'lib/models'
-import { authenticatedFetcher, getAssetUrl, postJSON } from 'lib/utils'
+import { JsonFetcher, authenticatedFetcher, getAssetUrl, postJSON } from 'lib/utils'
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 
 export type UserContextData = {
-  user: Profile
   member: Member | null
   name: string | undefined
   picture: string
   error?: any
   loading: boolean
-  mutate: (data: Partial<User>) => Promise<[Member, ApiError]>
+  mutate: (data: Partial<Member>) => Promise<[Member, ApiError]>
   reload: () => Promise<Member>
   level: MemberLevel
   authenticated: boolean
@@ -23,7 +22,6 @@ export type UserContextData = {
 }
 
 export const UserContext = createContext<UserContextData>({
-  user: null,
   member: null,
   name: undefined,
   error: undefined,
@@ -40,48 +38,37 @@ export const UserContext = createContext<UserContextData>({
 
 export function UserProvider({ children }: { children: ReactNode }) {
   const key = `/api/member/me`
-  const none = useMemo(() => {
-    return {}
-  }, [])
-  const { data: session, status } = useSession()
-  const [user, setUser] = useState<Profile>(none as any)
-  const authenticated = status === 'authenticated'
+  const { status } = useSession()
+  const [authenticated, setAuthenticated] = useState(false)
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      setAuthenticated(true)
+    }
+  }, [status])
 
   const {
     data: member,
     mutate: _mutate,
     error,
     isLoading: loading,
-  } = useSWR<Member, Error>(key, authenticatedFetcher(authenticated), {
-    fallbackData: user as Member,
+  } = useSWR<Member, Error>(key, JsonFetcher, {
+    revalidateIfStale: true,
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
     refreshInterval: 1000 * 60 * 5,
   })
 
-  useEffect(() => {
-    if (authenticated && session?.user && user == none) {
-      setUser(session.user)
-      _mutate(session.user as Member, {
-        revalidate: true,
-      })
-    }
-  }, [status, session?.user, user, none, authenticated, _mutate])
-
-  useEffect(() => {
-    if (!loading && member) {
-      setUser(member)
-    }
-  }, [member, loading, _mutate, user])
-
-  const { application_status, user_type } = user || {}
-  const name = user?.nickname || user?.first_name || 'Member'
-  const picture = getAssetUrl(user?.picture)
+  const { application_status, user_type } = member || {}
+  const name = member?.nickname || member?.first_name || 'Brother'
+  const picture = getAssetUrl(member?.picture)
   const approved = ApplicationStatus[application_status] >= ApplicationStatus.approved
   const level = MemberLevel[user_type]
   const isMember = approved && level >= MemberLevel.pledge
   const isStaff = isMember && level >= MemberLevel.staff
   const isApplicant = !approved
 
-  const mutate = async (mutation: Partial<User>) => {
+  const mutate = async (mutation: Partial<Member>) => {
     await _mutate({ ...member, ...mutation } as Member, false)
     const { success, data, error } = await postJSON<Member>(key, mutation as any)
     if (success) {
@@ -94,7 +81,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }
 
   const context: UserContextData = {
-    user,
     member,
     error,
     name,

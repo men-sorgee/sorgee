@@ -181,7 +181,7 @@ function Header({ userType, children, ...props }: Props) {
             />
           </Box>
 
-          <Logo width="20px" border="1px solid red" />
+          <Logo />
           <Box w="50%" textAlign="right">
             <User />
           </Box>

@@ -6,7 +6,7 @@ import { EventUser } from 'lib/models'
 
 export default async function inviteRSVP(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const method = withMethods(req, ['GET'])
+    const method = withMethods(req, ['GET', 'POST'])
     const { event_id, user_id, rsvp, reason } = (method == 'GET' ? req.query : req.body) as any
     if (!event_id || !user_id || !rsvp) return res.redirect(baseUrl + '/events')
 

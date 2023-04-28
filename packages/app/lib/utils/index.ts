@@ -135,3 +135,23 @@ export function serialize<T>(params: Record<keyof T, string[]>) {
 }
 
 export * from './fetchers'
+
+export function debouncedPromise<T>(
+  func: (...args: any[]) => Promise<T>,
+  delay: number
+): (...args: any[]) => Promise<T> {
+  let timerId: NodeJS.Timeout | null
+
+  return async function debouncedFunc(...args: any[]): Promise<T> {
+    if (timerId) {
+      clearTimeout(timerId)
+    }
+
+    return new Promise((resolve) => {
+      timerId = setTimeout(async () => {
+        const result = await func(...args)
+        resolve(result)
+      }, delay)
+    })
+  }
+}

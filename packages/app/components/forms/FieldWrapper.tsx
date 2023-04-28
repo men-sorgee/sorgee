@@ -9,6 +9,7 @@ import {
   Flex,
   chakra,
   Fade,
+  useColorModeValue,
 } from '@chakra-ui/react'
 import { InfoIcon } from '../icons'
 
@@ -55,7 +56,7 @@ const FieldWrapper = (props: Props) => {
             borderRadius="md"
             shadow={'lg'}
           >
-            <InfoIcon color="primary" mr={2} /> {help}
+            <InfoIcon color="accent.500" mr={2} /> {help}
           </FormHelperText>
         </Fade>
       )}

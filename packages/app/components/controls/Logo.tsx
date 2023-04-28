@@ -3,7 +3,7 @@ import NextLink from 'next/link'
 import { CSSProperties } from 'react'
 import { brand } from 'lib/config/brand'
 
-export const Logo = chakra(({ width = '50px', ...props }: CSSProperties) => (
+export const Logo = ({ width = '50px', ...props }: CSSProperties) => (
   <NextLink href="/">
     <svg
       color={brand.colors.accent.DEFAULT}
@@ -31,4 +31,4 @@ export const Logo = chakra(({ width = '50px', ...props }: CSSProperties) => (
       </g>
     </svg>
   </NextLink>
-))
+)

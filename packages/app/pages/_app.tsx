@@ -1,11 +1,12 @@
 import { AppProps } from 'next/app'
 import { SessionProvider } from 'next-auth/react'
 import { ChakraProvider, cookieStorageManager, extendTheme } from '@chakra-ui/react'
-import Layout from 'layout/index'
+import Layout from 'layout'
 import getTheme from '../theme'
 import { Manrope, Arvo, Roboto_Mono } from 'next/font/google'
 import { useRouter } from 'next/router'
 import { MessagesProvider, NotificationsProvider, UserProvider, MetaContextProvider } from 'hooks'
+import React from 'react'
 
 const heading = Arvo({
   variable: '--heading-font',
@@ -40,9 +41,11 @@ export default function MyApp({ Component, pageProps }: AppProps) {
           <UserProvider>
             <NotificationsProvider>
               <MessagesProvider>
-                <Layout fonts={[heading.variable, body.variable, mono.variable]}>
-                  <Component {...pageProps} />
-                </Layout>
+                <React.StrictMode>
+                  <Layout fonts={[heading.variable, body.variable, mono.variable]}>
+                    <Component {...pageProps} />
+                  </Layout>
+                </React.StrictMode>
               </MessagesProvider>
             </NotificationsProvider>
           </UserProvider>
