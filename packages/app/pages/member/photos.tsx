@@ -37,7 +37,6 @@ import Page from 'components/Page'
 import { ArrowUpTrayIcon, CameraIcon } from '@heroicons/react/24/outline'
 import { UserPhoto } from 'lib/models'
 import { deleteJSON, getAssetUrl } from 'lib/utils'
-import { da } from 'date-fns/locale'
 type Props = {}
 
 type PhotoItem = {

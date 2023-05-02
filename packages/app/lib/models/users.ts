@@ -235,7 +235,6 @@ export enum MemberLevel {
   big_brother = 6,
   // -- //
   staff = 7,
-  admin = 8,
 }
 
 export const MemberLevelColorMap = [

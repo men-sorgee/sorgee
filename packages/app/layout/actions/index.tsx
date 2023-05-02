@@ -12,7 +12,9 @@ import Members from './Members'
 
 export default function ActionsNav() {
   const router = useRouter()
-  const { authenticated, isMember, member, level } = useUser()
+  const { authenticated, isMember, member, level } = useUser({
+    forceLogin: false,
+  })
   const [path, setPath] = useState(router.asPath)
 
   useEffect(() => {

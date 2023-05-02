@@ -9,7 +9,9 @@ import { pledgeSurvey } from '../../lib/config'
 
 function Approved() {
   const router = useRouter()
-  const { loading, level, member } = useUser(MemberLevel.pledge)
+  const { loading, level, member } = useUser({
+    minLevel: MemberLevel.pledge,
+  })
 
   if (member && member?.application_status && member.application_status !== 'approved') {
     router.push('/apply/' + member?.application_status)

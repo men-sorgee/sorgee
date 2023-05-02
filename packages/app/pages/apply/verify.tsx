@@ -42,7 +42,10 @@ import { PhotoCapture } from 'components/controls'
 import { ArrowUpTrayIcon, CameraIcon } from '@heroicons/react/24/outline'
 
 function Verification() {
-  const { member, loading, reload } = useUser(MemberLevel.applicant, ApplicationStatus.verify)
+  const { member, loading, reload } = useUser({
+    minLevel: MemberLevel.applicant,
+    minAppStatus: ApplicationStatus.verify,
+  })
   const [complete, setComplete] = useState(false)
   const router = useRouter()
 

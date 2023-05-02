@@ -13,7 +13,10 @@ import { Member, MemberLevel, ApplicationStatus } from 'lib/models'
 function Review() {
   const router = useRouter()
   const [complete, setComplete] = useState<boolean>(false)
-  const { loading, member, reload } = useUser(MemberLevel.applicant, ApplicationStatus.review)
+  const { loading, member } = useUser({
+    minLevel: MemberLevel.applicant,
+    minAppStatus: ApplicationStatus.review,
+  })
 
   useEffect(() => {
     if (!loading && member) {

@@ -24,7 +24,9 @@ function Layout({
   className?: string
   fonts: any[]
 }) {
-  const { authenticated, member, level, loading } = useUser()
+  const { authenticated, member, level, loading } = useUser({
+    forceLogin: false,
+  })
   const router = useRouter()
   const [path] = useState<string>(router?.asPath)
   const { isOpen, onOpen } = useDisclosure()

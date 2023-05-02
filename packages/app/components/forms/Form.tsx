@@ -72,7 +72,7 @@ export default function Form<T>({
         })
       }
     },
-    [autoSave, onSubmit, reset, successMessage, toast]
+    [autoSave, debouncedSubmit, reset, successMessage, toast]
   )
 
   const debouncedTrigger = debouncedPromise(trigger, 1000)
@@ -89,7 +89,17 @@ export default function Form<T>({
         })
       }
     },
-    [autoSave, handleSubmit, isDirty, isSubmitting, isValid, isValidating, onSubmitWrapper, trigger]
+    [
+      autoSave,
+      debouncedTrigger,
+      handleSubmit,
+      isDirty,
+      isSubmitting,
+      isValid,
+      isValidating,
+      onSubmitWrapper,
+      trigger,
+    ]
   )
 
   return (

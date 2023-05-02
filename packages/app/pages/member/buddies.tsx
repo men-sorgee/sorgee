@@ -39,7 +39,9 @@ export async function getServerSideProps(): Promise<{ props: PageProps }> {
 export default function BuddiesPage({ fieldMap }: PageProps) {
   const [onlineOnly, setOnlineOnly] = useState(false)
   const [id, setId] = useState<string>(undefined)
-  const { member, loading } = useUser(MemberLevel.brother)
+  const { member, loading } = useUser({
+    minLevel: MemberLevel.brother,
+  })
 
   const buddies = member?.buddies as UserBuddy[]
   let members = buddies?.map((buddy) => buddy.buddy_id as User)

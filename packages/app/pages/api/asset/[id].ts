@@ -13,7 +13,7 @@ export default async function getAsset(req: NextApiRequest, res: NextApiResponse
       height ? '&height=' + height : ''
     }&quality=${quality}&access_token=${config.adminToken}`
     const response = await fetch(url)
-    res.setHeader('cache', 'public, max-age=31536000, immutable')
+    // res.setHeader('cache', 'public, max-age=31536000, immutable')
     res.status(response.status).send(response.body)
   } catch (err) {
     console.error(err)

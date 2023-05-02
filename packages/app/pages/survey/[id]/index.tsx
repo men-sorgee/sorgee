@@ -2,7 +2,7 @@ import { useUser } from 'hooks'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useCallback, useEffect, useState } from 'react'
 import { getJSON, postJSON, pruneUndefined } from 'lib/utils'
-import { SurveyAnswer, Survey, Question, GroupEvent, AnswerType } from 'lib/models'
+import { SurveyAnswer, Survey, Question, GroupEvent, AnswerType, MemberLevel } from 'lib/models'
 import {
   HStack,
   Button,
@@ -69,7 +69,9 @@ export const getServerSideProps = async (context) => {
 
 export default function SurveyPage({ survey, question, step }: Props) {
   const router = useRouter()
-  const { loading: userLoading, member } = useUser()
+  const { loading: userLoading, member } = useUser({
+    minLevel: MemberLevel.pledge,
+  })
   const event = survey?.event as GroupEvent
 
   const [answer, setAnswer] = useState<SurveyAnswer>(undefined)

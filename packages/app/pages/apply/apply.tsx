@@ -81,7 +81,14 @@ function Apply({ promo, invite, markdown, ...props }: PageProps) {
       signIn()
     },
   })
-  const { member: user, loading, reload } = useUser(MemberLevel.applicant, ApplicationStatus.apply)
+  const {
+    member: user,
+    loading,
+    reload,
+  } = useUser({
+    minLevel: MemberLevel.applicant,
+    minAppStatus: ApplicationStatus.apply,
+  })
 
   const [formError, setFormError] = useState<string>()
 

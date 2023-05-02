@@ -36,7 +36,9 @@ interface Props {}
 export default function UserMenu(_props: Props) {
   const { colorMode, toggleColorMode } = useColorMode()
   const { site } = useSite()
-  const { member, authenticated, isApplicant, isMember, isStaff, level } = useUser()
+  const { member, authenticated, isApplicant, isMember, isStaff, level } = useUser({
+    forceLogin: false,
+  })
   const showApply = !site?.invite_only
 
   return (

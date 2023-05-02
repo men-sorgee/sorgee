@@ -5,6 +5,7 @@ import { BoltIcon as LightningBoltIconSolid } from '@heroicons/react/24/solid'
 import { useUser } from 'hooks'
 import Page from 'components/Page'
 import dynamic from 'next/dynamic'
+import { MemberLevel } from 'lib/models'
 
 const BarcodeScannerComponent = dynamic(() => import('react-qr-barcode-scanner'), { ssr: false })
 
@@ -14,7 +15,7 @@ export default function Scanner() {
   const [show, setShow] = useState(true)
   const [url, setUrl] = useState<string>()
   const [stopStream, setStopStream] = useState(false)
-  const { member, loading } = useUser()
+  const { member, loading } = useUser({ minLevel: MemberLevel.staff })
   const onScan = (err: string, result: { getText: () => any }) => {
     if (!err && result) {
       let data = result.getText()
@@ -30,7 +31,7 @@ export default function Scanner() {
     setStopStream(true)
     setTimeout(() => setShow(false), 0)
   }
-  if (typeof window == 'undefined' || !member) return null
+  if (loading || typeof window == 'undefined' || !member) return null
   return (
     <Page title="Scan" requireAuth={true}>
       <Flex direction="column">

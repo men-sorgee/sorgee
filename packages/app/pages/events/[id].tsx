@@ -38,7 +38,7 @@ import {
   EventRSVP,
   ModalPopup,
 } from 'components/controls'
-import { EventDetail, EventStats, EventUser, FieldMap, Member, Rating, User } from 'lib/models'
+import { EventDetail, EventStats, EventUser, FieldMap, Member, MemberLevel, User } from 'lib/models'
 import Page from 'components/Page'
 import { useEffect, useState } from 'react'
 import { useUser, useEvent } from 'hooks'
@@ -46,7 +46,7 @@ import { useRouter } from 'next/router'
 import { isAfter, isToday } from 'date-fns'
 import { ArrowBackIcon } from '@chakra-ui/icons'
 import NextLink from 'next/link'
-import { brand } from '../../lib/config/brand'
+import { brand } from 'lib/config/brand'
 import { NextPageContext } from 'next'
 
 export type PageProps = {
@@ -68,13 +68,21 @@ export const getServerSideProps = async (context: NextPageContext) => {
 export default function EventPage({ id, fields }) {
   const router = useRouter()
   const { id: i } = router.query
-  const { member, loading, isStaff, reload: reloadUser } = useUser()
+  const {
+    member,
+    loading,
+    isStaff,
+    reload: reloadUser,
+    authenticated,
+  } = useUser({ minLevel: MemberLevel.inductee })
+
   const [eventId] = useState<string>(i || id)
   const [showTicket, setShowTicket] = useState<boolean>(false)
   const { event, loading: eventLoading } = useEvent(eventId)
   const [stats, setStats] = useState<EventStats>(undefined)
   const [invite, setInvite] = useState<EventUser>(undefined)
   const [memberId, setMemberId] = useState<string>(undefined)
+
   useEffect(() => {
     if (!eventLoading && event?.stats && !stats) {
       setStats(event.stats)
@@ -103,7 +111,8 @@ export default function EventPage({ id, fields }) {
         }
       })
   }
-  const showCount = useBreakpointValue([4, 8, 15, 20, 24])
+
+  if (!authenticated) return null
 
   return (
     <Page title="Event Details" loading={loading || eventLoading} requireAuth={true}>

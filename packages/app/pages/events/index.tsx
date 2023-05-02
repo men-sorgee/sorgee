@@ -30,7 +30,7 @@ export type PageProps = {}
 
 export default function EventsPage({}: PageProps) {
   const [tabValue, setTabValue] = useState(0)
-  const { member, loading, authorized } = useUser(MemberLevel.inductee)
+  const { member, loading, authorized } = useUser({ minLevel: MemberLevel.inductee })
   const {
     invitations,
     newInvitationCount,
@@ -76,14 +76,14 @@ export default function EventsPage({}: PageProps) {
                 showLocation={true}
               >
                 <ButtonLink
-                  gradient={false}
+                  gradient={true}
                   rounded="lg"
                   w="full"
                   colorScheme="accent"
                   href={`/events/${activeInvite.event.id}`}
                   p={6}
                 >
-                  View Location Details
+                  View Details
                 </ButtonLink>
                 <EventRSVP
                   memberId={member?.id}
@@ -188,7 +188,6 @@ function Invitations({
   onChange: () => void
   showLink?: boolean
 }) {
-  const linkColor = useColorModeValue('primary', 'gray')
   if (list.length === 0) {
     return (
       <Box>
@@ -232,7 +231,7 @@ function Invitations({
                 gradient={true}
                 rounded="lg"
                 w="full"
-                colorScheme={linkColor}
+                colorScheme="primary"
                 href={`/events/${invite.event.id}`}
                 p={6}
               >

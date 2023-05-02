@@ -4,7 +4,7 @@ import { ApiError, ApplicationStatus, Member, MemberLevel, Profile, User } from 
 import { JsonFetcher, authenticatedFetcher, getAssetUrl, postJSON } from 'lib/utils'
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
-import { useSession } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 
 export type UserContextData = {
   member: Member | null
@@ -106,28 +106,39 @@ export function UserProvider({ children }: { children: ReactNode }) {
   return <UserContext.Provider value={context}>{children}</UserContext.Provider>
 }
 
-export const useUser = (
-  minLevel: MemberLevel = MemberLevel.brother,
-  minAppStatus: ApplicationStatus = ApplicationStatus.approved
-): UserContextData & {
+type UseUserProps = {
+  minLevel?: MemberLevel
+  minAppStatus?: ApplicationStatus
+  forceLogin?: boolean
+}
+export const useUser = ({
+  minLevel = MemberLevel.brother,
+  minAppStatus = ApplicationStatus.approved,
+  forceLogin = true,
+}: UseUserProps = {}): UserContextData & {
   authorized: boolean
 } => {
   const router = useRouter()
-  const { level, loading, member, ...data } = useContext(UserContext)
+  const { level, loading, member, authenticated, ...data } = useContext(UserContext)
   let authorized = level >= minLevel
 
   useEffect(() => {
-    if (!loading && member) {
-      const status = ApplicationStatus[member.application_status]
-      if (status < minAppStatus) {
-        const destination = '/apply/' + member.application_status
-        if (router.asPath != destination) router.push(destination)
+    if (!loading) {
+      if (authenticated) {
+        const status = ApplicationStatus[member.application_status]
+        if (status < minAppStatus) {
+          const destination = '/apply/' + member.application_status
+          if (router.asPath != destination) router.push(destination)
+        }
+      } else if (forceLogin) {
+        signIn()
       }
     }
-  }, [authorized, loading, member, minAppStatus, router])
+  }, [authenticated, authorized, forceLogin, loading, member, minAppStatus, router])
 
   return {
     ...data,
+    authenticated,
     level,
     loading,
     member,

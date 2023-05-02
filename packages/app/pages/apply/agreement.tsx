@@ -25,7 +25,10 @@ export const getStaticProps = async () => {
   }
 }
 export default function Agreement({ markdown }: Props) {
-  const { loading, reload } = useUser(MemberLevel.applicant, ApplicationStatus.agreement)
+  const { loading, reload } = useUser({
+    minLevel: MemberLevel.applicant,
+    minAppStatus: ApplicationStatus.agreement,
+  })
 
   return (
     <Page

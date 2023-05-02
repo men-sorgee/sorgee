@@ -46,7 +46,7 @@ export const getServerSideProps = async (context) => {
 
 export default function EventAdmin({ event }: { event: EventDetail }) {
   const router = useRouter()
-  const { member, authorized, loading } = useUser(MemberLevel.staff)
+  const { member, authorized, loading } = useUser({ minLevel: MemberLevel.staff })
   const [fees, setFees] = useState<number>(undefined)
   const [stats] = useState<EventStats>(event.stats)
   const { error } = router.query

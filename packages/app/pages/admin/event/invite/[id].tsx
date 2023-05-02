@@ -58,7 +58,7 @@ export const getServerSideProps = async (context) => {
 }
 
 export default function InviteAdmin({ event, invite, user }: Props) {
-  const { member, loading, level } = useUser()
+  const { member, loading, level } = useUser({ minLevel: MemberLevel.staff })
   const { photo: p } = user
   const [camera, setCamera] = useState(false)
   const [picture, setPicture] = useState<string>()
