@@ -29,7 +29,7 @@ export default async function inviteRSVP(req: NextApiRequest, res: NextApiRespon
       success = true
     }
 
-    const url = success ? baseUrl + '/events/' + event_id : '/events'
+    const url = success ? '/events/' + event_id : '/events'
     const session = await getServerSession(req, res, authOptions)
     if (!session) {
       res.redirect(baseUrl + '/api/auth/signin?callbackUrl=' + url)
