@@ -192,7 +192,7 @@ export default function EventPage({ id, fields }) {
               </HStack>
             </Flex>
           )}
-          {invite?.attended && (
+          {event.status == 'occurred' && invite?.attended && (
             <AttendedEvent event={event} member={member} invite={invite} reloadUser={reloadUser} />
           )}
           {event.status != 'occurred' && (invite || !event.invite_only) && (
