@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import { baseUrl } from 'lib/config'
 import { findInvite, getEvent, registerForEvent, updateInvite } from 'lib/services/directus/server'
 import { withMethods } from 'lib/utils/server'
 import { EventUser } from 'lib/models'
@@ -9,11 +10,11 @@ export default async function inviteRSVP(req: NextApiRequest, res: NextApiRespon
   try {
     const method = withMethods(req, ['GET', 'POST'])
     const { event_id, user_id, rsvp, reason } = (method == 'GET' ? req.query : req.body) as any
-    if (!event_id || !user_id || !rsvp) return res.redirect('/events')
+    if (!event_id || !user_id || !rsvp) return res.redirect(baseUrl + '/events')
 
     const event = await getEvent(event_id as string)
 
-    if (!event || event.status !== 'scheduled') return res.redirect('/events')
+    if (!event || event.status !== 'scheduled') return res.redirect(baseUrl + '/events')
 
     const invite = (await findInvite(event_id as string, user_id as string)) as EventUser
 
@@ -31,13 +32,13 @@ export default async function inviteRSVP(req: NextApiRequest, res: NextApiRespon
     const url = success ? '/events/' + event_id : '/events'
     const session = await getServerSession(req, res, authOptions)
     if (!session) {
-      res.redirect('/api/auth/signin?callbackUrl=' + url)
+      res.redirect(baseUrl + '/api/auth/signin?callbackUrl=' + url)
     } else {
-      return res.redirect(url)
+      return res.redirect(baseUrl + url)
     }
   } catch (e) {
     console.error(e)
-    res.redirect('/events')
+    res.redirect(baseUrl + '/events')
   } finally {
     res.end()
   }
