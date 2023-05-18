@@ -98,7 +98,7 @@ export const MemberCard = chakra(
 
               <ButtonGroup>
                 <MemberChat member={member} />
-                <MemberConnect member={member} />
+                <MemberConnect memberId={member.id} />
               </ButtonGroup>
             </CardFooter>
           </Card>

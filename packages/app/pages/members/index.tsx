@@ -2,10 +2,9 @@ import { ManyItems } from '@directus/sdk'
 import Page from 'components/Page'
 import { addDays } from 'date-fns'
 import { useUser } from 'hooks'
-import { brand } from 'lib/config/brand'
 import { pruneUndefined, normalize, serialize, getJSON } from 'lib/utils'
 import { useEffect, useState, createRef } from 'react'
-import { MemberSpotlight, MemberCard, ModalPopup } from 'components/controls'
+import { MemberCard, MemberModal } from 'components/controls'
 import { ArrowRightIcon, ArrowLeftIcon, ChevronRightIcon, ChevronLeftIcon } from '@chakra-ui/icons'
 import {
   Flex,
@@ -64,11 +63,9 @@ export type PageProps = {
 export async function getServerSideProps(context: NextPageContext): Promise<{ props: PageProps }> {
   const { getFields } = await import('lib/services/directus/server')
   const fields = await getFields('users')
-  const { id } = context.query
   return {
     props: {
       fields,
-      id: id as string,
     },
   }
 }
@@ -262,9 +259,13 @@ export default function MemberListPage({ fields, id: i }: PageProps) {
           <Pager page={page} pageCount={pageCount} setPage={setPage} />
         </form>
       </FormProvider>
-      <ModalPopup size={brand.breakPoints} isOpen={isOpen} onClose={() => setId(undefined)}>
-        <MemberSpotlight id={id as string} fields={fields} full updateMeta />
-      </ModalPopup>
+
+      <MemberModal
+        updateMeta
+        isOpen={isOpen}
+        memberId={id as string}
+        onClose={() => setId(undefined)}
+      />
     </Page>
   )
 }

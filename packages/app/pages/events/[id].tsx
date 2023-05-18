@@ -5,11 +5,9 @@ import {
   StatNumber,
   SimpleGrid,
   Avatar,
-  AvatarGroup,
   Flex,
   Divider,
   StatGroup,
-  useBreakpointValue,
   Box,
   Link,
   Text,
@@ -18,15 +16,6 @@ import {
   useColorModeValue,
   Alert,
   AlertIcon,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverHeader,
-  PopoverBody,
-  PopoverFooter,
-  PopoverArrow,
-  PopoverCloseButton,
-  PopoverAnchor,
   Wrap,
 } from '@chakra-ui/react'
 import {
@@ -36,7 +25,7 @@ import {
   MemberSpotlight,
   RateItem,
   EventRSVP,
-  ModalPopup,
+  MemberModal,
 } from 'components/controls'
 import { EventDetail, EventStats, EventUser, FieldMap, Member, MemberLevel, User } from 'lib/models'
 import Page from 'components/Page'
@@ -46,26 +35,21 @@ import { useRouter } from 'next/router'
 import { isAfter, isToday } from 'date-fns'
 import { ArrowBackIcon } from '@chakra-ui/icons'
 import NextLink from 'next/link'
-import { brand } from 'lib/config/brand'
 import { NextPageContext } from 'next'
 
 export type PageProps = {
-  fields: FieldMap
   id?: string
 }
 
 export const getServerSideProps = async (context: NextPageContext) => {
-  const { getFields } = await import('lib/services/directus/server')
-  const fields = await getFields('users')
   return {
     props: {
-      fields,
       id: context.query.id,
     },
   }
 }
 
-export default function EventPage({ id, fields }) {
+export default function EventPage({ id }: PageProps) {
   const router = useRouter()
   const { id: i } = router.query
   const {
@@ -76,7 +60,7 @@ export default function EventPage({ id, fields }) {
     authenticated,
   } = useUser({ minLevel: MemberLevel.inductee })
 
-  const [eventId] = useState<string>(i || id)
+  const [eventId] = useState<string>(String(i) || id)
   const [showTicket, setShowTicket] = useState<boolean>(false)
   const { event, loading: eventLoading } = useEvent(eventId)
   const [stats, setStats] = useState<EventStats>(undefined)
@@ -211,13 +195,11 @@ export default function EventPage({ id, fields }) {
           </Link>
         )}
       </HStack>
-      <ModalPopup
-        size={brand.breakPoints}
+      <MemberModal
         isOpen={memberId != undefined}
+        memberId={memberId}
         onClose={() => setMemberId(undefined)}
-      >
-        <MemberSpotlight id={memberId} fields={fields} full />
-      </ModalPopup>
+      />
     </Page>
   )
 }

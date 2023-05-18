@@ -98,7 +98,7 @@ export const MemberSpotlight = chakra(
             <Spacer />
             <ButtonGroup>
               <MemberChat member={member} />
-              <MemberConnect member={member} />
+              <MemberConnect memberId={member?.id} />
             </ButtonGroup>
           </MemberHeader>
           {full && <Text>{member?.biography}</Text>}

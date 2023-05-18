@@ -20,6 +20,7 @@ export { MemberSpotlight } from './MemberSpotlight'
 export { MemberPropertyGroup } from './MemberPropertyGroup'
 export { MemberConnect } from './MemberConnect'
 export { MemberChat } from './MemberChat'
+export { MemberModal } from './MemberModal'
 
 export { ImageModal } from './ImageModal'
 export { ImageGallery } from './ImageGallery'

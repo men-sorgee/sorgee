@@ -1,44 +1,25 @@
 import Page from 'components/Page'
 import { useUser } from 'hooks'
-import { MemberLevel, SearchableMember, User, UserBuddy, FieldMap } from 'lib/models'
+import { MemberLevel, SearchableMember, User, UserBuddy } from 'lib/models'
 import {
   Flex,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalOverlay,
   SimpleGrid,
-  useColorModeValue,
-  useDisclosure,
   Text,
   Alert,
   Switch,
   Spacer,
   Link,
 } from '@chakra-ui/react'
-import { MemberCard, MemberSpotlight } from 'components/controls'
-import { useEffect, useState } from 'react'
+import { MemberCard, MemberModal } from 'components/controls'
+import { useState } from 'react'
 import NextLink from 'next/link'
 import { FieldSwitch } from 'components/forms'
 
-export type PageProps = {
-  fieldMap: FieldMap
-}
+export type PageProps = {}
 
-export async function getServerSideProps(): Promise<{ props: PageProps }> {
-  const { getFields } = await import('lib/services/directus/server')
-  const fieldMap = await getFields('users')
-  return {
-    props: {
-      fieldMap,
-    },
-  }
-}
-
-export default function BuddiesPage({ fieldMap }: PageProps) {
+export default function BuddiesPage({}: PageProps) {
   const [onlineOnly, setOnlineOnly] = useState(false)
-  const [id, setId] = useState<string>(undefined)
+  const [memberId, setMemberId] = useState<string>(undefined)
   const { member, loading } = useUser({
     minLevel: MemberLevel.brother,
   })
@@ -49,14 +30,6 @@ export default function BuddiesPage({ fieldMap }: PageProps) {
   if (onlineOnly) {
     members = onlineMembers
   }
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  useEffect(() => {
-    if (id) {
-      onOpen()
-    } else {
-      onClose()
-    }
-  }, [id, setId, onOpen, onClose])
 
   return (
     <Page title="Buddies" loading={loading} requireAuth={true}>
@@ -101,24 +74,16 @@ export default function BuddiesPage({ fieldMap }: PageProps) {
               size={['md', 'lg', 'xl']}
               member={u as unknown as SearchableMember}
               onClick={() => {
-                setId(u.id)
+                setMemberId(u.id)
               }}
             />
           ))}
       </SimpleGrid>
-      <Modal
-        size={['full', 'xl', '2xl', '3xl', '5xl']}
-        isOpen={isOpen}
-        onClose={() => setId(undefined)}
-      >
-        <ModalOverlay backdropFilter="auto" backdropBlur="2px" />
-        <ModalContent ml={-4} bg={useColorModeValue('white', 'black')}>
-          <ModalBody p={0} rounded="md">
-            <ModalCloseButton color={'white'} mt={2} />
-            <MemberSpotlight full id={id} fields={fieldMap}></MemberSpotlight>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+      <MemberModal
+        isOpen={memberId != undefined}
+        memberId={memberId}
+        onClose={() => setMemberId(undefined)}
+      />
     </Page>
   )
 }

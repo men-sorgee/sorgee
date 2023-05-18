@@ -1,6 +1,6 @@
 import { postJSON } from 'lib/utils'
 import { useMessages } from 'hooks'
-import { Member, ChatMessage, Message, ChatConversation, UserMessages } from 'lib/models'
+import { Member, ChatMessage, Message, ChatConversation } from 'lib/models'
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import {
@@ -16,14 +16,19 @@ import {
   MessageList,
   MessageInput,
   TypingIndicator,
+  InfoButton,
 } from '@chatscope/chat-ui-kit-react'
 import io, { Socket } from 'socket.io-client'
 import MessagesStyles from './MessagesStyles'
+import { MemberModal } from './MemberModal'
+import { IconButton, useDisclosure } from '@chakra-ui/react'
+import { MemberConnect } from './MemberConnect'
+import { UserCircleIcon } from '@heroicons/react/24/solid'
 
 let socket: Socket
 
 export const Messages = ({ currentUser }: { currentUser: Member }) => {
-  const { conversations, markAsRead, reload, mutate, activeConversation: a } = useMessages()
+  const { conversations, markAsRead, mutate, activeConversation: a } = useMessages()
   const [cId, setCid] = useState<string>(a)
   const [activeConversation, setActiveConversation] = useState<ChatConversation>()
   const [messages, setMessages] = useState<ChatMessage[]>([])
@@ -100,6 +105,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
   }, [activeConversation, cId, conversations])
 
   const audioRef = useRef<HTMLAudioElement>(null)
+  const messageRef = useRef<HTMLInputElement>(null)
 
   const socketInitializer = () => {
     fetch('/api/socket').catch((err) => {
@@ -156,6 +162,8 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
             id={user?.id}
             src={user.picture ? user.picture : undefined}
             name={user?.nickname}
+            status={user?.presence == 'online' ? 'available' : 'unavailable'}
+            active={user?.presence == 'online'}
           />,
           user.nickname,
         ]
@@ -186,9 +194,15 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
     return null
   }, [isTyping])
 
+  function decodeHtml(html) {
+    var txt = document.createElement('textarea')
+    txt.innerHTML = html
+    return txt.value
+  }
+
   const handleSend = (text: string) => {
     sendMessage({
-      body: text.trim(),
+      body: decodeHtml(text.trim()),
       type: 'text',
       user: {
         id: currentUser.id,
@@ -269,6 +283,8 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
     }
   }, [activeConversation, cId, conversations, markAsRead, mutate])
 
+  const { isOpen, onClose, onOpen } = useDisclosure()
+
   return (
     <>
       <MessagesStyles />
@@ -281,7 +297,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
               // Helper for getting the data of the first participant
               const {
                 id,
-                user: { nickname, picture },
+                user: { nickname, picture, presence },
                 newMessageCount,
                 messages,
               } = c
@@ -306,6 +322,8 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
                     src={picture ? picture : null}
                     name={nickname}
                     style={conversationAvatarStyle}
+                    status={presence == 'online' ? 'available' : 'unavailable'}
+                    active={presence == 'online'}
                   />
                 </ConversationCtrl>
               )
@@ -327,7 +345,18 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
                 style={conversationContentStyle}
                 info={activeConversation?.user?.presence}
               />
-              <ConversationHeader.Actions></ConversationHeader.Actions>
+              <ConversationHeader.Actions>
+                <IconButton
+                  aria-label="View Profile"
+                  onClick={onOpen}
+                  title="View Profile"
+                  icon={<UserCircleIcon width={30} />}
+                  size="lg"
+                  variant={'ghost'}
+                  _hover={{ bg: 'primary.500' }}
+                />
+                <MemberConnect memberId={cId} />
+              </ConversationHeader.Actions>
             </ConversationHeader>
           )}
 
@@ -339,7 +368,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
                     <MessageCtrl
                       model={{
                         type: 'text',
-                        payload: m.body,
+                        payload: decodeHtml(m.body),
                         direction: m.direction,
                         position: 'single',
                       }}
@@ -360,6 +389,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
           />
         </ChatContainer>
       </MainContainer>
+      <MemberModal memberId={cId} isOpen={isOpen} onClose={onClose} ref={inputRef} />
     </>
   )
 }

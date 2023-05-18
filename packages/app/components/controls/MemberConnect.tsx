@@ -4,13 +4,13 @@ import { UserIcon as BuddyIcon, UserPlusIcon } from '@heroicons/react/24/solid'
 import { useEffect, useState } from 'react'
 import { useUser } from 'hooks'
 import { deleteJSON, postJSON } from 'lib/utils'
-import { Member, MemberLevel, SearchableMember, User, UserBuddy } from 'lib/models'
+import { MemberLevel, User, UserBuddy } from 'lib/models'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
-  member: Partial<Member | SearchableMember>
+  memberId: string
 }
 
-export const MemberConnect = chakra(({ member, size = 'lg', ...props }: Props) => {
+export const MemberConnect = chakra(({ memberId, size = 'lg', ...props }: Props) => {
   const { loading: userLoading, member: me, level, reload } = useUser()
   const [hover, setHover] = useState(false)
   const [isBuddy, setIsBuddy] = useState<boolean | undefined>(undefined)
@@ -18,13 +18,13 @@ export const MemberConnect = chakra(({ member, size = 'lg', ...props }: Props) =
   const toggleBuddy = () => {
     if (isBuddy) {
       // remove buddy
-      deleteJSON(`/api/member/buddy/${member.id}`).then(() => {
+      deleteJSON(`/api/member/buddy/${memberId}`).then(() => {
         setIsBuddy(false)
         return reload()
       })
     } else {
       // add buddy
-      postJSON<Partial<UserBuddy>>(`/api/member/buddy/${member.id}`, {}).then(() => {
+      postJSON<Partial<UserBuddy>>(`/api/member/buddy/${memberId}`, {}).then(() => {
         setIsBuddy(true)
         return reload()
       })
@@ -33,19 +33,19 @@ export const MemberConnect = chakra(({ member, size = 'lg', ...props }: Props) =
   }
 
   useEffect(() => {
-    if (!userLoading && me && isBuddy == undefined && me.buddies) {
+    if (!userLoading && me?.buddies) {
       const buddies = me.buddies as UserBuddy[]
       const b = buddies.some((ur: UserBuddy) => {
         const buddy = ur.buddy_id as User
-        return buddy.id === member.id
+        return buddy.id === memberId
       })
       setIsBuddy(b)
     }
-  }, [isBuddy, me, member.id, userLoading])
+  }, [isBuddy, me, memberId, userLoading])
 
   if (level < MemberLevel.brother) return <></>
   if (userLoading || isBuddy == undefined) return <></>
-  if (me?.id === member.id) return <></>
+  if (me?.id === memberId) return <></>
   return (
     <>
       {(isBuddy && (
