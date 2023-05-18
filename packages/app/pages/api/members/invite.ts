@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse, InviteLink } from 'lib/models'
 import { withMember, withMethods } from 'lib/utils/server'
 import { sendNotificationEmail } from 'lib/services/sendgrid/server'
-import { createUser } from 'lib/services/directus/server'
+import { createUser, findUser, updateUser } from 'lib/services/directus/server'
 
 async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
@@ -20,14 +20,37 @@ async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
         button_url: link,
       }
     )
-    await createUser({
-      email: email.toLocaleLowerCase(),
-      user_type: 'applicant',
-      status: 'new',
-      vouched_by: member.id,
-      notes: `Invited by ${member.first_name} ${member.last_name}`,
-      application_status: 'apply',
-    })
+
+    const newUser = await findUser(email.toLocaleLowerCase())
+    if (newUser) {
+      switch (newUser.user_type) {
+        case 'subscriber': {
+          await updateUser(newUser.id, {
+            user_type: 'applicant',
+            vouched_by: member.id,
+            notes: `Invited by ${member.first_name} ${member.last_name}`,
+            application_status: 'apply',
+          })
+          break
+        }
+        case 'applicant': {
+          await updateUser(newUser.id, {
+            vouched_by: member.id,
+            notes: `Invited by ${member.first_name} ${member.last_name}`,
+          })
+          break
+        }
+      }
+    } else {
+      await createUser({
+        email: email.toLocaleLowerCase(),
+        user_type: 'applicant',
+        status: 'new',
+        vouched_by: member.id,
+        notes: `Invited by ${member.first_name} ${member.last_name}`,
+        application_status: 'apply',
+      })
+    }
 
     res.status(200).end()
   } catch (e: any) {

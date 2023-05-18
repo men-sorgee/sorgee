@@ -13,6 +13,7 @@ type FormProps<T> = {
   children: ReactNode | ReactNode[]
   autoSave?: boolean
   onSubmit: (data: T) => Promise<[T, ApiError | null]>
+  onSuccess?: () => void
 }
 
 export default function Form<T>({
@@ -20,6 +21,7 @@ export default function Form<T>({
   defaultValues,
   children,
   onSubmit,
+  onSuccess = () => {},
   autoSave = false,
 }: FormProps<T>) {
   const methods = useForm<T>({
@@ -57,6 +59,7 @@ export default function Form<T>({
           isClosable: true,
           onCloseComplete: () => {
             reset(r)
+            onSuccess()
           },
         })
       } else if (error?.field) {
@@ -72,7 +75,7 @@ export default function Form<T>({
         })
       }
     },
-    [autoSave, debouncedSubmit, reset, successMessage, toast]
+    [autoSave, debouncedSubmit, onSuccess, reset, successMessage, toast]
   )
 
   const debouncedTrigger = debouncedPromise(trigger, 1000)

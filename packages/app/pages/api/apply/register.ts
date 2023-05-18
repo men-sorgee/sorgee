@@ -4,7 +4,7 @@ import { withMethods } from 'lib/utils/server'
 import { User, Applicant, ApiResponse, SignUpForm } from 'lib/models'
 import { findPromo } from '../../../lib/services/directus/server'
 
-export default async function getUserDetails(
+export default async function Register(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<Applicant> | ApiResponse>
 ) {
@@ -28,7 +28,7 @@ export default async function getUserDetails(
 
     const promo = promoCode ? await findPromo(promoCode) : null
 
-    const existingUser = await findUser(email)
+    const existingUser = await findUser<User>(email)
     if (existingUser) {
       const updatedUser = await updateUser(existingUser.id, {
         first_name,
@@ -36,6 +36,7 @@ export default async function getUserDetails(
         birth_month,
         birth_year,
         vouched_by: promo ? promo.vouching_user : null,
+        notes: existingUser.notes + ': registered via app',
         promo: promo ? promo.id : null,
         status: 'active',
         user_type: 'applicant',
