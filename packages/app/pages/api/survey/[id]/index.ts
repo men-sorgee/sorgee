@@ -3,7 +3,7 @@ import { ApiResponse, Survey } from 'lib/models'
 import { withUser } from 'lib/utils/server'
 import { getSurvey } from 'lib/services/directus/server'
 
-export default async function survey(
+export default async function Survey(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<Survey>>
 ) {

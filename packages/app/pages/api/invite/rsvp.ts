@@ -6,7 +6,7 @@ import { EventUser } from 'lib/models'
 import { getServerSession } from 'next-auth'
 import { authOptions } from 'lib/auth/config'
 
-export default async function inviteRSVP(req: NextApiRequest, res: NextApiResponse) {
+export default async function InviteRSVP(req: NextApiRequest, res: NextApiResponse) {
   try {
     const method = withMethods(req, ['GET', 'POST'])
     const { event_id, user_id, rsvp, reason } = (method == 'GET' ? req.query : req.body) as any

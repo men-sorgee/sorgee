@@ -3,7 +3,7 @@ import { ApiResponse, GroupEvent } from 'lib/models'
 import { listUpcomingEvents } from 'lib/services/directus/server'
 import { withMember } from 'lib/utils/server'
 
-export default async function getEvents(
+export default async function Events(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<GroupEvent[]>>
 ) {

@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse } from 'lib/models'
 import { getUserStats, MemberStats } from 'lib/services/directus/server'
 
-export default async function getSite(
+export default async function Stats(
   _req: NextApiRequest,
   res: NextApiResponse<ApiResponse<MemberStats>>
 ) {

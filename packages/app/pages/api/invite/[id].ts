@@ -3,7 +3,7 @@ import { getInvite, getUser, updateInvite, updateUser } from 'lib/services/direc
 import { withStaff, withMethods } from 'lib/utils/server'
 import { ApiResponse, EventUser, MemberLevel } from 'lib/models'
 
-export default async function InviteEndpoint(
+export default async function Invite(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<EventUser> | null>
 ) {

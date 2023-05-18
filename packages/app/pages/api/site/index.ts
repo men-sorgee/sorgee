@@ -2,10 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse, Site } from 'lib/models'
 import { adminBaseUrl } from 'lib/config'
 
-export default async function getSite(
-  req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<Site>>
-) {
+export default async function Site(req: NextApiRequest, res: NextApiResponse<ApiResponse<Site>>) {
   const url = `${adminBaseUrl}/items/site`
 
   const response = await fetch(url)

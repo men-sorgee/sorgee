@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { withMethods, withUser } from 'lib/utils/server'
-import { Applicant, ApiResponse } from 'lib/models'
+import { ApiResponse } from 'lib/models'
 import {
   deleteUserPhoto,
   getUserPhoto,
@@ -46,4 +46,10 @@ export default async function MemberImage(req: NextApiRequest, res: NextApiRespo
     console.error(e.message || e, e.stack)
     res.status(405).json(ApiResponse(null, e.message || e))
   }
+}
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
 }

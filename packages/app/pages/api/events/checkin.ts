@@ -4,7 +4,7 @@ import { findInvite, findUser, getEvent, registerForEvent } from 'lib/services/d
 import { ApiResponse, Applicant, EventUser } from 'lib/models'
 import { withMethods, withStaff } from '../../../lib/utils/server'
 
-export default async function checkIn(
+export default async function EventCheckIn(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<Applicant> | ApiResponse>
 ) {

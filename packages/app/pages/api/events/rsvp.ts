@@ -4,7 +4,7 @@ import { findInvite, getEvent, registerForEvent, updateInvite } from 'lib/servic
 import { withMember, withMethods } from 'lib/utils/server'
 import { ApiResponse, Applicant, EventUser, GroupEvent, RSVPInfo } from 'lib/models'
 
-export default async function eventRSVP(
+export default async function EventRSVP(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<Applicant> | ApiResponse>
 ) {

@@ -1,5 +1,5 @@
 import { baseUrl } from 'lib/config'
-export default async function codeHandler(req, res: any) {
+export default async function Code(req, res: any) {
   const QRCode = await import('qrcode')
   const { args, ...query } = req.query
   const url = `${baseUrl}/${Array.isArray(args) ? args.join('/') : args}?${new URLSearchParams(
@@ -15,4 +15,9 @@ export default async function codeHandler(req, res: any) {
       light: '#ef9ac6',
     },
   })
+}
+export const config = {
+  api: {
+    bodyParser: false,
+  },
 }
