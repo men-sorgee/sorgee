@@ -99,6 +99,7 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
           picture: `/api/asset/${user.picture}?w=100&h=100&fit=crop`,
         },
       })
+      // @ts-ignore
       setConversations(convos.sort((a, b) => b.lastMessage.timestamp - a.lastMessage.timestamp))
       totalNewMessages.push(...newMessages)
     })
