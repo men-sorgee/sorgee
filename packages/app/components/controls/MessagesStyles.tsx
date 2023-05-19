@@ -19,6 +19,7 @@ export default function MessagesStyles() {
         display: flex;
         flex-direction: row;
         height: 100%;
+        max-height: calc(100vh - 3rem);
         overflow: auto;
         border: solid 1px ${borderColor};
         box-sizing: border-box;
@@ -118,7 +119,7 @@ export default function MessagesStyles() {
         }
         .cs-main-container--responsive .cs-conversation-list .cs-conversation__last-activity-time,
       .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__last-activity-time {
-          display: none;
+          dis-play: none;
         }
         .cs-main-container--responsive .cs-conversation-list .cs-conversation__unread-dot,
       .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__unread-dot {
@@ -1070,7 +1071,8 @@ export default function MessagesStyles() {
         border-right: solid 0px ${borderColor};
         border-bottom: solid 0px ${borderColor};
         border-left: solid 0px ${borderColor};
-        padding: 0.6em 0.9em;
+        padding: 0.4em 0.9em;
+        box-shadow: 2px 1px 1px 1px black;
       }
       .cs-conversation-header__back {
         box-sizing: border-box;
@@ -1079,11 +1081,16 @@ export default function MessagesStyles() {
         flex-direction: row;
         align-items: center;
         cursor: pointer;
+        
         order: 1;
       }
       .cs-conversation-header__back button {
         font-size: 1.4em;
+        
         padding: 0;
+      }
+      .cs-conversation-header__back button svg {
+        color: white;
       }
       .cs-conversation-header__avatar {
         box-sizing: border-box;
@@ -1447,7 +1454,7 @@ export default function MessagesStyles() {
         margin: 0 0 0 0.58em;
         line-height: 1.5;
       }
-      .cs-avatar:hover .cs-status__bullet:before, .cs-status:hover .cs-status__bullet:before {
+      .cs-avatar:hover .cs-status__bullet:before, .cs-status:ho-ver .cs-status__bullet:before {
         box-sizing: border-box;
         content: "";
         position: absolute;
@@ -1462,7 +1469,7 @@ export default function MessagesStyles() {
         transform: translateX(131%) translateY(58%) rotateZ(168deg) rotateX(10deg);
       }
 
-      .cs-avatar:hover .cs-status__bullet:after, .cs-status:hover .cs-status__bullet:after {
+      .cs-avatar:hover .cs-status__bullet:after, .cs-status:ho-ver .cs-status__bullet:after {
         box-sizing: border-box;
         content: "";
         position: absolute;

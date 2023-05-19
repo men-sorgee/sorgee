@@ -15,6 +15,7 @@ import { ChatBubbleBottomCenterIcon as ChatIcon } from '@heroicons/react/24/outl
 import { Member, MemberLevel } from 'lib/models'
 import { Messages } from '../../components/controls/Messages'
 import { useEffect, useRef, useState } from 'react'
+import { ac } from 'vitest/dist/types-e3c9754d'
 
 type Props = { member: Member }
 
@@ -23,7 +24,6 @@ const MessagesActions = ({ member }: Props) => {
     useMessages()
   const { isOpen, onOpen, onClose } = useDisclosure({
     onClose: () => setActiveId(undefined),
-    isOpen: activeId != undefined,
   })
   const [show, setShow] = useState<boolean>(undefined)
   const [prevMessagesCount, setPrevMessagesCount] = useState<number>(undefined)
@@ -45,17 +45,19 @@ const MessagesActions = ({ member }: Props) => {
       )
     }
     if (show == false && hasNewMessages) setShow(true)
+    if (activeId && !isOpen) onOpen()
   }, [
     setActiveId,
     conversations,
     hasNewMessages,
     isOpen,
     member,
-    member?.user_type,
+    member.user_type,
     newMessageCount,
     onOpen,
     prevMessagesCount,
     show,
+    activeId,
   ])
 
   return (
@@ -87,7 +89,7 @@ const MessagesActions = ({ member }: Props) => {
         )}
       </Box>
       <audio ref={audioRef} src="/sounds/click.mp3" preload="auto" />
-      <Drawer placement={'left'} onClose={onClose} isOpen={isOpen} size="lg">
+      <Drawer placement={'left'} onClose={onClose} isOpen={isOpen} size={['full', 'lg']}>
         <DrawerOverlay />
 
         <DrawerContent>
