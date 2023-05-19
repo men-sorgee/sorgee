@@ -71,7 +71,10 @@ const MessagesActions = ({ member }: Props) => {
           color={isOpen ? 'accent.500' : 'white'}
           size="lg"
           icon={<ChatIcon height="50px" width="50px" />}
-          onClick={() => setActiveId(lastActiveId)}
+          onClick={() => {
+            setActiveId(lastActiveId)
+            onOpen()
+          }}
         />
         {hasNewMessages && (
           <Badge
