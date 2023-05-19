@@ -56,7 +56,7 @@ export type MessageDirection = 'incoming' | 'outgoing'
 export type ChatMessage = {
   id: string
   status: MessageStatusType
-  timestamp: Date | string
+  timestamp: Date
   edited: boolean
   body: string
   image?: string
