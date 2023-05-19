@@ -20,10 +20,11 @@ export default async function Asset(req: NextApiRequest, res: NextApiResponse) {
           .setHeader('Content-Length', response.headers.get('Content-Length'))
           .setHeader('Content-Disposition', response.headers.get('Content-Disposition'))
           .setHeader('cache', response.headers.get('cache'))
+          .status(response.status)
           .send(Buffer.from(buffer))
       })
     } else {
-      res.status(404).send('Not found')
+      res.status(404).end()
     }
   } catch (err) {
     console.error(err)
