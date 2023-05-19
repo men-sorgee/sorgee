@@ -6,6 +6,9 @@ export async function getMessages(user_id: string) {
   const adminClient = await getAdminClient()
   const { data: messages = [] } = await adminClient.items('messages').readByQuery({
     filter: {
+      status: {
+        _neq: 'archived',
+      },
       _or: [
         {
           to: {

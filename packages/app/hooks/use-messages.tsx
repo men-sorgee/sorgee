@@ -12,11 +12,15 @@ import {
   useMemo,
 } from 'react'
 
+import useCookie from 'react-use-cookie'
+
 export type MessagesContextData = {
-  activeConversation?: string
-  setActiveConversation: (cid: string) => void
+  activeId?: string
+  lastActiveId?: string
+  setActiveId: (cid: string) => void
   chatWith: (user: Partial<Member>) => void
-  conversations: { [key: string]: ChatConversation }
+  activeConversation?: ChatConversation
+  conversations: ChatConversation[]
   hasNewMessages: boolean
   newMessageCount: number
   error?: any
@@ -29,10 +33,12 @@ export type MessagesContextData = {
 }
 
 export const MessagesContext = createContext<MessagesContextData>({
-  activeConversation: null,
-  setActiveConversation: (_) => {},
+  activeId: null,
+  setActiveId: (_) => {},
+  lastActiveId: null,
   chatWith: (_: Partial<Member>) => {},
-  conversations: {},
+  activeConversation: null,
+  conversations: [],
   hasNewMessages: false,
   newMessageCount: 0,
   markAsRead: async (_) => {},
@@ -55,19 +61,25 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
     fallbackData: {},
   })
 
-  const [conversations, setConversations] = useState<Record<string, ChatConversation>>({})
+  const [conversations, setConversations] = useState<ChatConversation[]>([])
   const [hasNewMessages, setHasNewMessages] = useState(undefined)
-  const [activeConversation, setActiveConversation] = useState<string>(undefined)
+  const [activeConversation, setActiveConversation] = useState<ChatConversation>(undefined)
   const [newMessages, setNewMessages] = useState<number>(undefined)
+  const [activeId, setActiveId] = useState<string>(undefined)
+  const [lastActiveId, setLastActiveId] = useCookie('last-active-conversation')
+
   useEffect(() => {
     let totalNewMessages = []
+    let convos: ChatConversation[] = []
     Object.keys(userMessages || {}).forEach((k) => {
-      const messages = userMessages[k].map((m: ChatMessage) => {
-        return {
-          ...m,
-          timestamp: new Date(m.timestamp as string),
-        }
-      })
+      const messages = userMessages[k]
+        .filter((m) => m.status != 'archived')
+        .map((m: ChatMessage) => {
+          return {
+            ...m,
+            timestamp: new Date(m.timestamp as string),
+          }
+        })
 
       const newMessages = messages.filter(
         (m: ChatMessage) => m.status === 'new' && m.direction === 'incoming'
@@ -76,7 +88,7 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
       const newMessageCount = newMessages.length
       const lastMessage = messages[messages.length - 1]
       const user = lastMessage.user
-      conversations[k] = {
+      convos.push({
         id: k,
         messages,
         newMessageCount,
@@ -86,38 +98,41 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
           ...user,
           picture: `/api/asset/${user.picture}?w=100&h=100&fit=crop`,
         },
-      }
+      })
+      setConversations(convos)
       totalNewMessages.push(...newMessages)
     })
 
     setNewMessages(totalNewMessages.length)
     setHasNewMessages(totalNewMessages.length > 0)
-  }, [conversations, hasNewMessages, newMessages, userMessages])
+  }, [hasNewMessages, newMessages, userMessages])
 
   const chatWith = useCallback(
     (user: Partial<Member>) => {
       // create empty conversation
-      if (!conversations[user.id])
-        setConversations({
-          [user.id]: {
+      const convo = conversations?.find((c) => c.user.id == user.id)
+
+      setConversations([
+        {
+          id: user.id,
+          messages: [],
+          newMessageCount: 0,
+          lastMessage: null,
+          hasNewMessages: false,
+          user: {
             id: user.id,
-            messages: [],
-            newMessageCount: 0,
-            lastMessage: null,
-            hasNewMessages: false,
-            user: {
-              id: user.id,
-              nickname: user.nickname,
-              presence: user.presence,
-              last_login: user.last_login,
-              picture: user.picture && `/api/asset/${user.picture}?w=100&h=100&fit=crop`,
-            },
+            nickname: user.nickname,
+            presence: user.presence,
+            last_login: user.last_login,
+            picture: user.picture && `/api/asset/${user.picture}?w=100&h=100&fit=crop`,
           },
-          ...conversations,
-        })
-      setActiveConversation(user.id)
+        },
+        ...conversations,
+      ])
+      setActiveId(user.id)
+      setActiveConversation(convo)
     },
-    [conversations]
+    [conversations, setActiveId]
   )
 
   const mark = useCallback(
@@ -133,10 +148,20 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
     [key, mutate]
   )
 
+  useEffect(() => {
+    if (activeId != undefined && activeId != null) {
+      const convo = conversations.find((c) => c.id == activeId)
+      setActiveConversation(convo)
+      setLastActiveId(activeId)
+    }
+  }, [activeId, conversations, lastActiveId, setLastActiveId])
+
   const context: MessagesContextData = {
-    activeConversation,
-    setActiveConversation,
+    activeId,
+    setActiveId,
+    lastActiveId,
     conversations,
+    activeConversation,
     chatWith,
     hasNewMessages,
     newMessageCount: newMessages,

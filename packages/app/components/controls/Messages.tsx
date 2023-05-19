@@ -3,6 +3,7 @@ import { useMessages } from 'hooks'
 import { Member, ChatMessage, Message, ChatConversation } from 'lib/models'
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { formatDistanceToNow } from 'date-fns'
+
 import {
   Avatar,
   MainContainer,
@@ -17,20 +18,31 @@ import {
   MessageInput,
   TypingIndicator,
   InfoButton,
+  InputToolbox,
+  AttachmentButton,
+  SendButton,
+  MessageTextContent,
 } from '@chatscope/chat-ui-kit-react'
 import io, { Socket } from 'socket.io-client'
 import MessagesStyles from './MessagesStyles'
 import { MemberModal } from './MemberModal'
 import { IconButton, useDisclosure } from '@chakra-ui/react'
 import { MemberConnect } from './MemberConnect'
-import { UserCircleIcon } from '@heroicons/react/24/solid'
+import { UserCircleIcon, XMarkIcon } from '@heroicons/react/24/solid'
 
 let socket: Socket
 
 export const Messages = ({ currentUser }: { currentUser: Member }) => {
-  const { conversations, markAsRead, mutate, activeConversation: a } = useMessages()
-  const [cId, setCid] = useState<string>(a)
-  const [activeConversation, setActiveConversation] = useState<ChatConversation>()
+  const {
+    conversations,
+    activeConversation,
+    markAsRead,
+    mutate,
+    activeId,
+    setActiveId,
+    hasNewMessages,
+    delete: d,
+  } = useMessages()
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isTyping, setIsTyping] = useState(false)
   const [sidebarVisible, setSidebarVisible] = useState(false)
@@ -41,17 +53,17 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
 
   const handleBackClick = () => {
     setSidebarVisible(!sidebarVisible)
-    setCid(null)
+    setActiveId(null)
   }
 
   const handleConversationClick = useCallback(
-    (cid: string) => {
+    (activeId: string) => {
       if (sidebarVisible) {
         setSidebarVisible(false)
       }
-      setCid(cid)
+      setActiveId(activeId)
     },
-    [sidebarVisible, setSidebarVisible]
+    [sidebarVisible, setActiveId]
   )
 
   useEffect(() => {
@@ -91,21 +103,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  useEffect(() => {
-    if (!conversations) return
-    if (cId !== undefined) {
-      setActiveConversation(conversations[cId])
-      setMessages(conversations[cId]?.messages)
-    } else {
-      const keys = Object.keys(conversations)
-      if (keys.length > 0) {
-        setCid(keys[0])
-      }
-    }
-  }, [activeConversation, cId, conversations])
-
   const audioRef = useRef<HTMLAudioElement>(null)
-  const messageRef = useRef<HTMLInputElement>(null)
 
   const socketInitializer = () => {
     fetch('/api/socket').catch((err) => {
@@ -120,10 +118,9 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
     })
     socket.on('receive-message', (message: ChatMessage) => {
       receiveMessage(message)
-      audioRef.current?.play()
     })
     socket.on('user-typing', (from: string) => {
-      if (from == cId) {
+      if (from == activeId) {
         setIsTyping(true)
         setTimeout(() => {
           setIsTyping(false)
@@ -134,10 +131,21 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
       socket.disconnect()
     }
   }
+  const messagesSeen = useCallback(() => {
+    if (activeConversation) {
+      markAsRead(
+        activeConversation.messages
+          .filter((m) => m.direction == 'incoming' && m.status == 'new')
+          .map((m) => m.id)
+      )
+      mutate()
+    }
+  }, [activeConversation, markAsRead, mutate])
 
   const receiveMessage = useCallback(
     (message: ChatMessage) => {
-      if (message.user.id == cId) {
+      audioRef.current?.play()
+      if (message.user.id == activeId) {
         setMessages((messages) => [
           ...messages,
           {
@@ -145,9 +153,10 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
             direction: 'incoming',
           },
         ])
+        messagesSeen()
       }
     },
-    [cId]
+    [activeId, messagesSeen]
   )
 
   // Get current user data
@@ -176,11 +185,11 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
   const userTyping = useCallback(() => {
     if (socket) {
       socket.emit('user-typing', {
-        to: cId,
+        to: activeId,
         from: currentUser.id,
       })
     }
-  }, [cId, currentUser.id])
+  }, [activeId, currentUser.id])
 
   const handleInputChange = (e) => {
     //setInputValue(e.target.value)
@@ -194,16 +203,17 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
     return null
   }, [isTyping])
 
-  function decodeHtml(html) {
+  function decodeHtml(html: string) {
     var txt = document.createElement('textarea')
     txt.innerHTML = html
     return txt.value
   }
 
-  const handleSend = (text: string) => {
+  const handleSend = (innerHtml: string) => {
     sendMessage({
-      body: decodeHtml(text.trim()),
-      type: 'text',
+      body: innerHtml,
+      type: 'html',
+      timestamp: new Date(),
       user: {
         id: currentUser.id,
         nickname: currentUser.nickname,
@@ -213,19 +223,25 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
       },
     })
   }
+  const [inputValue, setInputValue] = useState('')
+  const [previewSrc, setPreviewSrc] = useState<string>(undefined)
+  const handleAttachment = async (file: File) => {}
 
-  const handleAttachment = async (args) => {
-    //let formData = new FormData()
-    //formData.append('media', file)
-    //const query = `?name=messaged-from-${currentUser.email}&title=to-${currentUserName}`
-    //const res = await fetch(`/api/member/${currentUser.id}/photo/` + query, {
-    //  method: 'POST',
-    //  body: formData,
-    //})
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      setPreviewSrc(URL.createObjectURL(file))
+
+      let formData = new FormData()
+      formData.append('media', file)
+
+      handleAttachment(file)
+    }
   }
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const inputRef = useRef()
   const sendMessage = useCallback(
-    ({ body, image, type }: Partial<ChatMessage>) => {
+    ({ body, image, type, timestamp }: Partial<ChatMessage>) => {
       const user = {
         id: currentUser.id,
         nickname: currentUser.nickname,
@@ -239,6 +255,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
           type,
           body,
           image,
+          timestamp,
           direction: 'outgoing',
           user,
         } as ChatMessage,
@@ -247,22 +264,21 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
         body,
         image,
         type,
-        to: cId,
+        to: activeId,
         from: currentUser.id,
       } as Message).then(({ data }) => {
         const { type, body, image, date_created } = data
-        socket.emit('send-message', {
+        socket.emit('send-message', activeId, {
           type,
           body,
           image,
-          direction: 'outgoing',
           user,
-          timestamp: date_created,
+          timestamp: new Date(date_created).toISOString(),
         })
       })
     },
     [
-      cId,
+      activeId,
       currentUser.id,
       currentUser.last_login,
       currentUser.nickname,
@@ -272,16 +288,11 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
     ]
   )
 
-  const messagesSeen = useCallback(() => {
+  useEffect(() => {
     if (activeConversation) {
-      markAsRead(
-        conversations[cId].messages
-          .filter((m) => m.direction == 'incoming' && m.status == 'new')
-          .map((m) => m.id)
-      )
-      mutate()
+      setMessages(activeConversation.messages)
     }
-  }, [activeConversation, cId, conversations, markAsRead, mutate])
+  }, [activeConversation])
 
   const { isOpen, onClose, onOpen } = useDisclosure()
 
@@ -293,7 +304,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
       <MainContainer responsive className="bg" style={{}}>
         <Sidebar position="left" style={sidebarStyle}>
           <ConversationList>
-            {Object.values(conversations).map((c) => {
+            {conversations.map((c) => {
               // Helper for getting the data of the first participant
               const {
                 id,
@@ -303,7 +314,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
               } = c
               const lastMessage = messages.length ? messages[messages.length - 1] : null
               const lastMessageDate = lastMessage
-                ? formatDistanceToNow(lastMessage?.timestamp as Date)
+                ? formatDistanceToNow(lastMessage?.timestamp as Date) + ' ago'
                 : 'now'
               return (
                 <ConversationCtrl
@@ -336,7 +347,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
           }}
           style={chatContainerStyle}
         >
-          {cId && (
+          {activeId && (
             <ConversationHeader>
               <ConversationHeader.Back onClick={handleBackClick} />
               {convoUserAvatar}
@@ -350,46 +361,90 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
                   aria-label="View Profile"
                   onClick={onOpen}
                   title="View Profile"
-                  icon={<UserCircleIcon width={30} />}
+                  icon={<UserCircleIcon fill={'white'} width={30} />}
                   size="lg"
                   variant={'ghost'}
                   _hover={{ bg: 'primary.500' }}
                 />
-                <MemberConnect memberId={cId} />
+                <MemberConnect memberId={activeId} fill={'white'} />
               </ConversationHeader.Actions>
             </ConversationHeader>
           )}
-
           <MessageList scrollBehavior="auto" typingIndicator={typingIndicator}>
-            {cId &&
-              messages?.map((m, i) => (
+            {activeId &&
+              messages.map((m, i) => (
                 <MessageGroup key={i} direction={m.direction}>
                   <MessageGroup.Messages>
                     <MessageCtrl
                       model={{
-                        type: 'text',
+                        type: m.type,
                         payload: decodeHtml(m.body),
                         direction: m.direction,
                         position: 'single',
                       }}
-                    />
+                    >
+                      {m.direction == 'outgoing' && (
+                        <MessageCtrl.Header
+                          style={{
+                            flexDirection: 'row-reverse',
+                          }}
+                        >
+                          <IconButton
+                            variant={'ghost'}
+                            position={'absolute'}
+                            float={'right'}
+                            aria-label="Delete"
+                            title="Delete"
+                            icon={<XMarkIcon fill={'white'} width={10} />}
+                            onClick={() => d(m.id)}
+                            size="xs"
+                            color={'white'}
+                            m={1}
+                            opacity={0.2}
+                            _hover={{
+                              bg: 'secondary.500',
+                              opacity: 1,
+                            }}
+                          />
+                        </MessageCtrl.Header>
+                      )}
+
+                      <MessageCtrl.Footer
+                        style={{
+                          display: 'block',
+                          textAlign: m.direction == 'outgoing' ? 'right' : 'left',
+                        }}
+                        sentTime={formatDistanceToNow(m.timestamp as Date) + ' ago'}
+                      ></MessageCtrl.Footer>
+                    </MessageCtrl>
                   </MessageGroup.Messages>
                 </MessageGroup>
               ))}
+            {typingIndicator}
           </MessageList>
 
           <MessageInput
             attachButton={false}
-            onAttachClick={handleAttachment}
+            onAttachClick={() => {
+              fileInputRef.current.click()
+            }}
             onSend={handleSend}
             onChange={handleInputChange}
             ref={inputRef}
             autoFocus
             placeholder="Type message here"
-          />
+            content={inputValue}
+          ></MessageInput>
         </ChatContainer>
       </MainContainer>
-      <MemberModal memberId={cId} isOpen={isOpen} onClose={onClose} ref={inputRef} />
+      <input
+        type="file"
+        accept="image/*"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        style={{ display: 'none' }}
+      />
+      <MemberModal memberId={activeId} isOpen={isOpen} onClose={onClose} />
     </>
   )
 }

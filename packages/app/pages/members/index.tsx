@@ -291,6 +291,7 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
       setStatsR(data)
     })
   }, [])
+  if (fields == undefined) return null
   return (
     <>
       {level >= MemberLevel.big_brother && (

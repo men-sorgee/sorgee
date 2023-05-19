@@ -1,7 +1,7 @@
 import { IconButton, IconButtonProps, chakra } from '@chakra-ui/react'
 import { UserIcon, UserMinusIcon as BuddyIconMinus } from '@heroicons/react/24/outline'
 import { UserIcon as BuddyIcon, UserPlusIcon } from '@heroicons/react/24/solid'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useUser } from 'hooks'
 import { deleteJSON, postJSON } from 'lib/utils'
 import { MemberLevel, User, UserBuddy } from 'lib/models'
@@ -15,9 +15,11 @@ export const MemberConnect = chakra(({ memberId, size = 'lg', ...props }: Props)
   const [hover, setHover] = useState(false)
   const [isBuddy, setIsBuddy] = useState<boolean | undefined>(undefined)
 
-  const toggleBuddy = () => {
+  const toggleBuddy = useCallback(() => {
+    setIsBuddy(!isBuddy)
     if (isBuddy) {
       // remove buddy
+
       deleteJSON(`/api/member/buddy/${memberId}`).then(() => {
         setIsBuddy(false)
         return reload()
@@ -29,11 +31,10 @@ export const MemberConnect = chakra(({ memberId, size = 'lg', ...props }: Props)
         return reload()
       })
     }
-    setIsBuddy(!isBuddy)
-  }
+  }, [isBuddy, memberId, reload, setIsBuddy])
 
   useEffect(() => {
-    if (!userLoading && me?.buddies) {
+    if (!userLoading && me?.buddies && isBuddy == undefined) {
       const buddies = me.buddies as UserBuddy[]
       const b = buddies.some((ur: UserBuddy) => {
         const buddy = ur.buddy_id as User
@@ -50,8 +51,13 @@ export const MemberConnect = chakra(({ memberId, size = 'lg', ...props }: Props)
     <>
       {(isBuddy && (
         <IconButton
-          color={hover ? 'white' : 'accent.300'}
-          icon={hover ? <BuddyIconMinus width="30px" /> : <BuddyIcon width="30px" />}
+          icon={
+            hover ? (
+              <BuddyIconMinus stroke={'white'} width="30px" fill={'white'} />
+            ) : (
+              <BuddyIcon width="30px" fill={'white'} />
+            )
+          }
           onMouseOver={() => {
             setHover(true)
           }}
@@ -69,7 +75,13 @@ export const MemberConnect = chakra(({ memberId, size = 'lg', ...props }: Props)
         />
       )) || (
         <IconButton
-          icon={hover ? <UserPlusIcon width="30px" /> : <UserIcon width="30px" />}
+          icon={
+            hover ? (
+              <UserPlusIcon fill={'white'} width="30px" />
+            ) : (
+              <UserIcon stroke={'white'} width="30px" />
+            )
+          }
           onMouseOver={() => {
             setHover(true)
           }}

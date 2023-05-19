@@ -19,16 +19,11 @@ import { useEffect, useRef, useState } from 'react'
 type Props = { member: Member }
 
 const MessagesActions = ({ member }: Props) => {
-  const {
-    conversations,
-    hasNewMessages,
-    newMessageCount,
-    activeConversation,
-    setActiveConversation,
-  } = useMessages()
+  const { conversations, hasNewMessages, newMessageCount, activeId, setActiveId, lastActiveId } =
+    useMessages()
   const { isOpen, onOpen, onClose } = useDisclosure({
-    onClose: () => setActiveConversation(null),
-    isOpen: activeConversation != undefined,
+    onClose: () => setActiveId(undefined),
+    isOpen: activeId != undefined,
   })
   const [show, setShow] = useState<boolean>(undefined)
   const [prevMessagesCount, setPrevMessagesCount] = useState<number>(undefined)
@@ -51,7 +46,7 @@ const MessagesActions = ({ member }: Props) => {
     }
     if (show == false && hasNewMessages) setShow(true)
   }, [
-    activeConversation,
+    setActiveId,
     conversations,
     hasNewMessages,
     isOpen,
@@ -74,7 +69,7 @@ const MessagesActions = ({ member }: Props) => {
           color={isOpen ? 'accent.500' : 'white'}
           size="lg"
           icon={<ChatIcon height="50px" width="50px" />}
-          onClick={() => setActiveConversation(Object.keys(conversations)[0])}
+          onClick={() => setActiveId(lastActiveId)}
         />
         {hasNewMessages && (
           <Badge

@@ -50,7 +50,7 @@ export type ChatUser = {
   presence: string
 }
 export type MessageStatusType = 'new' | 'read' | 'edited' | 'archived'
-export type MessageType = 'text' | 'image'
+export type MessageType = 'text' | 'image' | 'html'
 export type MessageDirection = 'incoming' | 'outgoing'
 
 export type ChatMessage = {

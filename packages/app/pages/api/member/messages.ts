@@ -19,7 +19,7 @@ export default async function getUserMessages(
   try {
     const method = withMethods(req, ['GET', 'POST', 'PUT'])
     const user = await withUser(req, res)
-    const { body: c, to: t, status: s, ids: messageIds } = req.body
+    const { body: c, to: t, status: s, ids: messageIds, type } = req.body
     const { id: i } = req.query
     let id = i ? String(i) : null
     let ids: string[] = null
@@ -43,6 +43,7 @@ export default async function getUserMessages(
           from: user.id,
           to,
           body,
+          type,
         })
         return res.status(200).json(ApiResponse(message))
 

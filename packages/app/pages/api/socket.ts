@@ -1,7 +1,7 @@
 import { Server } from 'socket.io'
 import { Message } from 'lib/models'
 
-const SocketHandler = (req, res) => {
+export default function SocketHandler(req, res) {
   let io = null
   if (res.socket.server.io) {
     io = res.socket.server.io
@@ -47,4 +47,9 @@ const SocketHandler = (req, res) => {
   }
   res.end()
 }
-export default SocketHandler
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+}

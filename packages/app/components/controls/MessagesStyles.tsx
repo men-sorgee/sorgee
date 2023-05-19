@@ -211,7 +211,7 @@ export default function MessagesStyles() {
       }
       .cs-message__footer .cs-message__sent-time {
         box-sizing: border-box;
-        color: ${gray};
+        color: ${color};
         background-color: transparent;
         margin-left: auto;
         padding-left: 0.8em;

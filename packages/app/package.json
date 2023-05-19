@@ -59,6 +59,7 @@
     "react-qr-barcode-scanner": "^1.0.6",
     "react-qrcode-svg": "^0.1.0",
     "react-remark": "^2.1.0",
+    "react-use-cookie": "^1.4.0",
     "react-webcam": "^7.0.1",
     "reflect-metadata": "^0.1.13",
     "rehype-react": "^7.2.0",
@@ -88,8 +89,8 @@
     "eslint-config-next": "^13.2.4",
     "jsdom": "^21.1.1",
     "prettier": "^2.8.7",
-    "typescript": "5.0.4",
     "typeorm-model-generator": "^0.4.6",
+    "typescript": "5.0.4",
     "vite": "^4.2.1",
     "vitest": "^0.30.1"
   }

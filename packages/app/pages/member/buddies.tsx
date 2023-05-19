@@ -1,15 +1,7 @@
 import Page from 'components/Page'
 import { useUser } from 'hooks'
 import { MemberLevel, SearchableMember, User, UserBuddy } from 'lib/models'
-import {
-  Flex,
-  SimpleGrid,
-  Text,
-  Alert,
-  Switch,
-  Spacer,
-  Link,
-} from '@chakra-ui/react'
+import { Flex, SimpleGrid, Text, Alert, Switch, Spacer, Link } from '@chakra-ui/react'
 import { MemberCard, MemberModal } from 'components/controls'
 import { useState } from 'react'
 import NextLink from 'next/link'
@@ -34,7 +26,7 @@ export default function BuddiesPage({}: PageProps) {
   return (
     <Page title="Buddies" loading={loading} requireAuth={true}>
       <Alert
-        bg={'primary.300'}
+        bg={'secondary.300'}
         color="white"
         flexDirection={['column', 'row']}
         alignItems="start"
@@ -43,15 +35,10 @@ export default function BuddiesPage({}: PageProps) {
         p={4}
         borderRadius="md"
         shadow="md"
-        gap={4}
+        gap={2}
       >
-        <Text mt={0} fontSize="xl">
-          These are your buddies. They are the people you added to your buddy list. You can add
-          buddies from the{' '}
-          <Link textDecoration="underline" as={NextLink} href="/members">
-            members directory
-          </Link>
-          . You have {buddies?.length} buddies with {onlineMembers?.length} online.
+        <Text mt={0} fontSize={['md', 'lg', 'xl']}>
+          You have {buddies?.length} buddies with {onlineMembers?.length} online.
         </Text>
         <Spacer />
         <Flex direction="column" align="center" justify="space-around" minWidth={['full', '15%']}>
