@@ -17,9 +17,11 @@ import { User as AuthUser } from 'next-auth'
 
 export function withMethods(
   req: NextApiRequest,
-  allowed: HttpMethod[] = ['GET', 'POST', 'PATCH', 'PUT', 'DELETE']
-): HttpMethod {
-  const method = req.method.toUpperCase() as HttpMethod
+  allowed: string[] = ['GET', 'POST', 'PATCH', 'PUT', 'DELETE']
+) {
+  const method = req.method.toUpperCase()
+  if (method === 'OPTIONS' || method === 'HEAD') return method
+
   if (!allowed.includes(method)) {
     throw new Error('Method Not Allowed')
   }
