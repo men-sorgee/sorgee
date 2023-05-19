@@ -77,7 +77,7 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
         .map((m: ChatMessage) => {
           return {
             ...m,
-            timestamp: new Date(m.timestamp as string),
+            timestamp: new Date(m.timestamp),
           }
         })
 
