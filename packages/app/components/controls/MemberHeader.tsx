@@ -18,7 +18,7 @@ export const MemberHeader = ({
   member,
   color,
   size = 'lg',
-  minimal,
+  minimal = false,
   ...props
 }: MemberHeaderProps) => {
   return (

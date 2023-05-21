@@ -20,7 +20,7 @@ import {
   AvatarProps,
 } from '@chakra-ui/react'
 import { MemberConnect, MemberChat, MemberHeader, MemberPropertyGroup } from '.'
-import { useMember, useMeta } from 'hooks'
+import { useMember, useMeta, useUser } from 'hooks'
 import { formatDistanceToNowStrict } from 'date-fns'
 import {
   DirectusField,
@@ -34,6 +34,8 @@ import {
   MemberLevelColorMap,
   memberProfileExplicitRolesFields,
   memberEventFields,
+  GroupEvent,
+  EventUser,
 } from 'lib/models'
 import { ReactNode, useEffect } from 'react'
 import { ImageGallery } from './ImageGallery'
@@ -63,6 +65,7 @@ export const MemberSpotlight = chakra(
     ...props
   }: Props) => {
     const { member, name, picture, loading } = useMember(id)
+    const { member: me } = useUser()
     const { setMeta } = useMeta()
     useEffect(() => {
       if (full && updateMeta) setMeta(name || 'Brother', member?.biography, picture)
@@ -75,8 +78,15 @@ export const MemberSpotlight = chakra(
     const levelColor = MemberLevelColorMap[levelValue]
     const eventsAttended = member?.events?.filter((e) => e.attended)?.length || 0
     const eventsFlaked =
-      member?.events?.filter((e) => e.rsvp == 'confirmed' && e.attended == false)?.length || 0
-
+      member?.events?.filter((e: EventUser) => e.rsvp == 'confirmed' && e.attended == false)
+        ?.length || 0
+    const eventsConfirmed =
+      member?.events?.filter((e: EventUser) => e.rsvp == 'confirmed')?.length || 0
+    const eventsMaybe = member?.events?.filter((e: EventUser) => e.rsvp == 'maybe')?.length || 0
+    const eventsCancelled =
+      member?.events?.filter((e: EventUser) => e.rsvp == 'cancelled')?.length || 0
+    const eventsDeclined =
+      member?.events?.filter((e: EventUser) => e.rsvp == 'declined')?.length || 0
     return (
       <Flex direction="column" justify="space-between" {...props}>
         <Box
@@ -299,26 +309,55 @@ export const MemberSpotlight = chakra(
             </TabPanels>
           </Tabs>
         )}
-        <Flex justify="space-between" gap={4} p={4} align="flex-end">
-          {member.buddies.length > 0 && (
-            <Stat>
-              <StatLabel>
-                Added <br />
-                Buddies
-              </StatLabel>
-              <StatNumber>{member.buddies.length}</StatNumber>
-            </Stat>
-          )}
-          {eventsAttended > 0 && (
+        <Flex as={StatGroup} justify="space-between" gap={4} p={4} align="flex-end">
+          {eventsDeclined > 0 && (
             <Stat>
               <StatLabel>
                 Events
                 <br />
-                Attended
+                Declined
               </StatLabel>
-              <StatNumber>{eventsAttended}</StatNumber>
+              <StatNumber>{eventsDeclined}</StatNumber>
             </Stat>
           )}
+
+          <Stat>
+            <StatLabel>
+              Events
+              <br />
+              Confirmed
+            </StatLabel>
+            <StatNumber>{eventsConfirmed}</StatNumber>
+          </Stat>
+          {eventsMaybe > 0 && (
+            <Stat>
+              <StatLabel>
+                Events
+                <br />
+                Maybe
+              </StatLabel>
+              <StatNumber>{eventsMaybe}</StatNumber>
+            </Stat>
+          )}
+          {eventsCancelled > 0 && (
+            <Stat>
+              <StatLabel>
+                Events
+                <br />
+                Cancelled
+              </StatLabel>
+              <StatNumber>{eventsCancelled}</StatNumber>
+            </Stat>
+          )}
+
+          <Stat>
+            <StatLabel>
+              Events
+              <br />
+              Attended
+            </StatLabel>
+            <StatNumber>{eventsAttended}</StatNumber>
+          </Stat>
           {eventsFlaked > 0 && (
             <Stat color="accent.500">
               <StatLabel fontWeight="bold" whiteSpace="nowrap">
