@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { createUser, findUser, updateUser } from 'lib/services/directus/server/users'
 import { withMethods } from 'lib/utils/server'
 import { User, Applicant, ApiResponse, SignUpForm } from 'lib/models'
-import { findPromo } from '../../../lib/services/directus/server'
+import { findPromo } from 'lib/services/directus/server'
 
 export default async function Register(
   req: NextApiRequest,
@@ -22,7 +22,7 @@ export default async function Register(
 
     const email = e?.toLocaleLowerCase()
 
-    if (!first_name || !last_name || !birth_month || !birth_year || !email) {
+    if ([first_name, last_name, birth_month, birth_year, email].some((v) => v == undefined)) {
       return res.status(400).json(ApiResponse(null, 'Missing required fields'))
     }
 
