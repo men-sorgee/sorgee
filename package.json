@@ -6,7 +6,6 @@
   "author": "Jason <jason@guysnheat.com>",
   "license": "MIT",
   "workspaces": [
-    "packages/admin",
     "packages/automation",
     "packages/app"
   ],
