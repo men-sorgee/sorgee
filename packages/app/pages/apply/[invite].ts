@@ -7,7 +7,7 @@ export async function getServerSideProps(context: NextPageContext) {
 
   try {
     const { invite } = context.query
-    if (!invite) {
+    if (invite == undefined) {
       return { props }
     }
     const parsedInvite = parseInvite(invite as string)

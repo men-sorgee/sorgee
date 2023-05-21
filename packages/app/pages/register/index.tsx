@@ -59,7 +59,6 @@ export default function Register({ promo, birthMonthOptions, markdown }: Props) 
 
   const onSubmit = async (data: SignUpForm): Promise<[SignUpForm, ApiError]> => {
     const { data: response, error } = await postJSON<SignUpForm>('/api/apply/register', data)
-
     return [response, error]
   }
 
@@ -78,7 +77,7 @@ export default function Register({ promo, birthMonthOptions, markdown }: Props) 
           email,
         }}
         onSuccess={() => {
-          signIn('email', {
+          signIn(null, {
             callbackUrl: '/apply',
           })
         }}
