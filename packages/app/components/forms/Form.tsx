@@ -49,7 +49,7 @@ export default function Form<T>({
   const onSubmitWrapper = useCallback(
     async (data: T) => {
       const [r, error] = await debouncedSubmit(data)
-      const ok = error == undefined
+      const ok = error?.message == undefined
       if (ok) {
         toast({
           title: 'Success',
