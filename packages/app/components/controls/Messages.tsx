@@ -96,10 +96,14 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
     setConversationAvatarStyle,
     setSidebarStyle,
     setChatContainerStyle,
+    activeId,
+    setActiveId,
+    conversations,
   ])
 
   useEffect(() => {
     if (socket == undefined) return socketInitializer()
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -291,8 +295,10 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
   useEffect(() => {
     if (activeConversation) {
       setMessages(activeConversation.messages)
+    } else {
+      setActiveId(conversations[0]?.id)
     }
-  }, [activeConversation])
+  }, [activeConversation, conversations, setActiveId])
 
   const { isOpen, onClose, onOpen } = useDisclosure()
 
@@ -341,13 +347,13 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
             })}
           </ConversationList>
         </Sidebar>
-        <ChatContainer
-          onFocus={() => {
-            messagesSeen()
-          }}
-          style={chatContainerStyle}
-        >
-          {activeId && (
+        {activeId && (
+          <ChatContainer
+            onFocus={() => {
+              messagesSeen()
+            }}
+            style={chatContainerStyle}
+          >
             <ConversationHeader>
               <ConversationHeader.Back onClick={handleBackClick} />
               {convoUserAvatar}
@@ -369,73 +375,74 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
                 <MemberConnect memberId={activeId} fill={'white'} />
               </ConversationHeader.Actions>
             </ConversationHeader>
-          )}
-          <MessageList scrollBehavior="auto" typingIndicator={typingIndicator}>
-            {activeId &&
-              messages.map((m, i) => (
-                <MessageGroup key={i} direction={m.direction}>
-                  <MessageGroup.Messages>
-                    <MessageCtrl
-                      model={{
-                        type: m.type,
-                        payload: decodeHtml(m.body),
-                        direction: m.direction,
-                        position: 'single',
-                      }}
-                    >
-                      {m.direction == 'outgoing' && (
-                        <MessageCtrl.Header
-                          style={{
-                            flexDirection: 'row-reverse',
-                          }}
-                        >
-                          <IconButton
-                            variant={'ghost'}
-                            position={'absolute'}
-                            float={'right'}
-                            aria-label="Delete"
-                            title="Delete"
-                            icon={<XMarkIcon fill={'white'} width={10} />}
-                            onClick={() => d(m.id)}
-                            size="xs"
-                            color={'white'}
-                            m={1}
-                            opacity={0.2}
-                            _hover={{
-                              bg: 'secondary.500',
-                              opacity: 1,
-                            }}
-                          />
-                        </MessageCtrl.Header>
-                      )}
 
-                      <MessageCtrl.Footer
-                        style={{
-                          display: 'block',
-                          textAlign: m.direction == 'outgoing' ? 'right' : 'left',
+            <MessageList scrollBehavior="auto" typingIndicator={typingIndicator}>
+              {activeId &&
+                messages.map((m, i) => (
+                  <MessageGroup key={i} direction={m.direction}>
+                    <MessageGroup.Messages>
+                      <MessageCtrl
+                        model={{
+                          type: m.type,
+                          payload: decodeHtml(m.body),
+                          direction: m.direction,
+                          position: 'single',
                         }}
-                        sentTime={formatDistanceToNow(m.timestamp as Date) + ' ago'}
-                      ></MessageCtrl.Footer>
-                    </MessageCtrl>
-                  </MessageGroup.Messages>
-                </MessageGroup>
-              ))}
-            {typingIndicator}
-          </MessageList>
+                      >
+                        {m.direction == 'outgoing' && (
+                          <MessageCtrl.Header
+                            style={{
+                              flexDirection: 'row-reverse',
+                            }}
+                          >
+                            <IconButton
+                              variant={'ghost'}
+                              position={'absolute'}
+                              float={'right'}
+                              aria-label="Delete"
+                              title="Delete"
+                              icon={<XMarkIcon fill={'white'} width={10} />}
+                              onClick={() => d(m.id)}
+                              size="xs"
+                              color={'white'}
+                              m={1}
+                              opacity={0.2}
+                              _hover={{
+                                bg: 'secondary.500',
+                                opacity: 1,
+                              }}
+                            />
+                          </MessageCtrl.Header>
+                        )}
 
-          <MessageInput
-            attachButton={false}
-            onAttachClick={() => {
-              fileInputRef.current.click()
-            }}
-            onSend={handleSend}
-            onChange={handleInputChange}
-            ref={inputRef}
-            autoFocus
-            placeholder="Type message here"
-            content={inputValue}
-          ></MessageInput>
-        </ChatContainer>
+                        <MessageCtrl.Footer
+                          style={{
+                            display: 'block',
+                            textAlign: m.direction == 'outgoing' ? 'right' : 'left',
+                          }}
+                          sentTime={formatDistanceToNow(m.timestamp as Date) + ' ago'}
+                        ></MessageCtrl.Footer>
+                      </MessageCtrl>
+                    </MessageGroup.Messages>
+                  </MessageGroup>
+                ))}
+              {typingIndicator}
+            </MessageList>
+
+            <MessageInput
+              attachButton={false}
+              onAttachClick={() => {
+                fileInputRef.current.click()
+              }}
+              onSend={handleSend}
+              onChange={handleInputChange}
+              ref={inputRef}
+              autoFocus
+              placeholder="Type message here"
+              content={inputValue}
+            ></MessageInput>
+          </ChatContainer>
+        )}
       </MainContainer>
       <input
         type="file"
