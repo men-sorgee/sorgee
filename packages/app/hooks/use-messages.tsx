@@ -66,7 +66,10 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
   const [activeConversation, setActiveConversation] = useState<ChatConversation>(undefined)
   const [newMessages, setNewMessages] = useState<number>(undefined)
   const [activeId, setActiveId] = useState<string>(undefined)
-  const [lastActiveId, setLastActiveId] = useCookie('last-active-conversation')
+  const [lastActiveId, setLastActiveId] = useCookie(
+    'last-active-conversation',
+    conversations[0]?.id
+  )
 
   useEffect(() => {
     let totalNewMessages = []
