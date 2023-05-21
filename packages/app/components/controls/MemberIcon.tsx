@@ -77,7 +77,13 @@ export const MemberIcon = chakra(
               <Heading size={['md', 'lg']} textTransform="uppercase" m={0} color={color} w="full">
                 {member?.nickname || 'Anon'}
               </Heading>
-              <Flex gap={4} align="start" justify="space-between" w="full">
+              <Flex
+                gap={4}
+                direction={['column', 'column', 'row']}
+                align="start"
+                justify="space-between"
+                w="full"
+              >
                 <Box>
                   <MemberBadge size={size as any} user_type={member?.user_type} my={2} />
                   <Text fontSize="sm" color={color} mt={0}>

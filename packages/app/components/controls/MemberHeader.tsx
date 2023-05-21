@@ -23,7 +23,7 @@ export const MemberHeader = ({
 }: MemberHeaderProps) => {
   return (
     <>
-      <Flex direction="column" justify="space-between" align="center" alignItems="center" gap={2}>
+      <Flex direction={'column'} justify="space-between" align="center" alignItems="center" gap={2}>
         <MemberIcon member={member} size={size} {...props}>
           {children}
         </MemberIcon>
