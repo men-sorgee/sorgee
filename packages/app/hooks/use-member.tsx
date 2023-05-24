@@ -10,6 +10,7 @@ type MemberResults = {
   error?: any
   loading: boolean
   level: MemberLevel
+  reload: () => void
 }
 
 export const useMember = (id: string, refreshIntervalMinutes: number = 5): MemberResults => {
@@ -17,6 +18,7 @@ export const useMember = (id: string, refreshIntervalMinutes: number = 5): Membe
     data: member,
     error,
     isLoading,
+    mutate
   } = useSWR<Member, Error>(`/api/member/${id || ''}`, JsonFetcher, {
     refreshInterval: 1000 * 60 * refreshIntervalMinutes,
     isPaused: () => !id || id === 'null' || id === 'undefined',
@@ -33,6 +35,9 @@ export const useMember = (id: string, refreshIntervalMinutes: number = 5): Membe
     name,
     picture,
     loading: isLoading,
+    reload: () => {
+      mutate(undefined, true)
+    },
     level,
   }
 }

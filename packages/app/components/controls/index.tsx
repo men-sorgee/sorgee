@@ -19,6 +19,7 @@ export { MemberCard } from './MemberCard'
 export { MemberSpotlight } from './MemberSpotlight'
 export { MemberPropertyGroup } from './MemberPropertyGroup'
 export { MemberConnect } from './MemberConnect'
+export { MemberVouch } from './MemberVouch'
 export { MemberChat } from './MemberChat'
 export { MemberModal } from './MemberModal'
 

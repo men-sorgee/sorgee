@@ -19,7 +19,7 @@ import {
   useColorModeValue,
   AvatarProps,
 } from '@chakra-ui/react'
-import { MemberConnect, MemberChat, MemberHeader, MemberPropertyGroup } from '.'
+import { MemberConnect, MemberChat, MemberVouch, MemberHeader, MemberPropertyGroup } from '.'
 import { useMember, useMeta, useUser } from 'hooks'
 import { formatDistanceToNowStrict } from 'date-fns'
 import {
@@ -34,7 +34,6 @@ import {
   MemberLevelColorMap,
   memberProfileExplicitRolesFields,
   memberEventFields,
-  GroupEvent,
   EventUser,
 } from 'lib/models'
 import { ReactNode, useEffect } from 'react'
@@ -64,8 +63,7 @@ export const MemberSpotlight = chakra(
     children,
     ...props
   }: Props) => {
-    const { member, name, picture, loading } = useMember(id)
-    const { member: me } = useUser()
+    const { member, name, picture, loading, reload } = useMember(id)
     const { setMeta } = useMeta()
     useEffect(() => {
       if (full && updateMeta) setMeta(name || 'Brother', member?.biography, picture)
@@ -106,10 +104,11 @@ export const MemberSpotlight = chakra(
           >
             {children}
             <Spacer />
-            <ButtonGroup>
+            <Flex gap={1} direction={'row'} align="center" justify="space-between">
+              <MemberVouch memberId={member?.id} reload={reload} />
               <MemberChat member={member} />
               <MemberConnect memberId={member?.id} />
-            </ButtonGroup>
+            </Flex>
           </MemberHeader>
           {full && <Text>{member?.biography}</Text>}
           {full && (

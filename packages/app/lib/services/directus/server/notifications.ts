@@ -3,7 +3,7 @@ import { UserNotification, Notification, AppNotification, NotificationStatusType
 
 export async function getNotification(id: string): Promise<Notification> {
   const adminClient = await getAdminClient()
-  return await adminClient.items('notifications').readOne(id) as uknown as Notification
+  return await adminClient.items('notifications').readOne(id) as unknown as Notification
 }
 
 export async function getNotifications(user_id: string): Promise<AppNotification[]> {
