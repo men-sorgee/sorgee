@@ -9,7 +9,7 @@ import { ConnectForm, FieldInput, FieldSelect, Form } from 'components/forms'
 import { postJSON } from 'lib/utils'
 import { Markdown } from 'components/controls'
 import { useRouter } from 'next/router'
-import { registrationPage } from 'lib/config'
+import { pages } from 'lib/config'
 
 export type Props = {
   promo?: Promo
@@ -21,7 +21,7 @@ export async function getServerSideProps() {
   const { getFieldOptions } = await import('lib/services/directus/server')
   const birthMonthOptions = await getFieldOptions<User>('birth_month')
   const { getPageById } = await import('lib/services/directus/static')
-  const page = await getPageById(registrationPage)
+  const page = await getPageById(pages.registrationPage)
   const { markdown } = page
 
   return { props: { birthMonthOptions, markdown } }

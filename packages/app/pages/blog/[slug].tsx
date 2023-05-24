@@ -15,7 +15,7 @@ import {
   useBreakpointValue,
 } from '@chakra-ui/react'
 import NotFound from 'components/NotFound'
-import { blogPage } from 'lib/config'
+import { pages as pageIds } from 'lib/config'
 import { ChevronRightIcon } from '@chakra-ui/icons'
 import NextLink from 'next/link'
 
@@ -25,7 +25,7 @@ interface Params extends ParsedUrlQuery {
 
 export const getStaticPaths: GetStaticPaths<Params> = async () => {
   const { listPages } = await import('lib/services/directus/static')
-  const pages = await listPages(blogPage)
+  const pages = await listPages(pageIds.blogPage)
   const paths = pages.map((page) => ({
     params: { slug: page.slug.split('/')[1] },
   }))

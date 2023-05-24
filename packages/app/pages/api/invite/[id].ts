@@ -1,8 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getInvite, getUser, updateInvite, updateUser } from 'lib/services/directus/server'
+import { getInvite, getNotification, getUser, updateInvite, updateUser } from 'lib/services/directus/server'
 import { withStaff, withMethods } from 'lib/utils/server'
 import { ApiResponse, EventUser, MemberLevel } from 'lib/models'
-
+import { SendGridCategory, SendGridTemplate, sendNotificationEmail } from 'lib/services/sendgrid/server'
+import { notifications } from 'lib/config'
 export default async function Invite(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<EventUser> | null>
@@ -40,11 +41,34 @@ export default async function Invite(
         // if they are an inductee or pledge, make them a brother
         const user_type: string =
           MemberLevel[attendee.user_type] < MemberLevel.brother ? 'brother' : attendee.user_type
+        
         await updateUser(user_id, {
-          signed_waiver: signed_waiver,
+          signed_waiver,
           user_type,
           status: 'active',
         })
+
+        if (MemberLevel[attendee.user_type] < MemberLevel.brother) {
+
+          // send congrats email
+          const congratsBrotherEmail = await getNotification(notifications.congratsBrother)
+          const { button_text, button_url, subject, body, data, template, category } = congratsBrotherEmail
+          await sendNotificationEmail(
+            attendee.email,
+            attendee.first_name,
+            subject.replace('$NAME$', attendee.first_name),
+            body,
+            {
+              ...data,
+              button_text,
+              button_url,
+              user_id: attendee.id
+            },
+            template as SendGridTemplate,
+            category as SendGridCategory,
+            congratsBrotherEmail.id
+          )
+        }
     }
 
     res.status(200).json(ApiResponse(invite))

@@ -8,7 +8,7 @@ import { ButtonLink } from 'components/controls'
 import { useEffect } from 'react'
 import { useSite } from '../hooks'
 import Link from 'next/link'
-import { homePage } from '../lib/config'
+import { pages } from 'lib/config'
 
 interface Props {
   page: Pick<
@@ -19,7 +19,7 @@ interface Props {
 
 export const getStaticProps = async () => {
   const { getPageById } = await import('lib/services/directus/static')
-  const page = await getPageById(homePage)
+  const page = await getPageById(pages.homePage)
 
   return {
     props: {

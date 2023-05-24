@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { baseUrl, adminBaseUrl, blogPage } from 'lib/config'
+import { baseUrl, adminBaseUrl } from 'lib/config'
 import app from 'lib/config/server'
 export default async function Asset(req: NextApiRequest, res: NextApiResponse) {
   try {

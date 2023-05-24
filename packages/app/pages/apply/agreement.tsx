@@ -8,7 +8,7 @@ import FieldCheckbox from 'components/forms/FieldCheckbox'
 import { postJSON } from 'lib/utils'
 import Page from 'components/Page'
 import { useRouter } from 'next/router'
-import { rulesPage } from 'lib/config'
+import { pages } from 'lib/config'
 import { Markdown } from 'components/controls'
 interface Props {
   markdown: string
@@ -16,7 +16,7 @@ interface Props {
 
 export const getStaticProps = async () => {
   const { getPageById } = await import('lib/services/directus/static')
-  const page = await getPageById(rulesPage)
+  const page = await getPageById(pages.rulesPage)
   const { markdown } = page
   return {
     props: {

@@ -37,7 +37,7 @@ import ApplicationSteps from './_steps'
 import Page from 'components/Page'
 import { signIn, useSession } from 'next-auth/react'
 import { useSite, useUser } from 'hooks'
-import { applyPage } from 'lib/config'
+import { pages } from 'lib/config'
 import { Markdown } from '../../components/controls'
 
 export type PageProps = {
@@ -60,7 +60,7 @@ export type PageProps = {
 export const getServerSideProps = async (_context) => {
   const { getFieldOptions } = await import('lib/services/directus/server')
   const { getPageById } = await import('lib/services/directus/static')
-  const page = await getPageById(applyPage)
+  const page = await getPageById(pages.applyPage)
   const { markdown } = page
   const props: Partial<PageProps> = {
     spectrumOptions: await getFieldOptions('spectrum'),

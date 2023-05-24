@@ -1,6 +1,12 @@
 import { getAdminClient } from '.'
 import { UserNotification, Notification, AppNotification, NotificationStatusType } from 'lib/models'
 
+export async function getNotification(id: string) {
+  const adminClient = await getAdminClient()
+  const { data: notification } = await adminClient.items('notifications').readOne(id)
+  return notification as Notification
+}
+
 export async function getNotifications(user_id: string): Promise<AppNotification[]> {
   const adminClient = await getAdminClient()
   const { data: notificationsRaw } = await adminClient.items('notifications_users').readByQuery({
@@ -29,14 +35,14 @@ export async function getNotifications(user_id: string): Promise<AppNotification
     delete notification.users
     delete notification.status
     delete notification.id
-    const { subject, body, message, button_link, button_text, link, category } = notification
+    const { subject, body, message, button_url: button_link, button_text, link, category } = notification
     return {
       id: userNotification.id,
       status: userNotification.status,
       subject,
       body,
       message,
-      button_link,
+      button_url: button_link,
       button_text,
       link,
       category,

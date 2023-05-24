@@ -16,7 +16,7 @@ export type Notification = {
   subject?: string
   send_email?: boolean
   app_notification?: boolean
-  button_link?: string
+  button_url?: string
   button_text?: string
   message?: string
   category?: string
@@ -25,7 +25,7 @@ export type Notification = {
   date_sent?: string
   template?: string
   users: string | UserNotification[]
-  data: any
+  data: Record<string, any>
   static: boolean
 }
 
