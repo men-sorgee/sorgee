@@ -123,7 +123,7 @@ export const useUser = ({
   let authorized = level >= minLevel
 
   useEffect(() => {
-    if (!loading) {
+    if (!loading && member?.application_status) {
       if (authenticated) {
         const status = ApplicationStatus[member.application_status]
         if (status < minAppStatus) {

@@ -8,6 +8,7 @@ import {
   UserEmailEvent,
   UserInvite,
   UserNotification,
+  NotificationUser
 } from 'lib/models'
 
 import { ProviderType } from 'next-auth/providers'
@@ -347,7 +348,7 @@ export type ContactPreferenceType = 'email' | 'phone_text' | 'phone_call'
 export type Applicant = Profile & {
   invite?: UserInvite
   show_contact: boolean
-  notifications: UserNotification[]
+  notifications: string[] | NotificationUser[]
   contact_preference: ContactPreferenceType
   vouched_by: string
   biography: string

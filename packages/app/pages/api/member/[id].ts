@@ -7,6 +7,7 @@ import {
   MemberLevel,
   memberFields,
   Member,
+  UserShare,
   memberProfileContactFields,
   memberProfileExplicitFields,
   memberProfileExplicitRolesFields,
@@ -18,7 +19,7 @@ import {
   memberProfilePhotoFields,
 } from 'lib/models'
 
-export default async function MemberEndpoint(
+export default async function Member(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<Member> | ApiResponse>
 ) {
@@ -50,7 +51,11 @@ export default async function MemberEndpoint(
             return res.status(404).json(ApiResponse(null, 'Not found'))
           }
 
-          user.my_photos = user.my_photos.filter((p) => p.is_public)
+          let shares = user.photo_shares as UserShare[]
+          let canSee = shares?.some(s => s.viewer_id == viewer.id) || false
+          if (!canSee) {
+            user.my_photos = user.my_photos.filter((p) => p.is_public)
+          }
           filter(user)
         }
 

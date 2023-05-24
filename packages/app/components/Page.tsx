@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import AccessDenied from './AccessDenied'
 import { Flex, BoxProps, chakra, Box, Heading } from '@chakra-ui/react'
-import { MemberLevel } from '../lib/models'
+import { MemberLevel } from 'lib/models'
 
 type Props = BoxProps & {
   id?: string

@@ -17,11 +17,12 @@ export default function MessagesStyles() {
       .cs-main-container {
         position: relative;
         display: flex;
+        bottom: 0;
         flex-direction: row;
         height: 100%;
-        max-height: calc(100vh - 3rem);
+        
         overflow: auto;
-        border: solid 1px ${borderColor};
+        
         box-sizing: border-box;
         color: ${color};
         background-color: ${bg};
@@ -974,7 +975,7 @@ export default function MessagesStyles() {
         background-color: ${bg};
       }
       .cs-chat-container .cs-message-input {
-        border-top: solid 1px ${borderColor};
+        border-top: solid 0px ${borderColor};
         border-right: solid 0px ${borderColor};
         border-bottom: solid 0px ${borderColor};
         border-left: solid 0px ${borderColor};

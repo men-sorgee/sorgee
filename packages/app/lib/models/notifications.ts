@@ -24,17 +24,28 @@ export type Notification = {
   body?: string
   date_sent?: string
   template?: string
-  users: string | UserNotification[]
+  users: string | NotificationUser[]
   data: Record<string, any>
   static: boolean
 }
 
-export type UserNotification = {
+export type NotificationUser = {
   id: number
   notification_id?: string | Notification
   user_id?: string | User
   status: NotificationStatusType
   email_events?: string[] | UserEmailEvent[]
+}
+
+export type UserNotification = {
+  id: string;
+  status: string;
+  date_created?: string;
+  user_id?: string | User;
+  message?: string;
+  button_text?: string;
+  button_url?: string;
+  icon?: string;
 }
 
 export type UserEmailEvent = {

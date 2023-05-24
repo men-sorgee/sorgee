@@ -298,3 +298,4 @@ export type MemberStats = {
 
 export * from './invites'
 export * from './buddies'
+export * from './shares'

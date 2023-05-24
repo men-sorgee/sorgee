@@ -7,9 +7,10 @@ import {
   MenuList,
   useColorMode,
   MenuDivider,
+  useToast,
 } from '@chakra-ui/react'
 import { ButtonLink, MemberAvatar, MemberIcon } from 'components/controls'
-
+import { useEffect} from 'react'
 import Link from 'next/link'
 import {
   CalendarIcon,
@@ -36,11 +37,28 @@ interface Props {}
 export default function UserMenu(_props: Props) {
   const { colorMode, toggleColorMode } = useColorMode()
   const { site } = useSite()
-  const { member, authenticated, isApplicant, isMember, isStaff, level } = useUser({
+  const { member, authenticated, isApplicant, isMember, isStaff, level, loading } = useUser({
     forceLogin: false,
   })
   const showApply = !site?.invite_only
 
+  const toast = useToast()
+
+ // useEffect(() => {
+ //   if (!loading && member?.notifications?.length) {
+ //     member.notifications.forEach((n) => {
+ //       toast({
+ //         title: 'Notification!',
+ //         description: n.message,
+ //         status: 'info',
+ //         isClosable: true,
+ //         onCloseComplete: () => {
+ //         }
+ //       })
+ //     })
+ //   }
+ // }, [loading, member?.notifications, member?.notifications?.length, toast])
+  
   return (
     <>
       {authenticated ? (

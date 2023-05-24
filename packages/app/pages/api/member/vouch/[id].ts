@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { withMethods, withMember } from 'lib/utils/server'
 import { ApiResponse, MemberLevel, UserBuddy } from 'lib/models'
-import { getMember, updateUser, getNotification } from 'lib/services/directus/server'
+import { getMember, updateUser, getNotification, addUserNotification } from 'lib/services/directus/server'
 import { notifications } from 'lib/config'
 import { sendNotificationEmail, SendGridCategory, SendGridTemplate } from 'lib/services/sendgrid/server'
 
@@ -61,6 +61,11 @@ export default async function VouchForMember(
         category as SendGridCategory,
         congratsInducteeEmail.id
       )
+
+      await addUserNotification({
+        user_id: them.id,
+        message: `You have been vouched for by ${me.nickname} and are now an Inductee!`
+      })
 
       return res.status(200).json(ApiResponse({
         id: me.id,
