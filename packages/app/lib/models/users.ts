@@ -7,6 +7,7 @@ import {
   Rating,
   UserEmailEvent,
   UserInvite,
+  UserNotification,
 } from 'lib/models'
 
 import { ProviderType } from 'next-auth/providers'
@@ -47,6 +48,13 @@ export type UserBuddy = {
   user_id: string | User
   buddy_id: string | User
   sort: number
+}
+
+export type UserShare = {
+  id: string;
+  date_created?: string;
+  user_id: string | User;
+  viewer_id: string | User;
 }
 
 export type UserContactAttempt = {
@@ -156,6 +164,7 @@ export type User = {
   ratings: string[] | Rating[]
   allow_messages: 'anyone' | 'buddies' | 'staff'
   buddies: string[] | UserBuddy[]
+  photo_shares: string[] | UserShare[]
   buddy_of: string[] | UserBuddy[]
   private_folder?: string
   public_folder?: string
@@ -338,7 +347,7 @@ export type ContactPreferenceType = 'email' | 'phone_text' | 'phone_call'
 export type Applicant = Profile & {
   invite?: UserInvite
   show_contact: boolean
-
+  notifications: UserNotification[]
   contact_preference: ContactPreferenceType
   vouched_by: string
   biography: string
@@ -364,6 +373,7 @@ export type Applicant = Profile & {
 }
 export const applicantFields: Array<keyof Applicant> = [
   ...profileFields,
+  'notifications.*' as any,
   'vouched_by',
   'show_contact',
   'contact_preference',
@@ -388,7 +398,7 @@ export const applicantFields: Array<keyof Applicant> = [
 ]
 
 export type Member = Applicant & {
-  notifications: AppNotification[]
+
   signed_waiver: boolean
   presence: 'offline' | 'online' | 'away'
   ratings: Rating[]
@@ -457,6 +467,7 @@ export type Member = Applicant & {
   allow_messages: 'anyone' | 'buddies' | 'staff'
   buddies: string[] | UserBuddy[]
   buddy_of: string[] | UserBuddy[]
+  photo_shares: string[] | UserShare[]
 
   rating: number
   private_folder?: string
@@ -586,7 +597,7 @@ export const memberProfileHealthFields: Array<keyof Member> = [
   'vaccinations',
 ]
 
-export const memberProfilePhotoFields: Array<keyof Member> = ['my_photos.*' as any]
+export const memberProfilePhotoFields: Array<keyof Member> = ['my_photos.*' as any, 'photo_shares.*' as any]
 
 export const searchableMemberFields: Array<keyof Member> = [
   'id',

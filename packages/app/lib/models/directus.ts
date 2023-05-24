@@ -5,6 +5,7 @@ import {
   Page,
   PageContent,
   Notification,
+  UserNotification,
   Promo,
   Question,
   Rating,
@@ -17,9 +18,10 @@ import {
   User,
   UserAccount,
   UserBuddy,
+  UserShare,
   UserEmailEvent,
   UserFile,
-  UserNotification,
+  NotificationUser,
   UserPhoto,
   UserSession,
   UserVerificationToken,
@@ -148,7 +150,8 @@ export type DirectusTypes = {
   events_users: EventUser
   location: Location
   notifications: Notification
-  notifications_users: UserNotification
+  notifications_users: NotificationUser
+  user_notifications: UserNotification
   page: Page
   promos: Promo
   page_content: PageContent
@@ -162,6 +165,7 @@ export type DirectusTypes = {
   user_verification_token: UserVerificationToken
   user_email_events: UserEmailEvent
   user_buddy: UserBuddy
+  user_shares: UserShare
   users: User
   users_files: UserFile
   users_photos: UserPhoto

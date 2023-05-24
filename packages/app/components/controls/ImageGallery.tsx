@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react'
-import { Box, HStack, IconButton, Stack } from '@chakra-ui/react'
-import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
+import { Box, HStack, Icon } from '@chakra-ui/react'
 import { ImageModal } from './ImageModal'
+import { LockOpenIcon } from '@heroicons/react/24/outline'
 
-export const ImageGallery = ({ images }: { images: string[] }) => {
+export const ImageGallery = ({ images }: { images: Array<{ src: string, private: boolean }> }) => {
   const [openIndex, setOpenIndex] = useState<number>(undefined)
   const [viewIndex, setViewIndex] = useState<number>(0)
   const showScroll = images?.length > 0
@@ -14,9 +14,10 @@ export const ImageGallery = ({ images }: { images: string[] }) => {
 
   return (
     <HStack overflowX="auto">
-      {images.map((url, index) => (
+      {images.map(({ src, private: showLock }, index) => (
         <Box
           key={index}
+          position="relative"
           rounded="lg"
           shadow="lg"
           w="200px"
@@ -24,7 +25,7 @@ export const ImageGallery = ({ images }: { images: string[] }) => {
           minW="200px"
           backgroundPosition="center"
           backgroundRepeat="no-repeat"
-          backgroundImage={`url('${url}?width=200&height=200&quality=60')`}
+          backgroundImage={`url('${src}?width=200&height=200&quality=60')`}
           backgroundSize="cover"
           onClick={() => {
             handleImageClick(index)
@@ -35,8 +36,9 @@ export const ImageGallery = ({ images }: { images: string[] }) => {
             key={'modal-' + index}
             isOpen={openIndex === index}
             onClose={() => setOpenIndex(-1)}
-            imageSrc={`${url}?&quality=100`}
+            imageSrc={`${src}?&quality=100`}
           />
+          {showLock && <LockOpenIcon title="Private Photo" style={{ color: 'white', position: "absolute", top: "5", right: "5", width: "20px", zIndex: 20 }}   />}
         </Box>
       ))}
     </HStack>

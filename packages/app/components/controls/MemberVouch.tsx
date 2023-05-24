@@ -30,7 +30,6 @@ export const MemberVouch = chakra(({ memberId, size = 'lg', ...props }: Props) =
   }, [memberId, mutate, reload])
 
   useEffect(() => {
-    console.dir({ isLoading, userLoading, voucher, memberId, level, myLevel, me })
     if (!userLoading && !isLoading && voucher?.id == undefined) {
       if (level == MemberLevel.pledge) {
         setShowVouchButton(true)
@@ -82,8 +81,7 @@ export const MemberVouch = chakra(({ memberId, size = 'lg', ...props }: Props) =
                 onClick={vouchForPledge}>Vouch for {name}</Button>
             </PopoverBody>
           </PopoverContent>
-        </Popover>)}
-      {voucher?.id && (<MemberAvatar
+        </Popover>) || voucher?.id && (<MemberAvatar
         size="sm"
         m={2}
         title={`Vouched by ${voucher.nickname} `}

@@ -8,7 +8,6 @@ import {
   Text,
   Heading,
   Flex,
-  ButtonGroup,
   Stat,
   StatGroup,
   StatLabel,
@@ -19,7 +18,7 @@ import {
   useColorModeValue,
   AvatarProps,
 } from '@chakra-ui/react'
-import { MemberConnect, MemberChat, MemberVouch, MemberHeader, MemberPropertyGroup } from '.'
+import { MemberConnect, MemberChat, MemberVouch, MemberShare, MemberHeader, MemberPropertyGroup } from '.'
 import { useMember, useMeta, useUser } from 'hooks'
 import { formatDistanceToNowStrict } from 'date-fns'
 import {
@@ -64,14 +63,16 @@ export const MemberSpotlight = chakra(
     ...props
   }: Props) => {
     const { member, name, picture, loading, reload } = useMember(id)
+    const { member: me } = useUser()
     const { setMeta } = useMeta()
+
     useEffect(() => {
       if (full && updateMeta) setMeta(name || 'Brother', member?.biography, picture)
     }, [full, member, name, picture, setMeta, updateMeta])
 
     const headingColor = useColorModeValue('primary.700', 'primary.300')
     if (loading || !id || !member) return <Loading />
-    const publicPhotos = member.my_photos?.filter((p) => p.is_public) || []
+    const photos = member.my_photos || []
     const levelValue = MemberLevel[member?.user_type || 'subscriber']
     const levelColor = MemberLevelColorMap[levelValue]
     const eventsAttended = member?.events?.filter((e) => e.attended)?.length || 0
@@ -85,6 +86,8 @@ export const MemberSpotlight = chakra(
       member?.events?.filter((e: EventUser) => e.rsvp == 'cancelled')?.length || 0
     const eventsDeclined =
       member?.events?.filter((e: EventUser) => e.rsvp == 'declined')?.length || 0
+    
+    const sharedWithMe = member?.photo_shares.some(s => s.viewer_id == me?.id)
     return (
       <Flex direction="column" justify="space-between" {...props}>
         <Box
@@ -108,6 +111,7 @@ export const MemberSpotlight = chakra(
               <MemberVouch memberId={member?.id} reload={reload} />
               <MemberChat member={member} />
               <MemberConnect memberId={member?.id} />
+              <MemberShare memberId={member?.id} reload={reload} />
             </Flex>
           </MemberHeader>
           {full && <Text>{member?.biography}</Text>}
@@ -122,6 +126,9 @@ export const MemberSpotlight = chakra(
                 )}
                 Member Since: {new Date(member.date_created).toLocaleDateString()}
               </Text>
+              {sharedWithMe && <Text fontSize="xs">
+                Shared Private Photos
+              </Text>}
               {member?.rating > 0 && (
                 <Rating
                   value={member.rating || 0}
@@ -136,9 +143,14 @@ export const MemberSpotlight = chakra(
         </Box>
         {full && member.show_photos && (
           <Box p={2} flex="grow">
-            {publicPhotos.length > 0 && (
+            {photos.length > 0 && (
               <ImageGallery
-                images={publicPhotos.map((p: UserPhoto) => `/api/asset/${p.directus_files_id}`)}
+                images={photos.map((p: UserPhoto) => {
+                  return {
+                    src: `/api/asset/${p.directus_files_id}`,
+                    private: p.is_public == false,
+                  }
+                })}
               />
             )}
           </Box>
