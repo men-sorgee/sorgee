@@ -66,31 +66,32 @@ function Layout({
     <>
       <Meta />
       <Flex direction="column" flex="1" overflowX="clip">
-        <ErrorBoundary>
-          <Header userType={member?.user_type} />
-          <Flex
-            as="main"
-            flex="1 100%"
-            direction="column"
-            maxH={`calc(100vh - ${showActions ? '146px' : '75px'})`}
-            overflowY="auto"
-            overflowX="hidden"
+
+        <Header userType={member?.user_type} />
+        <Flex
+          as="main"
+          flex="1 100%"
+          direction="column"
+          maxH={`calc(100vh - ${showActions ? '146px' : '75px'})`}
+          overflowY="auto"
+          overflowX="hidden"
+          w="full"
+        >
+          <Box
+            position="relative"
             w="full"
+            flex="1 100%"
+            className={` ${heading} ${body} ${mono}}`}
+            {...constrained}
           >
-            <Box
-              position="relative"
-              w="full"
-              flex="1 100%"
-              className={` ${heading} ${body} ${mono}}`}
-              {...constrained}
-            >
-              <Box minH={`calc(80vh - ${showActions ? '146px' : '75px'})`} ref={headerRef}>
-                {children}
-              </Box>
-              <Spacer h="1rem" />
-              <Footer />
+            <Box minH={`calc(80vh - ${showActions ? '146px' : '75px'})`} ref={headerRef}>
+              <ErrorBoundary>{children}</ErrorBoundary>
             </Box>
-          </Flex>
+            <Spacer h="1rem" />
+            <Footer />
+          </Box>
+        </Flex>
+        <ErrorBoundary >
           {showActions && (
             <Slide in={isOpen} direction="bottom">
               <Actions />
