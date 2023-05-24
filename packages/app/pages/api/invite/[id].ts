@@ -9,7 +9,7 @@ export default async function Invite(
   res: NextApiResponse<ApiResponse<EventUser> | null>
 ) {
   try {
-    withMethods(req, ['GET', 'POST'])
+    const method = withMethods(req, ['GET', 'POST'])
     await withStaff(req, res)
     const { id } = req.query
 
@@ -23,7 +23,7 @@ export default async function Invite(
       return res.status(404).json(ApiResponse(null, 'Not invited'))
     }
 
-    switch (req.method) {
+    switch (method) {
       case 'GET':
         return res.status(200).json(ApiResponse(invite))
       case 'POST':
@@ -41,7 +41,7 @@ export default async function Invite(
         // if they are an inductee or pledge, make them a brother
         const user_type: string =
           MemberLevel[attendee.user_type] < MemberLevel.brother ? 'brother' : attendee.user_type
-        
+
         await updateUser(user_id, {
           signed_waiver,
           user_type,
@@ -52,12 +52,15 @@ export default async function Invite(
 
           // send congrats email
           const congratsBrotherEmail = await getNotification(notifications.congratsBrother)
+          if (congratsBrotherEmail == null) throw new Error('Notification not found')
+
           const { button_text, button_url, subject, body, data, template, category } = congratsBrotherEmail
+
           await sendNotificationEmail(
             attendee.email,
             attendee.first_name,
             subject.replace('$NAME$', attendee.first_name),
-            body,
+            body.replace('$NAME$', attendee.first_name),
             {
               ...data,
               button_text,

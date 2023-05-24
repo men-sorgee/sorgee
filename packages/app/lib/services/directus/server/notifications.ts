@@ -1,10 +1,9 @@
 import { getAdminClient } from '.'
 import { UserNotification, Notification, AppNotification, NotificationStatusType } from 'lib/models'
 
-export async function getNotification(id: string) {
+export async function getNotification(id: string): Promise<Notification> {
   const adminClient = await getAdminClient()
-  const { data: notification } = await adminClient.items('notifications').readOne(id)
-  return notification as Notification
+  return await adminClient.items('notifications').readOne(id) as uknown as Notification
 }
 
 export async function getNotifications(user_id: string): Promise<AppNotification[]> {

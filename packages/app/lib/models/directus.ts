@@ -4,6 +4,7 @@ import {
   Message,
   Page,
   PageContent,
+  Notification,
   Promo,
   Question,
   Rating,

@@ -15,7 +15,8 @@ const config = {
   pledgeSurvey: '118dc4ac-356e-4349-a35c-3013679e655b',
   userImageId: 'b063b5ac-fcec-46ae-8225-bbfb4a0184b5',
   notifications: {
-    congratsBrother: 'c25e8f2e-669e-43f5-b126-d3a1527eb61f'
+    congratsBrother: 'c25e8f2e-669e-43f5-b126-d3a1527eb61f',
+    congratsInductee: '581ffb86-a3cc-4951-a31a-296988c12703'
   }
 }
 const {

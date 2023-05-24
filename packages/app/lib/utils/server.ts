@@ -1,4 +1,4 @@
-import { HttpMethod } from '.'
+
 import { NextApiRequest, NextApiResponse } from 'next'
 import {
   Applicant,
@@ -23,7 +23,7 @@ export function withMethods(
   if (method === 'OPTIONS' || method === 'HEAD') return method
 
   if (!allowed.includes(method)) {
-    throw new Error('Method Not Allowed')
+    throw new Error(`Method ${method} Not Allowed. Allowed: ` + allowed.join(', '))
   }
   return method
 }

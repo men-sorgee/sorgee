@@ -78,7 +78,7 @@ async function convertMarkdownToHtml(markdown: string) {
 // to verify we never send the same email twice
 // hash email + subject + body and check this store
 // if it exists, don't send the email
-const hashSet = new Set<string>()
+const hashMap = new Map<string, number>()
 
 export async function sendNotificationEmail(
   to_email: string,
@@ -93,10 +93,23 @@ export async function sendNotificationEmail(
   body = await convertMarkdownToHtml(body)
 
   const hash = Buffer.from(`${to_email}${subject}${body}`, 'base64').toString()
-  if (hashSet.has(hash) && !to_email.includes('thebrotherhoodgroup')) {
+  const now = Date.now()
+  if (hashMap.has(hash) && !to_email.includes('thebrotherhoodgroup')) {
     console.log(`SendGrid Email ${category} Skipped: ${to_email}`)
     return
   }
+
+  hashMap.set(hash, now)
+
+  // Remove expired entries from the map
+  setTimeout(() => {
+    const expirationTime = now - 24 * 60 * 60 * 1000 // 24 hours
+    Array.from(hashMap.entries()).forEach(([key, value]) => {
+      if (value < expirationTime) {
+        hashMap.delete(key)
+      }
+    })
+  }, 60 * 60 * 1000) // 1 hour
 
   const email: MailDataRequired = {
     personalizations: [
@@ -129,7 +142,7 @@ export async function sendNotificationEmail(
       )
     }
     console.log(`SendGrid Email ${category} Sent: ${to_email}`)
-    hashSet.add(hash)
+    hashMap.set(hash, now)
     return data
   } catch (error) {
     console.error(error.message, error)

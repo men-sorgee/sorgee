@@ -237,6 +237,12 @@ export enum MemberLevel {
   staff = 7,
 }
 
+export type VouchingUser = {
+  id: string,
+  nickname: string,
+  picture: string
+}
+
 export const MemberLevelColorMap = [
   ['red.500', 'red.100'],
   ['orange.500', 'orange.100'],
