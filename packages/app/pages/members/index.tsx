@@ -75,7 +75,7 @@ type Meta = {
   filtered: number
 }
 export default function MemberListPage({ fields, id: i }: PageProps) {
-  const { member: currentMember, loading } = useUser()
+  const { member: currentMember, loading } = useUser({ minLevel: MemberLevel.brother })
   const router = useRouter()
   const { page: p, size: s, sort: o, id: _, ...q } = router.query
 

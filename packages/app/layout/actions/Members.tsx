@@ -1,14 +1,18 @@
 import { IconButton, Link } from '@chakra-ui/react'
 import { UserGroupIcon } from '@heroicons/react/24/outline'
 import NextLink from 'next/link'
-import { Member } from 'lib/models'
+import { Member, MemberLevel } from 'lib/models'
 
 interface Props {
   member: Member
   active: boolean
 }
 
-const MembersAction = ({ active }: Props) => {
+const MembersAction = ({ member, active }: Props) => {
+    const level = MemberLevel[member?.user_type]
+  if (level < MemberLevel.brother) {
+    return <></>
+  }
   return (
     <>
       <Link href="/members" as={NextLink} zIndex="fixed">

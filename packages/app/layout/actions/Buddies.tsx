@@ -9,14 +9,14 @@ interface Props {
 }
 
 const BuddiesAction = ({ member, active }: Props) => {
-  const buddies = member?.buddies as UserBuddy[]
-  const online = buddies?.filter(({ buddy_id: buddy }: UserBuddy) => {
-    return (buddy as User)?.presence == 'online'
-  }).length
   const level = MemberLevel[member?.user_type]
   if (level < MemberLevel.brother) {
     return <></>
   }
+  const buddies = member?.buddies as UserBuddy[]
+  const online = buddies?.filter(({ buddy_id: buddy }: UserBuddy) => {
+    return (buddy as User)?.presence == 'online'
+  }).length
   return (
     <>
       <Link href="/member/buddies" as={NextLink} zIndex="fixed">

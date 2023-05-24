@@ -9,10 +9,11 @@ import Buddies from './Buddies'
 import Messages from './Messages'
 import Events from './Events'
 import Members from './Members'
+import { MemberLevel } from '../../lib/models'
 
 export default function ActionsNav() {
   const router = useRouter()
-  const { authenticated, isMember, member, level } = useUser({
+  const { authenticated, isMember, member } = useUser({
     forceLogin: false,
   })
   const [path, setPath] = useState(router.asPath)

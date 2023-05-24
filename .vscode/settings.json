@@ -87,4 +87,7 @@
     "**/*.{test,spec}.{ts,tsx}"
   ],
   "testing.automaticallyOpenPeekView": "never",
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
 }

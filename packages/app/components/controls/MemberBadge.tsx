@@ -1,6 +1,7 @@
 import { Badge, BadgeProps, chakra, HStack, Tooltip } from '@chakra-ui/react'
 import { MemberLevel, MemberLevelColorMap } from 'lib/models'
-import { CheckBadgeIcon, ShieldCheckIcon } from '@heroicons/react/24/solid'
+import { CheckBadgeIcon } from '@heroicons/react/24/solid'
+import Link from 'next/link'
 type Props = BadgeProps & {
   user_type: string
   size?: string
@@ -13,6 +14,7 @@ export const MemberBadge = chakra(({ user_type, size = 'md', ...props }: Props) 
   const levelName = user_type.split('_').join(' ')
   return (
     <HStack spacing={2}>
+      <Link href="/brothers" target="_blank" passHref title="Learn about brother-levels.">
       <Badge
         {...props}
         rounded={size}
@@ -22,7 +24,8 @@ export const MemberBadge = chakra(({ user_type, size = 'md', ...props }: Props) 
         bg="white"
       >
         {levelName}
-      </Badge>
+        </Badge>
+      </Link>
 
       {levelValue >= MemberLevel.brother && (
         <Tooltip label="Verified" aria-label="Verified">
