@@ -19,9 +19,10 @@ export const MemberChat = chakra(({ member, size = 'lg', ...props }: Props) => {
 
   useEffect(() => {
     if (!loading) {
-      if (conversations[member?.id] != undefined && hasConversation == undefined) {
+      const convo = conversations?.find(c => c.id == member?.id)
+      if (convo && hasConversation == undefined) {
         setHasConversation(true)
-        const newMessages = conversations[member.id].messages?.filter(
+        const newMessages = convo.messages?.filter(
           (m) => m.direction == 'incoming' && m.status == 'new'
         )
         setNewMessageCount(newMessages.length)
