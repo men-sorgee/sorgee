@@ -140,7 +140,7 @@ function Header({ userType, children, ...props }: Props) {
 
   const NavMenu = ({ navItems, ...props }: StackProps & { navItems: NavItem[] }) => {
     return (
-      <Accordion allowToggle defaultIndex={[0]} as="nav" color={'white'} __css={props} mb={4}>
+      <Accordion allowToggle defaultIndex={[0]} as="nav" color={'white'} __css={props} mx={0} px={0} mb={4} {...constrained}>
         {navItems.map((navItem, index) => (
           <NavMenuItem
             key={navItem.title}

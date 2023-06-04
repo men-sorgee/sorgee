@@ -4,10 +4,10 @@ declare module 'react' {
     // extends React's HTMLAttributes
     name?: string
   }
-  interface InputHTMLAttributes<T> extends HTMLAttributes<T> {}
+  interface InputHTMLAttributes<T> extends HTMLAttributes<T> { }
 }
 
-declare namespace JSX {}
+declare namespace JSX { }
 
 declare global {
   namespace JSX {
@@ -22,6 +22,13 @@ declare global {
           breakout?: 'on' | 'off'
           avatarUrl?: string
         },
+        HTMLElement
+      >
+      'stripe-pricing-table': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement> & {
+        'pricing-table-id': string
+        'publishable-key': string
+
+      },
         HTMLElement
       >
     }

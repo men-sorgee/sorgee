@@ -10,7 +10,7 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import { ButtonLink, MemberAvatar, MemberIcon } from 'components/controls'
-import { useEffect} from 'react'
+import { useEffect } from 'react'
 import Link from 'next/link'
 import {
   CalendarIcon,
@@ -28,11 +28,12 @@ import {
   SunIcon,
   ServerStackIcon,
   PaintBrushIcon,
+  CreditCardIcon
 } from '@heroicons/react/24/outline'
 import { useUser, useSite } from 'hooks'
 import { MemberLevel, ApplicationStatus } from 'lib/models'
 import { pledgeSurvey } from '../lib/config'
-interface Props {}
+interface Props { }
 
 export default function UserMenu(_props: Props) {
   const { colorMode, toggleColorMode } = useColorMode()
@@ -44,21 +45,21 @@ export default function UserMenu(_props: Props) {
 
   const toast = useToast()
 
- // useEffect(() => {
- //   if (!loading && member?.notifications?.length) {
- //     member.notifications.forEach((n) => {
- //       toast({
- //         title: 'Notification!',
- //         description: n.message,
- //         status: 'info',
- //         isClosable: true,
- //         onCloseComplete: () => {
- //         }
- //       })
- //     })
- //   }
- // }, [loading, member?.notifications, member?.notifications?.length, toast])
-  
+  // useEffect(() => {
+  //   if (!loading && member?.notifications?.length) {
+  //     member.notifications.forEach((n) => {
+  //       toast({
+  //         title: 'Notification!',
+  //         description: n.message,
+  //         status: 'info',
+  //         isClosable: true,
+  //         onCloseComplete: () => {
+  //         }
+  //       })
+  //     })
+  //   }
+  // }, [loading, member?.notifications, member?.notifications?.length, toast])
+
   return (
     <>
       {authenticated ? (
@@ -100,7 +101,15 @@ export default function UserMenu(_props: Props) {
                 >
                   Settings
                 </MenuItem>
-
+                <MenuItem
+                  icon={<CreditCardIcon color={'white'} width={'1.5rem'} />}
+                  bg="black"
+                  _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                  as={Link} target='_blank' rel='noopener noreferrer'
+                  href="/api/stripe/portal"
+                >
+                  Billing
+                </MenuItem>
                 <MenuItem
                   icon={<UserIcon color={'white'} width={'1.5rem'} />}
                   bg="black"

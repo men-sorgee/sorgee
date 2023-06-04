@@ -8,26 +8,32 @@ export default async function Asset(req: NextApiRequest, res: NextApiResponse) {
 
     if (!referer || !referer.startsWith(baseUrl)) return res.status(404).end()
 
-    const url = `${adminBaseUrl}/assets/${id}?fit=${fit}${width ? '&width=' + width : ''}${
-      height ? '&height=' + height : ''
-    }&quality=${quality}&access_token=${app.adminToken}`
+    const url = `${adminBaseUrl}/assets/${id}?fit=${fit}${width ? '&width=' + width : ''}${height ? '&height=' + height : ''
+      }&quality=${quality}&access_token=${app.adminToken}`
 
-    const response = await fetch(url, { cache: 'force-cache' })
+    const response = await fetch(url, { cache: 'force-cache', keepalive: true })
     if (response.ok) {
-      response.arrayBuffer().then((buffer) => {
-        res
-          .setHeader('Content-Type', response.headers.get('Content-Type'))
-          .setHeader('Content-Length', response.headers.get('Content-Length'))
-          .setHeader('Content-Disposition', response.headers.get('Content-Disposition'))
-          .setHeader('cache', response.headers.get('cache'))
-          .status(response.status)
-          .send(Buffer.from(buffer))
-      })
+      const buffer = await response.arrayBuffer()
+      res
+        .setHeader('Content-Type', response.headers.get('Content-Type'))
+        .setHeader('Content-Length', response.headers.get('Content-Length'))
+        .setHeader('Content-Disposition', response.headers.get('Content-Disposition'))
+        .setHeader('cache', response.headers.get('cache'))
+        .status(response.status)
+        .send(Buffer.from(buffer))
+
+
     } else {
-      res.status(404).end()
+      res.status(404)
     }
   } catch (err) {
     console.error(err)
-    res.status(500).end()
+    res.status(500)
+  }
+}
+
+export const config = {
+  api: {
+    bodyParser: false,
   }
 }

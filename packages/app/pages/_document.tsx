@@ -50,6 +50,16 @@ class MyDocument extends Document {
             src="https://api.buglog.io/website/80W58ZYWE9/code"
             strategy="lazyOnload"
           />
+          <Script
+            id="cody-init"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+            __html: `window.codySettings = { widget_id: 'f9b9899d-a39f-459e-a9e0-143daf7e8aa6', color: '#2A48DF' };
+                    !function(){var t=window,e=document,a=function(){a.init(arguments)},n=window.codySettings.base_url||"https://getcody.ai";
+                    t.Cody=a;var i=function(){var t=e.createElement("script");t.type="text/javascript",t.async=!0,t.src="https://trinketsofcody.com/cody-widget.js";
+                    var a=e.getElementsByTagName("script")[0];a.parentNode.insertBefore(t,a)};
+                    "complete"===document.readyState?i():t.attachEvent?t.attachEvent("onload",i):t.addEventListener("load",i,!1)}();`
+          }}/>
         </body>
       </Html>
     )

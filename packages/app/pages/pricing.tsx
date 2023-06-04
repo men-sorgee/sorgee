@@ -35,7 +35,7 @@ export default function ThreeTierPricing() {
         Membership dues that fit your hunger
       </Heading>
       <Text fontSize="lg">
-        Start with 30-day free trial. No credit card needed. Cancel at anytime.
+        Billing begins immeditatly. You can choose to be billed monthly or annually. Cancel at anytime.
       </Text>
 
       <TableContainer>
@@ -55,7 +55,7 @@ export default function ThreeTierPricing() {
                   fontSize={{ base: 'md', sm: 'lg', md: '3xl' }}
                   color={useColorModeValue('primary.300', 'white')}
                 >
-                  Basic
+                  Free
                 </Text>
               </Th>
               <Th>
@@ -63,7 +63,7 @@ export default function ThreeTierPricing() {
                   fontSize={{ base: 'md', sm: 'lg', md: '3xl' }}
                   color={useColorModeValue('primary.400', 'white')}
                 >
-                  Plus
+                  Basic
                 </Text>
               </Th>
               <Th>
@@ -86,7 +86,7 @@ export default function ThreeTierPricing() {
                   fontSize={{ base: 'lg', md: 'xl' }}
                   color={useColorModeValue('gray.500', 'white')}
                 >
-                  $5
+                  FREE
                 </Text>
                 <Show above="md">
                   <Text color={useColorModeValue('gray.500', 'white')}>
@@ -143,7 +143,7 @@ export default function ThreeTierPricing() {
             <Tr>
               <Th>
                 <Text as="strong" color={useColorModeValue('gray.500', 'white')}>
-                  <em>Search</em>
+                  <em>Member Cruising</em>
                 </Text>
               </Th>
               <Td>
@@ -159,24 +159,38 @@ export default function ThreeTierPricing() {
             <Tr>
               <Th>
                 <Text as="strong" color={useColorModeValue('gray.500', 'white')}>
-                  <em>Messaging *</em>
+                  <em>Messaging</em>
                 </Text>
               </Th>
               <Td>
-                <Check />
+
               </Td>
               <Td>
-                <Check />
+                <Check available />
               </Td>
               <Td>
-                <Check />
+                <Check available />
               </Td>
             </Tr>
 
             <Tr>
               <Th>
                 <Text as="strong" color={useColorModeValue('gray.500', 'white')}>
-                  <em>Live Chat *</em>
+                  <em>Buddy List (w/Online Status)</em>
+                </Text>
+              </Th>
+              <Td></Td>
+              <Td>
+                <Check available />
+              </Td>
+              <Td>
+                <Check available />
+              </Td>
+            </Tr>
+            <Tr>
+              <Th>
+                <Text as="strong" color={useColorModeValue('gray.500', 'white')}>
+                  <em>Cruise by Location *</em>
                 </Text>
               </Th>
               <Td></Td>
@@ -190,33 +204,7 @@ export default function ThreeTierPricing() {
             <Tr>
               <Th>
                 <Text as="strong" color={useColorModeValue('gray.500', 'white')}>
-                  <em>Live Location *</em>
-                </Text>
-              </Th>
-              <Td></Td>
-              <Td>
-                <Check />
-              </Td>
-              <Td>
-                <Check />
-              </Td>
-            </Tr>
-            <Tr>
-              <Th>
-                <Text as="strong" color={useColorModeValue('gray.500', 'white')}>
-                  <em>Create Groups *</em>
-                </Text>
-              </Th>
-              <Td></Td>
-              <Td></Td>
-              <Td>
-                <Check />
-              </Td>
-            </Tr>
-            <Tr>
-              <Th>
-                <Text as="strong" color={useColorModeValue('gray.500', 'white')}>
-                  <em>Host Events *</em>
+                  <em>Host Private Events *</em>
                 </Text>
               </Th>
               <Td></Td>
@@ -241,14 +229,14 @@ export default function ThreeTierPricing() {
         </Table>
       </TableContainer>
       {(!site.invite_only && (
-        <ButtonLink my={8} colorScheme="accent" size="lg" href="/apply">
+        <ButtonLink my={8} colorScheme="accent" size="lg" href="/subscribe">
           Get Started
         </ButtonLink>
       )) || (
-        <ButtonLink my={8} colorScheme="accent" size="lg" href="/limited">
-          Get Started
-        </ButtonLink>
-      )}
+          <ButtonLink my={8} colorScheme="accent" size="lg" href="/limited">
+            Get Started
+          </ButtonLink>
+        )}
     </Page>
   )
 }

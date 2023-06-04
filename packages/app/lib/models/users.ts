@@ -68,6 +68,18 @@ export type UserContactAttempt = {
   user?: string | User
 }
 
+export type UserBillingEvent = {
+  id: string;
+  created: string;
+  type?: string;
+  data?: string;
+  livemode: boolean;
+  pending_webhooks?: number;
+  object?: string;
+  account?: string;
+  api_version?: string;
+};
+
 export type User = {
   id: string
   presence?: string
@@ -474,6 +486,18 @@ export type Member = Applicant & {
   private_folder?: string
   public_folder?: string
   approved_date?: string
+
+  membership_type?: MembershipType;
+  customer_id?: string;
+  membership_start?: string;
+  renewal_type?: string;
+}
+
+export enum MembershipType {
+  Free = "0",
+  Basic = "1",
+  Plus = "2",
+  Pro = "3"
 }
 
 export type SearchableMember = Omit<
@@ -625,6 +649,13 @@ export const searchableMemberFields: Array<keyof Member> = [
   'buddy_of.*' as any,
 ]
 
+export const memberSubscriptionFields: Array<keyof Member> = [
+  'membership_type',
+  'customer_id',
+  'membership_start',
+  'renewal_type'
+]
+
 export const memberFields: Array<keyof Member> = [
   ...applicantFields,
   ...searchableMemberFields,
@@ -647,6 +678,7 @@ export const memberFields: Array<keyof Member> = [
   ...memberProfileLocationFields,
   'show_photos',
   ...memberProfilePhotoFields,
+  ...memberSubscriptionFields
 ]
 
 export const getAllowedUsers = (level: MemberLevel) => {

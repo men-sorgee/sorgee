@@ -67,6 +67,7 @@
     "remark-html": "^15.0.1",
     "socket.io": "^4.6.1",
     "socket.io-client": "^4.6.1",
+    "stripe": "^12.8.0",
     "styled-components": "^5.3.6",
     "swr": "2.1.5",
     "twilio": "^4.10.0",

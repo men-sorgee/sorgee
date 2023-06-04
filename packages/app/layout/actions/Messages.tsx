@@ -15,7 +15,6 @@ import { ChatBubbleBottomCenterIcon as ChatIcon } from '@heroicons/react/24/outl
 import { Member, MemberLevel } from 'lib/models'
 import { Messages } from '../../components/controls/Messages'
 import { useEffect, useRef, useState } from 'react'
-import { ac } from 'vitest/dist/types-e3c9754d'
 
 type Props = { member: Member }
 
