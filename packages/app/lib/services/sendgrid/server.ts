@@ -75,10 +75,7 @@ async function convertMarkdownToHtml(markdown: string) {
   return remark().use(html).processSync(markdown).toString()
 }
 
-// to verify we never send the same email twice
-// hash email + subject + body and check this store
-// if it exists, don't send the email
-const hashMap = new Map<string, number>()
+
 
 export async function sendNotificationEmail(
   to_email: string,
@@ -91,25 +88,6 @@ export async function sendNotificationEmail(
   notification_id: string = null
 ) {
   body = await convertMarkdownToHtml(body)
-
-  const hash = Buffer.from(`${to_email}${subject}${body}`, 'base64').toString()
-  const now = Date.now()
-  if (hashMap.has(hash) && !to_email.includes('thebrotherhoodgroup')) {
-    console.log(`SendGrid Email ${category} Skipped: ${to_email}`)
-    return
-  }
-
-  hashMap.set(hash, now)
-
-  // Remove expired entries from the map
-  setTimeout(() => {
-    const expirationTime = now - 24 * 60 * 60 * 1000 // 24 hours
-    Array.from(hashMap.entries()).forEach(([key, value]) => {
-      if (value < expirationTime) {
-        hashMap.delete(key)
-      }
-    })
-  }, 60 * 60 * 1000) // 1 hour
 
   const email: MailDataRequired = {
     personalizations: [
@@ -133,19 +111,15 @@ export async function sendNotificationEmail(
       notification_id,
     },
   }
-  try {
-    const [response, data] = await getMailer().send(email, false)
-    if (response.statusCode > 202) {
-      const { errors } = response.body as { errors: string[] }
-      throw new Error(
-        `Sendgrid Email ${category} Error: ${errors?.join(', ') || data || response.body}`
-      )
-    }
-    console.log(`SendGrid Email ${category} Sent: ${to_email}`)
-    hashMap.set(hash, now)
-    return data
-  } catch (error) {
-    console.error(error.message, error)
-    throw error
+
+  const [response, resData] = await getMailer().send(email, false)
+  if (response.statusCode > 202) {
+    const { errors } = response.body as { errors: string[] }
+    throw new Error(
+      `Sendgrid Email ${category} Error: ${errors?.join(', ') || resData || response.body}`
+    )
   }
+  console.log(`SendGrid Email ${category} Sent: ${to_email}`)
+  return data
+
 }

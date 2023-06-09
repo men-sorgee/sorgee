@@ -2,7 +2,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from 'stripe'
 import { saveUserBillingEvent } from "lib/services/directus/server/users/billing";
 import stripe from "lib/services/stripe/server";
-import { findUser, findUser, updateUser } from "../../../lib/services/directus/server/users";
+import { findUser, updateUser } from "lib/services/directus/server/users";
+import { Member } from "lib/models";
 
 const endpointSecret = process.env.STRIPE_API_SECRET || "whsec_d40a4bc62374712649790867acb4bb35481fabd87befcceff8b42f860bde77ff";
 
@@ -38,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     case 'charge.captured':
       const chargeCaptured = event.data.object as Stripe.Charge
       // Then define and call a function to handle the event charge.captured
-      const { customer, amount, id } = chargeCaptured;
+      const { customer, amount } = chargeCaptured;
       break;
     case 'charge.expired':
       const chargeExpired = event.data.object as Stripe.Charge

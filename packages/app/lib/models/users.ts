@@ -380,7 +380,7 @@ export type Applicant = Profile & {
   social_scenes: string[]
   photo?: string | DirectusFile
   photo_denial_reason: string | null
-
+  approved_date?: string
   date_created: string
   date_updated: string
 }
@@ -397,6 +397,7 @@ export const applicantFields: Array<keyof Applicant> = [
   'event_availability',
   'birth_month',
   'birth_year',
+  'approved_date',
   'age',
   'height',
   'weight',
@@ -485,7 +486,6 @@ export type Member = Applicant & {
   rating: number
   private_folder?: string
   public_folder?: string
-  approved_date?: string
 
   membership_type?: MembershipType;
   customer_id?: string;

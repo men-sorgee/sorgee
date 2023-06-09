@@ -97,8 +97,8 @@ function Apply({ promo, invite, markdown, ...props }: PageProps) {
 
   useEffect(() => {
     if (!loading && user) {
-      const { email, user_type } = user
-      if (invite && invite.e && invite.e.toLowerCase() != email.toLowerCase()) {
+      const { email } = user
+      if (invite && invite.e && invite.e.toLowerCase() != email?.toLowerCase()) {
         setFormError(
           `You must login using the email address ${invite.e} to use this invite, not ${email}. Please logout and try again.`
         )
@@ -146,7 +146,6 @@ function Form({
     spectrumOptions,
     positionsOptions,
     relationshipOptions,
-    timeOfDayOptions,
     birthMonthOptions,
     setFormError,
   } = props

@@ -10,16 +10,7 @@ async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     const member = await withMember(req, res)
 
     const { email, link } = req.body as InviteLink
-    await sendNotificationEmail(
-      email,
-      `${member.first_name}'s Friend`,
-      `${member.first_name} ${member.last_name} has invited you to join our community!`,
-      `Begin your application, by clicking the button below.`,
-      {
-        button_text: `Accept Invitation`,
-        button_url: link,
-      }
-    )
+
 
     const newUser = await findUser(email.toLocaleLowerCase())
     if (newUser) {
@@ -45,12 +36,23 @@ async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
       await createUser({
         email: email.toLocaleLowerCase(),
         user_type: 'applicant',
-        status: 'new',
+        status: 'active',
         vouched_by: member.id,
         notes: `Invited by ${member.first_name} ${member.last_name}`,
         application_status: 'apply',
       })
     }
+
+    await sendNotificationEmail(
+      email,
+      `${member.first_name}'s Friend`,
+      `${member.first_name} ${member.last_name} has invited you to join our community!`,
+      `Begin your application, by clicking the button below.`,
+      {
+        button_text: `Accept Invitation`,
+        button_url: link,
+      }
+    )
 
     res.status(200).end()
   } catch (e: any) {

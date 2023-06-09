@@ -54,7 +54,7 @@ function mapToken(token: UserVerificationToken): VerificationToken {
 }
 
 function log(...args) {
-  //console.debug(...args)
+  console.debug(...args)
 }
 
 const authAdapter: Adapter = {

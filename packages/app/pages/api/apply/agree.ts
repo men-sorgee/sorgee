@@ -1,7 +1,6 @@
-import { Applicant, Profile } from 'lib/models/users'
 import { updateUser, getUserEvents, getNotification } from 'lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { AgreementData, ApiResponse, ApplicationStatus, MemberLevel } from 'lib/models'
+import { AgreementData, ApiResponse, Applicant, Profile } from 'lib/models'
 import { SendGridCategory, SendGridTemplate, sendNotificationEmail, updateSendGrid } from 'lib/services/sendgrid/server'
 import { withApplicant, withMethods } from 'lib/utils/server'
 import { notifications } from 'lib/config'
@@ -29,7 +28,7 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
       const userEvents = await getUserEvents(applicant.id)
       const hasAttendedEvent = userEvents.some((e) => e.attended)
 
-      const updatedUser = (await updateUser(applicant.id, {
+      const updatedUser = (await updateUser<Applicant>(applicant.id, {
         application_status: 'approved',
         user_type: hasAttendedEvent ? 'brother' : applicant.vouched_by ? 'inductee' : 'pledge',
         approved_date: new Date().toISOString(),

@@ -6,8 +6,8 @@ import YahooProvider from './yahoo'
 import EmailProvider from 'next-auth/providers/email'
 import { TwitterLegacy } from 'next-auth/providers/twitter'
 import { authAdapter } from './adapter'
-import { sendNotificationEmail, updateSendGrid } from 'lib/services/sendgrid/server'
-import { Member, memberFields, Profile, User, UserStatusType } from 'lib/models'
+import { SendGridCategory, SendGridTemplate, sendNotificationEmail, updateSendGrid } from 'lib/services/sendgrid/server'
+import { MemberLevel, Profile, User, UserStatusType } from 'lib/models'
 import config from 'lib/config/server'
 import { sendNotification } from 'lib/services/twilio/server'
 import {
@@ -19,7 +19,17 @@ import {
 } from 'lib/services/db/server/auth'
 const { google, discord, twitter, yahoo, microsoft } = config
 
-const allowedStatuses: UserStatusType[] = ['new', 'active', 'inactive', 'stale']
+const allowedStatuses: UserStatusType[] = ['new', 'active', 'stale']
+
+const userCanSignin = (user: User | any) => {
+  const can = user && allowedStatuses.includes(user.status as UserStatusType)
+    && MemberLevel[user.userType as string] >= MemberLevel.applicant
+  console.dir({
+    user,
+    can
+  })
+  return can
+}
 
 export const authOptions: AuthOptions = {
   adapter: authAdapter,
@@ -38,30 +48,30 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async signIn(data) {
-      const { user, email, profile, account } = data
-
-      console.debug('callback:signIn')
-
-      if (email?.verificationRequest) {
-        let found = (await getUser(user.id)) || (await findUser(account.userId))
-        return found != null
-      }
-
-      let findEmail: string =
+      let { user, email: is, profile, account } = data
+      let email: string =
         profile?.email ||
         user?.email ||
         ((account?.user || account?.sub || account?.userId || account?.email) as string)
-      if (findEmail) {
-        let user = await findUser(findEmail)
-        return user && allowedStatuses.includes(user.status as UserStatusType)
+
+      if (is?.verificationRequest) {
+        console.debug('callback:signIn:verificationRequest')
+        let found = (await getUser(user.id)) || (await findUser(email))
+        return found != null
+      }
+      console.debug('callback:signIn')
+
+      if (email) {
+        let user = await findUser(email)
+        return userCanSignin(user)
       }
       if (account?.providerAccountId) {
         let user = await findUserByAccount(account.provider, account.providerAccountId)
-        return user && allowedStatuses.includes(user.status as UserStatusType)
+        return userCanSignin(user)
       }
       if (user?.id) {
-        let found = await getUser(user.id)
-        return found != null
+        user = await getUser(user.id as string)
+        return userCanSignin(user)
       }
       return false
     },
@@ -138,19 +148,19 @@ export const authOptions: AuthOptions = {
       maxAge: 60 * 60, // 1 hour
       async sendVerificationRequest({ identifier: email, url }) {
         const user = await findUser(email)
-
-        if (user && user.status == 'active') {
+        console.log('sendVerificationRequest')
+        if (userCanSignin(user)) {
           // check if the user needs to sign in with their phone
           if (user.phone && user.phoneVerified && user.authWithPhone) {
             try {
               await sendNotification(user.phone, `Sign in:  ${url}`)
-              console.log(`Sent sign in notification to ${user.phone} for ${user.email} `)
+              console.log(`Sent sign in link to ${user.phone} for ${user.email} `)
               return
             } catch (e) {
               console.error(e)
             }
           }
-
+          console.log(`Sending sign in link to ${user.email} `)
           await sendNotificationEmail(
             email,
             'User',
@@ -159,9 +169,17 @@ export const authOptions: AuthOptions = {
             {
               button_text: 'Sign In',
               button_url: url,
-            }
+            },
+            SendGridTemplate.AppNotification,
+            SendGridCategory.Notification
           )
+        } else {
+          console.log('User not active')
         }
+      },
+      normalizeIdentifier(identifier: string): string {
+        let [local, domain] = identifier.toLowerCase().trim().split("@")
+        return `${local}@${domain}`
       },
     }),
   ],

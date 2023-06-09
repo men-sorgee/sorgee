@@ -3,12 +3,12 @@ import { ApplicationStatus } from 'lib/models'
 import { useEffect } from 'react'
 import { Show, Hide } from '@chakra-ui/react'
 export default function ApplicationSteps({ status }: { status: string }) {
-  const steps = ['Registration', 'Identification', 'Verification', 'Review', 'Agreement']
+  const steps = ['Registration', 'Verification', 'Review', 'Agreement']
   const { activeStep, setStep } = useSteps({
-    initialStep: -1,
+    initialStep: 0,
   })
   useEffect(() => {
-    if (status && activeStep == -1) setStep(ApplicationStatus[status] + 1)
+    if (status && activeStep == 0) setStep(ApplicationStatus[status])
   }, [activeStep, setStep, status])
   return (
     <>
