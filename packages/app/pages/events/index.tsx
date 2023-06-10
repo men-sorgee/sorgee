@@ -142,7 +142,7 @@ export default function EventsPage({}: PageProps) {
                 <Heading mb={4}>Your Invitations</Heading>
 
                 <Invitations
-                  list={invitations.filter((e) => e.rsvp != 'declined')}
+                  list={invitations}
                   member={member}
                   onChange={onEventsChange}
                   name="Invitations"
