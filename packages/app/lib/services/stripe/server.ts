@@ -11,3 +11,9 @@ const stripe = new StripeClient(process.env.STRIPE_SECRET_KEY!, {
 })
 
 export default stripe;
+
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || null
+
+export {
+  webhookSecret
+}

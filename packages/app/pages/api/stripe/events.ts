@@ -1,11 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from 'stripe'
 import { saveUserBillingEvent } from "lib/services/directus/server/users/billing";
-import stripe from "lib/services/stripe/server";
+import stripe, { webhookSecret } from "lib/services/stripe/server";
 import { findUser, updateUser } from "lib/services/directus/server/users";
 import { Member } from "lib/models";
 
-const endpointSecret = process.env.STRIPE_API_SECRET || "whsec_d40a4bc62374712649790867acb4bb35481fabd87befcceff8b42f860bde77ff";
+
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const sig = req.headers['stripe-signature'];
@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   console.log('Stripe event received')
   try {
 
-    event = stripe.webhooks.constructEvent(req.read(), sig, endpointSecret);
+    event = stripe.webhooks.constructEvent(req.read(), sig, webhookSecret);
     //console.dir(event)
     const { id, type, api_version, created, data, livemode, object, pending_webhooks, account } = event;
 
@@ -247,5 +247,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 export const config = {
   api: {
     bodyParser: false,
-  }
-}
+  },
+};
