@@ -100,7 +100,8 @@ export default function EventPage({ id }: PageProps) {
 
   return (
     <Page title="Event Details" loading={loading || eventLoading} requireAuth={true}>
-      {member && event && (
+      {authenticated && member && event && (<>
+     
         <EventCard
           event={event}
           showDescription
@@ -183,23 +184,26 @@ export default function EventPage({ id }: PageProps) {
             <EventRSVP memberId={member.id} eventId={id} rsvp={invite?.rsvp} />
           )}
         </EventCard>
-      )}
-      <HStack spacing={4} mt={4}>
-        <Link as={NextLink} href="/events">
-          <ArrowBackIcon mr={2} w="50" />
-          Back to Events
-        </Link>
-        {isStaff && (
-          <Link as={NextLink} href={`/admin/event/${eventId}`} my={4}>
-            Event Admin
+        <MemberModal
+          isOpen={memberId != undefined}
+          memberId={memberId}
+          onClose={() => setMemberId(undefined)}
+          />
+        <HStack spacing={4} mt={4}>
+          <Link as={NextLink} href="/events">
+            <ArrowBackIcon mr={2} w="50" />
+            Back to Events
           </Link>
-        )}
-      </HStack>
-      <MemberModal
-        isOpen={memberId != undefined}
-        memberId={memberId}
-        onClose={() => setMemberId(undefined)}
-      />
+          {isStaff && (
+            <Link as={NextLink} href={`/admin/event/${eventId}`} my={4}>
+              Event Admin
+            </Link>
+          )}
+        </HStack>
+        </>
+      )}
+      
+     
     </Page>
   )
 }
