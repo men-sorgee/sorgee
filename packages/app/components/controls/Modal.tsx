@@ -23,7 +23,7 @@ export const ModalPopup = chakra(
   ({ header, footer, isOpen, onClose, children, ...props }: Props) => {
     const bg = useColorModeValue('white', 'gray.800')
     return (
-      <Modal scrollBehavior="inside" isOpen={isOpen} onClose={onClose} isCentered {...props}>
+      <Modal scrollBehavior="outside" isOpen={isOpen} onClose={onClose} isCentered {...props}>
         <ModalOverlay backdropFilter="auto" backdropBlur="2px" />
         <ModalContent bg={bg} m={0} p={0} rounded="lg" shadow="lg">
           <ModalCloseButton color="white" />
