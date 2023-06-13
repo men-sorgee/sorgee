@@ -48,8 +48,17 @@ export default function AdminEventList({ events }: Props) {
       }
     }) || []
   const today = new Date(new Date().toDateString())
+
+  
+  
   const upcoming = eventList?.filter((event) => event.date > today)
   const past = eventList?.filter((event) => event.date < today)
+  past.sort((a, b) => {
+    const dateA = new Date(a.datetime).getTime()
+    const dateB = new Date(b.datetime).getTime()
+    return dateB - dateA
+  })
+  
   const activeEvent = eventList?.find((event) => Number(event.date) == Number(today))
 
   return (
