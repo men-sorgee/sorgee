@@ -163,7 +163,7 @@ export default function DynamicPage({ page }: Props) {
             },
           }}
         >
-          <Markdown content={markdown} size="lg" />
+          <Markdown content={markdown}  />
         </Box>
         {content.map((s: any, i: Key) => (
           <Section key={i} content={s} />

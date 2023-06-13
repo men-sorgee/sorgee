@@ -167,7 +167,10 @@ export async function getPageContent(query: string, variables: any): Promise<Pag
 
 const all_pages = `
 {
-  pages: page {
+  pages: page (
+      filter: { status: { _eq: "published" }}
+      sort: ["sort"]
+    ) {
     id
     title
     description
@@ -226,7 +229,10 @@ const all_pages = `
       title
       status
     }
-    children {
+    children (
+      filter: { status: { _eq: "published" }}
+      sort: ["sort"]
+    ) {
       id
       slug
       title
