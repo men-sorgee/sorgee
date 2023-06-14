@@ -77,11 +77,11 @@ export const MemberHeader = ({
             {sharedWithMe && (
               <Badge
                 fontSize={['xs', 'sm']}
-                bg="primary.300"
+                bg="accent.300"
                 color="white"
-                borderRadius="0 3px 3px 0"
+                borderRadius="3px 3px 3px 3px"
               >
-                Unlocked
+                Photos Unlocked
               </Badge>
             )}
           </Flex>

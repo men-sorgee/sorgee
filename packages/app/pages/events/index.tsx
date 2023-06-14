@@ -39,7 +39,8 @@ export type PageProps = {}
 export default function EventsPage({}: PageProps) {
   const [tabValue, setTabValue] = useState(0)
   const { member, loading, authorized } = useUser({
-    minLevel: MemberLevel.inductee
+    minLevel: MemberLevel.inductee,
+    redirectsEnabled: true
   })
   const {
     invitations,

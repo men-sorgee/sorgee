@@ -91,7 +91,8 @@ type Meta = {
 export default function MemberListPage({ fields, id: i }: PageProps) {
   const { member: currentMember, loading } = useUser({
     minLevel: MemberLevel.brother,
-    requiredFeature: 'view_directory'
+    requiredFeature: 'view_directory',
+    redirectsEnabled: true
   })
   const router = useRouter()
   const { page: p, size: s, sort: o, id: _, ...q } = router.query

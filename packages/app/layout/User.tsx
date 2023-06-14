@@ -71,9 +71,9 @@ export default function UserMenu(_props: Props) {
   //   }
   // }, [loading, member?.notifications, member?.notifications?.length, toast])
 
-  const hasDirectory = hasFeature('view_directory')
-  const hasChat = hasFeature('chat')
-  const hasBuddyList = hasFeature('buddy_list')
+  const hasDirectory =
+    level >= MemberLevel.brother && hasFeature('view_directory')
+  const hasBuddyList = level >= MemberLevel.brother && hasFeature('buddy_list')
   const hasEvents = isMember && level >= MemberLevel.brother
 
   if (loading) return <Spinner />

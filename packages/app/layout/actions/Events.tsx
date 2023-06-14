@@ -1,5 +1,5 @@
 import { useUserEvents } from 'hooks'
-import { Member } from 'lib/models'
+import { Member, MemberLevel } from 'lib/models'
 import NextLink from 'next/link'
 
 import { Badge, IconButton, Link } from '@chakra-ui/react'
@@ -10,7 +10,11 @@ interface Props {
   active: boolean
 }
 
-const EventsAction = ({ active }: Props) => {
+const EventsAction = ({ member, active }: Props) => {
+  const level = MemberLevel[member?.user_type]
+  if (level < MemberLevel.inductee) {
+    return null
+  }
   const { newInvitationCount } = useUserEvents()
 
   return (

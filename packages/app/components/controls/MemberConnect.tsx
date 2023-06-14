@@ -39,35 +39,36 @@ export const MemberConnect = chakra(
       if (isBuddy) {
         // remove buddy
 
-        deleteJSON(`/api/member/buddy/${member.id}`).then(() => {
+        deleteJSON(`/api/member/buddy/${member?.id}`).then(() => {
           setIsBuddy(false)
           return reload()
         })
       } else {
         // add buddy
-        postJSON<Partial<UserBuddy>>(`/api/member/buddy/${member.id}`, {}).then(
-          () => {
-            setIsBuddy(true)
-            return reload()
-          }
-        )
+        postJSON<Partial<UserBuddy>>(
+          `/api/member/buddy/${member?.id}`,
+          {}
+        ).then(() => {
+          setIsBuddy(true)
+          return reload()
+        })
       }
-    }, [isBuddy, member.id, reload, setIsBuddy])
+    }, [isBuddy, member?.id, reload, setIsBuddy])
 
     useEffect(() => {
       if (!userLoading && me?.buddies && isBuddy == undefined) {
         const buddies = me.buddies as UserBuddy[]
         const b = buddies.some((ur: UserBuddy) => {
           const buddy = ur.buddy_id as User
-          return buddy.id === member.id
+          return buddy.id === member?.id
         })
         setIsBuddy(b)
       }
-    }, [isBuddy, me, member.id, userLoading])
+    }, [isBuddy, me, member?.id, userLoading])
 
     if (level < MemberLevel.brother) return null
     if (userLoading || isBuddy == undefined) return null
-    if (me?.id === member.id) return null
+    if (me?.id === member?.id) return null
 
     if (!hasFeature('buddy_list'))
       return (

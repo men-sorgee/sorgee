@@ -46,7 +46,6 @@ const ChatActions = ({ member, hasFeature }: Props) => {
       setPrevMessagesCount(newMessageCount)
     }
     if (newMessageCount > prevMessagesCount) {
-      audioRef.current.volume = 0.5
       audioRef.current?.play()
       setPrevMessagesCount(newMessageCount)
     }
@@ -72,13 +71,21 @@ const ChatActions = ({ member, hasFeature }: Props) => {
     activeId
   ])
 
-  if (!hasFeature)
+  const level = MemberLevel[member?.user_type]
+  if (level < MemberLevel.brother) {
+    return null
+  }
+
+  if (!hasFeature && !hasNewMessages)
     return (
-      <UpgradeIcon
-        title="Member Chat"
-        membershipType={MembershipType.Plus}
-        icon={<ChatIcon height="50px" width="50px" />}
-      />
+      <>
+        <audio ref={audioRef} src="/sounds/click.mp3" preload="auto" />
+        <UpgradeIcon
+          title="Member Chat"
+          membershipType={MembershipType.Plus}
+          icon={<ChatIcon height="50px" width="50px" />}
+        />
+      </>
     )
 
   return (
@@ -127,7 +134,7 @@ const ChatActions = ({ member, hasFeature }: Props) => {
             <DrawerCloseButton />
           </DrawerHeader>
           <DrawerBody p={0} position="relative">
-            <Messages currentUser={member} />
+            <Messages member={member} />
           </DrawerBody>
         </DrawerContent>
       </Drawer>

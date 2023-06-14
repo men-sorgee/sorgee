@@ -54,7 +54,7 @@ export const MemberIcon = chakra(
     return (
       <>
         {member && (
-          <Flex gap={3} w="full" align="start">
+          <Flex gap={2} w="full" align="start">
             <Avatar
               id={member?.id}
               src={
@@ -99,7 +99,7 @@ export const MemberIcon = chakra(
               </Heading>
               <Flex
                 gap={4}
-                direction={['column', 'column', 'row']}
+                direction="row"
                 align="start"
                 justify="space-between"
                 w="full"

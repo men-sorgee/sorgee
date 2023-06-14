@@ -68,7 +68,7 @@ export default function EventPage({ id }: PageProps) {
     reload: reloadUser,
     authenticated,
     hasFeature
-  } = useUser({ minLevel: MemberLevel.inductee })
+  } = useUser({ minLevel: MemberLevel.inductee, redirectsEnabled: true })
 
   const [eventId] = useState<string>(String(i) || id)
   const [showTicket, setShowTicket] = useState<boolean>(false)

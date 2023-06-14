@@ -2,7 +2,12 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { UpgradeIcon } from 'components/controls'
 import { useUser } from 'hooks'
-import { Member, MembershipType, SearchableMember } from 'lib/models'
+import {
+  Member,
+  MemberLevel,
+  MembershipType,
+  SearchableMember
+} from 'lib/models'
 import { deleteJSON, postJSON } from 'lib/utils'
 
 import { chakra, IconButton, IconButtonProps } from '@chakra-ui/react'
@@ -14,7 +19,7 @@ type Props = Omit<IconButtonProps, 'aria-label'> & {
 
 export const MemberShare = chakra(
   ({ member, size = 'lg', ...props }: Props) => {
-    const { loading, member: me, reload, hasFeature } = useUser()
+    const { loading, member: me, reload, level, hasFeature } = useUser()
 
     const [isShared, setIsShared] = useState<boolean>(false)
 
@@ -41,6 +46,7 @@ export const MemberShare = chakra(
     }, [me, member.id, loading])
 
     if (loading || !me || me.id == member.id) return null
+    if (level < MemberLevel.brother) return null
 
     const label = isShared ? 'Unshare Private Photos' : 'Share Private Photos'
 

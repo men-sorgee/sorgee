@@ -14,7 +14,8 @@ export default function BuddiesPage({}: PageProps) {
   const [memberId, setMemberId] = useState<string>(undefined)
   const { member, loading } = useUser({
     minLevel: MemberLevel.brother,
-    requiredFeature: 'buddy_list'
+    requiredFeature: 'buddy_list',
+    redirectsEnabled: true
   })
 
   const buddies = member?.buddies as UserBuddy[]
@@ -73,6 +74,7 @@ export default function BuddiesPage({}: PageProps) {
               key={u.id}
               size={['md', 'lg', 'xl']}
               member={u as unknown as SearchableMember}
+              viewer={member}
               onClick={() => {
                 setMemberId(u.id)
               }}

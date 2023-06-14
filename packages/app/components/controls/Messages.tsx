@@ -29,7 +29,7 @@ import MessagesStyles from './MessagesStyles'
 
 let socket: Socket
 
-export const Messages = ({ currentUser }: { currentUser: Member }) => {
+export const Messages = ({ member }: { member: Member }) => {
   const {
     conversations,
     activeConversation,
@@ -114,7 +114,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
       addTrailingSlash: false
     })
     socket.on('connect', () => {
-      socket.emit('join', currentUser.id)
+      socket.emit('join', member?.id)
     })
     socket.on('receive-message', (message: ChatMessage) => {
       receiveMessage(message)
@@ -174,7 +174,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
             status={user?.presence == 'online' ? 'available' : 'unavailable'}
             active={user?.presence == 'online'}
           />,
-          user.nickname
+          user?.nickname
         ]
       }
     }
@@ -186,10 +186,10 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
     if (socket) {
       socket.emit('user-typing', {
         to: activeId,
-        from: currentUser.id
+        from: member?.id
       })
     }
-  }, [activeId, currentUser.id])
+  }, [activeId, member?.id])
 
   const handleInputChange = (e) => {
     //setInputValue(e.target.value)
@@ -215,11 +215,11 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
       type: 'html',
       timestamp: new Date(),
       user: {
-        id: currentUser.id,
-        nickname: currentUser.nickname,
-        picture: currentUser.picture as string,
-        last_login: currentUser.last_login,
-        presence: currentUser.presence
+        id: member?.id,
+        nickname: member?.nickname,
+        picture: member?.picture as string,
+        last_login: member?.last_login,
+        presence: member?.presence
       }
     })
   }
@@ -243,11 +243,11 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
   const sendMessage = useCallback(
     ({ body, image, type, timestamp }: Partial<ChatMessage>) => {
       const user = {
-        id: currentUser.id,
-        nickname: currentUser.nickname,
-        picture: currentUser.picture as string,
-        last_login: currentUser.last_login,
-        presence: currentUser.presence
+        id: member?.id,
+        nickname: member?.nickname,
+        picture: member?.picture as string,
+        last_login: member?.last_login,
+        presence: member?.presence
       }
       setMessages([
         ...messages,
@@ -265,7 +265,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
         image,
         type,
         to: activeId,
-        from: currentUser.id
+        from: member?.id
       } as Message).then(({ data }) => {
         const { type, body, image, date_created } = data
         socket.emit('send-message', activeId, {
@@ -279,11 +279,11 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
     },
     [
       activeId,
-      currentUser.id,
-      currentUser.last_login,
-      currentUser.nickname,
-      currentUser.picture,
-      currentUser.presence,
+      member?.id,
+      member?.last_login,
+      member?.nickname,
+      member?.picture,
+      member?.presence,
       messages
     ]
   )
@@ -373,7 +373,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
                   _hover={{ bg: 'primary.500' }}
                 />
                 <MemberConnect
-                  member={activeConversation.user}
+                  member={activeConversation?.user}
                   fill={'white'}
                 />
               </ConversationHeader.Actions>

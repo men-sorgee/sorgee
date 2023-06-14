@@ -132,18 +132,15 @@ export const MemberSpotlight = chakra(
           >
             {children}
             <Spacer />
-            <Flex
-              gap={1}
-              direction={'row'}
-              align="center"
-              justify="space-between"
-            >
-              <MemberVouch memberId={member?.id} />
-              <MemberLike member={member} />
-              <MemberChat member={member} />
-              <MemberConnect member={member} />
-              <MemberShare member={member} />
-            </Flex>
+            {member?.rating > 0 && (
+              <Rating
+                value={member.rating || 0}
+                mt={2}
+                aria-label="User Rating"
+                size="xs"
+                simple
+              />
+            )}
           </MemberHeader>
           {full && <Text>{member?.biography}</Text>}
           {full && (
@@ -161,15 +158,18 @@ export const MemberSpotlight = chakra(
                 {new Date(member.date_created).toLocaleDateString()}
               </Text>
 
-              {member?.rating > 0 && (
-                <Rating
-                  value={member.rating || 0}
-                  mt={2}
-                  aria-label="User Rating"
-                  size="xs"
-                  simple
-                />
-              )}
+              <Flex
+                gap={1}
+                direction={'row'}
+                align="center"
+                justify="space-between"
+              >
+                <MemberVouch memberId={member?.id} />
+                <MemberLike member={member} />
+                <MemberChat member={member} />
+                <MemberConnect member={member} />
+                <MemberShare member={member} />
+              </Flex>
             </Flex>
           )}
         </Box>
