@@ -1,4 +1,9 @@
 import {
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
   Box,
   Tabs,
   TabList,
@@ -18,7 +23,7 @@ import {
   useColorModeValue,
   AvatarProps,
 } from '@chakra-ui/react'
-import { MemberConnect, MemberChat, MemberVouch, MemberShare, MemberHeader, MemberPropertyGroup } from '.'
+import { MemberConnect, MemberChat, MemberVouch, MemberShare, MemberLike, MemberHeader, MemberPropertyGroup } from '.'
 import { useMember, useMeta, useUser } from 'hooks'
 import { formatDistanceToNowStrict } from 'date-fns'
 import {
@@ -86,8 +91,8 @@ export const MemberSpotlight = chakra(
       member?.events?.filter((e: EventUser) => e.rsvp == 'cancelled')?.length || 0
     const eventsDeclined =
       member?.events?.filter((e: EventUser) => e.rsvp == 'declined')?.length || 0
+
     
-    const sharedWithMe = member?.photo_shares.some(s => s.viewer_id == me?.id)
     return (
       <Flex direction="column" justify="space-between" {...props}>
         <Box
@@ -99,6 +104,7 @@ export const MemberSpotlight = chakra(
           borderTopLeftRadius="lg"
         >
           <MemberHeader
+            viewer={me}
             member={member}
             zoom={true}
             color={color}
@@ -108,10 +114,11 @@ export const MemberSpotlight = chakra(
             {children}
             <Spacer />
             <Flex gap={1} direction={'row'} align="center" justify="space-between">
-              <MemberVouch memberId={member?.id} reload={reload} />
+              <MemberVouch memberId={member?.id}  />
+              <MemberLike member={member}  />
               <MemberChat member={member} />
-              <MemberConnect memberId={member?.id} />
-              <MemberShare memberId={member?.id} reload={reload} />
+              <MemberConnect member={member} />
+              <MemberShare member={member}  />
             </Flex>
           </MemberHeader>
           {full && <Text>{member?.biography}</Text>}
@@ -126,9 +133,7 @@ export const MemberSpotlight = chakra(
                 )}
                 Member Since: {new Date(member.date_created).toLocaleDateString()}
               </Text>
-              {sharedWithMe && <Text fontSize="xs">
-                Shared Private Photos
-              </Text>}
+              
               {member?.rating > 0 && (
                 <Rating
                   value={member.rating || 0}
@@ -141,245 +146,282 @@ export const MemberSpotlight = chakra(
             </Flex>
           )}
         </Box>
-        {full && member.show_photos && (
-          <Box p={2} flex="grow">
-            {photos.length > 0 && (
-              <ImageGallery
-                images={photos.map((p: UserPhoto) => {
-                  return {
-                    src: `/api/asset/${p.directus_files_id}`,
-                    private: p.is_public == false,
-                  }
-                })}
-              />
-            )}
-          </Box>
-        )}
+        <Accordion defaultIndex={0}>
+          {full && member.show_photos && member.my_photos?.length > 0 && (
+            <AccordionItem>
+              <AccordionButton>
+                <Box as="span" flex='1' textAlign='left'>
+                  Photos
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+              <AccordionPanel pb={4}>
+                <Box p={2} flex="grow">
+                  {photos.length > 0 && (
+                    <ImageGallery
+                      images={photos.map((p: UserPhoto) => {
+                        return {
+                          src: `/api/asset/${p.directus_files_id}`,
+                          private: p.is_public == false,
+                        }
+                      })}
+                    />
+                  )}
+                </Box>
+              </AccordionPanel>
+            </AccordionItem>)}
 
-        {full && fields && (
-          <Tabs
-            isFitted
-            variant="enclosed"
-            colorScheme="primary"
-            fontSize={['xs', 'sm', 'md', 'lg']}
-            w="full"
-            p={0}
-            flex="grow"
-            size={['sm', 'md', 'lg']}
-            mt={4}
-          >
-            <TabList px={1}>
-              <Tab p={1} fontWeight="bold">
-                General
-              </Tab>
-              <Tab p={1} fontWeight="bold">
-                Sexual
-              </Tab>
-              <Tab p={1} fontWeight="bold">
-                Interests
-              </Tab>
-              <Tab p={1} fontWeight="bold">
-                Health
-              </Tab>
-            </TabList>
-            <TabPanels maxH="100%" overflowY="auto" my={2} mx={0}>
-              <TabPanel>
-                <Heading
-                  as="h3"
-                  mt={0}
-                  size="sm"
-                  mb={2}
-                  borderBottom="1px solid"
-                  borderColor={headingColor}
-                  color={headingColor}
-                  textTransform="uppercase"
-                >
-                  Features
-                </Heading>
-                <MemberPropertyGroup
-                  k="profile"
-                  member={member}
-                  fieldList={memberProfileFields}
-                  show={member?.show_profile}
-                  fields={fields}
-                />
-              </TabPanel>
-              <TabPanel>
-                <Heading
-                  as="h3"
-                  mt={0}
-                  size="sm"
-                  mb={2}
-                  borderBottom="1px solid"
-                  borderColor={headingColor}
-                  color={headingColor}
-                  textTransform="uppercase"
-                >
-                  Features
-                </Heading>
-                <MemberPropertyGroup
-                  k="explicit"
-                  member={member}
-                  fieldList={memberProfileExplicitFields}
-                  show={member?.show_explicit}
-                  fields={fields}
-                  maxCols={2}
-                />
-                <Heading
-                  as="h3"
-                  mt={2}
-                  size="sm"
-                  mb={0}
-                  borderBottom="1px solid"
-                  borderColor={headingColor}
-                  color={headingColor}
-                  textTransform="uppercase"
-                >
-                  Roles
-                </Heading>
-                <MemberPropertyGroup
-                  k="explicit_roles"
-                  member={member}
-                  fieldList={memberProfileExplicitRolesFields}
-                  show={member?.show_explicit_roles}
-                  fields={fields}
-                  maxCols={2}
-                />
-              </TabPanel>
-              <TabPanel>
-                <Heading
-                  as="h3"
-                  mt={0}
-                  size="sm"
-                  mb={2}
-                  borderBottom="1px solid"
-                  borderColor={headingColor}
-                  color={headingColor}
-                  textTransform="uppercase"
-                >
+          {full && fields && (<AccordionItem>
+            <AccordionButton>
+              <Box as="span" flex='1' textAlign='left'>
+                Stats
+              </Box>
+              <AccordionIcon />
+            </AccordionButton>
+            <AccordionPanel p={0}>
+              <Tabs
+                isFitted
+                variant="enclosed"
+                colorScheme="primary"
+                fontSize={['xs', 'sm', 'md', 'lg']}
+                w="full"
+                p={0}
+                flex="grow"
+                size={['sm', 'md', 'lg']}
+                mt={4}
+              >
+                <TabList px={1}>
+                  <Tab p={1} fontWeight="bold">
+                    General
+                  </Tab>
+                  <Tab p={1} fontWeight="bold">
+                    Sexual
+                  </Tab>
+                  <Tab p={1} fontWeight="bold">
+                    Interests
+                  </Tab>
+                  <Tab p={1} fontWeight="bold">
+                    Health
+                  </Tab>
+                </TabList>
+                <TabPanels maxH="100%" overflowY="auto" my={2} mx={0}>
+                  <TabPanel>
+                    <Heading
+                      as="h3"
+                      mt={0}
+                      size="sm"
+                      mb={2}
+                      borderBottom="1px solid"
+                      borderColor={headingColor}
+                      color={headingColor}
+                      textTransform="uppercase"
+                    >
+                      Features
+                    </Heading>
+                    <MemberPropertyGroup
+                      k="profile"
+                      member={member}
+                      fieldList={memberProfileFields}
+                      show={member?.show_profile}
+                      fields={fields}
+                    />
+                  </TabPanel>
+                  <TabPanel>
+                    <Heading
+                      as="h3"
+                      mt={0}
+                      size="sm"
+                      mb={2}
+                      borderBottom="1px solid"
+                      borderColor={headingColor}
+                      color={headingColor}
+                      textTransform="uppercase"
+                    >
+                      Features
+                    </Heading>
+                    <MemberPropertyGroup
+                      k="explicit"
+                      member={member}
+                      fieldList={memberProfileExplicitFields}
+                      show={member?.show_explicit}
+                      fields={fields}
+                      maxCols={2}
+                    />
+                    <Heading
+                      as="h3"
+                      mt={2}
+                      size="sm"
+                      mb={0}
+                      borderBottom="1px solid"
+                      borderColor={headingColor}
+                      color={headingColor}
+                      textTransform="uppercase"
+                    >
+                      Roles
+                    </Heading>
+                    <MemberPropertyGroup
+                      k="explicit_roles"
+                      member={member}
+                      fieldList={memberProfileExplicitRolesFields}
+                      show={member?.show_explicit_roles}
+                      fields={fields}
+                      maxCols={2}
+                    />
+                  </TabPanel>
+                  <TabPanel>
+                    <Heading
+                      as="h3"
+                      mt={0}
+                      size="sm"
+                      mb={2}
+                      borderBottom="1px solid"
+                      borderColor={headingColor}
+                      color={headingColor}
+                      textTransform="uppercase"
+                    >
+                      Events
+                    </Heading>
+                    <MemberPropertyGroup
+                      k="events"
+                      member={member}
+                      fieldList={memberEventFields}
+                      show={member?.show_events}
+                      fields={fields}
+                    />
+                    <Heading
+                      as="h3"
+                      mt={2}
+                      size="sm"
+                      mb={0}
+                      borderBottom="1px solid"
+                      borderColor={headingColor}
+                      color={headingColor}
+                      textTransform="uppercase"
+                    >
+                      Sexual
+                    </Heading>
+                    <MemberPropertyGroup
+                      k="interests"
+                      member={member}
+                      fieldList={memberInterestsFields}
+                      show={member?.show_interests}
+                      fields={fields}
+                    />
+                  </TabPanel>
+                  <TabPanel>
+                    <Heading
+                      as="h3"
+                      mt={0}
+                      size="sm"
+                      mb={2}
+                      borderBottom="1px solid"
+                      borderColor={headingColor}
+                      color={headingColor}
+                      textTransform="uppercase"
+                    >
+                      Sexual Health
+                    </Heading>
+                    <MemberPropertyGroup
+                      k="health"
+                      member={member}
+                      fieldList={memberProfileHealthFields}
+                      show={member?.show_health}
+                      fields={fields}
+                      maxCols={2}
+                    />
+                  </TabPanel>
+                  <TabPanel>
+                    <MemberPropertyGroup
+                      k="contact"
+                      member={member}
+                      fieldList={memberProfileContactFields}
+                      show={member?.show_contact}
+                      fields={fields}
+                    />
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
+            </AccordionPanel>
+          </AccordionItem>)}
+          {full && member.show_events && (
+            <AccordionItem>
+              <AccordionButton>
+                <Box as="span" flex='1' textAlign='left'>
                   Events
-                </Heading>
-                <MemberPropertyGroup
-                  k="events"
-                  member={member}
-                  fieldList={memberEventFields}
-                  show={member?.show_events}
-                  fields={fields}
-                />
-                <Heading
-                  as="h3"
-                  mt={2}
-                  size="sm"
-                  mb={0}
-                  borderBottom="1px solid"
-                  borderColor={headingColor}
-                  color={headingColor}
-                  textTransform="uppercase"
-                >
-                  Sexual
-                </Heading>
-                <MemberPropertyGroup
-                  k="interests"
-                  member={member}
-                  fieldList={memberInterestsFields}
-                  show={member?.show_interests}
-                  fields={fields}
-                />
-              </TabPanel>
-              <TabPanel>
-                <Heading
-                  as="h3"
-                  mt={0}
-                  size="sm"
-                  mb={2}
-                  borderBottom="1px solid"
-                  borderColor={headingColor}
-                  color={headingColor}
-                  textTransform="uppercase"
-                >
-                  Sexual Health
-                </Heading>
-                <MemberPropertyGroup
-                  k="health"
-                  member={member}
-                  fieldList={memberProfileHealthFields}
-                  show={member?.show_health}
-                  fields={fields}
-                  maxCols={2}
-                />
-              </TabPanel>
-              <TabPanel>
-                <MemberPropertyGroup
-                  k="contact"
-                  member={member}
-                  fieldList={memberProfileContactFields}
-                  show={member?.show_contact}
-                  fields={fields}
-                />
-              </TabPanel>
-            </TabPanels>
-          </Tabs>
-        )}
-        <Flex as={StatGroup} justify="space-between" gap={4} p={4} align="flex-end">
-          {eventsDeclined > 0 && (
-            <Stat>
-              <StatLabel>
-                Events
-                <br />
-                Declined
-              </StatLabel>
-              <StatNumber>{eventsDeclined}</StatNumber>
-            </Stat>
-          )}
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+              <AccordionPanel pb={4}>
+                <Flex as={StatGroup} justify="space-between" gap={4} p={4} align="flex-end">
+                  {eventsDeclined > 0 && (
+                    <Stat>
+                      <StatLabel>
+                        Events
+                        <br />
+                        Declined
+                      </StatLabel>
+                      <StatNumber>{eventsDeclined}</StatNumber>
+                    </Stat>
+                  )}
 
-          <Stat>
-            <StatLabel>
-              Events
-              <br />
-              Confirmed
-            </StatLabel>
-            <StatNumber>{eventsConfirmed}</StatNumber>
-          </Stat>
-          {eventsMaybe > 0 && (
-            <Stat>
-              <StatLabel>
-                Events
-                <br />
-                Maybe
-              </StatLabel>
-              <StatNumber>{eventsMaybe}</StatNumber>
-            </Stat>
-          )}
-          {eventsCancelled > 0 && (
-            <Stat>
-              <StatLabel>
-                Events
-                <br />
-                Cancelled
-              </StatLabel>
-              <StatNumber>{eventsCancelled}</StatNumber>
-            </Stat>
-          )}
+                  <Stat>
+                    <StatLabel>
+                      Events
+                      <br />
+                      Confirmed
+                    </StatLabel>
+                    <StatNumber>{eventsConfirmed}</StatNumber>
+                  </Stat>
+                  {eventsMaybe > 0 && (
+                    <Stat>
+                      <StatLabel>
+                        Events
+                        <br />
+                        Maybe
+                      </StatLabel>
+                      <StatNumber>{eventsMaybe}</StatNumber>
+                    </Stat>
+                  )}
+                  {eventsCancelled > 0 && (
+                    <Stat>
+                      <StatLabel>
+                        Events
+                        <br />
+                        Cancelled
+                      </StatLabel>
+                      <StatNumber>{eventsCancelled}</StatNumber>
+                    </Stat>
+                  )}
 
-          <Stat>
-            <StatLabel>
-              Events
-              <br />
-              Attended
-            </StatLabel>
-            <StatNumber>{eventsAttended}</StatNumber>
-          </Stat>
-          {eventsFlaked > 0 && (
-            <Stat color="accent.500">
-              <StatLabel fontWeight="bold" whiteSpace="nowrap">
-                Event
-                <br />
-                No-Shows
-              </StatLabel>
-              <StatNumber>{eventsFlaked}</StatNumber>
-            </Stat>
-          )}
-        </Flex>
+                  <Stat>
+                    <StatLabel>
+                      Events
+                      <br />
+                      Attended
+                    </StatLabel>
+                    <StatNumber>{eventsAttended}</StatNumber>
+                  </Stat>
+                  {eventsFlaked > 0 && (
+                    <Stat color="accent.500">
+                      <StatLabel fontWeight="bold" whiteSpace="nowrap">
+                        Event
+                        <br />
+                        No-Shows
+                      </StatLabel>
+                      <StatNumber>{eventsFlaked}</StatNumber>
+                    </Stat>
+                  )}
+                </Flex>
+              </AccordionPanel>
+            </AccordionItem>)}
+        </Accordion>
+
+
+
+
+
+
+
       </Flex>
     )
   }

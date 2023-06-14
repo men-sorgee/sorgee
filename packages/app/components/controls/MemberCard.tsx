@@ -13,14 +13,16 @@ import {
   CardProps,
   Heading,
 } from '@chakra-ui/react'
-import { SearchableMember, MemberLevelColorMap, MemberLevel } from 'lib/models'
-import { MemberHeader, MemberChat, MemberConnect } from '.'
+import { SearchableMember, MemberLevelColorMap, MemberLevel, Member } from 'lib/models'
+import { MemberHeader, MemberChat, MemberConnect, MemberLike } from '.'
 import NextLink from 'next/link'
 import { formatDistanceToNowStrict } from 'date-fns'
 import { LockIcon } from '@chakra-ui/icons'
+import { useUser } from '../../hooks'
 
 type Props = CardProps & {
-  member: Partial<SearchableMember>
+  viewer: Member
+  member: SearchableMember|Member
   full?: boolean
   onClick?: () => void
 }
@@ -29,6 +31,7 @@ export const MemberCard = chakra(
   ({ member, onClick, full = false, size = 'lg', ...props }: Props) => {
     const levelValue = MemberLevel[member?.user_type]
     const levelColor = MemberLevelColorMap[levelValue]
+    const { member: viewer, reload, loading } = useUser()
     return (
       <>
         <LinkBox key={member.id}>
@@ -54,7 +57,7 @@ export const MemberCard = chakra(
                   if (member.show_profile) onClick()
                 }}
               >
-                <MemberHeader member={member} zoom={false} size={size}>
+                <MemberHeader member={member} zoom={false} size={size} viewer={viewer}>
                   {!member.show_profile && (
                     <>
                       <Flex
@@ -97,8 +100,9 @@ export const MemberCard = chakra(
               </Text>
 
               <ButtonGroup>
+                <MemberLike member={member as Member}  />
                 <MemberChat member={member} />
-                <MemberConnect memberId={member.id} />
+                <MemberConnect member={member as Member} />
               </ButtonGroup>
             </CardFooter>
           </Card>

@@ -51,11 +51,17 @@ export type UserBuddy = {
   sort: number
 }
 
+export type UserLike = {
+  id: string
+  user_id: string | User
+  like_id: string | User
+  sort: number
+}
+
 export type UserShare = {
-  id: string;
-  date_created?: string;
-  user_id: string | User;
-  viewer_id: string | User;
+  id: string
+  user_id: string | User
+  viewer_id: string | User
 }
 
 export type UserContactAttempt = {
@@ -68,17 +74,7 @@ export type UserContactAttempt = {
   user?: string | User
 }
 
-export type UserBillingEvent = {
-  id: string;
-  created: string;
-  type?: string;
-  data?: string;
-  livemode: boolean;
-  pending_webhooks?: number;
-  object?: string;
-  account?: string;
-  api_version?: string;
-};
+
 
 export type User = {
   id: string
@@ -179,6 +175,8 @@ export type User = {
   buddies: string[] | UserBuddy[]
   photo_shares: string[] | UserShare[]
   buddy_of: string[] | UserBuddy[]
+  likes: string[] | UserLike[]
+  liked_by: string[] | UserLike[]
   private_folder?: string
   public_folder?: string
 }
@@ -316,6 +314,8 @@ export type UserPhotoFieldType = 'photo' | 'picture' | 'public' | 'private'
 
 export type UserFields = (string | keyof User)[] | '*' | '*.*' | any
 
+
+
 export type Profile = {
   id: string
   picture?: DirectusFile | string
@@ -411,6 +411,8 @@ export const applicantFields: Array<keyof Applicant> = [
   'session_expire',
 ]
 
+export type MemberFeature = "view_directory" | "chat" | "share_photos" | "buddy_list" | "flirt" | "view_attendees"
+
 export type Member = Applicant & {
 
   signed_waiver: boolean
@@ -482,6 +484,8 @@ export type Member = Applicant & {
   buddies: string[] | UserBuddy[]
   buddy_of: string[] | UserBuddy[]
   photo_shares: string[] | UserShare[]
+  likes: UserLike[]
+  liked_by: UserLike[]
 
   rating: number
   private_folder?: string
@@ -491,6 +495,7 @@ export type Member = Applicant & {
   customer_id?: string;
   membership_start?: string;
   renewal_type?: string;
+  has_features: Array<MemberFeature>
 }
 
 export enum MembershipType {
@@ -539,7 +544,7 @@ export const userPrivateFields: Array<keyof User> = [
   'tags',
   'flags',
   'reviewed_by',
-  'photo_denial_reason',
+  'photo_denial_reason'
 ]
 
 export const memberProfilePrivateFields: Array<keyof Member> = [
@@ -560,6 +565,7 @@ export const memberProfilePrivateFields: Array<keyof Member> = [
   'approved_date',
   'ratings',
   'buddy_of',
+  'liked_by',
 ]
 
 export const memberProfileContactFields: Array<keyof Member> = [
@@ -647,6 +653,8 @@ export const searchableMemberFields: Array<keyof Member> = [
   'date_created',
   'buddies.*' as any,
   'buddy_of.*' as any,
+  'likes.*' as any,
+  'liked_by.*' as any,
 ]
 
 export const memberSubscriptionFields: Array<keyof Member> = [
@@ -678,7 +686,8 @@ export const memberFields: Array<keyof Member> = [
   ...memberProfileLocationFields,
   'show_photos',
   ...memberProfilePhotoFields,
-  ...memberSubscriptionFields
+  ...memberSubscriptionFields,
+  'has_features',
 ]
 
 export const getAllowedUsers = (level: MemberLevel) => {
