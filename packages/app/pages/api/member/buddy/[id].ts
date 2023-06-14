@@ -1,8 +1,22 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { withMethods, withMember } from 'lib/utils/server'
-import { ApiResponse, UserBuddy } from 'lib/models'
-import { getUser, getBuddy, addBuddy, removeBuddy } from 'lib/services/directus/server/users'
+import {
+  ApiResponse,
+  UserBuddy,
+} from 'lib/models'
 import { addUserNotification } from 'lib/services/directus/server'
+import {
+  addBuddy,
+  getBuddy,
+  getUser,
+  removeBuddy,
+} from 'lib/services/directus/server/users'
+import {
+  withMember,
+  withMethods,
+} from 'lib/utils/server'
+import {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next'
 
 export default async function MemberBuddy(
   req: NextApiRequest,

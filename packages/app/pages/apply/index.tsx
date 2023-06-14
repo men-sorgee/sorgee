@@ -1,14 +1,16 @@
-import { useSession, signIn } from 'next-auth/react'
-import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import Page from 'components/Page'
+
 import { Loading } from 'components/controls'
+import Page from 'components/Page'
+import { signIn, useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
+
 export default function Index({}) {
   const { data: session, status } = useSession({
     required: true,
     onUnauthenticated: () => {
       signIn()
-    },
+    }
   })
   const { user } = session || {}
   const router = useRouter()

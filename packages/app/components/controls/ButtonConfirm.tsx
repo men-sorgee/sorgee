@@ -1,17 +1,18 @@
+import { ReactNode, RefObject, useCallback, useRef } from 'react'
+
 import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  Button,
   ButtonProps,
   chakra,
-  useToast,
   useDisclosure,
-  Button,
-  AlertDialog,
-  AlertDialogOverlay,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogBody,
-  AlertDialogFooter,
+  useToast
 } from '@chakra-ui/react'
-import { useRef, useCallback, ReactNode, RefObject } from 'react'
 
 export type ConfirmButtonProps = ButtonProps & {
   promise: () => Promise<any>
@@ -21,7 +22,9 @@ export type ConfirmButtonProps = ButtonProps & {
   confirmColorScheme?: string
   successMessage: string
   failureMessage: string
-  focusRef?: RefObject<HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement>
+  focusRef?: RefObject<
+    HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement
+  >
   children: ReactNode | ReactNode[]
 }
 
@@ -50,7 +53,7 @@ export const ButtonConfirm = chakra(
             title,
             description: successMessage,
             status: 'success',
-            duration: 3000,
+            duration: 3000
           })
         })
         .catch((err) => {
@@ -59,7 +62,7 @@ export const ButtonConfirm = chakra(
             title,
             description: failureMessage + ' ' + err?.message || err,
             status: 'error',
-            duration: 5000,
+            duration: 5000
           })
         })
     }, [complete, failureMessage, promise, successMessage, title, toast])

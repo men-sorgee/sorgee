@@ -1,10 +1,12 @@
-import { ElementRef, RefObject, useState } from 'react'
-import { MemberSpotlight } from './MemberSpotlight'
-import { ModalPopup } from './Modal'
+import { RefObject } from 'react'
+
 import { brand } from 'lib/config/brand'
 import { FieldMap } from 'lib/models'
 import swr from 'swr'
+
 import { JsonFetcher } from '../../lib/utils'
+import { MemberSpotlight } from './MemberSpotlight'
+import { ModalPopup } from './Modal'
 
 export type MemberModalProps = {
   memberId?: string
@@ -21,9 +23,12 @@ export function MemberModal({
   onClose,
   ref,
   full = true,
-  updateMeta = false,
+  updateMeta = false
 }: MemberModalProps) {
-  const { data: fields, isLoading } = swr<FieldMap>(`/api/site/fields/users`, JsonFetcher)
+  const { data: fields, isLoading } = swr<FieldMap>(
+    `/api/site/fields/users`,
+    JsonFetcher
+  )
   if (isLoading) return null
   return (
     <>
@@ -35,7 +40,12 @@ export function MemberModal({
         finalFocusRef={ref}
       >
         {memberId && fields && (
-          <MemberSpotlight id={memberId} fields={fields} full={full} updateMeta={updateMeta} />
+          <MemberSpotlight
+            id={memberId}
+            fields={fields}
+            full={full}
+            updateMeta={updateMeta}
+          />
         )}
       </ModalPopup>
     </>

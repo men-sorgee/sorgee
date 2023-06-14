@@ -1,7 +1,7 @@
 'use client'
-import useSWR from 'swr'
-import { EventInvite, EventUser, GroupEvent } from 'lib/models'
+import { EventInvite } from 'lib/models'
 import { JsonFetcher } from 'lib/utils'
+import useSWR from 'swr'
 
 type InvitesResults = {
   invitations: EventInvite[]
@@ -18,14 +18,14 @@ export const useUserEvents = (): InvitesResults => {
     data: invites = [],
     mutate,
     error,
-    isLoading,
+    isLoading
   } = useSWR<EventInvite[], Error>(`/api/member/invites`, JsonFetcher, {
     refreshWhenHidden: true,
     refreshWhenOffline: true,
     revalidateOnFocus: true,
     revalidateOnReconnect: true,
     refreshInterval: 1000 * 60 * 10,
-    fallbackData: [],
+    fallbackData: []
   })
 
   if (invites == null || invites == undefined)
@@ -35,7 +35,7 @@ export const useUserEvents = (): InvitesResults => {
       upcoming: [],
       past: [],
       loading: true,
-      reload: () => {},
+      reload: () => {}
     }
 
   const upComing = ['scheduled', 'planned']
@@ -48,7 +48,9 @@ export const useUserEvents = (): InvitesResults => {
     (i) => attending.includes(i.rsvp) && upComing.includes(i.event.status)
   )
   const past = invites?.filter((i) => i.event.status == 'occurred')
-  const newInvitationCount = invitations?.filter((i) => i.rsvp == 'invited').length
+  const newInvitationCount = invitations?.filter(
+    (i) => i.rsvp == 'invited'
+  ).length
 
   return {
     invitations,
@@ -59,6 +61,6 @@ export const useUserEvents = (): InvitesResults => {
     loading: isLoading,
     reload: () => {
       mutate()
-    },
+    }
   }
 }

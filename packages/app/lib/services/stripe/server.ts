@@ -1,6 +1,7 @@
-import StripeClient from 'stripe';
-import { Subscription } from 'lib/models/billing';
-import { MembershipType } from '../../models';
+import { Subscription } from 'lib/models/billing'
+import StripeClient from 'stripe'
+
+import { MembershipType } from '../../models'
 
 const stripe = new StripeClient(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2022-11-15',
@@ -71,7 +72,4 @@ export function getSubscription(id: string) {
   return subscriptions.find(sub => sub.id === id)
 }
 
-
-export {
-  webhookSecret
-}
+export { webhookSecret }

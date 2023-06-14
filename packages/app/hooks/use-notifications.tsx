@@ -1,8 +1,15 @@
 'use client'
-import useSWR from 'swr'
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState
+} from 'react'
+
 import { AppNotification, NotificationStatusType } from 'lib/models'
-import { putJSON, JsonFetcher } from 'lib/utils'
-import { useState, useEffect, createContext, ReactNode, useContext } from 'react'
+import { JsonFetcher, putJSON } from 'lib/utils'
+import useSWR from 'swr'
 
 export type NotificationsContextData = {
   notifications: AppNotification[]
@@ -28,7 +35,7 @@ export const NotificationsContext = createContext<NotificationsContextData>({
   markAsRead: async (_) => {},
   delete: async () => {},
   loading: true,
-  reload: () => {},
+  reload: () => {}
 })
 
 export function NotificationsProvider({ children }: { children: ReactNode }) {
@@ -37,16 +44,17 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
     data: notifications = [],
     mutate,
     error,
-    isLoading,
+    isLoading
   } = useSWR<AppNotification[], Error>(key, JsonFetcher, {
     refreshInterval: 1000 * 60 * 3, // 3 minutes
     refreshWhenHidden: true,
     revalidateOnFocus: true,
     revalidateOnReconnect: true,
-    fallbackData: [],
+    fallbackData: []
   })
   const [hasNewNotifications, setHasNewNotifications] = useState(false)
-  const newNotifications = notifications?.filter((n) => n.status === 'new') || []
+  const newNotifications =
+    notifications?.filter((n) => n.status === 'new') || []
   useEffect(() => {
     if (!isLoading && notifications) {
       setHasNewNotifications(newNotifications?.length > 0)
@@ -61,7 +69,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
   const mark = async (id: number, state: NotificationStatusType) => {
     const { success, data } = await putJSON(key, {
       id,
-      state,
+      state
     })
     if (success) {
       await mutate(
@@ -72,7 +80,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
           return n
         }),
         {
-          revalidate: true,
+          revalidate: true
         }
       )
       setHasNewNotifications(newNotifications?.length > 0)
@@ -92,9 +100,13 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
     loading: isLoading,
     reload: () => {
       mutate()
-    },
+    }
   }
-  return <NotificationsContext.Provider value={context}>{children}</NotificationsContext.Provider>
+  return (
+    <NotificationsContext.Provider value={context}>
+      {children}
+    </NotificationsContext.Provider>
+  )
 }
 
 export const useNotifications = () => useContext(NotificationsContext)

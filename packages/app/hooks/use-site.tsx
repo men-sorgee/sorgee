@@ -1,7 +1,7 @@
 'use client'
-import useSWR, { KeyedMutator } from 'swr'
 import { Site } from 'lib/models'
 import { JsonFetcher } from 'lib/utils'
+import useSWR, { KeyedMutator } from 'swr'
 
 type SiteResults = {
   site: Site | null
@@ -16,7 +16,7 @@ export const useSite = (): SiteResults => {
     data: site,
     mutate,
     error,
-    isLoading,
+    isLoading
   } = useSWR<Site, Error>(`/api/site`, JsonFetcher, {
     refreshWhenHidden: false,
     refreshWhenOffline: false,
@@ -26,8 +26,8 @@ export const useSite = (): SiteResults => {
       site_title: 'GuysNHeat',
       description:
         'A fraternity of bisexual men that provides safe environments for discrete encounters for men to explore and express in a safe manor. We host curated sex parties with vetted men in the Denver area.',
-      invite_only: true,
-    },
+      invite_only: true
+    }
   })
 
   return {
@@ -37,6 +37,6 @@ export const useSite = (): SiteResults => {
     loading: isLoading,
     reload: () => {
       mutate()
-    },
+    }
   }
 }

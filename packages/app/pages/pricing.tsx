@@ -1,41 +1,51 @@
-import { css } from '@emotion/react'
-import {
-  Box,
-  useColorModeValue,
-  Show,
-  Heading,
-  Text,
-  Icon,
-  VStack,
-  Hide,
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-} from '@chakra-ui/react'
-import { CheckCircleIcon } from '@heroicons/react/24/solid'
 import Page from 'components/Page'
-import { useSite } from '../hooks/use-site'
+
+import {
+  Heading,
+  Hide,
+  Icon,
+  Show,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Text,
+  Tfoot,
+  Th,
+  Thead,
+  Tr,
+  useColorModeValue
+} from '@chakra-ui/react'
+import { css } from '@emotion/react'
+import { CheckCircleIcon } from '@heroicons/react/24/solid'
+
 import { ButtonLink } from '../components/controls'
+import { useSite } from '../hooks/use-site'
 
 const Check = ({ available = false }) => {
   const style = useColorModeValue('gray.500', 'gray.300')
-  return <Icon as={CheckCircleIcon} boxSize={6} color={available ? 'green.500' : style} />
+  return (
+    <Icon
+      as={CheckCircleIcon}
+      boxSize={6}
+      color={available ? 'green.500' : style}
+    />
+  )
 }
 
 export default function ThreeTierPricing() {
   const { site } = useSite()
   return (
-    <Page title="Pricing" description="Membership due pricing for varying levels.">
+    <Page
+      title="Pricing"
+      description="Membership due pricing for varying levels."
+    >
       <Heading as="h2" size={['lg', 'xl']}>
         Membership dues that fit your hunger
       </Heading>
       <Text fontSize="lg">
-        Billing begins immeditatly. You can choose to be billed monthly or annually. Cancel at anytime.
+        Billing begins immeditatly. You can choose to be billed monthly or
+        annually. Cancel at anytime.
       </Text>
 
       <TableContainer>
@@ -78,7 +88,9 @@ export default function ThreeTierPricing() {
             <Tr>
               <Td>
                 <Hide above="md">
-                  <em color={useColorModeValue('gray.300', 'white')}>Per month:</em>
+                  <em color={useColorModeValue('gray.300', 'white')}>
+                    Per month:
+                  </em>
                 </Hide>
               </Td>
               <Th>
@@ -125,7 +137,10 @@ export default function ThreeTierPricing() {
           <Tbody>
             <Tr>
               <Th>
-                <Text as="strong" color={useColorModeValue('gray.500', 'white')}>
+                <Text
+                  as="strong"
+                  color={useColorModeValue('gray.500', 'white')}
+                >
                   Event Invites
                 </Text>
               </Th>
@@ -142,7 +157,10 @@ export default function ThreeTierPricing() {
 
             <Tr>
               <Th>
-                <Text as="strong" color={useColorModeValue('gray.500', 'white')}>
+                <Text
+                  as="strong"
+                  color={useColorModeValue('gray.500', 'white')}
+                >
                   <em>Member Cruising</em>
                 </Text>
               </Th>
@@ -158,13 +176,14 @@ export default function ThreeTierPricing() {
             </Tr>
             <Tr>
               <Th>
-                <Text as="strong" color={useColorModeValue('gray.500', 'white')}>
+                <Text
+                  as="strong"
+                  color={useColorModeValue('gray.500', 'white')}
+                >
                   <em>Messaging</em>
                 </Text>
               </Th>
-              <Td>
-
-              </Td>
+              <Td></Td>
               <Td>
                 <Check available />
               </Td>
@@ -175,7 +194,10 @@ export default function ThreeTierPricing() {
 
             <Tr>
               <Th>
-                <Text as="strong" color={useColorModeValue('gray.500', 'white')}>
+                <Text
+                  as="strong"
+                  color={useColorModeValue('gray.500', 'white')}
+                >
                   <em>Buddy List (w/Online Status)</em>
                 </Text>
               </Th>
@@ -189,7 +211,10 @@ export default function ThreeTierPricing() {
             </Tr>
             <Tr>
               <Th>
-                <Text as="strong" color={useColorModeValue('gray.500', 'white')}>
+                <Text
+                  as="strong"
+                  color={useColorModeValue('gray.500', 'white')}
+                >
                   <em>Cruise by Location *</em>
                 </Text>
               </Th>
@@ -203,7 +228,10 @@ export default function ThreeTierPricing() {
             </Tr>
             <Tr>
               <Th>
-                <Text as="strong" color={useColorModeValue('gray.500', 'white')}>
+                <Text
+                  as="strong"
+                  color={useColorModeValue('gray.500', 'white')}
+                >
                   <em>Host Private Events *</em>
                 </Text>
               </Th>
@@ -233,10 +261,10 @@ export default function ThreeTierPricing() {
           Get Started
         </ButtonLink>
       )) || (
-          <ButtonLink my={8} colorScheme="accent" size="lg" href="/limited">
-            Get Started
-          </ButtonLink>
-        )}
+        <ButtonLink my={8} colorScheme="accent" size="lg" href="/limited">
+          Get Started
+        </ButtonLink>
+      )}
     </Page>
   )
 }

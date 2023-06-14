@@ -1,9 +1,10 @@
 import * as typeorm from 'typeorm'
-import { SurveyAnswers } from './SurveyAnswers'
+
+import { DirectusUsers } from './DirectusUsers'
 import { Events } from './Events'
 import { Location } from './Location'
 import { Notifications } from './Notifications'
-import { DirectusUsers } from './DirectusUsers'
+import { SurveyAnswers } from './SurveyAnswers'
 import { SurveysSurveyQuestions } from './SurveysSurveyQuestions'
 
 @typeorm.Index('surveys_pkey', ['id'], { unique: true })

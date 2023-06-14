@@ -32,14 +32,14 @@ const {
   notifications
 } = config
 export {
-  title,
-  description,
-  baseUrl,
-  adminUrl,
   adminBaseUrl,
+  adminUrl,
+  baseUrl,
+  description,
   memberCookie,
+  notifications,
   pages,
   pledgeSurvey,
+  title,
   userImageId,
-  notifications
 }

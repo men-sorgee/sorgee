@@ -1,31 +1,24 @@
 'use client'
-import {
-  Box,
-  Heading,
-  Link,
-  Image,
-  Text,
-  Divider,
-  HStack,
-  Tag,
-  Wrap,
-  WrapItem,
-  SpaceProps,
-  useColorModeValue,
-  Container,
-  VStack,
-  Flex,
-  SimpleGrid,
-  LinkBox,
-  LinkOverlay,
-} from '@chakra-ui/react'
-import { format } from 'date-fns'
-import { getAssetUrl } from 'lib/utils'
-import { Page as PageModel } from 'lib/models'
 import Page from 'components/Page'
-import { Markdown } from '../../components/controls'
+import { format } from 'date-fns'
+import { Page as PageModel } from 'lib/models'
+import { getAssetUrl } from 'lib/utils'
 import NextLink from 'next/link'
 import { NextRouter, useRouter } from 'next/router'
+
+import {
+  Box,
+  Divider,
+  Heading,
+  Image,
+  LinkBox,
+  LinkOverlay,
+  SimpleGrid,
+  Text,
+  useColorModeValue
+} from '@chakra-ui/react'
+
+import { Markdown } from '../../components/controls'
 
 export async function getServerSideProps(_context) {
   const { getPageBySlug } = await import('lib/services/directus/static')
@@ -33,13 +26,13 @@ export async function getServerSideProps(_context) {
 
   if (!page) {
     return {
-      notFound: true,
+      notFound: true
     }
   }
   return {
     props: {
-      page,
-    },
+      page
+    }
   }
 }
 
@@ -54,7 +47,7 @@ const Article = ({ page, router }: { page: PageModel; router: NextRouter }) => {
           transition="0.3s ease-in-out"
           _hover={{
             transform: 'scale(1.05)',
-            cursor: 'pointer',
+            cursor: 'pointer'
           }}
           src={getAssetUrl(page.image.id)}
           alt={page.image.title}
@@ -108,7 +101,15 @@ type Props = {
 }
 
 export default function Blog({ page }: Props) {
-  const { title, description, image, markdown, content, next_page, children: c } = page
+  const {
+    title,
+    description,
+    image,
+    markdown,
+    content,
+    next_page,
+    children: c
+  } = page
   const articles = (c as PageModel[])
     .filter((p) => page.status === 'published')
     .sort((a, b) => {
@@ -142,7 +143,13 @@ export default function Blog({ page }: Props) {
             flexDirection={{ base: 'column', sm: 'row' }}
             justifyContent="space-between"
           >
-            <Box display="flex" flex="1" marginRight="3" position="relative" alignItems="center">
+            <Box
+              display="flex"
+              flex="1"
+              marginRight="3"
+              position="relative"
+              alignItems="center"
+            >
               <Box
                 width={{ base: '100%', sm: '85%' }}
                 zIndex="2"
@@ -156,7 +163,7 @@ export default function Blog({ page }: Props) {
                     transition="0.3s ease-in-out"
                     _hover={{
                       transform: 'scale(1.05)',
-                      cursor: 'pointer',
+                      cursor: 'pointer'
                     }}
                     src={getAssetUrl(latest.image.id)}
                     alt={latest.image.title}
@@ -186,7 +193,12 @@ export default function Blog({ page }: Props) {
                 </Text>
               </Box>
               <Box zIndex="1" width="100%" position="absolute" height="100%">
-                <Box bgGradient={bg} backgroundSize="20px 20px" opacity="0.4" height="100%" />
+                <Box
+                  bgGradient={bg}
+                  backgroundSize="20px 20px"
+                  opacity="0.4"
+                  height="100%"
+                />
               </Box>
             </Box>
             <Box

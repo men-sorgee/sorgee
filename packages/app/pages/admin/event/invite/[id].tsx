@@ -1,24 +1,31 @@
 import { useCallback, useEffect, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { getAssetUrl, postJSON } from 'lib/utils'
+
 import {
-  Button,
-  Heading,
-  useToast,
-  Flex,
-  Text,
-  Avatar,
-  HStack,
-  Alert,
-  AlertIcon,
-  Box,
-} from '@chakra-ui/react'
-import { EventUser, GroupEvent, User, MemberLevel } from 'lib/models'
-import { ButtonLink, Loading, PhotoCapture, MemberBadge } from 'components/controls'
+  ButtonLink,
+  Loading,
+  MemberBadge,
+  PhotoCapture
+} from 'components/controls'
 import { FieldSwitch } from 'components/forms'
-import { useRouter } from 'next/router'
 import Page from 'components/Page'
 import { useEvent, useUser } from 'hooks'
+import { EventUser, GroupEvent, MemberLevel, User } from 'lib/models'
+import { getAssetUrl, postJSON } from 'lib/utils'
+import { useRouter } from 'next/router'
+import { FormProvider, useForm } from 'react-hook-form'
+
+import {
+  Alert,
+  AlertIcon,
+  Avatar,
+  Box,
+  Button,
+  Flex,
+  Heading,
+  HStack,
+  Text,
+  useToast
+} from '@chakra-ui/react'
 
 type Props = {
   event: GroupEvent
@@ -42,7 +49,7 @@ export const getServerSideProps = async (context) => {
   const invite = await getInvite(inviteId)
   if (!invite) {
     return {
-      notFound: true,
+      notFound: true
     }
   }
   const event = invite.events_id as GroupEvent
@@ -52,8 +59,8 @@ export const getServerSideProps = async (context) => {
     props: {
       invite,
       event,
-      user,
-    },
+      user
+    }
   }
 }
 
@@ -88,8 +95,8 @@ export default function InviteAdmin({ event, invite, user }: Props) {
       id: invite?.id,
       user_id: user?.id,
       signed_waiver: user?.signed_waiver,
-      paid: invite?.paid,
-    },
+      paid: invite?.paid
+    }
   })
 
   const { setError, handleSubmit, watch } = methods
@@ -109,17 +116,20 @@ export default function InviteAdmin({ event, invite, user }: Props) {
         const media = await fetch(picture!).then((res) => res.blob())
         let formData = new FormData()
         formData.append('media', media)
-        await fetch(`/api/member/${user.id}/photos/photo?name=${user.email}-face`, {
-          method: 'POST',
-          body: formData,
-        })
+        await fetch(
+          `/api/member/${user.id}/photos/photo?name=${user.email}-face`,
+          {
+            method: 'POST',
+            body: formData
+          }
+        )
       }
 
       const { success, error } = await postJSON('/api/invite/' + invite.id, {
         user_id: user.id,
         paid: data.paid,
         attended: true,
-        signed_waiver: data.signed_waiver,
+        signed_waiver: data.signed_waiver
       })
       if (success) {
         toast({
@@ -133,7 +143,7 @@ export default function InviteAdmin({ event, invite, user }: Props) {
             reload()
             router.push('/admin/event/' + event.id)
             setWorking(false)
-          },
+          }
         })
       } else if (error?.field) {
         setError(error!.field as any, error.message as any)
@@ -145,12 +155,22 @@ export default function InviteAdmin({ event, invite, user }: Props) {
           description: 'Please try again later.',
           status: 'error',
           duration: 5000,
-          isClosable: true,
+          isClosable: true
         })
         setWorking(false)
       }
     },
-    [event.id, invite.id, picture, reload, router, setError, toast, user.email, user.id]
+    [
+      event.id,
+      invite.id,
+      picture,
+      reload,
+      router,
+      setError,
+      toast,
+      user.email,
+      user.id
+    ]
   )
   const paid = watch('paid')
   const signed_waiver = watch('signed_waiver')
@@ -164,7 +184,10 @@ export default function InviteAdmin({ event, invite, user }: Props) {
     >
       {(invite && (
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(updateInvite)} style={{ marginTop: '2rem' }}>
+          <form
+            onSubmit={handleSubmit(updateInvite)}
+            style={{ marginTop: '2rem' }}
+          >
             {(!working && (
               <Flex
                 direction={['column', 'column', 'row']}
@@ -180,7 +203,12 @@ export default function InviteAdmin({ event, invite, user }: Props) {
                 rounded="lg"
                 my={4}
               >
-                <Flex direction="row" gap={8} alignItems="center" justifyItems="center">
+                <Flex
+                  direction="row"
+                  gap={8}
+                  alignItems="center"
+                  justifyItems="center"
+                >
                   <Avatar
                     id={user.id}
                     src={picture}
@@ -192,7 +220,11 @@ export default function InviteAdmin({ event, invite, user }: Props) {
                     _hover={{ cursor: 'pointer' }}
                   />
                   <Box>
-                    <Heading size={['sm', 'sm', 'md']} textTransform="uppercase" m={0}>
+                    <Heading
+                      size={['sm', 'sm', 'md']}
+                      textTransform="uppercase"
+                      m={0}
+                    >
                       {user?.first_name} {user?.last_name} <br />
                       RSVP: {invite.rsvp}
                     </Heading>
@@ -216,7 +248,7 @@ export default function InviteAdmin({ event, invite, user }: Props) {
                       label="Paid"
                       size="lg"
                       registerOptions={{
-                        required: 'Member must pay',
+                        required: 'Member must pay'
                       }}
                     />
                   )}
@@ -226,7 +258,7 @@ export default function InviteAdmin({ event, invite, user }: Props) {
                       label="Signed"
                       size="lg"
                       registerOptions={{
-                        required: 'Waiver must be signed',
+                        required: 'Waiver must be signed'
                       }}
                     />
                   )}
@@ -256,7 +288,13 @@ export default function InviteAdmin({ event, invite, user }: Props) {
                   </Button>
                 )}
                 {invite?.attended && (
-                  <Alert size="xl" status="warning" rounded="lg" shadow="lg" mt={4}>
+                  <Alert
+                    size="xl"
+                    status="warning"
+                    rounded="lg"
+                    shadow="lg"
+                    mt={4}
+                  >
                     <AlertIcon />
                     <Text fontSize="lg" m={0}>
                       Already checked in
@@ -279,7 +317,11 @@ export default function InviteAdmin({ event, invite, user }: Props) {
               </Alert>
             )}
             <HStack spacing={4}>
-              <ButtonLink colorScheme="gray" href={'/admin/event/' + event?.id} my={4}>
+              <ButtonLink
+                colorScheme="gray"
+                href={'/admin/event/' + event?.id}
+                my={4}
+              >
                 Return to Event
               </ButtonLink>
               <ButtonLink colorScheme="primary" href="/admin/scan" my={4}>

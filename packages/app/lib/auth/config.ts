@@ -1,22 +1,34 @@
 import { brand } from 'lib/config/brand'
-import { AuthOptions } from 'next-auth'
-import GoogleProvider from 'next-auth/providers/google'
-import MicrosoftProvider from 'next-auth/providers/azure-ad'
-import YahooProvider from './yahoo'
-import EmailProvider from 'next-auth/providers/email'
-import { TwitterLegacy } from 'next-auth/providers/twitter'
-import { authAdapter } from './adapter'
-import { SendGridCategory, SendGridTemplate, sendNotificationEmail, updateSendGrid } from 'lib/services/sendgrid/server'
-import { MemberLevel, Profile, User, UserStatusType } from 'lib/models'
 import config from 'lib/config/server'
-import { sendNotification } from 'lib/services/twilio/server'
 import {
-  findUser,
-  getUser,
-  findUserByAccount,
+  MemberLevel,
+  Profile,
+  User,
+  UserStatusType,
+} from 'lib/models'
+import {
   extendUserPresence,
+  findUser,
+  findUserByAccount,
+  getUser,
   recordUserLogin,
 } from 'lib/services/db/server/auth'
+import {
+  SendGridCategory,
+  SendGridTemplate,
+  sendNotificationEmail,
+  updateSendGrid,
+} from 'lib/services/sendgrid/server'
+import { sendNotification } from 'lib/services/twilio/server'
+import { AuthOptions } from 'next-auth'
+import MicrosoftProvider from 'next-auth/providers/azure-ad'
+import EmailProvider from 'next-auth/providers/email'
+import GoogleProvider from 'next-auth/providers/google'
+import { TwitterLegacy } from 'next-auth/providers/twitter'
+
+import { authAdapter } from './adapter'
+import YahooProvider from './yahoo'
+
 const { google, discord, twitter, yahoo, microsoft } = config
 
 const allowedStatuses: UserStatusType[] = ['new', 'active', 'stale']

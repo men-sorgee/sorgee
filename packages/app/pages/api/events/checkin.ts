@@ -1,8 +1,24 @@
-import { NextApiRequest, NextApiResponse } from 'next'
 import { baseUrl } from 'lib/config'
-import { findInvite, findUser, getEvent, registerForEvent } from 'lib/services/directus/server'
-import { ApiResponse, Applicant, EventUser } from 'lib/models'
-import { withMethods, withStaff } from '../../../lib/utils/server'
+import {
+  ApiResponse,
+  Applicant,
+  EventUser,
+} from 'lib/models'
+import {
+  findInvite,
+  findUser,
+  getEvent,
+  registerForEvent,
+} from 'lib/services/directus/server'
+import {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next'
+
+import {
+  withMethods,
+  withStaff,
+} from '../../../lib/utils/server'
 
 export default async function EventCheckIn(
   req: NextApiRequest,

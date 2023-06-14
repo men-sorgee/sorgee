@@ -1,7 +1,11 @@
-import Router from 'next/router'
 import { useEffect } from 'react'
 
-export const useWarnIfUnsavedChanges = (unsavedChanges: boolean, callback: () => boolean) => {
+import Router from 'next/router'
+
+export const useWarnIfUnsavedChanges = (
+  unsavedChanges: boolean,
+  callback: () => boolean
+) => {
   useEffect(() => {
     if (unsavedChanges) {
       const routeChangeStart = () => {

@@ -1,15 +1,24 @@
-import ApplicationSteps from './_steps'
-import { useUser } from 'hooks/use-user'
 import { useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { AgreementData, ApplicationStatus, Member, MemberLevel } from 'lib/models'
-import { Box, Button, Text, Heading } from '@chakra-ui/react'
-import FieldCheckbox from 'components/forms/FieldCheckbox'
-import { postJSON } from 'lib/utils'
-import Page from 'components/Page'
-import { useRouter } from 'next/router'
-import { pages } from 'lib/config'
+
 import { Markdown } from 'components/controls'
+import FieldCheckbox from 'components/forms/FieldCheckbox'
+import Page from 'components/Page'
+import { useUser } from 'hooks/use-user'
+import { pages } from 'lib/config'
+import {
+  AgreementData,
+  ApplicationStatus,
+  Member,
+  MemberLevel
+} from 'lib/models'
+import { postJSON } from 'lib/utils'
+import { useRouter } from 'next/router'
+import { FormProvider, useForm } from 'react-hook-form'
+
+import { Box, Button, Heading, Text } from '@chakra-ui/react'
+
+import ApplicationSteps from './_steps'
+
 interface Props {
   markdown: string
 }
@@ -20,14 +29,14 @@ export const getStaticProps = async () => {
   const { markdown } = page
   return {
     props: {
-      markdown,
-    },
+      markdown
+    }
   }
 }
 export default function Agreement({ markdown }: Props) {
   const { loading, reload } = useUser({
     minLevel: MemberLevel.applicant,
-    minAppStatus: ApplicationStatus.agreement,
+    minAppStatus: ApplicationStatus.agreement
   })
 
   return (
@@ -42,11 +51,17 @@ export default function Agreement({ markdown }: Props) {
   )
 }
 
-function Form({ reload, markdown }: { markdown: string; reload: () => Promise<Member> }) {
+function Form({
+  reload,
+  markdown
+}: {
+  markdown: string
+  reload: () => Promise<Member>
+}) {
   const router = useRouter()
   const [completed, setCompleted] = useState(false)
   const methods = useForm<AgreementData>({
-    mode: 'onBlur',
+    mode: 'onBlur'
   })
   const { handleSubmit, setError, watch } = methods
 
@@ -68,10 +83,13 @@ function Form({ reload, markdown }: { markdown: string; reload: () => Promise<Me
   return (
     !completed && (
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} style={{ maxWidth: 'xl', margin: '0 auto' }}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          style={{ maxWidth: 'xl', margin: '0 auto' }}
+        >
           <Box
             css={{
-              img: { display: 'none' },
+              img: { display: 'none' }
             }}
             mt={4}
           >
@@ -101,9 +119,9 @@ function Form({ reload, markdown }: { markdown: string; reload: () => Promise<Me
               >
                 privacy policy.
               </a>
-              By entering this site, you commit to keep all user information confidential and not to
-              share it with any third parties. You also agree to not use this site for any illegal
-              purposes.
+              By entering this site, you commit to keep all user information
+              confidential and not to share it with any third parties. You also
+              agree to not use this site for any illegal purposes.
             </Text>
           </Box>
           <Box mt={4}>
@@ -113,15 +131,20 @@ function Form({ reload, markdown }: { markdown: string; reload: () => Promise<Me
               registerOptions={{
                 required: {
                   value: true,
-                  message: 'You must agree to the terms and conditions',
-                },
+                  message: 'You must agree to the terms and conditions'
+                }
               }}
             >
               I agree
             </FieldCheckbox>
           </Box>
 
-          <Button colorScheme="primary" type="submit" mt={8} disabled={agree != true}>
+          <Button
+            colorScheme="primary"
+            type="submit"
+            mt={8}
+            disabled={agree != true}
+          >
             Agree & Continue
           </Button>
         </form>

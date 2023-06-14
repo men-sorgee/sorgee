@@ -1,8 +1,20 @@
-import { NextApiRequest, NextApiResponse } from 'next'
 import { baseUrl } from 'lib/config'
-import { findInvite, getEvent } from 'lib/services/directus/server'
-import { ApiResponse, Applicant } from 'lib/models'
-import { withMethods, withStaff } from 'lib/utils/server'
+import {
+  ApiResponse,
+  Applicant,
+} from 'lib/models'
+import {
+  findInvite,
+  getEvent,
+} from 'lib/services/directus/server'
+import {
+  withMethods,
+  withStaff,
+} from 'lib/utils/server'
+import {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next'
 
 export default async function InviteCheckIn(
   req: NextApiRequest,

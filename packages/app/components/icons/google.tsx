@@ -2,7 +2,9 @@ import type { NextComponentType, NextPageContext } from 'next'
 
 interface Props {}
 
-const Google: NextComponentType<NextPageContext, {}, Props> = (props: Props) => {
+const Google: NextComponentType<NextPageContext, {}, Props> = (
+  props: Props
+) => {
   return (
     <svg
       width="64px"

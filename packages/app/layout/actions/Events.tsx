@@ -1,8 +1,9 @@
-import { Badge, IconButton, Link } from '@chakra-ui/react'
-import { CalendarIcon } from '@heroicons/react/24/outline'
-import NextLink from 'next/link'
 import { useUserEvents } from 'hooks'
 import { Member } from 'lib/models'
+import NextLink from 'next/link'
+
+import { Badge, IconButton, Link } from '@chakra-ui/react'
+import { CalendarIcon } from '@heroicons/react/24/outline'
 
 interface Props {
   member: Member

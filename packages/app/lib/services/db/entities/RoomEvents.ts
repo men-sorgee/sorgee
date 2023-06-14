@@ -1,4 +1,5 @@
 import * as typeorm from 'typeorm'
+
 import { Room } from './Room'
 
 @typeorm.Index('room_events_pkey', ['id'], { unique: true })

@@ -1,21 +1,24 @@
+import { useEffect, useRef, useState } from 'react'
+
+import { UpgradeIcon } from 'components/controls'
+import { useMessages } from 'hooks'
+import { Member, MemberLevel, MembershipType } from 'lib/models'
+
 import {
+  Badge,
   Box,
   Drawer,
-  DrawerOverlay,
+  DrawerBody,
   DrawerCloseButton,
   DrawerContent,
   DrawerHeader,
-  DrawerBody,
-  useDisclosure,
+  DrawerOverlay,
   IconButton,
-  Badge,
+  useDisclosure
 } from '@chakra-ui/react'
-import { useMessages } from 'hooks'
 import { ChatBubbleBottomCenterIcon as ChatIcon } from '@heroicons/react/24/outline'
-import { Member, MemberLevel, MembershipType } from 'lib/models'
+
 import { Messages } from '../../components/controls/Messages'
-import { useEffect, useRef, useState } from 'react'
-import { UpgradeIcon } from 'components/controls'
 
 type Props = {
   member: Member
@@ -23,10 +26,16 @@ type Props = {
 }
 
 const ChatActions = ({ member, hasFeature }: Props) => {
-  const { conversations, hasNewMessages, newMessageCount, activeId, setActiveId, lastActiveId } =
-    useMessages()
+  const {
+    conversations,
+    hasNewMessages,
+    newMessageCount,
+    activeId,
+    setActiveId,
+    lastActiveId
+  } = useMessages()
   const { isOpen, onOpen, onClose } = useDisclosure({
-    onClose: () => setActiveId(undefined),
+    onClose: () => setActiveId(undefined)
   })
   const [show, setShow] = useState<boolean>(undefined)
   const [prevMessagesCount, setPrevMessagesCount] = useState<number>(undefined)
@@ -44,7 +53,7 @@ const ChatActions = ({ member, hasFeature }: Props) => {
     if (show == undefined && member) {
       setShow(
         MemberLevel[member.user_type] >= MemberLevel.brother ||
-        Object.keys(conversations).length > 0
+          Object.keys(conversations).length > 0
       )
     }
     if (show == false && hasNewMessages) setShow(true)
@@ -60,14 +69,17 @@ const ChatActions = ({ member, hasFeature }: Props) => {
     onOpen,
     prevMessagesCount,
     show,
-    activeId,
+    activeId
   ])
 
-  if (!hasFeature) return <UpgradeIcon
-    title='Member Chat'
-    membershipType={MembershipType.Plus}
-    icon={<ChatIcon height="50px" width="50px" />}
-  />
+  if (!hasFeature)
+    return (
+      <UpgradeIcon
+        title="Member Chat"
+        membershipType={MembershipType.Plus}
+        icon={<ChatIcon height="50px" width="50px" />}
+      />
+    )
 
   return (
     <>
@@ -101,7 +113,12 @@ const ChatActions = ({ member, hasFeature }: Props) => {
         )}
       </Box>
       <audio ref={audioRef} src="/sounds/click.mp3" preload="auto" />
-      <Drawer placement={'left'} onClose={onClose} isOpen={isOpen} size={['full', 'lg']}>
+      <Drawer
+        placement={'left'}
+        onClose={onClose}
+        isOpen={isOpen}
+        size={['full', 'lg']}
+      >
         <DrawerOverlay />
 
         <DrawerContent>

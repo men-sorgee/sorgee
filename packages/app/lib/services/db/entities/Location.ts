@@ -1,8 +1,9 @@
 import * as typeorm from 'typeorm'
-import { Events } from './Events'
+
 import { DirectusFile } from './DirectusFiles'
-import { User } from './User'
+import { Events } from './Events'
 import { Surveys } from './Surveys'
+import { User } from './User'
 
 @typeorm.Index('location_pkey', ['id'], { unique: true })
 @typeorm.Entity('location', { schema: 'public' })

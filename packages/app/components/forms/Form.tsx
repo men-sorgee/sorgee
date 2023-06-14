@@ -1,10 +1,13 @@
+import type { ReactElement } from 'react'
 import { ReactNode, useCallback, useEffect } from 'react'
-import { useForm, FormProvider, useFormContext } from 'react-hook-form'
+
 import { useWarnIfUnsavedChanges } from 'hooks/use-warn-if-unsaved'
 import { ApiError } from 'lib/models'
-import { useToast } from '@chakra-ui/react'
-import type { ReactElement } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
+import { FormProvider, useForm, useFormContext } from 'react-hook-form'
+
+import { useToast } from '@chakra-ui/react'
+
 import { debouncedPromise } from '../../lib/utils'
 
 type FormProps<T> = {
@@ -22,24 +25,26 @@ export default function Form<T>({
   children,
   onSubmit,
   onSuccess = () => {},
-  autoSave = false,
+  autoSave = false
 }: FormProps<T>) {
   const methods = useForm<T>({
     defaultValues: defaultValues as any,
     values: defaultValues as any,
     resetOptions: {
-      keepDirtyValues: true,
-    },
+      keepDirtyValues: true
+    }
   })
   const {
     handleSubmit,
     formState: { isDirty, isValidating, isValid, isSubmitting },
     trigger,
-    reset,
+    reset
   } = methods
 
   useWarnIfUnsavedChanges(isDirty, () => {
-    return window.confirm('Are you sure you want to leave? You have unsaved changes.')
+    return window.confirm(
+      'Are you sure you want to leave? You have unsaved changes.'
+    )
   })
 
   const toast = useToast()
@@ -60,7 +65,7 @@ export default function Form<T>({
           onCloseComplete: () => {
             reset(r)
             onSuccess()
-          },
+          }
         })
       } else if (error?.field) {
         // @ts-ignore
@@ -71,7 +76,7 @@ export default function Form<T>({
           description: `Something went wrong ${error.message || error}`,
           status: 'error',
           duration: 9000,
-          isClosable: true,
+          isClosable: true
         })
       }
     },
@@ -101,7 +106,7 @@ export default function Form<T>({
       isValid,
       isValidating,
       onSubmitWrapper,
-      trigger,
+      trigger
     ]
   )
 

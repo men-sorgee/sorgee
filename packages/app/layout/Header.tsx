@@ -1,30 +1,33 @@
-import {
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-  Box,
-  IconButton,
-  Stack,
-  Collapse,
-  Link,
-  useDisclosure,
-  chakra,
-  BoxProps,
-  HStack,
-  StackProps,
-  useColorModeValue,
-  useOutsideClick,
-} from '@chakra-ui/react'
-import { Bars4Icon, XMarkIcon } from '@heroicons/react/24/solid'
-import { Logo } from '../components/controls'
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+
 import { Page, PageItem, UserType } from 'lib/models'
 import NextLink from 'next/link'
+import { useRouter } from 'next/router'
+
+import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
+  BoxProps,
+  chakra,
+  Collapse,
+  HStack,
+  IconButton,
+  Link,
+  Stack,
+  StackProps,
+  useColorModeValue,
+  useDisclosure,
+  useOutsideClick
+} from '@chakra-ui/react'
+import { Bars4Icon, XMarkIcon } from '@heroicons/react/24/solid'
+
+import { Logo } from '../components/controls'
 import { constrained } from './index'
 import User from './User'
-import { useRouter } from 'next/router'
 
 export type Props = BoxProps & {
   userType?: UserType
@@ -40,7 +43,7 @@ function Header({ userType, children, ...props }: Props) {
     ref: ref,
     handler: () => {
       onClose()
-    },
+    }
   })
   useEffect(() => {
     const routeComplete = () => {
@@ -66,9 +69,11 @@ function Header({ userType, children, ...props }: Props) {
         title: page.title,
         path: `/${page.slug}`,
         children:
-          page.children?.filter((p) => canSee(p.visibility)).map((p) => mapPage(p, true)) || [],
+          page.children
+            ?.filter((p) => canSee(p.visibility))
+            .map((p) => mapPage(p, true)) || [],
         isChild: isChild || page.parent?.id != undefined,
-        visibility: page.visibility || [],
+        visibility: page.visibility || []
       }
     },
     [canSee]
@@ -101,15 +106,15 @@ function Header({ userType, children, ...props }: Props) {
         {
           title: 'Health & Wellness',
           path: '/blog',
-          children: [],
+          children: []
         },
         {
           title: 'Pricing',
           path: '/pricing',
           children: [],
-          visibility: ['pledge', 'inductee','brother','staff'],
-        },
-      ],
+          visibility: ['pledge', 'inductee', 'brother', 'staff']
+        }
+      ]
     },
     ...menus.filter((p) => canSee(p.visibility)),
     {
@@ -119,28 +124,41 @@ function Header({ userType, children, ...props }: Props) {
           title: 'Privacy Policy',
           path: '/privacy',
           reload: true,
-          children: [],
+          children: []
         },
         {
           title: 'Cookie Policy',
           path: '/cookies',
           reload: true,
-          children: [],
+          children: []
         },
         {
           title: 'Terms of Service',
           path: '/terms',
           reload: true,
-          children: [],
-        },
-      ],
-    },
+          children: []
+        }
+      ]
+    }
   ]
   const bg = useColorModeValue('primary.800', 'black')
 
-  const NavMenu = ({ navItems, ...props }: StackProps & { navItems: NavItem[] }) => {
+  const NavMenu = ({
+    navItems,
+    ...props
+  }: StackProps & { navItems: NavItem[] }) => {
     return (
-      <Accordion allowToggle defaultIndex={[0]} as="nav" color={'white'} __css={props} mx={0} px={0} mb={4} {...constrained}>
+      <Accordion
+        allowToggle
+        defaultIndex={[0]}
+        as="nav"
+        color={'white'}
+        __css={props}
+        mx={0}
+        px={0}
+        mb={4}
+        {...constrained}
+      >
         {navItems.map((navItem, index) => (
           <NavMenuItem
             key={navItem.title}
@@ -155,7 +173,15 @@ function Header({ userType, children, ...props }: Props) {
 
   return (
     <>
-      <Box {...props} as="header" color="white" shadow="xl" bg={bg} minH="60px" px={0}>
+      <Box
+        {...props}
+        as="header"
+        color="white"
+        shadow="xl"
+        bg={bg}
+        minH="60px"
+        px={0}
+      >
         <HStack
           alignItems="center"
           alignContent="center"
@@ -196,7 +222,7 @@ function Header({ userType, children, ...props }: Props) {
 
 const NavMenuItem = ({
   onClose,
-  item: { title: label, children, path },
+  item: { title: label, children, path }
 }: {
   onClose: () => void
   childrenOpen?: boolean
@@ -209,7 +235,7 @@ const NavMenuItem = ({
           <Link
             as={path ? NextLink : 'div'}
             _hover={{
-              textDecoration: 'none',
+              textDecoration: 'none'
             }}
             href={path}
             fontWeight={600}
@@ -233,7 +259,13 @@ const NavMenuItem = ({
             borderColor={'white'}
           >
             {children.map((child: NavItem, i: number) => (
-              <Box key={i} w="full" _hover={{ bg: 'primary.400' }} py={1} px={2}>
+              <Box
+                key={i}
+                w="full"
+                _hover={{ bg: 'primary.400' }}
+                py={1}
+                px={2}
+              >
                 {(child.reload && (
                   <a style={{ display: 'block' }} href={child.path}>
                     {child.title}

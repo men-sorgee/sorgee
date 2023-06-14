@@ -1,10 +1,18 @@
-import { IconButton, Badge, IconButtonProps, chakra } from '@chakra-ui/react'
+import { useEffect, useState } from 'react'
+
+import { UpgradeIcon } from 'components/controls'
 import { useMember, useMessages, useUser } from 'hooks'
+import {
+  Member,
+  MemberLevel,
+  MembershipType,
+  SearchableMember,
+  UserBuddy
+} from 'lib/models'
+
+import { Badge, chakra, IconButton, IconButtonProps } from '@chakra-ui/react'
 import { ChatBubbleBottomCenterIcon as ChatIconOff } from '@heroicons/react/24/outline'
 import { ChatBubbleBottomCenterIcon as ChatIconOn } from '@heroicons/react/24/solid'
-import { MemberLevel, SearchableMember, UserBuddy, Member, MembershipType } from 'lib/models'
-import { useEffect, useState } from 'react'
-import { UpgradeIcon } from 'components/controls'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
   member: Partial<Member | SearchableMember>
@@ -20,7 +28,7 @@ export const MemberChat = chakra(({ member, size = 'lg', ...props }: Props) => {
 
   useEffect(() => {
     if (!loading) {
-      const convo = conversations?.find(c => c.id == member?.id)
+      const convo = conversations?.find((c) => c.id == member?.id)
       if (convo && hasConversation == undefined) {
         setHasConversation(true)
         const newMessages = convo.messages?.filter(
@@ -46,11 +54,14 @@ export const MemberChat = chakra(({ member, size = 'lg', ...props }: Props) => {
       return <></>
   }
 
-  if (me?.id != them?.vouched_by && !hasFeature('chat')) return <UpgradeIcon
-    title={`Chat with ${name}`}
-    membershipType={MembershipType.Plus}
-    icon={<ChatIconOff width="30px" />}
-  />
+  if (me?.id != them?.vouched_by && !hasFeature('chat'))
+    return (
+      <UpgradeIcon
+        title={`Chat with ${name}`}
+        membershipType={MembershipType.Plus}
+        icon={<ChatIconOff width="30px" />}
+      />
+    )
 
   return (
     <>
@@ -63,7 +74,13 @@ export const MemberChat = chakra(({ member, size = 'lg', ...props }: Props) => {
         }}
         aria-label={`Chat with ${member.nickname || 'this member'}`}
         title={`Chat with ${member.nickname || 'this member'}`}
-        icon={hasConversation ? <ChatIconOn width="30px" /> : <ChatIconOff width="30px" />}
+        icon={
+          hasConversation ? (
+            <ChatIconOn width="30px" />
+          ) : (
+            <ChatIconOff width="30px" />
+          )
+        }
         size={size}
         _hover={{ bg: 'primary.500' }}
         {...props}

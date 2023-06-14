@@ -1,9 +1,12 @@
-import useSWR from 'swr'
-import { JsonFetcher, postJSON } from 'lib/utils'
-import { Rating, RatingCollection } from 'lib/models'
-import { useState, useEffect, useCallback, ReactNode } from 'react'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
+
 import { Rating as RatingControl } from 'components/controls'
+import { Rating, RatingCollection } from 'lib/models'
+import { JsonFetcher, postJSON } from 'lib/utils'
+import useSWR from 'swr'
+
 import { Box, Flex } from '@chakra-ui/react'
+
 import { RatingControlProps } from './Rating'
 
 export type RateItemProps = RatingControlProps & {
@@ -15,7 +18,7 @@ export type RateItemProps = RatingControlProps & {
 
 const itemMap = {
   users: 'member',
-  events: 'event',
+  events: 'event'
 }
 
 export const RateItem = ({
@@ -26,9 +29,13 @@ export const RateItem = ({
   ...props
 }: RateItemProps) => {
   const [value, setValue] = useState<number>(undefined)
-  const { data = [], mutate } = useSWR<Rating[], Error>(`/api/member/ratings`, JsonFetcher, {
-    fallbackData: [],
-  })
+  const { data = [], mutate } = useSWR<Rating[], Error>(
+    `/api/member/ratings`,
+    JsonFetcher,
+    {
+      fallbackData: []
+    }
+  )
   const ratings = data
     .filter((r) => r.collection == collection)
     .map((r) => {

@@ -1,10 +1,23 @@
 'use client'
-import useSWR from 'swr'
-import { ApiError, ApplicationStatus, Member, MemberFeature, MemberLevel, Profile, User } from 'lib/models'
-import { JsonFetcher, authenticatedFetcher, getAssetUrl, postJSON } from 'lib/utils'
-import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react'
-import { useRouter } from 'next/router'
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState
+} from 'react'
+
+import {
+  ApiError,
+  ApplicationStatus,
+  Member,
+  MemberFeature,
+  MemberLevel
+} from 'lib/models'
+import { getAssetUrl, JsonFetcher, postJSON } from 'lib/utils'
 import { signIn, useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
+import useSWR from 'swr'
 
 export type UserContextData = {
   member: Member | null
@@ -35,7 +48,7 @@ export const UserContext = createContext<UserContextData>({
   isMember: false,
   isStaff: false,
   isApplicant: false,
-  hasFeature: (feature: MemberFeature) => false,
+  hasFeature: (feature: MemberFeature) => false
 })
 
 export function UserProvider({ children }: { children: ReactNode }) {
@@ -55,18 +68,19 @@ export function UserProvider({ children }: { children: ReactNode }) {
     data: member,
     mutate: _mutate,
     error,
-    isLoading: loading,
+    isLoading: loading
   } = useSWR<Member, Error>(key, JsonFetcher, {
     revalidateIfStale: true,
     revalidateOnFocus: true,
     revalidateOnReconnect: true,
-    refreshInterval: 1000 * 60 * 5,
+    refreshInterval: 1000 * 60 * 5
   })
 
   const { application_status, user_type } = member || {}
   const name = member?.nickname || member?.first_name || 'Brother'
   const picture = getAssetUrl(member?.picture)
-  const approved = ApplicationStatus[application_status] >= ApplicationStatus.approved
+  const approved =
+    ApplicationStatus[application_status] >= ApplicationStatus.approved
   const level = MemberLevel[user_type]
   const isMember = approved && level >= MemberLevel.pledge
   const isStaff = isMember && level >= MemberLevel.staff
@@ -74,7 +88,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   const mutate = async (mutation: Partial<Member>) => {
     await _mutate({ ...member, ...mutation } as Member, false)
-    const { success, data, error } = await postJSON<Member>(key, mutation as any)
+    const { success, data, error } = await postJSON<Member>(
+      key,
+      mutation as any
+    )
     if (success) {
       await _mutate(data, false)
       return [data, null]
@@ -100,7 +117,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       return _mutate(
         { ...member },
         {
-          revalidate: true,
+          revalidate: true
         }
       )
     },
@@ -119,21 +136,23 @@ type UseUserProps = {
   minLevel?: MemberLevel
   minAppStatus?: ApplicationStatus
   requiredFeature?: MemberFeature
-  forceLogin?: boolean
+  redirectsEnabled?: boolean
 }
 export const useUser = ({
-  minLevel = MemberLevel.brother,
-  minAppStatus = ApplicationStatus.approved,
-  forceLogin = true,
-  requiredFeature,
+  minLevel,
+  minAppStatus,
+  redirectsEnabled = false,
+  requiredFeature
 }: UseUserProps = {}): UserContextData & {
   authorized: boolean
-}  => {
+} => {
   const router = useRouter()
-  const { level, loading, member, authenticated, hasFeature, ...data } = useContext(UserContext)
+  const { level, loading, member, authenticated, hasFeature, ...data } =
+    useContext(UserContext)
   let authorized = level >= minLevel
 
   useEffect(() => {
+    if (!redirectsEnabled) return
     if (!loading && member?.application_status) {
       if (authenticated) {
         const status = ApplicationStatus[member.application_status]
@@ -144,27 +163,37 @@ export const useUser = ({
         }
         if (level < minLevel) {
           const destination = '/unauthorized'
-          if (router.asPath != destination) router.push(destination, {
-            query: {
-              level: minLevel
-            }
-          })
+          if (router.asPath != destination)
+            router.push(destination, {
+              query: {
+                level: minLevel
+              }
+            })
           return
         }
         if (requiredFeature && !hasFeature(requiredFeature)) {
           const destination = '/pricing'
-          if (router.asPath != destination) router.push(destination, {
-            query: {
-              feature: requiredFeature
-            }
-          })
+          if (router.asPath != destination)
+            router.push(destination, {
+              query: {
+                feature: requiredFeature
+              }
+            })
           return
         }
-      } else if (forceLogin) {
+      } else {
         signIn().catch(console.error)
       }
     }
-  }, [authenticated, authorized, forceLogin, loading, member, minAppStatus, router])
+  }, [
+    authenticated,
+    authorized,
+    redirectsEnabled,
+    loading,
+    member,
+    minAppStatus,
+    router
+  ])
 
   return {
     ...data,

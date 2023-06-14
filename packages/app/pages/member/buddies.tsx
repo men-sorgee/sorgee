@@ -1,10 +1,11 @@
+import { useState } from 'react'
+
+import { MemberCard, MemberModal } from 'components/controls'
 import Page from 'components/Page'
 import { useUser } from 'hooks'
 import { MemberLevel, SearchableMember, User, UserBuddy } from 'lib/models'
-import { Flex, SimpleGrid, Text, Alert, Switch, Spacer, Link } from '@chakra-ui/react'
-import { MemberCard, MemberModal } from 'components/controls'
-import { useState } from 'react'
 
+import { Alert, Flex, SimpleGrid, Spacer, Switch, Text } from '@chakra-ui/react'
 
 export type PageProps = {}
 
@@ -38,10 +39,16 @@ export default function BuddiesPage({}: PageProps) {
         gap={2}
       >
         <Text mt={0} fontSize={['md', 'lg', 'xl']}>
-          You have {buddies?.length} buddies with {onlineMembers?.length} online.
+          You have {buddies?.length} buddies with {onlineMembers?.length}{' '}
+          online.
         </Text>
         <Spacer />
-        <Flex direction="column" align="center" justify="space-around" minWidth={['full', '15%']}>
+        <Flex
+          direction="column"
+          align="center"
+          justify="space-around"
+          minWidth={['full', '15%']}
+        >
           <Text as="label" htmlFor="onlineOnly" fontWeight="bold" m={0}>
             Online Only
           </Text>
@@ -53,7 +60,13 @@ export default function BuddiesPage({}: PageProps) {
           />
         </Flex>
       </Alert>
-      <SimpleGrid my={4} columns={[1, 1, 1, 2]} spacing={4} w="full" justifyItems="stretch">
+      <SimpleGrid
+        my={4}
+        columns={[1, 1, 1, 2]}
+        spacing={4}
+        w="full"
+        justifyItems="stretch"
+      >
         {members &&
           members?.map((u: User) => (
             <MemberCard

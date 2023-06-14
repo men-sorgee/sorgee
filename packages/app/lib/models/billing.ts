@@ -1,4 +1,8 @@
-import { User, MemberFeature, MembershipType } from "./users";
+import {
+  MemberFeature,
+  MembershipType,
+  User,
+} from './users'
 
 export type BillingEvent = {
   id: string

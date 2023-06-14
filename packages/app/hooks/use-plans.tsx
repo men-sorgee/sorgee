@@ -1,7 +1,7 @@
 'use client'
-import useSWR from 'swr'
 import { Subscription } from 'lib/models'
 import { JsonFetcher } from 'lib/utils'
+import useSWR from 'swr'
 
 type PlansResults = {
   plans: Subscription[]
@@ -13,7 +13,7 @@ export const useSite = (): PlansResults => {
   const {
     data: plans,
     error,
-    isLoading,
+    isLoading
   } = useSWR<Subscription[], Error>(`/api/stripe/pricing`, JsonFetcher, {
     refreshWhenHidden: false,
     refreshWhenOffline: false,

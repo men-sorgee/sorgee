@@ -1,8 +1,18 @@
 import { InputHTMLAttributes } from 'react'
-import { useFormContext, RegisterOptions } from 'react-hook-form'
+
 import { FieldOptions } from 'lib/models'
+import { RegisterOptions, useFormContext } from 'react-hook-form'
+
+import {
+  Box,
+  chakra,
+  Flex,
+  Radio,
+  RadioGroup,
+  RadioProps
+} from '@chakra-ui/react'
+
 import FieldWrapper from './FieldWrapper'
-import { Radio, RadioGroup, Flex, RadioProps, chakra, SimpleGrid } from '@chakra-ui/react'
 
 type Props = RadioProps &
   InputHTMLAttributes<HTMLInputElement> & {
@@ -25,10 +35,11 @@ function RadioButtonsField(props: Props) {
     className,
     color = 'primary',
     size,
-    justifyContent = 'space-between',
+    justifyContent = 'stretch',
     ...opts
   } = props
-  const { register, setValue, watch, getFieldState, formState } = useFormContext()
+  const { register, setValue, watch, getFieldState, formState } =
+    useFormContext()
   const { error } = getFieldState(field, formState)
   const classes = error ? 'error' : ''
   const fieldValue = watch(field)
@@ -41,20 +52,22 @@ function RadioButtonsField(props: Props) {
         value={fieldValue?.toString()}
         as={Flex}
         justifyContent={justifyContent}
+        gap={[2, 4]}
       >
         {options?.map(({ text, value }, index) => (
-          <Radio
-            {...opts}
-            {...register(field, registerOptions)}
-            key={index.toString()}
-            defaultChecked={index === 0}
-            className={classes}
-            value={value}
-            color="text"
-            mr={4}
-          >
-            {text}
-          </Radio>
+          <Box key={index.toString()} flex={1}>
+            <Radio
+              {...opts}
+              {...register(field, registerOptions)}
+              key={index.toString()}
+              defaultChecked={index === 0}
+              className={classes}
+              value={value}
+              color="text"
+            >
+              {text}
+            </Radio>
+          </Box>
         ))}
       </RadioGroup>
     </FieldWrapper>

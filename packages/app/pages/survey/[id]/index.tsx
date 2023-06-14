@@ -1,38 +1,47 @@
-import { useUser } from 'hooks'
-import { FormProvider, useForm } from 'react-hook-form'
 import { useCallback, useEffect, useState } from 'react'
-import { getJSON, postJSON, pruneUndefined } from 'lib/utils'
-import { SurveyAnswer, Survey, Question, GroupEvent, AnswerType, MemberLevel } from 'lib/models'
+
+import { Step, Steps } from 'chakra-ui-steps'
+import { ButtonLink, Markdown } from 'components/controls'
 import {
-  HStack,
+  FieldCheckbox,
+  FieldCheckboxes,
+  FieldDate,
+  FieldImage,
+  FieldInput,
+  FieldNumber,
+  FieldRadioButtons,
+  FieldRange,
+  FieldRating,
+  FieldSelect,
+  FieldSwitch,
+  FieldText
+} from 'components/forms'
+import Page from 'components/Page'
+import { useUser } from 'hooks'
+import {
+  AnswerType,
+  GroupEvent,
+  MemberLevel,
+  Question,
+  Survey,
+  SurveyAnswer
+} from 'lib/models'
+import { getJSON, postJSON, pruneUndefined } from 'lib/utils'
+import { useRouter } from 'next/router'
+import { FormProvider, useForm } from 'react-hook-form'
+
+import {
+  Box,
   Button,
   Flex,
-  Box,
   Heading,
-  useToast,
+  HStack,
   Spacer,
   Spinner,
   Text,
   useBreakpointValue,
+  useToast
 } from '@chakra-ui/react'
-import {
-  FieldInput,
-  FieldSelect,
-  FieldText,
-  FieldCheckboxes,
-  FieldCheckbox,
-  FieldNumber,
-  FieldRating,
-  FieldRadioButtons,
-  FieldImage,
-  FieldSwitch,
-  FieldDate,
-  FieldRange,
-} from 'components/forms'
-import Page from 'components/Page'
-import { useRouter } from 'next/router'
-import { Steps, Step } from 'chakra-ui-steps'
-import { ButtonLink, Markdown } from 'components/controls'
 
 type Props = {
   survey: Survey
@@ -47,8 +56,8 @@ export const getServerSideProps = async (context) => {
     return {
       redirect: {
         destination: `/survey/${i}/1`,
-        permanent: false,
-      },
+        permanent: false
+      }
     }
   }
   const id = String(i)
@@ -62,15 +71,15 @@ export const getServerSideProps = async (context) => {
     props: pruneUndefined({
       survey,
       question,
-      step,
-    }),
+      step
+    })
   }
 }
 
 export default function SurveyPage({ survey, question, step }: Props) {
   const router = useRouter()
   const { loading: userLoading, member } = useUser({
-    minLevel: MemberLevel.pledge,
+    minLevel: MemberLevel.pledge
   })
   const event = survey?.event as GroupEvent
 
@@ -80,8 +89,8 @@ export default function SurveyPage({ survey, question, step }: Props) {
   const toast = useToast()
   const methods = useForm({
     defaultValues: {
-      ...answer,
-    },
+      ...answer
+    }
   })
 
   const { handleSubmit, reset } = methods
@@ -93,7 +102,7 @@ export default function SurveyPage({ survey, question, step }: Props) {
           if (result.success) {
             setAnswer(result.data)
             reset({
-              ...result.data,
+              ...result.data
             })
           }
         })
@@ -114,7 +123,10 @@ export default function SurveyPage({ survey, question, step }: Props) {
   const onSubmit = useCallback(
     async (data: any) => {
       setWorking(true)
-      const { success, error } = await postJSON(`/api/survey/${survey.id}/${question.id}`, data)
+      const { success, error } = await postJSON(
+        `/api/survey/${survey.id}/${question.id}`,
+        data
+      )
       setWorking(false)
       if (success) {
         next()
@@ -123,25 +135,34 @@ export default function SurveyPage({ survey, question, step }: Props) {
           answer_number: 0,
           answer_text: '',
           answer_choose: [],
-          answer_context: '',
+          answer_context: ''
         })
       } else {
         toast({
           title: 'Error',
           status: 'error',
           description: error.message,
-          isClosable: true,
+          isClosable: true
         })
         setWorking(false)
       }
     },
     [survey.id, question?.id, next, reset, toast]
   )
-  const orientation = useBreakpointValue<any>(['vertical', 'vertical', 'horizontal'])
+  const orientation = useBreakpointValue<any>([
+    'vertical',
+    'vertical',
+    'horizontal'
+  ])
   return (
     <Page title={survey.name} loading={userLoading} requireAuth={true}>
       {member && survey && (
-        <Flex gap={4} direction={['row', 'row', 'column']} align="start" justify="stretch">
+        <Flex
+          gap={4}
+          direction={['row', 'row', 'column']}
+          align="start"
+          justify="stretch"
+        >
           <Steps
             orientation={orientation}
             activeStep={index}
@@ -169,7 +190,12 @@ export default function SurveyPage({ survey, question, step }: Props) {
                   <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit)}>
                       <Flex direction="column" gap={4} key={question.id}>
-                        <Heading as="h5" size="h5" py={2} title={`Question.id: ${question.id}`}>
+                        <Heading
+                          as="h5"
+                          size="h5"
+                          py={2}
+                          title={`Question.id: ${question.id}`}
+                        >
                           {question.question}
                         </Heading>
                         <InnerField question={question} />
@@ -177,14 +203,20 @@ export default function SurveyPage({ survey, question, step }: Props) {
                         {question.control != 'textarea' && (
                           <FieldText
                             mt={4}
-                            placeholder={question.context ? '' : 'Anything to add?'}
+                            placeholder={
+                              question.context ? '' : 'Anything to add?'
+                            }
                             field="answer_context"
                           />
                         )}
                       </Flex>
                       <HStack spacing={4} mt={4}>
                         <Spacer />
-                        <Button colorScheme="accent" type="submit" disabled={working}>
+                        <Button
+                          colorScheme="accent"
+                          type="submit"
+                          disabled={working}
+                        >
                           {working ? <Spinner /> : 'Next'}
                         </Button>
                       </HStack>
@@ -198,7 +230,12 @@ export default function SurveyPage({ survey, question, step }: Props) {
                   Thank you
                   <br /> for completing the survey!
                 </Heading>
-                <Markdown content={survey.closing?.replaceAll('$NAME$', member.nickname)} />
+                <Markdown
+                  content={survey.closing?.replaceAll(
+                    '$NAME$',
+                    member.nickname
+                  )}
+                />
                 {event && (
                   <ButtonLink href={`/events/${event.id}`} mt={4}>
                     Rate Event Attendees
@@ -252,7 +289,11 @@ const InnerField = ({ question }: { question: Question }) => {
     case 'input':
       return (
         (type == 'number' && (
-          <FieldNumber field={field} min={question.number_minimum} max={question.number_maximum} />
+          <FieldNumber
+            field={field}
+            min={question.number_minimum}
+            max={question.number_maximum}
+          />
         )) || <FieldInput field={field} type={type} />
       )
     case 'select':

@@ -1,6 +1,8 @@
 import Blocks from 'editorjs-blocks-react-renderer'
 import { PageContent } from 'lib/models'
+
 import { Image, SimpleGrid } from '@chakra-ui/react'
+
 import { Markdown } from './controls'
 
 export default function Section({ content }: { content: PageContent }) {
@@ -13,7 +15,7 @@ export default function Section({ content }: { content: PageContent }) {
           data={{
             blocks: content.control.blocks,
             time: content.control.time,
-            version: content.control.version,
+            version: content.control.version
           }}
         />
       )
@@ -40,7 +42,12 @@ export default function Section({ content }: { content: PageContent }) {
       )
     case 'md':
       return (
-        <SimpleGrid as="section" spacing={4} columns={columns} className={container_classes}>
+        <SimpleGrid
+          as="section"
+          spacing={4}
+          columns={columns}
+          className={container_classes}
+        >
           <Markdown content={content.markdown} />
         </SimpleGrid>
       )

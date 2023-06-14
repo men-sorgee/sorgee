@@ -1,9 +1,12 @@
-import stripe from "lib/services/stripe/server";
-import { NextApiRequest, NextApiResponse } from "next";
-import { withMember } from "lib/utils/server";
-import { baseUrl } from "lib/config";
-import { updateUser } from "lib/services/directus/server";
-import { Member } from "lib/models";
+import { baseUrl } from 'lib/config'
+import { Member } from 'lib/models'
+import { updateUser } from 'lib/services/directus/server'
+import stripe from 'lib/services/stripe/server'
+import { withMember } from 'lib/utils/server'
+import {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {

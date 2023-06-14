@@ -1,9 +1,18 @@
-import { getRepository } from './data-source'
-import { User, UserAccount, UserSession, UserVerificationToken } from '../entities'
-import { addHours } from 'date-fns'
-import { LessThan, MoreThan } from 'typeorm'
-import { getUTCNow } from 'lib/utils'
 import { randomUUID } from 'crypto'
+import { addHours } from 'date-fns'
+import { getUTCNow } from 'lib/utils'
+import {
+  LessThan,
+  MoreThan,
+} from 'typeorm'
+
+import {
+  User,
+  UserAccount,
+  UserSession,
+  UserVerificationToken,
+} from '../entities'
+import { getRepository } from './data-source'
 
 export async function createUser(userData: Partial<User>) {
   const repo = await getRepository(User)

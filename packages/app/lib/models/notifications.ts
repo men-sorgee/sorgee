@@ -1,4 +1,8 @@
-import { UserType, NotificationStatusType, User } from './users'
+import {
+  NotificationStatusType,
+  User,
+  UserType,
+} from './users'
 
 export type AppNotification = Omit<
   Notification,

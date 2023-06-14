@@ -1,6 +1,10 @@
-import { MemberLevel, UserType } from 'lib/models'
 import { Block } from 'editorjs-blocks-react-renderer'
-import { DirectusFile, DirectusUser } from './directus'
+import { UserType } from 'lib/models'
+
+import {
+  DirectusFile,
+  DirectusUser,
+} from './directus'
 import { User } from './users'
 
 export type File = {

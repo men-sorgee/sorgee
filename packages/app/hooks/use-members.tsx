@@ -1,8 +1,11 @@
-import { ManyItems } from '@directus/sdk'
 import { useEffect, useState } from 'react'
+
+import useSWR from 'swr'
+
+import { ManyItems } from '@directus/sdk'
+
 import { Profile, SearchableMember } from '../lib/models'
 import { JsonFetcher } from '../lib/utils'
-import useSWR from 'swr'
 
 export type MemberSearchContext = {
   members: SearchableMember[]
@@ -25,10 +28,13 @@ export default function useMemberSearch(
   const key = `/api/members?limit=${size}&page=${page}&sort=${sort}&${new URLSearchParams(
     query
   ).toString()}`
-  const { data: response, error } = useSWR<ManyItems<Partial<Profile>>>(key, JsonFetcher)
+  const { data: response, error } = useSWR<ManyItems<Partial<Profile>>>(
+    key,
+    JsonFetcher
+  )
   const [meta, setMeta] = useState<{ total: number; filtered: number }>({
     total: 0,
-    filtered: 0,
+    filtered: 0
   })
   const [pageCount, setPageCount] = useState(1)
   const [members, setMembers] = useState<SearchableMember[]>([])
@@ -37,7 +43,7 @@ export default function useMemberSearch(
     if (response?.meta) {
       setMeta({
         total: response?.meta?.total_count || 0,
-        filtered: response?.meta?.filter_count || 0,
+        filtered: response?.meta?.filter_count || 0
       })
       setPageCount(Math.ceil(meta?.filtered ? meta.filtered / size : 1))
     }
@@ -54,6 +60,6 @@ export default function useMemberSearch(
     pageSize: size,
     sort,
     loading: !response,
-    error,
+    error
   }
 }

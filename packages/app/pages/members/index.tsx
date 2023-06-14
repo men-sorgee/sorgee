@@ -1,51 +1,63 @@
-import { ManyItems } from '@directus/sdk'
+import { createRef, useEffect, useState } from 'react'
+
+import { MemberCard, MemberModal } from 'components/controls'
+import { FieldCheckbox, FieldCheckboxes, FieldInput } from 'components/forms'
 import Page from 'components/Page'
 import { addDays } from 'date-fns'
 import { useUser } from 'hooks'
-import { pruneUndefined, normalize, serialize, getJSON } from 'lib/utils'
-import { useEffect, useState, createRef } from 'react'
-import { MemberCard, MemberModal } from 'components/controls'
-import { ArrowRightIcon, ArrowLeftIcon, ChevronRightIcon, ChevronLeftIcon } from '@chakra-ui/icons'
 import {
-  Flex,
-  HStack,
-  Stat,
-  StatGroup,
-  StatHelpText,
-  StatArrow,
-  Select,
-  StatLabel,
-  StatNumber,
-  SimpleGrid,
-  Heading,
+  FieldMap,
+  getAllowedUsers,
+  Member,
+  MemberLevel,
+  SearchableMember,
+  UserType
+} from 'lib/models'
+import { MemberStats } from 'lib/services/directus/server/users'
+import {
+  getJSON,
+  JsonFetcher,
+  normalize,
+  pruneUndefined,
+  serialize
+} from 'lib/utils'
+import { NextPageContext } from 'next'
+import { useRouter } from 'next/router'
+import { FormProvider, useForm } from 'react-hook-form'
+import useSWR from 'swr'
+
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon
+} from '@chakra-ui/icons'
+import {
   Accordion,
   AccordionButton,
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
-  Container,
-  useDisclosure,
   Button,
+  Container,
+  Flex,
+  Heading,
+  HStack,
   IconButton,
+  Select,
+  SimpleGrid,
   Spacer,
+  Stat,
+  StatArrow,
+  StatGroup,
+  StatHelpText,
+  StatLabel,
+  StatNumber,
   Text,
+  useDisclosure
 } from '@chakra-ui/react'
-import useSWR from 'swr'
-import {
-  FieldMap,
-  SearchableMember,
-  UserType,
-  MemberLevel,
-  getAllowedUsers,
-  Member,
-} from 'lib/models'
-import { JsonFetcher } from 'lib/utils'
-import { useRouter } from 'next/router'
-import { FormProvider, useForm } from 'react-hook-form'
-import { NextPageContext } from 'next'
-import { FieldCheckboxes, FieldInput, FieldCheckbox } from 'components/forms'
-import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline'
-import { MemberStats } from 'lib/services/directus/server/users'
+import { ManyItems } from '@directus/sdk'
+import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/24/outline'
 
 export type QueryParams = Record<keyof SearchableMember, string[]> & {
   online: boolean
@@ -60,13 +72,15 @@ export type PageProps = {
   id?: string
 }
 
-export async function getServerSideProps(context: NextPageContext): Promise<{ props: PageProps }> {
+export async function getServerSideProps(
+  context: NextPageContext
+): Promise<{ props: PageProps }> {
   const { getFields } = await import('lib/services/directus/server')
   const fields = await getFields('users')
   return {
     props: {
-      fields,
-    },
+      fields
+    }
   }
 }
 
@@ -75,7 +89,7 @@ type Meta = {
   filtered: number
 }
 export default function MemberListPage({ fields, id: i }: PageProps) {
-  const { member: currentMember, loading } = useUser({ 
+  const { member: currentMember, loading } = useUser({
     minLevel: MemberLevel.brother,
     requiredFeature: 'view_directory'
   })
@@ -94,7 +108,7 @@ export default function MemberListPage({ fields, id: i }: PageProps) {
   const [description, setDescription] = useState<string>(undefined)
   const [meta, setMeta] = useState<Meta>({
     total: 0,
-    filtered: 0,
+    filtered: 0
   })
   const topRef = createRef<HTMLDivElement>()
   useEffect(() => {
@@ -121,7 +135,13 @@ export default function MemberListPage({ fields, id: i }: PageProps) {
     if (id) {
       window.history.pushState({}, null, `/members/${id}`)
     } else {
-      if (loading || page == undefined || size == undefined || sort == undefined) return
+      if (
+        loading ||
+        page == undefined ||
+        size == undefined ||
+        sort == undefined
+      )
+        return
       const filter = query ? serialize<SearchableMember>(query) : ''
       window.history.pushState(
         null,
@@ -142,11 +162,14 @@ export default function MemberListPage({ fields, id: i }: PageProps) {
       ...query,
       ...normalize<SearchableMember>(q),
       online: q.online ? true : undefined,
-      photos: q.photos ? true : undefined,
-    },
+      photos: q.photos ? true : undefined
+    }
   })
 
-  const { data: response } = useSWR<ManyItems<Partial<SearchableMember>>>(key, JsonFetcher)
+  const { data: response } = useSWR<ManyItems<Partial<SearchableMember>>>(
+    key,
+    JsonFetcher
+  )
 
   useEffect(() => {
     setPage(1)
@@ -157,7 +180,7 @@ export default function MemberListPage({ fields, id: i }: PageProps) {
       const { total_count, filter_count } = response.meta
       setMeta({
         total: total_count || 0,
-        filtered: filter_count || 0,
+        filtered: filter_count || 0
       })
       setPageCount(filter_count > 0 ? Math.ceil(filter_count / size) : 0)
       setMembers(response.data)
@@ -199,7 +222,11 @@ export default function MemberListPage({ fields, id: i }: PageProps) {
           style={{ width: '100%', display: 'block' }}
         >
           <div ref={topRef}></div>
-          <FilterFields fields={fields} currentMember={currentMember} meta={meta} />
+          <FilterFields
+            fields={fields}
+            currentMember={currentMember}
+            meta={meta}
+          />
 
           <Flex gap={4} mt={4} align="center">
             <Select
@@ -243,7 +270,13 @@ export default function MemberListPage({ fields, id: i }: PageProps) {
             </Select>
           </Flex>
           <Pager page={page} pageCount={pageCount} setPage={setPage} />
-          <SimpleGrid my={4} columns={[1, 1, 1, 2]} spacing={4} w="full" justifyItems="stretch">
+          <SimpleGrid
+            my={4}
+            columns={[1, 1, 1, 2]}
+            spacing={4}
+            w="full"
+            justifyItems="stretch"
+          >
             {members?.map((member: SearchableMember) => (
               <MemberCard
                 full
@@ -291,9 +324,11 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
     getJSON(`/api/stats`).then(({ data }) => {
       setStats(data)
     })
-    getJSON(`/api/stats?start=${addDays(new Date(), -14).toISOString()}`).then(({ data }) => {
-      setStatsR(data)
-    })
+    getJSON(`/api/stats?start=${addDays(new Date(), -14).toISOString()}`).then(
+      ({ data }) => {
+        setStatsR(data)
+      }
+    )
   }, [])
   if (fields == undefined) return null
   return (
@@ -373,8 +408,18 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
         }}
       >
         <AccordionItem w="full">
-          <AccordionButton px={0} py={1} _expanded={{ bg: 'primary', color: 'white' }}>
-            <Flex direction="row" pr={4} gap={[2, 4]} justify="space-between" w="full">
+          <AccordionButton
+            px={0}
+            py={1}
+            _expanded={{ bg: 'primary', color: 'white' }}
+          >
+            <Flex
+              direction="row"
+              pr={4}
+              gap={[2, 4]}
+              justify="space-between"
+              w="full"
+            >
               <Heading as="h3" size="h3" mt={1} ml={2}>
                 Filter
               </Heading>
@@ -400,8 +445,8 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
               <FieldCheckboxes
                 field="user_type"
                 label="User Level"
-                options={fields['user_type'].meta.options.choices.filter((item) =>
-                  allowedUserTypes.includes(item.value as UserType)
+                options={fields['user_type'].meta.options.choices.filter(
+                  (item) => allowedUserTypes.includes(item.value as UserType)
                 )}
               />
               {/**<FieldCheckboxes
@@ -426,7 +471,11 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
              />**/}
             </SimpleGrid>
 
-            <AccordionButton as={'div'} mt={6} _hover={{ bg: 'transparent', cursor: 'default' }}>
+            <AccordionButton
+              as={'div'}
+              mt={6}
+              _hover={{ bg: 'transparent', cursor: 'default' }}
+            >
               <HStack w="full" justify="center">
                 <Button size="lg" type="submit" colorScheme="primary">
                   Search

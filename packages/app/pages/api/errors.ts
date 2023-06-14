@@ -1,6 +1,9 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { withMethods } from 'lib/utils/server'
 import { ApiResponse } from 'lib/models'
+import { withMethods } from 'lib/utils/server'
+import {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next'
 
 export default function Errors(req: NextApiRequest, res: NextApiResponse) {
   try {

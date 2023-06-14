@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
-import { MemberLevel } from 'lib/models'
+
 import { useUser } from 'hooks'
+import { MemberLevel } from 'lib/models'
 
 type Props = {
   minLevel?: MemberLevel

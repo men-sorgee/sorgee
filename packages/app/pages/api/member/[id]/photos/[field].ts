@@ -1,23 +1,31 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { getUser, updateUser } from 'lib/services/directus/server/users'
-import { withMethods, withUser } from 'lib/utils/server'
 import {
-  Applicant,
   ApiResponse,
-  MemberLevel,
-  UserPhotoFieldType,
-  UserPhoto,
-  User,
+  Applicant,
   DirectusFile,
+  User,
+  UserPhoto,
+  UserPhotoFieldType,
 } from 'lib/models'
 import {
-  uploadFile,
-  getFileInfo,
-  UploadFolder,
   createFolder,
   findFolder,
+  getFileInfo,
+  uploadFile,
+  UploadFolder,
 } from 'lib/services/directus/server'
+import {
+  getUser,
+  updateUser,
+} from 'lib/services/directus/server/users'
 import { addUserPhoto } from 'lib/services/directus/server/users/photos'
+import {
+  withMethods,
+  withUser,
+} from 'lib/utils/server'
+import {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next'
 
 export default async function MemberImage(
   req: NextApiRequest,

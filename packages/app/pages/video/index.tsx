@@ -1,22 +1,23 @@
-import { ListItem, UnorderedList } from '@chakra-ui/react'
 import Page from 'components/Page'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+
+import { ListItem, UnorderedList } from '@chakra-ui/react'
 
 export const getServerSideProps = async () => {
   const key = process.env.WHEREBY_API_KEY
   const response = await fetch(`https://api.whereby.dev/v1/meetings`, {
     headers: {
-      Authorization: `Bearer ${key}`,
-    },
+      Authorization: `Bearer ${key}`
+    }
   })
 
   const { results: meetings } = await response.json()
 
   return {
     props: {
-      meetings,
-    },
+      meetings
+    }
   }
 }
 
@@ -31,7 +32,9 @@ export default function VideoChats({ meetings = [] }: { meetings: any[] }) {
       <UnorderedList>
         {meetings?.map((meeting) => (
           <ListItem key={meeting.meetingId}>
-            <Link href={`/video/${meeting.meetingId}`}>{meeting.meetingId}</Link>
+            <Link href={`/video/${meeting.meetingId}`}>
+              {meeting.meetingId}
+            </Link>
           </ListItem>
         ))}
       </UnorderedList>

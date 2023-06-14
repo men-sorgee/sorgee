@@ -1,42 +1,43 @@
-import { useUser } from '@/hooks/use-user'
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+
 import {
-  ImageAsset,
-  PhotoCapture,
-  PhotoUpload,
   ButtonConfirm,
+  ImageAsset,
   MemberAvatar,
+  PhotoCapture,
+  PhotoUpload
 } from 'components/controls'
+import Page from 'components/Page'
+import { UserPhoto } from 'lib/models'
+import { deleteJSON, getAssetUrl } from 'lib/utils'
+
+import { useUser } from '@/hooks/use-user'
 import {
   Alert,
   AlertIcon,
+  Box,
+  chakra,
+  Flex,
   HStack,
+  IconButton,
+  Link,
   Modal,
-  ModalOverlay,
+  ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalHeader,
-  ModalBody,
-  ModalFooter,
-  ModalCloseButton,
-  useDisclosure,
-  IconButton,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  Text,
-  Wrap,
-  Box,
-  Flex,
-  Link,
-  chakra,
+  ModalOverlay,
   StackProps,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  useDisclosure,
+  Wrap
 } from '@chakra-ui/react'
-import Page from 'components/Page'
 import { ArrowUpTrayIcon, CameraIcon } from '@heroicons/react/24/outline'
-import { UserPhoto } from 'lib/models'
-import { deleteJSON, getAssetUrl } from 'lib/utils'
+
 type Props = {}
 
 type PhotoItem = {
@@ -61,7 +62,7 @@ export default function PhotoAlbums({}: Props) {
       return {
         fileId: image.directus_files_id as string,
         photoId: image.id as number,
-        is_public: image.is_public,
+        is_public: image.is_public
       }
     }) || []
   const publicImages = list.filter((image: PhotoItem) => image.is_public)
@@ -74,7 +75,12 @@ export default function PhotoAlbums({}: Props) {
           <Flex align="center" justify="center">
             {(pictureSrc && (
               <Flex direction="column" mb={4}>
-                <MemberAvatar member={member} width="150px" height="150px" rounded="full" />
+                <MemberAvatar
+                  member={member}
+                  width="150px"
+                  height="150px"
+                  rounded="full"
+                />
                 <ButtonConfirm
                   title="Delete Avatar"
                   buttonText="Delete"
@@ -148,7 +154,8 @@ export default function PhotoAlbums({}: Props) {
             <Alert mt={4} status="warning" rounded="lg" shadow="lg">
               <AlertIcon />
               You have photo-sharing turned off. Update&nbsp;
-              <Link href="/member/profile">your profile</Link>&nbsp; to change that.
+              <Link href="/member/profile">your profile</Link>&nbsp; to change
+              that.
             </Alert>
           )}
         </>
@@ -197,7 +204,12 @@ function PhotoList({ title, field, images, memberId, reload }: PhotoListProps) {
         </Box>
       ))}
 
-      <AddPhoto title={title} field={field} memberId={memberId} reload={reload} />
+      <AddPhoto
+        title={title}
+        field={field}
+        memberId={memberId}
+        reload={reload}
+      />
     </Wrap>
   )
 }
@@ -209,7 +221,14 @@ type PhotoProps = StackProps & {
   reload: () => void
 }
 const AddPhoto = chakra(
-  ({ title, memberId, field, reload, rounded = 'lg', ...props }: PhotoProps) => {
+  ({
+    title,
+    memberId,
+    field,
+    reload,
+    rounded = 'lg',
+    ...props
+  }: PhotoProps) => {
     const [image, setImage] = useState<string>()
     const [file, setFile] = useState<File>()
     const { isOpen, onOpen, onClose } = useDisclosure()

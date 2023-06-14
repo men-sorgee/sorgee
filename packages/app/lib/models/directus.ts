@@ -1,11 +1,12 @@
 import {
+  BillingEvent,
   EventUser,
   GroupEvent,
   Message,
+  Notification,
+  NotificationUser,
   Page,
   PageContent,
-  Notification,
-  UserNotification,
   Promo,
   Question,
   Rating,
@@ -18,15 +19,14 @@ import {
   User,
   UserAccount,
   UserBuddy,
-  UserShare,
   UserEmailEvent,
   UserFile,
-  NotificationUser,
+  UserLike,
+  UserNotification,
   UserPhoto,
   UserSession,
+  UserShare,
   UserVerificationToken,
-  BillingEvent,
-  UserLike,
 } from 'lib/models'
 
 export type DirectusCollection = {

@@ -1,50 +1,45 @@
-import { useUser } from 'hooks/use-user'
-import { NextRouter, useRouter } from 'next/router'
 import {
-  useState,
   ChangeEvent,
   Dispatch,
   SetStateAction,
-  useEffect,
   useCallback,
   useRef,
+  useState
 } from 'react'
-import ApplicationSteps from './_steps'
+
+import { PhotoCapture } from 'components/controls'
+import { FieldCheckbox } from 'components/forms'
+import Page from 'components/Page'
+import { useUser } from 'hooks/use-user'
+import { ApiResponse, ApplicationStatus, Member, MemberLevel } from 'lib/models'
+import { getAssetUrl } from 'lib/utils'
+import { NextRouter, useRouter } from 'next/router'
+import { FormProvider, useForm } from 'react-hook-form'
+
 import {
-  Icon,
-  Button,
-  Center,
-  Stack,
-  Text,
   Alert,
-  Flex,
-  HStack,
-  Input,
-  Heading,
-  Image,
   AlertIcon,
   Box,
+  Button,
+  Center,
+  Flex,
+  Heading,
+  HStack,
   IconButton,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  VStack,
-  chakra,
+  Image,
+  Input,
+  Stack,
+  Text
 } from '@chakra-ui/react'
-import Page from 'components/Page'
-import { FieldCheckbox } from 'components/forms'
-import { FormProvider, useForm } from 'react-hook-form'
-import { ErrorMessage } from '@hookform/error-message'
-import { ApiResponse, Member, MemberLevel, ApplicationStatus } from 'lib/models'
-import { getAssetUrl } from 'lib/utils'
-import { PhotoCapture } from 'components/controls'
 import { ArrowUpTrayIcon, CameraIcon } from '@heroicons/react/24/outline'
+import { ErrorMessage } from '@hookform/error-message'
+
+import ApplicationSteps from './_steps'
 
 function Verification() {
   const { member, loading, reload } = useUser({
     minLevel: MemberLevel.applicant,
-    minAppStatus: ApplicationStatus.verify,
+    minAppStatus: ApplicationStatus.verify
   })
   const [complete, setComplete] = useState(false)
   const router = useRouter()
@@ -71,7 +66,7 @@ function Form({
   router,
   setComplete,
   member,
-  reload,
+  reload
 }: {
   member: Member
   reload: () => Promise<Member>
@@ -87,7 +82,7 @@ function Form({
 
   const methods = useForm<{ file: File; verify: boolean }>({
     defaultValues: { verify: false },
-    mode: 'onChange',
+    mode: 'onChange'
   })
   const {
     handleSubmit,
@@ -95,13 +90,17 @@ function Form({
     setError,
     clearErrors,
     watch,
-    formState: { errors },
+    formState: { errors }
   } = methods
 
   const onFileUploadChange = (e: ChangeEvent<HTMLInputElement>) => {
     const fileInput = e.target
 
-    const file = fileInput.files ? (fileInput.files?.length ? fileInput.files[0] : null) : null
+    const file = fileInput.files
+      ? fileInput.files?.length
+        ? fileInput.files[0]
+        : null
+      : null
     if (!file || !file.type.startsWith('image')) {
       setError('file', { message: 'Please select a valid image' })
       return
@@ -136,7 +135,9 @@ function Form({
       fetch(data)
         .then((res) => res.blob())
         .then((blob) => {
-          let file = new File([blob], 'verification-photo.jpg', { type: 'image/jpeg' })
+          let file = new File([blob], 'verification-photo.jpg', {
+            type: 'image/jpeg'
+          })
           setFile(file)
           setPreviewUrl(data)
           setCamera(false)
@@ -158,7 +159,7 @@ function Form({
 
       const res = await fetch('/api/apply/verify', {
         method: 'POST',
-        body: formData,
+        body: formData
       })
 
       if (res.ok) {
@@ -189,9 +190,10 @@ function Form({
         <Flex direction="column" alignItems="center"></Flex>
         <Stack alignItems="center" spacing={4}>
           <Text fontSize="xl">
-            To verify you are who you say you are, please take a selfie while holding a piece of
-            paper with the following verification-code written on it. ( This photo will not be
-            shared with anyone and will not be used for your profile.)
+            To verify you are who you say you are, please take a selfie while
+            holding a piece of paper with the following verification-code
+            written on it. ( This photo will not be shared with anyone and will
+            not be used for your profile.)
           </Text>
           <Heading size="3xl" mb={3}>
             {code}
@@ -227,7 +229,12 @@ function Form({
                 w={['full', '75%']}
                 minH={350}
               >
-                <Input hidden onChange={onFileUploadChange} type="file" ref={fileInput} />
+                <Input
+                  hidden
+                  onChange={onFileUploadChange}
+                  type="file"
+                  ref={fileInput}
+                />
                 <IconButton
                   aria-label="Take Photo"
                   icon={<CameraIcon />}
@@ -260,7 +267,13 @@ function Form({
             )
           )}
           {member?.photo_denial_reason && (
-            <Alert status="error" bg="red.200" size="lg" w={['full', '75%']} mx="auto">
+            <Alert
+              status="error"
+              bg="red.200"
+              size="lg"
+              w={['full', '75%']}
+              mx="auto"
+            >
               <AlertIcon />
               <Text>
                 Your verification photo was denied.
@@ -273,14 +286,20 @@ function Form({
             <AlertIcon />
             <Text fontSize="xl" textAlign="left">
               <strong>
-                Be sure your face and code is clearly visible, with no sunglasses or hats.
+                Be sure your face and code is clearly visible, with no
+                sunglasses or hats.
               </strong>
               <br />
-              Your photo will not be accepted without the verification code written on a piece of
-              paper.
+              Your photo will not be accepted without the verification code
+              written on a piece of paper.
             </Text>
           </Alert>
-          <Flex alignItems="center" align="center" justify="middle" textAlign="center">
+          <Flex
+            alignItems="center"
+            align="center"
+            justify="middle"
+            textAlign="center"
+          >
             <FieldCheckbox
               w="fit-content"
               field="verify"
@@ -301,12 +320,22 @@ function Form({
               Clear
             </Button>
             {member?.photo && !member?.photo_denial_reason && isVerified && (
-              <Button type="submit" size="lg" onClick={handleSubmit(skip)} colorScheme="primary">
+              <Button
+                type="submit"
+                size="lg"
+                onClick={handleSubmit(skip)}
+                colorScheme="primary"
+              >
                 Use Existing
               </Button>
             )}
             {file && (
-              <Button type="submit" size="lg" disabled={!canUpload} colorScheme="accent">
+              <Button
+                type="submit"
+                size="lg"
+                disabled={!canUpload}
+                colorScheme="accent"
+              >
                 Upload
               </Button>
             )}

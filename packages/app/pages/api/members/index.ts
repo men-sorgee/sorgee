@@ -1,6 +1,3 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { searchUsers } from 'lib/services/directus/server/users'
-
 import {
   ApiResponse,
   getAllowedUsers,
@@ -10,9 +7,15 @@ import {
   User,
   UserType,
 } from 'lib/models'
-import { ManyItems } from '@directus/sdk'
+import { searchUsers } from 'lib/services/directus/server/users'
 import { normalize } from 'lib/utils'
 import { withMember } from 'lib/utils/server'
+import {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next'
+
+import { ManyItems } from '@directus/sdk'
 
 type MemberSearch = SearchableMember & {
   offset?: number

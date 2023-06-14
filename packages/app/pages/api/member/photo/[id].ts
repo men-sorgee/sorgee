@@ -1,11 +1,17 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { withMethods, withUser } from 'lib/utils/server'
 import { ApiResponse } from 'lib/models'
 import {
   deleteUserPhoto,
   getUserPhoto,
   updateUserPhoto,
 } from 'lib/services/directus/server/users/photos'
+import {
+  withMethods,
+  withUser,
+} from 'lib/utils/server'
+import {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next'
 
 export default async function MemberImage(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {

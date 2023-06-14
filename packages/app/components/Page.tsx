@@ -1,10 +1,13 @@
-import { useMeta } from 'hooks/use-meta'
-import { Loading } from 'components/controls'
-import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
-import AccessDenied from './AccessDenied'
-import { Flex, BoxProps, chakra, Box, Heading } from '@chakra-ui/react'
+
+import { Loading } from 'components/controls'
+import { useMeta } from 'hooks/use-meta'
 import { MemberLevel } from 'lib/models'
+import { useSession } from 'next-auth/react'
+
+import { Box, BoxProps, chakra, Heading } from '@chakra-ui/react'
+
+import AccessDenied from './AccessDenied'
 
 type Props = BoxProps & {
   id?: string
@@ -52,7 +55,7 @@ const Page = ({
     session?.user.user_type,
     setMeta,
     status,
-    title,
+    title
   ])
 
   if (denied) {

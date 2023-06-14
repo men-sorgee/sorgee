@@ -1,18 +1,23 @@
-import { useColorModeValue, Flex, Box } from '@chakra-ui/react'
-import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { constrained } from '..'
+
 import { useUser } from 'hooks'
-import Notifications from './Notifications'
+import { useRouter } from 'next/router'
+
+import { Box, Flex, useColorModeValue } from '@chakra-ui/react'
+
+import { constrained } from '../'
+import { MemberLevel } from '../../lib/models'
 import Buddies from './Buddies'
 import Chat from './Chat'
 import Events from './Events'
 import Members from './Members'
+import Notifications from './Notifications'
 
 export default function ActionsNav() {
   const router = useRouter()
-  const { authenticated, isMember, level, member, hasFeature } = useUser({
-    forceLogin: false,
+  const { authenticated, isMember, member, hasFeature } = useUser({
+    minLevel: MemberLevel.inductee,
+    redirectsEnabled: false
   })
   const [path, setPath] = useState(router.asPath)
 
@@ -44,11 +49,25 @@ export default function ActionsNav() {
       bottom={0}
       pr="16px"
     >
-      <Flex justify="center" w="full" gap={[4, 6, 8, 10]} p={4} {...constrained}>
-        <Chat member={member} hasFeature={hasChat} /> 
+      <Flex
+        justify="center"
+        w="full"
+        gap={[4, 6, 8, 10]}
+        p={4}
+        {...constrained}
+      >
+        <Chat member={member} hasFeature={hasChat} />
         <Events member={member} active={path.startsWith('/events')} />
-        <Members member={member} active={path.startsWith('/members')} hasFeature={hasDirectory} />
-        <Buddies member={member} active={path.startsWith('/member/buddies')} hasFeature={hasBuddyList} />
+        <Members
+          member={member}
+          active={path.startsWith('/members')}
+          hasFeature={hasDirectory}
+        />
+        <Buddies
+          member={member}
+          active={path.startsWith('/member/buddies')}
+          hasFeature={hasBuddyList}
+        />
         <Notifications member={member} />
       </Flex>
     </Box>

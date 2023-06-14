@@ -1,5 +1,6 @@
-import { getAdminClient } from '..'
 import { UserLike } from 'lib/models'
+
+import { getAdminClient } from '../'
 
 export async function getLike(user_id: string, like_id: string): Promise<UserLike> {
   const adminClient = await getAdminClient()

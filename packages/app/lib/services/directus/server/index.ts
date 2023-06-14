@@ -1,8 +1,13 @@
-import { NotificationsUsers } from './../../db/entities/NotificationsUsers'
-import { Directus } from '@directus/sdk'
-import { DirectusField, DirectusTypes, Promo, User, FieldMap } from 'lib/models'
 import { adminUrl } from 'lib/config'
-import { FieldDate } from '../../../../components/forms'
+import {
+  DirectusField,
+  DirectusTypes,
+  FieldMap,
+  Promo,
+  User,
+} from 'lib/models'
+
+import { Directus } from '@directus/sdk'
 
 const _adminDb = new Directus<DirectusTypes>(adminUrl)
 const cache: { [key: string]: any } = {}

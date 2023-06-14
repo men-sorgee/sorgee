@@ -1,20 +1,26 @@
-import { Flex, SlideFade, Text, Image, Box, Heading } from '@chakra-ui/react'
 import { useState } from 'react'
-import { Member, GroupEvent, EventDetail } from 'lib/models'
+
+import { EventDetail, GroupEvent, Member } from 'lib/models'
+
+import { Box, Flex, Heading, Image, SlideFade, Text } from '@chakra-ui/react'
 
 type EventTicketProps = {
   member: Member
   event: EventDetail | GroupEvent
   open?: boolean
 }
-export const EventTicket = ({ member, event, open = false }: EventTicketProps) => {
+export const EventTicket = ({
+  member,
+  event,
+  open = false
+}: EventTicketProps) => {
   const [showTicket, setShowTicket] = useState<boolean>(undefined)
 
   if (!member || !event) return null
 
-  const checkinUrl = `/api/${event?.invite_only ? 'invite' : 'events'}/checkin?user_id=${
-    member?.id
-  }&event_id=${event?.id}`
+  const checkinUrl = `/api/${
+    event?.invite_only ? 'invite' : 'events'
+  }/checkin?user_id=${member?.id}&event_id=${event?.id}`
   return (
     <Box mt={4} borderTop="2px dotted">
       <Image
@@ -29,7 +35,8 @@ export const EventTicket = ({ member, event, open = false }: EventTicketProps) =
       />
       <div className="no-print">
         <Text textAlign="center">
-          <strong>Important:</strong> Present this ticket to the host when you arrive for access.
+          <strong>Important:</strong> Present this ticket to the host when you
+          arrive for access.
         </Text>
         <Flex direction="column" my={4}>
           {!open && (

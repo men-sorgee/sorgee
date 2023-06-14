@@ -1,18 +1,15 @@
 import {
-  AppNotification,
   DirectusFile,
   DirectusUser,
   EventUser,
+  NotificationUser,
   Promo,
   Rating,
   UserEmailEvent,
   UserInvite,
-  UserNotification,
-  NotificationUser
 } from 'lib/models'
-
 import { ProviderType } from 'next-auth/providers'
-import { deprecate } from 'util'
+
 export type UserAccount = {
   id?: string
   user?: string | User

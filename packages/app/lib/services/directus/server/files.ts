@@ -1,10 +1,19 @@
-import { getAdminClient } from '.'
-import formidable, { Fields, Files, File } from 'formidable'
-import IncomingForm from 'formidable/Formidable'
-import { NextApiRequest } from 'next'
 import { Writable } from 'node:stream'
+
 import FormData from 'form-data'
-import { DirectusFile, DirectusFolder } from 'lib/models'
+import formidable, {
+  Fields,
+  File,
+  Files,
+} from 'formidable'
+import IncomingForm from 'formidable/Formidable'
+import {
+  DirectusFile,
+  DirectusFolder,
+} from 'lib/models'
+import { NextApiRequest } from 'next'
+
+import { getAdminClient } from './'
 
 export enum UploadFolder {
   members = '8c3d5472-6b02-4056-affd-ab3d461b273d',

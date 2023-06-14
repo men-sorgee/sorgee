@@ -1,32 +1,31 @@
+import { useRef } from 'react'
+
+import { MembershipType } from 'lib/models'
+import { useRouter } from 'next/router'
+
 import {
   AlertDialog,
   AlertDialogBody,
+  AlertDialogCloseButton,
+  AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogContent,
   AlertDialogOverlay,
-  AlertDialogCloseButton,
   Box,
   Button,
-  useDisclosure,
-  IconButton
+  IconButton,
+  useDisclosure
 } from '@chakra-ui/react'
-import { useRef } from 'react'
-import { useRouter } from 'next/router';
-import { Member, MemberLevel, MembershipType } from 'lib/models'
-import Subscribe from '../../pages/api/subscribe';
-import { addBuddy } from 'lib/services/directus/server/users';
-
 
 type Props = {
-  title: string;
-  icon: React.ReactElement;
+  title: string
+  icon: React.ReactElement
   membershipType: MembershipType
 }
 
 const UpgradeIcon = ({ title, icon, membershipType }: Props) => {
   const router = useRouter()
-  const { isOpen, onOpen, onClose,  } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const cancelRef = useRef()
 
   const onUpgrade = () => {
@@ -59,20 +58,20 @@ const UpgradeIcon = ({ title, icon, membershipType }: Props) => {
         <AlertDialogOverlay>
           <AlertDialogCloseButton />
           <AlertDialogContent>
-            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
               Upgrade Required
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              This feature is only available with our paid plans. Upgrade your plan to add
-              this and other features to your account.
+              This feature is only available with our paid plans. Upgrade your
+              plan to add this and other features to your account.
             </AlertDialogBody>
 
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onClose}>
                 Cancel
               </Button>
-              <Button colorScheme='red' onClick={onUpgrade} ml={3}>
+              <Button colorScheme="red" onClick={onUpgrade} ml={3}>
                 Upgrade
               </Button>
             </AlertDialogFooter>

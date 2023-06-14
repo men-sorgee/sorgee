@@ -1,6 +1,6 @@
 'use client'
-import { useState, useEffect } from 'react'
 import type { RefObject } from 'react'
+import { useEffect, useState } from 'react'
 
 interface IntersectionObserverArgs extends IntersectionObserverInit {
   freezeOnceVisible?: boolean
@@ -15,7 +15,7 @@ export function useIntersectionObserver(
     threshold = 0,
     root = null,
     rootMargin = '0%',
-    freezeOnceVisible = false,
+    freezeOnceVisible = false
   }: IntersectionObserverArgs
 ): IntersectionObserverEntry | undefined {
   const [entry, setEntry] = useState<IntersectionObserverEntry>()

@@ -1,7 +1,7 @@
-import { NextPageContext } from 'next'
 import { pruneUndefined } from 'lib/utils'
+import { NextPageContext } from 'next'
 
-import { default as MemberList, QueryParams } from './index'
+import MemberList, { QueryParams } from './index'
 
 export async function getServerSideProps(ctx: NextPageContext) {
   const { getFields } = await import('lib/services/directus/server')
@@ -11,7 +11,7 @@ export async function getServerSideProps(ctx: NextPageContext) {
 
   const props: any = {
     fieldMap,
-    params,
+    params
   }
 
   const { id } = ctx.query
@@ -20,7 +20,7 @@ export async function getServerSideProps(ctx: NextPageContext) {
   }
 
   return {
-    props: pruneUndefined(props),
+    props: pruneUndefined(props)
   }
 }
 

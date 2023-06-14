@@ -1,9 +1,29 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { withMethods, withMember } from 'lib/utils/server'
-import { ApiResponse, UserLike, Member } from 'lib/models'
-import { getUser, getLike, addLike, removeLike } from 'lib/services/directus/server/users'
+import {
+  ApiResponse,
+  Member,
+  UserLike,
+} from 'lib/models'
 import { addUserNotification } from 'lib/services/directus/server'
-import { SendGridCategory, SendGridTemplate, sendNotificationEmail } from 'lib/services/sendgrid/server'
+import {
+  addLike,
+  getLike,
+  getUser,
+  removeLike,
+} from 'lib/services/directus/server/users'
+import {
+  SendGridCategory,
+  SendGridTemplate,
+  sendNotificationEmail,
+} from 'lib/services/sendgrid/server'
+import {
+  withMember,
+  withMethods,
+} from 'lib/utils/server'
+import {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next'
+
 import { baseUrl } from '../../../../lib/config'
 
 export default async function MemberLike(

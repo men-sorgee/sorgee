@@ -1,14 +1,16 @@
-import { useFormContext, RegisterOptions } from 'react-hook-form'
-import FieldWrapper from './FieldWrapper'
+import { RegisterOptions, useFormContext } from 'react-hook-form'
+
 import {
-  SliderProps,
   chakra,
   Slider,
-  SliderTrack,
   SliderFilledTrack,
-  SliderThumb,
   SliderMark,
+  SliderProps,
+  SliderThumb,
+  SliderTrack
 } from '@chakra-ui/react'
+
+import FieldWrapper from './FieldWrapper'
 
 export type Props = SliderProps & {
   field: string

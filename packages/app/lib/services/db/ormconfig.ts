@@ -1,5 +1,7 @@
 import { DataSourceOptions } from 'typeorm'
+
 import * as types from './entities'
+
 const config: DataSourceOptions = {
   name: 'gnh',
   type: 'postgres',

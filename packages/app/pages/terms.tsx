@@ -1,6 +1,8 @@
-import Script from 'next/script'
-import { useMeta } from 'hooks/use-meta'
 import { useEffect } from 'react'
+
+import { useMeta } from 'hooks/use-meta'
+import Script from 'next/script'
+
 import { Box } from '@chakra-ui/react'
 
 export default function Terms() {

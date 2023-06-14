@@ -1,7 +1,8 @@
 import * as typeorm from 'typeorm'
+
 import { DirectusFile } from './DirectusFiles'
-import { Page } from './Page'
 import { DirectusUsers } from './DirectusUsers'
+import { Page } from './Page'
 
 @typeorm.Index('page_content_pkey', ['id'], { unique: true })
 @typeorm.Entity('page_content', { schema: 'public' })

@@ -4,19 +4,10 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm'
+
 import { DirectusFolders } from './DirectusFolders'
-import { DirectusUsers } from './DirectusUsers'
-import { Location } from './Location'
-import { Messages } from './Messages'
-import { Page } from './Page'
-import { PageContent } from './PageContent'
-import { SurveyAnswers } from './SurveyAnswers'
-import { User } from './User'
-import { UsersFiles } from './UsersFiles'
-import { UsersPhotos } from './UsersPhotos'
 
 @Index('directus_files_pkey', ['id'], { unique: true })
 @Entity('directus_files', { schema: 'public' })

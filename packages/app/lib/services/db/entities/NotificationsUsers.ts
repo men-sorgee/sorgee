@@ -1,4 +1,5 @@
 import * as typeorm from 'typeorm'
+
 import { Notifications } from './Notifications'
 import { User } from './User'
 

@@ -1,4 +1,8 @@
-import { Column, Entity, Index } from "typeorm";
+import {
+  Column,
+  Entity,
+  Index,
+} from 'typeorm'
 
 @Index("spatial_ref_sys_pkey", ["srid"], { unique: true })
 @Entity("spatial_ref_sys", { schema: "public" })

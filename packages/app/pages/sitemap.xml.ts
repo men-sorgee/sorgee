@@ -1,7 +1,6 @@
 import { baseUrl } from 'lib/config'
-import { listPages } from 'lib/services/directus/static'
 import { Page } from 'lib/models'
-import { cache } from 'react'
+import { listPages } from 'lib/services/directus/static'
 
 function generateSiteMap(pages: Page[]) {
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -23,14 +22,14 @@ function generateSiteMap(pages: Page[]) {
        <loc>${baseUrl}/cookies</loc>
      </url>
      ${pages
-       .map((page) => {
-         return `
+      .map((page) => {
+        return `
        <url>
            <loc>${`${baseUrl}/${page.slug}`}</loc>
        </url>
      `
-       })
-       .join('')}
+      })
+      .join('')}
    </urlset>
  `
 }

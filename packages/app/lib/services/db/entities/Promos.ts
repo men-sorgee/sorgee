@@ -1,4 +1,5 @@
 import * as typeorm from 'typeorm'
+
 import { DirectusUsers } from './DirectusUsers'
 import { User } from './User'
 

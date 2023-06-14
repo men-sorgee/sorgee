@@ -1,26 +1,27 @@
+import { useEffect, useState } from 'react'
+
 import { useNotifications } from 'hooks/use-notifications'
+import { AppNotification, Member } from 'lib/models'
+
 import {
-  Button,
   Alert,
   AlertTitle,
-  Heading,
+  Button,
   chakra,
+  Heading,
   HStack,
-  AlertDescription,
-  VStack,
   Modal,
-  ModalOverlay,
-  ModalContent,
   ModalBody,
-  ModalHeader,
-  ModalFooter,
   ModalCloseButton,
-  useDisclosure,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure
 } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
-import { AppNotification, Member } from 'lib/models'
-import { Markdown } from './Markdown'
+
 import { ButtonLink } from './ButtonLink'
+import { Markdown } from './Markdown'
 
 type Props = {
   notification: AppNotification
@@ -57,7 +58,7 @@ export const NotificationCard = chakra(({ member, notification }: Props) => {
     notification?.message,
     notification?.status,
     notification?.subject,
-    subject,
+    subject
   ])
 
   const openMessage = () => {
@@ -82,7 +83,11 @@ export const NotificationCard = chakra(({ member, notification }: Props) => {
         flexDirection="column"
         alignItems="flex-start"
       >
-        {subject && <AlertTitle fontWeight={isNew ? 'bold' : 'normal'}>{subject}</AlertTitle>}
+        {subject && (
+          <AlertTitle fontWeight={isNew ? 'bold' : 'normal'}>
+            {subject}
+          </AlertTitle>
+        )}
       </Alert>
       <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
         <ModalOverlay />
@@ -97,7 +102,11 @@ export const NotificationCard = chakra(({ member, notification }: Props) => {
           <ModalFooter>
             <HStack spacing={2} align="right">
               {notification?.link && (
-                <ButtonLink onClick={onClose} href={notification?.link} colorScheme="accent">
+                <ButtonLink
+                  onClick={onClose}
+                  href={notification?.link}
+                  colorScheme="accent"
+                >
                   {notification?.button_text || 'Check it Out!'}
                 </ButtonLink>
               )}

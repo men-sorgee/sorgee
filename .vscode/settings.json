@@ -61,17 +61,21 @@
   "typescript.tsdk": "./node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.preferences.importModuleSpecifier": "relative",
-  "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnPaste": false, // required
   "editor.formatOnType": false, // required
   "editor.formatOnSave": true, // optional
   "editor.formatOnSaveMode": "file", // required to format on save
   "files.autoSave": "onFocusChange", // optional but recommended
+  "editor.codeActionsOnSave": {
+    "source.organizeImports.sortImports": true,
+    "source.fixAll.eslint": true
+  },
   "[dockerfile]": {
     "editor.defaultFormatter": "ms-azuretools.vscode-docker"
   },
   "[markdown]": {
-    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "autoimport.filesToScan": "packages/app/**/*.{ts,tsx}",
   "autoimport.showNotifications": true,
@@ -89,7 +93,7 @@
     "editor.defaultFormatter": "vscode.json-language-features"
   },
   "[typescriptreact]": {
-    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "eslint.codeActionsOnSave.mode": "problems",
   "vs-code-prettier-eslint.prettierLast": true

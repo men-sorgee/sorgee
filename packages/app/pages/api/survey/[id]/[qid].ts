@@ -1,7 +1,20 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { ApiResponse, Question, SurveyAnswer } from 'lib/models'
-import { withMember, withMethods } from 'lib/utils/server'
-import { getSurveyAnswer, getQuestion, setSurveyAnswer } from 'lib/services/directus/server'
+import {
+  ApiResponse,
+  SurveyAnswer,
+} from 'lib/models'
+import {
+  getQuestion,
+  getSurveyAnswer,
+  setSurveyAnswer,
+} from 'lib/services/directus/server'
+import {
+  withMember,
+  withMethods,
+} from 'lib/utils/server'
+import {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next'
 
 export default async function SurveyQuestion(
   req: NextApiRequest,

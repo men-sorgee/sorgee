@@ -1,9 +1,30 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { getInvite, getNotification, getUser, updateInvite, updateUser } from 'lib/services/directus/server'
-import { withStaff, withMethods } from 'lib/utils/server'
-import { ApiResponse, EventUser, MemberLevel } from 'lib/models'
-import { SendGridCategory, SendGridTemplate, sendNotificationEmail } from 'lib/services/sendgrid/server'
 import { notifications } from 'lib/config'
+import {
+  ApiResponse,
+  EventUser,
+  MemberLevel,
+} from 'lib/models'
+import {
+  getInvite,
+  getNotification,
+  getUser,
+  updateInvite,
+  updateUser,
+} from 'lib/services/directus/server'
+import {
+  SendGridCategory,
+  SendGridTemplate,
+  sendNotificationEmail,
+} from 'lib/services/sendgrid/server'
+import {
+  withMethods,
+  withStaff,
+} from 'lib/utils/server'
+import {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next'
+
 export default async function Invite(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<EventUser> | null>

@@ -1,21 +1,31 @@
-import { useUser } from '@/hooks/use-user'
-import { useRouter } from 'next/router'
-import ApplicationSteps from './_steps'
-import Page from 'components/Page'
-import { Text, Heading, VStack, Button, Box, Alert } from '@chakra-ui/react'
-import { FieldRadioButtons } from 'components/forms'
-import { useForm, FormProvider } from 'react-hook-form'
-import { postJSON } from 'lib/utils'
 import { useEffect, useState } from 'react'
-import { useToast } from '@chakra-ui/react'
-import { Member, MemberLevel, ApplicationStatus } from 'lib/models'
+
+import { FieldRadioButtons } from 'components/forms'
+import Page from 'components/Page'
+import { ApplicationStatus, MemberLevel } from 'lib/models'
+import { postJSON } from 'lib/utils'
+import { useRouter } from 'next/router'
+import { FormProvider, useForm } from 'react-hook-form'
+
+import { useUser } from '@/hooks/use-user'
+import {
+  Alert,
+  Box,
+  Button,
+  Heading,
+  Text,
+  useToast,
+  VStack
+} from '@chakra-ui/react'
+
+import ApplicationSteps from './_steps'
 
 function Review() {
   const router = useRouter()
   const [complete, setComplete] = useState<boolean>(false)
   const { loading, member } = useUser({
     minLevel: MemberLevel.applicant,
-    minAppStatus: ApplicationStatus.review,
+    minAppStatus: ApplicationStatus.review
   })
 
   useEffect(() => {
@@ -33,20 +43,22 @@ function Review() {
   const methods = useForm<{ contact_preference: string }>({
     mode: 'onBlur',
     defaultValues: {
-      contact_preference: member?.contact_preference || 'email',
-    },
+      contact_preference: member?.contact_preference || 'email'
+    }
   })
   const { setError } = methods
   const toast = useToast()
   const onSubmit = async ({ contact_preference }) => {
-    const { success, error } = await postJSON('/api/member/me', { contact_preference })
+    const { success, error } = await postJSON('/api/member/me', {
+      contact_preference
+    })
     if (success) {
       toast({
         title: 'Application Submitted',
         description: 'Your application has been submitted for review.',
         status: 'success',
         duration: 9000,
-        isClosable: true,
+        isClosable: true
       })
       setComplete(true)
     } else if (error?.field) {
@@ -75,7 +87,13 @@ function Review() {
               How would you like to be contacted?
             </Text>
 
-            <VStack alignItems="center" align="center" justify="middle" textAlign="center" mt={8}>
+            <VStack
+              alignItems="center"
+              align="center"
+              justify="middle"
+              textAlign="center"
+              mt={8}
+            >
               <FormProvider {...methods}>
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
                   <FieldRadioButtons
@@ -85,7 +103,7 @@ function Review() {
                     options={[
                       { text: 'Email', value: 'email' },
                       { text: 'Phone', value: 'phone_call' },
-                      { text: 'Text', value: 'phone_text' },
+                      { text: 'Text', value: 'phone_text' }
                     ]}
                   />
                   <Button type="submit" mt={8} size="lg" bgColor="accent.500">
@@ -108,8 +126,8 @@ function Review() {
               rounded="lg"
               shadow="lg"
             >
-              Your application is currently being reviewed by our team. You will receive an email
-              with our decision within 7 days. <br />
+              Your application is currently being reviewed by our team. You will
+              receive an email with our decision within 7 days. <br />
               Thank you for your interest in our fraternity.
             </Alert>
           </>

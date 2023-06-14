@@ -1,25 +1,22 @@
+import { useEffect } from 'react'
+
+import { NotificationCard } from 'components/controls'
+import { useNotifications } from 'hooks/use-notifications'
+import { Member } from 'lib/models'
+
 import {
   Badge,
-  useDisclosure,
+  Box,
   Drawer,
   DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
   DrawerHeader,
   DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  MenuItem,
   IconButton,
-  Box,
+  useDisclosure
 } from '@chakra-ui/react'
 import { BellIcon } from '@heroicons/react/24/outline'
-import {
-  NotificationsContext,
-  NotificationsContextData,
-  useNotifications,
-} from 'hooks/use-notifications'
-import { NotificationCard } from 'components/controls'
-import { Member } from 'lib/models'
-import { useEffect } from 'react'
 
 interface Props {
   member: Member
@@ -27,7 +24,8 @@ interface Props {
 
 const NotificationsAction = ({ member }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { hasNewNotifications, notifications, newNotificationCount } = useNotifications()
+  const { hasNewNotifications, notifications, newNotificationCount } =
+    useNotifications()
 
   useEffect(() => {
     if (isOpen && notifications?.length == 0) {

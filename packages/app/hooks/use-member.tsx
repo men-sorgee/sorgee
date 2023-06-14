@@ -1,7 +1,7 @@
 'use client'
-import useSWR from 'swr'
 import { Member, MemberLevel } from 'lib/models'
 import { getAssetUrl, JsonFetcher } from 'lib/utils'
+import useSWR from 'swr'
 
 type MemberResults = {
   member: Member
@@ -13,7 +13,10 @@ type MemberResults = {
   reload: () => void
 }
 
-export const useMember = (id: string, refreshIntervalMinutes: number = 5): MemberResults => {
+export const useMember = (
+  id: string,
+  refreshIntervalMinutes: number = 5
+): MemberResults => {
   const {
     data: member,
     error,
@@ -23,8 +26,8 @@ export const useMember = (id: string, refreshIntervalMinutes: number = 5): Membe
     refreshInterval: 1000 * 60 * refreshIntervalMinutes,
     isPaused: () => !id || id === 'null' || id === 'undefined',
     fallback: {
-      '/api/member/': null,
-    },
+      '/api/member/': null
+    }
   })
   const level = MemberLevel[member?.user_type || 'subscriber']
   const name = member?.nickname || member?.first_name || null
@@ -38,6 +41,6 @@ export const useMember = (id: string, refreshIntervalMinutes: number = 5): Membe
     reload: () => {
       mutate(undefined, true)
     },
-    level,
+    level
   }
 }

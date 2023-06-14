@@ -1,8 +1,11 @@
-import { chakra } from '@chakra-ui/react'
 import { TextareaHTMLAttributes } from 'react'
-import { useFormContext, RegisterOptions } from 'react-hook-form'
+
+import { RegisterOptions, useFormContext } from 'react-hook-form'
+
+import { chakra, Textarea, TextareaProps } from '@chakra-ui/react'
+
 import FieldWrapper from './FieldWrapper'
-import { Textarea, TextareaProps } from '@chakra-ui/react'
+
 type Props = TextareaProps &
   TextareaHTMLAttributes<HTMLInputElement> & {
     field: string
@@ -13,12 +16,26 @@ type Props = TextareaProps &
   }
 
 const TextField = (props: Props) => {
-  const { field, label, help, registerOptions = {}, className, mt, ...opts } = props
+  const {
+    field,
+    label,
+    help,
+    registerOptions = {},
+    className,
+    mt,
+    ...opts
+  } = props
   const { register, getFieldState, formState } = useFormContext()
   const { error } = getFieldState(field, formState)
   const classes = error ? 'error' : ''
   return (
-    <FieldWrapper field={field} label={label} help={help} className={className} mt={mt}>
+    <FieldWrapper
+      field={field}
+      label={label}
+      help={help}
+      className={className}
+      mt={mt}
+    >
       <Textarea
         {...opts}
         id={field}

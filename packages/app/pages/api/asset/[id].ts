@@ -1,6 +1,13 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { baseUrl, adminBaseUrl } from 'lib/config'
+import {
+  adminBaseUrl,
+  baseUrl,
+} from 'lib/config'
 import app from 'lib/config/server'
+import {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next'
+
 export default async function Asset(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { id, fit = 'cover', width, height, quality = '70' } = req.query

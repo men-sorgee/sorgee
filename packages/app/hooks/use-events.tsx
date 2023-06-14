@@ -1,7 +1,7 @@
 'use client'
-import useSWR, { KeyedMutator } from 'swr'
 import { GroupEvent } from 'lib/models'
 import { JsonFetcher } from 'lib/utils'
+import useSWR, { KeyedMutator } from 'swr'
 
 type EventsResults = {
   events: GroupEvent[]
@@ -16,7 +16,7 @@ export const useEvents = (): EventsResults => {
     data: events = [],
     mutate,
     error,
-    isLoading,
+    isLoading
   } = useSWR<GroupEvent[], Error>(`/api/events`, JsonFetcher, {
     refreshWhenHidden: true,
     refreshWhenOffline: true,
@@ -24,7 +24,7 @@ export const useEvents = (): EventsResults => {
     revalidateOnReconnect: true,
     refreshInterval: 1000 * 60 * 10,
     //isPaused: () => !authenticated,
-    fallbackData: [],
+    fallbackData: []
   })
 
   return {
@@ -34,6 +34,6 @@ export const useEvents = (): EventsResults => {
     loading: isLoading,
     reload: () => {
       mutate()
-    },
+    }
   }
 }

@@ -1,9 +1,9 @@
-import { NextPageContext } from 'next'
 import { baseUrl } from 'lib/config'
+import { NextPageContext } from 'next'
 import dynamic from 'next/dynamic'
 
 const QrCode = dynamic<any>(() => import('react-qrcode-svg'), {
-  ssr: false,
+  ssr: false
 })
 
 interface Props {

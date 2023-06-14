@@ -1,9 +1,11 @@
-import { Flex, Badge, Spacer } from '@chakra-ui/react'
-import { SearchableMember, Member } from 'lib/models'
-import { MemberIcon, MemberIconProps } from './MemberIcon'
-import { capitalCase } from 'change-case'
-
 import { ReactNode } from 'react'
+
+import { capitalCase } from 'change-case'
+import { Member, SearchableMember } from 'lib/models'
+
+import { Badge, Flex, Spacer } from '@chakra-ui/react'
+
+import { MemberIcon, MemberIconProps } from './MemberIcon'
 
 export type MemberHeaderProps = MemberIconProps & {
   children?: ReactNode
@@ -23,10 +25,18 @@ export const MemberHeader = ({
   minimal = false,
   ...props
 }: MemberHeaderProps) => {
-  const sharedWithMe = member?.photo_shares?.some(s => s.viewer_id == viewer?.id)
+  const sharedWithMe = member?.photo_shares?.some(
+    (s) => s.viewer_id == viewer?.id
+  )
   return (
     <>
-      <Flex direction='column' justify="space-between" align="center" alignItems="center" gap={2}>
+      <Flex
+        direction="column"
+        justify="space-between"
+        align="center"
+        alignItems="center"
+        gap={2}
+      >
         <MemberIcon member={member} size={size} {...props}>
           {children}
         </MemberIcon>
@@ -44,7 +54,12 @@ export const MemberHeader = ({
               </Badge>
             )}
             {member?.relationship_status && (
-              <Badge fontSize={['xs', 'sm']} bg="primary.500" color="white" rounded={0}>
+              <Badge
+                fontSize={['xs', 'sm']}
+                bg="primary.500"
+                color="white"
+                rounded={0}
+              >
                 {capitalCase(member.relationship_status)}
               </Badge>
             )}
@@ -59,14 +74,16 @@ export const MemberHeader = ({
               </Badge>
             )}
             <Spacer />
-            {sharedWithMe && <Badge
+            {sharedWithMe && (
+              <Badge
                 fontSize={['xs', 'sm']}
                 bg="primary.300"
                 color="white"
                 borderRadius="0 3px 3px 0"
               >
                 Unlocked
-              </Badge>}
+              </Badge>
+            )}
           </Flex>
         )}
       </Flex>

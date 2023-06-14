@@ -1,23 +1,23 @@
-import {
-  HStack,
-  Box,
-  Avatar,
-  VStack,
-  Heading,
-  Text,
-  AvatarProps,
-  AvatarBadge,
-  Tooltip,
-  chakra,
-  useColorModeValue,
-  Spacer,
-  Flex,
-} from '@chakra-ui/react'
-import { useEffect, useState, ReactNode } from 'react'
-import { MemberBadge } from '.'
-import { getAssetUrl, toLocalDate } from 'lib/utils'
-import { Member, SearchableMember } from 'lib/models'
+import { ReactNode, useEffect, useState } from 'react'
+
 import { formatDistanceToNowStrict } from 'date-fns'
+import { Member, SearchableMember } from 'lib/models'
+import { getAssetUrl, toLocalDate } from 'lib/utils'
+
+import {
+  Avatar,
+  AvatarBadge,
+  AvatarProps,
+  Box,
+  chakra,
+  Flex,
+  Heading,
+  Spacer,
+  Text,
+  Tooltip
+} from '@chakra-ui/react'
+
+import { MemberBadge } from './'
 import { ImageModal } from './ImageModal'
 
 export type MemberIconProps = AvatarProps & {
@@ -28,14 +28,23 @@ export type MemberIconProps = AvatarProps & {
 }
 
 export const MemberIcon = chakra(
-  ({ member, zoom = false, size = 'lg', color = 'white', children, ...props }: MemberIconProps) => {
+  ({
+    member,
+    zoom = false,
+    size = 'lg',
+    color = 'white',
+    children,
+    ...props
+  }: MemberIconProps) => {
     const [lastLogin, setLastLogin] = useState<string | null>(null)
 
     useEffect(() => {
       if (member && !lastLogin) {
         setLastLogin(
           member?.last_login
-            ? `Last login ${formatDistanceToNowStrict(toLocalDate(member.last_login))} ago`
+            ? `Last login ${formatDistanceToNowStrict(
+                toLocalDate(member.last_login)
+              )} ago`
             : undefined
         )
       }
@@ -50,7 +59,8 @@ export const MemberIcon = chakra(
               id={member?.id}
               src={
                 member?.picture
-                  ? getAssetUrl(member?.picture) + '?width=100&height=100&quality=80'
+                  ? getAssetUrl(member?.picture) +
+                    '?width=100&height=100&quality=80'
                   : null
               }
               size={['lg', 'xl']}
@@ -68,13 +78,23 @@ export const MemberIcon = chakra(
             >
               {member?.presence == 'online' && (
                 <Tooltip label={lastLogin} placement="top">
-                  <AvatarBadge borderWidth="thin" boxSize="1.5rem" bg="green.300" />
+                  <AvatarBadge
+                    borderWidth="thin"
+                    boxSize="1.5rem"
+                    bg="green.300"
+                  />
                 </Tooltip>
               )}
             </Avatar>
 
             <Flex w="full" direction="column" gap={1} textAlign="left">
-              <Heading size={['md', 'lg']} textTransform="uppercase" m={0} color={color} w="full">
+              <Heading
+                size={['md', 'lg']}
+                textTransform="uppercase"
+                m={0}
+                color={color}
+                w="full"
+              >
                 {member?.nickname || 'Anon'}
               </Heading>
               <Flex
@@ -85,7 +105,11 @@ export const MemberIcon = chakra(
                 w="full"
               >
                 <Box>
-                  <MemberBadge size={size as any} user_type={member?.user_type} my={2} />
+                  <MemberBadge
+                    size={size as any}
+                    user_type={member?.user_type}
+                    my={2}
+                  />
                   <Text fontSize="sm" color={color} mt={0}>
                     {member?.city || 'Nearby'} {member?.state}
                   </Text>

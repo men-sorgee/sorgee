@@ -1,4 +1,7 @@
-import { DirectusFile, DirectusUser } from './directus'
+import {
+  DirectusFile,
+  DirectusUser,
+} from './directus'
 import { User } from './users'
 
 export type Room = {

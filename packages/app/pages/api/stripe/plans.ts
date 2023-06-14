@@ -1,6 +1,9 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { getSubscriptions } from "lib/services/stripe/server";
-import { ApiResponse } from "lib/models";
+import { ApiResponse } from 'lib/models'
+import { getSubscriptions } from 'lib/services/stripe/server'
+import {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {

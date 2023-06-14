@@ -1,16 +1,16 @@
-import { getAdminClient } from '.'
 import {
-  GroupEvent,
   EventDetail,
+  EventStatusType,
   EventUser,
-  UserType,
+  GroupEvent,
   InviteRSVPType,
   Location,
   SearchableMember,
-  EventStatusType,
   Survey,
-  User,
+  UserType,
 } from 'lib/models'
+
+import { getAdminClient } from './'
 
 function count<T>(ary: T[], classifier: (i: T) => any) {
   classifier = classifier || String

@@ -1,9 +1,15 @@
 import { useCallback, useState } from 'react'
-import { Box, HStack, Icon } from '@chakra-ui/react'
-import { ImageModal } from './ImageModal'
+
+import { Box, HStack } from '@chakra-ui/react'
 import { LockOpenIcon } from '@heroicons/react/24/outline'
 
-export const ImageGallery = ({ images }: { images: Array<{ src: string, private: boolean }> }) => {
+import { ImageModal } from './ImageModal'
+
+export const ImageGallery = ({
+  images
+}: {
+  images: Array<{ src: string; private: boolean }>
+}) => {
   const [openIndex, setOpenIndex] = useState<number>(undefined)
   const [viewIndex, setViewIndex] = useState<number>(0)
   const showScroll = images?.length > 0
@@ -38,7 +44,19 @@ export const ImageGallery = ({ images }: { images: Array<{ src: string, private:
             onClose={() => setOpenIndex(-1)}
             imageSrc={`${src}?&quality=100`}
           />
-          {showLock && <LockOpenIcon title="Private Photo" style={{ color: 'white', position: "absolute", top: "5", right: "5", width: "20px", zIndex: 20 }}   />}
+          {showLock && (
+            <LockOpenIcon
+              title="Private Photo"
+              style={{
+                color: 'white',
+                position: 'absolute',
+                top: '5',
+                right: '5',
+                width: '20px',
+                zIndex: 20
+              }}
+            />
+          )}
         </Box>
       ))}
     </HStack>

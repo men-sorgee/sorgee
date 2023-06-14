@@ -1,5 +1,5 @@
-import { Server } from 'socket.io'
 import { Message } from 'lib/models'
+import { Server } from 'socket.io'
 
 export default function SocketHandler(req, res) {
   let io = null

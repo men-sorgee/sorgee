@@ -1,29 +1,41 @@
-import { AppProps } from 'next/app'
-import { SessionProvider } from 'next-auth/react'
-import { ChakraProvider, cookieStorageManager, extendTheme } from '@chakra-ui/react'
-import Layout from 'layout'
-import getTheme from '../theme'
-import { Manrope, Arvo, Roboto_Mono } from 'next/font/google'
-import { useRouter } from 'next/router'
-import { MessagesProvider, NotificationsProvider, UserProvider, MetaContextProvider } from 'hooks'
 import React from 'react'
+
+import {
+  MessagesProvider,
+  MetaContextProvider,
+  NotificationsProvider,
+  UserProvider
+} from 'hooks'
+import Layout from 'layout'
+import { SessionProvider } from 'next-auth/react'
+import { AppProps } from 'next/app'
+import { Arvo, Manrope, Roboto_Mono } from 'next/font/google'
+import { useRouter } from 'next/router'
+
+import {
+  ChakraProvider,
+  cookieStorageManager,
+  extendTheme
+} from '@chakra-ui/react'
+
+import getTheme from '../theme'
 
 const heading = Arvo({
   variable: '--heading-font',
   weight: ['400', '700'],
-  subsets: ['latin'],
+  subsets: ['latin']
 })
 
 const body = Manrope({
   variable: '--body-font',
   weight: 'variable',
-  subsets: ['latin'],
+  subsets: ['latin']
 })
 
 const mono = Roboto_Mono({
   variable: '--mono-font',
   weight: 'variable',
-  subsets: ['latin'],
+  subsets: ['latin']
 })
 
 const theme = extendTheme(getTheme(body, heading, mono))
@@ -42,7 +54,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
             <NotificationsProvider>
               <MessagesProvider>
                 <React.StrictMode>
-                  <Layout fonts={[heading.variable, body.variable, mono.variable]}>
+                  <Layout
+                    fonts={[heading.variable, body.variable, mono.variable]}
+                  >
                     <Component {...pageProps} />
                   </Layout>
                 </React.StrictMode>
@@ -73,7 +87,7 @@ function sendToGoogleAnalytics({ name, delta, id }) {
     // Use a non-interaction event to avoid affecting bounce rate.
     nonInteraction: true,
     // Use `sendBeacon()` if the browser supports it.
-    transport: 'beacon',
+    transport: 'beacon'
   })
 }
 

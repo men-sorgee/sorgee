@@ -1,5 +1,4 @@
-export { default as DiscordIcon } from './discord'
-export { default as Fire } from './discord'
+export { default as DiscordIcon, default as Fire } from './discord'
 export { default as GitHubIcon } from './github'
 export { default as InstagramIcon } from './instagram'
 export { default as TwitterIcon } from './twitter'

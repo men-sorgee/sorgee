@@ -1,8 +1,11 @@
 import { SelectHTMLAttributes } from 'react'
-import { useFormContext, RegisterOptions } from 'react-hook-form'
+
 import { FieldOptions } from 'lib/models'
+import { RegisterOptions, useFormContext } from 'react-hook-form'
+
+import { chakra, Select, SelectProps } from '@chakra-ui/react'
+
 import FieldWrapper from './FieldWrapper'
-import { Select, SelectProps, chakra } from '@chakra-ui/react'
 
 type Props = SelectProps &
   SelectHTMLAttributes<HTMLInputElement> & {
@@ -29,8 +32,20 @@ const SelectField = (props: Props) => {
   } = props
   const { register } = useFormContext()
   return (
-    <FieldWrapper w={w} field={field} label={label} help={help} className={className}>
-      <Select p={p} w={w} size={size} {...opts} {...register(field as any, registerOptions)}>
+    <FieldWrapper
+      w={w}
+      field={field}
+      label={label}
+      help={help}
+      className={className}
+    >
+      <Select
+        p={p}
+        w={w}
+        size={size}
+        {...opts}
+        {...register(field as any, registerOptions)}
+      >
         {options?.map(({ text, value }, index) => (
           <option key={index.toString()} value={value}>
             {text}

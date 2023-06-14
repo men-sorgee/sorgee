@@ -1,19 +1,34 @@
-import { useMeta } from 'hooks/use-meta'
-import { Markdown, SubscribeBox } from 'components/controls'
-import { signIn } from 'next-auth/react'
-import Section from 'components/Section'
-import { Page } from 'lib/models'
-import { Box, Heading, Text, Center, Flex, useColorModeValue } from '@chakra-ui/react'
-import { ButtonLink } from 'components/controls'
 import { useEffect } from 'react'
-import { useSite } from '../hooks'
-import Link from 'next/link'
+
+import { ButtonLink, Markdown, SubscribeBox } from 'components/controls'
+import Section from 'components/Section'
+import { useMeta } from 'hooks/use-meta'
 import { pages } from 'lib/config'
+import { Page } from 'lib/models'
+import { signIn } from 'next-auth/react'
+import Link from 'next/link'
+
+import {
+  Box,
+  Center,
+  Flex,
+  Heading,
+  Text,
+  useColorModeValue
+} from '@chakra-ui/react'
+
+import { useSite } from '../hooks'
 
 interface Props {
   page: Pick<
     Page,
-    'title' | 'description' | 'content' | 'markdown' | 'image' | 'next_page' | 'next_page_params'
+    | 'title'
+    | 'description'
+    | 'content'
+    | 'markdown'
+    | 'image'
+    | 'next_page'
+    | 'next_page_params'
   >
 }
 
@@ -23,14 +38,22 @@ export const getStaticProps = async () => {
 
   return {
     props: {
-      page,
-    },
+      page
+    }
   }
 }
 
 export default function HomePage({ page }: Props) {
   const { setMeta } = useMeta()
-  const { title, description, content, markdown, image, next_page, next_page_params } = page
+  const {
+    title,
+    description,
+    content,
+    markdown,
+    image,
+    next_page,
+    next_page_params
+  } = page
   const { site } = useSite()
   useEffect(() => {
     setMeta(title, description, image?.id)
@@ -70,7 +93,12 @@ export default function HomePage({ page }: Props) {
           )}
           {site && !site.invite_only && next_page && <>or</>}
           {next_page && (
-            <ButtonLink mt={[4, 4, 8]} size="lg" fontSize="3xl" href={next_page.slug}>
+            <ButtonLink
+              mt={[4, 4, 8]}
+              size="lg"
+              fontSize="3xl"
+              href={next_page.slug}
+            >
               {next_page.title}
             </ButtonLink>
           )}
@@ -85,9 +113,14 @@ export default function HomePage({ page }: Props) {
         >
           {site && site.invite_only && (
             <>
-              Access to this site is by invite-only while we build and test this site. If you would
-              like to join our beta-program and apply for early access, DM us on Twitter{' '}
-              <Link target="_blank" rel="noreferrer" href="https://twitter.com/guysnheat">
+              Access to this site is by invite-only while we build and test this
+              site. If you would like to join our beta-program and apply for
+              early access, DM us on Twitter{' '}
+              <Link
+                target="_blank"
+                rel="noreferrer"
+                href="https://twitter.com/guysnheat"
+              >
                 @guysnheat
               </Link>
             </>

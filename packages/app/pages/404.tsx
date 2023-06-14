@@ -1,6 +1,7 @@
-import { Heading, Text } from '@chakra-ui/react'
 import { ButtonLink } from 'components/controls'
 import Page from 'components/Page'
+
+import { Heading, Text } from '@chakra-ui/react'
 
 export default function NotFound() {
   return (

@@ -1,16 +1,22 @@
-import { useUser } from '@/hooks/use-user'
-import { useRouter } from 'next/router'
 import Page from 'components/Page'
-import { Text, Heading, Link } from '@chakra-ui/react'
+import { useRouter } from 'next/router'
+
+import { useUser } from '@/hooks/use-user'
+import { Heading, Link, Text } from '@chakra-ui/react'
+
 import { MemberLevel } from '../../lib/models'
 
 function Denied() {
   const router = useRouter()
   const { loading, member } = useUser({
-    minLevel: MemberLevel.applicant,
+    minLevel: MemberLevel.applicant
   })
 
-  if (member && member?.application_status && member.application_status !== 'denied') {
+  if (
+    member &&
+    member?.application_status &&
+    member.application_status !== 'denied'
+  ) {
     router.push('/apply/' + member?.application_status)
     return null
   }
@@ -25,8 +31,9 @@ function Denied() {
           {member?.photo_denial_reason}
         </Text>
         <Text fontSize="2xl">
-          The more the merrier with us, but some aspect of your application did not add up. Mistakes
-          happen, and if you believe a mistake was made and you want to try again, please contact
+          The more the merrier with us, but some aspect of your application did
+          not add up. Mistakes happen, and if you believe a mistake was made and
+          you want to try again, please contact
           <Link className="link" href="mailto:support@guysnheat.com">
             support
           </Link>

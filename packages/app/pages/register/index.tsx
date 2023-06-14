@@ -1,15 +1,22 @@
-import { signIn, useSession } from 'next-auth/react'
-import { Button, GridItem, Heading, SimpleGrid, useToast } from '@chakra-ui/react'
-import Page from 'components/Page'
-import { ApiError, FieldOptions, Promo, SignUpForm, User } from 'lib/models'
-import { useSite } from 'hooks/use-site'
 import { useEffect } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
-import { ConnectForm, FieldInput, FieldSelect, Form } from 'components/forms'
-import { postJSON } from 'lib/utils'
+
 import { Markdown } from 'components/controls'
-import { useRouter } from 'next/router'
+import { ConnectForm, FieldInput, FieldSelect, Form } from 'components/forms'
+import Page from 'components/Page'
+import { useSite } from 'hooks/use-site'
 import { pages } from 'lib/config'
+import { ApiError, FieldOptions, Promo, SignUpForm, User } from 'lib/models'
+import { postJSON } from 'lib/utils'
+import { signIn, useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
+
+import {
+  Button,
+  GridItem,
+  Heading,
+  SimpleGrid,
+  useToast
+} from '@chakra-ui/react'
 
 export type Props = {
   promo?: Promo
@@ -27,7 +34,11 @@ export async function getServerSideProps() {
   return { props: { birthMonthOptions, markdown } }
 }
 
-export default function Register({ promo, birthMonthOptions, markdown }: Props) {
+export default function Register({
+  promo,
+  birthMonthOptions,
+  markdown
+}: Props) {
   const { site, loading } = useSite()
   const toast = useToast()
   const router = useRouter()
@@ -45,7 +56,7 @@ export default function Register({ promo, birthMonthOptions, markdown }: Props) 
         isClosable: true,
         onCloseComplete: () => {
           router.push('/')
-        },
+        }
       })
     }
     if (status == 'authenticated') {
@@ -54,11 +65,16 @@ export default function Register({ promo, birthMonthOptions, markdown }: Props) 
   }, [loading, promo, router, site, status, toast])
 
   const required = {
-    required: 'This field is required',
+    required: 'This field is required'
   }
 
-  const onSubmit = async (data: SignUpForm): Promise<[SignUpForm, ApiError]> => {
-    const { data: response, error } = await postJSON<SignUpForm>('/api/apply/register', data)
+  const onSubmit = async (
+    data: SignUpForm
+  ): Promise<[SignUpForm, ApiError]> => {
+    const { data: response, error } = await postJSON<SignUpForm>(
+      '/api/apply/register',
+      data
+    )
     return [response, error]
   }
 
@@ -68,17 +84,18 @@ export default function Register({ promo, birthMonthOptions, markdown }: Props) 
   return (
     <Page title="Register" loading={loading}>
       <Heading size="lg" maxW="xl">
-        Use the form below to enter your email address and basic info to register.
+        Use the form below to enter your email address and basic info to
+        register.
       </Heading>
       <Markdown content={markdown} />
       <Form<SignUpForm>
         defaultValues={{
           promo: promo?.code,
-          email,
+          email
         }}
         onSuccess={() => {
           signIn(null, {
-            callbackUrl: '/apply',
+            callbackUrl: '/apply'
           })
         }}
         onSubmit={onSubmit}
@@ -88,10 +105,19 @@ export default function Register({ promo, birthMonthOptions, markdown }: Props) 
           {({ register, formState: { isDirty, isSubmitting } }) => (
             <>
               <SimpleGrid columns={[1, 2]} spacing={4}>
-                <FieldInput field="first_name" label="First Name" registerOptions={required} />
+                <FieldInput
+                  field="first_name"
+                  label="First Name"
+                  registerOptions={required}
+                />
                 <FieldInput field="last_name" label="Last Name" />
                 <GridItem colSpan={[1, 2]}>
-                  <FieldInput type="email" field="email" label="Email" registerOptions={required} />
+                  <FieldInput
+                    type="email"
+                    field="email"
+                    label="Email"
+                    registerOptions={required}
+                  />
                 </GridItem>
                 <FieldSelect
                   field="birth_month"

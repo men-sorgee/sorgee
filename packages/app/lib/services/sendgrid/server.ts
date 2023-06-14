@@ -1,6 +1,10 @@
+import {
+  MemberLevel,
+  Profile,
+} from 'lib/models'
+
 import client from '@sendgrid/client'
 import mail, { MailDataRequired } from '@sendgrid/mail'
-import { MemberLevel, Profile } from 'lib/models'
 
 function getClient() {
   client.setApiKey(process.env.SENDGRID_API_KEY)

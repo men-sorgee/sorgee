@@ -1,19 +1,23 @@
-
-import { NextApiRequest, NextApiResponse } from 'next'
 import {
   Applicant,
-  Member,
-  User,
-  UserInvite,
   applicantFields,
+  Member,
   memberFields,
   MemberLevel,
+  User,
+  UserInvite,
 } from 'lib/models'
-
 import { findUser } from 'lib/services/directus/server'
-import { getServerSession } from 'next-auth'
+import {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next'
+import {
+  getServerSession,
+  User as AuthUser,
+} from 'next-auth'
+
 import { authOptions } from '@/lib/auth/config'
-import { User as AuthUser } from 'next-auth'
 
 export function withMethods(
   req: NextApiRequest,

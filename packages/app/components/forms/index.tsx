@@ -1,4 +1,3 @@
-import { chakra } from '@chakra-ui/react'
 export { default as FieldCheckbox } from './FieldCheckbox'
 export { default as FieldCheckboxes } from './FieldCheckboxes'
 export { default as FieldDate } from './FieldDate'

@@ -7,10 +7,11 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm'
-import { Notifications } from './Notifications'
-import { Location } from './Location'
+
 import { DirectusUsers } from './DirectusUsers'
 import { EventsUser } from './EventsUsers'
+import { Location } from './Location'
+import { Notifications } from './Notifications'
 import { Rating } from './Rating'
 import { Surveys } from './Surveys'
 

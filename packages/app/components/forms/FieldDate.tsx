@@ -1,6 +1,9 @@
-import { Input, InputProps, chakra } from '@chakra-ui/react'
 import { InputHTMLAttributes } from 'react'
-import { useFormContext, RegisterOptions } from 'react-hook-form'
+
+import { RegisterOptions, useFormContext } from 'react-hook-form'
+
+import { chakra, Input, InputProps } from '@chakra-ui/react'
+
 import FieldWrapper from './FieldWrapper'
 
 type Props = InputProps &

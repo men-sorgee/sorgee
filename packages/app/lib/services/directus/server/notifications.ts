@@ -1,5 +1,12 @@
-import { getAdminClient } from '.'
-import { NotificationUser, Notification, AppNotification, UserNotification, NotificationStatusType } from 'lib/models'
+import {
+  AppNotification,
+  Notification,
+  NotificationStatusType,
+  NotificationUser,
+  UserNotification,
+} from 'lib/models'
+
+import { getAdminClient } from './'
 
 export async function getNotification(id: string): Promise<Notification> {
   const adminClient = await getAdminClient()

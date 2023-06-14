@@ -1,45 +1,56 @@
+import { ButtonLink, MemberAvatar, MemberIcon } from 'components/controls'
+import { useSite, useUser } from 'hooks'
+import { pledgeSurvey } from 'lib/config'
+import { MemberLevel } from 'lib/models'
 import { signIn, signOut } from 'next-auth/react'
+import Link from 'next/link'
+
 import {
   Box,
   Menu,
   MenuButton,
+  MenuDivider,
   MenuItem,
   MenuList,
-  useColorMode,
-  MenuDivider,
-  useToast,
   Spinner,
+  useColorMode,
+  useToast
 } from '@chakra-ui/react'
-import { ButtonLink, MemberAvatar, MemberIcon } from 'components/controls'
-import Link from 'next/link'
 import {
-  CalendarIcon,
-  CogIcon,
-  PaperAirplaneIcon,
-  ArrowTopRightOnSquareIcon,
-  UserGroupIcon,
-  UsersIcon,
   ArrowRightOnRectangleIcon,
-  ViewfinderCircleIcon,
-  UserIcon,
+  ArrowTopRightOnSquareIcon,
+  CalendarIcon,
   CameraIcon,
+  CogIcon,
+  CreditCardIcon,
+  IdentificationIcon,
   MoonIcon,
-  SunIcon,
-  ServerStackIcon,
   PaintBrushIcon,
-  CreditCardIcon
+  PaperAirplaneIcon,
+  ServerStackIcon,
+  SunIcon,
+  UserGroupIcon,
+  UserIcon,
+  UsersIcon,
+  ViewfinderCircleIcon
 } from '@heroicons/react/24/outline'
-import { useUser, useSite } from 'hooks'
-import { MemberLevel, ApplicationStatus } from 'lib/models'
-import { pledgeSurvey } from 'lib/config'
 
-interface Props { }
+interface Props {}
 
 export default function UserMenu(_props: Props) {
   const { colorMode, toggleColorMode } = useColorMode()
   const { site } = useSite()
-  const { member, authenticated, isApplicant, isMember, isStaff, level, hasFeature, loading } = useUser({
-    forceLogin: false,
+  const {
+    member,
+    authenticated,
+    isApplicant,
+    isMember,
+    isStaff,
+    level,
+    hasFeature,
+    loading
+  } = useUser({
+    redirectsEnabled: false
   })
   const showApply = !site?.invite_only
 
@@ -71,10 +82,17 @@ export default function UserMenu(_props: Props) {
     <>
       {authenticated ? (
         <Menu placement="bottom">
-          <MenuButton cursor={'pointer'}>{member && <MemberAvatar member={member} />}</MenuButton>
+          <MenuButton cursor={'pointer'}>
+            {member && <MemberAvatar member={member} />}
+          </MenuButton>
 
           <MenuList bg="black" maxH="80vh" overflowY="auto">
-            <Box p={4} m={2} mt={0} bgGradient="linear(to-bl, primary.300, accent.300)">
+            <Box
+              p={4}
+              m={2}
+              mt={0}
+              bgGradient="linear(to-bl, primary.300, accent.300)"
+            >
               <MemberIcon member={member} />
               <span id="account-email" hidden>
                 {member?.email}
@@ -96,9 +114,18 @@ export default function UserMenu(_props: Props) {
             >
               Set Theme To {colorMode === 'light' ? 'Dark' : 'Light'}
             </MenuItem>
-
+            <MenuDivider />
             {isMember && (
               <>
+                <MenuItem
+                  icon={<UserIcon color={'white'} width={'1.5rem'} />}
+                  bg="black"
+                  _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                  as={Link}
+                  href="/member/account"
+                >
+                  Account
+                </MenuItem>
                 <MenuItem
                   icon={<CogIcon color={'white'} width={'1.5rem'} />}
                   bg="black"
@@ -112,13 +139,15 @@ export default function UserMenu(_props: Props) {
                   icon={<CreditCardIcon color={'white'} width={'1.5rem'} />}
                   bg="black"
                   _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                  as={Link} target='_blank' rel='noopener noreferrer'
+                  as={Link}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   href="/api/stripe/portal"
                 >
                   Billing
                 </MenuItem>
                 <MenuItem
-                  icon={<UserIcon color={'white'} width={'1.5rem'} />}
+                  icon={<IdentificationIcon color={'white'} width={'1.5rem'} />}
                   bg="black"
                   _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                   as={Link}
@@ -137,7 +166,12 @@ export default function UserMenu(_props: Props) {
                 </MenuItem>
                 {level === MemberLevel.pledge && (
                   <MenuItem
-                    icon={<ArrowRightOnRectangleIcon color={'white'} width={'1.5rem'} />}
+                    icon={
+                      <ArrowRightOnRectangleIcon
+                        color={'white'}
+                        width={'1.5rem'}
+                      />
+                    }
                     bg="black"
                     _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                     as={Link}
@@ -150,37 +184,47 @@ export default function UserMenu(_props: Props) {
                 {level > MemberLevel.pledge && (
                   <>
                     <MenuDivider />
-                    {hasEvents && <MenuItem
-                      icon={<CalendarIcon color={'white'} width={'1.5rem'} />}
-                      bg="black"
-                      _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                      as={Link}
-                      href="/events"
-                    >
-                      Events
-                    </MenuItem>}
+                    {hasEvents && (
+                      <MenuItem
+                        icon={<CalendarIcon color={'white'} width={'1.5rem'} />}
+                        bg="black"
+                        _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                        as={Link}
+                        href="/events"
+                      >
+                        Events
+                      </MenuItem>
+                    )}
 
-                    {hasDirectory && <MenuItem
-                      icon={<UserGroupIcon color={'white'} width={'1.5rem'} />}
-                      bg="black"
-                      _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                      as={Link}
-                      href="/members"
-                    >
-                      Members
-                    </MenuItem>}
-                    {hasBuddyList && <MenuItem
-                      icon={<UsersIcon color={'white'} width={'1.5rem'} />}
-                      bg="black"
-                      _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                      as={Link}
-                      href="/member/buddies"
-                    >
-                      Buddies
-                    </MenuItem>}
+                    {hasDirectory && (
+                      <MenuItem
+                        icon={
+                          <UserGroupIcon color={'white'} width={'1.5rem'} />
+                        }
+                        bg="black"
+                        _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                        as={Link}
+                        href="/members"
+                      >
+                        Members
+                      </MenuItem>
+                    )}
+                    {hasBuddyList && (
+                      <MenuItem
+                        icon={<UsersIcon color={'white'} width={'1.5rem'} />}
+                        bg="black"
+                        _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                        as={Link}
+                        href="/member/buddies"
+                      >
+                        Buddies
+                      </MenuItem>
+                    )}
                     {level >= MemberLevel.brother && (
                       <MenuItem
-                        icon={<PaperAirplaneIcon color={'white'} width={'1.5rem'} />}
+                        icon={
+                          <PaperAirplaneIcon color={'white'} width={'1.5rem'} />
+                        }
                         bg="black"
                         _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                         as={Link}
@@ -195,7 +239,9 @@ export default function UserMenu(_props: Props) {
                   <>
                     <MenuDivider />
                     <MenuItem
-                      icon={<ServerStackIcon color={'white'} width={'1.5rem'} />}
+                      icon={
+                        <ServerStackIcon color={'white'} width={'1.5rem'} />
+                      }
                       bg="black"
                       _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                       as={Link}
@@ -214,7 +260,12 @@ export default function UserMenu(_props: Props) {
                       Event Admin
                     </MenuItem>
                     <MenuItem
-                      icon={<ViewfinderCircleIcon color={'white'} width={'1.5rem'} />}
+                      icon={
+                        <ViewfinderCircleIcon
+                          color={'white'}
+                          width={'1.5rem'}
+                        />
+                      }
                       bg="black"
                       _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                       as={Link}
@@ -241,7 +292,12 @@ export default function UserMenu(_props: Props) {
                 <MenuDivider />
 
                 <MenuItem
-                  icon={<ArrowTopRightOnSquareIcon color={'white'} width={'1.5rem'} />}
+                  icon={
+                    <ArrowTopRightOnSquareIcon
+                      color={'white'}
+                      width={'1.5rem'}
+                    />
+                  }
                   bg="black"
                   _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                   as={Link}
@@ -253,7 +309,9 @@ export default function UserMenu(_props: Props) {
             )}
             <MenuDivider />
             <MenuItem
-              icon={<ArrowRightOnRectangleIcon color={'white'} width={'1.5rem'} />}
+              icon={
+                <ArrowRightOnRectangleIcon color={'white'} width={'1.5rem'} />
+              }
               bg="black"
               _hover={{ bg: 'gray.400', textDecoration: 'none' }}
               as={Link}

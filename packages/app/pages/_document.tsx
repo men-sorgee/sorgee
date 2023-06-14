@@ -11,7 +11,7 @@ class MyDocument extends Document {
             width: '100%',
             height: '100dvh',
             position: 'fixed',
-            overflowY: 'hidden',
+            overflowY: 'hidden'
           }}
         >
           <Script
@@ -33,7 +33,7 @@ class MyDocument extends Document {
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-SJX78PVP26');`,
+            gtag('config', 'G-SJX78PVP26');`
             }}
           />
           <Main />
@@ -61,7 +61,8 @@ class MyDocument extends Document {
                       var a=e.getElementsByTagName("script")[0];a.parentNode.insertBefore(t,a)};
                       "complete"===document.readyState?i():t.attachEvent?t.attachEvent("onload",i):t.addEventListener("load",i,!1)}();
                        `
-            }} />
+            }}
+          />
         </body>
       </Html>
     )

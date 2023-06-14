@@ -1,4 +1,5 @@
 import { User } from 'next-auth'
+
 import { DirectusUser } from './directus'
 import { GroupEvent } from './events'
 

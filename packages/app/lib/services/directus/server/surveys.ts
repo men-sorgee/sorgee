@@ -1,5 +1,10 @@
-import { getAdminClient } from '.'
-import { Question, Survey, SurveyAnswer } from 'lib/models'
+import {
+  Question,
+  Survey,
+  SurveyAnswer,
+} from 'lib/models'
+
+import { getAdminClient } from './'
 
 export async function getSurvey(id: string): Promise<Survey> {
   const client = await getAdminClient()

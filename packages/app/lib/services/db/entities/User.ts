@@ -7,6 +7,9 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm'
+
+import { DirectusFile } from './DirectusFiles'
+import { DirectusUsers } from './DirectusUsers'
 import { EventsUser } from './EventsUsers'
 import { Location } from './Location'
 import { Messages } from './Messages'
@@ -15,15 +18,13 @@ import { Promos } from './Promos'
 import { Rating } from './Rating'
 import { SurveyAnswers } from './SurveyAnswers'
 import { UserAccount } from './UserAccount'
+import { UserBuddy } from './UserBuddy'
 import { UserContactAttempt } from './UserContactAttempt'
 import { UserEmailEvents } from './UserEmailEvents'
 import { UserRelationships } from './UserRelationships'
 import { UserSession } from './UserSession'
-import { DirectusUsers } from './DirectusUsers'
-import { DirectusFile } from './DirectusFiles'
 import { UsersFiles } from './UsersFiles'
 import { UsersPhotos } from './UsersPhotos'
-import { UserBuddy } from './UserBuddy'
 
 @Index('users_email_unique', ['email'], { unique: true })
 @Index('users_pkey', ['id'], { unique: true })

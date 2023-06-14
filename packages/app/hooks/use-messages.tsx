@@ -1,18 +1,23 @@
 'use client'
-import useSWR, { KeyedMutator } from 'swr'
-import { ChatMessage, ChatConversation, Member, MessageStatusType, UserMessages } from 'lib/models'
-import { putJSON, JsonFetcher } from 'lib/utils'
 import {
-  useState,
-  useEffect,
   createContext,
   ReactNode,
-  useContext,
   useCallback,
-  useMemo,
+  useContext,
+  useEffect,
+  useState
 } from 'react'
 
+import {
+  ChatConversation,
+  ChatMessage,
+  Member,
+  MessageStatusType,
+  UserMessages
+} from 'lib/models'
+import { JsonFetcher, putJSON } from 'lib/utils'
 import useCookie from 'react-use-cookie'
+import useSWR, { KeyedMutator } from 'swr'
 
 export type MessagesContextData = {
   activeId?: string
@@ -46,24 +51,29 @@ export const MessagesContext = createContext<MessagesContextData>({
   delete: async () => {},
   loading: true,
   reload: () => {},
-  mutate: async () => ({}),
+  mutate: async () => ({})
 })
 
-export function MessagesProvider({ children }: { children: ReactNode | ReactNode[] }) {
+export function MessagesProvider({
+  children
+}: {
+  children: ReactNode | ReactNode[]
+}) {
   const key = `/api/member/messages`
   const {
     data: userMessages = {},
     mutate,
     error,
-    isLoading,
+    isLoading
   } = useSWR<UserMessages, Error>(key, JsonFetcher, {
     refreshInterval: 1000 * 30, // 1 minutes
-    fallbackData: {},
+    fallbackData: {}
   })
 
   const [conversations, setConversations] = useState<ChatConversation[]>([])
   const [hasNewMessages, setHasNewMessages] = useState(undefined)
-  const [activeConversation, setActiveConversation] = useState<ChatConversation>(undefined)
+  const [activeConversation, setActiveConversation] =
+    useState<ChatConversation>(undefined)
   const [newMessages, setNewMessages] = useState<number>(undefined)
   const [activeId, setActiveId] = useState<string>(undefined)
   const [lastActiveId, setLastActiveId] = useCookie(
@@ -80,7 +90,7 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
         .map((m: ChatMessage) => {
           return {
             ...m,
-            timestamp: new Date(m.timestamp),
+            timestamp: new Date(m.timestamp)
           }
         })
 
@@ -99,11 +109,13 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
         hasNewMessages,
         user: {
           ...user,
-          picture: `/api/asset/${user.picture}?w=100&h=100&fit=crop`,
-        },
+          picture: `/api/asset/${user.picture}?w=100&h=100&fit=crop`
+        }
       })
       // @ts-ignore
-      setConversations(convos.sort((a, b) => b.lastMessage.timestamp - a.lastMessage.timestamp))
+      setConversations(
+        convos.sort((a, b) => b.lastMessage.timestamp - a.lastMessage.timestamp)
+      )
       totalNewMessages.push(...newMessages)
     })
 
@@ -128,10 +140,11 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
             nickname: user.nickname,
             presence: user.presence,
             last_login: user.last_login,
-            picture: user.picture && `/api/asset/${user.picture}?w=100&h=100&fit=crop`,
-          },
+            picture:
+              user.picture && `/api/asset/${user.picture}?w=100&h=100&fit=crop`
+          }
         },
-        ...conversations,
+        ...conversations
       ])
       setActiveId(user.id)
       setActiveConversation(convo)
@@ -143,7 +156,7 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
     async (ids: string[], status: MessageStatusType) => {
       const { success, data } = await putJSON<any, UserMessages>(key, {
         ids,
-        status,
+        status
       })
       if (success) {
         mutate(data)
@@ -180,12 +193,16 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
     loading: isLoading,
     reload: () => {
       mutate(userMessages, {
-        revalidate: true,
+        revalidate: true
       })
     },
-    mutate,
+    mutate
   }
-  return <MessagesContext.Provider value={context}>{children}</MessagesContext.Provider>
+  return (
+    <MessagesContext.Provider value={context}>
+      {children}
+    </MessagesContext.Provider>
+  )
 }
 
 export const useMessages = () => useContext(MessagesContext)

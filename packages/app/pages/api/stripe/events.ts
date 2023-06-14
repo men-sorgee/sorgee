@@ -1,11 +1,21 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import type { Readable } from 'node:stream'
+
+import { IncomingMessage } from 'http'
+import { Member } from 'lib/models'
+import {
+  findUser,
+  updateUser,
+} from 'lib/services/directus/server/users'
+import {
+  getBillingEvent,
+  saveBillingEvent,
+} from 'lib/services/directus/server/users/billing'
+import stripe, { webhookSecret } from 'lib/services/stripe/server'
+import {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next'
 import Stripe from 'stripe'
-import { saveBillingEvent } from "lib/services/directus/server/users/billing";
-import stripe, { webhookSecret } from "lib/services/stripe/server";
-import { findUser, updateUser } from "lib/services/directus/server/users";
-import { Member, BillingEvent } from "lib/models";
-import { IncomingMessage } from "http";
-import type { Readable } from 'node:stream';
 
 async function getRawBody(readable: Readable): Promise<Buffer> {
   const chunks = [];
@@ -31,6 +41,13 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
     let user = null;
     if (data?.metadata?.userId) {
       user = data.metadata.userId;
+    }
+
+    const existingEvent = await getBillingEvent(id)
+
+    if (existingEvent) {
+      console.log(`Event ${id} already exists`)
+      return res.status(200).json({ received: true });
     }
 
     await saveBillingEvent({

@@ -1,4 +1,9 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  Index,
+  PrimaryGeneratedColumn,
+} from 'typeorm'
 
 @Index("site_pkey", ["id"], { unique: true })
 @Entity("site", { schema: "public" })

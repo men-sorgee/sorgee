@@ -1,6 +1,9 @@
-import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse } from 'lib/models'
 import { withMethods } from 'lib/utils/server'
+import {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next'
 
 export default async function Revalidate(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {

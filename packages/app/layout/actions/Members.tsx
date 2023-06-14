@@ -1,8 +1,9 @@
+import { UpgradeIcon } from 'components/controls'
+import { Member, MemberLevel, MembershipType } from 'lib/models'
+import NextLink from 'next/link'
+
 import { IconButton, Link } from '@chakra-ui/react'
 import { UserGroupIcon } from '@heroicons/react/24/outline'
-import NextLink from 'next/link'
-import { Member, MemberLevel, MembershipType } from 'lib/models'
-import { UpgradeIcon } from 'components/controls'
 
 interface Props {
   member: Member
@@ -16,12 +17,15 @@ const MembersAction = ({ member, active, hasFeature }: Props) => {
     return <></>
   }
 
-  if (!hasFeature) return <UpgradeIcon
-    title='Member Directory'
-    membershipType={MembershipType.Free}
-    icon={<UserGroupIcon height="50px" width="50px" />}
-  />
-  
+  if (!hasFeature)
+    return (
+      <UpgradeIcon
+        title="Member Directory"
+        membershipType={MembershipType.Free}
+        icon={<UserGroupIcon height="50px" width="50px" />}
+      />
+    )
+
   return (
     <>
       <Link href="/members" as={NextLink} zIndex="fixed">

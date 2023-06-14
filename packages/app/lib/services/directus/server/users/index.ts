@@ -1,19 +1,22 @@
-import { Rating, RatingCollection, UserType } from 'lib/models'
-// Service Calls ------------------------------------
-
-import { getAdminClient } from '..'
 import {
-  User,
-  memberFields,
-  profileFields,
-  Profile,
-  Member,
   Applicant,
   applicantFields,
+  Member,
+  memberFields,
+  Profile,
+  profileFields,
+  Rating,
+  RatingCollection,
+  User,
   UserEmailEvent,
   UserFields,
+  UserType,
 } from 'lib/models'
+
 import { FieldFilter } from '@directus/sdk'
+
+// Service Calls ------------------------------------
+import { getAdminClient } from '../'
 
 export async function createUser(member: Partial<User>): Promise<User> {
   const adminClient = await getAdminClient()

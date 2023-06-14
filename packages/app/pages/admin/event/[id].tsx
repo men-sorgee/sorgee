@@ -1,52 +1,57 @@
+import { useEffect, useRef, useState } from 'react'
+
+import { ButtonLink, EventCard } from 'components/controls'
+import Page from 'components/Page'
+import { useUser } from 'hooks'
+import { EventDetail, EventStats, MemberLevel, User } from 'lib/models'
+import NextLink from 'next/link'
+import { useRouter } from 'next/router'
+
+import { ArrowBackIcon, CheckIcon } from '@chakra-ui/icons'
 import {
   Alert,
-  HStack,
-  Box,
-  Heading,
   AlertIcon,
-  Stat,
+  Avatar,
+  Box,
+  Button,
+  Heading,
+  HStack,
+  Input,
   Link,
+  SimpleGrid,
+  Stat,
   StatLabel,
   StatNumber,
-  SimpleGrid,
-  Wrap,
-  Avatar,
-  Input,
-  Button,
+  Wrap
 } from '@chakra-ui/react'
-import { EventCard, ButtonLink } from 'components/controls'
-import { EventDetail, EventStats, MemberLevel, User } from 'lib/models'
-import Page from 'components/Page'
-import { useEffect, useState, useRef } from 'react'
-import { useUser } from 'hooks'
-import { useRouter } from 'next/router'
-import NextLink from 'next/link'
-import { ArrowBackIcon, CheckIcon } from '@chakra-ui/icons'
+
 export const getServerSideProps = async (context) => {
   const { getEventDetail } = await import('lib/services/directus/server/events')
   const eventId = String(context.query.id)
   if (!eventId) {
     return {
-      notFound: true,
+      notFound: true
     }
   }
   const event = await getEventDetail(eventId)
   if (!event) {
     return {
-      notFound: true,
+      notFound: true
     }
   }
 
   return {
     props: {
-      event,
-    },
+      event
+    }
   }
 }
 
 export default function EventAdmin({ event }: { event: EventDetail }) {
   const router = useRouter()
-  const { member, authorized, loading } = useUser({ minLevel: MemberLevel.staff })
+  const { member, authorized, loading } = useUser({
+    minLevel: MemberLevel.staff
+  })
   const [fees, setFees] = useState<number>(undefined)
   const [stats] = useState<EventStats>(event.stats)
   const { error } = router.query
@@ -70,7 +75,7 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
           name,
           rsvp: u.rsvp,
           attended: u.attended,
-          src,
+          src
         }
       })
   }
@@ -106,7 +111,9 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
               <ButtonLink colorScheme="primary" href="/admin/scan">
                 Scan Invite
               </ButtonLink>
-              {(checkinLink && <ButtonLink href={checkinLink}>Check In</ButtonLink>) || (
+              {(checkinLink && (
+                <ButtonLink href={checkinLink}>Check In</ButtonLink>
+              )) || (
                 <>
                   <Input ref={emailRef} size="sm" placeholder="Email" w="30%" />
                   <Button onClick={emailCheckin}>Email Checkin</Button>
@@ -160,8 +167,20 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
           <Wrap>
             {getAttendees('confirmed').map(({ id, name, src, attended }) => (
               <Box key={id} position="relative">
-                <Avatar opacity={attended ? 1 : 0.5} name={name} src={src} title={name} />
-                {attended && <CheckIcon color="green" boxSize={8} position="absolute" ml={-6} />}
+                <Avatar
+                  opacity={attended ? 1 : 0.5}
+                  name={name}
+                  src={src}
+                  title={name}
+                />
+                {attended && (
+                  <CheckIcon
+                    color="green"
+                    boxSize={8}
+                    position="absolute"
+                    ml={-6}
+                  />
+                )}
               </Box>
             ))}
           </Wrap>
@@ -171,7 +190,13 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
           <Wrap>
             {getAttendees('maybe').map(({ id, name, src, attended }) => (
               <Box key={id} position="relative">
-                <Avatar key={id} opacity={attended ? 1 : 0.5} name={name} src={src} title={name} />
+                <Avatar
+                  key={id}
+                  opacity={attended ? 1 : 0.5}
+                  name={name}
+                  src={src}
+                  title={name}
+                />
                 {attended && <CheckIcon boxSize={6} />}
               </Box>
             ))}

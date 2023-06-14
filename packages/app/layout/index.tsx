@@ -1,31 +1,34 @@
-import React, { useEffect, useState, ReactNode, useRef } from 'react'
-import { Flex, Box, Slide, useDisclosure, Spacer } from '@chakra-ui/react'
-import { useRouter } from 'next/router'
-import Header from './Header'
-import Meta from './Meta'
-import Footer from './Footer'
-import Actions from './actions'
-import Splash from './Splash'
+import React, { ReactNode, useEffect, useRef, useState } from 'react'
+
 import { ErrorBoundary } from 'components/ErrorBoundary'
 import { useUser } from 'hooks'
-import { MemberLevel } from '../lib/models'
+import { useRouter } from 'next/router'
+
+import { Box, Flex, Slide, Spacer, useDisclosure } from '@chakra-ui/react'
+
 import { brand } from '../lib/config/brand'
+import { MemberLevel } from '../lib/models'
+import Actions from './actions'
+import Footer from './Footer'
+import Header from './Header'
+import Meta from './Meta'
+import Splash from './Splash'
 
 export const constrained = {
   maxW: brand.breakPoints,
-  mx: [2, 'auto'],
+  mx: [2, 'auto']
 }
 
 function Layout({
   children,
-  fonts: [heading, body, mono],
+  fonts: [heading, body, mono]
 }: {
   children?: ReactNode
   className?: string
   fonts: any[]
 }) {
   const { authenticated, member, level, loading } = useUser({
-    forceLogin: false,
+    redirectsEnabled: false
   })
   const router = useRouter()
   const [path] = useState<string>(router?.asPath)
@@ -47,7 +50,7 @@ function Layout({
         if (headerRef.current != null) {
           headerRef.current.scrollIntoView({
             behavior: 'smooth',
-            block: 'start',
+            block: 'start'
           })
         }
       }, 100)
@@ -66,7 +69,6 @@ function Layout({
     <>
       <Meta />
       <Flex direction="column" flex="1" overflowX="clip">
-
         <Header userType={member?.user_type} />
         <Flex
           as="main"
@@ -84,14 +86,17 @@ function Layout({
             className={` ${heading} ${body} ${mono}}`}
             {...constrained}
           >
-            <Box minH={`calc(80vh - ${showActions ? '146px' : '75px'})`} ref={headerRef}>
+            <Box
+              minH={`calc(80vh - ${showActions ? '146px' : '75px'})`}
+              ref={headerRef}
+            >
               <ErrorBoundary>{children}</ErrorBoundary>
             </Box>
             <Spacer h="1rem" />
             <Footer />
           </Box>
         </Flex>
-        <ErrorBoundary >
+        <ErrorBoundary>
           {showActions && (
             <Slide in={isOpen} direction="bottom">
               <Actions />

@@ -1,34 +1,45 @@
-import Script from 'next/script'
 import { useEffect, useRef, useState } from 'react'
+
 import Page from 'components/Page'
 import { useUser } from 'hooks'
-import { adminBaseUrl, adminUrl } from 'lib/config'
-import { useRouter } from 'next/router'
+import { adminBaseUrl } from 'lib/config'
 import { DirectusFile } from 'lib/models'
+import { useRouter } from 'next/router'
+import Script from 'next/script'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
+
 import { Box, Button } from '@chakra-ui/react'
 
 export const getServerSideProps = async (context) => {
   const key = process.env.WHEREBY_API_KEY
   const { id } = context.query
   const meetingId = String(id)
-  const response = await fetch(`https://api.whereby.dev/v1/meetings/${meetingId}`, {
-    headers: {
-      Authorization: `Bearer ${key}`,
-    },
-  })
+  const response = await fetch(
+    `https://api.whereby.dev/v1/meetings/${meetingId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${key}`
+      }
+    }
+  )
 
   const meeting = await response.json()
 
   return {
     props: {
       key,
-      meeting,
-    },
+      meeting
+    }
   }
 }
 
-export default function VideoChat({ key, meeting }: { key: string; meeting: any }) {
+export default function VideoChat({
+  key,
+  meeting
+}: {
+  key: string
+  meeting: any
+}) {
   const router = useRouter()
   const chatRoom = useRef<HTMLElement>(null)
   const { member, isStaff, loading, name, picture } = useUser()
@@ -36,7 +47,9 @@ export default function VideoChat({ key, meeting }: { key: string; meeting: any 
   useEffect(() => {
     if (!loading && member && chatUrl == null) {
       const picture = member.picture as DirectusFile
-      const avatarUrl = member.picture ? `${adminBaseUrl}/assets/${picture?.id}` : undefined
+      const avatarUrl = member.picture
+        ? `${adminBaseUrl}/assets/${picture?.id}`
+        : undefined
       setChatUrl(
         isStaff
           ? `${meeting.roomUrl}?roomKey=${key}&avatarUrl=${avatarUrl}}`
@@ -48,7 +61,16 @@ export default function VideoChat({ key, meeting }: { key: string; meeting: any 
         router.push('/video/ended')
       })
     }
-  }, [chatUrl, isStaff, key, loading, meeting?.roomUrl, member, picture, router])
+  }, [
+    chatUrl,
+    isStaff,
+    key,
+    loading,
+    meeting?.roomUrl,
+    member,
+    picture,
+    router
+  ])
   const handle = useFullScreenHandle()
   handle
   return (
@@ -61,12 +83,21 @@ export default function VideoChat({ key, meeting }: { key: string; meeting: any 
       />
       {chatUrl && (
         <Box minH="60vh">
-          <Button onClick={handle.enter} variant="outline" color="white" mb="-9rem" ml="10rem">
+          <Button
+            onClick={handle.enter}
+            variant="outline"
+            color="white"
+            mb="-9rem"
+            ml="10rem"
+          >
             Full Screen
           </Button>
           <FullScreen handle={handle}>
             <whereby-embed
-              style={{ height: handle.active ? '100vh' : '60vh', width: '100%' }}
+              style={{
+                height: handle.active ? '100vh' : '60vh',
+                width: '100%'
+              }}
               ref={chatRoom}
               displayName={name}
               room={chatUrl}

@@ -1,14 +1,27 @@
-import { pruneUndefined } from './../../../lib/utils/index'
-import type { NextApiRequest, NextApiResponse } from 'next'
-import { ApiResponse, Message, User, UserMessages, MessageStatusType } from 'lib/models'
 import {
-  updateMessage,
-  getMessages,
-  sendMessage,
+  ApiResponse,
+  Message,
+  MessageStatusType,
+  UserMessages,
+} from 'lib/models'
+import {
+  withMethods,
+  withUser,
+} from 'lib/utils/server'
+import type {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next'
+
+import {
   getMessage,
+  getMessages,
   markAs,
+  sendMessage,
+  updateMessage,
 } from '@/lib/services/directus/server/messages'
-import { withMethods, withUser } from 'lib/utils/server'
+
+import { pruneUndefined } from '../../../lib/utils/index'
 
 export default async function getUserMessages(
   req: NextApiRequest,

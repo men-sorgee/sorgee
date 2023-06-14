@@ -1,6 +1,8 @@
-import { signIn, useSession } from 'next-auth/react'
-import { ButtonLink } from './controls'
+import { useSession } from 'next-auth/react'
+
 import { Box, Heading, Text } from '@chakra-ui/react'
+
+import { ButtonLink } from './controls'
 
 const NotFound = () => {
   const { status } = useSession()

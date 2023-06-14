@@ -1,28 +1,34 @@
+import { formatDistanceToNowStrict } from 'date-fns'
 import {
-  LinkBox,
+  Member,
+  MemberLevel,
+  MemberLevelColorMap,
+  SearchableMember
+} from 'lib/models'
+import NextLink from 'next/link'
+
+import { LockIcon } from '@chakra-ui/icons'
+import {
+  ButtonGroup,
   Card,
-  LinkOverlay,
   CardBody,
   CardFooter,
-  Spacer,
-  Flex,
-  Text,
-  chakra,
-  ButtonGroup,
   CardHeader,
   CardProps,
+  chakra,
+  Flex,
   Heading,
+  LinkBox,
+  LinkOverlay,
+  Text
 } from '@chakra-ui/react'
-import { SearchableMember, MemberLevelColorMap, MemberLevel, Member } from 'lib/models'
-import { MemberHeader, MemberChat, MemberConnect, MemberLike } from '.'
-import NextLink from 'next/link'
-import { formatDistanceToNowStrict } from 'date-fns'
-import { LockIcon } from '@chakra-ui/icons'
+
 import { useUser } from '../../hooks'
+import { MemberChat, MemberConnect, MemberHeader, MemberLike } from './'
 
 type Props = CardProps & {
   viewer: Member
-  member: SearchableMember|Member
+  member: SearchableMember | Member
   full?: boolean
   onClick?: () => void
 }
@@ -57,7 +63,12 @@ export const MemberCard = chakra(
                   if (member.show_profile) onClick()
                 }}
               >
-                <MemberHeader member={member} zoom={false} size={size} viewer={viewer}>
+                <MemberHeader
+                  member={member}
+                  zoom={false}
+                  size={size}
+                  viewer={viewer}
+                >
                   {!member.show_profile && (
                     <>
                       <Flex
@@ -68,8 +79,19 @@ export const MemberCard = chakra(
                         align="start"
                         justify="center"
                       >
-                        <LockIcon color="primary.500" h={20} w={20} mx={'auto'} />
-                        <Heading as="h3" mt={-10} size="sm" p={0} textAlign="center">
+                        <LockIcon
+                          color="primary.500"
+                          h={20}
+                          w={20}
+                          mx={'auto'}
+                        />
+                        <Heading
+                          as="h3"
+                          mt={-10}
+                          size="sm"
+                          p={0}
+                          textAlign="center"
+                        >
                           PRIVATE PROFILE
                         </Heading>
                       </Flex>
@@ -91,16 +113,19 @@ export const MemberCard = chakra(
               <Text fontSize="xs">
                 {member?.show_profile && member.last_login && (
                   <>
-                    Last Login: {formatDistanceToNowStrict(new Date(member.last_login))} ago
+                    Last Login:{' '}
+                    {formatDistanceToNowStrict(new Date(member.last_login))} ago
                     <br />
                   </>
                 )}
                 Member Since:{' '}
-                {new Date(member.approved_date || member.date_created).toLocaleDateString()}
+                {new Date(
+                  member.approved_date || member.date_created
+                ).toLocaleDateString()}
               </Text>
 
               <ButtonGroup>
-                <MemberLike member={member as Member}  />
+                <MemberLike member={member as Member} />
                 <MemberChat member={member} />
                 <MemberConnect member={member as Member} />
               </ButtonGroup>

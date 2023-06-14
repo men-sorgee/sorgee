@@ -1,4 +1,5 @@
 import * as typeorm from 'typeorm'
+
 import { Events } from './Events'
 import { NotificationsUsers } from './NotificationsUsers'
 import { Surveys } from './Surveys'

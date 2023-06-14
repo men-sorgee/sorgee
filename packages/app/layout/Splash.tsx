@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react'
+
 import {
+  Button,
   Flex,
-  Box,
-  Slide,
-  useDisclosure,
+  Heading,
   Modal,
   ModalBody,
+  ModalContent,
   ModalFooter,
   ModalOverlay,
-  Button,
-  ModalContent,
-  Text,
-  Heading,
+  Text
 } from '@chakra-ui/react'
 
 export default function Splash() {

@@ -1,9 +1,28 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { withMethods, withMember } from 'lib/utils/server'
-import { ApiResponse, MemberLevel, UserBuddy } from 'lib/models'
-import { getMember, updateUser, getNotification, addUserNotification } from 'lib/services/directus/server'
 import { notifications } from 'lib/config'
-import { sendNotificationEmail, SendGridCategory, SendGridTemplate } from 'lib/services/sendgrid/server'
+import {
+  ApiResponse,
+  MemberLevel,
+  UserBuddy,
+} from 'lib/models'
+import {
+  addUserNotification,
+  getMember,
+  getNotification,
+  updateUser,
+} from 'lib/services/directus/server'
+import {
+  SendGridCategory,
+  SendGridTemplate,
+  sendNotificationEmail,
+} from 'lib/services/sendgrid/server'
+import {
+  withMember,
+  withMethods,
+} from 'lib/utils/server'
+import {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next'
 
 export default async function VouchForMember(
   req: NextApiRequest,

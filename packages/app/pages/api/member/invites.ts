@@ -1,7 +1,14 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { ApiResponse, EventUser } from 'lib/models'
-import { withMember } from 'lib/utils/server'
+import {
+  ApiResponse,
+  EventUser,
+} from 'lib/models'
 import { listInvites } from 'lib/services/directus/server/users'
+import { withMember } from 'lib/utils/server'
+import {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next'
+
 export default async function listUserInvites(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<EventUser[]>>

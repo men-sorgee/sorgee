@@ -1,7 +1,9 @@
-import { useState } from 'react'
-import FieldWrapper from './FieldWrapper'
-import { Flex, chakra } from '@chakra-ui/react'
 import { PhotoUpload, PhotoUploadProps } from 'components/controls/PhotoUpload'
+
+import { chakra } from '@chakra-ui/react'
+
+import FieldWrapper from './FieldWrapper'
+
 export type Props = PhotoUploadProps & {
   field: string
   label?: string

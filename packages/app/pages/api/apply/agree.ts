@@ -1,9 +1,29 @@
-import { updateUser, getUserEvents, getNotification } from 'lib/services/directus/server'
-import { NextApiRequest, NextApiResponse } from 'next'
-import { AgreementData, ApiResponse, Applicant, Profile } from 'lib/models'
-import { SendGridCategory, SendGridTemplate, sendNotificationEmail, updateSendGrid } from 'lib/services/sendgrid/server'
-import { withApplicant, withMethods } from 'lib/utils/server'
 import { notifications } from 'lib/config'
+import {
+  AgreementData,
+  ApiResponse,
+  Applicant,
+  Profile,
+} from 'lib/models'
+import {
+  getNotification,
+  getUserEvents,
+  updateUser,
+} from 'lib/services/directus/server'
+import {
+  SendGridCategory,
+  SendGridTemplate,
+  sendNotificationEmail,
+  updateSendGrid,
+} from 'lib/services/sendgrid/server'
+import {
+  withApplicant,
+  withMethods,
+} from 'lib/utils/server'
+import {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next'
 
 async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {

@@ -1,30 +1,38 @@
+import { DirectusFile } from 'lib/models'
+import {
+  User,
+  UserSession,
+  UserVerificationToken,
+} from 'lib/services/db/entities'
+import { getAssetUrl } from 'lib/utils'
 import {
   Adapter,
-  AdapterUser,
-  AdapterSession,
   AdapterAccount,
+  AdapterSession,
+  AdapterUser,
   VerificationToken,
 } from 'next-auth/adapters'
-import { User, UserSession, UserVerificationToken } from 'lib/services/db/entities'
 
 import {
-  createUser,
-  findUser,
-  getUser,
-  updateUser,
+  addVerificationToken,
+  createAccount,
   createSession,
+  createUser,
+  deleteAccount,
   deleteSession,
   findSession,
-  updateSession,
-  addVerificationToken,
-  findVerificationToken,
-  deleteAccount,
-  createAccount,
+  findUser,
   findUserByAccount,
+  findVerificationToken,
+  getUser,
+  updateSession,
+  updateUser,
 } from '@/lib/services/db/server/auth'
-import { importFile, UploadFolder } from '../services/directus/server/files'
-import { DirectusFile } from 'lib/models'
-import { getAssetUrl } from 'lib/utils'
+
+import {
+  importFile,
+  UploadFolder,
+} from '../services/directus/server/files'
 
 function mapUser(user: User): AdapterUser {
   return {

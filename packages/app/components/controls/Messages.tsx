@@ -1,28 +1,31 @@
-import { postJSON } from 'lib/utils'
-import { useMessages } from 'hooks'
-import { Member, ChatMessage, Message } from 'lib/models'
-import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+
 import { formatDistanceToNow } from 'date-fns'
+import { useMessages } from 'hooks'
+import { ChatMessage, Member, Message } from 'lib/models'
+import { postJSON } from 'lib/utils'
+import io, { Socket } from 'socket.io-client'
+
+import { IconButton, useDisclosure } from '@chakra-ui/react'
 import {
   Avatar,
-  MainContainer,
-  Sidebar,
-  ConversationList,
-  Conversation as ConversationCtrl,
-  MessageGroup,
-  Message as MessageCtrl,
   ChatContainer,
+  Conversation as ConversationCtrl,
   ConversationHeader,
-  MessageList,
+  ConversationList,
+  MainContainer,
+  Message as MessageCtrl,
+  MessageGroup,
   MessageInput,
-  TypingIndicator,
+  MessageList,
+  Sidebar,
+  TypingIndicator
 } from '@chatscope/chat-ui-kit-react'
-import io, { Socket } from 'socket.io-client'
-import MessagesStyles from './MessagesStyles'
-import { MemberModal } from './MemberModal'
-import { IconButton, useDisclosure } from '@chakra-ui/react'
-import { MemberConnect } from './MemberConnect'
 import { UserCircleIcon, XMarkIcon } from '@heroicons/react/24/solid'
+
+import { MemberConnect } from './MemberConnect'
+import { MemberModal } from './MemberModal'
+import MessagesStyles from './MessagesStyles'
 
 let socket: Socket
 
@@ -34,7 +37,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
     mutate,
     activeId,
     setActiveId,
-    delete: d,
+    delete: d
   } = useMessages()
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isTyping, setIsTyping] = useState(false)
@@ -65,16 +68,16 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
         display: 'flex',
         flexBasis: 'auto',
         width: '100%',
-        maxWidth: '100%',
+        maxWidth: '100%'
       })
       setConversationContentStyle({
-        display: 'flex',
+        display: 'flex'
       })
       setConversationAvatarStyle({
-        marginRight: '1em',
+        marginRight: '1em'
       })
       setChatContainerStyle({
-        display: 'none',
+        display: 'none'
       })
     } else {
       setSidebarStyle({})
@@ -91,7 +94,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
     setChatContainerStyle,
     activeId,
     setActiveId,
-    conversations,
+    conversations
   ])
 
   useEffect(() => {
@@ -108,7 +111,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
     })
     socket = io({
       path: '/api/socket.io',
-      addTrailingSlash: false,
+      addTrailingSlash: false
     })
     socket.on('connect', () => {
       socket.emit('join', currentUser.id)
@@ -147,8 +150,8 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
           ...messages,
           {
             ...message,
-            direction: 'incoming',
-          },
+            direction: 'incoming'
+          }
         ])
         messagesSeen()
       }
@@ -171,7 +174,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
             status={user?.presence == 'online' ? 'available' : 'unavailable'}
             active={user?.presence == 'online'}
           />,
-          user.nickname,
+          user.nickname
         ]
       }
     }
@@ -183,7 +186,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
     if (socket) {
       socket.emit('user-typing', {
         to: activeId,
-        from: currentUser.id,
+        from: currentUser.id
       })
     }
   }, [activeId, currentUser.id])
@@ -216,8 +219,8 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
         nickname: currentUser.nickname,
         picture: currentUser.picture as string,
         last_login: currentUser.last_login,
-        presence: currentUser.presence,
-      },
+        presence: currentUser.presence
+      }
     })
   }
   const [inputValue, setInputValue] = useState('')
@@ -244,7 +247,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
         nickname: currentUser.nickname,
         picture: currentUser.picture as string,
         last_login: currentUser.last_login,
-        presence: currentUser.presence,
+        presence: currentUser.presence
       }
       setMessages([
         ...messages,
@@ -254,15 +257,15 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
           image,
           timestamp,
           direction: 'outgoing',
-          user,
-        } as ChatMessage,
+          user
+        } as ChatMessage
       ])
       postJSON<Message>('/api/member/messages', {
         body,
         image,
         type,
         to: activeId,
-        from: currentUser.id,
+        from: currentUser.id
       } as Message).then(({ data }) => {
         const { type, body, image, date_created } = data
         socket.emit('send-message', activeId, {
@@ -270,7 +273,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
           body,
           image,
           user,
-          timestamp: new Date(date_created).toISOString(),
+          timestamp: new Date(date_created).toISOString()
         })
       })
     },
@@ -281,7 +284,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
       currentUser.nickname,
       currentUser.picture,
       currentUser.presence,
-      messages,
+      messages
     ]
   )
 
@@ -309,9 +312,11 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
                 id,
                 user: { nickname, picture, presence },
                 newMessageCount,
-                messages,
+                messages
               } = c
-              const lastMessage = messages.length ? messages[messages.length - 1] : null
+              const lastMessage = messages.length
+                ? messages[messages.length - 1]
+                : null
               const lastMessageDate = lastMessage
                 ? formatDistanceToNow(lastMessage?.timestamp as Date) + ' ago'
                 : 'now'
@@ -323,7 +328,9 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
                   onClick={() => {
                     handleConversationClick(id)
                   }}
-                  lastActivityTime={lastMessageDate ? lastMessageDate : 'Just now'}
+                  lastActivityTime={
+                    lastMessageDate ? lastMessageDate : 'Just now'
+                  }
                   unreadDot={newMessageCount > 0}
                 >
                   <Avatar
@@ -365,11 +372,17 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
                   variant={'ghost'}
                   _hover={{ bg: 'primary.500' }}
                 />
-                <MemberConnect member={activeConversation.user} fill={'white'} />
+                <MemberConnect
+                  member={activeConversation.user}
+                  fill={'white'}
+                />
               </ConversationHeader.Actions>
             </ConversationHeader>
 
-            <MessageList scrollBehavior="auto" typingIndicator={typingIndicator}>
+            <MessageList
+              scrollBehavior="auto"
+              typingIndicator={typingIndicator}
+            >
               {activeId &&
                 messages.map((m, i) => (
                   <MessageGroup key={i} direction={m.direction}>
@@ -379,13 +392,13 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
                           type: m.type,
                           payload: decodeHtml(m.body),
                           direction: m.direction,
-                          position: 'single',
+                          position: 'single'
                         }}
                       >
                         {m.direction == 'outgoing' && (
                           <MessageCtrl.Header
                             style={{
-                              flexDirection: 'row-reverse',
+                              flexDirection: 'row-reverse'
                             }}
                           >
                             <IconButton
@@ -402,7 +415,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
                               opacity={0.2}
                               _hover={{
                                 bg: 'secondary.500',
-                                opacity: 1,
+                                opacity: 1
                               }}
                             />
                           </MessageCtrl.Header>
@@ -411,9 +424,12 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
                         <MessageCtrl.Footer
                           style={{
                             display: 'block',
-                            textAlign: m.direction == 'outgoing' ? 'right' : 'left',
+                            textAlign:
+                              m.direction == 'outgoing' ? 'right' : 'left'
                           }}
-                          sentTime={formatDistanceToNow(m.timestamp as Date) + ' ago'}
+                          sentTime={
+                            formatDistanceToNow(m.timestamp as Date) + ' ago'
+                          }
                         ></MessageCtrl.Footer>
                       </MessageCtrl>
                     </MessageGroup.Messages>
