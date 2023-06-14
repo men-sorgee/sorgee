@@ -4,14 +4,15 @@ import { UserIcon as BuddyIcon, UserPlusIcon } from '@heroicons/react/24/solid'
 import { useCallback, useEffect, useState } from 'react'
 import { useUser } from 'hooks'
 import { deleteJSON, postJSON } from 'lib/utils'
-import { MemberLevel, User, UserBuddy } from 'lib/models'
+import { Member, MemberLevel, MembershipType, User, UserBuddy } from 'lib/models'
+import { UpgradeIcon } from 'components/controls'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
-  memberId: string
+  member: Member | { id: string }
 }
 
-export const MemberConnect = chakra(({ memberId, size = 'lg', ...props }: Props) => {
-  const { loading: userLoading, member: me, level, reload } = useUser()
+export const MemberConnect = chakra(({ member, size = 'lg', ...props }: Props) => {
+  const { loading: userLoading, member: me, level, reload , hasFeature} = useUser()
   const [hover, setHover] = useState(false)
   const [isBuddy, setIsBuddy] = useState<boolean | undefined>(undefined)
 
@@ -20,33 +21,39 @@ export const MemberConnect = chakra(({ memberId, size = 'lg', ...props }: Props)
     if (isBuddy) {
       // remove buddy
 
-      deleteJSON(`/api/member/buddy/${memberId}`).then(() => {
+      deleteJSON(`/api/member/buddy/${member.id}`).then(() => {
         setIsBuddy(false)
         return reload()
       })
     } else {
       // add buddy
-      postJSON<Partial<UserBuddy>>(`/api/member/buddy/${memberId}`, {}).then(() => {
+      postJSON<Partial<UserBuddy>>(`/api/member/buddy/${member.id}`, {}).then(() => {
         setIsBuddy(true)
         return reload()
       })
     }
-  }, [isBuddy, memberId, reload, setIsBuddy])
+  }, [isBuddy, member.id, reload, setIsBuddy])
 
   useEffect(() => {
     if (!userLoading && me?.buddies && isBuddy == undefined) {
       const buddies = me.buddies as UserBuddy[]
       const b = buddies.some((ur: UserBuddy) => {
         const buddy = ur.buddy_id as User
-        return buddy.id === memberId
+        return buddy.id === member.id
       })
       setIsBuddy(b)
     }
-  }, [isBuddy, me, memberId, userLoading])
+  }, [isBuddy, me, member.id, userLoading])
 
-  if (level < MemberLevel.brother) return <></>
-  if (userLoading || isBuddy == undefined) return <></>
-  if (me?.id === memberId) return <></>
+  if (level < MemberLevel.brother) return null
+  if (userLoading || isBuddy == undefined) return null
+  if (me?.id === member.id) return null
+
+  if (!hasFeature('buddy_list')) return <UpgradeIcon
+    title='Add Buddy'
+    membershipType={MembershipType.Plus}
+    icon={<UserIcon stroke={'white'} width="30px" />}
+  />
   return (
     <>
       {(isBuddy && (

@@ -1,33 +1,44 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from 'stripe'
-import { saveUserBillingEvent } from "lib/services/directus/server/users/billing";
+import { saveBillingEvent } from "lib/services/directus/server/users/billing";
 import stripe, { webhookSecret } from "lib/services/stripe/server";
 import { findUser, updateUser } from "lib/services/directus/server/users";
-import { Member } from "lib/models";
+import { Member, BillingEvent } from "lib/models";
+import { IncomingMessage } from "http";
+import type { Readable } from 'node:stream';
+
+async function getRawBody(readable: Readable): Promise<Buffer> {
+  const chunks = [];
+  for await (const chunk of readable) {
+    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+  }
+  return Buffer.concat(chunks);
+}
 
 
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest & IncomingMessage, res: NextApiResponse) {
   const sig = req.headers['stripe-signature'];
 
   let event: Stripe.Event;
   console.log('Stripe event received')
   try {
+    const rawBody = await getRawBody(req)
+    const body = Buffer.from(rawBody).toString('utf8')
 
-    event = stripe.webhooks.constructEvent(req.read(), sig, webhookSecret);
-    //console.dir(event)
-    const { id, type, api_version, created, data, livemode, object, pending_webhooks, account } = event;
+    event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
+    const { id, type, created, data: { object } } = event;
+    const data = object as any & { metadata?: { userId?: string } }
+    let user = null;
+    if (data?.metadata?.userId) {
+      user = data.metadata.userId;
+    }
 
-    await saveUserBillingEvent({
+    await saveBillingEvent({
       id,
       type,
-      api_version,
-      data: data as any,
-      livemode,
-      object,
-      pending_webhooks,
-      account,
-      created: new Date(created).toISOString(),
+      data,
+      user,
+      created
     })
   } catch (err) {
     console.error(err)

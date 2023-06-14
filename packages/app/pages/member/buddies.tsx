@@ -4,8 +4,7 @@ import { MemberLevel, SearchableMember, User, UserBuddy } from 'lib/models'
 import { Flex, SimpleGrid, Text, Alert, Switch, Spacer, Link } from '@chakra-ui/react'
 import { MemberCard, MemberModal } from 'components/controls'
 import { useState } from 'react'
-import NextLink from 'next/link'
-import { FieldSwitch } from 'components/forms'
+
 
 export type PageProps = {}
 
@@ -14,6 +13,7 @@ export default function BuddiesPage({}: PageProps) {
   const [memberId, setMemberId] = useState<string>(undefined)
   const { member, loading } = useUser({
     minLevel: MemberLevel.brother,
+    requiredFeature: 'buddy_list'
   })
 
   const buddies = member?.buddies as UserBuddy[]

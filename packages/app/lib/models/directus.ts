@@ -25,7 +25,8 @@ import {
   UserPhoto,
   UserSession,
   UserVerificationToken,
-  UserBillingEvent,
+  BillingEvent,
+  UserLike,
 } from 'lib/models'
 
 export type DirectusCollection = {
@@ -163,10 +164,11 @@ export type DirectusTypes = {
   survey_answers: SurveyAnswer
   user_account: UserAccount
   user_session: UserSession
-  user_billing_events: UserBillingEvent
+  billing_event: BillingEvent
   user_verification_token: UserVerificationToken
   user_email_events: UserEmailEvent
   user_buddy: UserBuddy
+  user_like: UserLike
   user_shares: UserShare
   users: User
   users_files: UserFile

@@ -1,5 +1,5 @@
-import { Flex, Badge, Box, Spacer } from '@chakra-ui/react'
-import { SearchableMember } from 'lib/models'
+import { Flex, Badge, Spacer } from '@chakra-ui/react'
+import { SearchableMember, Member } from 'lib/models'
 import { MemberIcon, MemberIconProps } from './MemberIcon'
 import { capitalCase } from 'change-case'
 
@@ -8,12 +8,14 @@ import { ReactNode } from 'react'
 export type MemberHeaderProps = MemberIconProps & {
   children?: ReactNode
   member: Partial<SearchableMember>
+  viewer: Member
   color?: string
   zoom?: boolean
   minimal?: boolean
 }
 
 export const MemberHeader = ({
+  viewer,
   children,
   member,
   color,
@@ -21,9 +23,10 @@ export const MemberHeader = ({
   minimal = false,
   ...props
 }: MemberHeaderProps) => {
+  const sharedWithMe = member?.photo_shares?.some(s => s.viewer_id == viewer?.id)
   return (
     <>
-      <Flex direction={'column'} justify="space-between" align="center" alignItems="center" gap={2}>
+      <Flex direction='column' justify="space-between" align="center" alignItems="center" gap={2}>
         <MemberIcon member={member} size={size} {...props}>
           {children}
         </MemberIcon>
@@ -55,6 +58,15 @@ export const MemberHeader = ({
                 {capitalCase(member.spectrum)}
               </Badge>
             )}
+            <Spacer />
+            {sharedWithMe && <Badge
+                fontSize={['xs', 'sm']}
+                bg="primary.300"
+                color="white"
+                borderRadius="0 3px 3px 0"
+              >
+                Unlocked
+              </Badge>}
           </Flex>
         )}
       </Flex>

@@ -8,8 +8,7 @@ import { MemberAvatar } from './MemberAvatar'
 import swr from 'swr'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
-  memberId: string,
-  reload: () => void,
+  memberId: string
 }
 
 export const MemberVouch = chakra(({ memberId, size = 'lg', ...props }: Props) => {
@@ -82,11 +81,11 @@ export const MemberVouch = chakra(({ memberId, size = 'lg', ...props }: Props) =
             </PopoverBody>
           </PopoverContent>
         </Popover>) || voucher?.id && (<MemberAvatar
-        size="sm"
-        m={2}
-        title={`Vouched by ${voucher.nickname} `}
-        aria-label={`Vouched by ${voucher.nickname} `}
-        member={voucher}
+          size="sm"
+          m={2}
+          title={`Vouched by ${voucher.nickname} `}
+          aria-label={`Vouched by ${voucher.nickname} `}
+          member={voucher}
       />)}
     </>
   )

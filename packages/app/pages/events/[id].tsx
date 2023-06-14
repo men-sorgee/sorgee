@@ -58,6 +58,7 @@ export default function EventPage({ id }: PageProps) {
     isStaff,
     reload: reloadUser,
     authenticated,
+    hasFeature
   } = useUser({ minLevel: MemberLevel.inductee })
 
   const [eventId] = useState<string>(String(i) || id)
@@ -98,6 +99,8 @@ export default function EventPage({ id }: PageProps) {
 
   if (!authenticated) return null
 
+  const canViewAttendees = hasFeature('view_attendees')
+
   return (
     <Page title="Event Details" loading={loading || eventLoading} requireAuth={true}>
       {authenticated && member && event && (<>
@@ -133,13 +136,13 @@ export default function EventPage({ id }: PageProps) {
             )}
           </SimpleGrid>
           {stats && event.status != 'occurred' && invite && (
-            <Flex direction="column" gap={4}>
+            <Flex direction={canViewAttendees ? "column": "row"} gap={4}>
               <HStack align="start" justify="end">
                 <Stat>
                   <StatLabel>Confirmed</StatLabel>
                   <StatNumber>{stats.confirmed_count}</StatNumber>
                 </Stat>
-                <Wrap spacing={-2}>
+                {canViewAttendees && <Wrap spacing={-2}>
                   {getAttendees('confirmed').map(({ id, name, src }) => (
                     <Avatar
                       key={id}
@@ -152,7 +155,7 @@ export default function EventPage({ id }: PageProps) {
                       }}
                     />
                   ))}
-                </Wrap>
+                </Wrap>}
               </HStack>
 
               <HStack align="start" justify="right">
@@ -160,7 +163,7 @@ export default function EventPage({ id }: PageProps) {
                   <StatLabel>Maybe</StatLabel>
                   <StatNumber>{stats.maybe_count}</StatNumber>
                 </Stat>
-                <Wrap spacing={-2}>
+                {canViewAttendees && <Wrap spacing={-2}>
                   {getAttendees('maybe').map(({ id, name, src }) => (
                     <Avatar
                       key={id}
@@ -173,7 +176,7 @@ export default function EventPage({ id }: PageProps) {
                       }}
                     />
                   ))}
-                </Wrap>
+                </Wrap>}
               </HStack>
             </Flex>
           )}

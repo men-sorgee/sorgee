@@ -12,13 +12,17 @@ import {
 } from '@chakra-ui/react'
 import { useMessages } from 'hooks'
 import { ChatBubbleBottomCenterIcon as ChatIcon } from '@heroicons/react/24/outline'
-import { Member, MemberLevel } from 'lib/models'
+import { Member, MemberLevel, MembershipType } from 'lib/models'
 import { Messages } from '../../components/controls/Messages'
 import { useEffect, useRef, useState } from 'react'
+import { UpgradeIcon } from 'components/controls'
 
-type Props = { member: Member }
+type Props = {
+  member: Member
+  hasFeature: boolean
+}
 
-const MessagesActions = ({ member }: Props) => {
+const ChatActions = ({ member, hasFeature }: Props) => {
   const { conversations, hasNewMessages, newMessageCount, activeId, setActiveId, lastActiveId } =
     useMessages()
   const { isOpen, onOpen, onClose } = useDisclosure({
@@ -40,7 +44,7 @@ const MessagesActions = ({ member }: Props) => {
     if (show == undefined && member) {
       setShow(
         MemberLevel[member.user_type] >= MemberLevel.brother ||
-          Object.keys(conversations).length > 0
+        Object.keys(conversations).length > 0
       )
     }
     if (show == false && hasNewMessages) setShow(true)
@@ -58,6 +62,12 @@ const MessagesActions = ({ member }: Props) => {
     show,
     activeId,
   ])
+
+  if (!hasFeature) return <UpgradeIcon
+    title='Member Chat'
+    membershipType={MembershipType.Plus}
+    icon={<ChatIcon height="50px" width="50px" />}
+  />
 
   return (
     <>
@@ -108,4 +118,4 @@ const MessagesActions = ({ member }: Props) => {
   )
 }
 
-export default MessagesActions
+export default ChatActions

@@ -12,8 +12,8 @@ export default async function MemberBuddy(
     const method = withMethods(req, ['POST', 'DELETE', 'GET'])
     const me = await withMember(req, res)
 
-    const { bid } = req.query
-    const user_id = String(bid)
+    const { id } = req.query
+    const user_id = String(id)
 
     const them = await getUser(user_id)
     if (them == null) {

@@ -1,6 +1,6 @@
 'use client'
 import useSWR from 'swr'
-import { ApiError, ApplicationStatus, Member, MemberLevel, Profile, User } from 'lib/models'
+import { ApiError, ApplicationStatus, Member, MemberFeature, MemberLevel, Profile, User } from 'lib/models'
 import { JsonFetcher, authenticatedFetcher, getAssetUrl, postJSON } from 'lib/utils'
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
@@ -19,6 +19,7 @@ export type UserContextData = {
   isMember: boolean
   isStaff: boolean
   isApplicant: boolean
+  hasFeature: (feature: MemberFeature) => boolean
 }
 
 export const UserContext = createContext<UserContextData>({
@@ -34,6 +35,7 @@ export const UserContext = createContext<UserContextData>({
   isMember: false,
   isStaff: false,
   isApplicant: false,
+  hasFeature: (feature: MemberFeature) => false,
 })
 
 export function UserProvider({ children }: { children: ReactNode }) {
@@ -81,6 +83,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
       return [null, error]
     }
   }
+  const hasFeature = (feature: MemberFeature): boolean => {
+    if (!member) return false
+    if (isStaff) return true
+    if (level == MemberLevel.big_brother) return true
+    return member.has_features?.includes(feature)
+  }
 
   const context: UserContextData = {
     member,
@@ -102,6 +110,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     isMember,
     isStaff,
     isApplicant,
+    hasFeature
   }
   return <UserContext.Provider value={context}>{children}</UserContext.Provider>
 }
@@ -109,17 +118,19 @@ export function UserProvider({ children }: { children: ReactNode }) {
 type UseUserProps = {
   minLevel?: MemberLevel
   minAppStatus?: ApplicationStatus
+  requiredFeature?: MemberFeature
   forceLogin?: boolean
 }
 export const useUser = ({
   minLevel = MemberLevel.brother,
   minAppStatus = ApplicationStatus.approved,
   forceLogin = true,
+  requiredFeature,
 }: UseUserProps = {}): UserContextData & {
   authorized: boolean
-} => {
+}  => {
   const router = useRouter()
-  const { level, loading, member, authenticated, ...data } = useContext(UserContext)
+  const { level, loading, member, authenticated, hasFeature, ...data } = useContext(UserContext)
   let authorized = level >= minLevel
 
   useEffect(() => {
@@ -129,9 +140,28 @@ export const useUser = ({
         if (status < minAppStatus) {
           const destination = '/apply/' + member.application_status
           if (router.asPath != destination) router.push(destination)
+          return
+        }
+        if (level < minLevel) {
+          const destination = '/unauthorized'
+          if (router.asPath != destination) router.push(destination, {
+            query: {
+              level: minLevel
+            }
+          })
+          return
+        }
+        if (requiredFeature && !hasFeature(requiredFeature)) {
+          const destination = '/pricing'
+          if (router.asPath != destination) router.push(destination, {
+            query: {
+              feature: requiredFeature
+            }
+          })
+          return
         }
       } else if (forceLogin) {
-        signIn()
+        signIn().catch(console.error)
       }
     }
   }, [authenticated, authorized, forceLogin, loading, member, minAppStatus, router])
@@ -143,5 +173,6 @@ export const useUser = ({
     loading,
     member,
     authorized,
+    hasFeature
   }
 }

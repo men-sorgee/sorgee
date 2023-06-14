@@ -24,10 +24,7 @@ const allowedStatuses: UserStatusType[] = ['new', 'active', 'stale']
 const userCanSignin = (user: User | any) => {
   const can = user && allowedStatuses.includes(user.status as UserStatusType)
     && MemberLevel[user.userType as string] >= MemberLevel.applicant
-  console.dir({
-    user,
-    can
-  })
+
   return can
 }
 

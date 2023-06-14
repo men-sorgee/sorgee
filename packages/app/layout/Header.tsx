@@ -103,12 +103,12 @@ function Header({ userType, children, ...props }: Props) {
           path: '/blog',
           children: [],
         },
-        //{
-        //  title: 'Pricing',
-        //  path: '/pricing',
-        //  children: [],
-        //  visibility: ['staff'],
-        //},
+        {
+          title: 'Pricing',
+          path: '/pricing',
+          children: [],
+          visibility: ['pledge', 'inductee','brother','staff'],
+        },
       ],
     },
     ...menus.filter((p) => canSee(p.visibility)),

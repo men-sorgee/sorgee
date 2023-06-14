@@ -23,6 +23,7 @@ export { MemberVouch } from './MemberVouch'
 export { MemberChat } from './MemberChat'
 export { MemberModal } from './MemberModal'
 export { MemberShare } from './MemberShare'
+export { MemberLike } from './MemberLike'
 
 export { ImageModal } from './ImageModal'
 export { ImageGallery } from './ImageGallery'
@@ -40,3 +41,5 @@ export { NotificationCard } from './NotificationCard'
 export { Messages } from './Messages'
 
 export { SubscribeBox } from './SubscribeBox'
+
+export { UpgradeIcon } from './UpgradeIcon'

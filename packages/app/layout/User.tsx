@@ -8,13 +8,12 @@ import {
   useColorMode,
   MenuDivider,
   useToast,
+  Spinner,
 } from '@chakra-ui/react'
 import { ButtonLink, MemberAvatar, MemberIcon } from 'components/controls'
-import { useEffect } from 'react'
 import Link from 'next/link'
 import {
   CalendarIcon,
-  InboxIcon,
   CogIcon,
   PaperAirplaneIcon,
   ArrowTopRightOnSquareIcon,
@@ -32,13 +31,14 @@ import {
 } from '@heroicons/react/24/outline'
 import { useUser, useSite } from 'hooks'
 import { MemberLevel, ApplicationStatus } from 'lib/models'
-import { pledgeSurvey } from '../lib/config'
+import { pledgeSurvey } from 'lib/config'
+
 interface Props { }
 
 export default function UserMenu(_props: Props) {
   const { colorMode, toggleColorMode } = useColorMode()
   const { site } = useSite()
-  const { member, authenticated, isApplicant, isMember, isStaff, level, loading } = useUser({
+  const { member, authenticated, isApplicant, isMember, isStaff, level, hasFeature, loading } = useUser({
     forceLogin: false,
   })
   const showApply = !site?.invite_only
@@ -59,6 +59,13 @@ export default function UserMenu(_props: Props) {
   //     })
   //   }
   // }, [loading, member?.notifications, member?.notifications?.length, toast])
+
+  const hasDirectory = hasFeature('view_directory')
+  const hasChat = hasFeature('chat')
+  const hasBuddyList = hasFeature('buddy_list')
+  const hasEvents = isMember && level >= MemberLevel.brother
+
+  if (loading) return <Spinner />
 
   return (
     <>
@@ -143,7 +150,7 @@ export default function UserMenu(_props: Props) {
                 {level > MemberLevel.pledge && (
                   <>
                     <MenuDivider />
-                    <MenuItem
+                    {hasEvents && <MenuItem
                       icon={<CalendarIcon color={'white'} width={'1.5rem'} />}
                       bg="black"
                       _hover={{ bg: 'gray.400', textDecoration: 'none' }}
@@ -151,9 +158,9 @@ export default function UserMenu(_props: Props) {
                       href="/events"
                     >
                       Events
-                    </MenuItem>
+                    </MenuItem>}
 
-                    <MenuItem
+                    {hasDirectory && <MenuItem
                       icon={<UserGroupIcon color={'white'} width={'1.5rem'} />}
                       bg="black"
                       _hover={{ bg: 'gray.400', textDecoration: 'none' }}
@@ -161,8 +168,8 @@ export default function UserMenu(_props: Props) {
                       href="/members"
                     >
                       Members
-                    </MenuItem>
-                    <MenuItem
+                    </MenuItem>}
+                    {hasBuddyList && <MenuItem
                       icon={<UsersIcon color={'white'} width={'1.5rem'} />}
                       bg="black"
                       _hover={{ bg: 'gray.400', textDecoration: 'none' }}
@@ -170,8 +177,8 @@ export default function UserMenu(_props: Props) {
                       href="/member/buddies"
                     >
                       Buddies
-                    </MenuItem>
-                    {level > MemberLevel.inductee && (
+                    </MenuItem>}
+                    {level >= MemberLevel.brother && (
                       <MenuItem
                         icon={<PaperAirplaneIcon color={'white'} width={'1.5rem'} />}
                         bg="black"

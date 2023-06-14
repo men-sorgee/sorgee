@@ -75,7 +75,10 @@ type Meta = {
   filtered: number
 }
 export default function MemberListPage({ fields, id: i }: PageProps) {
-  const { member: currentMember, loading } = useUser({ minLevel: MemberLevel.brother })
+  const { member: currentMember, loading } = useUser({ 
+    minLevel: MemberLevel.brother,
+    requiredFeature: 'view_directory'
+  })
   const router = useRouter()
   const { page: p, size: s, sort: o, id: _, ...q } = router.query
 
@@ -246,6 +249,7 @@ export default function MemberListPage({ fields, id: i }: PageProps) {
                 full
                 size="xl"
                 key={member.id}
+                viewer={currentMember}
                 member={member}
                 onClick={() => setId(member.id)}
               />

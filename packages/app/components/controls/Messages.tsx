@@ -1,9 +1,8 @@
 import { postJSON } from 'lib/utils'
 import { useMessages } from 'hooks'
-import { Member, ChatMessage, Message, ChatConversation } from 'lib/models'
+import { Member, ChatMessage, Message } from 'lib/models'
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { formatDistanceToNow } from 'date-fns'
-
 import {
   Avatar,
   MainContainer,
@@ -17,11 +16,6 @@ import {
   MessageList,
   MessageInput,
   TypingIndicator,
-  InfoButton,
-  InputToolbox,
-  AttachmentButton,
-  SendButton,
-  MessageTextContent,
 } from '@chatscope/chat-ui-kit-react'
 import io, { Socket } from 'socket.io-client'
 import MessagesStyles from './MessagesStyles'
@@ -40,7 +34,6 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
     mutate,
     activeId,
     setActiveId,
-    hasNewMessages,
     delete: d,
   } = useMessages()
   const [messages, setMessages] = useState<ChatMessage[]>([])
@@ -111,7 +104,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
 
   const socketInitializer = () => {
     fetch('/api/socket').catch((err) => {
-      console.log(err)
+      console.error(err)
     })
     socket = io({
       path: '/api/socket.io',
@@ -372,7 +365,7 @@ export const Messages = ({ currentUser }: { currentUser: Member }) => {
                   variant={'ghost'}
                   _hover={{ bg: 'primary.500' }}
                 />
-                <MemberConnect memberId={activeId} fill={'white'} />
+                <MemberConnect member={activeConversation.user} fill={'white'} />
               </ConversationHeader.Actions>
             </ConversationHeader>
 
