@@ -12,11 +12,11 @@ async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     const { email, link } = req.body as InviteLink
 
 
-    const newUser = await findUser(email.toLocaleLowerCase())
-    if (newUser) {
-      switch (newUser.user_type) {
+    const existingUser = await findUser(email.toLocaleLowerCase())
+    if (existingUser) {
+      switch (existingUser.user_type) {
         case 'subscriber': {
-          await updateUser(newUser.id, {
+          await updateUser(existingUser.id, {
             user_type: 'applicant',
             vouched_by: member.id,
             notes: `Invited by ${member.first_name} ${member.last_name}`,
@@ -25,11 +25,14 @@ async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
           break
         }
         case 'applicant': {
-          await updateUser(newUser.id, {
+          await updateUser(existingUser.id, {
             vouched_by: member.id,
             notes: `Invited by ${member.first_name} ${member.last_name}`,
           })
           break
+        }
+        default: {
+          throw new Error('User already exists')
         }
       }
     } else {
@@ -43,16 +46,16 @@ async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
       })
     }
 
-    await sendNotificationEmail(
-      email,
-      `${member.first_name}'s Friend`,
-      `${member.first_name} ${member.last_name} has invited you to join our community!`,
-      `Begin your application, by clicking the button below.`,
-      {
-        button_text: `Accept Invitation`,
-        button_url: link,
-      }
-    )
+    //await sendNotificationEmail(
+    //  email,
+    //  `${member.first_name}'s Friend`,
+    //  `${member.first_name} ${member.last_name} has invited you to join our community!`,
+    //  `Begin your application, by clicking the button below.`,
+    //  {
+    //    button_text: `Accept Invitation`,
+    //    button_url: link,
+    //  }
+    //)
 
     res.status(200).end()
   } catch (e: any) {

@@ -2,16 +2,18 @@ import { useUser } from '@/hooks/use-user'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useState } from 'react'
 import { postJSON } from 'lib/utils'
-import { UserInvite, InviteLink, Member } from 'lib/models'
-import { HStack, Button, Text, useClipboard, useToast } from '@chakra-ui/react'
+import { UserInvite, InviteLink, Member, MemberLevel } from 'lib/models'
+import { Alert, AlertIcon, Button, Text, useToast } from '@chakra-ui/react'
 import { FieldInput } from 'components/forms'
 import { baseUrl } from 'lib/config'
 import Page from 'components/Page'
 
 function Invite() {
-  const { loading, member } = useUser()
+  const { loading, member } = useUser({
+    minLevel: MemberLevel.brother
+  })
   return (
-    <Page title="Invite Someone" loading={loading} sectionClass="" requireAuth={true}>
+    <Page title="Invite a Trusted Buddy" loading={loading} requireAuth={true}>
       {member && <Form member={member} />}
     </Page>
   )
@@ -19,8 +21,7 @@ function Invite() {
 
 function Form({ member }: { member: Member }) {
   const toast = useToast()
-  const { setValue, hasCopied } = useClipboard('')
-  const [link, setLink] = useState<string>()
+  const [link, setLink] = useState<string|boolean>(false)
   const methods = useForm<InviteLink>({
     mode: 'onBlur',
   })
@@ -36,10 +37,7 @@ function Form({ member }: { member: Member }) {
   }
 
   const onCopyClick = (e: any) => {
-    e.preventDefault()
-    const invite = getLink(e.target.dataset)
-    if (!invite) return
-    setValue(invite)
+    navigator?.clipboard?.writeText(link as string)
     toast({
       title: 'Copied!',
       description: 'The invite link was copied to your clipboard.',
@@ -57,7 +55,6 @@ function Form({ member }: { member: Member }) {
       e: data.email,
       v: member?.id,
     })
-    setLink(inviteLink)
     const { success, error } = await postJSON('/api/members/invite', {
       ...data,
       link: inviteLink,
@@ -65,13 +62,13 @@ function Form({ member }: { member: Member }) {
 
     if (success) {
       toast({
-        title: 'Copied!',
-        description: 'The invite link was sent to ' + data.email,
+        title: 'Invite Link is Ready',
+        description: 'Share the link with your buddy ' + data.email,
         status: 'success',
         duration: 9000,
         isClosable: true,
       })
-      reset()
+
     } else {
       setError('email', { message: error?.message })
     }
@@ -80,14 +77,31 @@ function Form({ member }: { member: Member }) {
 
   return (
     <>
-      <Text mb={10}>
+      <Text >
         {member?.first_name || 'Brother'}, enter your friend&apos;s email address and we will create
         a link that will allow them to apply to join.
       </Text>
+      <Alert status="warning" rounded='lg' shadow="lg" mb={10} mt={1}>
+        <AlertIcon />
+        <Text m={0}>
+          <b>Warning:</b>&nbsp;
+          By inviting this person, you are personally vouching for them. If they get banned for bad
+          behavior, you will also be banned.
+        </Text>
+      </Alert>
 
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <FieldInput
+          
+          {link ? <FieldInput key="link"
+              field="link"
+              label="Link"
+              rounded="md"
+              onClick={onCopyClick}
+              value={link as string}
+              readOnly
+              /> : 
+            <FieldInput key="email"
             field="email"
             type="email"
             label="Email"
@@ -97,20 +111,27 @@ function Form({ member }: { member: Member }) {
               required: {
                 value: true,
                 message: 'Please enter an email address',
-              },
+              }
             }}
             placeholder="Email address"
-          />
-
-          <HStack spacing={4} mt={4}>
-            <Button colorScheme="accent" type="submit" disabled={!member || !email.isTouched}>
-              Send Invite
+            />}
+          {link && <Alert rounded='lg' shadow="lg" mt={1} mb={10}><AlertIcon/>
+          <Text m={0}>
+            <b>Important:</b>&nbsp;  <em>This link is unique to you and your friend. Please do not share it with
+              anyone else.</em>
+            </Text>
+          </Alert>}
+          {link ? <Button mt={4} colorScheme="accent" onClick={() => {
+              reset()
+              setLink(false)
+          }}>Clear</Button>
+            : <Button mt={4}  colorScheme="accent" type="submit" disabled={!member || !email.isTouched}>
+              Create Invite
             </Button>
+          }
+          
+          
 
-            <Button disabled={!email.isTouched} colorScheme="primary" onClick={onCopyClick}>
-              {hasCopied ? 'Copied!' : 'Copy'}
-            </Button>
-          </HStack>
         </form>
       </FormProvider>
     </>
