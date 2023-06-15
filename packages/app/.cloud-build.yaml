@@ -12,7 +12,10 @@ steps:
     id: Build
     env:
       - 'DOCKER_BUILDKIT=1'
-    secretEnv: ['STRIPE_ACCOUNT_ID', 'STRIPE_SECRET_KEY ', 'ADMIN_TOKEN']
+    secretEnv:
+      - STRIPE_ACCOUNT_ID
+      - STRIPE_SECRET_KEY
+      - ADMIN_TOKEN
   - name: gcr.io/cloud-builders/docker
     args:
       - push
