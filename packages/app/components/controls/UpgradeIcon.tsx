@@ -17,6 +17,8 @@ import {
   useDisclosure
 } from '@chakra-ui/react'
 
+import { ButtonLink } from './ButtonLink'
+
 type Props = {
   title: string
   icon: React.ReactElement
@@ -28,8 +30,8 @@ const UpgradeIcon = ({ title, icon, membershipType }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const cancelRef = useRef()
 
-  const onUpgrade = () => {
-    router.push('/pricing', {
+  const onUpgrade = async () => {
+    await router.push('/subscription/pricing', {
       query: {
         plan: membershipType
       }
@@ -47,6 +49,8 @@ const UpgradeIcon = ({ title, icon, membershipType }: Props) => {
           size="lg"
           icon={icon}
           onClick={onOpen}
+          color={'gray.300'}
+          stroke={'gray.300'}
         />
       </Box>
       <AlertDialog
@@ -71,9 +75,13 @@ const UpgradeIcon = ({ title, icon, membershipType }: Props) => {
               <Button ref={cancelRef} onClick={onClose}>
                 Cancel
               </Button>
-              <Button colorScheme="red" onClick={onUpgrade} ml={3}>
+              <ButtonLink
+                colorScheme="red"
+                href={`/subscription/pricing?plan=${membershipType}`}
+                ml={3}
+              >
                 Upgrade
-              </Button>
+              </ButtonLink>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialogOverlay>

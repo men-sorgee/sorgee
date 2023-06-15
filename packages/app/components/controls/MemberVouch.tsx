@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { useMember, useUser } from 'hooks'
-import { MemberLevel, VouchingUser } from 'lib/models'
+import { useUser } from 'hooks'
+import { Member, MemberLevel, SearchableMember, VouchingUser } from 'lib/models'
 import { JsonFetcher, postJSON } from 'lib/utils'
 import swr from 'swr'
 
@@ -25,12 +25,12 @@ import { HandRaisedIcon } from '@heroicons/react/24/outline'
 import { MemberAvatar } from './MemberAvatar'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
-  memberId: string
+  member: Partial<Member | SearchableMember>
 }
 
 export const MemberVouch = chakra(
-  ({ memberId, size = 'lg', ...props }: Props) => {
-    const { level, name } = useMember(memberId)
+  ({ member, size = 'lg', ...props }: Props) => {
+    const { user_type: level, nickname: name } = member
     const {
       loading: userLoading,
       member: me,
@@ -43,21 +43,21 @@ export const MemberVouch = chakra(
       data: voucher,
       isLoading,
       mutate
-    } = swr<VouchingUser>(`/api/member/vouch/${memberId}`, JsonFetcher, {})
+    } = swr<VouchingUser>(`/api/member/vouch/${member?.id}`, JsonFetcher, {})
 
     const vouchForPledge = useCallback(() => {
       // add buddy
-      postJSON<any, VouchingUser>(`/api/member/vouch/${memberId}`, {}).then(
+      postJSON<any, VouchingUser>(`/api/member/vouch/${member?.id}`, {}).then(
         (r) => {
           mutate(r.data, true)
           return reload()
         }
       )
-    }, [memberId, mutate, reload])
+    }, [member?.id, mutate, reload])
 
     useEffect(() => {
       if (!userLoading && !isLoading && voucher?.id == undefined) {
-        if (level == MemberLevel.pledge) {
+        if (MemberLevel[level] == MemberLevel.pledge) {
           setShowVouchButton(true)
         }
       }
@@ -66,7 +66,7 @@ export const MemberVouch = chakra(
       }
     }, [
       me,
-      memberId,
+      member?.id,
       userLoading,
       setShowVouchButton,
       isLoading,

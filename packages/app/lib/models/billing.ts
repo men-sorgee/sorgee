@@ -1,8 +1,4 @@
-import {
-  MemberFeature,
-  MembershipType,
-  User,
-} from './users'
+import { User } from './users'
 
 export type BillingEvent = {
   id: string
@@ -12,16 +8,6 @@ export type BillingEvent = {
   created: number
 };
 
-export type Subscription = {
-  id: string
-  name: string
-  type: MembershipType
-  price: {
-    monthly: number
-    annualy: number
-  }
-  description: string
-  features: MemberFeature[]
-}
+
 
 

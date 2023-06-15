@@ -54,7 +54,11 @@ export const MemberChat = chakra(({ member, size = 'lg', ...props }: Props) => {
       return <></>
   }
 
-  if (me?.id != them?.vouched_by && !hasFeature('chat'))
+  if (
+    member.user_type !== 'pledge' &&
+    me?.id != them?.vouched_by &&
+    !hasFeature('chat')
+  )
     return (
       <UpgradeIcon
         title={`Chat with ${name}`}

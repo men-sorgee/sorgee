@@ -10,7 +10,7 @@ import {
   getBillingEvent,
   saveBillingEvent,
 } from 'lib/services/directus/server/users/billing'
-import stripe, { webhookSecret } from 'lib/services/stripe/server'
+import stripeClient, { webhookSecret } from 'lib/services/stripe/server'
 import {
   NextApiRequest,
   NextApiResponse,
@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
     const rawBody = await getRawBody(req)
     const body = Buffer.from(rawBody).toString('utf8')
 
-    event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
+    event = stripeClient.webhooks.constructEvent(body, sig, webhookSecret);
     const { id, type, created, data: { object } } = event;
     const data = object as any & { metadata?: { userId?: string } }
     let user = null;

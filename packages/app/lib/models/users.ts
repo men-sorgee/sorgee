@@ -409,6 +409,7 @@ export const applicantFields: Array<keyof Applicant> = [
 ]
 
 export type MemberFeature = "view_directory" | "chat" | "share_photos" | "buddy_list" | "flirt" | "view_attendees"
+export const memberFeatures: MemberFeature[] = ["view_directory", "flirt", "buddy_list", "view_attendees", "chat", "share_photos"]
 
 export type Member = Applicant & {
 

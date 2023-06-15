@@ -172,7 +172,7 @@ export const useUser = ({
           return
         }
         if (requiredFeature && !hasFeature(requiredFeature)) {
-          const destination = '/pricing'
+          const destination = '/subscription/pricing'
           if (router.asPath != destination)
             router.push(destination, {
               query: {

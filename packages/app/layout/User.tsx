@@ -28,6 +28,7 @@ import {
   PaintBrushIcon,
   PaperAirplaneIcon,
   ServerStackIcon,
+  SquaresPlusIcon,
   SunIcon,
   UserGroupIcon,
   UserIcon,
@@ -135,17 +136,33 @@ export default function UserMenu(_props: Props) {
                 >
                   Settings
                 </MenuItem>
+
+                {member.customer_id && (
+                  <MenuItem
+                    icon={<CreditCardIcon color={'white'} width={'1.5rem'} />}
+                    bg="black"
+                    _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                    as={Link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="/api/stripe/portal"
+                  >
+                    Billing
+                  </MenuItem>
+                )}
+
                 <MenuItem
-                  icon={<CreditCardIcon color={'white'} width={'1.5rem'} />}
+                  icon={<SquaresPlusIcon color={'white'} width={'1.5rem'} />}
                   bg="black"
                   _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                   as={Link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  href="/api/stripe/portal"
+                  href="/subscription/pricing"
                 >
-                  Billing
+                  Subscribe / Upgrade
                 </MenuItem>
+
                 <MenuItem
                   icon={<IdentificationIcon color={'white'} width={'1.5rem'} />}
                   bg="black"

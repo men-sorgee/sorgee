@@ -164,7 +164,7 @@ export const MemberSpotlight = chakra(
                 align="center"
                 justify="space-between"
               >
-                <MemberVouch memberId={member?.id} />
+                <MemberVouch member={member} />
                 <MemberLike member={member} />
                 <MemberChat member={member} />
                 <MemberConnect member={member} />

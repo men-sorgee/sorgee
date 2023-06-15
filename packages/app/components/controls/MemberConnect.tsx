@@ -75,7 +75,7 @@ export const MemberConnect = chakra(
         <UpgradeIcon
           title="Add Buddy"
           membershipType={MembershipType.Plus}
-          icon={<UserIcon stroke={'white'} width="30px" />}
+          icon={<UserIcon width="30px" />}
         />
       )
     return (

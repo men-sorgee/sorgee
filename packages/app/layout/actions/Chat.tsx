@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { UpgradeIcon } from 'components/controls'
+import { Messages, UpgradeIcon } from 'components'
 import { useMessages } from 'hooks'
 import { Member, MemberLevel, MembershipType } from 'lib/models'
 
@@ -17,8 +17,6 @@ import {
   useDisclosure
 } from '@chakra-ui/react'
 import { ChatBubbleBottomCenterIcon as ChatIcon } from '@heroicons/react/24/outline'
-
-import { Messages } from '../../components/controls/Messages'
 
 type Props = {
   member: Member
@@ -76,49 +74,45 @@ const ChatActions = ({ member, hasFeature }: Props) => {
     return null
   }
 
-  if (!hasFeature && !hasNewMessages)
-    return (
-      <>
-        <audio ref={audioRef} src="/sounds/click.mp3" preload="auto" />
+  return (
+    <>
+      {hasFeature || hasNewMessages ? (
+        <Box hidden={!show}>
+          <IconButton
+            aria-label="Messages"
+            title="Messages"
+            variant="primary"
+            zIndex="fixed"
+            color={isOpen ? 'accent.500' : 'white'}
+            size="lg"
+            icon={<ChatIcon height="50px" width="50px" />}
+            onClick={() => {
+              setActiveId(lastActiveId)
+              onOpen()
+            }}
+          />
+          {hasNewMessages && (
+            <Badge
+              bg="accent.500"
+              color="white"
+              ml={-4}
+              zIndex="overlay"
+              position="absolute"
+              rounded="full"
+              px={2}
+              py={0.5}
+            >
+              {newMessageCount}
+            </Badge>
+          )}
+        </Box>
+      ) : (
         <UpgradeIcon
           title="Member Chat"
           membershipType={MembershipType.Plus}
           icon={<ChatIcon height="50px" width="50px" />}
         />
-      </>
-    )
-
-  return (
-    <>
-      <Box hidden={!show}>
-        <IconButton
-          aria-label="Messages"
-          title="Messages"
-          variant="primary"
-          zIndex="fixed"
-          color={isOpen ? 'accent.500' : 'white'}
-          size="lg"
-          icon={<ChatIcon height="50px" width="50px" />}
-          onClick={() => {
-            setActiveId(lastActiveId)
-            onOpen()
-          }}
-        />
-        {hasNewMessages && (
-          <Badge
-            bg="accent.500"
-            color="white"
-            ml={-4}
-            zIndex="overlay"
-            position="absolute"
-            rounded="full"
-            px={2}
-            py={0.5}
-          >
-            {newMessageCount}
-          </Badge>
-        )}
-      </Box>
+      )}
       <audio ref={audioRef} src="/sounds/click.mp3" preload="auto" />
       <Drawer
         placement={'left'}
