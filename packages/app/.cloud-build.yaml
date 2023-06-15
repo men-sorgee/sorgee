@@ -1,4 +1,11 @@
 steps:
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: 'bash'
+    args:
+      [
+        '-c',
+        "gcloud secrets versions access latest --secret=gnh-app-env --format='get(payload.data)' | tr '_-' '/+' | base64 -d > .env.build"
+      ]
   - name: gcr.io/cloud-builders/docker
     args:
       - build
@@ -12,9 +19,6 @@ steps:
     id: Build
     env:
       - 'DOCKER_BUILDKIT=1'
-      - 'ADMIN_URL=https://admin.guysnheat.com'
-
-    secretEnv: ['STRIPE_ACCOUNT_ID', 'STRIPE_SECRET_KEY', 'ADMIN_TOKEN']
   - name: gcr.io/cloud-builders/docker
     args:
       - push

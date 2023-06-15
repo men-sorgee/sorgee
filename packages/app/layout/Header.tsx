@@ -1,15 +1,6 @@
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
-import {
-  Page,
-  PageItem,
-  UserType,
-} from 'lib/models'
+import { Page, PageItem, UserType } from 'lib/models'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 
@@ -30,12 +21,9 @@ import {
   StackProps,
   useColorModeValue,
   useDisclosure,
-  useOutsideClick,
+  useOutsideClick
 } from '@chakra-ui/react'
-import {
-  Bars4Icon,
-  XMarkIcon,
-} from '@heroicons/react/24/solid'
+import { Bars4Icon, XMarkIcon } from '@heroicons/react/24/solid'
 
 import { Logo } from '../components/controls'
 import { constrained } from './index'
@@ -122,7 +110,7 @@ function Header({ userType, children, ...props }: Props) {
         },
         {
           title: 'Pricing',
-          path: '/member/account',
+          path: '/pricing',
           children: [],
           visibility: ['pledge', 'inductee', 'brother', 'staff']
         }
