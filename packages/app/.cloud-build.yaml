@@ -1,6 +1,6 @@
 steps:
   - name: gcr.io/cloud-builders/docker
-    entryPoint: 'bash'
+    entrypoint: 'bash'
     args:
       - -c
       - >-
