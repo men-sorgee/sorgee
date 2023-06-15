@@ -48,11 +48,11 @@ substitutions:
 
 availableSecrets:
   secretManager:
-    - versionName: projects/806946159244/secrets/gnh-app-stripe-account
+    - versionName: projects/806946159244/secrets/gnh-app-stripe-account/versions/1
       env: 'STRIPE_ACCOUNT_ID'
-    - versionName: projects/806946159244/secrets/gnh-app-stripe-secret
+    - versionName: projects/806946159244/secrets/gnh-app-stripe-secret/versions/1
       env: 'STRIPE_SECRET_KEY'
-    - versionName: projects/806946159244/secrets/gnh-app-admin-token
+    - versionName: projects/806946159244/secrets/gnh-app-admin-token/versions/4
       env: 'ADMIN_TOKEN'
 tags:
   - gcp-cloud-build-deploy-cloud-run
