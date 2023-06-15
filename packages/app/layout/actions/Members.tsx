@@ -21,7 +21,7 @@ const MembersAction = ({ member, active, hasFeature }: Props) => {
     return (
       <UpgradeIcon
         title="Member Directory"
-        membershipType={MembershipType.Free}
+        membershipType={MembershipType.free}
         icon={<UserGroupIcon height="50px" width="50px" />}
       />
     )

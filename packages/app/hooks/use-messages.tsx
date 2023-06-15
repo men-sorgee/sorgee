@@ -114,7 +114,11 @@ export function MessagesProvider({
       })
       // @ts-ignore
       setConversations(
-        convos.sort((a, b) => b.lastMessage.timestamp - a.lastMessage.timestamp)
+        convos.sort(
+          (a, b) =>
+            b.lastMessage.timestamp.getTime() -
+            a.lastMessage.timestamp.getTime()
+        )
       )
       totalNewMessages.push(...newMessages)
     })

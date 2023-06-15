@@ -31,7 +31,7 @@ const BuddiesAction = ({ member, active, hasFeature }: Props) => {
     return (
       <UpgradeIcon
         title="Buddy List"
-        membershipType={MembershipType.Basic}
+        membershipType={MembershipType.basic}
         icon={<UsersIcon height="50px" width="50px" />}
       />
     )

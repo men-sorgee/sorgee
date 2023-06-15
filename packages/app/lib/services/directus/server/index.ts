@@ -14,7 +14,7 @@ const cache: { [key: string]: any } = {}
 
 export async function getAdminClient(): Promise<Directus<DirectusTypes>> {
   if (await _adminDb.auth.token) return _adminDb
-  await _adminDb.auth.static(process.env.ADMIN_TOKEN)
+  let success = await _adminDb.auth.static(process.env.ADMIN_TOKEN)
   return _adminDb
 }
 

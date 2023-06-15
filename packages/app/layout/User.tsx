@@ -118,15 +118,31 @@ export default function UserMenu(_props: Props) {
             <MenuDivider />
             {isMember && (
               <>
-                <MenuItem
-                  icon={<UserIcon color={'white'} width={'1.5rem'} />}
-                  bg="black"
-                  _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                  as={Link}
-                  href="/member/account"
-                >
-                  Account
-                </MenuItem>
+                {member.membership_type != 'none' && (
+                  <MenuItem
+                    icon={<UserIcon color={'white'} width={'1.5rem'} />}
+                    bg="black"
+                    _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                    as={Link}
+                    href="/member/account"
+                  >
+                    Account
+                  </MenuItem>
+                )}
+                {member.membership_type == 'none' && (
+                  <MenuItem
+                    icon={<SquaresPlusIcon color={'white'} width={'1.5rem'} />}
+                    bg="black"
+                    _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                    as={Link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="/member/account"
+                  >
+                    Upgrade
+                  </MenuItem>
+                )}
+
                 <MenuItem
                   icon={<CogIcon color={'white'} width={'1.5rem'} />}
                   bg="black"
@@ -137,7 +153,7 @@ export default function UserMenu(_props: Props) {
                   Settings
                 </MenuItem>
 
-                {member.customer_id && (
+                {member.membership_type != 'none' && (
                   <MenuItem
                     icon={<CreditCardIcon color={'white'} width={'1.5rem'} />}
                     bg="black"
@@ -150,18 +166,6 @@ export default function UserMenu(_props: Props) {
                     Billing
                   </MenuItem>
                 )}
-
-                <MenuItem
-                  icon={<SquaresPlusIcon color={'white'} width={'1.5rem'} />}
-                  bg="black"
-                  _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                  as={Link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="/subscription/pricing"
-                >
-                  Subscribe / Upgrade
-                </MenuItem>
 
                 <MenuItem
                   icon={<IdentificationIcon color={'white'} width={'1.5rem'} />}

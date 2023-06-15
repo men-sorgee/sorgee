@@ -13,7 +13,8 @@ const getConfig = (phase) => {
    */
   const nextConfig = {
     publicRuntimeConfig: {
-      dev
+      dev,
+      stripePublicKey: process.env.STRIPE_PUBLIC_KEY
     },
     pageExtensions: ['tsx'],
 
@@ -49,7 +50,10 @@ const getConfig = (phase) => {
       ]
     },
     poweredByHeader: false,
-    crossOrigin: false
+    crossOrigin: false,
+    env: {
+      STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY
+    }
   }
   return nextConfig
 }

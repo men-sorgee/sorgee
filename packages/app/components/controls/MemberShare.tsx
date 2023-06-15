@@ -54,7 +54,7 @@ export const MemberShare = chakra(
       return (
         <UpgradeIcon
           title={label}
-          membershipType={MembershipType.Plus}
+          membershipType={MembershipType.plus}
           icon={<LockClosedIcon width="30px" />}
         />
       )

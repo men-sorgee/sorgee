@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const session = await stripe.billingPortal.sessions.create({
       customer: user.customer_id,
-      return_url: `${baseUrl}/subscription/success`,
+      return_url: `${baseUrl}/member/plans`,
     });
 
     res.redirect(session.url);

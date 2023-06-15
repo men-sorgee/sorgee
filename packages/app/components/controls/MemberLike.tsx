@@ -11,8 +11,8 @@ import {
 import { deleteJSON, postJSON } from 'lib/utils'
 
 import { chakra, IconButton, IconButtonProps } from '@chakra-ui/react'
-import { HeartIcon as LikeIcon } from '@heroicons/react/24/outline'
-import { HeartIcon as LikedIcon } from '@heroicons/react/24/solid'
+import { StarIcon as LikeIcon } from '@heroicons/react/24/outline'
+import { FireIcon, StarIcon as LikedIcon } from '@heroicons/react/24/solid'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
   member: Partial<Member | SearchableMember>
@@ -22,6 +22,7 @@ export const MemberLike = chakra(({ member, size = 'lg', ...props }: Props) => {
   const { loading, member: me, reload, hasFeature, level } = useUser()
 
   const [isLiked, setIsLiked] = useState<boolean>(false)
+  const [mutual, setMutual] = useState<boolean>(false)
 
   const toggleLike = useCallback(() => {
     if (isLiked) {
@@ -40,21 +41,25 @@ export const MemberLike = chakra(({ member, size = 'lg', ...props }: Props) => {
 
   useEffect(() => {
     const likes = me?.likes || []
+    const likedBy = me?.liked_by || []
     if (!loading && likes.length > 0) {
       setIsLiked(likes.some((l) => l.like_id == member.id))
+    }
+    if (!loading && likes.length > 0) {
+      setMutual(likedBy.some((l) => l.user_id == member.id))
     }
   }, [me, member.id, loading])
 
   if (loading || !me || me.id == member.id) return null
   if (level < MemberLevel.brother) return null
 
-  const label = isLiked ? 'Unlike' : 'Like'
+  const label = mutual ? 'Match!' : isLiked ? 'Liked' : 'Like'
 
   if (!hasFeature('flirt'))
     return (
       <UpgradeIcon
         title={label}
-        membershipType={MembershipType.Plus}
+        membershipType={MembershipType.plus}
         icon={<LikeIcon width="30px" />}
       />
     )
@@ -63,10 +68,18 @@ export const MemberLike = chakra(({ member, size = 'lg', ...props }: Props) => {
     <>
       <IconButton
         size={size}
-        color="white"
+        color={mutual ? 'yellow' : 'white'}
         title={label}
         aria-label={label}
-        icon={isLiked ? <LikedIcon width="30px" /> : <LikeIcon width="30px" />}
+        icon={
+          mutual ? (
+            <FireIcon width="30px" />
+          ) : isLiked ? (
+            <LikedIcon width="30px" />
+          ) : (
+            <LikeIcon width="30px" />
+          )
+        }
         variant="ghost"
         _hover={{ bg: 'primary.500' }}
         onClick={toggleLike}

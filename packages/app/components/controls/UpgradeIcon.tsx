@@ -31,7 +31,7 @@ const UpgradeIcon = ({ title, icon, membershipType }: Props) => {
   const cancelRef = useRef()
 
   const onUpgrade = async () => {
-    await router.push('/subscription/pricing', {
+    await router.push('/member/account', {
       query: {
         plan: membershipType
       }
@@ -77,7 +77,7 @@ const UpgradeIcon = ({ title, icon, membershipType }: Props) => {
               </Button>
               <ButtonLink
                 colorScheme="red"
-                href={`/subscription/pricing?plan=${membershipType}`}
+                href={`/member/account?plan=${membershipType}`}
                 ml={3}
               >
                 Upgrade

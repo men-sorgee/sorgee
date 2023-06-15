@@ -62,7 +62,7 @@ export const MemberChat = chakra(({ member, size = 'lg', ...props }: Props) => {
     return (
       <UpgradeIcon
         title={`Chat with ${name}`}
-        membershipType={MembershipType.Plus}
+        membershipType={MembershipType.plus}
         icon={<ChatIconOff width="30px" />}
       />
     )

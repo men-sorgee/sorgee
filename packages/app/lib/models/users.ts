@@ -176,6 +176,12 @@ export type User = {
   liked_by: string[] | UserLike[]
   private_folder?: string
   public_folder?: string
+
+  membership_type?: MembershipType;
+  customer_id?: string;
+  membership_start?: string;
+  renewal_type?: string;
+  has_features: Array<MemberFeature>
 }
 
 type Color = {
@@ -489,18 +495,20 @@ export type Member = Applicant & {
   private_folder?: string
   public_folder?: string
 
-  membership_type?: MembershipType;
+  membership_type?: Membership | string
   customer_id?: string;
   membership_start?: string;
   renewal_type?: string;
   has_features: Array<MemberFeature>
 }
 
+export type Membership = 'none' | 'free' | 'basic' | 'plus' | 'pro'
 export enum MembershipType {
-  Free = "0",
-  Basic = "1",
-  Plus = "2",
-  Pro = "3"
+  none = -1,
+  free = 0,
+  basic = 1,
+  plus = 2,
+  pro = 3
 }
 
 export type SearchableMember = Omit<

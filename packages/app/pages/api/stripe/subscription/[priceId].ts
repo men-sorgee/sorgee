@@ -9,7 +9,8 @@ const handler = async (req, res) => {
 
     let member = await withMember(req, res)
     const stripe = getClient();
-    if (member.customer_id == null || member.customer_id == undefined) {
+
+    if (!member.customer_id) {
       const { id, email, first_name, last_name } = member;
 
       const customer = await stripe.customers.create({
@@ -27,21 +28,25 @@ const handler = async (req, res) => {
 
     const { priceId } = req.query;
 
-
     const lineItems = [
       {
         price: priceId,
         quantity: 1,
+        metadata: {
+          userId: member.id,
+        }
       },
     ];
 
     const session = await stripe.checkout.sessions.create({
       customer: member.customer_id,
       mode: "subscription",
-      payment_method_types: ["card"],
       line_items: lineItems,
-      success_url: `${baseUrl}/payment/success`,
-      cancel_url: `${baseUrl}/payment/cancelled`,
+      success_url: `${baseUrl}/member/plans?message=success`,
+      cancel_url: `${baseUrl}/member/plans?message=cancelled`,
+      metadata: {
+        userId: member.id,
+      }
     });
 
     res.send({
