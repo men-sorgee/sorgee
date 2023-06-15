@@ -1,11 +1,4 @@
 steps:
-  - name: gcr.io/cloud-builders/gcloud
-    entrypoint: 'bash'
-    args:
-      [
-        '-c',
-        "gcloud secrets versions access latest --secret=gnh-app-env --format='get(payload.data)' | tr '_-' '/+' | base64 -d > .env.build"
-      ]
   - name: gcr.io/cloud-builders/docker
     args:
       - build
@@ -59,12 +52,12 @@ substitutions:
 
 availableSecrets:
   secretManager:
-    - versionName: projects/806946159244/secrets/gnh-app-stripe-account/versions/1
-      env: 'STRIPE_ACCOUNT_ID'
-    - versionName: projects/806946159244/secrets/gnh-app-stripe-secret/versions/1
-      env: 'STRIPE_SECRET_KEY'
-    - versionName: projects/806946159244/secrets/gnh-app-admin-token/versions/4
-      env: 'ADMIN_TOKEN'
+    - versionName: projects/806946159244/secrets/gnh-app-stripe-account/versions/latest
+      env: STRIPE_ACCOUNT_ID
+    - versionName: projects/806946159244/secrets/gnh-app-stripe-secret/versions/latest
+      env: STRIPE_SECRET_KEY
+    - versionName: projects/806946159244/secrets/gnh-app-admin-token/versions/latest
+      env: ADMIN_TOKEN
 tags:
   - gcp-cloud-build-deploy-cloud-run
   - gcp-cloud-build-deploy-cloud-run-managed
