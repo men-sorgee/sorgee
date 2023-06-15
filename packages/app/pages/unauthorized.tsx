@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import { Text } from '@chakra-ui/react'
@@ -13,7 +14,7 @@ export default function UnauthorizedPage() {
       <Text align="center">
         Unfortunately, the page you tried to access is only available to{' '}
         {level || 'member'}s. Learn how to advance your level in our{' '}
-        <a href="/brothers">brotherhood guide</a>.
+        <Link href="/brothers">brotherhood guide</Link>.
       </Text>
 
       <Image
