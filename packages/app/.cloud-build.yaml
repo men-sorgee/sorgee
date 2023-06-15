@@ -12,6 +12,9 @@ steps:
     id: Build
     env:
       - 'DOCKER_BUILDKIT=1'
+      - 'ADMIN_URL=https://admin.guysnheat.com'
+
+    secretEnv: ['STRIPE_ACCOUNT_ID', 'STRIPE_SECRET_KEY', 'ADMIN_TOKEN']
   - name: gcr.io/cloud-builders/docker
     args:
       - push
@@ -42,6 +45,15 @@ substitutions:
   _PLATFORM: managed
   _SERVICE_NAME: gnh-app
   _LABELS: gcb-trigger-id=ba5256ae-2f50-4176-8ea2-055e8bd2e0e3
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/806946159244/secrets/gnh-app-stripe-account
+      env: 'STRIPE_ACCOUNT_ID'
+    - versionName: projects/806946159244/secrets/gnh-app-stripe-secret
+      env: 'STRIPE_SECRET_KEY'
+    - versionName: projects/806946159244/secrets/gnh-app-admin-token
+      env: 'ADMIN_TOKEN'
 tags:
   - gcp-cloud-build-deploy-cloud-run
   - gcp-cloud-build-deploy-cloud-run-managed
