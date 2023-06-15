@@ -24,7 +24,7 @@ import {
 import { CheckCircleIcon } from '@heroicons/react/24/solid'
 import { loadStripe } from '@stripe/stripe-js'
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   const { getClient } = await import('lib/services/stripe/server')
   const stripe = getClient()
 
