@@ -11,7 +11,9 @@ ENV PWA=true
 WORKDIR /app
 COPY . .
 COPY --from=dependencies /app/node_modules ./node_modules
+ENV STRIPE_ACCOUNT_ID=${STRIPE_ACCOUNT_ID}
 ENV STRIPE_PUBLIC_KEY=pk_live_51LoPw1EoEUGL2Bgubxo5vTjGRx0ONP4JHo6A0zVJivv7ToiCBoRnKdmRoCIWFbikTTenBSQZ7xy8wmF0woyx4NBH00MykU8UsN
+ENV STRIPE_SECRET_KEY=${STRIPE_PUBLIC_KEY}
 
 RUN yarn run build
 

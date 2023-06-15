@@ -6,7 +6,6 @@ steps:
         '-c',
         "gcloud secrets versions access latest --secret=gnh-app-env --format='get(payload.data)' | tr '_-' '/+' | base64 -d > .env.build"
       ]
-    id: Variables
   - name: gcr.io/cloud-builders/docker
     args:
       - build
@@ -17,16 +16,21 @@ steps:
       - packages/app
       - '-f'
       - packages/app/Dockerfile
+      - '-e'
+      - 'STRIPE_ACCOUNT_ID=$$STRIPE_ACCOUNT_ID'
+      - '-e'
+      - 'STRIPE_SECRET_KEY=$$STRIPE_SECRET_KEY'
+      - '-e'
+      - 'ADMIN_TOKEN=$$ADMIN_TOKEN'
     id: Build
     env:
       - 'DOCKER_BUILDKIT=1'
-    waitFor: Variables
+    secretEnv: ['STRIPE_ACCOUNT_ID', 'STRIPE_SECRET_KEY ', 'ADMIN_TOKEN']
   - name: gcr.io/cloud-builders/docker
     args:
       - push
       - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
     id: Push
-    waitFor: Build
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
     args:
       - run
@@ -41,7 +45,6 @@ steps:
       - '--quiet'
     id: Deploy
     entrypoint: gcloud
-    waitFor: Push
 images:
   - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
 options:
@@ -54,6 +57,14 @@ substitutions:
   _SERVICE_NAME: gnh-app
   _LABELS: gcb-trigger-id=ba5256ae-2f50-4176-8ea2-055e8bd2e0e3
 
+availableSecrets:
+  secretManager:
+    - versionName: projects/806946159244/secrets/gnh-app-stripe-account/versions/1
+      env: 'STRIPE_ACCOUNT_ID'
+    - versionName: projects/806946159244/secrets/gnh-app-stripe-secret/versions/1
+      env: 'STRIPE_SECRET_KEY'
+    - versionName: projects/806946159244/secrets/gnh-app-admin-token/versions/4
+      env: 'ADMIN_TOKEN'
 tags:
   - gcp-cloud-build-deploy-cloud-run
   - gcp-cloud-build-deploy-cloud-run-managed
