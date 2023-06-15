@@ -1,20 +1,17 @@
 steps:
   - name: gcr.io/cloud-builders/docker
+    entryPoint: 'bash'
     args:
-      - build
-      - '--cache-from'
-      - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:latest'
-      - '-t'
-      - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
-      - packages/app
-      - '-f'
-      - packages/app/Dockerfile
-      - '-e'
-      - 'STRIPE_ACCOUNT_ID=$$STRIPE_ACCOUNT_ID'
-      - '-e'
-      - 'STRIPE_SECRET_KEY=$$STRIPE_SECRET_KEY'
-      - '-e'
-      - 'ADMIN_TOKEN=$$ADMIN_TOKEN'
+      - -c
+      - >-
+        docker build --cache-from
+        $_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:latest -t
+        $_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+        packages/app -f packages/app/Dockerfile 
+        -e STRIPE_ACCOUNT_ID=$$STRIPE_ACCOUNT_ID
+        -e STRIPE_SECRET_KEY=$$STRIPE_SECRET_KEY 
+        -e ADMIN_TOKEN=$$ADMIN_TOKEN
+
     id: Build
     env:
       - 'DOCKER_BUILDKIT=1'
