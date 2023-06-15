@@ -1,21 +1,22 @@
 steps:
   - name: gcr.io/cloud-builders/docker
     entrypoint: 'bash'
+    secretEnv:
+      - STRIPE_ACCOUNT_ID
+      - STRIPE_SECRET_KEY
+      - ADMIN_TOKEN
     args:
       - -c
       - >-
         docker build --cache-from
         $_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:latest -t
         $_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
-        packages/app -f packages/app/Dockerfile 
-        -e STRIPE_ACCOUNT_ID=$$STRIPE_ACCOUNT_ID
-        -e STRIPE_SECRET_KEY=$$STRIPE_SECRET_KEY 
-        -e ADMIN_TOKEN=$$ADMIN_TOKEN
+        packages/app -f packages/app/Dockerfile
 
     id: Build
     env:
       - 'DOCKER_BUILDKIT=1'
-    secretEnv: ['STRIPE_ACCOUNT_ID', 'STRIPE_SECRET_KEY ', 'ADMIN_TOKEN']
+
   - name: gcr.io/cloud-builders/docker
     args:
       - push
@@ -47,15 +48,16 @@ substitutions:
   _SERVICE_NAME: gnh-app
   _LABELS: gcb-trigger-id=ba5256ae-2f50-4176-8ea2-055e8bd2e0e3
 
-availableSecrets:
-  secretManager:
-    - versionName: projects/806946159244/secrets/gnh-app-stripe-account/versions/latest
-      env: STRIPE_ACCOUNT_ID
-    - versionName: projects/806946159244/secrets/gnh-app-stripe-secret/versions/latest
-      env: STRIPE_SECRET_KEY
-    - versionName: projects/806946159244/secrets/gnh-app-admin-token/versions/latest
-      env: ADMIN_TOKEN
 tags:
   - gcp-cloud-build-deploy-cloud-run
   - gcp-cloud-build-deploy-cloud-run-managed
   - gnh-app
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/$PROJECT_ID/secrets/gnh-app-stripe-account/versions/latest
+      env: STRIPE_ACCOUNT_ID
+    - versionName: projects/$PROJECT_ID/secrets/gnh-app-stripe-secret/versions/latest
+      env: STRIPE_SECRET_KEY
+    - versionName: projects/$PROJECT_ID/secrets/gnh-app-admin-token/versions/latest
+      env: ADMIN_TOKEN
