@@ -233,7 +233,7 @@ const Pricing = ({ products }: Params) => {
         Additional features are available for a small recurring fee.
       </Text>
 
-      <HStack mt={14}>
+      <HStack mt={14} hidden>
         <Button
           size="lg"
           type="submit"
