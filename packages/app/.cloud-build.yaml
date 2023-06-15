@@ -50,14 +50,6 @@ substitutions:
   _SERVICE_NAME: gnh-app
   _LABELS: gcb-trigger-id=ba5256ae-2f50-4176-8ea2-055e8bd2e0e3
 
-availableSecrets:
-  secretManager:
-    - versionName: projects/806946159244/secrets/gnh-app-stripe-account/versions/1
-      env: 'STRIPE_ACCOUNT_ID'
-    - versionName: projects/806946159244/secrets/gnh-app-stripe-secret/versions/1
-      env: 'STRIPE_SECRET_KEY'
-    - versionName: projects/806946159244/secrets/gnh-app-admin-token/versions/4
-      env: 'ADMIN_TOKEN'
 tags:
   - gcp-cloud-build-deploy-cloud-run
   - gcp-cloud-build-deploy-cloud-run-managed
