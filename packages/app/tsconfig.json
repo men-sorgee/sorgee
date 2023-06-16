@@ -15,22 +15,21 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "baseUrl": ".",
     "incremental": true,
     "jsx": "preserve",
     //"jsxImportSource": "@emotion/react",
     "paths": {
-      "@/components/*": ["components/*"],
-      "@/lib/*": ["lib/*"],
-      "@/styles": ["styles/*"],
-      "@/hooks/*": ["hooks/*"]
+      "@components/*": ["components/*"],
+      "@lib/*": ["lib/*"],
+      "@hooks/*": ["hooks/*"]
     },
     "plugins": [
       {
         "name": "next"
       }
     ],
-    "types": ["vitest/importMeta"]
+    "types": ["vitest/importMeta"],
+    "baseUrl": "./src"
   },
   "include": [
     "next-env.d.ts",

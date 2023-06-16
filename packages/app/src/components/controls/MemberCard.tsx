@@ -1,0 +1,138 @@
+import { formatDistanceToNowStrict } from 'date-fns'
+import {
+  Member,
+  MemberLevel,
+  MemberLevelColorMap,
+  SearchableMember
+} from '@lib/models'
+import NextLink from 'next/link'
+
+import { LockIcon } from '@chakra-ui/icons'
+import {
+  ButtonGroup,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  CardProps,
+  chakra,
+  Flex,
+  Heading,
+  LinkBox,
+  LinkOverlay,
+  Text
+} from '@chakra-ui/react'
+
+import { useUser } from '../../hooks'
+import { MemberChat, MemberConnect, MemberHeader, MemberLike } from './'
+
+type Props = CardProps & {
+  viewer: Member
+  member: SearchableMember | Member
+  full?: boolean
+  onClick?: () => void
+}
+
+export const MemberCard = chakra(
+  ({ member, onClick, full = false, size = 'lg', ...props }: Props) => {
+    const levelValue = MemberLevel[member?.user_type]
+    const levelColor = MemberLevelColorMap[levelValue]
+    const { member: viewer, reload, loading } = useUser()
+    return (
+      <>
+        <LinkBox key={member.id}>
+          <Card
+            w="full"
+            h="full"
+            bgGradient={`linear(to-bl, ${levelColor[0]}, ${levelColor[1]})`}
+            rounded="lg"
+            border="1px solid transparent"
+            borderColor="primary"
+            color="white"
+            minW="full"
+            overflow="hidden"
+            _hover={{ shadow: '2xl', borderColor: 'accent.500' }}
+            {...props}
+          >
+            <CardHeader>
+              <LinkOverlay
+                as={NextLink}
+                href={`/members/${member.id}`}
+                onClick={(e) => {
+                  e.preventDefault()
+                  if (member.show_profile) onClick()
+                }}
+              >
+                <MemberHeader
+                  member={member}
+                  zoom={false}
+                  size={size}
+                  viewer={viewer}
+                >
+                  {!member.show_profile && (
+                    <>
+                      <Flex
+                        px={4}
+                        mt={-8}
+                        direction="column"
+                        w="25%"
+                        align="start"
+                        justify="center"
+                      >
+                        <LockIcon
+                          color="primary.500"
+                          h={20}
+                          w={20}
+                          mx={'auto'}
+                        />
+                        <Heading
+                          as="h3"
+                          mt={-10}
+                          size="sm"
+                          p={0}
+                          textAlign="center"
+                        >
+                          PRIVATE PROFILE
+                        </Heading>
+                      </Flex>
+                    </>
+                  )}
+                </MemberHeader>
+              </LinkOverlay>
+            </CardHeader>
+
+            {full && member?.show_profile && (
+              <CardBody>
+                <Text noOfLines={2} py={0} my={0}>
+                  {member.biography}
+                </Text>
+              </CardBody>
+            )}
+
+            <CardFooter justify="space-between" alignItems="end">
+              <Text fontSize="xs">
+                {member?.show_profile && member.last_login && (
+                  <>
+                    Last Login:{' '}
+                    {formatDistanceToNowStrict(new Date(member.last_login))} ago
+                    <br />
+                  </>
+                )}
+                Member Since:{' '}
+                {new Date(
+                  member.approved_date || member.date_created
+                ).toLocaleDateString()}
+              </Text>
+
+              <ButtonGroup>
+                <MemberLike member={member as Member} />
+                <MemberChat member={member} />
+                <MemberConnect member={member as Member} />
+              </ButtonGroup>
+            </CardFooter>
+          </Card>
+        </LinkBox>
+      </>
+    )
+  }
+)
