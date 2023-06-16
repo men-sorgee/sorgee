@@ -1,28 +1,8 @@
-import { useState } from 'react'
-
-import axios from 'axios'
-import { sentenceCase } from 'change-case'
-import { ButtonLink, Page } from 'components'
+import { Page } from 'components'
 import { useUser } from 'hooks'
-import { memberFeatures, MemberLevel, ProductView } from '@lib/models'
-import { subscriptionData } from '@lib/services/stripe/client'
 
-import {
-  Badge,
-  Box,
-  Button,
-  Flex,
-  Heading,
-  HStack,
-  Radio,
-  RadioGroup,
-  Spacer,
-  Text,
-  useColorModeValue,
-  VStack
-} from '@chakra-ui/react'
-import { CheckCircleIcon } from '@heroicons/react/24/solid'
-import { loadStripe } from '@stripe/stripe-js'
+import { Button, HStack, Spacer } from '@chakra-ui/react'
+
 import { Plans } from 'components'
 
 type Params = {}

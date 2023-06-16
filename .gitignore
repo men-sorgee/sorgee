@@ -6,7 +6,7 @@ node_modules
 .pnp.js
 
 # testing
-/coverage
+coverage/
 
 # next.js
 .next
@@ -25,10 +25,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
 
 .env
 *.env
@@ -38,6 +35,7 @@ certificates
 data
 
 .env*
-packages/app/results/*
 .tests/*
-packages/app/lib/services/db/ormconfig.json
+
+packages/app/results/*
+packages/app/coverage/*

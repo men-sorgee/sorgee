@@ -56,33 +56,35 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
   const customer = data as Stripe.Customer
   const subscription = data as Stripe.Subscription
 
-  switch (dataType) {
-    case 'customer':
-      let { userId } = customer.metadata || {}
-      if (!userId) {
-        user = await getUser(userId)
-      } else {
-        user = await findUser(customer.email)
-      }
-      break
-    case 'subscription':
-      const { customer: customerId } = extractFromSubscription(subscription)
-      user = (await findUserByCustomer(customerId)) as User
-      break
-  }
-
   try {
+    switch (dataType) {
+      case 'customer':
+        const { id } = customer || {}
+        if (!id) {
+          user = (await findUserByCustomer(id)) as User
+        } else {
+          user = await findUser(customer.email)
+        }
+        break
+      case 'subscription':
+        const { customer: customerId } = extractFromSubscription(subscription)
+        user = (await findUserByCustomer(customerId)) as User
+        break
+    }
+
+
     await saveBillingEvent({
       id,
       type,
       data,
-      user: user?.id,
+      user: user?.id || null,
       created,
     })
   } catch (err) {
     console.warn(err)
     // process event anyway
   }
+
   if (user == null) {
     return res.status(200).json({ received: true })
   }
