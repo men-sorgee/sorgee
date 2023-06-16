@@ -1,5 +1,5 @@
 import { baseUrl } from 'lib/config'
-import { Member } from 'lib/models'
+import { Member, ApiResponse } from 'lib/models'
 import { updateUser } from 'lib/services/directus/server'
 import { getClient } from 'lib/services/stripe/server'
 import { withMember } from 'lib/utils/server'
@@ -30,10 +30,7 @@ const handler = async (req, res) => {
     const lineItems = [
       {
         price: priceId,
-        quantity: 1,
-        metadata: {
-          userId: member.id,
-        },
+        quantity: 1
       },
     ]
 
@@ -41,16 +38,16 @@ const handler = async (req, res) => {
       customer: member.customer_id,
       mode: 'subscription',
       line_items: lineItems,
-      success_url: `${baseUrl}/member/plans?message=success`,
-      cancel_url: `${baseUrl}/member/plans?message=cancelled`,
+      success_url: `${baseUrl}/member/account?message=success`,
+      cancel_url: `${baseUrl}/member/account`,
       metadata: {
         userId: member.id,
       },
     })
 
-    res.send({
+    res.json(ApiResponse({
       id: session.id,
-    })
+    }))
   } catch (error) {
     console.log(error)
     res.status(500).json({ error: error.message })

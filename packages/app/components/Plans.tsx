@@ -1,5 +1,5 @@
 import { useState } from 'react'
-
+import Script from 'next/script'
 import axios from 'axios'
 import { sentenceCase } from 'change-case'
 import { ButtonLink } from 'components'
@@ -21,8 +21,9 @@ import {
   VStack
 } from '@chakra-ui/react'
 import { CheckCircleIcon } from '@heroicons/react/24/solid'
-import { loadStripe } from '@stripe/stripe-js'
+
 import { useProducts } from 'hooks'
+import { getJSON } from '../lib/utils'
 type Params = {
   allowSubscribe?: boolean
 }
@@ -34,8 +35,15 @@ const Plans = ({ allowSubscribe = false }: Params) => {
 
   const bgColor = useColorModeValue('primary.500', 'gray.700')
 
-  const processSubscription = (planId: string) => async () => {
-    const { data } = await axios.get(`/api/stripe/subscription/${planId}`)
+  const processSubscription = async (planId: string) => {
+    const { loadStripe } = await import('@stripe/stripe-js')
+    const { data, error, success } = await getJSON<{ id: string }>(
+      `/api/stripe/purchase/${planId}`
+    )
+    if (!success) {
+      console.error(error)
+      return
+    }
     const stripe = await loadStripe(
       process.env.STRIPE_PUBLIC_KEY ||
         'pk_live_51LoPw1EoEUGL2Bgubxo5vTjGRx0ONP4JHo6A0zVJivv7ToiCBoRnKdmRoCIWFbikTTenBSQZ7xy8wmF0woyx4NBH00MykU8UsN'
@@ -142,7 +150,7 @@ const Plans = ({ allowSubscribe = false }: Params) => {
                 <Box>
                   {showSubscribeButton && (
                     <Button
-                      onClick={processSubscription(plan.id)}
+                      onClick={() => processSubscription(plan.id)}
                       variant="solid"
                       bg="primary.500"
                       color="white"
