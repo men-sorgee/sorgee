@@ -6,9 +6,7 @@ export type BillingEvent = {
   data: Record<string, any>
   user?: string | User
   created: number
-};
-
-
+}
 
 export type ProductView = {
   id: string

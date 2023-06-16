@@ -12,7 +12,7 @@ import { Alert, AlertIcon, Button, Text, useToast } from '@chakra-ui/react'
 
 function Invite() {
   const { loading, member } = useUser({
-    minLevel: MemberLevel.brother
+    minLevel: MemberLevel.brother,
   })
   return (
     <Page title="Invite a Trusted Buddy" loading={loading} requireAuth={true}>
@@ -25,16 +25,14 @@ function Form({ member }: { member: Member }) {
   const toast = useToast()
   const [link, setLink] = useState<string | boolean>(false)
   const methods = useForm<InviteLink>({
-    mode: 'onBlur'
+    mode: 'onBlur',
   })
 
   const { handleSubmit, setError, reset, getFieldState, formState } = methods
 
   const getLink = ({ e }: UserInvite) => {
     if (!member) return
-    const data = Buffer.from(JSON.stringify({ e, v: member?.id })).toString(
-      'base64'
-    )
+    const data = Buffer.from(JSON.stringify({ e, v: member?.id })).toString('base64')
     const invite = `${baseUrl}/apply/${data}`
     setLink(invite)
     return invite
@@ -47,7 +45,7 @@ function Form({ member }: { member: Member }) {
       description: 'The invite link was copied to your clipboard.',
       status: 'success',
       duration: 9000,
-      isClosable: true
+      isClosable: true,
     })
   }
 
@@ -57,11 +55,11 @@ function Form({ member }: { member: Member }) {
     }
     const inviteLink = getLink({
       e: data.email,
-      v: member?.id
+      v: member?.id,
     })
     const { success, error } = await postJSON('/api/members/invite', {
       ...data,
-      link: inviteLink
+      link: inviteLink,
     })
 
     if (success) {
@@ -70,7 +68,7 @@ function Form({ member }: { member: Member }) {
         description: 'Share the link with your buddy ' + data.email,
         status: 'success',
         duration: 9000,
-        isClosable: true
+        isClosable: true,
       })
     } else {
       setError('email', { message: error?.message })
@@ -81,15 +79,14 @@ function Form({ member }: { member: Member }) {
   return (
     <>
       <Text>
-        {member?.first_name || 'Brother'}, enter your friend&apos;s email
-        address and we will create a link that will allow them to apply to join.
+        {member?.first_name || 'Brother'}, enter your friend&apos;s email address and we will create
+        a link that will allow them to apply to join.
       </Text>
       <Alert status="warning" rounded="lg" shadow="lg" mb={10} mt={1}>
         <AlertIcon />
         <Text m={0}>
-          <b>Warning:</b>&nbsp; By inviting this person, you are personally
-          vouching for them. If they get banned for bad behavior, you will also
-          be banned.
+          <b>Warning:</b>&nbsp; By inviting this person, you are personally vouching for them. If
+          they get banned for bad behavior, you will also be banned.
         </Text>
       </Alert>
 
@@ -116,8 +113,8 @@ function Form({ member }: { member: Member }) {
               registerOptions={{
                 required: {
                   value: true,
-                  message: 'Please enter an email address'
-                }
+                  message: 'Please enter an email address',
+                },
               }}
               placeholder="Email address"
             />
@@ -128,8 +125,8 @@ function Form({ member }: { member: Member }) {
               <Text m={0}>
                 <b>Important:</b>&nbsp;{' '}
                 <em>
-                  This link is unique to you and your friend. Please do not
-                  share it with anyone else.
+                  This link is unique to you and your friend. Please do not share it with anyone
+                  else.
                 </em>
               </Text>
             </Alert>

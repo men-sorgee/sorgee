@@ -14,7 +14,7 @@ import {
   ListItem,
   OrderedList,
   Text,
-  UnorderedList
+  UnorderedList,
 } from '@chakra-ui/react'
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
 
@@ -26,13 +26,7 @@ export const Markdown = ({ content, size }: Props) => {
   const [reactContent, setMarkdownSource] = useRemark({
     rehypeReactOptions: {
       components: {
-        a: ({
-          href,
-          children
-        }: {
-          href: string
-          children: React.ReactNode
-        }) => {
+        a: ({ href, children }: { href: string; children: React.ReactNode }) => {
           return (
             <Link
               as={NextLink}
@@ -41,9 +35,7 @@ export const Markdown = ({ content, size }: Props) => {
               color="accent"
             >
               {children}&nbsp;
-              {href.startsWith('http') && (
-                <Icon as={ArrowTopRightOnSquareIcon} width="1rem" />
-              )}
+              {href.startsWith('http') && <Icon as={ArrowTopRightOnSquareIcon} width="1rem" />}
             </Link>
           )
         },
@@ -61,9 +53,7 @@ export const Markdown = ({ content, size }: Props) => {
             />
           )
         },
-        p: ({ children }: { children: React.ReactNode }) => (
-          <Text fontSize={size}>{children}</Text>
-        ),
+        p: ({ children }: { children: React.ReactNode }) => <Text fontSize={size}>{children}</Text>,
         h1: ({ children }: { children: React.ReactNode }) => (
           <Heading as="h1" size={size || 'h1'}>
             {children}
@@ -90,12 +80,7 @@ export const Markdown = ({ content, size }: Props) => {
           </Heading>
         ),
         ul: ({ children }: { children: React.ReactNode }) => (
-          <UnorderedList
-            display="block"
-            ml="1rem"
-            mt={1}
-            listStylePosition="outside"
-          >
+          <UnorderedList display="block" ml="1rem" mt={1} listStylePosition="outside">
             {children}
           </UnorderedList>
         ),
@@ -111,19 +96,13 @@ export const Markdown = ({ content, size }: Props) => {
         ),
         blockquote: ({ children }: { children: React.ReactNode }) => (
           <Alert rounded="lg" shadow="lg" my={4}>
-            <Heading
-              w="full"
-              as="h5"
-              size={size || 'h5'}
-              m={0}
-              textAlign="center"
-            >
+            <Heading w="full" as="h5" size={size || 'h5'} m={0} textAlign="center">
               {children}
             </Heading>
           </Alert>
-        )
-      }
-    }
+        ),
+      },
+    },
   })
   useEffect(() => {
     setMarkdownSource(content || '')

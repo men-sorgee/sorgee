@@ -22,14 +22,14 @@ function generateSiteMap(pages: Page[]) {
        <loc>${baseUrl}/cookies</loc>
      </url>
      ${pages
-      .map((page) => {
-        return `
+       .map((page) => {
+         return `
        <url>
            <loc>${`${baseUrl}/${page.slug}`}</loc>
        </url>
      `
-      })
-      .join('')}
+       })
+       .join('')}
    </urlset>
  `
 }

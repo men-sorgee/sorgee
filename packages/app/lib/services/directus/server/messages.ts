@@ -1,11 +1,4 @@
-import {
-  ChatMessage,
-  ChatUser,
-  DirectusFile,
-  Message,
-  MessageStatusType,
-  User,
-} from 'lib/models'
+import { ChatMessage, ChatUser, DirectusFile, Message, MessageStatusType, User } from 'lib/models'
 import { getAssetUrl } from 'lib/utils'
 
 import { getAdminClient } from './'

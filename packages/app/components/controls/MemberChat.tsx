@@ -2,13 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { UpgradeIcon } from 'components/controls'
 import { useMember, useMessages, useUser } from 'hooks'
-import {
-  Member,
-  MemberLevel,
-  MembershipType,
-  SearchableMember,
-  UserBuddy
-} from 'lib/models'
+import { Member, MemberLevel, MembershipType, SearchableMember, UserBuddy } from 'lib/models'
 
 import { Badge, chakra, IconButton, IconButtonProps } from '@chakra-ui/react'
 import { ChatBubbleBottomCenterIcon as ChatIconOff } from '@heroicons/react/24/outline'
@@ -54,11 +48,7 @@ export const MemberChat = chakra(({ member, size = 'lg', ...props }: Props) => {
       return <></>
   }
 
-  if (
-    member.user_type !== 'pledge' &&
-    me?.id != them?.vouched_by &&
-    !hasFeature('chat')
-  )
+  if (member.user_type !== 'pledge' && me?.id != them?.vouched_by && !hasFeature('chat'))
     return (
       <UpgradeIcon
         title={`Chat with ${name}`}
@@ -78,13 +68,7 @@ export const MemberChat = chakra(({ member, size = 'lg', ...props }: Props) => {
         }}
         aria-label={`Chat with ${member.nickname || 'this member'}`}
         title={`Chat with ${member.nickname || 'this member'}`}
-        icon={
-          hasConversation ? (
-            <ChatIconOn width="30px" />
-          ) : (
-            <ChatIconOff width="30px" />
-          )
-        }
+        icon={hasConversation ? <ChatIconOn width="30px" /> : <ChatIconOff width="30px" />}
         size={size}
         _hover={{ bg: 'primary.500' }}
         {...props}

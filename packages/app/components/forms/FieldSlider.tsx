@@ -7,7 +7,7 @@ import {
   SliderMark,
   SliderProps,
   SliderThumb,
-  SliderTrack
+  SliderTrack,
 } from '@chakra-ui/react'
 
 import FieldWrapper from './FieldWrapper'

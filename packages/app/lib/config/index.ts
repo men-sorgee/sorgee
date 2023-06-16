@@ -16,8 +16,8 @@ const config = {
   userImageId: 'b063b5ac-fcec-46ae-8225-bbfb4a0184b5',
   notifications: {
     congratsBrother: 'c25e8f2e-669e-43f5-b126-d3a1527eb61f',
-    congratsInductee: '581ffb86-a3cc-4951-a31a-296988c12703'
-  }
+    congratsInductee: '581ffb86-a3cc-4951-a31a-296988c12703',
+  },
 }
 const {
   title,
@@ -29,7 +29,7 @@ const {
   pages,
   pledgeSurvey,
   userImageId,
-  notifications
+  notifications,
 } = config
 export {
   adminBaseUrl,

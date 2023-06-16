@@ -5,11 +5,7 @@ import { LockOpenIcon } from '@heroicons/react/24/outline'
 
 import { ImageModal } from './ImageModal'
 
-export const ImageGallery = ({
-  images
-}: {
-  images: Array<{ src: string; private: boolean }>
-}) => {
+export const ImageGallery = ({ images }: { images: Array<{ src: string; private: boolean }> }) => {
   const [openIndex, setOpenIndex] = useState<number>(undefined)
   const [viewIndex, setViewIndex] = useState<number>(0)
   const showScroll = images?.length > 0
@@ -53,7 +49,7 @@ export const ImageGallery = ({
                 top: '5',
                 right: '5',
                 width: '20px',
-                zIndex: 20
+                zIndex: 20,
               }}
             />
           )}

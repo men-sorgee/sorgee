@@ -9,7 +9,7 @@ import {
   RangeSliderFilledTrack,
   RangeSliderProps,
   RangeSliderThumb,
-  RangeSliderTrack
+  RangeSliderTrack,
 } from '@chakra-ui/react'
 
 import FieldWrapper from './FieldWrapper'
@@ -22,20 +22,11 @@ export type Props = RangeSliderProps & {
 }
 
 const InputField = (props: Props) => {
-  const {
-    field,
-    label,
-    help,
-    registerOptions = {},
-    min = 0,
-    max = 10,
-    step = 1,
-    ...opts
-  } = props
+  const { field, label, help, registerOptions = {}, min = 0, max = 10, step = 1, ...opts } = props
 
   const {
     register,
-    formState: { defaultValues }
+    formState: { defaultValues },
   } = useFormContext()
   const { onChange } = register(field, registerOptions)
   const initialValues = [min, max]
@@ -55,8 +46,8 @@ const InputField = (props: Props) => {
         onChange={(val: number[]) => {
           onChange({
             target: {
-              value: val
-            }
+              value: val,
+            },
           })
           setValues(val)
         }}

@@ -1,13 +1,7 @@
-import {
-  ApiResponse,
-  Survey,
-} from 'lib/models'
+import { ApiResponse, Survey } from 'lib/models'
 import { getSurvey } from 'lib/services/directus/server'
 import { withUser } from 'lib/utils/server'
-import {
-  NextApiRequest,
-  NextApiResponse,
-} from 'next'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function Survey(
   req: NextApiRequest,

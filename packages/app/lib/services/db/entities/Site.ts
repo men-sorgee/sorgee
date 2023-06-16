@@ -1,30 +1,25 @@
-import {
-  Column,
-  Entity,
-  Index,
-  PrimaryGeneratedColumn,
-} from 'typeorm'
+import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm'
 
-@Index("site_pkey", ["id"], { unique: true })
-@Entity("site", { schema: "public" })
+@Index('site_pkey', ['id'], { unique: true })
+@Entity('site', { schema: 'public' })
 export class Site {
-  @PrimaryGeneratedColumn({ type: "integer", name: "id" })
-  id: number;
+  @PrimaryGeneratedColumn({ type: 'integer', name: 'id' })
+  id: number
 
-  @Column("character varying", {
-    name: "site_title",
+  @Column('character varying', {
+    name: 'site_title',
     nullable: true,
     length: 255,
   })
-  siteTitle: string | null;
+  siteTitle: string | null
 
-  @Column("boolean", {
-    name: "invite_only",
+  @Column('boolean', {
+    name: 'invite_only',
     nullable: true,
-    default: () => "false",
+    default: () => 'false',
   })
-  inviteOnly: boolean | null;
+  inviteOnly: boolean | null
 
-  @Column("text", { name: "description", nullable: true })
-  description: string | null;
+  @Column('text', { name: 'description', nullable: true })
+  description: string | null
 }

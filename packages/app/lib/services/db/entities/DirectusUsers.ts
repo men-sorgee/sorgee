@@ -1,8 +1,4 @@
-import {
-  Column,
-  Entity,
-  Index,
-} from 'typeorm'
+import { Column, Entity, Index } from 'typeorm'
 
 @Index('directus_users_email_unique', ['email'], { unique: true })
 @Index('directus_users_external_identifier_unique', ['externalIdentifier'], {

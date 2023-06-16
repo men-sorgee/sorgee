@@ -1,9 +1,4 @@
-import {
-  ApiResponse,
-  Applicant,
-  ApplicationStatus,
-  DirectusFile,
-} from 'lib/models'
+import { ApiResponse, Applicant, ApplicationStatus, DirectusFile } from 'lib/models'
 import {
   deleteFile,
   getFileInfo,
@@ -12,14 +7,8 @@ import {
   UploadFolder,
 } from 'lib/services/directus/server'
 import { sendNotificationEmail } from 'lib/services/sendgrid/server'
-import {
-  withApplicant,
-  withMethods,
-} from 'lib/utils/server'
-import {
-  NextApiRequest,
-  NextApiResponse,
-} from 'next'
+import { withApplicant, withMethods } from 'lib/utils/server'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse<Applicant>>) {
   try {

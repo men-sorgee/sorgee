@@ -14,7 +14,7 @@ import {
   memberProfileExplicitRolesFields,
   memberProfileFields,
   memberProfileHealthFields,
-  UserPhoto
+  UserPhoto,
 } from 'lib/models'
 import { toLocalDate } from 'lib/utils'
 
@@ -41,7 +41,7 @@ import {
   TabPanels,
   Tabs,
   Text,
-  useColorModeValue
+  useColorModeValue,
 } from '@chakra-ui/react'
 
 import {
@@ -52,7 +52,7 @@ import {
   MemberLike,
   MemberPropertyGroup,
   MemberShare,
-  MemberVouch
+  MemberVouch,
 } from './'
 import { ImageGallery } from './ImageGallery'
 import { Loading } from './Loading'
@@ -84,41 +84,32 @@ export const MemberSpotlight = chakra(
     const { setMeta } = useMeta()
 
     useEffect(() => {
-      if (full && updateMeta)
-        setMeta(name || 'Brother', member?.biography, picture)
-    }, [[member]])
+      if (full && updateMeta) setMeta(name || 'Brother', member?.biography, picture)
+    }, [member, name, picture, full, updateMeta, setMeta])
 
     const headingColor = useColorModeValue('primary.700', 'primary.300')
     if (loading || !id || !member) return <Loading />
     const photos = member.my_photos || []
     const levelValue = MemberLevel[member?.user_type || 'subscriber']
     const levelColor = MemberLevelColorMap[levelValue]
-    const eventsAttended =
-      member?.events?.filter((e) => e.attended)?.length || 0
+    const eventsAttended = member?.events?.filter((e) => e.attended)?.length || 0
     const eventsFlaked =
-      member?.events?.filter(
-        (e: EventUser) => e.rsvp == 'confirmed' && e.attended == false
-      )?.length || 0
+      member?.events?.filter((e: EventUser) => e.rsvp == 'confirmed' && e.attended == false)
+        ?.length || 0
     const eventsConfirmed =
-      member?.events?.filter((e: EventUser) => e.rsvp == 'confirmed')?.length ||
-      0
-    const eventsMaybe =
-      member?.events?.filter((e: EventUser) => e.rsvp == 'maybe')?.length || 0
+      member?.events?.filter((e: EventUser) => e.rsvp == 'confirmed')?.length || 0
+    const eventsMaybe = member?.events?.filter((e: EventUser) => e.rsvp == 'maybe')?.length || 0
     const eventsCancelled =
-      member?.events?.filter((e: EventUser) => e.rsvp == 'cancelled')?.length ||
-      0
+      member?.events?.filter((e: EventUser) => e.rsvp == 'cancelled')?.length || 0
     const eventsDeclined =
-      member?.events?.filter((e: EventUser) => e.rsvp == 'declined')?.length ||
-      0
+      member?.events?.filter((e: EventUser) => e.rsvp == 'declined')?.length || 0
 
     return (
       <Flex direction="column" justify="space-between" {...props}>
         <Box
           px={5}
           py={4}
-          bgGradient={
-            full ? `linear(to-bl, ${levelColor[1]}, ${levelColor[0]})` : null
-          }
+          bgGradient={full ? `linear(to-bl, ${levelColor[1]}, ${levelColor[0]})` : null}
           color="white"
           borderTopRightRadius="lg"
           borderTopLeftRadius="lg"
@@ -134,13 +125,7 @@ export const MemberSpotlight = chakra(
             {children}
             <Spacer />
             {member?.rating > 0 && (
-              <Rating
-                value={member.rating || 0}
-                mt={2}
-                aria-label="User Rating"
-                size="xs"
-                simple
-              />
+              <Rating value={member.rating || 0} mt={2} aria-label="User Rating" size="xs" simple />
             )}
           </MemberHeader>
           {full && <Text>{member?.biography}</Text>}
@@ -149,22 +134,14 @@ export const MemberSpotlight = chakra(
               <Text fontSize="xs">
                 {member.last_login && (
                   <>
-                    Last Login:{' '}
-                    {formatDistanceToNowStrict(toLocalDate(member.last_login))}{' '}
-                    ago
+                    Last Login: {formatDistanceToNowStrict(toLocalDate(member.last_login))} ago
                     <br />
                   </>
                 )}
-                Member Since:{' '}
-                {new Date(member.date_created).toLocaleDateString()}
+                Member Since: {new Date(member.date_created).toLocaleDateString()}
               </Text>
 
-              <Flex
-                gap={1}
-                direction={'row'}
-                align="center"
-                justify="space-between"
-              >
+              <Flex gap={1} direction={'row'} align="center" justify="space-between">
                 <MemberBlock member={member} />
                 <Spacer />
                 <MemberVouch member={member} />
@@ -192,7 +169,7 @@ export const MemberSpotlight = chakra(
                       images={photos.map((p: UserPhoto) => {
                         return {
                           src: `/api/asset/${p.directus_files_id}`,
-                          private: p.is_public == false
+                          private: p.is_public == false,
                         }
                       })}
                     />
@@ -385,13 +362,7 @@ export const MemberSpotlight = chakra(
                 <AccordionIcon />
               </AccordionButton>
               <AccordionPanel pb={4}>
-                <Flex
-                  as={StatGroup}
-                  justify="space-between"
-                  gap={4}
-                  p={4}
-                  align="flex-end"
-                >
+                <Flex as={StatGroup} justify="space-between" gap={4} p={4} align="flex-end">
                   {eventsDeclined > 0 && (
                     <Stat>
                       <StatLabel>

@@ -2,10 +2,7 @@ import { ApiResponse } from 'lib/models'
 import { markNotification } from 'lib/services/directus/server'
 import { sendNotification } from 'lib/services/twilio/server'
 import { withMethods } from 'lib/utils/server'
-import {
-  NextApiRequest,
-  NextApiResponse,
-} from 'next'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 async function SendNotification(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {

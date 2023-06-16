@@ -5,25 +5,11 @@ import { useUser } from 'hooks'
 import { MemberLevel } from 'lib/models'
 import dynamic from 'next/dynamic'
 
-import {
-  AspectRatio,
-  Badge,
-  Box,
-  Button,
-  Flex,
-  HStack,
-  IconButton
-} from '@chakra-ui/react'
-import {
-  ArrowPathRoundedSquareIcon,
-  BoltIcon
-} from '@heroicons/react/24/outline'
+import { AspectRatio, Badge, Box, Button, Flex, HStack, IconButton } from '@chakra-ui/react'
+import { ArrowPathRoundedSquareIcon, BoltIcon } from '@heroicons/react/24/outline'
 import { BoltIcon as LightningBoltIconSolid } from '@heroicons/react/24/solid'
 
-const BarcodeScannerComponent = dynamic(
-  () => import('react-qr-barcode-scanner'),
-  { ssr: false }
-)
+const BarcodeScannerComponent = dynamic(() => import('react-qr-barcode-scanner'), { ssr: false })
 
 export default function Scanner() {
   const [facing, setFacing] = useState<'user' | 'environment'>('environment')
@@ -109,14 +95,7 @@ export default function Scanner() {
                 torch={light}
               />
             </AspectRatio>
-            <HStack
-              align="center"
-              position="absolute"
-              zIndex="1"
-              spacing={4}
-              mt={-12}
-              mx={'45%'}
-            >
+            <HStack align="center" position="absolute" zIndex="1" spacing={4} mt={-12} mx={'45%'}>
               <IconButton
                 bg="white"
                 icon={<ArrowPathRoundedSquareIcon />}

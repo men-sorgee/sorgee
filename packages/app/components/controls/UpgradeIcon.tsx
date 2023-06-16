@@ -14,7 +14,7 @@ import {
   Box,
   Button,
   IconButton,
-  useDisclosure
+  useDisclosure,
 } from '@chakra-ui/react'
 
 import { ButtonLink } from './ButtonLink'
@@ -33,8 +33,8 @@ const UpgradeIcon = ({ title, icon, membershipType }: Props) => {
   const onUpgrade = async () => {
     await router.push('/member/account', {
       query: {
-        plan: membershipType
-      }
+        plan: membershipType,
+      },
     })
   }
 
@@ -53,12 +53,7 @@ const UpgradeIcon = ({ title, icon, membershipType }: Props) => {
           stroke={'gray.300'}
         />
       </Box>
-      <AlertDialog
-        size={'lg'}
-        isOpen={isOpen}
-        leastDestructiveRef={cancelRef}
-        onClose={onClose}
-      >
+      <AlertDialog size={'lg'} isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
         <AlertDialogOverlay>
           <AlertDialogCloseButton />
           <AlertDialogContent>
@@ -67,19 +62,15 @@ const UpgradeIcon = ({ title, icon, membershipType }: Props) => {
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              This feature is only available with our paid plans. Upgrade your
-              plan to add this and other features to your account.
+              This feature is only available with our paid plans. Upgrade your plan to add this and
+              other features to your account.
             </AlertDialogBody>
 
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onClose}>
                 Cancel
               </Button>
-              <ButtonLink
-                colorScheme="red"
-                href={`/member/account?plan=${membershipType}`}
-                ml={3}
-              >
+              <ButtonLink colorScheme="red" href={`/member/account?plan=${membershipType}`} ml={3}>
                 Upgrade
               </ButtonLink>
             </AlertDialogFooter>

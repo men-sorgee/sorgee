@@ -14,11 +14,7 @@ export const Logo = ({ width = '50px', ...props }: CSSProperties) => (
       style={{ margin: '0 0 0 1.5rem', ...props }}
     >
       <defs>
-        <path
-          fill={brand.colors.secondary.DEFAULT}
-          id="a"
-          d="M0 0h59.314v59.414H0z"
-        ></path>
+        <path fill={brand.colors.secondary.DEFAULT} id="a" d="M0 0h59.314v59.414H0z"></path>
       </defs>
       <g fill="none">
         <path

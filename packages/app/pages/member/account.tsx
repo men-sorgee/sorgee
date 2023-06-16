@@ -19,7 +19,7 @@ import {
   Spacer,
   Text,
   useColorModeValue,
-  VStack
+  VStack,
 } from '@chakra-ui/react'
 import { CheckCircleIcon } from '@heroicons/react/24/solid'
 import { loadStripe } from '@stripe/stripe-js'
@@ -42,7 +42,7 @@ export const getServerSideProps = async () => {
           price: price.unit_amount,
           interval: price.recurring.interval,
           currency: price.currency,
-          ...subscriptionData[product.id]
+          ...subscriptionData[product.id],
         }
       })
   )
@@ -55,7 +55,7 @@ export const getServerSideProps = async () => {
         acc[name] = {
           name,
           prices: {},
-          ...details
+          ...details,
         }
       }
 
@@ -67,8 +67,8 @@ export const getServerSideProps = async () => {
 
   return {
     props: {
-      products: Object.values(products)
-    }
+      products: Object.values(products),
+    },
   }
 }
 
@@ -93,8 +93,7 @@ const Pricing = ({ products }: Params) => {
 
   const showSubscribeButton =
     !!member && member.membership_type == 'none' && level == MemberLevel.brother
-  const showManageSubscriptionButton =
-    !!member && member.membership_type != 'none'
+  const showManageSubscriptionButton = !!member && member.membership_type != 'none'
 
   return (
     <Page
@@ -171,14 +170,9 @@ const Pricing = ({ products }: Params) => {
                     width="20px"
                     color={plan.features.includes(feature) ? 'green' : 'gray'}
                   />
-                  <Text
-                    textAlign="left"
-                    p={0}
-                    mx={2}
-                    textTransform={'capitalize'}
-                  >
+                  <Text textAlign="left" p={0} mx={2} textTransform={'capitalize'}>
                     {sentenceCase(feature, {
-                      stripRegexp: /[^A-Za-z0-9\s]/g
+                      stripRegexp: /[^A-Za-z0-9\s]/g,
                     })}
                   </Text>
                 </Flex>
@@ -198,39 +192,30 @@ const Pricing = ({ products }: Params) => {
                     Subscribe
                   </Button>
                 )}
-                {showManageSubscriptionButton &&
-                  member.membership_type != plan.type && (
-                    <ButtonLink
-                      href="/api/stripe/portal"
-                      variant="solid"
-                      bg="primary.500"
-                      color="white"
-                      _hover={{ bg: 'accent.600' }}
-                    >
-                      Update Subscription
-                    </ButtonLink>
-                  )}
-                {showManageSubscriptionButton &&
-                  member.membership_type == plan.type && (
-                    <Badge
-                      variant="solid"
-                      bg="secondary.500"
-                      size="xl"
-                      rounded="md"
-                      px={4}
-                      py={2}
-                    >
-                      Current Plan
-                    </Badge>
-                  )}
+                {showManageSubscriptionButton && member.membership_type != plan.type && (
+                  <ButtonLink
+                    href="/api/stripe/portal"
+                    variant="solid"
+                    bg="primary.500"
+                    color="white"
+                    _hover={{ bg: 'accent.600' }}
+                  >
+                    Update Subscription
+                  </ButtonLink>
+                )}
+                {showManageSubscriptionButton && member.membership_type == plan.type && (
+                  <Badge variant="solid" bg="secondary.500" size="xl" rounded="md" px={4} py={2}>
+                    Current Plan
+                  </Badge>
+                )}
               </Box>
             )}
           </VStack>
         ))}
       </Flex>
       <Text fontSize="xs" align="center" mb={4} mx={[0, 20]}>
-        * Approved and verified members always get event invites for free.
-        Additional features are available for a small recurring fee.
+        * Approved and verified members always get event invites for free. Additional features are
+        available for a small recurring fee.
       </Text>
 
       <HStack mt={14} hidden>

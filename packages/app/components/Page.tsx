@@ -55,7 +55,7 @@ const Page = ({
     session?.user.user_type,
     setMeta,
     status,
-    title
+    title,
   ])
 
   if (denied) {

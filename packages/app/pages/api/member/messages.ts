@@ -1,17 +1,6 @@
-import {
-  ApiResponse,
-  Message,
-  MessageStatusType,
-  UserMessages,
-} from 'lib/models'
-import {
-  withMethods,
-  withUser,
-} from 'lib/utils/server'
-import type {
-  NextApiRequest,
-  NextApiResponse,
-} from 'next'
+import { ApiResponse, Message, MessageStatusType, UserMessages } from 'lib/models'
+import { withMethods, withUser } from 'lib/utils/server'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 import {
   getMessage,

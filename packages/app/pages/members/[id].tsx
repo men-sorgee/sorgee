@@ -11,7 +11,7 @@ export async function getServerSideProps(ctx: NextPageContext) {
 
   const props: any = {
     fieldMap,
-    params
+    params,
   }
 
   const { id } = ctx.query
@@ -20,7 +20,7 @@ export async function getServerSideProps(ctx: NextPageContext) {
   }
 
   return {
-    props: pruneUndefined(props)
+    props: pruneUndefined(props),
   }
 }
 

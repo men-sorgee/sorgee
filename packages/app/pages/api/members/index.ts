@@ -10,10 +10,7 @@ import {
 import { searchUsers } from 'lib/services/directus/server/users'
 import { normalize } from 'lib/utils'
 import { withMember } from 'lib/utils/server'
-import {
-  NextApiRequest,
-  NextApiResponse,
-} from 'next'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 import { ManyItems } from '@directus/sdk'
 
@@ -43,13 +40,15 @@ export default async function FindMembers(
     const orSearchItems = []
     const andSearchItems = []
 
+    let blockList = member.blocked?.map((u) => u.blocked_id) || [member?.id]
+
     andSearchItems.push({
       show_profile: {
         _eq: true,
       },
       id: {
-        _nin: [...member.blocked.map((b) => b.blocked_id), member.id],
-      }
+        _nin: blockList,
+      },
     })
 
     if (sort.includes('last_login')) {

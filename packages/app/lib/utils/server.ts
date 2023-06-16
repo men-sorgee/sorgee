@@ -8,14 +8,8 @@ import {
   UserInvite,
 } from 'lib/models'
 import { findUser } from 'lib/services/directus/server'
-import {
-  NextApiRequest,
-  NextApiResponse,
-} from 'next'
-import {
-  getServerSession,
-  User as AuthUser,
-} from 'next-auth'
+import { NextApiRequest, NextApiResponse } from 'next'
+import { getServerSession, User as AuthUser } from 'next-auth'
 
 import { authOptions } from '@/lib/auth/config'
 

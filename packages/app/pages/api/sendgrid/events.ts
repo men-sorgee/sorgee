@@ -1,16 +1,6 @@
-import {
-  ApiResponse,
-  NotificationStatusType,
-  UserEmailEvent,
-} from 'lib/models'
-import {
-  markNotification,
-  storeEmailEvent,
-} from 'lib/services/directus/server'
-import {
-  NextApiRequest,
-  NextApiResponse,
-} from 'next'
+import { ApiResponse, NotificationStatusType, UserEmailEvent } from 'lib/models'
+import { markNotification, storeEmailEvent } from 'lib/services/directus/server'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 type SendGridEvent = {
   sg_event_id: string

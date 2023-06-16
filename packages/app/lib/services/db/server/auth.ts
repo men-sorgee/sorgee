@@ -1,17 +1,9 @@
 import { randomUUID } from 'crypto'
 import { addHours } from 'date-fns'
 import { getUTCNow } from 'lib/utils'
-import {
-  LessThan,
-  MoreThan,
-} from 'typeorm'
+import { LessThan, MoreThan } from 'typeorm'
 
-import {
-  User,
-  UserAccount,
-  UserSession,
-  UserVerificationToken,
-} from '../entities'
+import { User, UserAccount, UserSession, UserVerificationToken } from '../entities'
 import { getRepository } from './data-source'
 
 export async function createUser(userData: Partial<User>) {

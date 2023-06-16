@@ -37,12 +37,7 @@ const SwitchField = (props: Props) => {
   const classes = error ? 'error' : ''
 
   return (
-    <FieldWrapper
-      size={size}
-      field={field}
-      className={className}
-      {...{ mt, mb, mr, ml, my, mx }}
-    >
+    <FieldWrapper size={size} field={field} className={className} {...{ mt, mb, mr, ml, my, mx }}>
       <HStack>
         <Switch
           textAlign="left"

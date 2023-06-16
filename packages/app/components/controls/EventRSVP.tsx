@@ -13,7 +13,7 @@ import {
   HStack,
   Spinner,
   Text,
-  Textarea
+  Textarea,
 } from '@chakra-ui/react'
 
 import { ButtonConfirm } from './ButtonConfirm'
@@ -25,12 +25,7 @@ type RSVPProps = BoxProps & {
   onChange?: () => void
 }
 
-export const EventRSVP = ({
-  memberId,
-  rsvp: r,
-  eventId,
-  onChange
-}: RSVPProps) => {
+export const EventRSVP = ({ memberId, rsvp: r, eventId, onChange }: RSVPProps) => {
   if (!eventId) throw new Error('EventRSVP requires an event or invite.')
   const [working, setWorking] = useState(false)
   const { data: eventUser, mutate } = useSWR<Partial<EventUser>>(
@@ -40,9 +35,9 @@ export const EventRSVP = ({
       fallbackData: {
         users_id: memberId,
         events_id: eventId,
-        rsvp: r || 'invited'
+        rsvp: r || 'invited',
       },
-      isPaused: () => r != undefined
+      isPaused: () => r != undefined,
     }
   )
 
@@ -53,11 +48,11 @@ export const EventRSVP = ({
     const {
       success,
       data: response,
-      error
+      error,
     } = await postJSON<RSVPInfo>('/api/events/rsvp', {
       event_id: eventId,
       user_id: memberId,
-      ...data
+      ...data,
     })
     if (!success) throw new Error(error?.message || 'Something went wrong.')
     return response
@@ -87,7 +82,7 @@ export const EventRSVP = ({
       promise={() =>
         respond({
           rsvp: 'cancelled',
-          reason: reasonRef.current.value
+          reason: reasonRef.current.value,
         })
       }
       complete={complete}
@@ -109,18 +104,15 @@ export const EventRSVP = ({
       colorScheme="primary"
       promise={() =>
         respond({
-          rsvp: 'confirmed'
+          rsvp: 'confirmed',
         })
       }
       complete={complete}
     >
       <Text>
-        <strong>
-          Only confirm to events you are absolutely sure you can attend.
-        </strong>{' '}
-        Hosts count on confirmed attendees to help cover the cost of the event.
-        You can cancel up to 24 hours before the event without affecting your
-        rating.
+        <strong>Only confirm to events you are absolutely sure you can attend.</strong> Hosts count
+        on confirmed attendees to help cover the cost of the event. You can cancel up to 24 hours
+        before the event without affecting your rating.
       </Text>
     </ButtonConfirm>
   )
@@ -134,18 +126,16 @@ export const EventRSVP = ({
       colorScheme="secondary"
       promise={() =>
         respond({
-          rsvp: 'maybe'
+          rsvp: 'maybe',
         })
       }
       complete={complete}
     >
       <Text>
         <strong>
-          Only confirmed attendees will be sent the event details on the day of
-          the event.
+          Only confirmed attendees will be sent the event details on the day of the event.
         </strong>{' '}
-        Be sure to update your RSVP as soon as you are sure if you can attend or
-        not.
+        Be sure to update your RSVP as soon as you are sure if you can attend or not.
       </Text>
     </ButtonConfirm>
   )
@@ -159,15 +149,14 @@ export const EventRSVP = ({
       colorScheme="red"
       promise={() =>
         respond({
-          rsvp: 'declined'
+          rsvp: 'declined',
         })
       }
       complete={complete}
     >
       <Text>
         <strong>
-          Declined events will be hidden from your calendar and you will not be
-          able to see them.
+          Declined events will be hidden from your calendar and you will not be able to see them.
         </strong>{' '}
         Are you sure you want to decline this event?
       </Text>
@@ -177,7 +166,7 @@ export const EventRSVP = ({
   const RSVPView = ({
     heading,
     body,
-    children
+    children,
   }: {
     heading: ReactNode
     body?: ReactNode
@@ -218,11 +207,9 @@ export const EventRSVP = ({
                 <AlertIcon />
                 <Text>
                   <strong>
-                    Only confirmed attendees will be sent the event details on
-                    the day of the event.
+                    Only confirmed attendees will be sent the event details on the day of the event.
                   </strong>{' '}
-                  Be sure to update your RSVP as soon as you are sure if you can
-                  attend.
+                  Be sure to update your RSVP as soon as you are sure if you can attend.
                 </Text>
               </Alert>
             }

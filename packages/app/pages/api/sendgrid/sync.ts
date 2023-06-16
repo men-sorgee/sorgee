@@ -1,18 +1,9 @@
 import config from 'lib/config/server'
-import {
-  ApiResponse,
-  Profile,
-} from 'lib/models'
-import {
-  getUser,
-  updateUser,
-} from 'lib/services/directus/server'
+import { ApiResponse, Profile } from 'lib/models'
+import { getUser, updateUser } from 'lib/services/directus/server'
 import { updateSendGrid } from 'lib/services/sendgrid/server'
 import { withMethods } from 'lib/utils/server'
-import {
-  NextApiRequest,
-  NextApiResponse,
-} from 'next'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 async function SyncContact(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {

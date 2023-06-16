@@ -13,19 +13,10 @@ import {
   uploadFile,
   UploadFolder,
 } from 'lib/services/directus/server'
-import {
-  getUser,
-  updateUser,
-} from 'lib/services/directus/server/users'
+import { getUser, updateUser } from 'lib/services/directus/server/users'
 import { addUserPhoto } from 'lib/services/directus/server/users/photos'
-import {
-  withMethods,
-  withUser,
-} from 'lib/utils/server'
-import {
-  NextApiRequest,
-  NextApiResponse,
-} from 'next'
+import { withMethods, withUser } from 'lib/utils/server'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function MemberImage(
   req: NextApiRequest,

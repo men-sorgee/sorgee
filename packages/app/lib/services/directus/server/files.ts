@@ -1,16 +1,9 @@
 import { Writable } from 'node:stream'
 
 import FormData from 'form-data'
-import formidable, {
-  Fields,
-  File,
-  Files,
-} from 'formidable'
+import formidable, { Fields, File, Files } from 'formidable'
 import IncomingForm from 'formidable/Formidable'
-import {
-  DirectusFile,
-  DirectusFolder,
-} from 'lib/models'
+import { DirectusFile, DirectusFolder } from 'lib/models'
 import { NextApiRequest } from 'next'
 
 import { getAdminClient } from './'

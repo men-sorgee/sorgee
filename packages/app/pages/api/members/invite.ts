@@ -1,20 +1,7 @@
-import {
-  ApiResponse,
-  InviteLink,
-} from 'lib/models'
-import {
-  createUser,
-  findUser,
-  updateUser,
-} from 'lib/services/directus/server'
-import {
-  withMember,
-  withMethods,
-} from 'lib/utils/server'
-import {
-  NextApiRequest,
-  NextApiResponse,
-} from 'next'
+import { ApiResponse, InviteLink } from 'lib/models'
+import { createUser, findUser, updateUser } from 'lib/services/directus/server'
+import { withMember, withMethods } from 'lib/utils/server'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
@@ -22,7 +9,6 @@ async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     const member = await withMember(req, res)
 
     const { email, link } = req.body as InviteLink
-
 
     const existingUser = await findUser(email.toLocaleLowerCase())
     if (existingUser) {

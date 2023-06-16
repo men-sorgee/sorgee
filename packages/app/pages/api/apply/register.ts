@@ -1,20 +1,8 @@
-import {
-  ApiResponse,
-  Applicant,
-  SignUpForm,
-  User,
-} from 'lib/models'
+import { ApiResponse, Applicant, SignUpForm, User } from 'lib/models'
 import { findPromo } from 'lib/services/directus/server'
-import {
-  createUser,
-  findUser,
-  updateUser,
-} from 'lib/services/directus/server/users'
+import { createUser, findUser, updateUser } from 'lib/services/directus/server/users'
 import { withMethods } from 'lib/utils/server'
-import {
-  NextApiRequest,
-  NextApiResponse,
-} from 'next'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function Register(
   req: NextApiRequest,

@@ -18,7 +18,7 @@ export type RateItemProps = RatingControlProps & {
 
 const itemMap = {
   users: 'member',
-  events: 'event'
+  events: 'event',
 }
 
 export const RateItem = ({
@@ -29,13 +29,9 @@ export const RateItem = ({
   ...props
 }: RateItemProps) => {
   const [value, setValue] = useState<number>(undefined)
-  const { data = [], mutate } = useSWR<Rating[], Error>(
-    `/api/member/ratings`,
-    JsonFetcher,
-    {
-      fallbackData: []
-    }
-  )
+  const { data = [], mutate } = useSWR<Rating[], Error>(`/api/member/ratings`, JsonFetcher, {
+    fallbackData: [],
+  })
   const ratings = data
     .filter((r) => r.collection == collection)
     .map((r) => {

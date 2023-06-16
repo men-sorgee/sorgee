@@ -2,7 +2,7 @@ import RegisterPage, { getServerSideProps as pageProps } from './index'
 
 export async function getServerSideProps({ params }) {
   const {
-    props: { birthMonthOptions }
+    props: { birthMonthOptions },
   } = await pageProps()
   const { findPromo } = await import('lib/services/directus/server')
   const { code } = params
@@ -14,8 +14,8 @@ export async function getServerSideProps({ params }) {
   return {
     props: {
       promo,
-      birthMonthOptions
-    }
+      birthMonthOptions,
+    },
   }
 }
 

@@ -1,13 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import {
-  Box,
-  Icon,
-  IconButton,
-  IconButtonProps,
-  Stack,
-  Tooltip
-} from '@chakra-ui/react'
+import { Box, Icon, IconButton, IconButtonProps, Stack, Tooltip } from '@chakra-ui/react'
 import { StarIcon } from '@heroicons/react/24/solid'
 
 export type RatingControlProps = IconButtonProps & {

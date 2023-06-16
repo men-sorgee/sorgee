@@ -1,28 +1,13 @@
-import {
-  ApiResponse,
-  Member,
-  UserLike,
-} from 'lib/models'
+import { ApiResponse, Member, UserLike } from 'lib/models'
 import { addUserNotification } from 'lib/services/directus/server'
-import {
-  addLike,
-  getLike,
-  getUser,
-  removeLike,
-} from 'lib/services/directus/server/users'
+import { addLike, getLike, getUser, removeLike } from 'lib/services/directus/server/users'
 import {
   SendGridCategory,
   SendGridTemplate,
   sendNotificationEmail,
 } from 'lib/services/sendgrid/server'
-import {
-  withMember,
-  withMethods,
-} from 'lib/utils/server'
-import {
-  NextApiRequest,
-  NextApiResponse,
-} from 'next'
+import { withMember, withMethods } from 'lib/utils/server'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 import { baseUrl } from '../../../../lib/config'
 
@@ -60,7 +45,7 @@ export default async function MemberLike(
           {
             user_id: them.id,
             button_text: `View Their Profile`,
-            button_url: `${baseUrl}/members/${me.id}`
+            button_url: `${baseUrl}/members/${me.id}`,
           },
           SendGridTemplate.AppNotification,
           SendGridCategory.Notification
@@ -72,7 +57,7 @@ export default async function MemberLike(
             user_id: them.id,
             message: `Someone your like, likes you too!`,
             button_text: `View Their Profile`,
-            button_url: `/member/${me.id}`
+            button_url: `/member/${me.id}`,
           })
         }
 

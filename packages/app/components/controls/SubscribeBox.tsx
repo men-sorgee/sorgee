@@ -4,15 +4,7 @@ import { SubscriptionData } from 'lib/models'
 import { postJSON } from 'lib/utils'
 import { FormProvider, useForm } from 'react-hook-form'
 
-import {
-  Box,
-  BoxProps,
-  Button,
-  chakra,
-  Flex,
-  Heading,
-  Text
-} from '@chakra-ui/react'
+import { Box, BoxProps, Button, chakra, Flex, Heading, Text } from '@chakra-ui/react'
 
 import { FieldInput } from '../forms'
 
@@ -20,7 +12,7 @@ type Props = BoxProps
 export const SubscribeBox = chakra(({ ...props }: Props) => {
   const [subscribed, setSubscribed] = useState(false)
   const methods = useForm<SubscriptionData>({
-    mode: 'onBlur'
+    mode: 'onBlur',
   })
   const { handleSubmit, setError } = methods
   const onSubmit = async (data: SubscriptionData) => {
@@ -48,25 +40,19 @@ export const SubscribeBox = chakra(({ ...props }: Props) => {
         Wanna get it in?
       </Heading>
       <Text>
-        Drop your email and what to call ya. We&apos;ll reach out when
-        we&apos;re opened up.
+        Drop your email and what to call ya. We&apos;ll reach out when we&apos;re opened up.
       </Text>
 
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Flex
-            direction={['column', 'column', 'row']}
-            justify="space-between"
-            gap={4}
-            mt={4}
-          >
+          <Flex direction={['column', 'column', 'row']} justify="space-between" gap={4} mt={4}>
             <FieldInput
               field="name"
               registerOptions={{
                 required: {
                   value: true,
-                  message: 'Please enter your name'
-                }
+                  message: 'Please enter your name',
+                },
               }}
               placeholder={' name'}
               autoComplete="full-name"
@@ -77,27 +63,20 @@ export const SubscribeBox = chakra(({ ...props }: Props) => {
               registerOptions={{
                 required: {
                   value: true,
-                  message: 'Please enter your email address'
-                }
+                  message: 'Please enter your email address',
+                },
               }}
               type="email"
               placeholder={'email'}
               autoComplete="email"
             />
-            <Button
-              flex="grow"
-              type="submit"
-              size="lg"
-              fontSize="sm"
-              color={'white'}
-            >
+            <Button flex="grow" type="submit" size="lg" fontSize="sm" color={'white'}>
               Email Me
             </Button>
           </Flex>
 
           <Text fontSize="xs" fontStyle={'italic'} color={'text'}>
-            Add your information here, only if you agree to our Terms of Service
-            and Privacy Policy.
+            Add your information here, only if you agree to our Terms of Service and Privacy Policy.
           </Text>
         </form>
       </FormProvider>

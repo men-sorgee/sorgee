@@ -1,11 +1,4 @@
-import {
-  EventInvite,
-  EventUser,
-  GroupEvent,
-  Invite,
-  InviteRSVPType,
-  Member,
-} from 'lib/models'
+import { EventInvite, EventUser, GroupEvent, Invite, InviteRSVPType, Member } from 'lib/models'
 import { listUpcomingEvents } from 'lib/services/directus/server'
 
 import { getAdminClient } from '../'

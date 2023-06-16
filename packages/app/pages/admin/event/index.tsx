@@ -14,7 +14,7 @@ import {
   TabList,
   TabPanel,
   TabPanels,
-  Tabs
+  Tabs,
 } from '@chakra-ui/react'
 
 type Props = {
@@ -30,13 +30,11 @@ export async function getServerSideProps(
     return {
       redirect: {
         destination: '/auth/signin',
-        permanent: false
-      }
+        permanent: false,
+      },
     }
   }
-  const { listAdminEvents } = await import(
-    'lib/services/directus/server/events'
-  )
+  const { listAdminEvents } = await import('lib/services/directus/server/events')
   const events = await listAdminEvents()
   return { props: { events } }
 }
@@ -48,7 +46,7 @@ export default function AdminEventList({ events }: Props) {
       const date = new Date(new Date(event.datetime).toDateString())
       return {
         ...event,
-        date
+        date,
       }
     }) || []
   const today = new Date(new Date().toDateString())
@@ -61,9 +59,7 @@ export default function AdminEventList({ events }: Props) {
     return dateB - dateA
   })
 
-  const activeEvent = eventList?.find(
-    (event) => Number(event.date) == Number(today)
-  )
+  const activeEvent = eventList?.find((event) => Number(event.date) == Number(today))
 
   return (
     <Page
@@ -83,10 +79,7 @@ export default function AdminEventList({ events }: Props) {
             <TabPanel p={0}>
               <LinkBox cursor="pointer" my={4}>
                 <EventCard event={activeEvent} showDescription={false}>
-                  <LinkOverlay
-                    as={Link}
-                    href={`/admin/event/${activeEvent.id}`}
-                  >
+                  <LinkOverlay as={Link} href={`/admin/event/${activeEvent.id}`}>
                     View Event
                   </LinkOverlay>
                 </EventCard>
@@ -96,12 +89,7 @@ export default function AdminEventList({ events }: Props) {
           <TabPanel p={0}>
             <Heading mb={4}>Upcoming Events</Heading>
             {upcoming.map((event) => (
-              <LinkBox
-                key={event.id}
-                cursor="pointer"
-                mb={4}
-                title="Click for event admin"
-              >
+              <LinkBox key={event.id} cursor="pointer" mb={4} title="Click for event admin">
                 <EventCard event={event} showDescription={false}>
                   <LinkOverlay as={Link} href={`/admin/event/${event.id}`}>
                     View Event

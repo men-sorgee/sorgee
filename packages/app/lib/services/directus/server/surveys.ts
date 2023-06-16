@@ -1,8 +1,4 @@
-import {
-  Question,
-  Survey,
-  SurveyAnswer,
-} from 'lib/models'
+import { Question, Survey, SurveyAnswer } from 'lib/models'
 
 import { getAdminClient } from './'
 

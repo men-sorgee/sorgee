@@ -15,7 +15,7 @@ import {
   OrderedList,
   SimpleGrid,
   Text,
-  UnorderedList
+  UnorderedList,
 } from '@chakra-ui/react'
 
 import { ButtonLink, Loading } from '../components/controls'
@@ -28,7 +28,7 @@ import {
   FieldRadioButtons,
   FieldSelect,
   FieldSwitch,
-  FieldText
+  FieldText,
 } from '../components/forms'
 import FieldRange from '../components/forms/FieldRange'
 import Page from '../components/Page'
@@ -45,7 +45,7 @@ const Form = () => {
             label="Choices"
             options={[
               { text: 'One', value: '1' },
-              { text: 'Two', value: '2' }
+              { text: 'Two', value: '2' },
             ]}
           />
           <FieldCheckbox field="checkbox" label="Checkbox" />
@@ -56,7 +56,7 @@ const Form = () => {
             label="Checkboxes"
             options={[
               { text: 'One', value: '1' },
-              { text: 'Two', value: '2' }
+              { text: 'Two', value: '2' },
             ]}
           />
           <FieldRadioButtons
@@ -64,7 +64,7 @@ const Form = () => {
             label="Radios"
             options={[
               { text: 'One', value: '1' },
-              { text: 'Two', value: '2' }
+              { text: 'Two', value: '2' },
             ]}
           />
           <FieldRange field="range" label="Range" />
@@ -76,8 +76,7 @@ const Form = () => {
   )
 }
 export default function Styles() {
-  const text =
-    'lorum ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.'
+  const text = 'lorum ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.'
   const getText = (n = 1) => {
     let l = text
     for (let i = 0; i < n; i++) {

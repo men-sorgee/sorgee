@@ -10,7 +10,7 @@ import {
   FieldText,
   Form,
   MemberHeader,
-  Page
+  Page,
 } from 'components'
 import { useUser } from 'hooks/use-user'
 import { FieldMap, Member, MemberLevel } from 'lib/models'
@@ -29,7 +29,7 @@ import {
   TabPanels,
   Tabs,
   Text,
-  useColorModeValue
+  useColorModeValue,
 } from '@chakra-ui/react'
 
 type PageProps = {
@@ -41,14 +41,14 @@ export async function getServerSideProps(): Promise<{ props: PageProps }> {
   const fieldMap = await getFields('users')
   return {
     props: {
-      fieldMap
-    }
+      fieldMap,
+    },
   }
 }
 
 export default function ProfilePage(props: PageProps) {
   const { member, loading } = useUser({
-    minLevel: MemberLevel.pledge
+    minLevel: MemberLevel.pledge,
   })
   return (
     <Page title="Edit Profile" loading={loading} requireAuth={true}>
@@ -59,7 +59,7 @@ export default function ProfilePage(props: PageProps) {
 
 const ProfileForm = (props: PageProps) => {
   const [tabValue, setTabValue] = useState(0)
-  const { member, mutate } = useUser()
+  const { member, mutate, level } = useUser()
   const { fieldMap } = props
 
   const {
@@ -96,7 +96,7 @@ const ProfileForm = (props: PageProps) => {
     hiv_status,
     last_tested,
     load_policy,
-    vaccinations
+    vaccinations,
   } = member
 
   const defaultValues = {
@@ -133,7 +133,7 @@ const ProfileForm = (props: PageProps) => {
     hiv_status,
     last_tested,
     load_policy,
-    vaccinations
+    vaccinations,
   }
 
   const getOptions = (field: string) => {
@@ -143,13 +143,29 @@ const ProfileForm = (props: PageProps) => {
   const bg = useColorModeValue('gray.100', 'dark.700')
 
   let showProfile: boolean | undefined
+  const isPledge = level == MemberLevel.pledge
   return (
     <>
       <Text size="lg">
-        This is your profile. We use this information to match you with
-        brothers. Verified brothers can see your full profile, unless you choose
-        to make it private.
+        This is your profile. We use this information to match you with brothers. Verified brothers
+        can see your full profile, unless you choose to make it private.
       </Text>
+      {isPledge && (
+        <Alert
+          bg={'primary.300'}
+          color="white"
+          flexDirection="column"
+          my={4}
+          p={4}
+          borderRadius="md"
+          shadow="md"
+          status="error"
+        >
+          As a Pledge you are hoping someone sees enough of you in your profile that they choose to
+          reach out and vet you for the group. Vague, short profiles are not likely to get you very
+          far. Photos help!
+        </Alert>
+      )}
       <Form<Member>
         onSubmit={mutate}
         defaultValues={defaultValues}
@@ -186,16 +202,16 @@ const ProfileForm = (props: PageProps) => {
                     flexShrink={1}
                     borderLeft={{
                       base: 'none',
-                      lg: showProfile ? '4px dotted black' : ''
+                      lg: showProfile ? '4px dotted black' : '',
                     }}
                     borderTop={{
                       base: showProfile ? '4px dotted black' : '',
-                      lg: 'none'
+                      lg: 'none',
                     }}
                   >
                     <Text>
-                      You can choose to make your profile private if you do not
-                      wish to show up in member searches.*
+                      You can choose to make your profile private if you do not wish to show up in
+                      member searches.*
                     </Text>
                     <Flex flexDirection={['column', 'row']} gap={4} mt={4}>
                       <FieldSwitch
@@ -217,8 +233,8 @@ const ProfileForm = (props: PageProps) => {
                 </GridItem>
               </SimpleGrid>
               <Text fontSize="xs" as="em" mb={4}>
-                * This does not affect this information being used to recommend
-                you to other events and members.
+                * This does not affect this information being used to recommend you to other events
+                and members.
               </Text>
 
               <SimpleGrid spacing={4} columns={[1, 1, 3]} mt={10}>
@@ -255,15 +271,11 @@ const ProfileForm = (props: PageProps) => {
                 </GridItem>
               </SimpleGrid>
 
-              <SimpleGrid spacing={4} columns={[2, 2, 4]}>
+              <SimpleGrid mt={4} spacing={4} columns={[2, 2, 4]}>
                 <FieldNumber field="age" label="Age" min={21} />
                 <FieldInput field="height" label="Height" placeholder="5'11" />
                 <FieldNumber field="weight" label="Weight" placeholder="185" />
-                <FieldSelect
-                  field="build"
-                  label="Build"
-                  options={getOptions('build')}
-                />
+                <FieldSelect field="build" label="Build" options={getOptions('build')} />
                 <FieldSelect
                   field="skin_tone"
                   label="Skin Tone"
@@ -315,22 +327,13 @@ const ProfileForm = (props: PageProps) => {
                 size={['sm', 'lg']}
               >
                 <TabList fontWeight="bold">
-                  <Tab
-                    fontSize={['md', 'lg', '2xl']}
-                    fontWeight={tabValue == 0 ? 'bold' : null}
-                  >
+                  <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 0 ? 'bold' : null}>
                     Below the Belt
                   </Tab>
-                  <Tab
-                    fontSize={['md', 'lg', '2xl']}
-                    fontWeight={tabValue == 1 ? 'bold' : null}
-                  >
+                  <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 1 ? 'bold' : null}>
                     Role & Fetishes
                   </Tab>
-                  <Tab
-                    fontSize={['md', 'lg', '2xl']}
-                    fontWeight={tabValue == 2 ? 'bold' : null}
-                  >
+                  <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 2 ? 'bold' : null}>
                     Health Info
                   </Tab>
                 </TabList>
@@ -355,12 +358,7 @@ const ProfileForm = (props: PageProps) => {
                       </Alert>
                     </Collapse>
                     <SimpleGrid spacing={4} columns={[2]}>
-                      <FieldInput
-                        field="cock_length"
-                        label="Cock Length"
-                        type="number"
-                        step=".5"
-                      />
+                      <FieldInput field="cock_length" label="Cock Length" type="number" step=".5" />
                       <FieldSelect
                         field="cock_girth"
                         label="Cock Girth"
@@ -456,11 +454,7 @@ const ProfileForm = (props: PageProps) => {
                         label="HIV Status"
                         options={getOptions('hiv_status')}
                       />
-                      <FieldInput
-                        field="last_tested"
-                        label="Last Tested"
-                        type="date"
-                      />
+                      <FieldInput field="last_tested" label="Last Tested" type="date" />
                     </SimpleGrid>
                     <SimpleGrid mt={4} spacing={4} columns={1}>
                       <FieldCheckboxes
@@ -478,13 +472,7 @@ const ProfileForm = (props: PageProps) => {
                 </TabPanels>
               </Tabs>
 
-              <Box
-                backdropFilter="blur(2px)"
-                position="sticky"
-                h="80px"
-                w="full"
-                bottom={0}
-              ></Box>
+              <Box backdropFilter="blur(2px)" position="sticky" h="80px" w="full" bottom={0}></Box>
               <Button
                 mt={-10}
                 size="lg"

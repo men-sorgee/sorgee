@@ -1,17 +1,9 @@
 import { authOptions } from 'lib/auth/config'
 import { baseUrl } from 'lib/config'
 import { EventUser } from 'lib/models'
-import {
-  findInvite,
-  getEvent,
-  registerForEvent,
-  updateInvite,
-} from 'lib/services/directus/server'
+import { findInvite, getEvent, registerForEvent, updateInvite } from 'lib/services/directus/server'
 import { withMethods } from 'lib/utils/server'
-import {
-  NextApiRequest,
-  NextApiResponse,
-} from 'next'
+import { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth'
 
 export default async function InviteRSVP(req: NextApiRequest, res: NextApiResponse) {

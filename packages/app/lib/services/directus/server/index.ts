@@ -1,11 +1,5 @@
 import { adminUrl } from 'lib/config'
-import {
-  DirectusField,
-  DirectusTypes,
-  FieldMap,
-  Promo,
-  User,
-} from 'lib/models'
+import { DirectusField, DirectusTypes, FieldMap, Promo, User } from 'lib/models'
 
 import { Directus } from '@directus/sdk'
 

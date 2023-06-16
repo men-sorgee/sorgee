@@ -12,14 +12,10 @@ import ApplicationSteps from './_steps'
 function Approved() {
   const router = useRouter()
   const { loading, level, member } = useUser({
-    minLevel: MemberLevel.pledge
+    minLevel: MemberLevel.pledge,
   })
 
-  if (
-    member &&
-    member?.application_status &&
-    member.application_status !== 'approved'
-  ) {
+  if (member && member?.application_status && member.application_status !== 'approved') {
     router.push('/apply/' + member?.application_status)
     return null
   }
@@ -42,25 +38,19 @@ function Approved() {
         <VStack alignItems="center" justifyItems="middle" pt={10}>
           {level == MemberLevel.inductee && (
             <Text textAlign="center">
-              You will now get periodic event invites as well as access to our
-              member-only content.
+              You will now get periodic event invites as well as access to our member-only content.
             </Text>
           )}
           {level == MemberLevel.pledge && (
             <>
               <Text textAlign="center">
-                You need a brother to sponsor you before you can be inducted.
-                Complete the pledge survey to get started. It will help brothers
-                get to know who you are before reaching out. You will also want
-                to complete your profile and make sure it is visible to
+                You need a brother to sponsor you before you can be inducted. Complete the pledge
+                survey to get started. It will help brothers get to know who you are before reaching
+                out. You will also want to complete your profile and make sure it is visible to
                 brothers.
               </Text>
               <HStack spacing={4} textAlign="center" mt={4}>
-                <ButtonLink
-                  href={`/survey/${pledgeSurvey}`}
-                  colorScheme="accent"
-                  gradient
-                >
+                <ButtonLink href={`/survey/${pledgeSurvey}`} colorScheme="accent" gradient>
                   Take the Pledge Questionnaire
                 </ButtonLink>
               </HStack>

@@ -3,14 +3,7 @@ import { InputHTMLAttributes } from 'react'
 import { FieldOptions } from 'lib/models'
 import { RegisterOptions, useFormContext } from 'react-hook-form'
 
-import {
-  Box,
-  chakra,
-  Flex,
-  Radio,
-  RadioGroup,
-  RadioProps
-} from '@chakra-ui/react'
+import { Box, chakra, Flex, Radio, RadioGroup, RadioProps } from '@chakra-ui/react'
 
 import FieldWrapper from './FieldWrapper'
 
@@ -38,8 +31,7 @@ function RadioButtonsField(props: Props) {
     justifyContent = 'stretch',
     ...opts
   } = props
-  const { register, setValue, watch, getFieldState, formState } =
-    useFormContext()
+  const { register, setValue, watch, getFieldState, formState } = useFormContext()
   const { error } = getFieldState(field, formState)
   const classes = error ? 'error' : ''
   const fieldValue = watch(field)

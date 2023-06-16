@@ -12,7 +12,7 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputProps,
-  NumberInputStepper
+  NumberInputStepper,
 } from '@chakra-ui/react'
 
 import FieldWrapper from './FieldWrapper'
@@ -49,11 +49,7 @@ const InputField = (props: Props) => {
       <InputGroup size={size}>
         {leftAddon && <InputLeftAddon>{leftAddon}</InputLeftAddon>}
         <NumberInput {...opts} size={size} w="full">
-          <NumberInputField
-            size={size}
-            id={field}
-            {...register(field as any, registerOptions)}
-          />
+          <NumberInputField size={size} id={field} {...register(field as any, registerOptions)} />
           {showStepper && (
             <NumberInputStepper>
               <NumberIncrementStepper />

@@ -6,19 +6,18 @@ import { withMember } from 'lib/utils/server'
 
 const handler = async (req, res) => {
   try {
-
     let member = await withMember(req, res)
-    const stripe = getClient();
+    const stripe = getClient()
 
     if (!member.customer_id) {
-      const { id, email, first_name, last_name } = member;
+      const { id, email, first_name, last_name } = member
 
       const customer = await stripe.customers.create({
         email,
-        name: first_name + " " + last_name,
+        name: first_name + ' ' + last_name,
         metadata: {
           userId: id,
-        }
+        },
       })
 
       member = await updateUser<Member>(member.id, {
@@ -26,7 +25,7 @@ const handler = async (req, res) => {
       })
     }
 
-    const { priceId } = req.query;
+    const { priceId } = req.query
 
     const lineItems = [
       {
@@ -34,28 +33,28 @@ const handler = async (req, res) => {
         quantity: 1,
         metadata: {
           userId: member.id,
-        }
+        },
       },
-    ];
+    ]
 
     const session = await stripe.checkout.sessions.create({
       customer: member.customer_id,
-      mode: "subscription",
+      mode: 'subscription',
       line_items: lineItems,
       success_url: `${baseUrl}/member/plans?message=success`,
       cancel_url: `${baseUrl}/member/plans?message=cancelled`,
       metadata: {
         userId: member.id,
-      }
-    });
+      },
+    })
 
     res.send({
       id: session.id,
-    });
+    })
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: error.message });
+    console.log(error)
+    res.status(500).json({ error: error.message })
   }
-};
+}
 
-export default handler;
+export default handler

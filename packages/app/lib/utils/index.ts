@@ -1,11 +1,5 @@
-import {
-  addMinutes,
-  format,
-} from 'date-fns'
-import {
-  ApiError,
-  ApiResponse,
-} from 'lib/models'
+import { addMinutes, format } from 'date-fns'
+import { ApiError, ApiResponse } from 'lib/models'
 
 export function toLocalDate(value: string) {
   return addMinutes(new Date(value), new Date().getTimezoneOffset())

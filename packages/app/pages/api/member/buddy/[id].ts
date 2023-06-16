@@ -1,22 +1,8 @@
-import {
-  ApiResponse,
-  UserBuddy,
-} from 'lib/models'
+import { ApiResponse, UserBuddy } from 'lib/models'
 import { addUserNotification } from 'lib/services/directus/server'
-import {
-  addBuddy,
-  getBuddy,
-  getUser,
-  removeBuddy,
-} from 'lib/services/directus/server/users'
-import {
-  withMember,
-  withMethods,
-} from 'lib/utils/server'
-import {
-  NextApiRequest,
-  NextApiResponse,
-} from 'next'
+import { addBuddy, getBuddy, getUser, removeBuddy } from 'lib/services/directus/server/users'
+import { withMember, withMethods } from 'lib/utils/server'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function MemberBuddy(
   req: NextApiRequest,
@@ -44,13 +30,13 @@ export default async function MemberBuddy(
       case 'POST': {
         const buddy = await addBuddy(me.id, them.id)
 
-        if (them.buddies?.some(b => b.buddy_id == me.id)) {
+        if (them.buddies?.some((b) => b.buddy_id == me.id)) {
           // send mutual buddy notification
           await addUserNotification({
             user_id: them.id,
             message: `A buddy of yours added you to their buddy list!`,
             button_text: 'View Profile',
-            button_url: `/member/${me.id}`
+            button_url: `/member/${me.id}`,
           })
         }
 

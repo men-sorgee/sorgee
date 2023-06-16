@@ -16,15 +16,7 @@ export type Props = InputProps &
   }
 
 const InputField = (props: Props) => {
-  const {
-    field,
-    label,
-    help,
-    registerOptions = {},
-    type,
-    className,
-    ...opts
-  } = props
+  const { field, label, help, registerOptions = {}, type, className, ...opts } = props
   const { register } = useFormContext()
   const placeholderColor = useColorModeValue('gray.300', 'gray.100')
   return (

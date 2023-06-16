@@ -1,22 +1,7 @@
-import {
-  ApiResponse,
-  Member,
-  UserBlock,
-} from 'lib/models'
-import {
-  addBlock,
-  getBlock,
-  getUser,
-  removeBlock,
-} from 'lib/services/directus/server/users'
-import {
-  withMember,
-  withMethods,
-} from 'lib/utils/server'
-import {
-  NextApiRequest,
-  NextApiResponse,
-} from 'next'
+import { ApiResponse, Member, UserBlock } from 'lib/models'
+import { addBlock, getBlock, getUser, removeBlock } from 'lib/services/directus/server/users'
+import { withMember, withMethods } from 'lib/utils/server'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function MemberBlock(
   req: NextApiRequest,

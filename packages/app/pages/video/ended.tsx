@@ -8,9 +8,7 @@ export default function VideoChatEnded() {
     <Page title="Video Chat Ended">
       <Box textAlign="center">
         <Heading>Chat has ended</Heading>
-        <Text my={6}>
-          To rejoin the chat, please click the chat button in the footer.
-        </Text>
+        <Text my={6}>To rejoin the chat, please click the chat button in the footer.</Text>
         <ButtonLink href="/video">Rejoin Video Chat</ButtonLink>
       </Box>
     </Page>

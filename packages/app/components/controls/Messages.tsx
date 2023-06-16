@@ -19,7 +19,7 @@ import {
   MessageInput,
   MessageList,
   Sidebar,
-  TypingIndicator
+  TypingIndicator,
 } from '@chatscope/chat-ui-kit-react'
 import { UserCircleIcon, XMarkIcon } from '@heroicons/react/24/solid'
 
@@ -37,7 +37,7 @@ export const Messages = ({ member }: { member: Member }) => {
     mutate,
     activeId,
     setActiveId,
-    delete: d
+    delete: d,
   } = useMessages()
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isTyping, setIsTyping] = useState(false)
@@ -68,16 +68,16 @@ export const Messages = ({ member }: { member: Member }) => {
         display: 'flex',
         flexBasis: 'auto',
         width: '100%',
-        maxWidth: '100%'
+        maxWidth: '100%',
       })
       setConversationContentStyle({
-        display: 'flex'
+        display: 'flex',
       })
       setConversationAvatarStyle({
-        marginRight: '1em'
+        marginRight: '1em',
       })
       setChatContainerStyle({
-        display: 'none'
+        display: 'none',
       })
     } else {
       setSidebarStyle({})
@@ -94,7 +94,7 @@ export const Messages = ({ member }: { member: Member }) => {
     setChatContainerStyle,
     activeId,
     setActiveId,
-    conversations
+    conversations,
   ])
 
   useEffect(() => {
@@ -111,7 +111,7 @@ export const Messages = ({ member }: { member: Member }) => {
     })
     socket = io({
       path: '/api/socket.io',
-      addTrailingSlash: false
+      addTrailingSlash: false,
     })
     socket.on('connect', () => {
       socket.emit('join', member?.id)
@@ -150,8 +150,8 @@ export const Messages = ({ member }: { member: Member }) => {
           ...messages,
           {
             ...message,
-            direction: 'incoming'
-          }
+            direction: 'incoming',
+          },
         ])
         messagesSeen()
       }
@@ -174,7 +174,7 @@ export const Messages = ({ member }: { member: Member }) => {
             status={user?.presence == 'online' ? 'available' : 'unavailable'}
             active={user?.presence == 'online'}
           />,
-          user?.nickname
+          user?.nickname,
         ]
       }
     }
@@ -186,7 +186,7 @@ export const Messages = ({ member }: { member: Member }) => {
     if (socket) {
       socket.emit('user-typing', {
         to: activeId,
-        from: member?.id
+        from: member?.id,
       })
     }
   }, [activeId, member?.id])
@@ -219,8 +219,8 @@ export const Messages = ({ member }: { member: Member }) => {
         nickname: member?.nickname,
         picture: member?.picture as string,
         last_login: member?.last_login,
-        presence: member?.presence
-      }
+        presence: member?.presence,
+      },
     })
   }
   const [inputValue, setInputValue] = useState('')
@@ -247,7 +247,7 @@ export const Messages = ({ member }: { member: Member }) => {
         nickname: member?.nickname,
         picture: member?.picture as string,
         last_login: member?.last_login,
-        presence: member?.presence
+        presence: member?.presence,
       }
       setMessages([
         ...messages,
@@ -257,15 +257,15 @@ export const Messages = ({ member }: { member: Member }) => {
           image,
           timestamp,
           direction: 'outgoing',
-          user
-        } as ChatMessage
+          user,
+        } as ChatMessage,
       ])
       postJSON<Message>('/api/member/messages', {
         body,
         image,
         type,
         to: activeId,
-        from: member?.id
+        from: member?.id,
       } as Message).then(({ data }) => {
         const { type, body, image, date_created } = data
         socket.emit('send-message', activeId, {
@@ -273,7 +273,7 @@ export const Messages = ({ member }: { member: Member }) => {
           body,
           image,
           user,
-          timestamp: new Date(date_created).toISOString()
+          timestamp: new Date(date_created).toISOString(),
         })
       })
     },
@@ -284,7 +284,7 @@ export const Messages = ({ member }: { member: Member }) => {
       member?.nickname,
       member?.picture,
       member?.presence,
-      messages
+      messages,
     ]
   )
 
@@ -312,11 +312,9 @@ export const Messages = ({ member }: { member: Member }) => {
                 id,
                 user: { nickname, picture, presence },
                 newMessageCount,
-                messages
+                messages,
               } = c
-              const lastMessage = messages.length
-                ? messages[messages.length - 1]
-                : null
+              const lastMessage = messages.length ? messages[messages.length - 1] : null
               const lastMessageDate = lastMessage
                 ? formatDistanceToNow(lastMessage?.timestamp as Date) + ' ago'
                 : 'now'
@@ -328,9 +326,7 @@ export const Messages = ({ member }: { member: Member }) => {
                   onClick={() => {
                     handleConversationClick(id)
                   }}
-                  lastActivityTime={
-                    lastMessageDate ? lastMessageDate : 'Just now'
-                  }
+                  lastActivityTime={lastMessageDate ? lastMessageDate : 'Just now'}
                   unreadDot={newMessageCount > 0}
                 >
                   <Avatar
@@ -372,17 +368,11 @@ export const Messages = ({ member }: { member: Member }) => {
                   variant={'ghost'}
                   _hover={{ bg: 'primary.500' }}
                 />
-                <MemberConnect
-                  member={activeConversation?.user}
-                  fill={'white'}
-                />
+                <MemberConnect member={activeConversation?.user} fill={'white'} />
               </ConversationHeader.Actions>
             </ConversationHeader>
 
-            <MessageList
-              scrollBehavior="auto"
-              typingIndicator={typingIndicator}
-            >
+            <MessageList scrollBehavior="auto" typingIndicator={typingIndicator}>
               {activeId &&
                 messages.map((m, i) => (
                   <MessageGroup key={i} direction={m.direction}>
@@ -392,13 +382,13 @@ export const Messages = ({ member }: { member: Member }) => {
                           type: m.type,
                           payload: decodeHtml(m.body),
                           direction: m.direction,
-                          position: 'single'
+                          position: 'single',
                         }}
                       >
                         {m.direction == 'outgoing' && (
                           <MessageCtrl.Header
                             style={{
-                              flexDirection: 'row-reverse'
+                              flexDirection: 'row-reverse',
                             }}
                           >
                             <IconButton
@@ -415,7 +405,7 @@ export const Messages = ({ member }: { member: Member }) => {
                               opacity={0.2}
                               _hover={{
                                 bg: 'secondary.500',
-                                opacity: 1
+                                opacity: 1,
                               }}
                             />
                           </MessageCtrl.Header>
@@ -424,12 +414,9 @@ export const Messages = ({ member }: { member: Member }) => {
                         <MessageCtrl.Footer
                           style={{
                             display: 'block',
-                            textAlign:
-                              m.direction == 'outgoing' ? 'right' : 'left'
+                            textAlign: m.direction == 'outgoing' ? 'right' : 'left',
                           }}
-                          sentTime={
-                            formatDistanceToNow(m.timestamp as Date) + ' ago'
-                          }
+                          sentTime={formatDistanceToNow(m.timestamp as Date) + ' ago'}
                         ></MessageCtrl.Footer>
                       </MessageCtrl>
                     </MessageGroup.Messages>

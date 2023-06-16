@@ -1,7 +1,4 @@
-import {
-  MemberLevel,
-  Profile,
-} from 'lib/models'
+import { MemberLevel, Profile } from 'lib/models'
 
 import client from '@sendgrid/client'
 import mail, { MailDataRequired } from '@sendgrid/mail'
@@ -79,8 +76,6 @@ async function convertMarkdownToHtml(markdown: string) {
   return remark().use(html).processSync(markdown).toString()
 }
 
-
-
 export async function sendNotificationEmail(
   to_email: string,
   to_name: string,
@@ -125,5 +120,4 @@ export async function sendNotificationEmail(
   }
   console.log(`SendGrid Email ${category} Sent: ${to_email}`)
   return data
-
 }

@@ -11,7 +11,7 @@ import {
   ButtonProps,
   chakra,
   useDisclosure,
-  useToast
+  useToast,
 } from '@chakra-ui/react'
 
 export type ConfirmButtonProps = ButtonProps & {
@@ -22,9 +22,7 @@ export type ConfirmButtonProps = ButtonProps & {
   confirmColorScheme?: string
   successMessage: string
   failureMessage: string
-  focusRef?: RefObject<
-    HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement
-  >
+  focusRef?: RefObject<HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement>
   children: ReactNode | ReactNode[]
 }
 
@@ -53,7 +51,7 @@ export const ButtonConfirm = chakra(
             title,
             description: successMessage,
             status: 'success',
-            duration: 3000
+            duration: 3000,
           })
         })
         .catch((err) => {
@@ -62,7 +60,7 @@ export const ButtonConfirm = chakra(
             title,
             description: failureMessage + ' ' + err?.message || err,
             status: 'error',
-            duration: 5000
+            duration: 5000,
           })
         })
     }, [complete, failureMessage, promise, successMessage, title, toast])

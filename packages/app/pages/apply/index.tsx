@@ -10,7 +10,7 @@ export default function Index({}) {
     required: true,
     onUnauthenticated: () => {
       signIn()
-    }
+    },
   })
   const { user } = session || {}
   const router = useRouter()

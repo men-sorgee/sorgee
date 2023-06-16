@@ -17,29 +17,17 @@ type Props = CheckboxProps &
   }
 
 const CheckboxField = (props: Props) => {
-  const {
-    field,
-    label,
-    help,
-    registerOptions = {},
-    children,
-    className,
-    ...opts
-  } = props
+  const { field, label, help, registerOptions = {}, children, className, ...opts } = props
   const {
     register,
-    formState: { defaultValues }
+    formState: { defaultValues },
   } = useFormContext()
   const [checked] = useState<boolean>(
     Boolean((defaultValues ? defaultValues[field] : 'false') || 'false')
   )
   return (
     <FieldWrapper field={field} label={label} help={help} className={className}>
-      <Checkbox
-        checked={checked}
-        {...opts}
-        {...register(field, registerOptions)}
-      >
+      <Checkbox checked={checked} {...opts} {...register(field, registerOptions)}>
         {children || 'Yes'}
       </Checkbox>
     </FieldWrapper>

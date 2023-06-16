@@ -3,7 +3,7 @@ import { NextPageContext } from 'next'
 import dynamic from 'next/dynamic'
 
 const QrCode = dynamic<any>(() => import('react-qrcode-svg'), {
-  ssr: false
+  ssr: false,
 })
 
 interface Props {

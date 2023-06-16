@@ -10,7 +10,7 @@ import { getAdminClient } from './'
 
 export async function getNotification(id: string): Promise<Notification> {
   const adminClient = await getAdminClient()
-  return await adminClient.items('notifications').readOne(id) as unknown as Notification
+  return (await adminClient.items('notifications').readOne(id)) as unknown as Notification
 }
 
 export async function getNotifications(user_id: string): Promise<AppNotification[]> {
@@ -41,7 +41,15 @@ export async function getNotifications(user_id: string): Promise<AppNotification
     delete notification.users
     delete notification.status
     delete notification.id
-    const { subject, body, message, button_url: button_link, button_text, link, category } = notification
+    const {
+      subject,
+      body,
+      message,
+      button_url: button_link,
+      button_text,
+      link,
+      category,
+    } = notification
     return {
       id: userNotification.id,
       status: userNotification.status,
@@ -61,8 +69,6 @@ export async function markNotification(id: string, status: NotificationStatusTyp
   const admin = await getAdminClient()
   admin.items('notifications_users').updateOne(id, { status })
 }
-
-
 
 export async function deleteUserNotification(id: string) {
   const admin = await getAdminClient()

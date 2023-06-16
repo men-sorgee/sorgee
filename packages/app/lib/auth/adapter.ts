@@ -1,9 +1,5 @@
 import { DirectusFile } from 'lib/models'
-import {
-  User,
-  UserSession,
-  UserVerificationToken,
-} from 'lib/services/db/entities'
+import { User, UserSession, UserVerificationToken } from 'lib/services/db/entities'
 import { getAssetUrl } from 'lib/utils'
 import {
   Adapter,
@@ -29,10 +25,7 @@ import {
   updateUser,
 } from '@/lib/services/db/server/auth'
 
-import {
-  importFile,
-  UploadFolder,
-} from '../services/directus/server/files'
+import { importFile, UploadFolder } from '../services/directus/server/files'
 
 function mapUser(user: User): AdapterUser {
   return {

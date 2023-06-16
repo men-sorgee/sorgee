@@ -1,8 +1,5 @@
 import { baseUrl } from 'lib/config'
-import {
-  ApiResponse,
-  UserShare,
-} from 'lib/models'
+import { ApiResponse, UserShare } from 'lib/models'
 import {
   addUserNotification,
   createUserShare,
@@ -14,14 +11,8 @@ import {
   SendGridTemplate,
   sendNotificationEmail,
 } from 'lib/services/sendgrid/server'
-import {
-  withMember,
-  withMethods,
-} from 'lib/utils/server'
-import {
-  NextApiRequest,
-  NextApiResponse,
-} from 'next'
+import { withMember, withMethods } from 'lib/utils/server'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function ShareWithMember(
   req: NextApiRequest,
@@ -36,8 +27,8 @@ export default async function ShareWithMember(
 
     const them = await getMember(user_id)
 
-    const sharedWith = (me.photo_shares as UserShare[])
-    let existingShare = sharedWith?.find(s => s.viewer_id == user_id)
+    const sharedWith = me.photo_shares as UserShare[]
+    let existingShare = sharedWith?.find((s) => s.viewer_id == user_id)
     if (method == 'DELETE') {
       if (existingShare) {
         await deleteUserShare(existingShare.id)
@@ -46,7 +37,6 @@ export default async function ShareWithMember(
         return res.status(200).json(ApiResponse({}))
       }
     } else if (method == 'POST' && existingShare == null) {
-
       await createUserShare(me.id, user_id)
 
       // send notification
@@ -54,7 +44,7 @@ export default async function ShareWithMember(
         user_id: them.id,
         message: `${me.nickname} shared their private photos!`,
         button_text: 'View Photos',
-        button_url: `/member/${me.id}`
+        button_url: `/member/${me.id}`,
       })
 
       await sendNotificationEmail(
@@ -65,7 +55,7 @@ export default async function ShareWithMember(
         {
           button_text: 'View Photos',
           button_url: `${baseUrl}/members/${me.id}`,
-          user_id: them.id
+          user_id: them.id,
         },
         SendGridTemplate.AppNotification,
         SendGridCategory.Notification

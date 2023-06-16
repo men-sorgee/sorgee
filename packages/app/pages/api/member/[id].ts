@@ -15,18 +15,9 @@ import {
   User,
   UserShare,
 } from 'lib/models'
-import {
-  getUser,
-  updateUser,
-} from 'lib/services/directus/server/users'
-import {
-  withMethods,
-  withUser,
-} from 'lib/utils/server'
-import {
-  NextApiRequest,
-  NextApiResponse,
-} from 'next'
+import { getUser, updateUser } from 'lib/services/directus/server/users'
+import { withMethods, withUser } from 'lib/utils/server'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function Member(
   req: NextApiRequest,
@@ -61,7 +52,7 @@ export default async function Member(
           }
 
           let shares = user.photo_shares as UserShare[]
-          let canSee = shares?.some(s => s.viewer_id == viewer.id) || false
+          let canSee = shares?.some((s) => s.viewer_id == viewer.id) || false
           if (!canSee) {
             user.my_photos = user.my_photos.filter((p) => p.is_public)
           }

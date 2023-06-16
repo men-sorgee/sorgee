@@ -6,7 +6,7 @@ import {
   FieldInput,
   FieldSelect,
   FieldText,
-  FieldWrapper
+  FieldWrapper,
 } from 'components/forms'
 import Page from 'components/Page'
 import { useSite, useUser } from 'hooks'
@@ -19,7 +19,7 @@ import {
   MemberLevel,
   Profile,
   Promo,
-  UserInvite
+  UserInvite,
 } from 'lib/models'
 import { postJSON, pruneUndefined } from 'lib/utils'
 import { signIn, useSession } from 'next-auth/react'
@@ -37,7 +37,7 @@ import {
   InputGroup,
   InputRightAddon,
   SimpleGrid,
-  Text
+  Text,
 } from '@chakra-ui/react'
 
 import { Markdown } from '../../components/controls'
@@ -72,7 +72,7 @@ export const getServerSideProps = async (_context) => {
     positionsOptions: await getFieldOptions('my_positions'),
     skinToneOptions: await getFieldOptions('skin_tone'),
     birthMonthOptions: await getFieldOptions('birth_month'),
-    markdown
+    markdown,
   }
   return { props }
 }
@@ -82,15 +82,15 @@ function Apply({ promo, invite, markdown, ...props }: PageProps) {
     required: true,
     onUnauthenticated: () => {
       signIn()
-    }
+    },
   })
   const {
     member: user,
     loading,
-    reload
+    reload,
   } = useUser({
     minLevel: MemberLevel.applicant,
-    minAppStatus: ApplicationStatus.apply
+    minAppStatus: ApplicationStatus.apply,
   })
 
   const [formError, setFormError] = useState<string>()
@@ -101,11 +101,7 @@ function Apply({ promo, invite, markdown, ...props }: PageProps) {
   useEffect(() => {
     if (!loading && user) {
       const { email } = user
-      if (
-        invite &&
-        invite.e &&
-        invite.e.toLowerCase() != email?.toLowerCase()
-      ) {
+      if (invite && invite.e && invite.e.toLowerCase() != email?.toLowerCase()) {
         setFormError(
           `You must login using the email address ${invite.e} to use this invite, not ${email}. Please logout and try again.`
         )
@@ -121,7 +117,7 @@ function Apply({ promo, invite, markdown, ...props }: PageProps) {
     invite,
     promo,
     ...props,
-    setFormError
+    setFormError,
   }
   return (
     <Page
@@ -162,7 +158,7 @@ function Form({
     positionsOptions,
     relationshipOptions,
     birthMonthOptions,
-    setFormError
+    setFormError,
   } = props
 
   const methods = useForm({
@@ -187,25 +183,21 @@ function Form({
       weight: user?.weight || null,
       skin_tone: user?.skin_tone || null,
       my_positions: user?.my_positions || [],
-      invite
-    }
+      invite,
+    },
   })
   const {
     register,
     handleSubmit,
     setError,
-    formState: { isSubmitting }
+    formState: { isSubmitting },
   } = methods
 
   async function onSubmit(data: any) {
     if (data.height_feet || data.height_inches) {
       data.height = `${data.height_feet} ${data.height_inches}`
     }
-    const {
-      success,
-      data: d,
-      error
-    } = await postJSON('/api/apply', pruneUndefined(data))
+    const { success, data: d, error } = await postJSON('/api/apply', pruneUndefined(data))
     if (success) {
       reload().then(() => {
         router.push('/apply/verify')
@@ -227,15 +219,11 @@ function Form({
             Private Information
           </Heading>
           <Text>
-            We collect this information for verification purposes only. We will
-            not share, show or sell this information to anyone.
+            We collect this information for verification purposes only. We will not share, show or
+            sell this information to anyone.
           </Text>
           <SimpleGrid gap={4} py={4} columns={{ base: 1, md: 2 }}>
-            <FieldInput
-              field="first_name"
-              label="First Name"
-              registerOptions={{ required }}
-            />
+            <FieldInput field="first_name" label="First Name" registerOptions={{ required }} />
             <FieldInput field="last_name" label="Last Name" />
             <FieldInput
               field="email"
@@ -251,8 +239,8 @@ function Form({
               registerOptions={{
                 pattern: {
                   value: /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
-                  message: 'US numbers only. Format: 123 456 7890'
-                }
+                  message: 'US numbers only. Format: 123 456 7890',
+                },
               }}
               placeholder="000 456 7890"
             />
@@ -261,19 +249,14 @@ function Form({
             About You
           </Heading>
           <Text>
-            <strong>Be as honest as possible.</strong> Honest answers will help
-            your chances of approval and help our AI create the perfect group
-            events!
+            <strong>Be as honest as possible.</strong> Honest answers will help your chances of
+            approval and help our AI create the perfect group events!
           </Text>
           <SimpleGrid spacing={4} mt={4} columns={[1, 2]}>
             <GridItem colSpan={{ base: 1, sm: 2 }}>
               <FieldInput field="nickname" label="Nickname" />
             </GridItem>
-            <FieldSelect
-              field="spectrum"
-              label="Orientation"
-              options={spectrumOptions}
-            />
+            <FieldSelect field="spectrum" label="Orientation" options={spectrumOptions} />
             <FieldSelect
               field="relationship_status"
               label="Relationship Status"
@@ -286,7 +269,7 @@ function Form({
               label="Birth Month"
               options={birthMonthOptions}
               registerOptions={{
-                required: 'You must provide your month of birth'
+                required: 'You must provide your month of birth',
               }}
             />
             <FieldInput
@@ -297,7 +280,7 @@ function Form({
               max={maxYear}
               defaultValue={maxYear - 10}
               registerOptions={{
-                required: 'You must provide your year of birth'
+                required: 'You must provide your year of birth',
               }}
             />
             <FieldWrapper field="weight" label="Weight">
@@ -309,17 +292,9 @@ function Form({
 
             <FieldWrapper field="height" label="Height">
               <InputGroup>
-                <Input
-                  type="number"
-                  id="height_feet"
-                  {...register('height_feet')}
-                />
+                <Input type="number" id="height_feet" {...register('height_feet')} />
                 <InputRightAddon mr={2}>&apos;</InputRightAddon>
-                <Input
-                  type="number"
-                  id="height_inches"
-                  {...register('height_inches')}
-                />
+                <Input type="number" id="height_inches" {...register('height_inches')} />
                 <InputRightAddon>&quot;</InputRightAddon>
               </InputGroup>
             </FieldWrapper>
@@ -349,22 +324,14 @@ function Form({
               Assistance
             </Heading>
             <Text>
-              We want you to be comfortable. Check this and we will help guide
-              you along the way. Unsure how to answer the above questions, or
-              just new to this? Just check this box and we will help you out.
+              We want you to be comfortable. Check this and we will help guide you along the way.
+              Unsure how to answer the above questions, or just new to this? Just check this box and
+              we will help you out.
             </Text>
-            <FieldCheckbox
-              field="needs_guidance"
-              label="I'd like some guidance"
-            />
+            <FieldCheckbox field="needs_guidance" label="I'd like some guidance" />
             <input type="hidden" {...register('invite')} />
           </SimpleGrid>
-          <Button
-            type="submit"
-            mt={4}
-            colorScheme={'primary'}
-            disabled={isSubmitting}
-          >
+          <Button type="submit" mt={4} colorScheme={'primary'} disabled={isSubmitting}>
             Save & Continue
           </Button>
         </form>

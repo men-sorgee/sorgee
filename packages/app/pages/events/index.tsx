@@ -1,13 +1,7 @@
 import { useCallback, useState } from 'react'
 
 import { capitalCase } from 'change-case'
-import {
-  ButtonLink,
-  EventBadge,
-  EventCard,
-  EventRSVP,
-  EventTicket
-} from 'components/controls'
+import { ButtonLink, EventBadge, EventCard, EventRSVP, EventTicket } from 'components/controls'
 import Page from 'components/Page'
 import { addDays, isAfter, isSameDay, isToday } from 'date-fns'
 import { useUser, useUserEvents } from 'hooks'
@@ -31,7 +25,7 @@ import {
   TabPanels,
   Tabs,
   Text,
-  useColorModeValue
+  useColorModeValue,
 } from '@chakra-ui/react'
 
 export type PageProps = {}
@@ -40,7 +34,7 @@ export default function EventsPage({}: PageProps) {
   const [tabValue, setTabValue] = useState(0)
   const { member, loading, authorized } = useUser({
     minLevel: MemberLevel.inductee,
-    redirectsEnabled: true
+    redirectsEnabled: true,
   })
   const {
     invitations,
@@ -48,7 +42,7 @@ export default function EventsPage({}: PageProps) {
     upcoming,
     past,
     reload,
-    loading: eventsLoading
+    loading: eventsLoading,
   } = useUserEvents()
 
   const onEventsChange = useCallback(() => {
@@ -81,11 +75,7 @@ export default function EventsPage({}: PageProps) {
                 event={activeInvite.event as GroupEvent}
                 showDescription={false}
                 isGuest={activeInvite.guest}
-                href={
-                  activeInvite.attended
-                    ? `/events/${activeInvite.event.id}`
-                    : undefined
-                }
+                href={activeInvite.attended ? `/events/${activeInvite.event.id}` : undefined}
                 mb={4}
                 showAddToCalendar={false}
                 showLocation={true}
@@ -112,9 +102,7 @@ export default function EventsPage({}: PageProps) {
               </EventCard>
             </Box>
           )}
-          <EventCalendar
-            events={[...upcoming, ...invitations].map((i) => i.event)}
-          />
+          <EventCalendar events={[...upcoming, ...invitations].map((i) => i.event)} />
 
           <Tabs
             isFitted
@@ -126,34 +114,18 @@ export default function EventsPage({}: PageProps) {
           >
             <div className="no-print">
               <TabList>
-                <Tab
-                  fontSize={['md', 'lg', '2xl']}
-                  fontWeight={tabValue == 0 ? 'bold' : null}
-                >
+                <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 0 ? 'bold' : null}>
                   Upcoming
                 </Tab>
-                <Tab
-                  fontSize={['md', 'lg', '2xl']}
-                  fontWeight={tabValue == 1 ? 'bold' : null}
-                >
+                <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 1 ? 'bold' : null}>
                   Invitations
                   {newInvitationCount > 0 && (
-                    <Badge
-                      ml={1}
-                      bg="red.500"
-                      rounded="full"
-                      px={2}
-                      py={0.5}
-                      color="white"
-                    >
+                    <Badge ml={1} bg="red.500" rounded="full" px={2} py={0.5} color="white">
                       {newInvitationCount}
                     </Badge>
                   )}
                 </Tab>
-                <Tab
-                  fontSize={['md', 'lg', '2xl']}
-                  fontWeight={tabValue == 2 ? 'bold' : null}
-                >
+                <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 2 ? 'bold' : null}>
                   Past
                 </Tab>
               </TabList>
@@ -197,8 +169,8 @@ export default function EventsPage({}: PageProps) {
         <Box>
           <Heading>No Events</Heading>
           <Text>
-            You cannot see or attend events yet. Once you have completed the
-            application and vetting process, events will show up here.
+            You cannot see or attend events yet. Once you have completed the application and vetting
+            process, events will show up here.
           </Text>
         </Box>
       )}
@@ -212,7 +184,7 @@ function Invitations({
   name,
   text,
   onChange,
-  showLink = false
+  showLink = false,
 }: {
   list: EventInvite[]
   member: Member
@@ -232,8 +204,7 @@ function Invitations({
           <Alert mt={4} status="warning" rounded="lg" shadow="lg">
             <AlertIcon />
             You have event invitations turned off. Update&nbsp;
-            <Link href="/member/settings">your event settings</Link>&nbsp; to
-            change that.
+            <Link href="/member/settings">your event settings</Link>&nbsp; to change that.
           </Alert>
         )}
       </Box>
@@ -258,9 +229,7 @@ function Invitations({
             showDescription={false}
             showLocation={false}
             isGuest={invite.guest || false}
-            showAddToCalendar={
-              invite.rsvp == 'confirmed' || invite.rsvp == 'maybe'
-            }
+            showAddToCalendar={invite.rsvp == 'confirmed' || invite.rsvp == 'maybe'}
           >
             {showLink && (
               <ButtonLink
@@ -320,8 +289,7 @@ function PastEvents({ member, list }: { list: EventInvite[]; member: Member }) {
         </ButtonLink>
 
         <Heading as="h3" size="h3" textAlign="center">
-          {capitalCase(invite.rsvp)} and{' '}
-          {invite.attended ? 'attended!' : 'did not attend'}
+          {capitalCase(invite.rsvp)} and {invite.attended ? 'attended!' : 'did not attend'}
         </Heading>
         {!invite.attended && invite.rsvp == 'confirmed' && (
           <Alert status="warning" rounded="lg" mt={4} textAlign="center">
@@ -384,9 +352,7 @@ function EventCalendar({ events }: { events: GroupEvent[] }) {
     // Add class to tiles in month view only
     if (view === 'month') {
       const event: GroupEvent = events
-        ? events?.find((e: GroupEvent, i: any) =>
-            isSameDay(new Date(e.datetime), date)
-          )
+        ? events?.find((e: GroupEvent, i: any) => isSameDay(new Date(e.datetime), date))
         : null
       // Check if a date React-Calendar wants to check is on the list of dates to add class to
       return (
@@ -400,10 +366,7 @@ function EventCalendar({ events }: { events: GroupEvent[] }) {
   const line = useColorModeValue(brand.colors.primary[700], '#000')
   const bg = useColorModeValue('#FFF', brand.colors.gray[300])
   const lineWeekend = useColorModeValue(brand.colors.gray[300], '#FFF')
-  const bgWeekend = useColorModeValue(
-    brand.colors.gray[100],
-    brand.colors.gray[400]
-  )
+  const bgWeekend = useColorModeValue(brand.colors.gray[100], brand.colors.gray[400])
 
   return (
     <Show above="md">
@@ -414,10 +377,10 @@ function EventCalendar({ events }: { events: GroupEvent[] }) {
             width: '100%',
             minH: '50vh',
 
-            margin: '2rem auto 0 auto'
+            margin: '2rem auto 0 auto',
           },
           '.react-calendar abbr': {
-            textDecoration: 'none'
+            textDecoration: 'none',
           },
           '.react-calendar__navigation': {
             backgroundColor: line,
@@ -427,7 +390,7 @@ function EventCalendar({ events }: { events: GroupEvent[] }) {
             borderRadius: '15px 15px 0 0',
             fontWeight: 'bold',
             fontSize: '2.5em',
-            gap: '1rem'
+            gap: '1rem',
           },
           '.react-calendar__tile': {
             minHeight: '100px',
@@ -435,41 +398,41 @@ function EventCalendar({ events }: { events: GroupEvent[] }) {
             border: '1px solid',
             margin: '0',
             color: line,
-            cursor: 'default'
+            cursor: 'default',
           },
           '.react-calendar__tile--active': {
             fontWeight: 'bold',
             border: '4px dashed',
-            borderColor: brand.colors.accent[500]
+            borderColor: brand.colors.accent[500],
           },
           '.react-calendar__month-view__days__day': {
-            backgroundColor: bg
+            backgroundColor: bg,
           },
 
           '.react-calendar__month-view__days__day--weekend': {
             backgroundColor: bgWeekend,
             color: lineWeekend,
-            borderColor: line
+            borderColor: line,
           },
           '.react-calendar__month-view': {
             borderColor: line,
             borderStyle: 'solid',
             borderWidth: '1px 1px 20px 1px',
             borderRadius: '0 0 15px 15px',
-            backgroundColor: line
+            backgroundColor: line,
           },
           '.react-calendar__month-view__weekdays': {
             backgroundColor: line,
             color: 'white',
-            textTransform: 'uppercase'
+            textTransform: 'uppercase',
           },
           '.react-calendar__month-view__weekdays__weekday': {
             padding: '0.5em',
-            textAlign: 'center'
+            textAlign: 'center',
           },
           'react-calendar__month-view__days': {
-            justifyContent: 'end'
-          }
+            justifyContent: 'end',
+          },
         }}
       >
         <Calendar

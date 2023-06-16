@@ -17,7 +17,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  useDisclosure
+  useDisclosure,
 } from '@chakra-ui/react'
 
 import { ButtonLink } from './ButtonLink'
@@ -58,7 +58,7 @@ export const NotificationCard = chakra(({ member, notification }: Props) => {
     notification?.message,
     notification?.status,
     notification?.subject,
-    subject
+    subject,
   ])
 
   const openMessage = () => {
@@ -83,11 +83,7 @@ export const NotificationCard = chakra(({ member, notification }: Props) => {
         flexDirection="column"
         alignItems="flex-start"
       >
-        {subject && (
-          <AlertTitle fontWeight={isNew ? 'bold' : 'normal'}>
-            {subject}
-          </AlertTitle>
-        )}
+        {subject && <AlertTitle fontWeight={isNew ? 'bold' : 'normal'}>{subject}</AlertTitle>}
       </Alert>
       <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
         <ModalOverlay />
@@ -102,11 +98,7 @@ export const NotificationCard = chakra(({ member, notification }: Props) => {
           <ModalFooter>
             <HStack spacing={2} align="right">
               {notification?.link && (
-                <ButtonLink
-                  onClick={onClose}
-                  href={notification?.link}
-                  colorScheme="accent"
-                >
+                <ButtonLink onClick={onClose} href={notification?.link} colorScheme="accent">
                   {notification?.button_text || 'Check it Out!'}
                 </ButtonLink>
               )}

@@ -7,19 +7,12 @@ import {
   EventTicket,
   MemberModal,
   MemberSpotlight,
-  RateItem
+  RateItem,
 } from 'components/controls'
 import Page from 'components/Page'
 import { isAfter, isToday } from 'date-fns'
 import { useEvent, useUser } from 'hooks'
-import {
-  EventDetail,
-  EventStats,
-  EventUser,
-  Member,
-  MemberLevel,
-  User
-} from 'lib/models'
+import { EventDetail, EventStats, EventUser, Member, MemberLevel, User } from 'lib/models'
 import { NextPageContext } from 'next'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
@@ -43,7 +36,7 @@ import {
   StatNumber,
   Text,
   useColorModeValue,
-  Wrap
+  Wrap,
 } from '@chakra-ui/react'
 
 export type PageProps = {
@@ -53,8 +46,8 @@ export type PageProps = {
 export const getServerSideProps = async (context: NextPageContext) => {
   return {
     props: {
-      id: context.query.id
-    }
+      id: context.query.id,
+    },
   }
 }
 
@@ -67,7 +60,7 @@ export default function EventPage({ id }: PageProps) {
     isStaff,
     reload: reloadUser,
     authenticated,
-    hasFeature
+    hasFeature,
   } = useUser({ minLevel: MemberLevel.inductee, redirectsEnabled: true })
 
   const [eventId] = useState<string>(String(i) || id)
@@ -81,8 +74,7 @@ export default function EventPage({ id }: PageProps) {
     if (!eventLoading && event?.stats && !stats) {
       setStats(event.stats)
       setShowTicket(
-        isToday(new Date(event.datetime)) &&
-          !isAfter(new Date(), new Date(event.datetime_end))
+        isToday(new Date(event.datetime)) && !isAfter(new Date(), new Date(event.datetime_end))
       )
     }
     if (member?.events && !invite) {
@@ -102,7 +94,7 @@ export default function EventPage({ id }: PageProps) {
         return {
           id: u.id,
           name,
-          src
+          src,
         }
       })
   }
@@ -112,11 +104,7 @@ export default function EventPage({ id }: PageProps) {
   const canViewAttendees = hasFeature('view_attendees')
 
   return (
-    <Page
-      title="Event Details"
-      loading={loading || eventLoading}
-      requireAuth={true}
-    >
+    <Page title="Event Details" loading={loading || eventLoading} requireAuth={true}>
       {authenticated && member && event && (
         <>
           <EventCard
@@ -207,11 +195,7 @@ export default function EventPage({ id }: PageProps) {
               />
             )}
             {event.status != 'occurred' && (invite || !event.invite_only) && (
-              <EventRSVP
-                memberId={member.id}
-                eventId={id}
-                rsvp={invite?.rsvp}
-              />
+              <EventRSVP memberId={member.id} eventId={id} rsvp={invite?.rsvp} />
             )}
           </EventCard>
           <MemberModal
@@ -240,7 +224,7 @@ const AttendedEvent = ({
   event,
   member,
   invite,
-  reloadUser
+  reloadUser,
 }: {
   event: EventDetail
   member: Member
@@ -267,20 +251,11 @@ const AttendedEvent = ({
         align="center"
         justify="space-between"
       >
-        <RateItem
-          item_id={event.id}
-          collection="events"
-          aria-label={'Rate Event'}
-        />
+        <RateItem item_id={event.id} collection="events" aria-label={'Rate Event'} />
         <Spacer />
         {invite.attended &&
           event.surveys?.map((s) => (
-            <ButtonLink
-              key={s.id}
-              size="md"
-              href={`/survey/${s.id}/1`}
-              colorScheme="accent"
-            >
+            <ButtonLink key={s.id} size="md" href={`/survey/${s.id}/1`} colorScheme="accent">
               {s.title}
             </ButtonLink>
           ))}
@@ -298,8 +273,8 @@ const AttendedEvent = ({
           <Alert mb={4} rounded="lg" status="error">
             <AlertIcon />
             <strong>
-              This is not a personal attraction rating, but a rating of their
-              behavior and attitude at the event!
+              This is not a personal attraction rating, but a rating of their behavior and attitude
+              at the event!
             </strong>
           </Alert>
           {attendees.map((u: User) => (

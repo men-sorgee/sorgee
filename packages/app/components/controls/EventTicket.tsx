@@ -9,18 +9,14 @@ type EventTicketProps = {
   event: EventDetail | GroupEvent
   open?: boolean
 }
-export const EventTicket = ({
-  member,
-  event,
-  open = false
-}: EventTicketProps) => {
+export const EventTicket = ({ member, event, open = false }: EventTicketProps) => {
   const [showTicket, setShowTicket] = useState<boolean>(undefined)
 
   if (!member || !event) return null
 
-  const checkinUrl = `/api/${
-    event?.invite_only ? 'invite' : 'events'
-  }/checkin?user_id=${member?.id}&event_id=${event?.id}`
+  const checkinUrl = `/api/${event?.invite_only ? 'invite' : 'events'}/checkin?user_id=${
+    member?.id
+  }&event_id=${event?.id}`
   return (
     <Box mt={4} borderTop="2px dotted">
       <Image
@@ -35,8 +31,7 @@ export const EventTicket = ({
       />
       <div className="no-print">
         <Text textAlign="center">
-          <strong>Important:</strong> Present this ticket to the host when you
-          arrive for access.
+          <strong>Important:</strong> Present this ticket to the host when you arrive for access.
         </Text>
         <Flex direction="column" my={4}>
           {!open && (

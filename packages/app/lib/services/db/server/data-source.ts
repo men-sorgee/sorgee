@@ -1,10 +1,6 @@
 import 'reflect-metadata'
 
-import {
-  DataSource,
-  EntityTarget,
-  ObjectLiteral,
-} from 'typeorm'
+import { DataSource, EntityTarget, ObjectLiteral } from 'typeorm'
 
 import gnhDBConfig from '../ormconfig'
 

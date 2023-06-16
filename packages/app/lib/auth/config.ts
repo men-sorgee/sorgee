@@ -1,11 +1,6 @@
 import { brand } from 'lib/config/brand'
 import config from 'lib/config/server'
-import {
-  MemberLevel,
-  Profile,
-  User,
-  UserStatusType,
-} from 'lib/models'
+import { MemberLevel, Profile, User, UserStatusType } from 'lib/models'
 import {
   extendUserPresence,
   findUser,
@@ -34,8 +29,10 @@ const { google, discord, twitter, yahoo, microsoft } = config
 const allowedStatuses: UserStatusType[] = ['new', 'active', 'stale']
 
 const userCanSignin = (user: User | any) => {
-  const can = user && allowedStatuses.includes(user.status as UserStatusType)
-    && MemberLevel[user.userType as string] >= MemberLevel.applicant
+  const can =
+    user &&
+    allowedStatuses.includes(user.status as UserStatusType) &&
+    MemberLevel[user.userType as string] >= MemberLevel.applicant
 
   return can
 }
@@ -187,7 +184,7 @@ export const authOptions: AuthOptions = {
         }
       },
       normalizeIdentifier(identifier: string): string {
-        let [local, domain] = identifier.toLowerCase().trim().split("@")
+        let [local, domain] = identifier.toLowerCase().trim().split('@')
         return `${local}@${domain}`
       },
     }),

@@ -23,12 +23,9 @@ export function MemberModal({
   onClose,
   ref,
   full = true,
-  updateMeta = false
+  updateMeta = false,
 }: MemberModalProps) {
-  const { data: fields, isLoading } = swr<FieldMap>(
-    `/api/site/fields/users`,
-    JsonFetcher
-  )
+  const { data: fields, isLoading } = swr<FieldMap>(`/api/site/fields/users`, JsonFetcher)
   if (isLoading) return null
   return (
     <>
@@ -40,12 +37,7 @@ export function MemberModal({
         finalFocusRef={ref}
       >
         {memberId && fields && (
-          <MemberSpotlight
-            id={memberId}
-            fields={fields}
-            full={full}
-            updateMeta={updateMeta}
-          />
+          <MemberSpotlight id={memberId} fields={fields} full={full} updateMeta={updateMeta} />
         )}
       </ModalPopup>
     </>

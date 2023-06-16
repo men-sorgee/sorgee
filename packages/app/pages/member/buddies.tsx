@@ -15,7 +15,7 @@ export default function BuddiesPage({}: PageProps) {
   const { member, loading } = useUser({
     minLevel: MemberLevel.brother,
     requiredFeature: 'buddy_list',
-    redirectsEnabled: true
+    redirectsEnabled: true,
   })
 
   const buddies = member?.buddies as UserBuddy[]
@@ -40,16 +40,10 @@ export default function BuddiesPage({}: PageProps) {
         gap={2}
       >
         <Text mt={0} fontSize={['md', 'lg', 'xl']}>
-          You have {buddies?.length} buddies with {onlineMembers?.length}{' '}
-          online.
+          You have {buddies?.length} buddies with {onlineMembers?.length} online.
         </Text>
         <Spacer />
-        <Flex
-          direction="column"
-          align="center"
-          justify="space-around"
-          minWidth={['full', '15%']}
-        >
+        <Flex direction="column" align="center" justify="space-around" minWidth={['full', '15%']}>
           <Text as="label" htmlFor="onlineOnly" fontWeight="bold" m={0}>
             Online Only
           </Text>
@@ -61,13 +55,7 @@ export default function BuddiesPage({}: PageProps) {
           />
         </Flex>
       </Alert>
-      <SimpleGrid
-        my={4}
-        columns={[1, 1, 1, 2]}
-        spacing={4}
-        w="full"
-        justifyItems="stretch"
-      >
+      <SimpleGrid my={4} columns={[1, 1, 1, 2]} spacing={4} w="full" justifyItems="stretch">
         {members &&
           members?.map((u: User) => (
             <MemberCard

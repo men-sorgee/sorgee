@@ -1,7 +1,4 @@
-import {
-  MemberFeature,
-  MembershipType,
-} from 'lib/models'
+import { MemberFeature, MembershipType } from 'lib/models'
 import StripeClient from 'stripe'
 
 let stripeClient: StripeClient = null
@@ -14,8 +11,8 @@ export function getClient() {
     stripeAccount: process.env.STRIPE_ACCOUNT_ID,
     appInfo: {
       name: 'Guys N Heat',
-      version: '0.1.0'
-    }
+      version: '0.1.0',
+    },
   })
   return stripeClient
 }

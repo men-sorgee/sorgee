@@ -15,7 +15,7 @@ import {
   PopoverHeader,
   PopoverTrigger,
   Spacer,
-  Text
+  Text,
 } from '@chakra-ui/react'
 
 import { MemberIcon, MemberIconProps } from './MemberIcon'
@@ -38,9 +38,7 @@ export const MemberHeader = ({
   minimal = false,
   ...props
 }: MemberHeaderProps) => {
-  const sharedWithMe = member?.photo_shares?.some(
-    (s) => s.viewer_id == viewer?.id
-  )
+  const sharedWithMe = member?.photo_shares?.some((s) => s.viewer_id == viewer?.id)
   const needsVoucher =
     !member.vouched_by &&
     member.user_type == 'pledge' &&
@@ -48,13 +46,7 @@ export const MemberHeader = ({
 
   return (
     <>
-      <Flex
-        direction="column"
-        justify="space-between"
-        align="center"
-        alignItems="center"
-        gap={2}
-      >
+      <Flex direction="column" justify="space-between" align="center" alignItems="center" gap={2}>
         <MemberIcon member={member} size={size} {...props}>
           {children}
         </MemberIcon>
@@ -72,12 +64,7 @@ export const MemberHeader = ({
               </Badge>
             )}
             {member?.relationship_status && (
-              <Badge
-                fontSize={['xs', 'sm']}
-                bg="primary.500"
-                color="white"
-                rounded={0}
-              >
+              <Badge fontSize={['xs', 'sm']} bg="primary.500" color="white" rounded={0}>
                 {capitalCase(member.relationship_status)}
               </Badge>
             )}
@@ -126,12 +113,11 @@ export const MemberHeader = ({
                   </PopoverHeader>
                   <PopoverBody>
                     <Text>
-                      Pledges can't become an inductee unless someone vouches
-                      for them. If you see a Pledge that you want to get to
-                      know, go ahead and reach out. You should be able to chat
-                      with them regardless of you membership. If you think they
-                      would make a great Brother, you can vouch for them. This
-                      will promote them to Inductee.
+                      Pledges can&apos;t become an inductee unless someone vouches for them. If you
+                      see a Pledge that you want to get to know, go ahead and reach out. You should
+                      be able to chat with them regardless of you membership. If you think they
+                      would make a great Brother, you can vouch for them. This will promote them to
+                      Inductee.
                     </Text>
                   </PopoverBody>
                 </PopoverContent>

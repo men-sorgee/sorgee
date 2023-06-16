@@ -76,8 +76,6 @@ export type UserContactAttempt = {
   user?: string | User
 }
 
-
-
 export type User = {
   id: string
   presence?: string
@@ -178,7 +176,6 @@ export type User = {
   private_folder?: string
   public_folder?: string
 
-
   buddies: string[] | UserBuddy[]
   buddy_of: string[] | UserBuddy[]
   likes: string[] | UserLike[]
@@ -186,10 +183,10 @@ export type User = {
   blocked: string[] | UserBlock[]
   blocked_by: string[] | UserBlock[]
 
-  membership_type?: MembershipType;
-  customer_id?: string;
-  membership_start?: string;
-  renewal_type?: string;
+  membership_type?: MembershipType
+  customer_id?: string
+  membership_start?: string
+  renewal_type?: string
   has_features: Array<MemberFeature>
 }
 
@@ -270,8 +267,8 @@ export enum MemberLevel {
 }
 
 export type VouchingUser = {
-  id: string,
-  nickname: string,
+  id: string
+  nickname: string
   picture: string
 }
 
@@ -325,8 +322,6 @@ export type UserStatusType = 'new' | 'active' | 'inactive' | 'stale' | 'deleted'
 export type UserPhotoFieldType = 'photo' | 'picture' | 'public' | 'private'
 
 export type UserFields = (string | keyof User)[] | '*' | '*.*' | any
-
-
 
 export type Profile = {
   id: string
@@ -423,11 +418,23 @@ export const applicantFields: Array<keyof Applicant> = [
   'session_expire',
 ]
 
-export type MemberFeature = "view_directory" | "chat" | "share_photos" | "buddy_list" | "flirt" | "view_attendees"
-export const memberFeatures: MemberFeature[] = ["view_directory", "flirt", "buddy_list", "view_attendees", "chat", "share_photos"]
+export type MemberFeature =
+  | 'view_directory'
+  | 'chat'
+  | 'share_photos'
+  | 'buddy_list'
+  | 'flirt'
+  | 'view_attendees'
+export const memberFeatures: MemberFeature[] = [
+  'view_directory',
+  'flirt',
+  'buddy_list',
+  'view_attendees',
+  'chat',
+  'share_photos',
+]
 
 export type Member = Applicant & {
-
   signed_waiver: boolean
   presence: 'offline' | 'online' | 'away'
   ratings: Rating[]
@@ -507,9 +514,9 @@ export type Member = Applicant & {
   public_folder?: string
 
   membership_type?: Membership | string
-  customer_id?: string;
-  membership_start?: string;
-  renewal_type?: string;
+  customer_id?: string
+  membership_start?: string
+  renewal_type?: string
   has_features: Array<MemberFeature>
 }
 
@@ -519,7 +526,7 @@ export enum MembershipType {
   free = 0,
   basic = 1,
   plus = 2,
-  pro = 3
+  pro = 3,
 }
 
 export type SearchableMember = Omit<
@@ -561,7 +568,7 @@ export const userPrivateFields: Array<keyof User> = [
   'tags',
   'flags',
   'reviewed_by',
-  'photo_denial_reason'
+  'photo_denial_reason',
 ]
 
 export const memberProfilePrivateFields: Array<keyof Member> = [
@@ -581,10 +588,6 @@ export const memberProfilePrivateFields: Array<keyof Member> = [
   'public_folder',
   'approved_date',
   'ratings',
-  'buddy_of',
-  'liked_by',
-  'blocked_by',
-  'blocked'
 ]
 
 export const memberProfileContactFields: Array<keyof Member> = [
@@ -647,7 +650,10 @@ export const memberProfileHealthFields: Array<keyof Member> = [
   'vaccinations',
 ]
 
-export const memberProfilePhotoFields: Array<keyof Member> = ['my_photos.*' as any, 'photo_shares.*' as any]
+export const memberProfilePhotoFields: Array<keyof Member> = [
+  'my_photos.*' as any,
+  'photo_shares.*' as any,
+]
 
 export const searchableMemberFields: Array<keyof Member> = [
   'id',
@@ -674,13 +680,15 @@ export const searchableMemberFields: Array<keyof Member> = [
   'buddy_of.*' as any,
   'likes.*' as any,
   'liked_by.*' as any,
+  'blocked.block_id' as any,
+  'blocked_by.user_id' as any,
 ]
 
 export const memberSubscriptionFields: Array<keyof Member> = [
   'membership_type',
   'customer_id',
   'membership_start',
-  'renewal_type'
+  'renewal_type',
 ]
 
 export const memberFields: Array<keyof Member> = [
@@ -707,6 +715,11 @@ export const memberFields: Array<keyof Member> = [
   ...memberProfilePhotoFields,
   ...memberSubscriptionFields,
   'has_features',
+  'buddy_of',
+  'likes',
+  'liked_by',
+  'blocked_by',
+  'blocked',
 ]
 
 export const getAllowedUsers = (level: MemberLevel) => {

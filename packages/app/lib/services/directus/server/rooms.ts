@@ -1,7 +1,4 @@
-import {
-  Room,
-  RoomEvent,
-} from 'lib/models'
+import { Room, RoomEvent } from 'lib/models'
 
 import { getAdminClient } from './'
 

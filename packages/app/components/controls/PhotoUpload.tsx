@@ -12,7 +12,7 @@ import {
   Image,
   ImageProps,
   Input,
-  useToast
+  useToast,
 } from '@chakra-ui/react'
 import { ArrowUpTrayIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
@@ -61,7 +61,7 @@ export const PhotoUpload = chakra(
         description: error,
         status: 'error',
         duration: 9000,
-        isClosable: true
+        isClosable: true,
       })
     }
 
@@ -99,7 +99,7 @@ export const PhotoUpload = chakra(
         const query = `?name=${name}&title=${name}&description=${description}`
         const res = await fetch(postUrl + query, {
           method: 'POST',
-          body: formData
+          body: formData,
         })
 
         if (res.ok) {
@@ -189,22 +189,12 @@ export const PhotoUpload = chakra(
         {file && (
           <HStack spacing={4} mt={4} justify="center">
             {file && (
-              <Button
-                color="info"
-                size="lg"
-                disabled={!previewSrc}
-                onClick={onCancelFile}
-              >
+              <Button color="info" size="lg" disabled={!previewSrc} onClick={onCancelFile}>
                 Clear
               </Button>
             )}
             {file && (
-              <Button
-                size="lg"
-                disabled={!previewSrc}
-                colorScheme="accent"
-                onClick={onSubmit}
-              >
+              <Button size="lg" disabled={!previewSrc} colorScheme="accent" onClick={onSubmit}>
                 Upload
               </Button>
             )}

@@ -10,7 +10,7 @@ import {
   FormControlProps,
   FormErrorMessage,
   FormHelperText,
-  FormLabel
+  FormLabel,
 } from '@chakra-ui/react'
 
 import { InfoIcon } from '../icons'
@@ -25,17 +25,7 @@ type Props = FormControlProps & {
 
 const FieldWrapper = (props: Props) => {
   const [showHelp, setShowHelp] = useState(false)
-  const {
-    field,
-    label,
-    help,
-    className,
-    children,
-    size,
-    align = 'left',
-    w,
-    ...opts
-  } = props
+  const { field, label, help, className, children, size, align = 'left', w, ...opts } = props
   const { getFieldState } = useFormContext()
   const { error, isDirty } = getFieldState(field)
   return (

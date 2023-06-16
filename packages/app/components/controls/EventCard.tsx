@@ -26,7 +26,7 @@ import {
   StatLabel,
   StatNumber,
   Text,
-  useColorModeValue
+  useColorModeValue,
 } from '@chakra-ui/react'
 import { MapPinIcon } from '@heroicons/react/24/solid'
 
@@ -122,8 +122,7 @@ export const EventCard = ({
   const viewLocation =
     showLocation &&
     location &&
-    differenceInDays(toLocalDate(event.datetime), new Date()) <
-      location.display_threshold &&
+    differenceInDays(toLocalDate(event.datetime), new Date()) < location.display_threshold &&
     !isAfter(new Date(), toLocalDate(event.datetime))
 
   return (
@@ -133,7 +132,7 @@ export const EventCard = ({
       borderRadius="15px"
       {...props}
       _hover={{
-        boxShadow: 'xl'
+        boxShadow: 'xl',
       }}
       _print={{ shadow: 'none' }}
     >
@@ -146,21 +145,8 @@ export const EventCard = ({
           borderRadius="15px 15px 0 0"
           bg="primary.400"
         >
-          <Flex
-            direction="column"
-            w="75%"
-            align="center"
-            justify="center"
-            p={4}
-          >
-            <Heading
-              as="h3"
-              size="2xl"
-              w="full"
-              textAlign="center"
-              color="white!important"
-              m={0}
-            >
+          <Flex direction="column" w="75%" align="center" justify="center" p={4}>
+            <Heading as="h3" size="2xl" w="full" textAlign="center" color="white!important" m={0}>
               {event.name}
             </Heading>
           </Flex>
@@ -202,9 +188,7 @@ export const EventCard = ({
           <Show above={'md'}>
             <Stat>
               <StatLabel>Event Type</StatLabel>
-              <StatNumber fontSize={['lg', 'xl', '2xl']}>
-                {capitalCase(event.type)}
-              </StatNumber>
+              <StatNumber fontSize={['lg', 'xl', '2xl']}>{capitalCase(event.type)}</StatNumber>
             </Stat>
             <Stat>
               <StatLabel>Invite Type</StatLabel>
@@ -219,15 +203,11 @@ export const EventCard = ({
           </Stat>
           <Stat>
             <StatLabel>Start Time</StatLabel>
-            <StatNumber fontSize={['lg', 'xl', '2xl']}>
-              {eventStartDate?.time}
-            </StatNumber>
+            <StatNumber fontSize={['lg', 'xl', '2xl']}>{eventStartDate?.time}</StatNumber>
           </Stat>
           <Stat>
             <StatLabel>End Time</StatLabel>
-            <StatNumber fontSize={['lg', 'xl', '2xl']}>
-              {eventEndDate?.time}
-            </StatNumber>
+            <StatNumber fontSize={['lg', 'xl', '2xl']}>{eventEndDate?.time}</StatNumber>
           </Stat>
           {event.status == 'scheduled' && (
             <Stat flex="shrink">
@@ -268,13 +248,7 @@ export const EventCard = ({
                 borderColor="text"
                 float={['none', 'none', 'right']}
               >
-                <Icon
-                  h={20}
-                  w={20}
-                  as={MapPinIcon}
-                  color="primary.200"
-                  fill="primary.500"
-                />
+                <Icon h={20} w={20} as={MapPinIcon} color="primary.200" fill="primary.500" />
 
                 <LinkOverlay
                   target="_blank"
@@ -298,38 +272,36 @@ export const EventCard = ({
       </CardBody>
       <CardFooter>
         <Flex direction={['column', 'row']} gap={4} w="full" align="center">
-          {event.status == 'scheduled' &&
-            eventStartDate?.dateOnly &&
-            showAddToCalendar && (
-              <>
-                <AddToCalendarButton
-                  uid={event.id}
-                  size="2"
-                  trigger="click"
-                  name={event.name}
-                  description={event.description}
-                  startDate={event.datetime}
-                  endDate={event.datetime_end}
-                  location={
-                    viewLocation
-                      ? [
-                          location?.street,
-                          location?.unit,
-                          location?.city,
-                          location?.state,
-                          location?.zip
-                        ].join(' ')
-                      : ''
-                  }
-                  timeZone="America/Denver"
-                  options={['Apple', 'Google', 'Outlook.com', 'Yahoo', 'iCal']}
-                  buttonStyle="text"
-                  hideBackground
-                  lightMode={mode}
-                />
-                <Spacer />
-              </>
-            )}
+          {event.status == 'scheduled' && eventStartDate?.dateOnly && showAddToCalendar && (
+            <>
+              <AddToCalendarButton
+                uid={event.id}
+                size="2"
+                trigger="click"
+                name={event.name}
+                description={event.description}
+                startDate={event.datetime}
+                endDate={event.datetime_end}
+                location={
+                  viewLocation
+                    ? [
+                        location?.street,
+                        location?.unit,
+                        location?.city,
+                        location?.state,
+                        location?.zip,
+                      ].join(' ')
+                    : ''
+                }
+                timeZone="America/Denver"
+                options={['Apple', 'Google', 'Outlook.com', 'Yahoo', 'iCal']}
+                buttonStyle="text"
+                hideBackground
+                lightMode={mode}
+              />
+              <Spacer />
+            </>
+          )}
           {footer}
           <Spacer />
           {(event.status == 'planned' && (
@@ -337,9 +309,7 @@ export const EventCard = ({
               <Text as="em">* This is date is subject to change.</Text>
             </>
           )) ||
-            (event.status == 'scheduled' && (
-              <Countdown date={date} renderer={renderer} />
-            ))}
+            (event.status == 'scheduled' && <Countdown date={date} renderer={renderer} />)}
         </Flex>
       </CardFooter>
     </Card>

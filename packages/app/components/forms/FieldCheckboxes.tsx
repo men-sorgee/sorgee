@@ -10,7 +10,7 @@ import {
   CheckboxGroupProps,
   FormControlProps,
   Input,
-  SimpleGrid
+  SimpleGrid,
 } from '@chakra-ui/react'
 
 import FieldWrapper from './FieldWrapper'
@@ -42,7 +42,7 @@ const CheckboxesField = (props: Props) => {
     register,
     watch,
     setValue,
-    formState: { defaultValues }
+    formState: { defaultValues },
   } = useFormContext()
   const [other, setOther] = useState<string>(undefined)
   const [otherChecked, setOtherChecked] = useState<boolean>(false)
@@ -54,9 +54,7 @@ const CheckboxesField = (props: Props) => {
   useEffect(() => {
     if (includeOther) {
       const values = defaultValues[field] || []
-      let o = values.find(
-        (v: string) => !options.map((o) => o.value).includes(v)
-      )
+      let o = values.find((v: string) => !options.map((o) => o.value).includes(v))
       if (o) {
         setOther(o)
         setOtherChecked(true)
@@ -65,21 +63,11 @@ const CheckboxesField = (props: Props) => {
   }, [val, options, other, includeOther, field, defaultValues])
 
   return (
-    <FieldWrapper
-      field={field}
-      help={help}
-      label={label}
-      className={className}
-      {...opts}
-    >
+    <FieldWrapper field={field} help={help} label={label} className={className} {...opts}>
       <SimpleGrid gap={4} columns={[1, 2, 2, 3, 3, 4]} ml={[4, 0]}>
         <CheckboxGroup name={field} {...opts} defaultValue={val}>
           {options?.map(({ text, value }, index) => (
-            <Checkbox
-              key={index.toString()}
-              value={value}
-              {...register(field, registerOptions)}
-            >
+            <Checkbox key={index.toString()} value={value} {...register(field, registerOptions)}>
               {text}
             </Checkbox>
           ))}

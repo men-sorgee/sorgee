@@ -15,7 +15,7 @@ import {
   BreadcrumbLink,
   Flex,
   Link,
-  useBreakpointValue
+  useBreakpointValue,
 } from '@chakra-ui/react'
 
 interface Params extends ParsedUrlQuery {
@@ -26,12 +26,12 @@ export const getStaticPaths: GetStaticPaths<Params> = async () => {
   const { listPages } = await import('lib/services/directus/static')
   const pages = await listPages(pageIds.blogPage)
   const paths = pages.map((page) => ({
-    params: { slug: page.slug.split('/')[1] }
+    params: { slug: page.slug.split('/')[1] },
   }))
 
   return {
     paths,
-    fallback: 'blocking'
+    fallback: 'blocking',
   }
 }
 
@@ -40,7 +40,7 @@ interface Props {
 }
 
 export const getStaticProps: GetStaticProps<Props> = async ({
-  params
+  params,
 }: GetStaticPropsContext<Params>) => {
   const { getPageBySlug } = await import('lib/services/directus/static')
   const { slug } = params
@@ -48,13 +48,13 @@ export const getStaticProps: GetStaticProps<Props> = async ({
 
   if (!page) {
     return {
-      notFound: true
+      notFound: true,
     }
   }
   return {
     props: {
-      page
-    }
+      page,
+    },
   }
 }
 
@@ -75,8 +75,8 @@ export default function BlogPage({ page }: Props) {
     <Page
       css={{
         'h1:first-of-type': {
-          display: 'none'
-        }
+          display: 'none',
+        },
       }}
       id={id}
       title={title}
@@ -115,18 +115,18 @@ export default function BlogPage({ page }: Props) {
                 display: 'inline-block',
                 verticalAlign: 'middle',
                 paddingBottom: '0.25rem',
-                marginRight: '0.5rem'
-              }
+                marginRight: '0.5rem',
+              },
             },
             p: {
-              marginBottom: '1rem'
+              marginBottom: '1rem',
             },
             img: {
               maxWidth: imageWidth,
               display: 'inline-block',
               float: 'left',
-              margin: '.5rem 1rem 1rem 0'
-            }
+              margin: '.5rem 1rem 1rem 0',
+            },
           }}
         >
           <Markdown content={markdown} size="lg" />
