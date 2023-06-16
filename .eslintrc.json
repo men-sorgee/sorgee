@@ -3,6 +3,6 @@
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint", "prettier"],
   "rules": {
-    "prettier/prettier": 2 // Means error,
+    "prettier/prettier": 0 // Means error,
   }
 }

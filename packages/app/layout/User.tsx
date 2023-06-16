@@ -135,7 +135,6 @@ export default function UserMenu(_props: Props) {
                     bg="black"
                     _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                     as={Link}
-                    target="_blank"
                     rel="noopener noreferrer"
                     href="/member/account"
                   >
