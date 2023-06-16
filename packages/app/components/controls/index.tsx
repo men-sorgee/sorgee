@@ -24,6 +24,7 @@ export { MemberChat } from './MemberChat'
 export { MemberModal } from './MemberModal'
 export { MemberShare } from './MemberShare'
 export { MemberLike } from './MemberLike'
+export { MemberBlock } from './MemberBlock'
 
 export { ImageModal } from './ImageModal'
 export { ImageGallery } from './ImageGallery'

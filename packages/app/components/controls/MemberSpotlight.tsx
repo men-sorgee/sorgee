@@ -45,6 +45,7 @@ import {
 } from '@chakra-ui/react'
 
 import {
+  MemberBlock,
   MemberChat,
   MemberConnect,
   MemberHeader,
@@ -85,7 +86,7 @@ export const MemberSpotlight = chakra(
     useEffect(() => {
       if (full && updateMeta)
         setMeta(name || 'Brother', member?.biography, picture)
-    }, [full, member, name, picture, setMeta, updateMeta])
+    }, [[member]])
 
     const headingColor = useColorModeValue('primary.700', 'primary.300')
     if (loading || !id || !member) return <Loading />
@@ -164,6 +165,8 @@ export const MemberSpotlight = chakra(
                 align="center"
                 justify="space-between"
               >
+                <MemberBlock member={member} />
+                <Spacer />
                 <MemberVouch member={member} />
                 <MemberLike member={member} />
                 <MemberChat member={member} />

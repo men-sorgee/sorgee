@@ -1,4 +1,4 @@
-import { createRef, useEffect, useState } from 'react'
+import { createRef, useCallback, useEffect, useState } from 'react'
 
 import { MemberCard, MemberModal } from 'components/controls'
 import { FieldCheckbox, FieldCheckboxes, FieldInput } from 'components/forms'
@@ -203,6 +203,15 @@ export default function MemberListPage({ fields, id: i }: PageProps) {
   const sortDir = sort?.startsWith('-') ? '-' : ''
   const sortTerm = sort?.startsWith('-') ? sort.slice(1) : sort || 'last_login'
 
+  const close = useCallback(() => {
+    onClose()
+    setId(undefined)
+    setTimeout(() => {
+      setTitle('Men Nearby')
+      setDescription('View and find other men.'), 500
+    })
+  }, [onClose, id])
+
   return (
     <Page
       title={title || 'Men Nearby'}
@@ -298,12 +307,7 @@ export default function MemberListPage({ fields, id: i }: PageProps) {
         </form>
       </FormProvider>
 
-      <MemberModal
-        updateMeta
-        isOpen={isOpen}
-        memberId={id as string}
-        onClose={() => setId(undefined)}
-      />
+      <MemberModal isOpen={isOpen} memberId={id as string} onClose={close} />
     </Page>
   )
 }

@@ -48,8 +48,8 @@ export default async function FindMembers(
         _eq: true,
       },
       id: {
-        _neq: member.id,
-      },
+        _nin: [...member.blocked.map((b) => b.blocked_id), member.id],
+      }
     })
 
     if (sort.includes('last_login')) {

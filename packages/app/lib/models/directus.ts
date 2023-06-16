@@ -18,6 +18,7 @@ import {
   SurveyQuestion,
   User,
   UserAccount,
+  UserBlock,
   UserBuddy,
   UserEmailEvent,
   UserFile,
@@ -173,6 +174,7 @@ export type DirectusTypes = {
   users: User
   users_files: UserFile
   users_photos: UserPhoto
+  user_block: UserBlock
   rating: Rating
   rooms: Room
   room_events: RoomEvent

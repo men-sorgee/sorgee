@@ -20,7 +20,10 @@ import {
   PopoverTrigger,
   Text
 } from '@chakra-ui/react'
-import { HandRaisedIcon } from '@heroicons/react/24/outline'
+import {
+  HandRaisedIcon,
+  QuestionMarkCircleIcon
+} from '@heroicons/react/24/outline'
 
 import { MemberAvatar } from './MemberAvatar'
 
@@ -77,11 +80,27 @@ export const MemberVouch = chakra(
 
     return (
       <>
-        {(showVouchButton && (
+        {(voucher?.id && (
+          <MemberAvatar
+            size="sm"
+            m={2}
+            title={`Vouched by ${voucher.nickname} `}
+            aria-label={`Vouched by ${voucher.nickname} `}
+            member={voucher}
+          />
+        )) || (
+          <QuestionMarkCircleIcon
+            width="30px"
+            title={`Unendorsed `}
+            aria-label={`Unendorsed`}
+          />
+        )}
+        {showVouchButton && (
           <Popover>
             <PopoverTrigger>
               <IconButton
                 size={size}
+                title="Vouch for Pledge"
                 aria-label="Vouch for Pledge"
                 icon={<HandRaisedIcon width="30px" />}
                 variant="ghost"
@@ -120,16 +139,7 @@ export const MemberVouch = chakra(
               </PopoverBody>
             </PopoverContent>
           </Popover>
-        )) ||
-          (voucher?.id && (
-            <MemberAvatar
-              size="sm"
-              m={2}
-              title={`Vouched by ${voucher.nickname} `}
-              aria-label={`Vouched by ${voucher.nickname} `}
-              member={voucher}
-            />
-          ))}
+        )}
       </>
     )
   }

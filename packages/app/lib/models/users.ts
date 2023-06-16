@@ -60,6 +60,11 @@ export type UserShare = {
   user_id: string | User
   viewer_id: string | User
 }
+export type UserBlock = {
+  id: string
+  user_id: string | User
+  blocked_id: string | User
+}
 
 export type UserContactAttempt = {
   id: string
@@ -169,13 +174,17 @@ export type User = {
   rating: number
   ratings: string[] | Rating[]
   allow_messages: 'anyone' | 'buddies' | 'staff'
-  buddies: string[] | UserBuddy[]
   photo_shares: string[] | UserShare[]
+  private_folder?: string
+  public_folder?: string
+
+
+  buddies: string[] | UserBuddy[]
   buddy_of: string[] | UserBuddy[]
   likes: string[] | UserLike[]
   liked_by: string[] | UserLike[]
-  private_folder?: string
-  public_folder?: string
+  blocked: string[] | UserBlock[]
+  blocked_by: string[] | UserBlock[]
 
   membership_type?: MembershipType;
   customer_id?: string;
@@ -490,6 +499,8 @@ export type Member = Applicant & {
   photo_shares: string[] | UserShare[]
   likes: UserLike[]
   liked_by: UserLike[]
+  blocked: string[] | UserBlock[]
+  blocked_by: string[] | UserBlock[]
 
   rating: number
   private_folder?: string
@@ -572,6 +583,8 @@ export const memberProfilePrivateFields: Array<keyof Member> = [
   'ratings',
   'buddy_of',
   'liked_by',
+  'blocked_by',
+  'blocked'
 ]
 
 export const memberProfileContactFields: Array<keyof Member> = [

@@ -1,9 +1,22 @@
 import { ReactNode } from 'react'
 
 import { capitalCase } from 'change-case'
-import { Member, SearchableMember } from 'lib/models'
+import { Member, MemberLevel, SearchableMember } from 'lib/models'
 
-import { Badge, Flex, Spacer } from '@chakra-ui/react'
+import {
+  Badge,
+  Flex,
+  Heading,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+  Spacer,
+  Text
+} from '@chakra-ui/react'
 
 import { MemberIcon, MemberIconProps } from './MemberIcon'
 
@@ -28,6 +41,11 @@ export const MemberHeader = ({
   const sharedWithMe = member?.photo_shares?.some(
     (s) => s.viewer_id == viewer?.id
   )
+  const needsVoucher =
+    !member.vouched_by &&
+    member.user_type == 'pledge' &&
+    MemberLevel[viewer?.user_type] >= MemberLevel.brother
+
   return (
     <>
       <Flex
@@ -83,6 +101,41 @@ export const MemberHeader = ({
               >
                 Photos Unlocked
               </Badge>
+            )}
+            <Spacer />
+
+            {needsVoucher && (
+              <Popover>
+                <PopoverTrigger>
+                  <Badge
+                    fontSize={['xs', 'sm']}
+                    bg="accent.600"
+                    color="white"
+                    borderRadius="3px 3px 3px 3px"
+                  >
+                    Needs Vouching
+                  </Badge>
+                </PopoverTrigger>
+                <PopoverContent color="text">
+                  <PopoverArrow />
+                  <PopoverCloseButton />
+                  <PopoverHeader>
+                    <Heading fontSize="xl" m={0}>
+                      Vouching for a Pledge
+                    </Heading>
+                  </PopoverHeader>
+                  <PopoverBody>
+                    <Text>
+                      Pledges can't become an inductee unless someone vouches
+                      for them. If you see a Pledge that you want to get to
+                      know, go ahead and reach out. You should be able to chat
+                      with them regardless of you membership. If you think they
+                      would make a great Brother, you can vouch for them. This
+                      will promote them to Inductee.
+                    </Text>
+                  </PopoverBody>
+                </PopoverContent>
+              </Popover>
             )}
           </Flex>
         )}
