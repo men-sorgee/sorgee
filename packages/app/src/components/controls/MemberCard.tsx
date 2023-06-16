@@ -1,10 +1,5 @@
 import { formatDistanceToNowStrict } from 'date-fns'
-import {
-  Member,
-  MemberLevel,
-  MemberLevelColorMap,
-  SearchableMember
-} from '@lib/models'
+import { Member, MemberLevel, MemberLevelColorMap, User } from '@lib/models'
 import NextLink from 'next/link'
 
 import { LockIcon } from '@chakra-ui/icons'
@@ -23,12 +18,12 @@ import {
   Text
 } from '@chakra-ui/react'
 
-import { useUser } from '../../hooks'
+import { useUser } from 'hooks'
 import { MemberChat, MemberConnect, MemberHeader, MemberLike } from './'
 
 type Props = CardProps & {
   viewer: Member
-  member: SearchableMember | Member
+  member: Partial<User>
   full?: boolean
   onClick?: () => void
 }
@@ -125,9 +120,9 @@ export const MemberCard = chakra(
               </Text>
 
               <ButtonGroup>
-                <MemberLike member={member as Member} />
+                <MemberLike member={member} />
                 <MemberChat member={member} />
-                <MemberConnect member={member as Member} />
+                <MemberConnect member={member} />
               </ButtonGroup>
             </CardFooter>
           </Card>

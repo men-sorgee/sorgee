@@ -2,19 +2,14 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { UpgradeIcon } from 'components/controls'
 import { useUser } from 'hooks'
-import {
-  Member,
-  MemberLevel,
-  MembershipType,
-  SearchableMember
-} from '@lib/models'
+import { MemberLevel, MembershipType, User } from '@lib/models'
 import { deleteJSON, postJSON } from '@lib/utils'
 
 import { chakra, IconButton, IconButtonProps } from '@chakra-ui/react'
 import { LockClosedIcon, LockOpenIcon } from '@heroicons/react/24/outline'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
-  member: Partial<Member | SearchableMember>
+  member: Partial<User>
 }
 
 export const MemberShare = chakra(

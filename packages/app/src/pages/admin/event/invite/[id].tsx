@@ -228,7 +228,7 @@ export default function InviteAdmin({ event, invite, user }: Props) {
                       {user?.first_name} {user?.last_name} <br />
                       RSVP: {invite.rsvp}
                     </Heading>
-                    <MemberBadge size="lg" user_type={user?.user_type} />
+                    <MemberBadge size="lg" member={user} />
                     <Text fontSize="xs" color="gray.500">
                       <a href={'mailto:' + user?.email}>{user?.email}</a>
                     </Text>

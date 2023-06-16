@@ -233,11 +233,11 @@ export const EventRSVP = ({
         </>
       )
     case 'cancelled':
+    case 'declined':
       return (
         <RSVPView heading="You Are Not Attending">
           <ConfirmRSVPButton />
           <MaybeRSVPButton />
-          <DeclineRSVPButton>Hide Event</DeclineRSVPButton>
         </RSVPView>
       )
     case 'invited':

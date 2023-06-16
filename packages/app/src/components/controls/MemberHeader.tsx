@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { capitalCase } from 'change-case'
-import { Member, MemberLevel, SearchableMember } from '@lib/models'
+import { Member, MemberLevel, User } from '@lib/models'
 
 import {
   Badge,
@@ -22,7 +22,7 @@ import { MemberIcon, MemberIconProps } from './MemberIcon'
 
 export type MemberHeaderProps = MemberIconProps & {
   children?: ReactNode
-  member: Partial<SearchableMember>
+  member: Partial<User>
   viewer: Member
   color?: string
   zoom?: boolean

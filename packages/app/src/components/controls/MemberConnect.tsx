@@ -19,7 +19,7 @@ import {
 import { UserIcon as BuddyIcon, UserPlusIcon } from '@heroicons/react/24/solid'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
-  member: Member | { id: string }
+  member: Partial<User> | { id: string }
 }
 
 export const MemberConnect = chakra(

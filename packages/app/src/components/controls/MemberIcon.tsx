@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react'
 
 import { formatDistanceToNowStrict } from 'date-fns'
-import { Member, SearchableMember } from '@lib/models'
+import { User } from '@lib/models'
 import { getAssetUrl, toLocalDate } from '@lib/utils'
 
 import {
@@ -23,7 +23,7 @@ import { ImageModal } from './ImageModal'
 export type MemberIconProps = AvatarProps & {
   zoom?: boolean
   color?: string
-  member: Partial<Member | SearchableMember>
+  member: Partial<User>
   children?: ReactNode
 }
 
@@ -105,15 +105,12 @@ export const MemberIcon = chakra(
                 w="full"
               >
                 <Box>
-                  <MemberBadge
-                    size={size as any}
-                    user_type={member?.user_type}
-                    my={2}
-                  />
+                  <MemberBadge size={size as any} member={member} my={2} />
                   <Text fontSize="sm" color={color} mt={0}>
                     {member?.city || 'Nearby'} {member?.state}
                   </Text>
                 </Box>
+
                 <Spacer flex="grow" />
                 <Box>{children}</Box>
               </Flex>

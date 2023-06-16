@@ -183,7 +183,7 @@ export type User = {
   blocked: string[] | UserBlock[]
   blocked_by: string[] | UserBlock[]
 
-  membership_type?: MembershipType
+  membership_type?: Membership
   customer_id?: string
   membership_start?: string
   renewal_type?: string
@@ -513,7 +513,7 @@ export type Member = Applicant & {
   private_folder?: string
   public_folder?: string
 
-  membership_type?: Membership | string
+  membership_type?: Membership
   customer_id?: string
   membership_start?: string
   renewal_type?: string

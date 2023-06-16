@@ -2,12 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { UpgradeIcon } from 'components/controls'
 import { useUser } from 'hooks'
-import {
-  Member,
-  MemberLevel,
-  MembershipType,
-  SearchableMember
-} from '@lib/models'
+import { Member, MemberLevel, MembershipType, User } from '@lib/models'
 import { deleteJSON, postJSON } from '@lib/utils'
 
 import { chakra, IconButton, IconButtonProps } from '@chakra-ui/react'
@@ -15,7 +10,7 @@ import { StarIcon as LikeIcon } from '@heroicons/react/24/outline'
 import { FireIcon, StarIcon as LikedIcon } from '@heroicons/react/24/solid'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
-  member: Partial<Member | SearchableMember>
+  member: Partial<User>
 }
 
 export const MemberLike = chakra(({ member, size = 'lg', ...props }: Props) => {

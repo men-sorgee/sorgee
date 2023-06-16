@@ -6,7 +6,7 @@ import {
   Member,
   MemberLevel,
   MembershipType,
-  SearchableMember,
+  User,
   UserBuddy
 } from '@lib/models'
 
@@ -15,7 +15,7 @@ import { ChatBubbleBottomCenterIcon as ChatIconOff } from '@heroicons/react/24/o
 import { ChatBubbleBottomCenterIcon as ChatIconOn } from '@heroicons/react/24/solid'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
-  member: Partial<Member | SearchableMember>
+  member: Partial<User | Member>
 }
 
 export const MemberChat = chakra(({ member, size = 'lg', ...props }: Props) => {
@@ -27,7 +27,7 @@ export const MemberChat = chakra(({ member, size = 'lg', ...props }: Props) => {
   const [hasNewMessages, setHasNewMessages] = useState(false)
 
   useEffect(() => {
-    if (!loading) {
+    if (!loading && !memberLoading) {
       const convo = conversations?.find((c) => c.id == member?.id)
       if (convo && hasConversation == undefined) {
         setHasConversation(true)
@@ -38,7 +38,7 @@ export const MemberChat = chakra(({ member, size = 'lg', ...props }: Props) => {
         setHasNewMessages(newMessages.length > 0)
       }
     }
-  }, [conversations, hasConversation, loading, member.id])
+  }, [conversations, hasConversation, loading, member?.id, memberLoading])
 
   if (loading || userLoading || level < MemberLevel.brother) return <></>
   if (me?.id === member.id) return <></>
@@ -74,7 +74,7 @@ export const MemberChat = chakra(({ member, size = 'lg', ...props }: Props) => {
         zIndex="fixed"
         color="white"
         onClick={() => {
-          chatWith(member)
+          chatWith(member as Member)
         }}
         aria-label={`Chat with ${member.nickname || 'this member'}`}
         title={`Chat with ${member.nickname || 'this member'}`}

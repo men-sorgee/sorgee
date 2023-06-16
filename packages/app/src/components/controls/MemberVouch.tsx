@@ -1,12 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import { useUser } from 'hooks'
-import {
-  Member,
-  MemberLevel,
-  SearchableMember,
-  VouchingUser
-} from '@lib/models'
+import { MemberLevel, User, VouchingUser } from '@lib/models'
 import { JsonFetcher, postJSON } from '@lib/utils'
 import swr from 'swr'
 
@@ -23,7 +18,8 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverTrigger,
-  Text
+  Text,
+  Tooltip
 } from '@chakra-ui/react'
 import {
   HandRaisedIcon,
@@ -33,7 +29,7 @@ import {
 import { MemberAvatar } from './MemberAvatar'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
-  member: Partial<Member | SearchableMember>
+  member: Partial<User>
 }
 
 export const MemberVouch = chakra(
@@ -94,19 +90,26 @@ export const MemberVouch = chakra(
             member={voucher}
           />
         )) || (
-          <QuestionMarkCircleIcon
-            width="30px"
-            title={`Unendorsed `}
-            aria-label={`Unendorsed`}
-          />
+          <Tooltip
+            label="Vouching Brother Needed"
+            aria-label="Vouching Brother Needed"
+            bg="accent.500"
+            color="white"
+          >
+            <QuestionMarkCircleIcon
+              width="30px"
+              style={{ color: 'white' }}
+              aria-label={`Vouching Brother Needed`}
+            />
+          </Tooltip>
         )}
         {showVouchButton && (
           <Popover>
             <PopoverTrigger>
               <IconButton
                 size={size}
-                title="Vouch for Pledge"
-                aria-label="Vouch for Pledge"
+                title={`Vouch for ${name}`}
+                aria-label={`Vouch for ${name}`}
                 icon={<HandRaisedIcon width="30px" />}
                 variant="ghost"
                 _hover={{ bg: 'primary.500' }}

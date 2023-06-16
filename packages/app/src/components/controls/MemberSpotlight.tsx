@@ -51,8 +51,7 @@ import {
   MemberHeader,
   MemberLike,
   MemberPropertyGroup,
-  MemberShare,
-  MemberVouch
+  MemberShare
 } from './'
 import { ImageGallery } from './ImageGallery'
 import { Loading } from './Loading'
@@ -167,7 +166,6 @@ export const MemberSpotlight = chakra(
               >
                 <MemberBlock member={member} />
                 <Spacer />
-                <MemberVouch member={member} />
                 <MemberLike member={member} />
                 <MemberChat member={member} />
                 <MemberConnect member={member} />

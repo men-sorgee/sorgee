@@ -1,21 +1,22 @@
-import { MemberLevel, MemberLevelColorMap } from '@lib/models'
+import { MemberLevel, MemberLevelColorMap, User } from '@lib/models'
 
 import { Badge, BadgeProps, chakra, HStack, Tooltip } from '@chakra-ui/react'
 import { CheckBadgeIcon, SparklesIcon } from '@heroicons/react/24/solid'
+import { MemberVouch } from './MemberVouch'
 
 type Props = BadgeProps & {
-  user_type: string
+  member: Partial<User>
   size?: string
 }
 
 export const MemberBadge = chakra(
-  ({ user_type, size = 'md', ...props }: Props) => {
-    if (!user_type) return null
-    const levelValue: MemberLevel = MemberLevel[user_type]
+  ({ member, size = 'md', ...props }: Props) => {
+    if (!member) return null
+    const levelValue: MemberLevel = MemberLevel[member.user_type]
     const levelColor = MemberLevelColorMap[levelValue]
-    const levelName = user_type.split('_').join(' ')
+    const levelName = member.user_type.split('_').join(' ')
     return (
-      <HStack spacing={2}>
+      <HStack spacing={1}>
         <Badge
           {...props}
           rounded={size}
@@ -26,19 +27,13 @@ export const MemberBadge = chakra(
         >
           {levelName}
         </Badge>
-
-        {levelValue >= MemberLevel.brother && (
-          <Tooltip label="Verified" aria-label="Verified">
-            <CheckBadgeIcon width="30px" style={{ color: 'white' }} />
-          </Tooltip>
-        )}
-
+        <MemberVouch member={member} size={size as any} />
         {levelValue == MemberLevel.pledge && (
-          <Tooltip
-            label="Available for Adoption!"
-            aria-label="Available for Adoption!"
-          >
-            <SparklesIcon width="30px" style={{ color: 'yellow' }} />
+          <SparklesIcon width="30px" style={{ color: 'yellow' }} />
+        )}
+        {levelValue >= MemberLevel.brother && (
+          <Tooltip label="Verified" aria-label="Verified at an Event">
+            <CheckBadgeIcon width="30px" style={{ color: 'white' }} />
           </Tooltip>
         )}
       </HStack>
