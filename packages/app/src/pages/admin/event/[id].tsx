@@ -85,7 +85,7 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
     const email = emailRef.current.value
     if (email) {
       checkinLink = `/api/events/checkin?event_id=${event.id}&email=${email}`
-      location.href = checkinLink
+      //location.href = checkinLink
     }
   }
 
@@ -108,16 +108,29 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
           showDescription={false}
           footer={
             <>
-              <ButtonLink colorScheme="primary" href="/admin/scan">
+              <ButtonLink
+                colorScheme="primary"
+                href="/admin/scan"
+                color="white"
+              >
                 Scan Invite
               </ButtonLink>
-              {(checkinLink && (
-                <ButtonLink href={checkinLink}>Check In</ButtonLink>
-              )) || (
-                <>
-                  <Input ref={emailRef} size="sm" placeholder="Email" w="30%" />
-                  <Button onClick={emailCheckin}>Email Checkin</Button>
-                </>
+              {(checkinLink && <a href={checkinLink}>Check In</a>) || (
+                <form action={checkinLink} method="GET">
+                  <Input
+                    rounded={'md'}
+                    p={1}
+                    w="30%"
+                    name="email"
+                    ref={emailRef}
+                    onChange={() => emailCheckin()}
+                    size="sm"
+                    placeholder="Email"
+                  />
+                  <Button size={'md'} ml={2} p={1} type="submit">
+                    Email Checkin
+                  </Button>
+                </form>
               )}
             </>
           }
