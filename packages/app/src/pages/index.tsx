@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 
 import { ButtonLink, Markdown, SubscribeBox } from 'components/controls'
 import Section from 'components/Section'
-import { useMeta } from 'hooks/use-meta'
+import { useMeta, useUser } from 'hooks'
 import { pages } from '@lib/config'
 import { Page } from '@lib/models'
 import { signIn } from 'next-auth/react'
@@ -13,11 +13,12 @@ import {
   Center,
   Flex,
   Heading,
+  HStack,
   Text,
   useColorModeValue
 } from '@chakra-ui/react'
 
-import { useSite } from '../hooks'
+import { useMember, useSite } from '../hooks'
 
 interface Props {
   page: Pick<
@@ -44,6 +45,7 @@ export const getStaticProps = async () => {
 }
 
 export default function HomePage({ page }: Props) {
+  const { authenticated } = useUser()
   const { setMeta } = useMeta()
   const {
     title,
@@ -85,28 +87,31 @@ export default function HomePage({ page }: Props) {
         >
           A hot new approach to meeting men
         </Text>
-        <Center my={[4, 4, 8]} gap={4}>
-          {site && !site.invite_only && (
-            <ButtonLink py={8} size="lg" fontSize="3xl" href="/apply">
-              Get Started
-            </ButtonLink>
-          )}
-          {site && !site.invite_only && next_page && <>or</>}
-          {next_page && (
-            <ButtonLink
-              mt={[4, 4, 8]}
-              size="lg"
-              fontSize="3xl"
-              href={next_page.slug}
-            >
-              {next_page.title}
-            </ButtonLink>
-          )}
-        </Center>
+        {!authenticated && (
+          <HStack my={[4, 4, 8]} gap={4} align="top" justify={'center'}>
+            {site && !site.invite_only && (
+              <ButtonLink size="lg" fontSize="3xl" href="/apply" color="white">
+                Get Started
+              </ButtonLink>
+            )}
+            {site && !site.invite_only && next_page && <div>or</div>}
+            {next_page && (
+              <ButtonLink
+                size="lg"
+                fontSize="3xl"
+                href={next_page.slug}
+                color="white"
+              >
+                {next_page.title}
+              </ButtonLink>
+            )}
+          </HStack>
+        )}
       </Box>
       <Box mx={[4, 4, 0]}>
         <Text
           fontStyle="italic"
+          textAlign={['left', 'center']}
           size="xs"
           color={useColorModeValue('gray.700', 'gray.100')}
           mb={[5, 10, 20]}

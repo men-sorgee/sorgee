@@ -348,10 +348,12 @@ export default function UserMenu(_props: Props) {
       ) : (
         <>
           <ButtonLink
+            mr={2}
             href={`/api/auth/signin`}
             fontWeight={600}
             variant="ghost"
             _hover={{ textDecoration: 'none' }}
+            color="white"
             onClick={(e) => {
               e.preventDefault()
               signIn()
@@ -362,6 +364,7 @@ export default function UserMenu(_props: Props) {
           {showApply && (
             <ButtonLink
               href={`/apply`}
+              color="white"
               _hover={{ textDecoration: 'none' }}
               fontWeight={600}
               colorScheme={'accent'}

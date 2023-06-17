@@ -85,7 +85,7 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
     const email = emailRef.current.value
     if (email) {
       checkinLink = `/api/events/checkin?event_id=${event.id}&email=${email}`
-      router.push(checkinLink)
+      location.href = checkinLink
     }
   }
 

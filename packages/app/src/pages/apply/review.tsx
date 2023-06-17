@@ -53,6 +53,7 @@ function Review() {
       contact_preference
     })
     if (success) {
+      setComplete(true)
       toast({
         title: 'Application Submitted',
         description: 'Your application has been submitted for review.',
@@ -60,7 +61,6 @@ function Review() {
         duration: 9000,
         isClosable: true
       })
-      setComplete(true)
     } else if (error?.field) {
       setError(error!.field as any, error.message as any)
     }
