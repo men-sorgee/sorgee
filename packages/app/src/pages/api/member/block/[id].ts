@@ -22,6 +22,7 @@ export default async function MemberBlock(
     switch (method) {
       case 'GET': {
         const block = await getBlock(me.id, them.id)
+        res.setHeader('Cache-Control', 'cache, store, max-age=30')
         return block
           ? res.status(200).json(ApiResponse(block))
           : res.status(200).json(ApiResponse(null))

@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { capitalCase } from 'change-case'
-import { Member, MemberLevel, User } from '@lib/models'
+import { Member, MemberLevel, User, UserShare } from '@lib/models'
 
 import {
   Badge,
@@ -38,8 +38,9 @@ export const MemberHeader = ({
   minimal = false,
   ...props
 }: MemberHeaderProps) => {
-  const sharedWithMe = member?.photo_shares?.some(
-    (s) => s.viewer_id == viewer?.id
+  const photo_shares = member.photo_shares as UserShare[]
+  const sharedWithMe = photo_shares?.some(
+    (s: UserShare) => String(s.viewer_id) == viewer?.id
   )
   const needsVoucher =
     !member.vouched_by &&

@@ -1,6 +1,13 @@
 import { MemberLevel, MemberLevelColorMap, User } from '@lib/models'
 
-import { Badge, BadgeProps, chakra, HStack, Tooltip } from '@chakra-ui/react'
+import {
+  Badge,
+  BadgeProps,
+  chakra,
+  HStack,
+  Icon,
+  Tooltip
+} from '@chakra-ui/react'
 import { CheckBadgeIcon, SparklesIcon } from '@heroicons/react/24/solid'
 import { MemberVouch } from './MemberVouch'
 
@@ -16,7 +23,7 @@ export const MemberBadge = chakra(
     const levelColor = MemberLevelColorMap[levelValue]
     const levelName = member.user_type.split('_').join(' ')
     return (
-      <HStack spacing={1}>
+      <HStack spacing={0}>
         <Badge
           {...props}
           rounded={size}
@@ -29,11 +36,11 @@ export const MemberBadge = chakra(
         </Badge>
         <MemberVouch member={member} size={size as any} />
         {levelValue == MemberLevel.pledge && (
-          <SparklesIcon width="30px" style={{ color: 'yellow' }} />
+          <Icon as={SparklesIcon} boxSize={8} color="yellow" />
         )}
         {levelValue >= MemberLevel.brother && (
           <Tooltip label="Verified" aria-label="Verified at an Event">
-            <CheckBadgeIcon width="30px" style={{ color: 'white' }} />
+            <Icon as={CheckBadgeIcon} boxSize={8} color="white" />
           </Tooltip>
         )}
       </HStack>

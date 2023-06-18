@@ -23,6 +23,7 @@ export default async function MemberBuddy(
     switch (method) {
       case 'GET': {
         const buddy = await getBuddy(me.id, them.id)
+        res.setHeader('Cache-Control', 'cache, store, max-age=30')
         return buddy
           ? res.status(200).json(ApiResponse(buddy))
           : res.status(200).json(ApiResponse(null))

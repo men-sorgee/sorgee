@@ -2,29 +2,23 @@ import { useEffect } from 'react'
 
 import { Loading } from 'components/controls'
 import Page from 'components/Page'
-import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import { useUser } from '../../hooks'
 
 export default function Index({}) {
-  const { data: session, status } = useSession({
-    required: true,
-    onUnauthenticated: () => {
-      signIn()
-    }
-  })
-  const { user } = session || {}
+  const { member, loading } = useUser()
   const router = useRouter()
 
   useEffect(() => {
-    if (status !== 'loading' && user) {
-      const { application_status } = user || {}
+    if (!loading && member) {
+      const { application_status } = member || {}
       if (application_status === 'approved') {
         router.push('/members')
       } else {
         router.push('/apply/' + application_status)
       }
     }
-  }, [status, router, user])
+  }, [loading, router, member])
 
   return (
     <Page title="Application" requireAuth={true}>

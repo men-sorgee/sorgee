@@ -12,6 +12,7 @@ import { FieldCheckbox } from 'components/forms'
 import Page from 'components/Page'
 import { useUser } from 'hooks/use-user'
 import {
+  ApiError,
   ApiResponse,
   ApplicationStatus,
   Member,
@@ -42,7 +43,7 @@ import { ErrorMessage } from '@hookform/error-message'
 import ApplicationSteps from './_steps'
 
 function Verification() {
-  const { member, loading, reload } = useUser({
+  const { member, loading, mutate } = useUser({
     minLevel: MemberLevel.applicant,
     minAppStatus: ApplicationStatus.verify
   })
@@ -57,24 +58,24 @@ function Verification() {
       header={<ApplicationSteps status={'verify'} />}
     >
       {member?.id && !complete && (
-        <Form
+        <VerifyForm
           code={`${member.id.slice(0, 4)} ${member.id.slice(4, 8)}`}
-          {...{ member, router, reload, setComplete }}
+          {...{ member, router, mutate, setComplete }}
         />
       )}
     </Page>
   )
 }
 
-function Form({
+function VerifyForm({
   code,
   router,
   setComplete,
   member,
-  reload
+  mutate
 }: {
   member: Member
-  reload: () => Promise<Member>
+  mutate: any
   router: NextRouter
   code: string
   setComplete: Dispatch<SetStateAction<boolean>>
@@ -130,7 +131,13 @@ function Form({
   }
 
   function skip() {
-    reload().then(() => {
+    mutate(
+      {
+        application_status: ApplicationStatus.review,
+        ...member
+      },
+      null
+    ).then(() => {
       router.push('/apply/review')
     })
   }
@@ -169,7 +176,10 @@ function Form({
 
       if (res.ok) {
         setComplete(true)
-        reload().then(() => {
+        mutate({
+          application_status: ApplicationStatus.review,
+          ...member
+        }).then(() => {
           router.push('/apply/review')
         })
       } else {

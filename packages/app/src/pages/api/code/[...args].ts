@@ -7,6 +7,7 @@ export default async function Code(req, res: any) {
     query
   )}`
   res.setHeader('Content-Type', 'image/png')
+  res.setHeader('Cache-Control', 'cache, store, max-age=30')
 
   QRCode.toFileStream(res, url, {
     type: 'png',

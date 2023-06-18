@@ -25,6 +25,8 @@ export default async function VouchForMember(
     const { id } = req.query
     const user_id = String(id)
 
+    res.setHeader('Cache-Control', 'cache, store, max-age=30')
+
     const them = await getMember(user_id)
 
     if (method == 'GET') {

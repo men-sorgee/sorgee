@@ -153,7 +153,6 @@ function Header({ userType, children, ...props }: Props) {
         defaultIndex={[0]}
         as="nav"
         color={'white'}
-        __css={props}
         mx={0}
         px={0}
         mb={4}

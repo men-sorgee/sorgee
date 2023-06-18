@@ -25,6 +25,7 @@ export const MemberChat = chakra(({ member, size = 'lg', ...props }: Props) => {
   const [hasConversation, setHasConversation] = useState<boolean>(undefined)
   const [newMessageCount, setNewMessageCount] = useState<number>(undefined)
   const [hasNewMessages, setHasNewMessages] = useState(false)
+  const [hover, setHover] = useState(false)
 
   useEffect(() => {
     if (!loading && !memberLoading) {
@@ -81,12 +82,16 @@ export const MemberChat = chakra(({ member, size = 'lg', ...props }: Props) => {
         icon={
           hasConversation ? (
             <ChatIconOn width="30px" />
+          ) : hover ? (
+            <ChatIconOn width="30px" />
           ) : (
             <ChatIconOff width="30px" />
           )
         }
         size={size}
         _hover={{ bg: 'primary.500' }}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
         {...props}
       />
       {hasNewMessages && (

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { UpgradeIcon } from 'components/controls'
 import { useUser } from 'hooks'
-import { Member, MemberLevel, MembershipType, User } from '@lib/models'
+import { MemberLevel, MembershipType, User } from '@lib/models'
 import { deleteJSON, postJSON } from '@lib/utils'
 
 import { chakra, IconButton, IconButtonProps } from '@chakra-ui/react'
@@ -15,7 +15,8 @@ type Props = Omit<IconButtonProps, 'aria-label'> & {
 
 export const MemberLike = chakra(({ member, size = 'lg', ...props }: Props) => {
   const { loading, member: me, reload, hasFeature, level } = useUser()
-
+  const [hover, setHover] = useState(false)
+  const [showLike, setShowLike] = useState(false)
   const [isLiked, setIsLiked] = useState<boolean>(false)
   const [mutual, setMutual] = useState<boolean>(false)
 
@@ -59,6 +60,11 @@ export const MemberLike = chakra(({ member, size = 'lg', ...props }: Props) => {
       />
     )
 
+  // SWAP BETWEEN SHARED AND HOVER
+  useEffect(() => {
+    setShowLike(isLiked ? !hover : hover)
+  }, [hover, isLiked, mutual])
+
   return (
     <>
       <IconButton
@@ -69,7 +75,7 @@ export const MemberLike = chakra(({ member, size = 'lg', ...props }: Props) => {
         icon={
           mutual ? (
             <FireIcon width="30px" />
-          ) : isLiked ? (
+          ) : showLike ? (
             <LikedIcon width="30px" />
           ) : (
             <LikeIcon width="30px" />
@@ -78,6 +84,8 @@ export const MemberLike = chakra(({ member, size = 'lg', ...props }: Props) => {
         variant="ghost"
         _hover={{ bg: 'primary.500' }}
         onClick={toggleLike}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
         {...props}
       />
     </>

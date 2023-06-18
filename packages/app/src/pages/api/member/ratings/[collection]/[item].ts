@@ -14,6 +14,8 @@ export default async function MemberItemRating(
     const collection = String(c) as RatingCollection
     const item = String(i)
 
+    res.setHeader('Cache-Control', 'cache, store, max-age=30')
+
     switch (method) {
       case 'GET': {
         const rating = await getRating(member.id, collection, item)

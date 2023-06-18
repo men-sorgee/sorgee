@@ -20,7 +20,7 @@ export const MemberAvatar = chakra(
         }
         showBorder
         borderWidth="2px"
-        borderColor={'accent.300'}
+        borderColor="accent.300"
         color="white"
         loading="lazy"
         {...props}

@@ -51,6 +51,7 @@ const UpgradeIcon = ({ title, icon, membershipType }: Props) => {
           onClick={onOpen}
           color={'gray.300'}
           stroke={'gray.300'}
+          ref={cancelRef}
         />
       </Box>
       <AlertDialog
@@ -72,9 +73,7 @@ const UpgradeIcon = ({ title, icon, membershipType }: Props) => {
             </AlertDialogBody>
 
             <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
-                Cancel
-              </Button>
+              <Button onClick={onClose}>Cancel</Button>
               <ButtonLink
                 colorScheme="red"
                 href={`/member/account?plan=${membershipType}`}

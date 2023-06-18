@@ -6,23 +6,15 @@ import { Heading, HStack, Text, VStack } from '@chakra-ui/react'
 
 import { ButtonLink } from '../../components/controls'
 import { pledgeSurvey } from '../../lib/config'
-import { MemberLevel } from '../../lib/models'
+import { ApplicationStatus, MemberLevel } from '../../lib/models'
 import ApplicationSteps from './_steps'
 
 function Approved() {
   const router = useRouter()
   const { loading, level, member } = useUser({
-    minLevel: MemberLevel.pledge
+    minLevel: MemberLevel.applicant,
+    minAppStatus: ApplicationStatus.approved
   })
-
-  if (
-    member &&
-    member?.application_status &&
-    member.application_status !== 'approved'
-  ) {
-    router.push('/apply/' + member?.application_status)
-    return null
-  }
 
   return (
     <Page

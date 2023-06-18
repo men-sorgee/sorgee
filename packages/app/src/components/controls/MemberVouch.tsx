@@ -9,6 +9,7 @@ import {
   Button,
   chakra,
   Heading,
+  Icon,
   IconButton,
   IconButtonProps,
   Popover,
@@ -24,16 +25,17 @@ import {
 import {
   HandRaisedIcon,
   QuestionMarkCircleIcon
-} from '@heroicons/react/24/outline'
+} from '@heroicons/react/24/solid'
 
 import { MemberAvatar } from './MemberAvatar'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
   member: Partial<User>
+  hideVouch?: boolean
 }
 
 export const MemberVouch = chakra(
-  ({ member, size = 'lg', ...props }: Props) => {
+  ({ member, hideVouch = false, size = 'lg', ...props }: Props) => {
     const { user_type: level, nickname: name } = member
     const {
       loading: userLoading,
@@ -82,28 +84,31 @@ export const MemberVouch = chakra(
     return (
       <>
         {(voucher?.id && (
-          <MemberAvatar
-            size="sm"
-            m={2}
-            title={`Vouched by ${voucher.nickname} `}
-            aria-label={`Vouched by ${voucher.nickname} `}
-            member={voucher}
-          />
-        )) || (
           <Tooltip
-            label="Vouching Brother Needed"
-            aria-label="Vouching Brother Needed"
+            label="Integrity Vouched by ${voucher.nickname}"
+            aria-label="Integrity Vouched by ${voucher.nickname}"
             bg="accent.500"
             color="white"
           >
-            <QuestionMarkCircleIcon
-              width="30px"
-              style={{ color: 'white' }}
+            <MemberAvatar size="sm" m={2} member={voucher} />
+          </Tooltip>
+        )) || (
+          <Tooltip
+            label="Integrity Unknown"
+            aria-label="Integrity Unknown"
+            bg="accent.500"
+            color="white"
+          >
+            <Icon
+              as={QuestionMarkCircleIcon}
+              boxSize={8}
+              ml={1}
+              color="white"
               aria-label={`Vouching Brother Needed`}
             />
           </Tooltip>
         )}
-        {showVouchButton && (
+        {showVouchButton && !hideVouch && (
           <Popover>
             <PopoverTrigger>
               <IconButton
@@ -114,6 +119,8 @@ export const MemberVouch = chakra(
                 variant="ghost"
                 _hover={{ bg: 'primary.500' }}
                 {...props}
+                color="accent.500"
+                fill="white"
               />
             </PopoverTrigger>
             <PopoverContent color="text">

@@ -54,6 +54,7 @@ export default async function MemberImage(
     switch (method) {
       case 'GET': {
         const image = user[image_field] as DirectusFile
+        res.setHeader('Cache-Control', 'cache, store, max-age=30')
         return image ? res.status(200).redirect('/api/asset/' + image.id) : res.status(404).end()
       }
       case 'POST': {

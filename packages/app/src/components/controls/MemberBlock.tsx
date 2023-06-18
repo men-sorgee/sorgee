@@ -5,7 +5,10 @@ import { User } from 'lib/models'
 import { deleteJSON, postJSON } from 'lib/utils'
 
 import { chakra, IconButton, IconButtonProps } from '@chakra-ui/react'
-import { EyeSlashIcon as BlockIcon } from '@heroicons/react/24/outline'
+import {
+  EyeSlashIcon as BlockIcon,
+  EyeIcon as ViewIcon
+} from '@heroicons/react/24/outline'
 import { EyeSlashIcon as BlockedIcon } from '@heroicons/react/24/solid'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
@@ -15,7 +18,8 @@ type Props = Omit<IconButtonProps, 'aria-label'> & {
 export const MemberBlock = chakra(
   ({ member, size = 'lg', ...props }: Props) => {
     const { loading, member: me, reload, level } = useUser()
-
+    const [hover, setHover] = useState(false)
+    const [showBlock, setShowBlock] = useState(false)
     const [isBlocked, setIsBlocked] = useState<boolean>(false)
     const [mutual, setMutual] = useState<boolean>(false)
 
@@ -49,6 +53,11 @@ export const MemberBlock = chakra(
 
     const label = isBlocked ? 'Blocked' : 'Block'
 
+    // SWAP BETWEEN BLOCK AND HOVER
+    useEffect(() => {
+      setShowBlock(isBlocked ? !hover : hover)
+    }, [hover, isBlocked])
+
     return (
       <>
         <IconButton
@@ -57,16 +66,14 @@ export const MemberBlock = chakra(
           title={label}
           aria-label={label}
           icon={
-            isBlocked ? (
-              <BlockedIcon width="30px" />
-            ) : (
-              <BlockIcon width="30px" />
-            )
+            showBlock ? <BlockedIcon width="30px" /> : <ViewIcon width="30px" />
           }
           variant="ghost"
           _hover={{ bg: 'primary.500' }}
           onClick={toggleBlock}
           {...props}
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
         />
       </>
     )

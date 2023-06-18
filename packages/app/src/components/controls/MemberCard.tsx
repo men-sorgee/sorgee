@@ -86,6 +86,7 @@ export const MemberCard = chakra(
                           size="sm"
                           p={0}
                           textAlign="center"
+                          color="white"
                         >
                           PRIVATE PROFILE
                         </Heading>

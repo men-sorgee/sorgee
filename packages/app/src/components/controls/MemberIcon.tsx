@@ -63,7 +63,7 @@ export const MemberIcon = chakra(
                     '?width=100&height=100&quality=80'
                   : null
               }
-              size={['lg', 'xl']}
+              size={size}
               color={color}
               name={member?.nickname || 'Brother'}
               bgGradient="linear(to-b, primary.500, primary.800)"
@@ -105,9 +105,9 @@ export const MemberIcon = chakra(
                 w="full"
               >
                 <Box>
-                  <MemberBadge size={size as any} member={member} my={2} />
+                  <MemberBadge member={member} my={2} />
                   <Text fontSize="sm" color={color} mt={0}>
-                    {member?.city || 'Nearby'} {member?.state}
+                    {member?.city} {member?.state}
                   </Text>
                 </Box>
 

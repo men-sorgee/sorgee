@@ -9,9 +9,8 @@ export default async function Asset(req: NextApiRequest, res: NextApiResponse) {
 
     if (!referer || !referer.startsWith(baseUrl)) return res.status(404).end()
 
-    const url = `${adminBaseUrl}/assets/${id}?fit=${fit}${width ? '&width=' + width : ''}${
-      height ? '&height=' + height : ''
-    }&quality=${quality}&access_token=${app.adminToken}`
+    const url = `${adminBaseUrl}/assets/${id}?fit=${fit}${width ? '&width=' + width : ''}${height ? '&height=' + height : ''
+      }&quality=${quality}&access_token=${app.adminToken}`
 
     const response = await fetch(url, { cache: 'force-cache', keepalive: true })
     if (response.ok) {

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { use, useCallback, useEffect, useState } from 'react'
 
 import { UpgradeIcon } from 'components/controls'
 import { useUser } from 'hooks'
@@ -6,7 +6,8 @@ import { MemberLevel, MembershipType, User } from '@lib/models'
 import { deleteJSON, postJSON } from '@lib/utils'
 
 import { chakra, IconButton, IconButtonProps } from '@chakra-ui/react'
-import { LockClosedIcon, LockOpenIcon } from '@heroicons/react/24/outline'
+import { LockClosedIcon } from '@heroicons/react/24/outline'
+import { LockOpenIcon } from '@heroicons/react/24/solid'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
   member: Partial<User>
@@ -15,7 +16,8 @@ type Props = Omit<IconButtonProps, 'aria-label'> & {
 export const MemberShare = chakra(
   ({ member, size = 'lg', ...props }: Props) => {
     const { loading, member: me, reload, level, hasFeature } = useUser()
-
+    const [hover, setHover] = useState(false)
+    const [showLock, setShowLock] = useState(false)
     const [isShared, setIsShared] = useState<boolean>(false)
 
     const toggleShare = useCallback(() => {
@@ -54,6 +56,11 @@ export const MemberShare = chakra(
         />
       )
 
+    // SWAP BETWEEN SHARED AND HOVER
+    useEffect(() => {
+      setShowLock(isShared ? !hover : hover)
+    }, [hover, isShared])
+
     return (
       <>
         <IconButton
@@ -62,15 +69,19 @@ export const MemberShare = chakra(
           title={label}
           aria-label={label}
           icon={
-            isShared ? (
+            showLock ? (
               <LockOpenIcon width="30px" />
             ) : (
               <LockClosedIcon width="30px" />
             )
           }
           variant="ghost"
-          _hover={{ bg: 'primary.500' }}
+          _hover={{
+            bg: 'primary.500'
+          }}
           onClick={toggleShare}
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
           {...props}
         />
       </>

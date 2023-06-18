@@ -30,6 +30,7 @@ export default async function MemberLike(
     switch (method) {
       case 'GET': {
         const like = await getLike(me.id, them.id)
+        res.setHeader('Cache-Control', 'cache, store, max-age=30')
         return like
           ? res.status(200).json(ApiResponse(like))
           : res.status(200).json(ApiResponse(null))

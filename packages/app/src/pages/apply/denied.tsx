@@ -12,15 +12,6 @@ function Denied() {
     minLevel: MemberLevel.applicant
   })
 
-  if (
-    member &&
-    member?.application_status &&
-    member.application_status !== 'denied'
-  ) {
-    router.push('/apply/' + member?.application_status)
-    return null
-  }
-
   return (
     <Page title="Application Denied" loading={loading} requireAuth={true}>
       <>
