@@ -22,7 +22,7 @@ import {
 } from '@heroicons/react/24/solid'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
-  member: Partial<User> | { id: string }
+  member: Partial<User> | { id: string; nickname: string }
 }
 
 export const MemberConnect = chakra(
@@ -102,8 +102,10 @@ export const MemberConnect = chakra(
             variant="ghost"
             cursor="pointer"
             onClick={toggleBuddy}
-            title="Remove Buddy"
-            aria-label="Remove Buddy"
+            title={`Remove ${member?.nickname || 'this member'} as a Buddy`}
+            aria-label={`Remove ${
+              member?.nickname || 'this member'
+            } as a Buddy`}
             size={size}
             _hover={{ bg: 'primary.500' }}
             {...props}
@@ -124,8 +126,8 @@ export const MemberConnect = chakra(
               setHover(false)
             }}
             variant="ghost"
-            aria-label="Add Buddy"
-            title="Add Buddy"
+            aria-label={`Add ${member?.nickname || 'this member'} as a Buddy`}
+            title={`Add ${member?.nickname || 'this member'} as a Buddy`}
             cursor="pointer"
             onClick={toggleBuddy}
             color="white"

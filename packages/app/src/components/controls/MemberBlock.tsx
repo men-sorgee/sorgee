@@ -51,7 +51,9 @@ export const MemberBlock = chakra(
 
     if (loading || !me || me.id == member.id) return null
 
-    const label = isBlocked ? 'Blocked' : 'Block'
+    const label = isBlocked
+      ? `Unblock ${member?.nickname || 'this member'}`
+      : `Block ${member?.nickname || 'this member'}`
 
     // SWAP BETWEEN BLOCK AND HOVER
     useEffect(() => {

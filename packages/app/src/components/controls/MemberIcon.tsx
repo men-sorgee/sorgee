@@ -94,6 +94,7 @@ export const MemberIcon = chakra(
                 m={0}
                 color={color}
                 w="full"
+                title={member?.nickname || 'Anon'}
               >
                 {member?.nickname || 'Anon'}
               </Heading>

@@ -49,7 +49,11 @@ export const MemberLike = chakra(({ member, size = 'lg', ...props }: Props) => {
   if (loading || !me || me.id == member.id) return null
   if (level < MemberLevel.brother) return null
 
-  const label = mutual ? 'Match!' : isLiked ? 'Liked' : 'Like'
+  const label = mutual
+    ? `Mutual Like with ${member?.nickname}`
+    : isLiked
+    ? `Unlike ${member?.nickname}`
+    : `Like ${member?.nickname}`
 
   if (!hasFeature('flirt'))
     return (

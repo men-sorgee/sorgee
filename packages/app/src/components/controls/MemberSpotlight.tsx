@@ -26,6 +26,7 @@ import {
   AccordionPanel,
   AvatarProps,
   Box,
+  ButtonGroup,
   chakra,
   Flex,
   FlexProps,
@@ -144,34 +145,36 @@ export const MemberSpotlight = chakra(
           </MemberHeader>
           {full && <Text>{member?.biography}</Text>}
           {full && (
-            <Flex justify="space-between">
-              <Text fontSize="xs">
-                {member.last_login && (
-                  <>
-                    Last Login:{' '}
-                    {formatDistanceToNowStrict(toLocalDate(member.last_login))}{' '}
-                    ago
-                    <br />
-                  </>
-                )}
-                Member Since:{' '}
-                {new Date(member.date_created).toLocaleDateString()}
-              </Text>
-
-              <Flex
-                gap={1}
-                direction={'row'}
-                align="center"
-                justify="space-between"
-              >
+            <Box>
+              <Flex w="full">
                 <MemberBlock member={member} />
                 <Spacer />
-                <MemberLike member={member} />
-                <MemberChat member={member} />
-                <MemberConnect member={member} />
-                <MemberShare member={member} />
+                <ButtonGroup>
+                  <MemberLike member={member} />
+                  <MemberChat member={member} />
+                  <MemberConnect member={member} />
+                  <MemberShare member={member} />
+                </ButtonGroup>
               </Flex>
-            </Flex>
+              <Flex w="full">
+                <Text fontSize="xs">
+                  {member?.show_profile && member.last_login && (
+                    <>
+                      Last Login:{' '}
+                      {formatDistanceToNowStrict(new Date(member.last_login))}{' '}
+                      ago
+                    </>
+                  )}
+                </Text>
+                <Spacer />
+                <Text fontSize="xs">
+                  Member Since:{' '}
+                  {new Date(
+                    member.approved_date || member.date_created
+                  ).toLocaleDateString()}
+                </Text>
+              </Flex>
+            </Box>
           )}
         </Box>
         <Accordion defaultIndex={0}>

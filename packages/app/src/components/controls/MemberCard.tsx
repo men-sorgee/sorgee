@@ -13,13 +13,22 @@ import {
   chakra,
   Flex,
   Heading,
+  HStack,
   LinkBox,
   LinkOverlay,
+  Spacer,
   Text
 } from '@chakra-ui/react'
 
 import { useUser } from 'hooks'
-import { MemberChat, MemberConnect, MemberHeader, MemberLike } from './'
+import {
+  MemberChat,
+  MemberConnect,
+  MemberHeader,
+  MemberLike,
+  MemberBlock,
+  MemberShare
+} from './'
 
 type Props = CardProps & {
   viewer: Member
@@ -35,20 +44,20 @@ export const MemberCard = chakra(
     const { member: viewer, reload, loading } = useUser()
     return (
       <>
-        <LinkBox key={member.id}>
-          <Card
-            w="full"
-            h="full"
-            bgGradient={`linear(to-bl, ${levelColor[0]}, ${levelColor[1]})`}
-            rounded="lg"
-            border="1px solid transparent"
-            borderColor="primary"
-            color="white"
-            minW="full"
-            overflow="hidden"
-            _hover={{ shadow: '2xl', borderColor: 'accent.500' }}
-            {...props}
-          >
+        <Card
+          w="full"
+          h="full"
+          bgGradient={`linear(to-bl, ${levelColor[0]}, ${levelColor[1]})`}
+          rounded="lg"
+          border="1px solid transparent"
+          borderColor="primary"
+          color="white"
+          minW="full"
+          overflow="hidden"
+          _hover={{ shadow: '2xl', borderColor: 'accent.500' }}
+          {...props}
+        >
+          <LinkBox key={member.id}>
             <CardHeader>
               <LinkOverlay
                 as={NextLink}
@@ -104,30 +113,37 @@ export const MemberCard = chakra(
                 </Text>
               </CardBody>
             )}
-
-            <CardFooter justify="space-between" alignItems="end">
+          </LinkBox>
+          <CardFooter flexDir="column" justify="space-between" alignItems="end">
+            <Flex w="full">
+              <MemberBlock member={member} />
+              <Spacer />
+              <ButtonGroup>
+                <MemberLike member={member} />
+                <MemberChat member={member} />
+                <MemberConnect member={member} />
+                <MemberShare member={member} />
+              </ButtonGroup>
+            </Flex>
+            <Flex w="full">
               <Text fontSize="xs">
                 {member?.show_profile && member.last_login && (
                   <>
                     Last Login:{' '}
                     {formatDistanceToNowStrict(new Date(member.last_login))} ago
-                    <br />
                   </>
                 )}
+              </Text>
+              <Spacer />
+              <Text fontSize="xs">
                 Member Since:{' '}
                 {new Date(
                   member.approved_date || member.date_created
                 ).toLocaleDateString()}
               </Text>
-
-              <ButtonGroup>
-                <MemberLike member={member} />
-                <MemberChat member={member} />
-                <MemberConnect member={member} />
-              </ButtonGroup>
-            </CardFooter>
-          </Card>
-        </LinkBox>
+            </Flex>
+          </CardFooter>
+        </Card>
       </>
     )
   }

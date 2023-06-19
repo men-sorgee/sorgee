@@ -45,7 +45,9 @@ export const MemberShare = chakra(
     if (loading || !me || me.id == member.id) return null
     if (level < MemberLevel.brother) return null
 
-    const label = isShared ? 'Unshare Private Photos' : 'Share Private Photos'
+    const label = isShared
+      ? `Unshare Private Photos with ${member?.nickname || 'this member'}`
+      : `Share Private Photos with ${member?.nickname || 'this member'}`
 
     if (!hasFeature('share_photos'))
       return (

@@ -84,29 +84,22 @@ export const MemberVouch = chakra(
     return (
       <>
         {(voucher?.id && (
-          <Tooltip
-            label="Integrity Vouched by ${voucher.nickname}"
-            aria-label="Integrity Vouched by ${voucher.nickname}"
-            bg="accent.500"
-            color="white"
-          >
-            <MemberAvatar size="sm" m={2} member={voucher} />
-          </Tooltip>
+          <MemberAvatar
+            id={`vouched-${member?.id}`}
+            size="sm"
+            m={2}
+            title={`Vouched by ${voucher.nickname}`}
+            member={voucher}
+          />
         )) || (
-          <Tooltip
-            label="Integrity Unknown"
-            aria-label="Integrity Unknown"
-            bg="accent.500"
+          <Icon
+            as={QuestionMarkCircleIcon}
+            boxSize={8}
+            ml={1}
             color="white"
-          >
-            <Icon
-              as={QuestionMarkCircleIcon}
-              boxSize={8}
-              ml={1}
-              color="white"
-              aria-label={`Vouching Brother Needed`}
-            />
-          </Tooltip>
+            title="Integrity Unknown"
+            aria-label="Integrity Unknown"
+          />
         )}
         {showVouchButton && !hideVouch && (
           <Popover>
@@ -128,7 +121,7 @@ export const MemberVouch = chakra(
               <PopoverCloseButton />
               <PopoverHeader>
                 <Heading fontSize="xl" m={0}>
-                  Vouching for a Pledge
+                  Vouching for a {name}
                 </Heading>
               </PopoverHeader>
               <PopoverBody>
