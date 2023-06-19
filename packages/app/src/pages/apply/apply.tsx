@@ -10,7 +10,7 @@ import {
 } from 'components/forms'
 import Page from 'components/Page'
 import { useSite, useUser } from 'hooks'
-import { pages } from '@lib/config'
+import { pages } from 'lib/config'
 import {
   Applicant,
   ApplicationStatus,
@@ -20,8 +20,8 @@ import {
   Profile,
   Promo,
   UserInvite
-} from '@lib/models'
-import { postJSON, pruneUndefined } from '@lib/utils'
+} from 'lib/models'
+import { postJSON, pruneUndefined } from 'lib/utils'
 import { signIn, useSession } from 'next-auth/react'
 import { NextRouter, useRouter } from 'next/router'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -40,7 +40,7 @@ import {
   Text
 } from '@chakra-ui/react'
 
-import { Markdown } from '../../components/controls'
+import { Markdown } from 'components/controls'
 import ApplicationSteps from './_steps'
 
 export type PageProps = {

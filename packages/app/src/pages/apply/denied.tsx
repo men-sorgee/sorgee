@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { useUser } from 'hooks/use-user'
 import { Heading, Link, Text } from '@chakra-ui/react'
 
-import { MemberLevel } from '../../lib/models'
+import { MemberLevel } from 'lib/models'
 
 function Denied() {
   const router = useRouter()

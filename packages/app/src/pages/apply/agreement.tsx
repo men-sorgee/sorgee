@@ -4,14 +4,14 @@ import { Markdown } from 'components/controls'
 import FieldCheckbox from 'components/forms/FieldCheckbox'
 import Page from 'components/Page'
 import { useUser } from 'hooks/use-user'
-import { pages } from '@lib/config'
+import { pages } from 'lib/config'
 import {
   AgreementData,
   ApplicationStatus,
   Member,
   MemberLevel
-} from '@lib/models'
-import { postJSON } from '@lib/utils'
+} from 'lib/models'
+import { postJSON } from 'lib/utils'
 import { useRouter } from 'next/router'
 import { FormProvider, useForm } from 'react-hook-form'
 

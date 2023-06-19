@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
 import { Step, Steps, useSteps } from 'chakra-ui-steps'
-import { ApplicationStatus } from '@lib/models'
+import { ApplicationStatus } from 'lib/models'
 
 import { Hide, Show } from '@chakra-ui/react'
 

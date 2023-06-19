@@ -3,6 +3,7 @@ import {
   Dispatch,
   SetStateAction,
   useCallback,
+  useEffect,
   useRef,
   useState
 } from 'react'
@@ -17,8 +18,8 @@ import {
   ApplicationStatus,
   Member,
   MemberLevel
-} from '@lib/models'
-import { getAssetUrl } from '@lib/utils'
+} from 'lib/models'
+import { getAssetUrl } from 'lib/utils'
 import { NextRouter, useRouter } from 'next/router'
 import { FormProvider, useForm } from 'react-hook-form'
 
@@ -42,13 +43,19 @@ import { ErrorMessage } from '@hookform/error-message'
 
 import ApplicationSteps from './_steps'
 
-function Verification() {
+function VerificationPage() {
   const { member, loading, mutate } = useUser({
     minLevel: MemberLevel.applicant,
     minAppStatus: ApplicationStatus.verify
   })
   const [complete, setComplete] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    if (complete) {
+      router.push('/apply/review')
+    }
+  }, [complete, router])
 
   return (
     <Page
@@ -59,8 +66,11 @@ function Verification() {
     >
       {member?.id && !complete && (
         <VerifyForm
+          member={member}
+          mutate={mutate}
+          router={router}
           code={`${member.id.slice(0, 4)} ${member.id.slice(4, 8)}`}
-          {...{ member, router, mutate, setComplete }}
+          setComplete={setComplete}
         />
       )}
     </Page>
@@ -163,27 +173,28 @@ function VerifyForm({
   }, [])
 
   async function onSubmit({ verify }: { verify: boolean }) {
-    if (!file || !verify) return
+    console.log('onSubmit')
+    if (!verify) return
 
     try {
       let formData = new FormData()
+
       formData.append('media', file, 'verification-photo.jpg')
 
       const res = await fetch('/api/apply/verify', {
         method: 'POST',
         body: formData
       })
+      const body = (await res.json()) as ApiResponse
 
       if (res.ok) {
-        setComplete(true)
         mutate({
           application_status: ApplicationStatus.review,
           ...member
         }).then(() => {
-          router.push('/apply/review')
+          setComplete(true)
         })
       } else {
-        const body = (await res.json()) as ApiResponse
         if (body.error?.field) {
           setError(body.error!.field as any, body.error.message as any)
         } else {
@@ -361,4 +372,4 @@ function VerifyForm({
   )
 }
 
-export default Verification
+export default VerificationPage

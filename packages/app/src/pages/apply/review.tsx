@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { FieldRadioButtons } from 'components/forms'
 import Page from 'components/Page'
-import { ApplicationStatus, MemberLevel } from '@lib/models'
-import { postJSON } from '@lib/utils'
+import { ApplicationStatus, MemberLevel } from 'lib/models'
+import { postJSON } from 'lib/utils'
 import { useRouter } from 'next/router'
 import { FormProvider, useForm } from 'react-hook-form'
 

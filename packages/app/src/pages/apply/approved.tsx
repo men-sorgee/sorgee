@@ -4,10 +4,11 @@ import { useRouter } from 'next/router'
 import { useUser } from 'hooks/use-user'
 import { Heading, HStack, Text, VStack } from '@chakra-ui/react'
 
-import { ButtonLink } from '../../components/controls'
-import { pledgeSurvey } from '../../lib/config'
-import { ApplicationStatus, MemberLevel } from '../../lib/models'
+import { ButtonLink } from 'components/controls'
+import { pledgeSurvey } from 'lib/config'
+import { ApplicationStatus, MemberLevel } from 'lib/models'
 import ApplicationSteps from './_steps'
+import { Plans } from 'components'
 
 function Approved() {
   const router = useRouter()
@@ -58,10 +59,11 @@ function Approved() {
               </HStack>
             </>
           )}
-          <Text>Complete your account:</Text>
-          <HStack spacing={4} textAlign="center" mt={4}>
+          {level >= MemberLevel.brother && <Plans allowSubscribe={true} />}
+          <Text>Or stick with the free plan and complete your account:</Text>
+          <HStack spacing={4} textAlign="center" my={4}>
             <ButtonLink href="/member/settings" colorScheme="primary">
-              Manage Account
+              Manage Settings
             </ButtonLink>
             <ButtonLink href="/member/profile" colorScheme="primary">
               Manage Profile
