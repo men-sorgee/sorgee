@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 
 import { NotificationCard } from 'components/controls'
-import { useNotifications } from 'hooks/use-notifications'
-import { Member } from '@lib/models'
+import { useAppNotifications } from '@hooks/use-app-notifications'
+import { Member } from 'lib/models'
 
 import {
   Badge,
@@ -25,7 +25,7 @@ interface Props {
 const NotificationsAction = ({ member }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { hasNewNotifications, notifications, newNotificationCount } =
-    useNotifications()
+    useAppNotifications()
 
   useEffect(() => {
     if (isOpen && notifications?.length == 0) {

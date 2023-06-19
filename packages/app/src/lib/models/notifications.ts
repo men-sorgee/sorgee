@@ -1,12 +1,21 @@
-import { NotificationStatusType, User, UserType } from './users'
+import { User, UserType } from './users'
 
 export type AppNotification = Omit<
   Notification,
   'id' | 'status' | 'users' | 'data' | 'template'
 > & {
   id: number
-  status: NotificationStatusType
+  status: AppNotificationStatusType
+  read: boolean
 }
+
+export type AppNotificationStatusType =
+  | 'new'
+  | 'sent'
+  | 'deleted'
+  | 'open'
+  | 'click'
+  | 'delivered'
 
 export type Notification = {
   id: string
@@ -33,13 +42,18 @@ export type NotificationUser = {
   id: number
   notification_id?: string | Notification
   user_id?: string | User
-  status: NotificationStatusType
+  status: AppNotificationStatusType
   email_events?: string[] | UserEmailEvent[]
+  read: boolean
 }
+
+export type UserNotificationStatusType =
+  | 'new'
+  | 'read'
 
 export type UserNotification = {
   id: string
-  status: string
+  status: UserNotificationStatusType
   date_created?: string
   user_id?: string | User
   message?: string

@@ -1,0 +1,24 @@
+import { ApiResponse, UserNotification } from 'lib/models'
+import { withMethods, withUser } from 'lib/utils/server'
+import type { NextApiRequest, NextApiResponse } from 'next'
+
+import { getUserNotifications } from 'lib/services/directus/server/notifications'
+
+export default async function GetUserNotifications(
+  req: NextApiRequest,
+  res: NextApiResponse<ApiResponse>
+) {
+  try {
+    const method = withMethods(req, ['GET'])
+    const user = await withUser(req, res)
+    let notifications: UserNotification[] = []
+
+    notifications = await getUserNotifications(user.id)
+    return res.status(200).json(ApiResponse(notifications))
+
+  } catch (e) {
+    if (e.message == 'Unauthorized') return res.status(200).json(ApiResponse([]))
+    console.error(e.message || e, e.stack)
+    res.status(405).json(ApiResponse(null, e.message || e))
+  }
+}

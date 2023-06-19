@@ -7,39 +7,42 @@ import {
   useState
 } from 'react'
 
-import { AppNotification, NotificationStatusType } from '@lib/models'
-import { JsonFetcher, putJSON } from '@lib/utils'
+import { AppNotification, AppNotificationStatusType } from 'lib/models'
+import { JsonFetcher, putJSON } from 'lib/utils'
 import useSWR from 'swr'
 
-export type NotificationsContextData = {
+export type AppNotificationsContextData = {
   notifications: AppNotification[]
   hasNotifications: boolean
   notificationCount: number
   hasNewNotifications: boolean
   newNotificationCount: number
   error?: any
-  mark: (id: number, state: NotificationStatusType) => Promise<void>
   markAsRead: (id: number) => Promise<void>
   delete: (id: number) => Promise<void>
   loading: boolean
   reload: () => void
 }
 
-export const NotificationsContext = createContext<NotificationsContextData>({
-  notifications: [],
-  hasNotifications: false,
-  notificationCount: 0,
-  hasNewNotifications: false,
-  newNotificationCount: 0,
-  mark: async () => {},
-  markAsRead: async (_) => {},
-  delete: async () => {},
-  loading: true,
-  reload: () => {}
-})
+export const AppNotificationsContext =
+  createContext<AppNotificationsContextData>({
+    notifications: [],
+    hasNotifications: false,
+    notificationCount: 0,
+    hasNewNotifications: false,
+    newNotificationCount: 0,
+    markAsRead: async (_) => {},
+    delete: async () => {},
+    loading: true,
+    reload: () => {}
+  })
 
-export function NotificationsProvider({ children }: { children: ReactNode }) {
-  const key = `/api/member/notifications`
+export function AppNotificationsProvider({
+  children
+}: {
+  children: ReactNode
+}) {
+  const key = `/api/notifications`
   const {
     data: notifications = [],
     mutate,
@@ -53,21 +56,15 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
     fallbackData: []
   })
   const [hasNewNotifications, setHasNewNotifications] = useState(false)
-  const newNotifications =
-    notifications?.filter((n) => n.status === 'new') || []
+  const newNotifications = notifications?.filter((n) => !n.read) || []
   useEffect(() => {
     if (!isLoading && notifications) {
       setHasNewNotifications(newNotifications?.length > 0)
     }
-    if (hasNewNotifications) {
-      if (!sessionStorage.getItem('notified')) {
-        sessionStorage.setItem('notified', 'true')
-      }
-    }
   }, [notifications, isLoading, newNotifications?.length, hasNewNotifications])
 
-  const mark = async (id: number, state: NotificationStatusType) => {
-    const { success, data } = await putJSON(key, {
+  const put = async (id: number, state: 'deleted' | 'read') => {
+    const { success } = await putJSON(key + '/' + id, {
       id,
       state
     })
@@ -75,7 +72,8 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
       await mutate(
         notifications.map((n) => {
           if (n.id === id) {
-            n.status = state
+            n.read = true
+            state === 'deleted' ? (n.status = 'deleted') : null
           }
           return n
         }),
@@ -87,26 +85,25 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const context: NotificationsContextData = {
+  const context: AppNotificationsContextData = {
     notifications,
     hasNotifications: notifications?.length > 0,
     notificationCount: notifications?.length || 0,
     hasNewNotifications,
     newNotificationCount: newNotifications?.length || 0,
     error,
-    mark,
-    markAsRead: (id: number) => mark(id, 'read'),
-    delete: (id: number) => mark(id, 'deleted'),
+    markAsRead: (id: number) => put(id, 'read'),
+    delete: (id: number) => put(id, 'deleted'),
     loading: isLoading,
     reload: () => {
       mutate()
     }
   }
   return (
-    <NotificationsContext.Provider value={context}>
+    <AppNotificationsContext.Provider value={context}>
       {children}
-    </NotificationsContext.Provider>
+    </AppNotificationsContext.Provider>
   )
 }
 
-export const useNotifications = () => useContext(NotificationsContext)
+export const useAppNotifications = () => useContext(AppNotificationsContext)

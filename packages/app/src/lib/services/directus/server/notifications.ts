@@ -1,19 +1,19 @@
 import {
   AppNotification,
   Notification,
-  NotificationStatusType,
+  AppNotificationStatusType,
   NotificationUser,
   UserNotification,
 } from 'lib/models'
 
 import { getAdminClient } from './'
 
-export async function getNotification(id: string): Promise<Notification> {
+export async function getAppNotification(id: string): Promise<Notification> {
   const adminClient = await getAdminClient()
   return (await adminClient.items('notifications').readOne(id)) as unknown as Notification
 }
 
-export async function getNotifications(user_id: string): Promise<AppNotification[]> {
+export async function getAppNotifications(user_id: string): Promise<AppNotification[]> {
   const adminClient = await getAdminClient()
   const { data: notificationsRaw } = await adminClient.items('notifications_users').readByQuery({
     filter: {
@@ -38,9 +38,7 @@ export async function getNotifications(user_id: string): Promise<AppNotification
 
   const notifications = notificationsRaw.map((userNotification: NotificationUser) => {
     const notification: Notification = userNotification.notification_id as Notification
-    delete notification.users
-    delete notification.status
-    delete notification.id
+
     const {
       subject,
       body,
@@ -59,17 +57,47 @@ export async function getNotifications(user_id: string): Promise<AppNotification
       button_url: button_link,
       button_text,
       link,
-      category,
+      category
     } as AppNotification
   })
   return notifications
 }
 
-export async function markNotification(id: string, status: NotificationStatusType) {
+export async function markAppNotification(id: string, status: AppNotificationStatusType) {
   const admin = await getAdminClient()
   admin.items('notifications_users').updateOne(id, { status })
 }
 
+export async function markAppNotificationRead(id: string) {
+  const admin = await getAdminClient()
+  admin.items('notifications_users').updateOne(id, { read: true })
+}
+
+
+// Individual Notifications
+
+export async function getUserNotification(id: string): Promise<UserNotification> {
+  const adminClient = await getAdminClient()
+  return (await adminClient.items('user_notifications').readOne(id)) as unknown as UserNotification
+}
+
+export async function getUserNotifications(user_id: string): Promise<UserNotification[]> {
+  const adminClient = await getAdminClient()
+  const { data: notifications } = await adminClient.items('user_notifications').readByQuery({
+    filter: {
+      user_id: {
+        _eq: user_id,
+      },
+      status: {
+        _neq: 'deleted',
+      },
+    },
+    sort: ['-date_created'],
+    fields: '*' as any,
+  })
+
+  return notifications as UserNotification[]
+}
 export async function deleteUserNotification(id: string) {
   const admin = await getAdminClient()
   admin.items('user_notifications').deleteOne(id)
