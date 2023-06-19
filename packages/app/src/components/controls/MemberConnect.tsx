@@ -14,9 +14,12 @@ import { deleteJSON, postJSON } from 'lib/utils'
 import { chakra, IconButton, IconButtonProps } from '@chakra-ui/react'
 import {
   UserIcon,
-  UserMinusIcon as BuddyIconMinus
+  UserMinusIcon as RemoveBuddyIcon
 } from '@heroicons/react/24/outline'
-import { UserIcon as BuddyIcon, UserPlusIcon } from '@heroicons/react/24/solid'
+import {
+  UserIcon as BuddyIcon,
+  UserPlusIcon as AddBuddyIcon
+} from '@heroicons/react/24/solid'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
   member: Partial<User> | { id: string }
@@ -58,10 +61,12 @@ export const MemberConnect = chakra(
     useEffect(() => {
       if (!userLoading && me?.buddies && isBuddy == undefined) {
         const buddies = me.buddies as UserBuddy[]
-        const b = buddies.some((ur: UserBuddy) => {
-          return ur.buddy_id === member?.id
-        })
-        setIsBuddy(b)
+        setIsBuddy(
+          buddies.some((ur: UserBuddy) => {
+            let buddy = ur.buddy_id as User
+            return buddy?.id === member?.id || ur.buddy_id === member?.id
+          })
+        )
       }
     }, [isBuddy, me, member?.id, userLoading])
 
@@ -83,7 +88,7 @@ export const MemberConnect = chakra(
           <IconButton
             icon={
               hover ? (
-                <BuddyIconMinus stroke={'white'} width="30px" fill={'white'} />
+                <RemoveBuddyIcon width="30px" stroke="white" />
               ) : (
                 <BuddyIcon width="30px" fill={'white'} />
               )
@@ -107,9 +112,9 @@ export const MemberConnect = chakra(
           <IconButton
             icon={
               hover ? (
-                <UserPlusIcon fill={'white'} width="30px" />
+                <AddBuddyIcon width="30px" fill={'white'} />
               ) : (
-                <UserIcon stroke={'white'} width="30px" />
+                <UserIcon width="30px" fill={'white'} />
               )
             }
             onMouseOver={() => {
