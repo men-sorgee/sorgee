@@ -1,6 +1,6 @@
 'use client'
-import { GroupEvent } from '@lib/models'
-import { JsonFetcher } from '@lib/utils'
+import { GroupEvent } from 'lib/models'
+import { JsonFetcher } from 'lib/utils'
 import useSWR, { KeyedMutator } from 'swr'
 
 type EventsResults = {

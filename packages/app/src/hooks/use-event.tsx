@@ -1,6 +1,6 @@
 'use client'
-import { EventDetail } from '@lib/models'
-import { JsonFetcher } from '@lib/utils'
+import { EventDetail } from 'lib/models'
+import { JsonFetcher } from 'lib/utils'
 import useSWR from 'swr'
 
 type EventResults = {

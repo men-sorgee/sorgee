@@ -1,4 +1,4 @@
-import { brand } from '@lib/config/brand'
+import { brand } from 'lib/config/brand'
 
 import { useColorModeValue } from '@chakra-ui/react'
 

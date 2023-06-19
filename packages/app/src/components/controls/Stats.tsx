@@ -1,5 +1,5 @@
 import { capitalCase } from 'change-case'
-import { JsonFetcher } from '@lib/utils'
+import { JsonFetcher } from 'lib/utils'
 import useSWR from 'swr'
 
 import { Stat, StatLabel, StatNumber } from '@chakra-ui/react'

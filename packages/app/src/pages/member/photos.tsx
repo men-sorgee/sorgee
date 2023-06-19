@@ -8,8 +8,8 @@ import {
   PhotoUpload
 } from 'components/controls'
 import Page from 'components/Page'
-import { UserPhoto } from '@lib/models'
-import { deleteJSON, getAssetUrl } from '@lib/utils'
+import { UserPhoto } from 'lib/models'
+import { deleteJSON, getAssetUrl } from 'lib/utils'
 
 import { useUser } from 'hooks/use-user'
 import {

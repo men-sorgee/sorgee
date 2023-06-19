@@ -13,7 +13,7 @@ import {
   Page
 } from 'components'
 import { useUser } from 'hooks/use-user'
-import { FieldMap, Member, MemberLevel } from '@lib/models'
+import { FieldMap, Member, MemberLevel } from 'lib/models'
 
 import {
   Alert,

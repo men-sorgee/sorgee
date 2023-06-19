@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 
-import { ApiResponse } from '@lib/models'
+import { ApiResponse } from 'lib/models'
 
 import {
   Box,

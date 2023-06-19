@@ -1,6 +1,6 @@
 import { CSSProperties } from 'react'
 
-import { brand } from '@lib/config/brand'
+import { brand } from 'lib/config/brand'
 import NextLink from 'next/link'
 
 export const Logo = ({ width = '50px', ...props }: CSSProperties) => (

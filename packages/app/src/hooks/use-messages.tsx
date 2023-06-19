@@ -14,8 +14,8 @@ import {
   Member,
   MessageStatusType,
   UserMessages
-} from '@lib/models'
-import { JsonFetcher, putJSON } from '@lib/utils'
+} from 'lib/models'
+import { JsonFetcher, putJSON } from 'lib/utils'
 import useCookie from 'react-use-cookie'
 import useSWR, { KeyedMutator } from 'swr'
 

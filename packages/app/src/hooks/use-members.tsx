@@ -4,8 +4,8 @@ import useSWR from 'swr'
 
 import { ManyItems } from '@directus/sdk'
 
-import { Profile, SearchableMember } from '../lib/models'
-import { JsonFetcher } from '../lib/utils'
+import { Profile, SearchableMember } from 'lib/models'
+import { JsonFetcher } from 'lib/utils'
 
 export type MemberSearchContext = {
   members: SearchableMember[]

@@ -2,13 +2,13 @@ import type { ReactElement } from 'react'
 import { ReactNode, useCallback, useEffect } from 'react'
 
 import { useWarnIfUnsavedChanges } from 'hooks/use-warn-if-unsaved'
-import { ApiError } from '@lib/models'
+import { ApiError } from 'lib/models'
 import type { UseFormReturn } from 'react-hook-form'
 import { FormProvider, useForm, useFormContext } from 'react-hook-form'
 
 import { useToast } from '@chakra-ui/react'
 
-import { debouncedPromise } from '../../lib/utils'
+import { debouncedPromise } from 'lib/utils'
 
 type FormProps<T> = {
   successMessage?: string

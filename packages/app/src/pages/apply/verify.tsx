@@ -362,7 +362,7 @@ function VerifyForm({
                 disabled={!canUpload}
                 colorScheme="accent"
               >
-                Upload
+                Upload & Continue
               </Button>
             )}
           </HStack>

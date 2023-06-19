@@ -1,6 +1,6 @@
 import { notifications } from 'lib/config'
 import { AgreementData, ApiResponse, Applicant, Profile } from 'lib/models'
-import { getNotification, getUserEvents, updateUser } from 'lib/services/directus/server'
+import { getAppNotification, getUserEvents, updateUser } from 'lib/services/directus/server'
 import {
   SendGridCategory,
   SendGridTemplate,
@@ -24,7 +24,7 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
         applicant.nickname || applicant.first_name + ' ' + applicant.last_name,
         `Application Approved`,
         `Your application is approved. Congratulations, you are now an official pledge of Guys'n Heat! ` +
-          `A brother will be reaching out to finalize your onboarding process and if all goes well, invite you to the next event.`,
+        `A brother will be reaching out to finalize your onboarding process and if all goes well, invite you to the next event.`,
         {
           button_text: 'Complete Profile',
           button_url: 'https://guysnheat.com/member/profile',
@@ -47,7 +47,7 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
           updatedUser.user_type === 'brother'
             ? notifications.congratsBrother
             : notifications.congratsInductee
-        const congratsEmail = await getNotification(notificationId)
+        const congratsEmail = await getAppNotification(notificationId)
         if (congratsEmail == null) throw new Error('Notification not found')
 
         const { button_text, button_url, subject, body, data, template, category } = congratsEmail

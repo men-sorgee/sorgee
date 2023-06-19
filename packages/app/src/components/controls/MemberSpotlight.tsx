@@ -15,8 +15,8 @@ import {
   memberProfileFields,
   memberProfileHealthFields,
   UserPhoto
-} from '@lib/models'
-import { toLocalDate } from '@lib/utils'
+} from 'lib/models'
+import { toLocalDate } from 'lib/utils'
 
 import {
   Accordion,

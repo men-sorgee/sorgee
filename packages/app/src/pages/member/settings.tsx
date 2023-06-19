@@ -12,7 +12,7 @@ import {
 } from 'components/forms'
 import Page from 'components/Page'
 import { useUser } from 'hooks/use-user'
-import { FieldMap, Member, MemberLevel } from '@lib/models'
+import { FieldMap, Member, MemberLevel } from 'lib/models'
 import { NextPageContext } from 'next'
 
 import {

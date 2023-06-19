@@ -1,5 +1,5 @@
 import { formatDistanceToNowStrict } from 'date-fns'
-import { Member, MemberLevel, MemberLevelColorMap, User } from '@lib/models'
+import { Member, MemberLevel, MemberLevelColorMap, User } from 'lib/models'
 import NextLink from 'next/link'
 
 import { LockIcon } from '@chakra-ui/icons'

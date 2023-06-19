@@ -11,8 +11,8 @@ import {
 import Page from 'components/Page'
 import { addDays, isAfter, isSameDay, isToday } from 'date-fns'
 import { useUser, useUserEvents } from 'hooks'
-import { brand } from '@lib/config/brand'
-import { EventInvite, GroupEvent, Member, MemberLevel } from '@lib/models'
+import { brand } from 'lib/config/brand'
+import { EventInvite, GroupEvent, Member, MemberLevel } from 'lib/models'
 import Link from 'next/link'
 import Calendar from 'react-calendar'
 

@@ -1,7 +1,7 @@
 import { ReactNode, useCallback, useRef, useState } from 'react'
 
-import { EventUser, InviteRSVPType, RSVPInfo } from '@lib/models'
-import { JsonFetcher, postJSON } from '@lib/utils'
+import { EventUser, InviteRSVPType, RSVPInfo } from 'lib/models'
+import { JsonFetcher, postJSON } from 'lib/utils'
 import useSWR from 'swr'
 
 import {

@@ -19,7 +19,7 @@ import {
   Member,
   MemberLevel,
   User
-} from '@lib/models'
+} from 'lib/models'
 import { NextPageContext } from 'next'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'

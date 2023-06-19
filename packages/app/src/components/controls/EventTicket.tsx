@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { EventDetail, GroupEvent, Member } from '@lib/models'
+import { EventDetail, GroupEvent, Member } from 'lib/models'
 
 import { Box, Flex, Heading, Image, SlideFade, Text } from '@chakra-ui/react'
 

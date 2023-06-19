@@ -1,5 +1,5 @@
 import { useUserEvents } from 'hooks'
-import { Member, MemberLevel } from '@lib/models'
+import { Member, MemberLevel } from 'lib/models'
 import NextLink from 'next/link'
 
 import { Badge, IconButton, Link } from '@chakra-ui/react'

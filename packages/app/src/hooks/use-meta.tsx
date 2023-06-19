@@ -7,7 +7,7 @@ import {
   useState
 } from 'react'
 
-import { MetaProps } from '@lib/models'
+import { MetaProps } from 'lib/models'
 import { useRouter } from 'next/router'
 
 import { useSite } from './use-site'

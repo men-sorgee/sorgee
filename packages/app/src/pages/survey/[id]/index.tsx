@@ -25,8 +25,8 @@ import {
   Question,
   Survey,
   SurveyAnswer
-} from '@lib/models'
-import { getJSON, postJSON, pruneUndefined } from '@lib/utils'
+} from 'lib/models'
+import { getJSON, postJSON, pruneUndefined } from 'lib/utils'
 import { useRouter } from 'next/router'
 import { FormProvider, useForm } from 'react-hook-form'
 

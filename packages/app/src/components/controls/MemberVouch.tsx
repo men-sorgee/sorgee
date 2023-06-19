@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import { useUser } from 'hooks'
-import { MemberLevel, User, VouchingUser } from '@lib/models'
-import { JsonFetcher, postJSON } from '@lib/utils'
+import { MemberLevel, User, VouchingUser } from 'lib/models'
+import { JsonFetcher, postJSON } from 'lib/utils'
 import swr from 'swr'
 
 import {

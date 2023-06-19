@@ -1,8 +1,8 @@
 import { ReactNode, useEffect, useState } from 'react'
 
 import { formatDistanceToNowStrict } from 'date-fns'
-import { User } from '@lib/models'
-import { getAssetUrl, toLocalDate } from '@lib/utils'
+import { User } from 'lib/models'
+import { getAssetUrl, toLocalDate } from 'lib/utils'
 
 import {
   Avatar,

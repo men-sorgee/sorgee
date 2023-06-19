@@ -3,8 +3,8 @@ import { ReactNode, useEffect, useState } from 'react'
 import { AddToCalendarButton } from 'add-to-calendar-button-react'
 import { capitalCase } from 'change-case'
 import { differenceInDays, isAfter, isToday } from 'date-fns'
-import { GroupEvent, Location } from '@lib/models'
-import { getEventDate, toLocalDate } from '@lib/utils'
+import { GroupEvent, Location } from 'lib/models'
+import { getEventDate, toLocalDate } from 'lib/utils'
 import Countdown from 'react-countdown'
 
 import {

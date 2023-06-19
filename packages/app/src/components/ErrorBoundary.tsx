@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import { postJSON } from '@lib/utils'
+import { postJSON } from 'lib/utils'
 
 import { Box, Button } from '@chakra-ui/react'
 

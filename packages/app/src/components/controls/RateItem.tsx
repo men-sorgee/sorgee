@@ -1,8 +1,8 @@
 import { ReactNode, useCallback, useEffect, useState } from 'react'
 
 import { Rating as RatingControl } from 'components/controls'
-import { Rating, RatingCollection } from '@lib/models'
-import { JsonFetcher, postJSON } from '@lib/utils'
+import { Rating, RatingCollection } from 'lib/models'
+import { JsonFetcher, postJSON } from 'lib/utils'
 import useSWR from 'swr'
 
 import { Box, Flex } from '@chakra-ui/react'

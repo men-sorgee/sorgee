@@ -1,7 +1,7 @@
 import { ButtonLink, MemberAvatar, MemberIcon } from 'components/controls'
 import { useSite, useUser } from 'hooks'
-import { pledgeSurvey } from '@lib/config'
-import { MemberLevel } from '@lib/models'
+import { pledgeSurvey } from 'lib/config'
+import { MemberLevel } from 'lib/models'
 import { signIn, signOut } from 'next-auth/react'
 import Link from 'next/link'
 

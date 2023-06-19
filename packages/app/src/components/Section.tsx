@@ -1,5 +1,5 @@
 import Blocks from 'editorjs-blocks-react-renderer'
-import { PageContent } from '@lib/models'
+import { PageContent } from 'lib/models'
 
 import { Image, SimpleGrid } from '@chakra-ui/react'
 

@@ -1,4 +1,4 @@
-import { pruneUndefined } from '@lib/utils'
+import { pruneUndefined } from 'lib/utils'
 import { NextPageContext } from 'next'
 
 import MemberList, { QueryParams } from './index'

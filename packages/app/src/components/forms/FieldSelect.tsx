@@ -1,6 +1,6 @@
 import { SelectHTMLAttributes } from 'react'
 
-import { FieldOptions } from '@lib/models'
+import { FieldOptions } from 'lib/models'
 import { RegisterOptions, useFormContext } from 'react-hook-form'
 
 import { chakra, Select, SelectProps } from '@chakra-ui/react'

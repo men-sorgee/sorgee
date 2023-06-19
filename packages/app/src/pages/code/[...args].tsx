@@ -1,4 +1,4 @@
-import { baseUrl } from '@lib/config'
+import { baseUrl } from 'lib/config'
 import { NextPageContext } from 'next'
 import dynamic from 'next/dynamic'
 

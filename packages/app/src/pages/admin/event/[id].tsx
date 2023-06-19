@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ButtonLink, EventCard } from 'components/controls'
 import Page from 'components/Page'
 import { useUser } from 'hooks'
-import { EventDetail, EventStats, MemberLevel, User } from '@lib/models'
+import { EventDetail, EventStats, MemberLevel, User } from 'lib/models'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 

@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 
-import { MembershipType } from '@lib/models'
+import { MembershipType } from 'lib/models'
 import { useRouter } from 'next/router'
 
 import {

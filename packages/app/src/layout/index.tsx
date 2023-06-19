@@ -6,8 +6,8 @@ import { useRouter } from 'next/router'
 
 import { Box, Flex, Slide, Spacer, useDisclosure } from '@chakra-ui/react'
 
-import { brand } from '../lib/config/brand'
-import { MemberLevel } from '../lib/models'
+import { brand } from 'lib/config/brand'
+import { MemberLevel } from 'lib/models'
 import Actions from './actions'
 import Footer from './Footer'
 import Header from './Header'

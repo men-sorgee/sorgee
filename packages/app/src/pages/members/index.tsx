@@ -12,15 +12,15 @@ import {
   MemberLevel,
   SearchableMember,
   UserType
-} from '@lib/models'
-import { MemberStats } from '@lib/services/directus/server/users'
+} from 'lib/models'
+import { MemberStats } from 'lib/services/directus/server/users'
 import {
   getJSON,
   JsonFetcher,
   normalize,
   pruneUndefined,
   serialize
-} from '@lib/utils'
+} from 'lib/utils'
 import { NextPageContext } from 'next'
 import { useRouter } from 'next/router'
 import { FormProvider, useForm } from 'react-hook-form'

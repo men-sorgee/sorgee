@@ -9,7 +9,7 @@ import {
 import { withMember, withMethods } from 'lib/utils/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 
-import { baseUrl } from '../../../../lib/config'
+import { baseUrl } from 'lib/config'
 
 export default async function MemberLike(
   req: NextApiRequest,

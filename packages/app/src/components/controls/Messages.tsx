@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { formatDistanceToNow } from 'date-fns'
 import { useMessages } from 'hooks'
-import { ChatMessage, Member, Message } from '@lib/models'
-import { postJSON } from '@lib/utils'
+import { ChatMessage, Member, Message } from 'lib/models'
+import { postJSON } from 'lib/utils'
 import io, { Socket } from 'socket.io-client'
 
 import { IconButton, useDisclosure } from '@chakra-ui/react'

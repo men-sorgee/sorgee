@@ -2,8 +2,8 @@ import { use, useCallback, useEffect, useState } from 'react'
 
 import { UpgradeIcon } from 'components/controls'
 import { useUser } from 'hooks'
-import { MemberLevel, MembershipType, User } from '@lib/models'
-import { deleteJSON, postJSON } from '@lib/utils'
+import { MemberLevel, MembershipType, User } from 'lib/models'
+import { deleteJSON, postJSON } from 'lib/utils'
 
 import { chakra, IconButton, IconButtonProps } from '@chakra-ui/react'
 import { LockClosedIcon } from '@heroicons/react/24/outline'

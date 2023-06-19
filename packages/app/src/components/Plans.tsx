@@ -21,7 +21,7 @@ import {
 import { CheckCircleIcon } from '@heroicons/react/24/solid'
 
 import { useProducts } from 'hooks'
-import { getJSON } from '../lib/utils'
+import { getJSON } from 'lib/utils'
 type Params = {
   allowSubscribe?: boolean
 }
@@ -166,7 +166,7 @@ const Plans = ({ allowSubscribe = false }: Params) => {
                         color="white"
                         _hover={{ bg: 'accent.600' }}
                       >
-                        Update Subscription
+                        Switch to {plan.name}
                       </ButtonLink>
                     )}
                   {showManageSubscriptionButton &&

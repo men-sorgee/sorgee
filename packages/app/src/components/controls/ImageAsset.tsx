@@ -1,4 +1,4 @@
-import { DirectusFile } from '@lib/models'
+import { DirectusFile } from 'lib/models'
 
 import { chakra, Image, ImageProps } from '@chakra-ui/react'
 

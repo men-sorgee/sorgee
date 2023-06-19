@@ -1,5 +1,5 @@
-import { SearchableMember } from '@lib/models'
-import { getAssetUrl } from '@lib/utils'
+import { SearchableMember } from 'lib/models'
+import { getAssetUrl } from 'lib/utils'
 
 import { Avatar, AvatarProps, chakra } from '@chakra-ui/react'
 

@@ -1,10 +1,10 @@
 import { RefObject } from 'react'
 
-import { brand } from '@lib/config/brand'
-import { FieldMap } from '@lib/models'
+import { brand } from 'lib/config/brand'
+import { FieldMap } from 'lib/models'
 import swr from 'swr'
 
-import { JsonFetcher } from '../../lib/utils'
+import { JsonFetcher } from 'lib/utils'
 import { MemberSpotlight } from './MemberSpotlight'
 import { ModalPopup } from './Modal'
 

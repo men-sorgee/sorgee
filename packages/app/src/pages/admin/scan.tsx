@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import Page from 'components/Page'
 import { useUser } from 'hooks'
-import { MemberLevel } from '@lib/models'
+import { MemberLevel } from 'lib/models'
 import dynamic from 'next/dynamic'
 
 import {

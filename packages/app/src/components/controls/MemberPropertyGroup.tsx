@@ -1,5 +1,5 @@
 import { capitalCase } from 'change-case'
-import { DirectusField, Member } from '@lib/models'
+import { DirectusField, Member } from 'lib/models'
 
 import { LockIcon } from '@chakra-ui/icons'
 import {

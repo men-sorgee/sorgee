@@ -5,7 +5,7 @@ import NotFound from 'components/NotFound'
 import Page from 'components/Page'
 import Section from 'components/Section'
 import { useSite } from 'hooks/use-site'
-import { Page as PageModel } from '@lib/models'
+import { Page as PageModel } from 'lib/models'
 import NextLink from 'next/link'
 import { ParsedUrlQuery } from 'querystring'
 

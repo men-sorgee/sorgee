@@ -1,5 +1,5 @@
 import { UpgradeIcon } from 'components/controls'
-import { Member, MemberLevel, MembershipType } from '@lib/models'
+import { Member, MemberLevel, MembershipType } from 'lib/models'
 import NextLink from 'next/link'
 
 import { IconButton, Link } from '@chakra-ui/react'

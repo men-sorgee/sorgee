@@ -13,8 +13,8 @@ import {
   Member,
   MemberFeature,
   MemberLevel
-} from '@lib/models'
-import { getAssetUrl, JsonFetcher, postJSON } from '@lib/utils'
+} from 'lib/models'
+import { getAssetUrl, JsonFetcher, postJSON } from 'lib/utils'
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import useSWR from 'swr'

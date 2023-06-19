@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { capitalCase } from 'change-case'
-import { Member, MemberLevel, User, UserShare } from '@lib/models'
+import { Member, MemberLevel, User, UserShare } from 'lib/models'
 
 import {
   Badge,

@@ -2,9 +2,9 @@ import { useState } from 'react'
 
 import { FieldInput } from 'components/forms'
 import Page from 'components/Page'
-import { baseUrl } from '@lib/config'
-import { InviteLink, Member, MemberLevel, UserInvite } from '@lib/models'
-import { postJSON } from '@lib/utils'
+import { baseUrl } from 'lib/config'
+import { InviteLink, Member, MemberLevel, UserInvite } from 'lib/models'
+import { postJSON } from 'lib/utils'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import { useUser } from 'hooks/use-user'

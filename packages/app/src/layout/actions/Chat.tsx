@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Messages, UpgradeIcon } from 'components'
 import { useMessages } from 'hooks'
-import { Member, MemberLevel, MembershipType } from '@lib/models'
+import { Member, MemberLevel, MembershipType } from 'lib/models'
 
 import {
   Badge,

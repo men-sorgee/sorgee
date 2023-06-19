@@ -8,7 +8,7 @@ import {
   MembershipType,
   User,
   UserBuddy
-} from '@lib/models'
+} from 'lib/models'
 
 import { Badge, chakra, IconButton, IconButtonProps } from '@chakra-ui/react'
 import { ChatBubbleBottomCenterIcon as ChatIconOff } from '@heroicons/react/24/outline'

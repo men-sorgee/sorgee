@@ -8,8 +8,8 @@ import {
   MembershipType,
   User,
   UserBuddy
-} from '@lib/models'
-import { deleteJSON, postJSON } from '@lib/utils'
+} from 'lib/models'
+import { deleteJSON, postJSON } from 'lib/utils'
 
 import { chakra, IconButton, IconButtonProps } from '@chakra-ui/react'
 import {

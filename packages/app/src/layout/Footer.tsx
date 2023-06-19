@@ -7,7 +7,7 @@ import {
   VisuallyHidden
 } from '@chakra-ui/react'
 
-import { DiscordIcon, InstagramIcon, TwitterIcon } from '../components/icons'
+import { DiscordIcon, InstagramIcon, TwitterIcon } from 'components/icons'
 
 export default function Footer() {
   return (

@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { MemberCard, MemberModal } from 'components/controls'
 import Page from 'components/Page'
 import { useUser } from 'hooks'
-import { MemberLevel, SearchableMember, User, UserBuddy } from '@lib/models'
+import { MemberLevel, SearchableMember, User, UserBuddy } from 'lib/models'
 
 import { Alert, Flex, SimpleGrid, Spacer, Switch, Text } from '@chakra-ui/react'
 

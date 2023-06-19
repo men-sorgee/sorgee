@@ -2,7 +2,7 @@ import { notifications } from 'lib/config'
 import { ApiResponse, EventUser, MemberLevel } from 'lib/models'
 import {
   getInvite,
-  getNotification,
+  getAppNotification,
   getUser,
   updateInvite,
   updateUser,
@@ -61,7 +61,7 @@ export default async function Invite(
 
         if (MemberLevel[attendee.user_type] < MemberLevel.brother) {
           // send congrats email
-          const congratsBrotherEmail = await getNotification(notifications.congratsBrother)
+          const congratsBrotherEmail = await getAppNotification(notifications.congratsBrother)
           if (congratsBrotherEmail == null) throw new Error('Notification not found')
 
           const { button_text, button_url, subject, body, data, template, category } =

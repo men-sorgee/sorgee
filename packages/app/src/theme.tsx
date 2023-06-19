@@ -1,5 +1,5 @@
 import { StepsTheme } from 'chakra-ui-steps'
-import { brand } from '@lib/config/brand'
+import { brand } from 'lib/config/brand'
 
 import { defineStyleConfig, StyleFunctionProps } from '@chakra-ui/react'
 import defaultTheme from '@chakra-ui/theme'

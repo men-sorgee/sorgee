@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import { Box, Flex, useColorModeValue } from '@chakra-ui/react'
 
 import { constrained } from '../'
-import { MemberLevel } from '../../lib/models'
+import { MemberLevel } from 'lib/models'
 import Buddies from './Buddies'
 import Chat from './Chat'
 import Events from './Events'

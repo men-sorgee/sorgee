@@ -1,7 +1,7 @@
 import { EventCard } from 'components/controls'
 import Page from 'components/Page'
 import { useUser } from 'hooks'
-import { GroupEvent, MemberLevel } from '@lib/models'
+import { GroupEvent, MemberLevel } from 'lib/models'
 import { GetServerSidePropsResult, NextPageContext } from 'next'
 import { getServerSession } from 'next-auth/next'
 import Link from 'next/link'

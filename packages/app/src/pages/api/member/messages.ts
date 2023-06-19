@@ -10,7 +10,7 @@ import {
   updateMessage,
 } from 'lib/services/directus/server/messages'
 
-import { pruneUndefined } from '../../../lib/utils/index'
+import { pruneUndefined } from 'lib/utils/index'
 
 export default async function getUserMessages(
   req: NextApiRequest,

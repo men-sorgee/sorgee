@@ -3,7 +3,7 @@ import { ApiResponse, MemberLevel, UserBuddy } from 'lib/models'
 import {
   addUserNotification,
   getMember,
-  getNotification,
+  getAppNotification,
   updateUser,
 } from 'lib/services/directus/server'
 import {
@@ -51,7 +51,7 @@ export default async function VouchForMember(
       })
 
       // send congrats email
-      const congratsInducteeEmail = await getNotification(notifications.congratsInductee)
+      const congratsInducteeEmail = await getAppNotification(notifications.congratsInductee)
       if (congratsInducteeEmail == null) throw new Error('Notification not found')
 
       const { button_text, button_url, subject, body, data, template, category } =
@@ -74,7 +74,7 @@ export default async function VouchForMember(
 
       await addUserNotification({
         user_id: them.id,
-        message: `You have been vouched for by ${me.nickname} and are now an Inductee!`,
+        message: `You have been vouched for by ${me.nickname}!`,
       })
 
       return res.status(200).json(

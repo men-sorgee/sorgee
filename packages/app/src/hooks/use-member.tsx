@@ -1,6 +1,6 @@
 'use client'
-import { Member, MemberLevel } from '@lib/models'
-import { getAssetUrl, JsonFetcher } from '@lib/utils'
+import { Member, MemberLevel } from 'lib/models'
+import { getAssetUrl, JsonFetcher } from 'lib/utils'
 import useSWR from 'swr'
 
 type MemberResults = {
