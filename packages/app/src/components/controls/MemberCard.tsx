@@ -114,7 +114,14 @@ export const MemberCard = chakra(
               </CardBody>
             )}
           </LinkBox>
-          <CardFooter flexDir="column" justify="space-between" alignItems="end">
+          <Spacer />
+          <CardFooter
+            flexDir="column"
+            justify="space-between"
+            alignItems="end"
+            bg="primary.700"
+            p={2}
+          >
             <Flex w="full">
               <MemberBlock member={member} />
               <Spacer />

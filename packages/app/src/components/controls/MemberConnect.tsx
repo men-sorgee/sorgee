@@ -116,7 +116,7 @@ export const MemberConnect = chakra(
               hover ? (
                 <AddBuddyIcon width="30px" fill={'white'} />
               ) : (
-                <UserIcon width="30px" fill={'white'} />
+                <UserIcon width="30px" />
               )
             }
             onMouseOver={() => {
