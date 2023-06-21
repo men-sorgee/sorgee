@@ -8,7 +8,7 @@ import {
   useState
 } from 'react'
 
-import { PhotoCapture } from 'components/controls'
+import { BusyButton, PhotoCapture } from 'components/controls'
 import { FieldCheckbox } from 'components/forms'
 import Page from 'components/Page'
 import { useUser } from 'hooks/use-user'
@@ -19,7 +19,7 @@ import {
   Member,
   MemberLevel
 } from 'lib/models'
-import { getAssetUrl } from 'lib/utils'
+import { getAssetUrl, postForm, postJSON } from 'lib/utils'
 import { NextRouter, useRouter } from 'next/router'
 import { FormProvider, useForm } from 'react-hook-form'
 
@@ -29,6 +29,7 @@ import {
   Box,
   Button,
   Center,
+  Checkbox,
   Flex,
   Heading,
   HStack,
@@ -44,7 +45,7 @@ import { ErrorMessage } from '@hookform/error-message'
 import ApplicationSteps from './_steps'
 
 function VerificationPage() {
-  const { member, loading, mutate } = useUser({
+  const { member, loading, reload } = useUser({
     minLevel: MemberLevel.applicant,
     minAppStatus: ApplicationStatus.verify
   })
@@ -67,10 +68,10 @@ function VerificationPage() {
       {member?.id && !complete && (
         <VerifyForm
           member={member}
-          mutate={mutate}
-          router={router}
+          reload={reload}
           code={`${member.id.slice(0, 4)} ${member.id.slice(4, 8)}`}
           setComplete={setComplete}
+          complete={complete}
         />
       )}
     </Page>
@@ -79,35 +80,24 @@ function VerificationPage() {
 
 function VerifyForm({
   code,
-  router,
   setComplete,
+  complete,
   member,
-  mutate
+  reload
 }: {
-  member: Member
-  mutate: any
-  router: NextRouter
   code: string
+  complete: boolean
   setComplete: Dispatch<SetStateAction<boolean>>
+  member: Member
+  reload: () => Promise<Member>
 }): JSX.Element {
   const [previewUrl, setPreviewUrl] = useState<string | null>(
     member?.photo ? getAssetUrl(member.photo) : null
   )
   const [file, setFile] = useState<File | null>(null)
   const [camera, setCamera] = useState<boolean>()
-
-  const methods = useForm<{ file: File; verify: boolean }>({
-    defaultValues: { verify: false },
-    mode: 'onChange'
-  })
-  const {
-    handleSubmit,
-    reset,
-    setError,
-    clearErrors,
-    watch,
-    formState: { errors }
-  } = methods
+  const [isVerified, setVerify] = useState<boolean>(false)
+  const [error, setError] = useState<string | null>(null)
 
   const onFileUploadChange = (e: ChangeEvent<HTMLInputElement>) => {
     const fileInput = e.target
@@ -117,11 +107,12 @@ function VerifyForm({
         ? fileInput.files[0]
         : null
       : null
+
     if (!file || !file.type.startsWith('image')) {
-      setError('file', { message: 'Please select a valid image' })
+      setError('Please select a valid image')
       return
     }
-    clearErrors()
+    setError(null)
     setFile(file)
     setPreviewUrl(URL.createObjectURL(file))
 
@@ -134,22 +125,9 @@ function VerifyForm({
     if (!previewUrl && !file) {
       return
     }
-    reset({ file: null, verify: false })
-    clearErrors()
+    setError(null)
     setFile(null)
     setPreviewUrl(null)
-  }
-
-  function skip() {
-    mutate(
-      {
-        application_status: ApplicationStatus.review,
-        ...member
-      },
-      null
-    ).then(() => {
-      router.push('/apply/review')
-    })
   }
 
   const acceptPhoto = useCallback(
@@ -172,203 +150,203 @@ function VerifyForm({
     setCamera(true)
   }, [])
 
-  async function onSubmit({ verify }: { verify: boolean }) {
-    console.log('onSubmit')
-    if (!verify) return
-
-    try {
-      let formData = new FormData()
-
-      formData.append('media', file, 'verification-photo.jpg')
-
-      const res = await fetch('/api/apply/verify', {
-        method: 'POST',
-        body: formData
-      })
-      const body = (await res.json()) as ApiResponse
-
-      if (res.ok) {
-        mutate({
-          application_status: ApplicationStatus.review,
-          ...member
-        }).then(() => {
-          setComplete(true)
-        })
-      } else {
-        if (body.error?.field) {
-          setError(body.error!.field as any, body.error.message as any)
-        } else {
-          setError('file', { message: 'Something went wrong' })
-        }
-      }
-    } catch (error) {
-      setError('file', { message: error.message })
+  const submitExisting = useCallback(async () => {
+    if (!isVerified) {
+      setError('Please check the box to verify')
     }
-  }
-  const isVerified = watch('verify', false)
-  const hasPhoto = previewUrl != null || file != null
+    const { success } = await postJSON('/api/apply/verify', null)
+    if (success) {
+      reload().then(() => {
+        setComplete(true)
+      })
+    }
+  }, [setComplete, isVerified, reload])
 
-  const canUpload = isVerified && hasPhoto
+  const submitNew = useCallback(async () => {
+    if (!isVerified) {
+      setError('Please check the box to verify')
+    }
+
+    const { success, error } = await postForm('/api/apply/verify', (data) => {
+      data.append('media', file, 'verification-photo.jpg')
+    })
+
+    if (success) {
+      reload().then(() => setComplete(true))
+    } else {
+      if (error) {
+        setError(error.message)
+      } else {
+        setError('Something went wrong')
+      }
+    }
+  }, [file, isVerified, reload, setComplete])
+
+  const hasPhoto = member?.photo !== null
+  const hasUpload = file !== null && previewUrl !== null
+
   const fileInput = useRef<HTMLInputElement>(null)
+  const verifyCheckbox = useRef<HTMLInputElement>(null)
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Flex direction="column" alignItems="center"></Flex>
-        <Stack alignItems="center" spacing={4}>
-          <Text fontSize="xl">
-            To verify you are who you say you are, please take a selfie while
-            holding a piece of paper with the following verification-code
-            written on it. ( This photo will not be shared with anyone and will
-            not be used for your profile.)
-          </Text>
-          <Heading size="3xl" mb={3}>
-            {code}
-          </Heading>
+    <>
+      <Flex direction="column" alignItems="center"></Flex>
+      <Stack alignItems="center" spacing={4}>
+        <Text fontSize="xl">
+          To verify you are who you say you are, please take a selfie while
+          holding a piece of paper with the following verification-code written
+          on it. ( This photo will not be shared with anyone and will not be
+          used for your profile.)
+        </Text>
+        <Heading size="3xl" mb={3}>
+          {code}
+        </Heading>
 
-          {camera && (
-            <Box w={['full', '75%']}>
-              <PhotoCapture onAccept={acceptPhoto} />
-            </Box>
-          )}
+        {camera && (
+          <Box w={['full', '75%']}>
+            <PhotoCapture onAccept={acceptPhoto} />
+          </Box>
+        )}
 
-          {previewUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <Image
-              objectFit="cover"
-              border="1px solid"
-              rounded="md"
-              shadow="md"
-              borderColor="gray.200"
-              alt="file uploader preview"
-              src={previewUrl}
+        {previewUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <Image
+            objectFit="cover"
+            border="1px solid"
+            rounded="md"
+            shadow="md"
+            borderColor="gray.200"
+            alt="file uploader preview"
+            src={previewUrl}
+            w={['full', '75%']}
+            style={{ margin: '0 auto' }}
+          />
+        ) : (
+          !camera && (
+            <Center
+              as="label"
+              py={3}
+              px={100}
+              border={'1px dashed'}
+              borderColor="primary"
               w={['full', '75%']}
-              style={{ margin: '0 auto' }}
-            />
-          ) : (
-            !camera && (
-              <Center
-                as="label"
-                py={3}
-                px={100}
-                border={'1px dashed'}
-                borderColor="primary"
-                w={['full', '75%']}
-                minH={350}
-              >
-                <Input
-                  hidden
-                  onChange={onFileUploadChange}
-                  type="file"
-                  ref={fileInput}
-                />
-                <IconButton
-                  aria-label="Take Photo"
-                  icon={<CameraIcon />}
-                  size="lg"
-                  variant="ghost"
-                  onClick={takePhoto}
-                  color="white"
-                  rounded="full"
-                  bg="primary.500"
-                  opacity=".15"
-                  _hover={{ opacity: 1, bg: 'primary.500' }}
-                  p={2}
-                />
-                <IconButton
-                  onClick={() => {
-                    fileInput.current?.click()
-                  }}
-                  icon={<ArrowUpTrayIcon />}
-                  aria-label="Upload Photo"
-                  bg="primary.500"
-                  opacity=".15"
-                  size="lg"
-                  variant="ghost"
-                  color="white"
-                  rounded="full"
-                  _hover={{ opacity: 1, bg: 'primary.500' }}
-                  p={2}
-                ></IconButton>
-              </Center>
-            )
-          )}
-          {member?.photo_denial_reason && (
-            <Alert
-              status="error"
-              bg="red.200"
-              size="lg"
-              w={['full', '75%']}
-              mx="auto"
+              minH={350}
             >
-              <AlertIcon />
-              <Text>
-                Your verification photo was denied.
-                <br />
-                {member.photo_denial_reason}
-              </Text>
-            </Alert>
-          )}
-          <Alert rounded="lg" shadow="lg" status="warning" w={['full', '75%']}>
+              <Input
+                hidden
+                onChange={onFileUploadChange}
+                type="file"
+                ref={fileInput}
+              />
+              <IconButton
+                aria-label="Take Photo"
+                icon={<CameraIcon />}
+                size="lg"
+                variant="ghost"
+                onClick={takePhoto}
+                color="white"
+                rounded="full"
+                bg="primary.500"
+                opacity=".15"
+                _hover={{ opacity: 1, bg: 'primary.500' }}
+                p={2}
+              />
+              <IconButton
+                onClick={() => {
+                  fileInput.current?.click()
+                }}
+                icon={<ArrowUpTrayIcon />}
+                aria-label="Upload Photo"
+                bg="primary.500"
+                opacity=".15"
+                size="lg"
+                variant="ghost"
+                color="white"
+                rounded="full"
+                _hover={{ opacity: 1, bg: 'primary.500' }}
+                p={2}
+              ></IconButton>
+            </Center>
+          )
+        )}
+        {member?.photo_denial_reason && (
+          <Alert
+            status="error"
+            alignItems="start"
+            size="lg"
+            w={['full', '75%']}
+            mx="auto"
+          >
             <AlertIcon />
-            <Text fontSize="xl" textAlign="left">
-              <strong>
-                Be sure your face and code is clearly visible, with no
-                sunglasses or hats.
-              </strong>
-              <br />
-              Your photo will not be accepted without the verification code
-              written on a piece of paper.
+            <Text mt={0}>
+              Your verification photo was denied: &nbsp; &apos;
+              {member.photo_denial_reason}&apos;
             </Text>
           </Alert>
+        )}
+        <Alert rounded="lg" shadow="lg" alignItems="start" w={['full', '75%']}>
+          <AlertIcon />
+          <Text fontSize="xl" textAlign="left" mt={0}>
+            <strong>
+              Be sure your face and code is clearly visible, with no sunglasses
+              or hats.
+            </strong>
+            <br />
+            Your photo will not be accepted without the verification code
+            written on a piece of paper.
+          </Text>
+        </Alert>
+        {((hasPhoto && member?.photo_denial_reason === null) || hasUpload) && (
           <Flex
+            dir="column"
             alignItems="center"
             align="center"
             justify="middle"
             textAlign="center"
           >
-            <FieldCheckbox
-              w="fit-content"
-              field="verify"
-              label=""
-              registerOptions={{ required: 'Certification is Required' }}
+            <Checkbox
+              ref={verifyCheckbox}
+              name="verify"
+              onChange={(e) => {
+                e.target.checked ? setVerify(true) : setVerify(false)
+              }}
             >
               I certify that the photo I am submitting is me.
-            </FieldCheckbox>
-            <ErrorMessage
-              render={(m) => <Text className="text-red-500">{m.message}</Text>}
-              errors={errors}
-              name={'file'}
-            />
+            </Checkbox>
+            {error && <Text className="text-red-500">{error}</Text>}
           </Flex>
+        )}
 
+        {!complete && (
           <HStack spacing={4} justify="center">
-            <Button size="lg" disabled={!previewUrl} onClick={onCancelFile}>
-              Clear
-            </Button>
-            {member?.photo && !member?.photo_denial_reason && isVerified && (
-              <Button
-                type="submit"
+            {(hasPhoto || hasUpload) && previewUrl && (
+              <Button size="lg" disabled={!previewUrl} onClick={onCancelFile}>
+                Clear
+              </Button>
+            )}
+            {hasPhoto && member?.photo_denial_reason === null && (
+              <BusyButton
                 size="lg"
-                onClick={handleSubmit(skip)}
+                disabled={!isVerified}
+                onClick={() => submitExisting()}
                 colorScheme="primary"
               >
                 Use Existing
-              </Button>
+              </BusyButton>
             )}
-            {file && (
-              <Button
-                type="submit"
+            {hasUpload && (
+              <BusyButton
                 size="lg"
-                disabled={!canUpload}
+                disabled={!isVerified}
                 colorScheme="accent"
+                onClick={() => submitNew()}
               >
                 Upload & Continue
-              </Button>
+              </BusyButton>
             )}
           </HStack>
-        </Stack>
-      </form>
-    </FormProvider>
+        )}
+      </Stack>
+    </>
   )
 }
 

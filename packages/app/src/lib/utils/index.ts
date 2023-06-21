@@ -55,6 +55,7 @@ export async function postJSON<T = never | any, R = DefaultTo<null, T>>(
   return await fetchJSON<T, R>(url, data, 'POST')
 }
 
+
 export async function putJSON<T = never | any, R = DefaultTo<null, T>>(
   url: string,
   data: T
@@ -96,6 +97,30 @@ export async function fetchJSON<T = object | any, R = DefaultTo<null, T>>(
     return { success, error: { message: error.message || error } }
   }
 }
+
+export async function postForm<T = any>(
+  url: string,
+  withForm: (f: FormData) => void
+): Promise<ApiResult<T>> {
+  const data = new FormData()
+  withForm(data)
+  const response = await fetch(url, {
+    method: 'POST',
+    body: data,
+  })
+  const { ok: success } = response
+  try {
+    const body = (await response.json()) as ApiResponse<T>
+    if (!body) {
+      return { success, error: { message: 'No response body' } }
+    }
+    const { data, error } = body
+    return { success, data, error } as ApiResult<T>
+  } catch (error) {
+    return { success, error: { message: error.message || error } }
+  }
+}
+
 
 export function pruneUndefined<T = Record<string, any>>(
   obj: T,

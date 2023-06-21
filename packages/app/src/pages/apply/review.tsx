@@ -10,6 +10,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useUser } from 'hooks/use-user'
 import {
   Alert,
+  AlertIcon,
   Box,
   Button,
   Heading,
@@ -74,11 +75,8 @@ function Review() {
       header={<ApplicationSteps status={'review'} />}
     >
       <Box>
-        <Heading as="h1" size="h1">
-          Watch your inbox!
-        </Heading>
         <Heading as="h2" size="xl" pt={16}>
-          One of our brothers will be in touch with you for final verification.{' '}
+          Now, you wait...
         </Heading>
 
         {!complete && (
@@ -115,22 +113,23 @@ function Review() {
           </>
         )}
         {complete && (
-          <>
-            <Alert
-              as="h4"
-              color="white"
-              my={8}
-              status="success"
-              justifyContent="center"
-              py={8}
-              rounded="lg"
-              shadow="lg"
-            >
+          <Alert
+            color="white"
+            my={8}
+            status="success"
+            alignItems="start"
+            justifyContent="center"
+            py={8}
+            rounded="lg"
+            shadow="lg"
+          >
+            <AlertIcon />
+            <Text m={0}>
               Your application is currently being reviewed by our team. You will
               receive an email with our decision within 7 days. <br />
               Thank you for your interest in our fraternity.
-            </Alert>
-          </>
+            </Text>
+          </Alert>
         )}
       </Box>
     </Page>

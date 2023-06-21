@@ -12,7 +12,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 
 async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse<Applicant>>) {
   try {
-    if (!withMethods(req, ['POST'])) return
+    withMethods(req, ['POST'])
 
     const applicant = await withApplicant(req, res)
 
@@ -51,10 +51,6 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse<Appl
       SendGridTemplate.AppNotification,
       SendGridCategory.Notification
     )
-
-    if (fileInfo && previousPhoto) {
-      await deleteFile(previousPhoto.id)
-    }
 
     res.status(200).json(ApiResponse(updatedUser))
   } catch (e: any) {

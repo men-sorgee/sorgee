@@ -1,5 +1,6 @@
 export { ButtonConfirm } from './ButtonConfirm'
 export { ButtonLink } from './ButtonLink'
+export { BusyButton } from './BusyButton'
 
 export { Loading } from './Loading'
 export { Logo } from './Logo'
