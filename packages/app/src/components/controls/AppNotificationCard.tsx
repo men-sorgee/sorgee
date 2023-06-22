@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { useAppNotifications } from '@hooks/use-app-notifications'
+import { useAppNotifications } from 'hooks/use-app-notifications'
 import { AppNotification, Member } from 'lib/models'
 
 import {

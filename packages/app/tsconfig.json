@@ -19,9 +19,9 @@
     "jsx": "preserve",
     //"jsxImportSource": "@emotion/react",
     "paths": {
-      "@components/*": ["components/*"],
-      "@lib/*": ["lib/*"],
-      "@hooks/*": ["hooks/*"]
+      "components/*": ["components/*"],
+      "lib/*": ["lib/*"],
+      "hooks/*": ["hooks/*"]
     },
     "plugins": [
       {

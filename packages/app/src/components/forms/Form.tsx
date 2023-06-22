@@ -8,18 +8,20 @@ import { FormProvider, useForm, useFormContext } from 'react-hook-form'
 
 import { useToast } from '@chakra-ui/react'
 
-import { debouncedPromise } from 'lib/utils'
+import { ApiResult, debouncedPromise } from 'lib/utils'
 
-type FormProps<T> = {
+type FormProps<T = any> = {
   successMessage?: string
-  defaultValues: Partial<T> | Promise<Partial<T>>
-  children: ReactNode | ReactNode[]
+  defaultValues?: Partial<T> | Promise<Partial<T>>
+  children: (
+    context: UseFormReturn<T>
+  ) => ReactElement | ReactNode | ReactNode[]
   autoSave?: boolean
-  onSubmit: (data: T) => Promise<[T, ApiError | null]>
-  onSuccess?: () => void
+  onSubmit: (data: T) => Promise<ApiResult<T>>
+  onSuccess?: (data: T) => void
 }
 
-export default function Form<T>({
+export default function Form<T = any>({
   successMessage = 'Success',
   defaultValues,
   children,
@@ -53,9 +55,9 @@ export default function Form<T>({
 
   const onSubmitWrapper = useCallback(
     async (data: T) => {
-      const [r, error] = await debouncedSubmit(data)
-      const ok = error?.message == undefined
-      if (ok) {
+      const { success, error } = await debouncedSubmit(data)
+
+      if (success) {
         toast({
           title: 'Success',
           description: successMessage,
@@ -63,8 +65,8 @@ export default function Form<T>({
           duration: autoSave ? 1000 : 4000,
           isClosable: true,
           onCloseComplete: () => {
-            reset(r)
-            onSuccess()
+            reset()
+            onSuccess(data)
           }
         })
       } else if (error?.field) {
@@ -112,16 +114,18 @@ export default function Form<T>({
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmitWrapper)}>{children}</form>
+      <form onSubmit={handleSubmit(onSubmitWrapper)}>{children(methods)}</form>
     </FormProvider>
   )
 }
 
-interface ConnectFormProps {
-  children(children: UseFormReturn): ReactElement
+interface ConnectFormProps<T = any> {
+  children: (
+    children: UseFormReturn<T>
+  ) => ReactElement | ReactNode | ReactNode[]
 }
-export function ConnectForm({ children }: ConnectFormProps) {
-  const methods = useFormContext()
+export function ConnectForm<T>({ children }: ConnectFormProps<T>) {
+  const methods = useFormContext<T>()
 
-  return children({ ...methods })
+  return children(methods)
 }

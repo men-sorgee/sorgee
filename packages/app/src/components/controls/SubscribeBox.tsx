@@ -1,8 +1,6 @@
 import { useState } from 'react'
-
 import { SubscriptionData } from 'lib/models'
 import { postJSON } from 'lib/utils'
-import { FormProvider, useForm } from 'react-hook-form'
 
 import {
   Box,
@@ -14,23 +12,13 @@ import {
   Text
 } from '@chakra-ui/react'
 
-import { FieldInput } from '../forms'
+import { FieldInput, Form } from '../forms'
+import { BusyButton } from './BusyButton'
 
 type Props = BoxProps
+
 export const SubscribeBox = chakra(({ ...props }: Props) => {
   const [subscribed, setSubscribed] = useState(false)
-  const methods = useForm<SubscriptionData>({
-    mode: 'onBlur'
-  })
-  const { handleSubmit, setError } = methods
-  const onSubmit = async (data: SubscriptionData) => {
-    const { success, error } = await postJSON('/api/subscribe', data)
-    if (success) {
-      setSubscribed(true)
-    } else {
-      setError('email', error)
-    }
-  }
 
   if (subscribed)
     return (
@@ -52,55 +40,57 @@ export const SubscribeBox = chakra(({ ...props }: Props) => {
         we&apos;re opened up.
       </Text>
 
-      <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Flex
-            direction={['column', 'column', 'row']}
-            justify="space-between"
-            gap={4}
-            mt={4}
-          >
-            <FieldInput
-              field="name"
-              registerOptions={{
-                required: {
-                  value: true,
-                  message: 'Please enter your name'
-                }
-              }}
-              placeholder={' name'}
-              autoComplete="full-name"
-              pattern="^[a-zA-Z]{1,}\w+?$"
-            />
-            <FieldInput
-              field="email"
-              registerOptions={{
-                required: {
-                  value: true,
-                  message: 'Please enter your email address'
-                }
-              }}
-              type="email"
-              placeholder={'email'}
-              autoComplete="email"
-            />
-            <Button
-              flex="grow"
-              type="submit"
-              size="lg"
-              fontSize="sm"
-              color={'white'}
+      <Form<SubscriptionData>
+        onSubmit={(data: SubscriptionData) =>
+          postJSON<SubscriptionData>('/api/subscribe', data)
+        }
+        onSuccess={() => setSubscribed(true)}
+        successMessage="Successfully subscribed to our newsletter"
+      >
+        {() => (
+          <>
+            <Flex
+              direction={['column', 'column', 'row']}
+              justify="space-between"
+              gap={4}
+              mt={4}
             >
-              Email Me
-            </Button>
-          </Flex>
+              <FieldInput
+                field="name"
+                registerOptions={{
+                  required: {
+                    value: true,
+                    message: 'Please enter your name'
+                  }
+                }}
+                placeholder={' name'}
+                autoComplete="full-name"
+                pattern="^[a-zA-Z]{1,}\w+?$"
+              />
+              <FieldInput
+                field="email"
+                registerOptions={{
+                  required: {
+                    value: true,
+                    message: 'Please enter your email address'
+                  }
+                }}
+                type="email"
+                placeholder={'email'}
+                autoComplete="email"
+              />
+              <BusyButton type="submit" size="lg" fontSize="sm" color={'white'}>
+                Email Me
+              </BusyButton>
+            </Flex>
 
-          <Text fontSize="xs" fontStyle={'italic'} color={'text'}>
-            Add your information here, only if you agree to our Terms of Service
-            and Privacy Policy.
-          </Text>
-        </form>
-      </FormProvider>
+            <Text fontSize="xs" fontStyle={'italic'} color={'text'}>
+              Add your information here, only if you agree to our Terms of
+              Service and Privacy Policy.
+            </Text>
+          </>
+        )}
+      </Form>
     </Box>
   )
 })

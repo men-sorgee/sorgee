@@ -77,7 +77,7 @@ export async function getFileInfo(req: NextApiRequest): Promise<FileInfo & { for
     return { mimetype, originalFilename, filepath, data, form }
   } catch (er) {
     console.error(er)
-    throw new Error('No available file to in request')
+    return null
   }
 }
 

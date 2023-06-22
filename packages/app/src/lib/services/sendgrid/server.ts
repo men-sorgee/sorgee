@@ -60,13 +60,13 @@ export async function updateSendGrid(
       },
     })
     if (response.statusCode > 202) {
-      throw new Error('Sendgrid Error:' + JSON.stringify(data))
+      console.dir(response.body, { depth: null })
+      throw new Error('Sendgrid Error:' + JSON.stringify(data, null, 2))
     }
-    console.log('contact synced: ' + email)
+    console.log('SendGrid: contact synced: ' + email)
     return data
   } catch (error) {
-    console.error(error.message, error)
-    throw error
+    console.error(error)
   }
 }
 
@@ -110,14 +110,17 @@ export async function sendNotificationEmail(
       notification_id,
     },
   }
-
-  const [response, resData] = await getMailer().send(email, false)
-  if (response.statusCode > 202) {
-    const { errors } = response.body as { errors: string[] }
-    throw new Error(
-      `Sendgrid Email ${category} Error: ${errors?.join(', ') || resData || response.body}`
-    )
+  try {
+    const [response, results] = await getMailer().send(email, false)
+    if (response.statusCode > 202) {
+      console.dir(results, {
+        depth: null,
+      })
+      throw new Error('Sendgrid Error:' + JSON.stringify(results, null, 2))
+    }
+    console.log(`SendGrid: ${category} email sent to ${to_email}`)
+    return data
+  } catch (error) {
+    console.error(error)
   }
-  console.log(`SendGrid Email ${category} Sent: ${to_email}`)
-  return data
 }

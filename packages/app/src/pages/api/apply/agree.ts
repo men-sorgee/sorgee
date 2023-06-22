@@ -51,6 +51,7 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
         if (congratsEmail == null) throw new Error('Notification not found')
 
         const { button_text, button_url, subject, body, data, template, category } = congratsEmail
+
         await sendNotificationEmail(
           updatedUser.email,
           updatedUser.first_name,

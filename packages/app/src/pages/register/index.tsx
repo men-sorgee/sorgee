@@ -68,16 +68,6 @@ export default function Register({
     required: 'This field is required'
   }
 
-  const onSubmit = async (
-    data: SignUpForm
-  ): Promise<[SignUpForm, ApiError]> => {
-    const { data: response, error } = await postJSON<SignUpForm>(
-      '/api/apply/register',
-      data
-    )
-    return [response, error]
-  }
-
   const minYear = new Date().getFullYear() - 100
   const maxYear = new Date().getFullYear() - 21
 
@@ -93,62 +83,63 @@ export default function Register({
           promo: promo?.code,
           email
         }}
-        onSuccess={() => {
-          signIn(null, {
-            callbackUrl: '/apply'
+        onSuccess={({ email }) => {
+          signIn('email', {
+            callbackUrl: '/apply',
+            email: email || ''
           })
         }}
-        onSubmit={onSubmit}
+        onSubmit={(data) => {
+          return postJSON<SignUpForm>('/api/register', data)
+        }}
         successMessage={'Your account has been created.'}
       >
-        <ConnectForm>
-          {({ register, formState: { isDirty, isSubmitting } }) => (
-            <>
-              <SimpleGrid columns={[1, 2]} spacing={4}>
+        {({ register }) => (
+          <>
+            <SimpleGrid columns={[1, 2]} spacing={4}>
+              <FieldInput
+                field="first_name"
+                label="First Name"
+                registerOptions={required}
+              />
+              <FieldInput field="last_name" label="Last Name" />
+              <GridItem colSpan={[1, 2]}>
                 <FieldInput
-                  field="first_name"
-                  label="First Name"
+                  type="email"
+                  field="email"
+                  label="Email"
                   registerOptions={required}
                 />
-                <FieldInput field="last_name" label="Last Name" />
-                <GridItem colSpan={[1, 2]}>
-                  <FieldInput
-                    type="email"
-                    field="email"
-                    label="Email"
-                    registerOptions={required}
-                  />
-                </GridItem>
-                <FieldSelect
-                  field="birth_month"
-                  label="Birth Month"
-                  options={birthMonthOptions}
-                  registerOptions={required}
-                />
-                <FieldInput
-                  type="number"
-                  field="birth_year"
-                  label="Birth Year"
-                  min={minYear}
-                  max={maxYear}
-                  registerOptions={required}
-                />
-                <input type="hidden" {...register('promo')} />
-              </SimpleGrid>
-              {promo?.code && (
-                <>
-                  <Heading>
-                    Promo Code: <strong>{promo?.code}</strong>
-                  </Heading>
-                  <Markdown content={promo?.description} />
-                </>
-              )}
-              <Button color="accent" type="submit" mt={4}>
-                Start Application
-              </Button>
-            </>
-          )}
-        </ConnectForm>
+              </GridItem>
+              <FieldSelect
+                field="birth_month"
+                label="Birth Month"
+                options={birthMonthOptions}
+                registerOptions={required}
+              />
+              <FieldInput
+                type="number"
+                field="birth_year"
+                label="Birth Year"
+                min={minYear}
+                max={maxYear}
+                registerOptions={required}
+              />
+              <input type="hidden" {...register('promo')} />
+            </SimpleGrid>
+            {promo?.code && (
+              <>
+                <Heading>
+                  Promo Code: <strong>{promo?.code}</strong>
+                </Heading>
+                <Markdown content={promo?.description} />
+              </>
+            )}
+            <Button color="accent" type="submit" mt={4}>
+              Start Application
+            </Button>
+          </>
+        )}
       </Form>
     </Page>
   )

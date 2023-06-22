@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
 import { NotificationCard } from 'components/controls'
-import { useAppNotifications } from '@hooks/use-app-notifications'
+import { useAppNotifications } from 'hooks/use-app-notifications'
 import { Member } from 'lib/models'
 
 import {

@@ -1,41 +1,48 @@
 import { Button, ButtonProps, Spinner, chakra } from '@chakra-ui/react'
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 
 export type BusyButtonProps = ButtonProps & {
-  onClick: () => Promise<any> | any
+  onClick?: () => Promise<any> | any
   timeout?: number
   children: React.ReactNode | React.ReactNode[]
 }
 
 export const BusyButton = chakra(
-  ({ onClick, timeout = 10000, disabled, children, ...props }) => {
+  ({ onClick, timeout = 5000, disabled, children, ...props }) => {
     const [busy, setBusy] = useState(false)
-
+    const buttonRef = useRef<HTMLButtonElement>(null)
     const handleClick = useCallback(() => {
       const clickPromise = () =>
         new Promise((resolve, reject) => {
-          const promise = onClick()
-          if (promise.then) {
+          const promise = onClick?.call() || null
+          if (promise && promise?.then) {
             promise.then(resolve).catch(reject)
           } else {
-            setTimeout(() => {
-              resolve(promise)
-            }, timeout)
+            if (buttonRef.current && buttonRef.current.type === 'submit') {
+              buttonRef.current
+                .closest('form')
+                ?.requestSubmit(buttonRef.current)
+            }
           }
+          setTimeout(() => {
+            resolve(promise)
+          }, timeout)
         })
       setBusy(true)
-      clickPromise().finally(() => {
+      clickPromise().catch(() => {
         setBusy(false)
       })
+
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [busy, onClick, timeout, setBusy])
 
     return (
       <>
         <Button
-          onClick={() => handleClick()}
-          {...props}
+          ref={buttonRef}
           isDisabled={busy || disabled}
+          onClick={handleClick}
+          {...props}
         >
           {busy && <Spinner size="sm" mr={2} />} {children}
         </Button>

@@ -33,7 +33,7 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse<Appl
     }
 
     const updatedUser = (await updateUser(applicant.id, {
-      photo: file?.id || previousPhoto?.id || null,
+      photo: file || previousPhoto,
       application_status: 'review',
       user_type: 'applicant',
     })) as Applicant

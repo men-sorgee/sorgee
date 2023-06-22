@@ -5,10 +5,11 @@ import { Avatar, AvatarProps, chakra } from '@chakra-ui/react'
 
 type Props = AvatarProps & {
   member: Partial<SearchableMember>
+  children?: React.ReactNode | React.ReactNode[]
 }
 
 export const MemberAvatar = chakra(
-  ({ member: { nickname, picture }, ...props }: Props) => {
+  ({ member: { nickname, picture }, children, ...props }: Props) => {
     return (
       <Avatar
         bg="accent.500"
@@ -24,7 +25,9 @@ export const MemberAvatar = chakra(
         color="white"
         loading="lazy"
         {...props}
-      ></Avatar>
+      >
+        {children}
+      </Avatar>
     )
   }
 )

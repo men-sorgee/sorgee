@@ -1,9 +1,6 @@
 import Page from 'components/Page'
-import { useRouter } from 'next/router'
-
 import { useUser } from 'hooks/use-user'
 import { Heading, HStack, Text, VStack } from '@chakra-ui/react'
-
 import { ButtonLink } from 'components/controls'
 import { pledgeSurvey } from 'lib/config'
 import { ApplicationStatus, MemberLevel } from 'lib/models'
@@ -11,7 +8,6 @@ import ApplicationSteps from './_steps'
 import { Plans } from 'components'
 
 function Approved() {
-  const router = useRouter()
   const { loading, level, member } = useUser({
     minLevel: MemberLevel.applicant,
     minAppStatus: ApplicationStatus.approved
@@ -59,9 +55,22 @@ function Approved() {
               </HStack>
             </>
           )}
-          {level >= MemberLevel.brother && <Plans allowSubscribe={true} />}
-          <Text>Or stick with the free plan and complete your account:</Text>
+          {level == MemberLevel.brother &&
+            member?.membership_type == 'none' && (
+              <>
+                <Plans allowSubscribe={true} />
+                <Text>
+                  Or stick with the free plan and complete your profile.
+                </Text>
+              </>
+            )}
+
           <HStack spacing={4} textAlign="center" my={4}>
+            {level >= MemberLevel.brother && (
+              <ButtonLink href="/member/account" colorScheme="primary">
+                Manage Account
+              </ButtonLink>
+            )}
             <ButtonLink href="/member/settings" colorScheme="primary">
               Manage Settings
             </ButtonLink>

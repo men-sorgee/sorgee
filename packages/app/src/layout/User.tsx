@@ -46,6 +46,7 @@ export default function UserMenu(_props: Props) {
     authenticated,
     isApplicant,
     isMember,
+    isBrother,
     isStaff,
     level,
     hasFeature,
@@ -55,27 +56,9 @@ export default function UserMenu(_props: Props) {
   })
   const showApply = !site?.invite_only
 
-  const toast = useToast()
-
-  // useEffect(() => {
-  //   if (!loading && member?.notifications?.length) {
-  //     member.notifications.forEach((n) => {
-  //       toast({
-  //         title: 'Notification!',
-  //         description: n.message,
-  //         status: 'info',
-  //         isClosable: true,
-  //         onCloseComplete: () => {
-  //         }
-  //       })
-  //     })
-  //   }
-  // }, [loading, member?.notifications, member?.notifications?.length, toast])
-
   const hasDirectory =
     level >= MemberLevel.brother && hasFeature('view_directory')
   const hasBuddyList = level >= MemberLevel.brother && hasFeature('buddy_list')
-  const hasEvents = isMember && level >= MemberLevel.brother
 
   if (loading) return <Spinner />
 
@@ -118,28 +101,37 @@ export default function UserMenu(_props: Props) {
             <MenuDivider />
             {isMember && (
               <>
-                {member.membership_type != 'none' && (
-                  <MenuItem
-                    icon={<UserIcon color={'white'} width={'1.5rem'} />}
-                    bg="black"
-                    _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                    as={Link}
-                    href="/member/account"
-                  >
-                    Account
-                  </MenuItem>
-                )}
-                {member.membership_type == 'none' && (
-                  <MenuItem
-                    icon={<SquaresPlusIcon color={'white'} width={'1.5rem'} />}
-                    bg="black"
-                    _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                    as={Link}
-                    rel="noopener noreferrer"
-                    href="/member/account"
-                  >
-                    Upgrade
-                  </MenuItem>
+                {!isStaff && isBrother && (
+                  <>
+                    {member.membership_type != 'none' ? (
+                      <MenuItem
+                        icon={
+                          <CreditCardIcon color={'white'} width={'1.5rem'} />
+                        }
+                        bg="black"
+                        _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                        as={Link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href="/api/stripe/portal"
+                      >
+                        Billing
+                      </MenuItem>
+                    ) : (
+                      <MenuItem
+                        icon={
+                          <SquaresPlusIcon color={'white'} width={'1.5rem'} />
+                        }
+                        bg="black"
+                        _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                        as={Link}
+                        rel="noopener noreferrer"
+                        href="/member/account"
+                      >
+                        Upgrade Subscription
+                      </MenuItem>
+                    )}
+                  </>
                 )}
 
                 <MenuItem
@@ -151,20 +143,6 @@ export default function UserMenu(_props: Props) {
                 >
                   Settings
                 </MenuItem>
-
-                {member.membership_type != 'none' && (
-                  <MenuItem
-                    icon={<CreditCardIcon color={'white'} width={'1.5rem'} />}
-                    bg="black"
-                    _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                    as={Link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href="/api/stripe/portal"
-                  >
-                    Billing
-                  </MenuItem>
-                )}
 
                 <MenuItem
                   icon={<IdentificationIcon color={'white'} width={'1.5rem'} />}
@@ -201,20 +179,19 @@ export default function UserMenu(_props: Props) {
                   </MenuItem>
                 )}
 
-                {level > MemberLevel.pledge && (
+                {level >= MemberLevel.inductee && (
                   <>
                     <MenuDivider />
-                    {hasEvents && (
-                      <MenuItem
-                        icon={<CalendarIcon color={'white'} width={'1.5rem'} />}
-                        bg="black"
-                        _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                        as={Link}
-                        href="/events"
-                      >
-                        Events
-                      </MenuItem>
-                    )}
+
+                    <MenuItem
+                      icon={<CalendarIcon color={'white'} width={'1.5rem'} />}
+                      bg="black"
+                      _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                      as={Link}
+                      href="/events"
+                    >
+                      Events
+                    </MenuItem>
 
                     {hasDirectory && (
                       <MenuItem

@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react'
 
-import { FieldRadioButtons } from 'components/forms'
+import { FieldRadioButtons, Form } from 'components/forms'
 import Page from 'components/Page'
-import { ApplicationStatus, MemberLevel } from 'lib/models'
+import {
+  ApplicationStatus,
+  ContactPreferenceType,
+  MemberLevel
+} from 'lib/models'
 import { postJSON } from 'lib/utils'
 import { useRouter } from 'next/router'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -20,10 +24,12 @@ import {
 } from '@chakra-ui/react'
 
 import ApplicationSteps from './_steps'
+import { BusyButton } from '../../components'
 
 function Review() {
   const router = useRouter()
   const [complete, setComplete] = useState<boolean>(false)
+
   const { loading, member } = useUser({
     minLevel: MemberLevel.applicant,
     minAppStatus: ApplicationStatus.review
@@ -41,32 +47,6 @@ function Review() {
     }
   }, [loading, member, router])
 
-  const methods = useForm<{ contact_preference: string }>({
-    mode: 'onBlur',
-    defaultValues: {
-      contact_preference: member?.contact_preference || 'email'
-    }
-  })
-  const { setError } = methods
-  const toast = useToast()
-  const onSubmit = async ({ contact_preference }) => {
-    const { success, error } = await postJSON('/api/member/me', {
-      contact_preference
-    })
-    if (success) {
-      setComplete(true)
-      toast({
-        title: 'Application Submitted',
-        description: 'Your application has been submitted for review.',
-        status: 'success',
-        duration: 9000,
-        isClosable: true
-      })
-    } else if (error?.field) {
-      setError(error!.field as any, error.message as any)
-    }
-  }
-
   return (
     <Page
       title="Verification Review"
@@ -74,7 +54,7 @@ function Review() {
       requireAuth={true}
       header={<ApplicationSteps status={'review'} />}
     >
-      <Box>
+      <>
         <Heading as="h2" size="xl" pt={16}>
           Now, you wait...
         </Heading>
@@ -85,31 +65,44 @@ function Review() {
               How would you like to be contacted?
             </Text>
 
-            <VStack
-              alignItems="center"
-              align="center"
-              justify="middle"
-              textAlign="center"
-              mt={8}
+            <Form<{ contact_preference: ContactPreferenceType }>
+              defaultValues={{
+                contact_preference: member?.contact_preference || 'email'
+              }}
+              onSubmit={(data) => postJSON('/api/member/me', data)}
+              onSuccess={() => setComplete(true)}
             >
-              <FormProvider {...methods}>
-                <form onSubmit={methods.handleSubmit(onSubmit)}>
+              {() => (
+                <VStack
+                  alignItems="center"
+                  align="center"
+                  justify="middle"
+                  textAlign="center"
+                  mt={8}
+                >
                   <FieldRadioButtons
                     w="fit-content"
                     field="contact_preference"
-                    registerOptions={{ required: 'Certification is Required' }}
+                    registerOptions={{
+                      required: 'Certification is Required'
+                    }}
                     options={[
                       { text: 'Email', value: 'email' },
                       { text: 'Phone', value: 'phone_call' },
                       { text: 'Text', value: 'phone_text' }
                     ]}
                   />
-                  <Button type="submit" mt={8} size="lg" bgColor="accent.500">
+                  <BusyButton
+                    type="submit"
+                    mt={8}
+                    size="lg"
+                    bgColor="accent.500"
+                  >
                     Set Contact Preference
-                  </Button>
-                </form>
-              </FormProvider>
-            </VStack>
+                  </BusyButton>
+                </VStack>
+              )}
+            </Form>
           </>
         )}
         {complete && (
@@ -131,7 +124,7 @@ function Review() {
             </Text>
           </Alert>
         )}
-      </Box>
+      </>
     </Page>
   )
 }

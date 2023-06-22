@@ -57,6 +57,44 @@ export default function ProfilePage(props: PageProps) {
   )
 }
 
+type ProfileProps = Pick<
+  Member,
+  | 'show_profile'
+  | 'nickname'
+  | 'spectrum'
+  | 'mannerisms'
+  | 'relationship_status'
+  | 'biography'
+  | 'age'
+  | 'height'
+  | 'weight'
+  | 'build'
+  | 'skin_tone'
+  | 'hair_color'
+  | 'eye_color'
+  | 'hair_style'
+  | 'body_hair'
+  | 'facial_hair'
+  | 'body_attributes'
+  | 'show_explicit'
+  | 'show_explicit_roles'
+  | 'show_photos'
+  | 'cock_length'
+  | 'cock_girth'
+  | 'cock_attributes'
+  | 'ball_size'
+  | 'ball_gravity'
+  | 'cum_attributes'
+  | 'sexual_scenes'
+  | 'my_roles'
+  | 'my_positions'
+  | 'show_health'
+  | 'hiv_status'
+  | 'last_tested'
+  | 'load_policy'
+  | 'vaccinations'
+>
+
 const ProfileForm = (props: PageProps) => {
   const [tabValue, setTabValue] = useState(0)
   const { member, mutate, level } = useUser()
@@ -99,7 +137,7 @@ const ProfileForm = (props: PageProps) => {
     vaccinations
   } = member
 
-  const defaultValues = {
+  const defaultValues: ProfileProps = {
     show_profile,
     nickname,
     spectrum,
@@ -167,357 +205,355 @@ const ProfileForm = (props: PageProps) => {
           profiles are not likely to get you very far. Photos help!
         </Alert>
       )}
-      <Form<Member>
+      <Form<ProfileProps>
         onSubmit={mutate}
         defaultValues={defaultValues}
         successMessage="Your profile was updated."
       >
-        <ConnectForm>
-          {({ watch, formState: { isDirty, isSubmitting } }) => (
-            <>
-              {(showProfile = watch('show_profile'))}
-              <SimpleGrid
-                bg={bg}
-                columns={{ base: 1, lg: 2 }}
-                my={4}
-                rounded="lg"
-                shadow="lg"
-                border="1px solid transparent"
-                borderColor={showProfile ? 'accent.500' : 'text'}
-              >
-                <Collapse animateOpacity in={showProfile}>
-                  <Flex direction="column" alignContent="center" p={4}>
-                    <MemberHeader member={member} viewer={member} />
+        {({ watch, formState: { isDirty, isSubmitting } }) => (
+          <>
+            {(showProfile = watch('show_profile'))}
+            <SimpleGrid
+              bg={bg}
+              columns={{ base: 1, lg: 2 }}
+              my={4}
+              rounded="lg"
+              shadow="lg"
+              border="1px solid transparent"
+              borderColor={showProfile ? 'accent.500' : 'text'}
+            >
+              <Collapse animateOpacity in={showProfile}>
+                <Flex direction="column" alignContent="center" p={4}>
+                  <MemberHeader member={member} viewer={member} />
 
-                    {member && (
-                      <Text noOfLines={2} py={0} my={0}>
-                        {member?.biography}
-                      </Text>
-                    )}
-                  </Flex>
-                </Collapse>
-                <GridItem colSpan={showProfile ? 1 : 2}>
-                  <Flex
-                    flexDirection="column"
-                    p={4}
-                    flexShrink={1}
-                    borderLeft={{
-                      base: 'none',
-                      lg: showProfile ? '4px dotted black' : ''
-                    }}
-                    borderTop={{
-                      base: showProfile ? '4px dotted black' : '',
-                      lg: 'none'
-                    }}
-                  >
-                    <Text>
-                      You can choose to make your profile private if you do not
-                      wish to show up in member searches.*
+                  {member && (
+                    <Text noOfLines={2} py={0} my={0}>
+                      {member?.biography}
                     </Text>
-                    <Flex flexDirection={['column', 'row']} gap={4} mt={4}>
+                  )}
+                </Flex>
+              </Collapse>
+              <GridItem colSpan={showProfile ? 1 : 2}>
+                <Flex
+                  flexDirection="column"
+                  p={4}
+                  flexShrink={1}
+                  borderLeft={{
+                    base: 'none',
+                    lg: showProfile ? '4px dotted black' : ''
+                  }}
+                  borderTop={{
+                    base: showProfile ? '4px dotted black' : '',
+                    lg: 'none'
+                  }}
+                >
+                  <Text>
+                    You can choose to make your profile private if you do not
+                    wish to show up in member searches.*
+                  </Text>
+                  <Flex flexDirection={['column', 'row']} gap={4} mt={4}>
+                    <FieldSwitch
+                      mb={4}
+                      field="show_profile"
+                      label="Show Profile in Search"
+                      help="Turn this off, if do not wish to be searchable on the members page."
+                    />
+                    {showProfile && (
                       <FieldSwitch
-                        mb={4}
-                        field="show_profile"
-                        label="Show Profile in Search"
+                        mt={4}
+                        field="show_photos"
+                        label="Show Photos on Profile"
                         help="Turn this off, if do not wish to be searchable on the members page."
                       />
-                      {showProfile && (
-                        <FieldSwitch
-                          mt={4}
-                          field="show_photos"
-                          label="Show Photos on Profile"
-                          help="Turn this off, if do not wish to be searchable on the members page."
-                        />
-                      )}
-                    </Flex>
+                    )}
                   </Flex>
-                </GridItem>
-              </SimpleGrid>
-              <Text fontSize="xs" as="em" mb={4}>
-                * This does not affect this information being used to recommend
-                you to other events and members.
-              </Text>
+                </Flex>
+              </GridItem>
+            </SimpleGrid>
+            <Text fontSize="xs" as="em" mb={4}>
+              * This does not affect this information being used to recommend
+              you to other events and members.
+            </Text>
 
-              <SimpleGrid spacing={4} columns={[1, 1, 3]} mt={10}>
-                <GridItem colSpan={[1, 1, 3]}>
-                  <FieldInput
-                    field="nickname"
-                    label="Nickname"
-                    help="This is the name that will be displayed on your profile."
-                    className="col-span-2 sm:col-span-4"
-                  />
-                </GridItem>
-                <FieldSelect
-                  field="spectrum"
-                  label="Orientation"
-                  options={getOptions('spectrum')}
+            <SimpleGrid spacing={4} columns={[1, 1, 3]} mt={10}>
+              <GridItem colSpan={[1, 1, 3]}>
+                <FieldInput
+                  field="nickname"
+                  label="Nickname"
+                  help="This is the name that will be displayed on your profile."
+                  className="col-span-2 sm:col-span-4"
                 />
-                <FieldSelect
-                  field="mannerisms"
-                  label="Mannerisms"
-                  options={getOptions('mannerisms')}
+              </GridItem>
+              <FieldSelect
+                field="spectrum"
+                label="Orientation"
+                options={getOptions('spectrum')}
+              />
+              <FieldSelect
+                field="mannerisms"
+                label="Mannerisms"
+                options={getOptions('mannerisms')}
+              />
+              <FieldSelect
+                field="relationship_status"
+                label="Relationship Status"
+                options={getOptions('relationship_status')}
+              />
+              <GridItem colSpan={[1, 1, 3]}>
+                <FieldText
+                  field="biography"
+                  label="Biography"
+                  help="Tell us about yourself. What are your interests? What are you looking for?"
+                  rows={4}
                 />
-                <FieldSelect
-                  field="relationship_status"
-                  label="Relationship Status"
-                  options={getOptions('relationship_status')}
-                />
-                <GridItem colSpan={[1, 1, 3]}>
-                  <FieldText
-                    field="biography"
-                    label="Biography"
-                    help="Tell us about yourself. What are your interests? What are you looking for?"
-                    rows={4}
-                  />
-                </GridItem>
-              </SimpleGrid>
+              </GridItem>
+            </SimpleGrid>
 
-              <SimpleGrid mt={4} spacing={4} columns={[2, 2, 4]}>
-                <FieldNumber field="age" label="Age" min={21} />
-                <FieldInput field="height" label="Height" placeholder="5'11" />
-                <FieldNumber field="weight" label="Weight" placeholder="185" />
+            <SimpleGrid mt={4} spacing={4} columns={[2, 2, 4]}>
+              <FieldNumber field="age" label="Age" min={21} />
+              <FieldInput field="height" label="Height" placeholder="5'11" />
+              <FieldNumber field="weight" label="Weight" placeholder="185" />
+              <FieldSelect
+                field="build"
+                label="Build"
+                options={getOptions('build')}
+              />
+              <FieldSelect
+                field="skin_tone"
+                label="Skin Tone"
+                options={getOptions('skin_tone')}
+              />
+              <FieldSelect
+                field="hair_color"
+                label="Hair Color"
+                options={getOptions('hair_color')}
+              />
+              <FieldSelect
+                field="hair_style"
+                label="Hair Style"
+                options={getOptions('hair_style')}
+              />
+              <FieldSelect
+                field="body_hair"
+                label="Body Hair"
+                options={getOptions('body_hair')}
+              />
+              <GridItem colSpan={[1, 1, 2]}>
                 <FieldSelect
-                  field="build"
-                  label="Build"
-                  options={getOptions('build')}
+                  field="facial_hair"
+                  label="Facial Hair"
+                  options={getOptions('facial_hair')}
                 />
+              </GridItem>
+              <GridItem colSpan={[1, 1, 2]}>
                 <FieldSelect
-                  field="skin_tone"
-                  label="Skin Tone"
-                  options={getOptions('skin_tone')}
+                  field="eye_color"
+                  label="Eye Color"
+                  options={getOptions('eye_color')}
                 />
-                <FieldSelect
-                  field="hair_color"
-                  label="Hair Color"
-                  options={getOptions('hair_color')}
+              </GridItem>
+              <GridItem colSpan={[2, 2, 4]}>
+                <FieldCheckboxes
+                  field="body_attributes"
+                  label="Other Attributes"
+                  options={getOptions('body_attributes')}
                 />
-                <FieldSelect
-                  field="hair_style"
-                  label="Hair Style"
-                  options={getOptions('hair_style')}
-                />
-                <FieldSelect
-                  field="body_hair"
-                  label="Body Hair"
-                  options={getOptions('body_hair')}
-                />
-                <GridItem colSpan={[1, 1, 2]}>
-                  <FieldSelect
-                    field="facial_hair"
-                    label="Facial Hair"
-                    options={getOptions('facial_hair')}
-                  />
-                </GridItem>
-                <GridItem colSpan={[1, 1, 2]}>
-                  <FieldSelect
-                    field="eye_color"
-                    label="Eye Color"
-                    options={getOptions('eye_color')}
-                  />
-                </GridItem>
-                <GridItem colSpan={[2, 2, 4]}>
-                  <FieldCheckboxes
-                    field="body_attributes"
-                    label="Other Attributes"
-                    options={getOptions('body_attributes')}
-                  />
-                </GridItem>
-              </SimpleGrid>
+              </GridItem>
+            </SimpleGrid>
 
-              <Tabs
-                isFitted
-                defaultIndex={tabValue}
-                onChange={(index) => setTabValue(index)}
-                mt={4}
-                size={['sm', 'lg']}
-              >
-                <TabList fontWeight="bold">
-                  <Tab
-                    fontSize={['md', 'lg', '2xl']}
-                    fontWeight={tabValue == 0 ? 'bold' : null}
-                  >
-                    Below the Belt
-                  </Tab>
-                  <Tab
-                    fontSize={['md', 'lg', '2xl']}
-                    fontWeight={tabValue == 1 ? 'bold' : null}
-                  >
-                    Role & Fetishes
-                  </Tab>
-                  <Tab
-                    fontSize={['md', 'lg', '2xl']}
-                    fontWeight={tabValue == 2 ? 'bold' : null}
-                  >
-                    Health Info
-                  </Tab>
-                </TabList>
-                <TabPanels>
-                  <TabPanel p={0} pt={showProfile ? 0 : 4}>
-                    <Collapse animateOpacity in={showProfile}>
-                      <Alert
-                        bg={'primary.300'}
-                        color="white"
-                        flexDirection="column"
-                        my={4}
-                        p={4}
-                        borderRadius="md"
-                        shadow="md"
-                      >
-                        <FieldSwitch
-                          mt={4}
-                          field="show_explicit"
-                          label="Show Explicit Details on Profile"
-                          help="Turn this off, if would rather not show this information to other verified members."
-                        />
-                      </Alert>
-                    </Collapse>
-                    <SimpleGrid spacing={4} columns={[2]}>
-                      <FieldInput
-                        field="cock_length"
-                        label="Cock Length"
-                        type="number"
-                        step=".5"
+            <Tabs
+              isFitted
+              defaultIndex={tabValue}
+              onChange={(index) => setTabValue(index)}
+              mt={4}
+              size={['sm', 'lg']}
+            >
+              <TabList fontWeight="bold">
+                <Tab
+                  fontSize={['md', 'lg', '2xl']}
+                  fontWeight={tabValue == 0 ? 'bold' : null}
+                >
+                  Below the Belt
+                </Tab>
+                <Tab
+                  fontSize={['md', 'lg', '2xl']}
+                  fontWeight={tabValue == 1 ? 'bold' : null}
+                >
+                  Role & Fetishes
+                </Tab>
+                <Tab
+                  fontSize={['md', 'lg', '2xl']}
+                  fontWeight={tabValue == 2 ? 'bold' : null}
+                >
+                  Health Info
+                </Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel p={0} pt={showProfile ? 0 : 4}>
+                  <Collapse animateOpacity in={showProfile}>
+                    <Alert
+                      bg={'primary.300'}
+                      color="white"
+                      flexDirection="column"
+                      my={4}
+                      p={4}
+                      borderRadius="md"
+                      shadow="md"
+                    >
+                      <FieldSwitch
+                        mt={4}
+                        field="show_explicit"
+                        label="Show Explicit Details on Profile"
+                        help="Turn this off, if would rather not show this information to other verified members."
                       />
-                      <FieldSelect
-                        field="cock_girth"
-                        label="Cock Girth"
-                        options={getOptions('cock_girth')}
-                      />
+                    </Alert>
+                  </Collapse>
+                  <SimpleGrid spacing={4} columns={[2]}>
+                    <FieldInput
+                      field="cock_length"
+                      label="Cock Length"
+                      type="number"
+                      step=".5"
+                    />
+                    <FieldSelect
+                      field="cock_girth"
+                      label="Cock Girth"
+                      options={getOptions('cock_girth')}
+                    />
 
-                      <FieldSelect
-                        field="ball_size"
-                        label="Ball Size"
-                        options={getOptions('ball_size')}
-                      />
-                      <FieldSelect
-                        field="ball_gravity"
-                        label="Ball Sack"
-                        options={getOptions('ball_gravity')}
-                      />
-                    </SimpleGrid>
-                    <SimpleGrid mt={4} spacing={4} columns={1}>
-                      <FieldCheckboxes
-                        field="cock_attributes"
-                        label="Cock Attributes"
-                        options={getOptions('cock_attributes')}
-                      />
-                      <FieldCheckboxes
-                        field="cum_attributes"
-                        label="Cum Attributes"
-                        options={getOptions('cum_attributes')}
-                      />
-                    </SimpleGrid>
-                  </TabPanel>
+                    <FieldSelect
+                      field="ball_size"
+                      label="Ball Size"
+                      options={getOptions('ball_size')}
+                    />
+                    <FieldSelect
+                      field="ball_gravity"
+                      label="Ball Sack"
+                      options={getOptions('ball_gravity')}
+                    />
+                  </SimpleGrid>
+                  <SimpleGrid mt={4} spacing={4} columns={1}>
+                    <FieldCheckboxes
+                      field="cock_attributes"
+                      label="Cock Attributes"
+                      options={getOptions('cock_attributes')}
+                    />
+                    <FieldCheckboxes
+                      field="cum_attributes"
+                      label="Cum Attributes"
+                      options={getOptions('cum_attributes')}
+                    />
+                  </SimpleGrid>
+                </TabPanel>
 
-                  <TabPanel p={0} pt={showProfile ? 0 : 4}>
-                    <Collapse animateOpacity in={showProfile}>
-                      <Alert
-                        bg={'primary.300'}
-                        color="white"
-                        flexDirection="column"
-                        my={4}
-                        p={4}
-                        borderRadius="md"
-                        shadow="md"
-                      >
-                        <FieldSwitch
-                          mt={4}
-                          field="show_explicit_roles"
-                          mx="auto"
-                          label="Show Explicit Roles on Profile"
-                          help="Turn this off, if would rather not show this information to other verified members."
-                        />
-                      </Alert>
-                    </Collapse>
-                    <SimpleGrid spacing={4} columns={1}>
-                      <FieldCheckboxes
-                        field="my_positions"
-                        label="My Sexual Positions"
-                        options={getOptions('my_positions')}
+                <TabPanel p={0} pt={showProfile ? 0 : 4}>
+                  <Collapse animateOpacity in={showProfile}>
+                    <Alert
+                      bg={'primary.300'}
+                      color="white"
+                      flexDirection="column"
+                      my={4}
+                      p={4}
+                      borderRadius="md"
+                      shadow="md"
+                    >
+                      <FieldSwitch
+                        mt={4}
+                        field="show_explicit_roles"
+                        mx="auto"
+                        label="Show Explicit Roles on Profile"
+                        help="Turn this off, if would rather not show this information to other verified members."
                       />
-                      <FieldCheckboxes
-                        field="my_roles"
-                        label="My Sexual Roles"
-                        options={getOptions('my_roles')}
-                      />
-                      <FieldCheckboxes
-                        field="sexual_scenes"
-                        label="Sexual Scenes"
-                        options={getOptions('sexual_scenes')}
-                      />
-                    </SimpleGrid>
-                  </TabPanel>
+                    </Alert>
+                  </Collapse>
+                  <SimpleGrid spacing={4} columns={1}>
+                    <FieldCheckboxes
+                      field="my_positions"
+                      label="My Sexual Positions"
+                      options={getOptions('my_positions')}
+                    />
+                    <FieldCheckboxes
+                      field="my_roles"
+                      label="My Sexual Roles"
+                      options={getOptions('my_roles')}
+                    />
+                    <FieldCheckboxes
+                      field="sexual_scenes"
+                      label="Sexual Scenes"
+                      options={getOptions('sexual_scenes')}
+                    />
+                  </SimpleGrid>
+                </TabPanel>
 
-                  <TabPanel p={0} pt={showProfile ? 0 : 4}>
-                    <Collapse animateOpacity in={showProfile}>
-                      <Alert
-                        bg={'primary.300'}
-                        color="white"
-                        flexDirection="column"
-                        my={4}
-                        p={4}
-                        borderRadius="md"
-                        shadow="md"
-                      >
-                        <FieldSwitch
-                          mt={4}
-                          field="show_health"
-                          label="Show Health Information on Profile"
-                          help="Turn this off, if you'd prefer to not display this information to other verified members."
-                        />
-                      </Alert>
-                    </Collapse>
-                    <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
-                      <FieldSelect
-                        field="hiv_status"
-                        label="HIV Status"
-                        options={getOptions('hiv_status')}
+                <TabPanel p={0} pt={showProfile ? 0 : 4}>
+                  <Collapse animateOpacity in={showProfile}>
+                    <Alert
+                      bg={'primary.300'}
+                      color="white"
+                      flexDirection="column"
+                      my={4}
+                      p={4}
+                      borderRadius="md"
+                      shadow="md"
+                    >
+                      <FieldSwitch
+                        mt={4}
+                        field="show_health"
+                        label="Show Health Information on Profile"
+                        help="Turn this off, if you'd prefer to not display this information to other verified members."
                       />
-                      <FieldInput
-                        field="last_tested"
-                        label="Last Tested"
-                        type="date"
-                      />
-                    </SimpleGrid>
-                    <SimpleGrid mt={4} spacing={4} columns={1}>
-                      <FieldCheckboxes
-                        field="load_policy"
-                        label="Safety Policy"
-                        options={getOptions('load_policy')}
-                      />
-                      <FieldCheckboxes
-                        field="vaccinations"
-                        label="Vax Status"
-                        options={getOptions('vaccinations')}
-                      />
-                    </SimpleGrid>
-                  </TabPanel>
-                </TabPanels>
-              </Tabs>
+                    </Alert>
+                  </Collapse>
+                  <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
+                    <FieldSelect
+                      field="hiv_status"
+                      label="HIV Status"
+                      options={getOptions('hiv_status')}
+                    />
+                    <FieldInput
+                      field="last_tested"
+                      label="Last Tested"
+                      type="date"
+                    />
+                  </SimpleGrid>
+                  <SimpleGrid mt={4} spacing={4} columns={1}>
+                    <FieldCheckboxes
+                      field="load_policy"
+                      label="Safety Policy"
+                      options={getOptions('load_policy')}
+                    />
+                    <FieldCheckboxes
+                      field="vaccinations"
+                      label="Vax Status"
+                      options={getOptions('vaccinations')}
+                    />
+                  </SimpleGrid>
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
 
-              <Box
-                backdropFilter="blur(2px)"
-                position="sticky"
-                h="80px"
-                w="full"
-                bottom={0}
-              ></Box>
-              <Button
-                mt={-10}
-                size="lg"
-                type="submit"
-                bg="primary"
-                color="white"
-                position="sticky"
-                bottom={4}
-                disabled={isSubmitting || !isDirty}
-                _hover={{ bg: 'accent.500' }}
-              >
-                Update Profile
-              </Button>
-            </>
-          )}
-        </ConnectForm>
+            <Box
+              backdropFilter="blur(2px)"
+              position="sticky"
+              h="80px"
+              w="full"
+              bottom={0}
+            ></Box>
+            <Button
+              mt={-10}
+              size="lg"
+              type="submit"
+              bg="primary"
+              color="white"
+              position="sticky"
+              bottom={4}
+              disabled={isSubmitting || !isDirty}
+              _hover={{ bg: 'accent.500' }}
+            >
+              Update Profile
+            </Button>
+          </>
+        )}
       </Form>
     </>
   )

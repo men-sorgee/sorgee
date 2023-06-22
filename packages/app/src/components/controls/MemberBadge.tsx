@@ -31,6 +31,7 @@ export const MemberBadge = chakra(
           {levelName}
         </Badge>
         {isMember && <MemberVouch member={member} size={size as any} />}
+
         {levelValue == MemberLevel.pledge && (
           <Icon
             as={SparklesIcon}
@@ -43,8 +44,9 @@ export const MemberBadge = chakra(
           <Icon
             id={`verified-${member?.id}`}
             as={CheckBadgeIcon}
-            boxSize={8}
-            color="white"
+            boxSize={9}
+            stroke="white"
+            color="green"
             title="Verified at an Event"
             aria-label="Verified at an Event"
           />

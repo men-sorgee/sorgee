@@ -6,6 +6,7 @@ import { JsonFetcher, postJSON } from 'lib/utils'
 import swr from 'swr'
 
 import {
+  AvatarBadge,
   Button,
   chakra,
   Heading,
@@ -28,6 +29,7 @@ import {
 } from '@heroicons/react/24/solid'
 
 import { MemberAvatar } from './MemberAvatar'
+import { CheckIcon } from '@chakra-ui/icons'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
   member: Partial<User>
@@ -87,10 +89,18 @@ export const MemberVouch = chakra(
           <MemberAvatar
             id={`vouched-${member?.id}`}
             size="sm"
+            borderColor="white"
             m={2}
-            title={`Vouched by ${voucher.nickname}`}
+            title={`Vouched for by ${voucher.nickname}`}
             member={voucher}
-          />
+          >
+            <AvatarBadge
+              as={CheckIcon}
+              bg="green"
+              borderColor="white"
+              boxSize={4}
+            />
+          </MemberAvatar>
         )) || (
           <Icon
             as={QuestionMarkCircleIcon}

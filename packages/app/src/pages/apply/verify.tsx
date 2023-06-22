@@ -9,19 +9,12 @@ import {
 } from 'react'
 
 import { BusyButton, PhotoCapture } from 'components/controls'
-import { FieldCheckbox } from 'components/forms'
+
 import Page from 'components/Page'
 import { useUser } from 'hooks/use-user'
-import {
-  ApiError,
-  ApiResponse,
-  ApplicationStatus,
-  Member,
-  MemberLevel
-} from 'lib/models'
+import { ApplicationStatus, Member, MemberLevel } from 'lib/models'
 import { getAssetUrl, postForm, postJSON } from 'lib/utils'
-import { NextRouter, useRouter } from 'next/router'
-import { FormProvider, useForm } from 'react-hook-form'
+import { useRouter } from 'next/router'
 
 import {
   Alert,
@@ -40,8 +33,6 @@ import {
   Text
 } from '@chakra-ui/react'
 import { ArrowUpTrayIcon, CameraIcon } from '@heroicons/react/24/outline'
-import { ErrorMessage } from '@hookform/error-message'
-
 import ApplicationSteps from './_steps'
 
 function VerificationPage() {
