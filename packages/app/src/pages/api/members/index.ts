@@ -40,7 +40,7 @@ export default async function FindMembers(
     const orSearchItems = []
     const andSearchItems = []
 
-    let blockList = member.blocked?.map((u) => u.blocked_id) || [member?.id]
+    let blockList = [member.id, ...member.blocked?.map((u) => u.blocked_id) || []]
 
     andSearchItems.push({
       show_profile: {
