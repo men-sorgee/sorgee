@@ -38,15 +38,15 @@ export const NotificationCard = chakra(({ member, notification }: Props) => {
   useEffect(() => {
     let name = member?.nickname || member?.first_name || 'Friend'
     if (member && body == undefined && notification?.body) {
-      setBody(notification.body.replace(/\$NAME\$/g, name))
+      setBody(notification.body.replaceAll(/\$NAME\$/g, name))
     }
     if (member && message == undefined && notification?.message) {
-      setMessage(notification.message.replace(/\$NAME\$/g, name))
+      setMessage(notification.message.replaceAll(/\$NAME\$/g, name))
     }
     if (member && subject == undefined && notification?.subject) {
-      setSubject(notification.subject.replace(/\$NAME\$/g, name))
+      setSubject(notification.subject.replaceAll(/\$NAME\$/g, name))
     }
-    if (isNew == undefined && notification.status == 'new') {
+    if (isNew == undefined && !notification.read) {
       setIsNew(true)
     }
   }, [
@@ -54,10 +54,11 @@ export const NotificationCard = chakra(({ member, notification }: Props) => {
     isNew,
     member,
     message,
-    notification?.body,
-    notification?.message,
-    notification?.status,
-    notification?.subject,
+    notification.body,
+    notification.message,
+    notification.read,
+    notification.status,
+    notification.subject,
     subject
   ])
 

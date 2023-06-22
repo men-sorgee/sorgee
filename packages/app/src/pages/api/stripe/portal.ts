@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const stripe = getClient()
 
-    if (user.customer_id == null || user.customer_id == undefined) {
+    if (!user.customer_id) {
       const { id, email, first_name, last_name } = user
 
       const customer = await stripe.customers.create({
