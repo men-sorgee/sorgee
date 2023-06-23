@@ -156,6 +156,9 @@ export default function MessagesStyles() {
         .cs-main-container--responsive .cs-chat-container .cs-conversation-header .cs-conversation-header__back {
           display: flex;
         }
+        .cs-chat-container {
+          height: 85%;
+        }
       }
 
       .cs-message {
@@ -860,10 +863,11 @@ export default function MessagesStyles() {
       }
 
       .cs-message-input {
+        bottom: 20px;
+        position: static;
+        display: block;
         display: flex;
         flex-direction: row;
-        position: relative;
-
         background-color: ${secondary};
         border-top: none;
         border-right: none;
@@ -982,7 +986,7 @@ export default function MessagesStyles() {
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
-        height: 100%;
+        background-color: 'black';
         min-width: 180px;
         color: ${color};
         background-color: ${bg};
