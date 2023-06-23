@@ -28,7 +28,7 @@ type Props = {
   member: Member
 }
 
-export const NotificationCard = chakra(({ member, notification }: Props) => {
+export const AppNotificationCard = chakra(({ member, notification }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { markAsRead, delete: del } = useAppNotifications()
   const [isNew, setIsNew] = useState<boolean>(undefined)
@@ -46,8 +46,8 @@ export const NotificationCard = chakra(({ member, notification }: Props) => {
     if (member && subject == undefined && notification?.subject) {
       setSubject(notification.subject.replaceAll(/\$NAME\$/g, name))
     }
-    if (isNew == undefined && !notification.read) {
-      setIsNew(true)
+    if (isNew == undefined) {
+      setIsNew(!notification.read)
     }
   }, [
     body,

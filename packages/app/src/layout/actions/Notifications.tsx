@@ -1,7 +1,6 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
-import { NotificationCard } from 'components/controls'
-import { useAppNotifications } from 'hooks/use-app-notifications'
+import { AppNotificationCard, UserNotificationCard } from 'components/controls'
 import { Member } from 'lib/models'
 
 import {
@@ -14,28 +13,86 @@ import {
   DrawerHeader,
   DrawerOverlay,
   IconButton,
-  useDisclosure
+  useDisclosure,
+  useToast
 } from '@chakra-ui/react'
 import { BellIcon } from '@heroicons/react/24/outline'
+import { useUserNotifications, useAppNotifications } from 'hooks'
 
 interface Props {
   member: Member
 }
 
 const NotificationsAction = ({ member }: Props) => {
+  const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { hasNewNotifications, notifications, newNotificationCount } =
-    useAppNotifications()
+  const [wait, setWait] = useState<boolean>(false)
+  const {
+    hasNewNotifications: hasNewAppNotifications,
+    notifications: appNotifications,
+    newNotificationCount: newAppNotificationCount
+  } = useAppNotifications()
+  const [activeNotification, setActiveNotification] =
+    useState<string>(undefined)
+  const {
+    notifications,
+    delete: del,
+    markAsRead,
+    notificationCount
+  } = useUserNotifications()
+
+  const popMessage = useCallback(() => {
+    let notification = notifications?.pop()
+    if (notification) {
+      setActiveNotification(notification.id)
+      markAsRead(notification.id).then(() => {
+        let instance = toast({
+          title: 'Notice',
+          description: notification.message,
+          status: 'info',
+          duration: null,
+          isClosable: true,
+          position: 'top',
+          onCloseComplete: () => {
+            del(notification.id).then(() => {
+              setActiveNotification(undefined)
+              popMessage()
+            })
+          },
+          render: () => (
+            <UserNotificationCard
+              member={member}
+              notification={notification}
+              onClick={() => {
+                toast.close(instance)
+              }}
+            />
+          )
+        })
+      })
+    }
+  }, [del, markAsRead, member, notifications, toast])
 
   useEffect(() => {
-    if (isOpen && notifications?.length == 0) {
+    if (isOpen && appNotifications?.length == 0) {
       onClose()
     }
-  }, [notifications, isOpen, onClose])
+    if (activeNotification == undefined) {
+      popMessage()
+    }
+  }, [
+    appNotifications,
+    notifications,
+    isOpen,
+    notificationCount,
+    onClose,
+    popMessage,
+    activeNotification
+  ])
 
   return (
     <>
-      {notifications?.length > 0 && (
+      {appNotifications?.length > 0 && (
         <Box>
           <IconButton
             aria-label="Notifications"
@@ -46,7 +103,7 @@ const NotificationsAction = ({ member }: Props) => {
             icon={<BellIcon height="50px" width="50px" />}
             onClick={onOpen}
           />
-          {hasNewNotifications && (
+          {hasNewAppNotifications && (
             <Badge
               bg="accent.500"
               color="white"
@@ -57,7 +114,7 @@ const NotificationsAction = ({ member }: Props) => {
               px={2}
               py={0.5}
             >
-              {newNotificationCount}
+              {newAppNotificationCount}
             </Badge>
           )}
         </Box>
@@ -71,8 +128,8 @@ const NotificationsAction = ({ member }: Props) => {
           </DrawerHeader>
           <DrawerBody p={4}>
             <>
-              {notifications?.map((notification) => (
-                <NotificationCard
+              {appNotifications?.map((notification) => (
+                <AppNotificationCard
                   key={notification.id}
                   member={member}
                   notification={notification}

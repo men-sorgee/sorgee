@@ -47,13 +47,10 @@ export type NotificationUser = {
   read: boolean
 }
 
-export type UserNotificationStatusType =
-  | 'new'
-  | 'read'
 
 export type UserNotification = {
   id: string
-  status: UserNotificationStatusType
+  read: boolean
   date_created?: string
   user_id?: string | User
   message?: string

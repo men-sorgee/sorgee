@@ -28,10 +28,12 @@ type Params = {
 
 const Plans = ({ allowSubscribe = false }: Params) => {
   const { products, loading: productsLoading } = useProducts()
-  const { member, loading, authenticated, level } = useUser()
+  const { member, loading, authenticated, level } = useUser({
+    redirectsEnabled: false
+  })
   const [interval, setInterval] = useState('month')
 
-  const bgColor = useColorModeValue('primary.500', 'gray.700')
+  const bgColor = useColorModeValue('secondary.500', 'gray.700')
 
   const processSubscription = async (planId: string) => {
     const { loadStripe } = await import('@stripe/stripe-js')
@@ -61,30 +63,10 @@ const Plans = ({ allowSubscribe = false }: Params) => {
   }
   return (
     <>
-      <Box textAlign="center" mt={2}>
-        <RadioGroup
-          mx="auto"
-          rounded="full"
-          color="white"
-          bg={bgColor}
-          py={3}
-          px={4}
-          gap={4}
-          display="inline-block"
-          defaultValue={interval}
-        >
-          <Radio value="month" onChange={() => setInterval('month')} p={4}>
-            Monthly
-          </Radio>
-          <Radio value="year" onChange={() => setInterval('year')} p={4}>
-            Yearly
-          </Radio>
-        </RadioGroup>
-      </Box>
       <Flex
         w="full"
         mx="auto"
-        py="4"
+        pb="4"
         justify={['center', 'center', 'space-around']}
         direction={['column', 'column', 'row']}
         gap={[2, 3, 4]}
@@ -191,6 +173,26 @@ const Plans = ({ allowSubscribe = false }: Params) => {
         * Approved and verified members always get event invites for free.
         Additional features are available for a small recurring fee.
       </Text>
+      <Box textAlign="center" mt={2}>
+        <RadioGroup
+          mx="auto"
+          rounded="full"
+          color="white"
+          bg={bgColor}
+          py={0}
+          px={4}
+          gap={4}
+          display="inline-block"
+          defaultValue={interval}
+        >
+          <Radio value="month" onChange={() => setInterval('month')} p={4}>
+            Monthly
+          </Radio>
+          <Radio value="year" onChange={() => setInterval('year')} p={4}>
+            Yearly
+          </Radio>
+        </RadioGroup>
+      </Box>
     </>
   )
 }

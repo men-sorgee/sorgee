@@ -119,6 +119,7 @@ const ChatActions = ({ member, hasFeature }: Props) => {
         onClose={onClose}
         isOpen={isOpen}
         size={['full', 'lg']}
+        blockScrollOnMount={false}
       >
         <DrawerOverlay />
 

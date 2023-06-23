@@ -3,7 +3,8 @@ import React from 'react'
 import {
   MessagesProvider,
   MetaContextProvider,
-  NotificationsProvider,
+  AppNotificationsProvider,
+  UserNotificationsProvider,
   UserProvider
 } from 'hooks'
 import Layout from 'layout'
@@ -51,17 +52,19 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       <MetaContextProvider>
         <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
           <UserProvider>
-            <NotificationsProvider>
-              <MessagesProvider>
-                <React.StrictMode>
-                  <Layout
-                    fonts={[heading.variable, body.variable, mono.variable]}
-                  >
-                    <Component {...pageProps} />
-                  </Layout>
-                </React.StrictMode>
-              </MessagesProvider>
-            </NotificationsProvider>
+            <AppNotificationsProvider>
+              <UserNotificationsProvider>
+                <MessagesProvider>
+                  <React.StrictMode>
+                    <Layout
+                      fonts={[heading.variable, body.variable, mono.variable]}
+                    >
+                      <Component {...pageProps} />
+                    </Layout>
+                  </React.StrictMode>
+                </MessagesProvider>
+              </UserNotificationsProvider>
+            </AppNotificationsProvider>
           </UserProvider>
         </ChakraProvider>
       </MetaContextProvider>

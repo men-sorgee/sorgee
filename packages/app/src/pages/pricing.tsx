@@ -12,7 +12,6 @@ export default function PricingPage() {
         loading={loading}
         title="Pricing"
         description="Add features to your experience"
-        requireAuth
       >
         <Text fontSize="lg" align="center" mb={4} mx={[0, 20, 40, 60]}>
           Approved and verified members always get event invites for free.

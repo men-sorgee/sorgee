@@ -5,10 +5,15 @@ export { UserContext, UserProvider, useUser } from './use-user'
 export { useMember } from './use-member'
 export { MetaContext, MetaContextProvider, useMeta } from './use-meta'
 export {
-  AppNotificationsContext as NotificationsContext,
-  AppNotificationsProvider as NotificationsProvider,
-  useAppNotifications as useNotifications
+  AppNotificationsContext,
+  AppNotificationsProvider,
+  useAppNotifications
 } from './use-app-notifications'
+export {
+  UserNotificationsContext,
+  UserNotificationsProvider,
+  useUserNotifications
+} from './use-user-notifications'
 export { useWarnIfUnsavedChanges } from './use-warn-if-unsaved'
 export { useEvents } from './use-events'
 export { useUserEvents } from './use-invites'
