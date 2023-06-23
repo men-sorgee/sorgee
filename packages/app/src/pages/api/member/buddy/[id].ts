@@ -37,7 +37,7 @@ export default async function MemberBuddy(
             user_id: them.id,
             message: `A buddy of yours added you to their buddy list!`,
             button_text: 'View Profile',
-            button_url: `/member/${me.id}`,
+            button_url: `/members/${me.id}`,
           })
         }
 

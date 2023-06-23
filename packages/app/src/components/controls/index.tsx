@@ -39,7 +39,8 @@ export { EventRSVP } from './EventRSVP'
 export { EventTicket } from './EventTicket'
 export { EventCard } from './EventCard'
 
-export { NotificationCard } from './AppNotificationCard'
+export { AppNotificationCard } from './AppNotificationCard'
+export { UserNotificationCard } from './UserNotificationCard'
 export { Messages } from './Messages'
 
 export { SubscribeBox } from './SubscribeBox'

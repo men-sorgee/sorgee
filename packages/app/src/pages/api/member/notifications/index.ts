@@ -9,11 +9,9 @@ export default async function GetUserNotifications(
   res: NextApiResponse<ApiResponse>
 ) {
   try {
-    const method = withMethods(req, ['GET'])
+    //withMethods(req, ['GET'])
     const user = await withUser(req, res)
-    let notifications: UserNotification[] = []
-
-    notifications = await getUserNotifications(user.id)
+    let notifications: UserNotification[] = await getUserNotifications(user.id)
     return res.status(200).json(ApiResponse(notifications))
 
   } catch (e) {

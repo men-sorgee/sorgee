@@ -154,7 +154,7 @@ export type DirectusTypes = {
   location: Location
   notifications: Notification
   notifications_users: NotificationUser
-  user_notifications: UserNotification
+  user_notification: UserNotification
   page: Page
   promos: Promo
   page_content: PageContent

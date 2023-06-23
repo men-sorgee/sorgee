@@ -52,13 +52,22 @@ export default async function MemberLike(
           SendGridCategory.Notification
         )
 
+
+
         if (them.likes.some((b: UserLike) => b.like_id == me.id)) {
           // send mutual like notification
           await addUserNotification({
             user_id: them.id,
-            message: `Someone your like, likes you too!`,
+            message: `Someone you like, likes you!`,
             button_text: `View Their Profile`,
-            button_url: `/member/${me.id}`,
+            button_url: `/members/${me.id}`,
+          })
+        } else {
+          await addUserNotification({
+            user_id: them.id,
+            message: `Someone likes you too!`,
+            button_text: `View Their Profile`,
+            button_url: `/members/${me.id}`,
           })
         }
 

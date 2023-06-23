@@ -7,7 +7,7 @@ import {
   useState
 } from 'react'
 
-import { UserNotification, UserNotificationStatusType } from 'lib/models'
+import { UserNotification } from 'lib/models'
 import { deleteJSON, JsonFetcher, putJSON } from 'lib/utils'
 import useSWR from 'swr'
 
@@ -42,21 +42,21 @@ export function UserNotificationsProvider({
 }: {
   children: ReactNode
 }) {
-  const key = `/api/notifications`
+  const key = `/api/member/notifications`
   const {
     data: notifications = [],
     mutate,
     error,
     isLoading
   } = useSWR<UserNotification[], Error>(key, JsonFetcher, {
-    refreshInterval: 1000 * 60 * 3, // 3 minutes
+    refreshInterval: 1000 * 60, // 1 minutes
     refreshWhenHidden: true,
     revalidateOnFocus: true,
     revalidateOnReconnect: true,
     fallbackData: []
   })
   const [hasNewNotifications, setHasNewNotifications] = useState(false)
-  const newNotifications = notifications?.filter((n) => n.status == 'new') || []
+  const newNotifications = notifications?.filter((n) => n.read == false) || []
   useEffect(() => {
     if (!isLoading && notifications) {
       setHasNewNotifications(newNotifications?.length > 0)
