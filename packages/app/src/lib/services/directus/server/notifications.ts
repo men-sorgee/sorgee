@@ -1,8 +1,8 @@
 import {
   AppNotification,
-  Notification,
   AppNotificationStatusType,
   NotificationUser,
+  Notification,
   UserNotification,
 } from 'lib/models'
 
@@ -24,9 +24,6 @@ export async function getAppNotifications(user_id: string): Promise<AppNotificat
         _neq: 'deleted',
       },
       notification_id: {
-        status: {
-          _eq: 'ready',
-        },
         app_notification: {
           _eq: true,
         },
@@ -47,6 +44,7 @@ export async function getAppNotifications(user_id: string): Promise<AppNotificat
       button_text,
       link,
       category,
+      date_created,
     } = notification
     return {
       id: userNotification.id,
@@ -57,21 +55,24 @@ export async function getAppNotifications(user_id: string): Promise<AppNotificat
       button_url: button_link,
       button_text,
       link,
-      category
+      category,
+      read: userNotification.read,
+      date_created
     } as AppNotification
   })
   return notifications
 }
 
-export async function markAppNotification(id: string, status: AppNotificationStatusType) {
-  const admin = await getAdminClient()
-  admin.items('notifications_users').updateOne(id, { status })
+export async function getAppNotificationUser(id: number) {
+  const adminClient = await getAdminClient()
+  return adminClient.items('notifications_users').readOne(id)
 }
 
-export async function markAppNotificationRead(id: string) {
+export async function updateAppNotificationUser(id: number, notification: Partial<NotificationUser>) {
   const admin = await getAdminClient()
-  admin.items('notifications_users').updateOne(id, { read: true })
+  return admin.items('notifications_users').updateOne(id, notification)
 }
+
 
 
 // Individual Notifications

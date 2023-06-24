@@ -26,15 +26,10 @@ interface Props {
 
 const NotificationsAction = ({ member }: Props) => {
   const toast = useToast()
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const [wait, setWait] = useState<boolean>(false)
-  const {
-    hasNewNotifications: hasNewAppNotifications,
-    notifications: appNotifications,
-    newNotificationCount: newAppNotificationCount
-  } = useAppNotifications()
+
   const [activeNotification, setActiveNotification] =
     useState<string>(undefined)
+
   const {
     notifications,
     delete: del,
@@ -42,11 +37,11 @@ const NotificationsAction = ({ member }: Props) => {
     notificationCount
   } = useUserNotifications()
 
-  const popMessage = useCallback(() => {
+  const popMessage = useCallback(async () => {
     let notification = notifications?.pop()
     if (notification) {
       setActiveNotification(notification.id)
-      markAsRead(notification.id).then(() => {
+      return markAsRead(notification.id).then(() => {
         let instance = toast({
           title: 'Notice',
           description: notification.message,
@@ -74,14 +69,17 @@ const NotificationsAction = ({ member }: Props) => {
     }
   }, [del, markAsRead, member, notifications, toast])
 
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const { hasNewAppNotifications, appNotifications, newAppNotificationCount } =
+    useAppNotifications()
+
   useEffect(() => {
     if (isOpen && appNotifications?.length == 0) {
       onClose()
     }
-    if (activeNotification == undefined) {
-      popMessage()
-    }
   }, [
+    appNotifications?.length,
     appNotifications,
     notifications,
     isOpen,
@@ -90,6 +88,12 @@ const NotificationsAction = ({ member }: Props) => {
     popMessage,
     activeNotification
   ])
+
+  useEffect(() => {
+    if (isOpen && notifications?.length > 0) {
+      popMessage().then(() => {})
+    }
+  }, [isOpen, notifications, popMessage])
 
   return (
     <>
@@ -133,7 +137,7 @@ const NotificationsAction = ({ member }: Props) => {
             Notifications
             <DrawerCloseButton />
           </DrawerHeader>
-          <DrawerBody p={4}>
+          <DrawerBody p={0}>
             <>
               {appNotifications?.map((notification) => (
                 <AppNotificationCard

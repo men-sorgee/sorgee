@@ -1,5 +1,5 @@
 import { ApiResponse, AppNotificationStatusType } from 'lib/models'
-import { markAppNotification, markAppNotificationRead } from 'lib/services/directus/server'
+import { getAppNotificationUser, updateAppNotificationUser } from 'lib/services/directus/server'
 import { withMethods, withUser } from 'lib/utils/server'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
@@ -8,16 +8,28 @@ export default async function getUserNotifications(
   res: NextApiResponse<ApiResponse>
 ) {
   try {
-    const method = withMethods(req, ['PUT'])
-    await withUser(req, res)
-    const { id, status } = req.query
+    const method = withMethods(req, ['GET', 'DELETE', 'PUT'])
+    const user = await withUser(req, res)
+    const { id: i } = req.query
+    const id = Number(i)
 
-    if (status == 'read')
-      await markAppNotificationRead(String(id))
-    else
-      await markAppNotification(String(id), String(status) as AppNotificationStatusType)
+    let notification = await getAppNotificationUser(id)
+    if (notification.user_id as string !== user.id) throw new Error('Unauthorized')
 
-    return res.status(200).send(ApiResponse({ success: true }))
+    switch (method) {
+      case 'GET': {
+        notification = await updateAppNotificationUser(id, { read: true })
+        return res.status(200).send(ApiResponse(notification))
+      }
+      case 'DELETE':
+        notification = await updateAppNotificationUser(id, { status: 'deleted' })
+        return res.status(200).send(ApiResponse({ success: true }))
+      case 'PUT': {
+        notification = await updateAppNotificationUser(id, req.body)
+        return res.status(200).send(ApiResponse(notification))
+      }
+    }
+    return res.status(405).json(ApiResponse(null, 'Method Not Allowed'))
 
   } catch (e) {
     if (e.message == 'Unauthorized') return res.status(200).json(ApiResponse([]))
