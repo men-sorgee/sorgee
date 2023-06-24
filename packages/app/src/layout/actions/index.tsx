@@ -49,13 +49,7 @@ export default function ActionsNav() {
       bottom={0}
       pr="16px"
     >
-      <Flex
-        justify="center"
-        w="full"
-        gap={[4, 6, 8, 10]}
-        p={4}
-        {...constrained}
-      >
+      <Flex justify="center" w="full" gap={[1, 2, 4, 6]} p={4} {...constrained}>
         <Chat member={member} hasFeature={hasChat} />
         <Events member={member} active={path.startsWith('/events')} />
         <Members

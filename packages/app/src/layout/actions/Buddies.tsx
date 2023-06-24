@@ -8,7 +8,7 @@ import {
 } from 'lib/models'
 import NextLink from 'next/link'
 
-import { Badge, IconButton, Link } from '@chakra-ui/react'
+import { Badge, Icon, IconButton, Link } from '@chakra-ui/react'
 import { UsersIcon } from '@heroicons/react/24/outline'
 
 interface Props {
@@ -30,6 +30,7 @@ const BuddiesAction = ({ member, active, hasFeature }: Props) => {
   if (!hasFeature)
     return (
       <UpgradeIcon
+        size={['sm', 'md', 'lg']}
         title="Buddy List"
         membershipType={MembershipType.basic}
         icon={<UsersIcon height="50px" width="50px" />}
@@ -41,9 +42,15 @@ const BuddiesAction = ({ member, active, hasFeature }: Props) => {
       <Link href="/member/buddies" as={NextLink} zIndex="fixed">
         <IconButton
           variant="primary"
-          size="lg"
           zIndex="fixed"
-          icon={<UsersIcon height="50px" width="50px" />}
+          size={['sm', 'md', 'lg']}
+          icon={
+            <Icon
+              as={UsersIcon}
+              w={['35px', '40px', '50px']}
+              h={['35px', '40px', '50px']}
+            />
+          }
           color={active ? 'accent.500' : 'white'}
           aria-label="View Buddies"
           title="View Buddies"
@@ -52,7 +59,7 @@ const BuddiesAction = ({ member, active, hasFeature }: Props) => {
           <Badge
             bg={active ? 'accent.500' : 'white'}
             color={active ? 'white' : 'accent.500'}
-            ml={-4}
+            ml={[-6, -8, -10]}
             zIndex="overlay"
             position="absolute"
             rounded="full"

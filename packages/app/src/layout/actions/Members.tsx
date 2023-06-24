@@ -2,7 +2,7 @@ import { UpgradeIcon } from 'components/controls'
 import { Member, MemberLevel, MembershipType } from 'lib/models'
 import NextLink from 'next/link'
 
-import { IconButton, Link } from '@chakra-ui/react'
+import { Icon, IconButton, Link } from '@chakra-ui/react'
 import { UserGroupIcon } from '@heroicons/react/24/outline'
 
 interface Props {
@@ -23,6 +23,7 @@ const MembersAction = ({ member, active, hasFeature }: Props) => {
         title="Member Directory"
         membershipType={MembershipType.free}
         icon={<UserGroupIcon height="50px" width="50px" />}
+        size={['sm', 'md', 'lg']}
       />
     )
 
@@ -31,9 +32,15 @@ const MembersAction = ({ member, active, hasFeature }: Props) => {
       <Link href="/members" as={NextLink} zIndex="fixed">
         <IconButton
           variant="primary"
-          size="lg"
+          size={['sm', 'md', 'lg']}
+          icon={
+            <Icon
+              as={UserGroupIcon}
+              w={['35px', '40px', '50px']}
+              h={['35px', '40px', '50px']}
+            />
+          }
           zIndex="fixed"
-          icon={<UserGroupIcon height="50px" width="50px" />}
           color={active ? 'accent.500' : 'white'}
           aria-label={'View Members'}
           title="View Members"

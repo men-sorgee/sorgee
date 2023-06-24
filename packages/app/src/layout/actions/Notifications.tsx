@@ -12,6 +12,7 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerOverlay,
+  Icon,
   IconButton,
   useDisclosure,
   useToast
@@ -99,15 +100,21 @@ const NotificationsAction = ({ member }: Props) => {
             variant="primary"
             zIndex="fixed"
             color={isOpen ? 'accent.500' : 'white'}
-            size="lg"
-            icon={<BellIcon height="50px" width="50px" />}
+            size={['sm', 'md', 'lg']}
+            icon={
+              <Icon
+                as={BellIcon}
+                w={['35px', '40px', '50px']}
+                h={['35px', '40px', '50px']}
+              />
+            }
             onClick={onOpen}
           />
           {hasNewAppNotifications && (
             <Badge
               bg="accent.500"
               color="white"
-              ml={-4}
+              ml={[-6, -8, -10]}
               zIndex="overlay"
               position="absolute"
               rounded="full"

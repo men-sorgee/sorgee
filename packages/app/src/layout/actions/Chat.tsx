@@ -13,6 +13,7 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerOverlay,
+  Icon,
   IconButton,
   useDisclosure
 } from '@chakra-ui/react'
@@ -84,8 +85,14 @@ const ChatActions = ({ member, hasFeature }: Props) => {
             variant="primary"
             zIndex="fixed"
             color={isOpen ? 'accent.500' : 'white'}
-            size="lg"
-            icon={<ChatIcon height="50px" width="50px" />}
+            size={['sm', 'md', 'lg']}
+            icon={
+              <Icon
+                as={ChatIcon}
+                w={['35px', '40px', '50px']}
+                h={['35px', '40px', '50px']}
+              />
+            }
             onClick={() => {
               setActiveId(lastActiveId)
               onOpen()
@@ -95,7 +102,7 @@ const ChatActions = ({ member, hasFeature }: Props) => {
             <Badge
               bg="accent.500"
               color="white"
-              ml={-4}
+              ml={[-6, -8, -10]}
               zIndex="overlay"
               position="absolute"
               rounded="full"
@@ -111,6 +118,7 @@ const ChatActions = ({ member, hasFeature }: Props) => {
           title="Member Chat"
           membershipType={MembershipType.plus}
           icon={<ChatIcon height="50px" width="50px" />}
+          size={['sm', 'md', 'lg']}
         />
       )}
       <audio ref={audioRef} src="/sounds/click.mp3" preload="auto" />
@@ -123,7 +131,7 @@ const ChatActions = ({ member, hasFeature }: Props) => {
       >
         <DrawerOverlay />
 
-        <DrawerContent>
+        <DrawerContent position="absolute" zIndex={2147484000}>
           <DrawerHeader bg="primary.900" color="white" m={0} p={2}>
             Messages (beta)
             <DrawerCloseButton />
