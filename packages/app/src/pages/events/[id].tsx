@@ -5,6 +5,7 @@ import {
   EventCard,
   EventRSVP,
   EventTicket,
+  Lazy,
   MemberModal,
   MemberSpotlight,
   RateItem
@@ -252,8 +253,6 @@ const AttendedEvent = ({
     .map((u) => u.users_id as User)
     .filter((u) => u.id != member.id)
 
-  const color = useColorModeValue('gray.700', 'gray.200')
-
   return (
     <>
       <Divider mt={4} />
@@ -303,8 +302,14 @@ const AttendedEvent = ({
             </strong>
           </Alert>
           {attendees.map((u: User) => (
-            <Box key={event.id + '-' + u.id} bg="gray.400" mb={4} rounded="lg">
-              <MemberSpotlight size="md" id={u.id} color="white" full>
+            <Box
+              as={Lazy}
+              key={event.id + '-' + u.id}
+              bg="gray.400"
+              mb={4}
+              rounded="lg"
+            >
+              <MemberSpotlight size="md" id={u.id} color="white" mb={4}>
                 <RateItem
                   onChange={() => {
                     reloadUser()

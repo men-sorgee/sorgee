@@ -1,6 +1,6 @@
 import { createRef, useCallback, useEffect, useState } from 'react'
 
-import { MemberCard, MemberModal } from 'components/controls'
+import { Lazy, MemberCard, MemberModal } from 'components/controls'
 import { FieldCheckbox, FieldCheckboxes, FieldInput } from 'components/forms'
 import Page from 'components/Page'
 import { addDays } from 'date-fns'
@@ -282,20 +282,22 @@ export default function MemberListPage({ fields, id: i }: PageProps) {
           <Pager page={page} pageCount={pageCount} setPage={setPage} />
           <SimpleGrid
             my={4}
-            columns={[1, 1, 1, 2]}
+            columns={1}
             spacing={4}
             w="full"
             justifyItems="stretch"
           >
             {members?.map((member: SearchableMember) => (
-              <MemberCard
-                full
-                size="xl"
-                key={member.id}
-                viewer={currentMember}
-                member={member}
-                onClick={() => setId(member.id)}
-              />
+              <Lazy key={member.id}>
+                <MemberCard
+                  full
+                  size="xl"
+                  key={member.id}
+                  viewer={currentMember}
+                  member={member}
+                  onClick={() => setId(member.id)}
+                />
+              </Lazy>
             ))}
           </SimpleGrid>
           {meta.filtered == 0 && (

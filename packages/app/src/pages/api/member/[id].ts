@@ -36,7 +36,10 @@ export default async function Member(
     let me = viewer.id == user_id
     let fields = memberFields
     if (me) {
-      fields = [...memberFields, 'buddies.buddy_id.*' as any]
+      fields = [
+        ...memberFields,
+        'buddies.buddy_id.*' as any,
+        'likes.liked_id.*' as any]
     }
 
     let user = await getUser<Member>(user_id, fields)
@@ -75,7 +78,7 @@ export default async function Member(
   } catch (e) {
     if (e.message == 'Unauthorized') return res.status(200).json(ApiResponse(null, e))
     console.error(e.message || e, e.stack)
-    res.status(405).json(ApiResponse(null, e.message || e))
+    res.status(500).json(ApiResponse(null, e.message || e))
   }
 }
 

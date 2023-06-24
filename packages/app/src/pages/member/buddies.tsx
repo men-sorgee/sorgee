@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { MemberCard, MemberModal } from 'components/controls'
+import { Lazy, MemberCard, MemberModal } from 'components/controls'
 import Page from 'components/Page'
 import { useUser } from 'hooks'
 import { MemberLevel, SearchableMember, User, UserBuddy } from 'lib/models'
@@ -70,15 +70,17 @@ export default function BuddiesPage({}: PageProps) {
       >
         {members &&
           members?.map((u: User) => (
-            <MemberCard
-              key={u.id}
-              size={['md', 'lg', 'xl']}
-              member={u as unknown as SearchableMember}
-              viewer={member}
-              onClick={() => {
-                setMemberId(u.id)
-              }}
-            />
+            <Lazy key={u.id}>
+              <MemberCard
+                key={u.id}
+                size={['md', 'lg', 'xl']}
+                member={u as unknown as SearchableMember}
+                viewer={member}
+                onClick={() => {
+                  setMemberId(u.id)
+                }}
+              />
+            </Lazy>
           ))}
       </SimpleGrid>
       <MemberModal

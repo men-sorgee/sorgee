@@ -6,7 +6,8 @@ import {
   EventBadge,
   EventCard,
   EventRSVP,
-  EventTicket
+  EventTicket,
+  Lazy
 } from 'components/controls'
 import Page from 'components/Page'
 import { addDays, isAfter, isSameDay, isToday } from 'date-fns'
@@ -173,7 +174,6 @@ export default function EventsPage({}: PageProps) {
               </TabPanel>
               <TabPanel p={0}>
                 <Heading mb={4}>Your Invitations</Heading>
-
                 <Invitations
                   list={invitations}
                   member={member}
@@ -250,38 +250,40 @@ function Invitations({
     <>
       {list.map((invite, index) => {
         return (
-          <EventCard
-            key={index}
-            mb={8}
-            event={invite.event}
-            href={`/events/${invite.event.id}`}
-            showDescription={false}
-            showLocation={false}
-            isGuest={invite.guest || false}
-            showAddToCalendar={
-              invite.rsvp == 'confirmed' || invite.rsvp == 'maybe'
-            }
-          >
-            {showLink && (
-              <ButtonLink
-                gradient={true}
-                rounded="lg"
-                w="full"
-                colorScheme="primary"
-                href={`/events/${invite.event.id}`}
-                p={6}
-              >
-                View Details
-              </ButtonLink>
-            )}
-            <EventRSVP
-              memberId={member.id}
-              eventId={invite.event.id}
-              rsvp={invite.rsvp}
-              onChange={onChange}
-              mt={4}
-            />
-          </EventCard>
+          <Lazy key={invite.id}>
+            <EventCard
+              mb={8}
+              event={invite.event}
+              href={`/events/${invite.event.id}`}
+              showDescription={false}
+              showLocation={false}
+              isGuest={invite.guest || false}
+              showAddToCalendar={
+                invite.rsvp == 'confirmed' || invite.rsvp == 'maybe'
+              }
+            >
+              {showLink && (
+                <ButtonLink
+                  gradient={true}
+                  rounded="lg"
+                  w="full"
+                  colorScheme="primary"
+                  href={`/events/${invite.event.id}`}
+                  p={6}
+                  color="white"
+                >
+                  View Details
+                </ButtonLink>
+              )}
+              <EventRSVP
+                memberId={member.id}
+                eventId={invite.event.id}
+                rsvp={invite.rsvp}
+                onChange={onChange}
+                mt={4}
+              />
+            </EventCard>
+          </Lazy>
         )
       })}
     </>
@@ -315,6 +317,7 @@ function PastEvents({ member, list }: { list: EventInvite[]; member: Member }) {
           colorScheme="primary"
           href={`/events/${invite.event.id}`}
           p={6}
+          color="white"
         >
           Rate Event &amp; Attendees
         </ButtonLink>
@@ -342,16 +345,17 @@ function PastEvents({ member, list }: { list: EventInvite[]; member: Member }) {
   return (
     <>
       {list.map((invite) => (
-        <EventCard
-          key={invite.id}
-          event={invite.event as GroupEvent}
-          showDescription={false}
-          href={invite.attended ? `/events/${invite.event.id}` : undefined}
-          mb={4}
-          showAddToCalendar={false}
-        >
-          <PastEventItem invite={invite} />
-        </EventCard>
+        <Lazy key={invite.id}>
+          <EventCard
+            event={invite.event as GroupEvent}
+            showDescription={false}
+            href={invite.attended ? `/events/${invite.event.id}` : undefined}
+            mb={4}
+            showAddToCalendar={false}
+          >
+            <PastEventItem invite={invite} />
+          </EventCard>
+        </Lazy>
       ))}
     </>
   )

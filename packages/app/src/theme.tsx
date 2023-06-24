@@ -263,6 +263,11 @@ export default function getTheme(body: any, heading: any, mono: any) {
           '.print-only': {
             display: 'none'
           },
+          '.cody-launcher': {
+            bottom: null,
+            top: '48%',
+            zIndex: '10!important'
+          },
           '@media print': {
             '.print-only': {
               display: 'inherit'
