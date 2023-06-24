@@ -76,5 +76,5 @@ export type UserEmailEvent = {
   type?: string
   user?: string | User
   status?: string
-  notification_id?: string
+  notification_id?: number
 }

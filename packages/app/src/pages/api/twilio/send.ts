@@ -1,5 +1,5 @@
 import { ApiResponse } from 'lib/models'
-import { markAppNotification } from 'lib/services/directus/server'
+import { updateAppNotificationUser } from 'lib/services/directus/server'
 import { sendNotification } from 'lib/services/twilio/server'
 import { withMethods } from 'lib/utils/server'
 import { NextApiRequest, NextApiResponse } from 'next'
@@ -15,7 +15,7 @@ async function SendNotification(req: NextApiRequest, res: NextApiResponse<ApiRes
 
     await sendNotification(phone, message)
 
-    if (notification_id) await markAppNotification(notification_id, 'sent')
+    if (notification_id) await updateAppNotificationUser(notification_id, { status: 'sent' })
 
     res.status(200).send(ApiResponse({ success: true }))
   } catch (e: any) {

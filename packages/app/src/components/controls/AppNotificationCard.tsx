@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react'
-
+import { useCallback, useEffect, useState } from 'react'
+import { toLocalDate } from 'lib/utils'
 import { useAppNotifications } from 'hooks/use-app-notifications'
 import { AppNotification, Member } from 'lib/models'
-
+import { EnvelopeIcon } from '@heroicons/react/24/solid'
+import { EnvelopeOpenIcon } from '@heroicons/react/24/outline'
 import {
-  Alert,
-  AlertTitle,
+  Text,
+  Box,
   Button,
   chakra,
   Heading,
@@ -17,9 +18,13 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  useDisclosure
+  useDisclosure,
+  Icon,
+  Spacer,
+  VStack,
+  Collapse
 } from '@chakra-ui/react'
-
+import distance from 'date-fns/formatDistanceToNow'
 import { ButtonLink } from './ButtonLink'
 import { Markdown } from './Markdown'
 
@@ -30,7 +35,9 @@ type Props = {
 
 export const AppNotificationCard = chakra(({ member, notification }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { markAsRead, delete: del } = useAppNotifications()
+  const { isOpen: isMessageOpen, onToggle: toggleMessage } = useDisclosure()
+  const { readAppNotification, deleteAppNotification, reloadAppNotifications } =
+    useAppNotifications()
   const [isNew, setIsNew] = useState<boolean>(undefined)
   const [body, setBody] = useState<string>(undefined)
   const [message, setMessage] = useState<string>(undefined)
@@ -62,34 +69,54 @@ export const AppNotificationCard = chakra(({ member, notification }: Props) => {
     subject
   ])
 
-  const openMessage = () => {
-    markAsRead(notification.id)
+  const openMessage = useCallback(() => {
     onOpen()
-  }
-  const markAsDeleted = async () => {
-    del(notification.id)
+    return readAppNotification(notification.id).then(() => {
+      reloadAppNotifications()
+    })
+  }, [notification.id, onOpen, readAppNotification, reloadAppNotifications])
+
+  const markAsDeleted = useCallback(() => {
     onClose()
-  }
+    return deleteAppNotification(notification.id).then(() => {
+      reloadAppNotifications()
+    })
+  }, [deleteAppNotification, notification.id, onClose, reloadAppNotifications])
+
   return (
     <>
-      <Alert
-        boxShadow="md"
-        mb={4}
+      <HStack
+        px={4}
+        py={2}
         cursor="pointer"
-        border={'1px solid'}
+        borderBottom={'1px solid'}
         borderColor="text"
-        colorScheme={isNew ? 'purple' : 'white'}
+        bg={isNew ? 'secondary.100' : 'white'}
         onClick={openMessage}
-        borderRadius={'5px'}
-        flexDirection="column"
         alignItems="flex-start"
+        justify="left"
       >
-        {subject && (
-          <AlertTitle fontWeight={isNew ? 'bold' : 'normal'}>
+        <Icon
+          color="secondary.500"
+          as={isNew ? EnvelopeIcon : EnvelopeOpenIcon}
+          w={6}
+          h={6}
+        />
+        <VStack alignContent="left" justify="left">
+          <Text p={0} m={0} fontWeight={isNew ? 'bold' : 'normal'}>
             {subject}
-          </AlertTitle>
-        )}
-      </Alert>
+          </Text>
+
+          <Collapse in={isMessageOpen} animateOpacity>
+            <Text as="div" noOfLines={3} textAlign="left" w="full">
+              <Markdown content={notification?.message} size="sm" />
+            </Text>
+          </Collapse>
+          <Text fontSize="xs" textAlign="right" w="full">
+            Received {distance(toLocalDate(notification?.date_created))} ago
+          </Text>
+        </VStack>
+      </HStack>
       <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
         <ModalOverlay />
         <ModalContent>
@@ -104,6 +131,7 @@ export const AppNotificationCard = chakra(({ member, notification }: Props) => {
           </ModalBody>
           <ModalFooter>
             <HStack spacing={2} align="right">
+              <Button onClick={onClose}>Close</Button>
               {notification?.link && (
                 <ButtonLink
                   onClick={onClose}
@@ -114,6 +142,7 @@ export const AppNotificationCard = chakra(({ member, notification }: Props) => {
                   {notification?.button_text || 'Check it Out!'}
                 </ButtonLink>
               )}
+              <Spacer />
               <Button onClick={markAsDeleted} colorScheme="red">
                 Delete
               </Button>

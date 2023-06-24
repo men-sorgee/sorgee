@@ -1,5 +1,5 @@
 import { ApiResponse, AppNotificationStatusType, UserEmailEvent } from 'lib/models'
-import { markAppNotification, storeEmailEvent } from 'lib/services/directus/server'
+import { storeEmailEvent, updateAppNotificationUser } from 'lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 type SendGridEvent = {
@@ -15,7 +15,7 @@ type SendGridEvent = {
   status?: string
   type?: string
   timestamp: number
-  notification_id?: string
+  notification_id?: number
 }
 
 export default async function HandleEvents(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
@@ -54,10 +54,15 @@ export default async function HandleEvents(req: NextApiRequest, res: NextApiResp
           payload: sgEvent,
           notification_id,
         }
-        await storeEmailEvent(model)
+        try {
+          await storeEmailEvent(model)
+        } catch (e) {
+          console.error(e)
+        }
         const statesWeCareAbout = ['delivered', 'open', 'click']
-        if (notification_id && statesWeCareAbout.includes(event))
-          await markAppNotification(notification_id, event as AppNotificationStatusType)
+        if (notification_id && statesWeCareAbout.includes(event)) {
+          await updateAppNotificationUser(notification_id, { status: event as AppNotificationStatusType })
+        }
       })
     )
 

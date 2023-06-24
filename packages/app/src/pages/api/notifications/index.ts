@@ -2,9 +2,9 @@ import { ApiResponse, AppNotification } from 'lib/models'
 import { withMethods, withUser } from 'lib/utils/server'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { getAppNotifications, markAppNotification } from 'lib/services/directus/server/notifications'
+import { getAppNotifications } from 'lib/services/directus/server/notifications'
 
-export default async function getUserNotifications(
+export default async function AppNotifications(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse>
 ) {
@@ -17,8 +17,8 @@ export default async function getUserNotifications(
     return res.status(200).json(ApiResponse(notifications))
 
   } catch (e) {
-    if (e.message == 'Unauthorized') return res.status(200).json(ApiResponse([]))
+    if (e.message == 'Unauthorized') return res.status(401).json(ApiResponse([]))
     console.error(e.message || e, e.stack)
-    res.status(405).json(ApiResponse(null, e.message || e))
+    res.status(500).json(ApiResponse(null, e.message || e))
   }
 }

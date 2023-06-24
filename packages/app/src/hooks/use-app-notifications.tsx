@@ -2,39 +2,40 @@
 import {
   createContext,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useState
 } from 'react'
 
 import { AppNotification, AppNotificationStatusType } from 'lib/models'
-import { JsonFetcher, putJSON } from 'lib/utils'
+import { deleteJSON, getJSON, JsonFetcher, putJSON } from 'lib/utils'
 import useSWR from 'swr'
 
 export type AppNotificationsContextData = {
-  notifications: AppNotification[]
-  hasNotifications: boolean
-  notificationCount: number
-  hasNewNotifications: boolean
-  newNotificationCount: number
+  appNotifications: AppNotification[]
+  hasAppNotifications: boolean
+  appNotificationCount: number
+  hasNewAppNotifications: boolean
+  newAppNotificationCount: number
   error?: any
-  markAsRead: (id: number) => Promise<void>
-  delete: (id: number) => Promise<void>
-  loading: boolean
-  reload: () => void
+  readAppNotification: (id: number) => Promise<void>
+  deleteAppNotification: (id: number) => Promise<void>
+  appNotificationsLoading: boolean
+  reloadAppNotifications: () => void
 }
 
 export const AppNotificationsContext =
   createContext<AppNotificationsContextData>({
-    notifications: [],
-    hasNotifications: false,
-    notificationCount: 0,
-    hasNewNotifications: false,
-    newNotificationCount: 0,
-    markAsRead: async (_) => {},
-    delete: async () => {},
-    loading: true,
-    reload: () => {}
+    appNotifications: [],
+    hasAppNotifications: false,
+    appNotificationCount: 0,
+    hasNewAppNotifications: false,
+    newAppNotificationCount: 0,
+    readAppNotification: async (_) => {},
+    deleteAppNotification: async () => {},
+    appNotificationsLoading: true,
+    reloadAppNotifications: () => {}
   })
 
 export function AppNotificationsProvider({
@@ -63,39 +64,57 @@ export function AppNotificationsProvider({
     }
   }, [notifications, isLoading, newNotifications?.length, hasNewNotifications])
 
-  const put = async (id: number, state: 'deleted' | 'read') => {
-    const { success } = await putJSON(key + '/' + id, {
-      id,
-      state
-    })
-    if (success) {
-      await mutate(
-        notifications.map((n) => {
-          if (n.id === id) {
-            n.read = true
-            state === 'deleted' ? (n.status = 'deleted') : null
+  const readAppNotification = useCallback(
+    async (id: number) => {
+      const { success, data: notification } = await getJSON<
+        Partial<Notification>
+      >(key + '/' + id)
+      if (success) {
+        await mutate(
+          [
+            ...notifications.map(({ id: i, read, ...props }) => {
+              if (i === id) {
+                read = true
+              }
+              return {
+                id: i,
+                read,
+                ...props
+              }
+            })
+          ],
+          {
+            revalidate: true
           }
-          return n
-        }),
-        {
+        )
+      }
+    },
+    [key, mutate, notifications]
+  )
+
+  const deleteAppNotification = useCallback(
+    async (id: number) => {
+      const { success } = await deleteJSON(key + '/' + id)
+      if (success) {
+        await mutate([...notifications.filter((i) => i.id !== id)], {
           revalidate: true
-        }
-      )
-      setHasNewNotifications(newNotifications?.length > 0)
-    }
-  }
+        })
+      }
+    },
+    [key, mutate, notifications]
+  )
 
   const context: AppNotificationsContextData = {
-    notifications,
-    hasNotifications: notifications?.length > 0,
-    notificationCount: notifications?.length || 0,
-    hasNewNotifications,
-    newNotificationCount: newNotifications?.length || 0,
+    appNotifications: notifications,
+    hasAppNotifications: notifications?.length > 0,
+    appNotificationCount: notifications?.length || 0,
+    hasNewAppNotifications: hasNewNotifications,
+    newAppNotificationCount: newNotifications?.length || 0,
     error,
-    markAsRead: (id: number) => put(id, 'read'),
-    delete: (id: number) => put(id, 'deleted'),
-    loading: isLoading,
-    reload: () => {
+    readAppNotification,
+    deleteAppNotification,
+    appNotificationsLoading: isLoading,
+    reloadAppNotifications: () => {
       mutate()
     }
   }
