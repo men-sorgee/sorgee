@@ -282,7 +282,7 @@ export default function MemberListPage({ fields, id: i }: PageProps) {
           <Pager page={page} pageCount={pageCount} setPage={setPage} />
           <SimpleGrid
             my={4}
-            columns={1}
+            columns={[1, 1, 1, 2]}
             spacing={4}
             w="full"
             justifyItems="stretch"
