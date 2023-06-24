@@ -31,6 +31,8 @@ export { ImageModal } from './ImageModal'
 export { ImageGallery } from './ImageGallery'
 export { ImageAsset } from './ImageAsset'
 
+export { Lazy } from './Lazy'
+
 export { PhotoCapture } from './PhotoCapture'
 export { PhotoUpload } from './PhotoUpload'
 

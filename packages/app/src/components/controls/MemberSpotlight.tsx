@@ -112,13 +112,18 @@ export const MemberSpotlight = chakra(
       0
 
     return (
-      <Flex direction="column" justify="space-between" {...props}>
+      <Flex
+        direction="column"
+        justify="space-between"
+        {...props}
+        border="1px solid"
+        borderColor={'primary.500'}
+        rounded="lg"
+      >
         <Box
           px={5}
           py={4}
-          bgGradient={
-            full ? `linear(to-bl, ${levelColor[1]}, ${levelColor[0]})` : null
-          }
+          bgGradient={`linear(to-bl, ${levelColor[1]}, ${levelColor[0]})`}
           color="white"
           borderTopRightRadius="lg"
           borderTopLeftRadius="lg"
@@ -143,7 +148,7 @@ export const MemberSpotlight = chakra(
               />
             )}
           </MemberHeader>
-          {full && <Text>{member?.biography}</Text>}
+          <Text>{member?.biography}</Text>
           {full && (
             <Box>
               <Flex w="full">
@@ -177,11 +182,11 @@ export const MemberSpotlight = chakra(
             </Box>
           )}
         </Box>
-        <Accordion defaultIndex={0}>
+        <Accordion defaultIndex={0} rounded="lg">
           {full && member.show_photos && member.my_photos?.length > 0 && (
             <AccordionItem>
               <AccordionButton>
-                <Box as="span" flex="1" textAlign="left">
+                <Box as="span" flex="1" textAlign="left" color="text">
                   Photos
                 </Box>
                 <AccordionIcon />
@@ -206,7 +211,7 @@ export const MemberSpotlight = chakra(
           {full && fields && (
             <AccordionItem>
               <AccordionButton>
-                <Box as="span" flex="1" textAlign="left">
+                <Box as="span" flex="1" textAlign="left" color="text">
                   Stats
                 </Box>
                 <AccordionIcon />
@@ -380,7 +385,7 @@ export const MemberSpotlight = chakra(
           {full && member.show_events && (
             <AccordionItem>
               <AccordionButton>
-                <Box as="span" flex="1" textAlign="left">
+                <Box as="span" flex="1" textAlign="left" color="text">
                   Events
                 </Box>
                 <AccordionIcon />

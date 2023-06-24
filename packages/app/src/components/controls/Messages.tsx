@@ -23,8 +23,14 @@ import {
 } from '@chatscope/chat-ui-kit-react'
 import { UserCircleIcon, XMarkIcon } from '@heroicons/react/24/solid'
 
-import { MemberConnect } from './MemberConnect'
-import { MemberModal } from './MemberModal'
+import {
+  MemberConnect,
+  MemberModal,
+  MemberLike,
+  MemberShare,
+  MemberBlock
+} from './'
+
 import MessagesStyles from './MessagesStyles'
 
 let socket: Socket
@@ -158,7 +164,7 @@ export const Messages = ({ member }: { member: Member }) => {
     },
     [activeId, messagesSeen]
   )
-
+  const { isOpen, onClose, onOpen } = useDisclosure()
   // Get current user data
   const [convoUserAvatar, convoUserName] = useMemo(() => {
     if (activeConversation) {
@@ -173,6 +179,12 @@ export const Messages = ({ member }: { member: Member }) => {
             name={user?.nickname}
             status={user?.presence == 'online' ? 'available' : 'unavailable'}
             active={user?.presence == 'online'}
+            aria-label="View Profile"
+            onClick={onOpen}
+            title="View Profile"
+            style={{
+              cursor: 'pointer'
+            }}
           />,
           user?.nickname
         ]
@@ -180,7 +192,7 @@ export const Messages = ({ member }: { member: Member }) => {
     }
 
     return [undefined, undefined]
-  }, [activeConversation])
+  }, [activeConversation, onOpen])
 
   const userTyping = useCallback(() => {
     if (socket) {
@@ -296,8 +308,6 @@ export const Messages = ({ member }: { member: Member }) => {
     }
   }, [activeConversation, conversations, setActiveId])
 
-  const { isOpen, onClose, onOpen } = useDisclosure()
-
   return (
     <>
       <MessagesStyles />
@@ -363,19 +373,10 @@ export const Messages = ({ member }: { member: Member }) => {
                 info={activeConversation?.user?.presence}
               />
               <ConversationHeader.Actions>
-                <IconButton
-                  aria-label="View Profile"
-                  onClick={onOpen}
-                  title="View Profile"
-                  icon={<UserCircleIcon fill={'white'} width={30} />}
-                  size="lg"
-                  variant={'ghost'}
-                  _hover={{ bg: 'primary.500' }}
-                />
-                <MemberConnect
-                  member={activeConversation?.user}
-                  fill={'white'}
-                />
+                <MemberBlock size="sm" member={activeConversation?.user} />
+                <MemberLike size="sm" member={activeConversation?.user} />
+                <MemberConnect size="sm" member={activeConversation?.user} />
+                <MemberShare size="sm" member={activeConversation?.user} />
               </ConversationHeader.Actions>
             </ConversationHeader>
 

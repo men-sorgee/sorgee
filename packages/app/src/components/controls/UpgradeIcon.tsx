@@ -1,8 +1,5 @@
 import { useRef } from 'react'
-
 import { MembershipType } from 'lib/models'
-import { useRouter } from 'next/router'
-
 import {
   AlertDialog,
   AlertDialogBody,
@@ -14,29 +11,20 @@ import {
   Box,
   Button,
   IconButton,
+  IconButtonProps,
   useDisclosure
 } from '@chakra-ui/react'
-
 import { ButtonLink } from './ButtonLink'
 
-type Props = {
+type Props = Omit<IconButtonProps, 'aria-label'> & {
   title: string
   icon: React.ReactElement
   membershipType: MembershipType
 }
 
-const UpgradeIcon = ({ title, icon, membershipType }: Props) => {
-  const router = useRouter()
+const UpgradeIcon = ({ title, icon, membershipType, ...props }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const cancelRef = useRef()
-
-  const onUpgrade = async () => {
-    await router.push('/member/account', {
-      query: {
-        plan: membershipType
-      }
-    })
-  }
 
   return (
     <>
@@ -46,12 +34,12 @@ const UpgradeIcon = ({ title, icon, membershipType }: Props) => {
           title={title}
           variant="primary"
           zIndex="fixed"
-          size="lg"
           icon={icon}
           onClick={onOpen}
           color={'gray.300'}
           stroke={'gray.300'}
           ref={cancelRef}
+          {...props}
         />
       </Box>
       <AlertDialog

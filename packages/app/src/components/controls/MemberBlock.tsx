@@ -68,7 +68,11 @@ export const MemberBlock = chakra(
           title={label}
           aria-label={label}
           icon={
-            showBlock ? <BlockedIcon width="30px" /> : <ViewIcon width="30px" />
+            showBlock ? (
+              <BlockedIcon width="30px" fill="white" />
+            ) : (
+              <ViewIcon width="30px" stroke="white" />
+            )
           }
           variant="ghost"
           _hover={{ bg: 'primary.500' }}

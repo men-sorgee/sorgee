@@ -157,7 +157,7 @@ export default function MessagesStyles() {
           display: flex;
         }
         .cs-chat-container {
-          height: 85%;
+          height: calc(95vh - 4rem);
         }
       }
 

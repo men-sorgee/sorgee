@@ -22,31 +22,31 @@ export const MemberLike = chakra(({ member, size = 'lg', ...props }: Props) => {
 
   const toggleLike = useCallback(() => {
     if (isLiked) {
-      deleteJSON(`/api/member/like/${member.id}`).then(() => {
+      deleteJSON(`/api/member/like/${member?.id}`).then(() => {
         setIsLiked(false)
         return reload()
       })
     } else {
       // add buddy
-      postJSON(`/api/member/like/${member.id}`, {}).then((r) => {
+      postJSON(`/api/member/like/${member?.id}`, {}).then((r) => {
         setIsLiked(true)
         return reload()
       })
     }
-  }, [isLiked, member.id, reload])
+  }, [isLiked, member?.id, reload])
 
   useEffect(() => {
     const likes = me?.likes || []
     const likedBy = me?.liked_by || []
-    if (!loading && likes.length > 0) {
-      setIsLiked(likes.some((l) => l.like_id == member.id))
+    if (!loading && likes?.length > 0) {
+      setIsLiked(likes.some((l) => l?.like_id == member?.id))
     }
     if (!loading && likes.length > 0) {
-      setMutual(likedBy.some((l) => l.user_id == member.id))
+      setMutual(likedBy.some((l) => l?.user_id == member?.id))
     }
   }, [me, member.id, loading])
 
-  if (loading || !me || me.id == member.id) return null
+  if (loading || !me || me?.id == member?.id) return null
   if (level < MemberLevel.brother) return null
 
   const label = mutual
@@ -80,9 +80,9 @@ export const MemberLike = chakra(({ member, size = 'lg', ...props }: Props) => {
           mutual ? (
             <FireIcon width="30px" />
           ) : showLike ? (
-            <LikedIcon width="30px" />
+            <LikedIcon width="30px" fill="white" />
           ) : (
-            <LikeIcon width="30px" />
+            <LikeIcon width="30px" stroke="white" />
           )
         }
         variant="ghost"

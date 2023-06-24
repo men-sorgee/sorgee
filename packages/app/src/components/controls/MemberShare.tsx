@@ -22,27 +22,27 @@ export const MemberShare = chakra(
 
     const toggleShare = useCallback(() => {
       if (isShared) {
-        deleteJSON(`/api/member/share/${member.id}`).then(() => {
+        deleteJSON(`/api/member/share/${member?.id}`).then(() => {
           setIsShared(false)
           return reload()
         })
       } else {
         // add buddy
-        postJSON(`/api/member/share/${member.id}`, {}).then((r) => {
+        postJSON(`/api/member/share/${member?.id}`, {}).then((r) => {
           setIsShared(true)
           return reload()
         })
       }
-    }, [isShared, member.id, reload])
+    }, [isShared, member?.id, reload])
 
     useEffect(() => {
       const shares = me?.photo_shares || []
       if (!loading && shares.length > 0) {
-        setIsShared(shares.some((s) => s.viewer_id == member.id))
+        setIsShared(shares.some((s) => s.viewer_id == member?.id))
       }
-    }, [me, member.id, loading])
+    }, [me, member?.id, loading])
 
-    if (loading || !me || me.id == member.id) return null
+    if (loading || !me || me.id == member?.id) return null
     if (level < MemberLevel.brother) return null
 
     const label = isShared
@@ -72,9 +72,9 @@ export const MemberShare = chakra(
           aria-label={label}
           icon={
             showLock ? (
-              <LockOpenIcon width="30px" />
+              <LockOpenIcon width="30px" fill="white" />
             ) : (
-              <LockClosedIcon width="30px" />
+              <LockClosedIcon width="30px" stroke="white" />
             )
           }
           variant="ghost"
