@@ -22,7 +22,8 @@ import {
   Icon,
   Spacer,
   VStack,
-  Collapse
+  Collapse,
+  useColorModeValue
 } from '@chakra-ui/react'
 import distance from 'date-fns/formatDistanceToNow'
 import { ButtonLink } from './ButtonLink'
@@ -83,6 +84,11 @@ export const AppNotificationCard = chakra(({ member, notification }: Props) => {
     })
   }, [deleteAppNotification, notification.id, onClose, reloadAppNotifications])
 
+  const bgNew = useColorModeValue('secondary.100', 'secondary.700')
+  const bgRead = useColorModeValue('white', 'secondary.800')
+  const textNew = useColorModeValue('secondary.800', 'secondary.100')
+  const textRead = useColorModeValue('text', 'secondary.300')
+
   return (
     <>
       <HStack
@@ -91,13 +97,13 @@ export const AppNotificationCard = chakra(({ member, notification }: Props) => {
         cursor="pointer"
         borderBottom={'1px solid'}
         borderColor="text"
-        bg={isNew ? 'secondary.100' : 'white'}
+        bg={isNew ? bgNew : bgRead}
         onClick={openMessage}
         alignItems="flex-start"
         justify="left"
       >
         <Icon
-          color="secondary.500"
+          color={isNew ? textNew : textRead}
           as={isNew ? EnvelopeIcon : EnvelopeOpenIcon}
           w={6}
           h={6}
