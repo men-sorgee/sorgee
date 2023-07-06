@@ -38,38 +38,38 @@ export default async function MemberLike(
       case 'POST': {
         const like = await addLike(me.id, them.id)
 
+
+        let title = `You have a new like!`
+        let myName = me.nickname || me.first_name
+        let message = `${myName} likes you!`
+        let action = `View ${myName}'s Profile`
+
+        if (them.likes.some((b: UserLike) => b.like_id == me.id)) {
+          title = `You have a new match!`
+          message = `${myName} likes you back!`
+        }
+
+        await addUserNotification({
+          user_id: them.id,
+          message,
+          button_text: action,
+          button_url: `/members/${me.id}`,
+        })
+
         await sendNotificationEmail(
           them.email,
           them.nickname || them.first_name,
-          `You have a new like!`,
-          `${me.nickname || me.first_name} likes you!`,
+          title,
+          message,
           {
             user_id: them.id,
-            button_text: `View Their Profile`,
+            button_text: action,
             button_url: `${baseUrl}/members/${me.id}`,
           },
           SendGridTemplate.AppNotification,
           SendGridCategory.Notification
         )
 
-
-
-        if (them.likes.some((b: UserLike) => b.like_id == me.id)) {
-          // send mutual like notification
-          await addUserNotification({
-            user_id: them.id,
-            message: `Someone you like, likes you!`,
-            button_text: `View Their Profile`,
-            button_url: `/members/${me.id}`,
-          })
-        } else {
-          await addUserNotification({
-            user_id: them.id,
-            message: `Someone likes you too!`,
-            button_text: `View Their Profile`,
-            button_url: `/members/${me.id}`,
-          })
-        }
 
         return res.status(200).json(ApiResponse(like))
       }

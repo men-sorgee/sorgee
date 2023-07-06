@@ -39,10 +39,12 @@ export default async function ShareWithMember(
     } else if (method == 'POST' && existingShare == null) {
       await createUserShare(me.id, user_id)
 
+      let myName = me.nickname || me.first_name
+
       // send notification
       await addUserNotification({
         user_id: them.id,
-        message: `${me.nickname} shared their private photos!`,
+        message: `${myName} shared their private photos!`,
         button_text: 'View Photos',
         button_url: `/members/${me.id}`,
       })
@@ -50,7 +52,7 @@ export default async function ShareWithMember(
       await sendNotificationEmail(
         them.email,
         them.first_name,
-        `${me.nickname} has shared their private photos with you!`,
+        `${myName} has shared their private photos with you!`,
         'Congratulations! You have been granted access to view private photos from a member of the community. Click the button below to view their photos.',
         {
           button_text: 'View Photos',

@@ -3,6 +3,8 @@ import { addUserNotification } from 'lib/services/directus/server'
 import { addBuddy, getBuddy, getUser, removeBuddy } from 'lib/services/directus/server/users'
 import { withMember, withMethods } from 'lib/utils/server'
 import { NextApiRequest, NextApiResponse } from 'next'
+import { baseUrl } from '../../../../lib/config'
+import { sendNotificationEmail, SendGridTemplate, SendGridCategory } from '../../../../lib/services/sendgrid/server'
 
 export default async function MemberBuddy(
   req: NextApiRequest,
@@ -29,17 +31,39 @@ export default async function MemberBuddy(
           : res.status(200).json(ApiResponse(null))
       }
       case 'POST': {
+        let title = `You've been added to someone's buddy list!`
+        let myName = me.nickname || me.first_name
+        let message = `${myName} added you to their buddy list`
+        let action = `View ${myName}'s Profile`
+
         const buddy = await addBuddy(me.id, them.id)
 
         if (them.buddies?.some((b) => b.buddy_id == me.id)) {
-          // send mutual buddy notification
-          await addUserNotification({
-            user_id: them.id,
-            message: `A buddy of yours added you to their buddy list!`,
-            button_text: 'View Profile',
-            button_url: `/members/${me.id}`,
-          })
+          title = `A buddy of yours added you to their buddy list!`
         }
+
+        // send notification
+        await addUserNotification({
+          user_id: them.id,
+          message,
+          button_text: action,
+          button_url: `/members/${me.id}`,
+        })
+
+        // send email
+        await sendNotificationEmail(
+          them.email,
+          them.first_name,
+          title,
+          message,
+          {
+            button_text: 'View Profile',
+            button_url: `${baseUrl}/members/${me.id}`,
+            user_id: them.id,
+          },
+          SendGridTemplate.AppNotification,
+          SendGridCategory.Notification
+        )
 
         return res.status(200).json(ApiResponse(buddy))
       }
