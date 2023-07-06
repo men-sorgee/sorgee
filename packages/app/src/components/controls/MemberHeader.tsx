@@ -43,7 +43,7 @@ export const MemberHeader = ({
     (s: UserShare) => String(s.viewer_id) == viewer?.id
   )
   const likes = (member.likes as UserLike[]) || []
-  const likesYou = likes?.some((l: UserLike) => String(l.user_id) == viewer?.id)
+  const likesYou = likes?.some((l: UserLike) => String(l.like_id) == viewer?.id)
 
   const needsVoucher =
     !member.vouched_by &&
@@ -113,7 +113,7 @@ export const MemberHeader = ({
                 color="white"
                 borderRadius="3px 3px 3px 3px"
               >
-                Like You
+                Likes You
               </Badge>
             )}
 
