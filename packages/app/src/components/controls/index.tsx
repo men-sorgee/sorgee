@@ -11,6 +11,8 @@ export { RateItem } from './RateItem'
 export { Markdown } from './Markdown'
 export { LocationCoords } from './LocationCoords'
 
+export { Pager } from './Pager'
+
 export { MemberOnly } from './MemberOnly'
 export { MemberBadge } from './MemberBadge'
 export { MemberIcon } from './MemberIcon'
@@ -43,6 +45,7 @@ export { EventCard } from './EventCard'
 
 export { AppNotificationCard } from './AppNotificationCard'
 export { UserNotificationCard } from './UserNotificationCard'
+export { UserNotifications } from './UserNotifications'
 export { Messages } from './Messages'
 
 export { SubscribeBox } from './SubscribeBox'

@@ -19,7 +19,7 @@ export type UserNotificationsContextData = {
   newNotificationCount: number
   error?: any
   markAsRead: (id: string) => Promise<void>
-  delete: (id: string) => Promise<void>
+  deleteNotification: (id: string) => Promise<void>
   loading: boolean
   reload: () => void
 }
@@ -32,7 +32,7 @@ export const UserNotificationsContext =
     hasNewNotifications: false,
     newNotificationCount: 0,
     markAsRead: async (_) => {},
-    delete: async () => {},
+    deleteNotification: async () => {},
     loading: true,
     reload: () => {}
   })
@@ -56,15 +56,10 @@ export function UserNotificationsProvider({
     fallbackData: []
   })
   const [hasNewNotifications, setHasNewNotifications] = useState(false)
-  const newNotifications = notifications?.filter((n) => n.read == false) || []
+  const newNotifications = notifications?.filter((n) => n?.read != true) || []
   useEffect(() => {
     if (!isLoading && notifications) {
       setHasNewNotifications(newNotifications?.length > 0)
-    }
-    if (hasNewNotifications) {
-      if (!sessionStorage.getItem('notified')) {
-        sessionStorage.setItem('notified', 'true')
-      }
     }
   }, [notifications, isLoading, newNotifications?.length, hasNewNotifications])
 
@@ -73,17 +68,19 @@ export function UserNotificationsProvider({
       id
     })
     if (success) {
-      await mutate(
-        notifications.map((n) => {
-          if (n.id === id) {
-            status = 'read'
+      await mutate([
+        ...notifications.map(({ id: i, read, ...props }) => {
+          if (i === id) {
+            read = true
           }
-          return n
-        }),
-        {
-          revalidate: true
-        }
-      )
+          return {
+            id: i,
+            read,
+            ...props
+          }
+        })
+      ])
+
       setHasNewNotifications(newNotifications?.length > 0)
     }
   }
@@ -93,17 +90,7 @@ export function UserNotificationsProvider({
       id
     })
     if (success) {
-      await mutate(
-        notifications.map((n) => {
-          if (n.id !== id) {
-            return n
-          }
-        }),
-        {
-          revalidate: true
-        }
-      )
-      setHasNewNotifications(newNotifications?.length > 0)
+      await mutate([...notifications.filter((n) => n.id !== id)])
     }
   }
 
@@ -115,7 +102,7 @@ export function UserNotificationsProvider({
     newNotificationCount: newNotifications?.length || 0,
     error,
     markAsRead,
-    delete: del,
+    deleteNotification: del,
     loading: isLoading,
     reload: () => {
       mutate()

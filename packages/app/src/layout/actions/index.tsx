@@ -11,7 +11,7 @@ import Buddies from './Buddies'
 import Chat from './Chat'
 import Events from './Events'
 import Members from './Members'
-import Notifications from './Notifications'
+import AppNotifications from './Notifications'
 
 export default function ActionsNav() {
   const router = useRouter()
@@ -62,7 +62,7 @@ export default function ActionsNav() {
           active={path.startsWith('/member/buddies')}
           hasFeature={hasBuddyList}
         />
-        <Notifications member={member} />
+        <AppNotifications member={member} />
       </Flex>
     </Box>
   )

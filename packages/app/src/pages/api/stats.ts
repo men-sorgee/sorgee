@@ -1,5 +1,5 @@
-import { ApiResponse } from 'lib/models'
-import { getUserStats, MemberStats } from 'lib/services/directus/server'
+import { ApiResponse, MemberStats } from 'lib/models'
+import { getUserStats } from 'lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function Stats(

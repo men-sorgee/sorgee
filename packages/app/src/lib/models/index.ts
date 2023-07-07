@@ -19,6 +19,16 @@ export function ApiResponse<T = any | any>(
   }
 }
 
+export type MemberStats = {
+  subscribers: number
+  applicants: number
+  pledges: number
+  inductees: number
+  brothers: number
+  big_brothers: number
+  staff: number
+}
+
 export * from './billing'
 export * from './events'
 export * from './users'

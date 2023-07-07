@@ -13,6 +13,7 @@ import {
   UserEmailEvent,
   UserFields,
   UserType,
+  MemberStats
 } from 'lib/models'
 
 import { FieldFilter } from '@directus/sdk'
@@ -292,15 +293,7 @@ export async function getUserStats(start: string): Promise<{
   } as MemberStats
 }
 
-export type MemberStats = {
-  subscribers: number
-  applicants: number
-  pledges: number
-  inductees: number
-  brothers: number
-  big_brothers: number
-  staff: number
-}
+
 
 export * from './invites'
 export * from './buddies'

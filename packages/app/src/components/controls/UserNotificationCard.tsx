@@ -1,91 +1,120 @@
 import { useEffect, useState } from 'react'
-
-import { useUserNotifications } from 'hooks'
 import { UserNotification, Member } from 'lib/models'
-
+import { toLocalDate } from 'lib/utils'
+import distance from 'date-fns/formatDistanceToNow'
 import {
   Alert,
-  AlertTitle,
-  Button,
+  AlertIcon,
   chakra,
-  Heading,
   HStack,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  useDisclosure
+  Icon,
+  Spinner,
+  Text,
+  VStack
 } from '@chakra-ui/react'
 
 import { ButtonLink } from './ButtonLink'
 import { Markdown } from './Markdown'
+import { TrashIcon as TrashHover } from '@heroicons/react/24/solid'
+import { TrashIcon } from '@heroicons/react/24/outline'
 
 type Props = {
   notification: UserNotification
   member: Member
-  onClick?: () => void
+  onClick?: () => Promise<void> | void
+  onDelete?: () => Promise<void> | void
 }
 
 export const UserNotificationCard = chakra(
-  ({ member, notification, onClick }: Props) => {
-    const { isOpen, onOpen, onClose } = useDisclosure()
-    const { markAsRead, delete: del } = useUserNotifications()
-    const [isNew, setIsNew] = useState<boolean>(undefined)
+  ({ member, notification, onClick, onDelete }: Props) => {
+    const [working, setWorking] = useState<boolean>(false)
     const [message, setMessage] = useState<string>(undefined)
+    const [trashHover, setTrashHover] = useState<boolean>(false)
     useEffect(() => {
       let name = member?.nickname || member?.first_name || 'Friend'
       if (member && message == undefined && notification?.message) {
         setMessage(notification.message.replaceAll(/\$NAME\$/g, name))
       }
-      if (isNew == undefined) {
-        setIsNew(!notification.read)
-      }
-    }, [isNew, member, message, notification.message, notification.read])
+    }, [
+      member,
+      message,
+      notification.id,
+      notification.message,
+      notification.read
+    ])
 
-    const openMessage = () => {
-      markAsRead(notification.id).then(() => {
-        onOpen()
-      })
-    }
-    const markAsDeleted = async () => {
-      del(notification.id).then(() => {
-        onClose()
-      })
-    }
+    if (working) return null
 
     return (
       <>
         <Alert
-          boxShadow="md"
           mb={4}
-          cursor="pointer"
-          border={'1px solid'}
-          borderColor="text"
+          variant={notification?.read ? 'subtle' : 'left-accent'}
+          borderRadius={'md'}
+          alignItems="start"
+          justifyItems="space-between"
+          color="text"
+          status="success"
           bg="bg"
-          borderRadius={'5px'}
-          flexDirection="column"
-          alignItems="flex-start"
-          pt={0}
-          onClick={onClick}
+          cursor="pointer"
+          p={2}
+          gap={2}
+          onClick={() => {
+            setWorking(true)
+            onClick()
+          }}
         >
-          {' '}
-          {message && <Markdown content={message} size="md" />}
-          <HStack spacing={2} align="right">
+          <AlertIcon color="text" />{' '}
+          <VStack alignItems="start" justify="center" w="full">
+            {message && (
+              <Text
+                p={0}
+                m={0}
+                noOfLines={1}
+                fontWeight={notification?.read ? 'normal' : 'bold'}
+                flex={1}
+              >
+                {message}
+              </Text>
+            )}
+            <HStack w="full" gap={2} align="flex-start" justify="space-between">
+              <Text fontSize="xs" w="full" m={0} p={0}>
+                Received {distance(toLocalDate(notification?.date_created))} ago
+              </Text>
+            </HStack>
             {notification?.button_url && (
               <ButtonLink
                 size="xs"
-                onClick={onClose}
                 href={notification?.button_url}
                 colorScheme="accent"
                 color="white"
+                onClick={async () => {
+                  setWorking(true)
+                  await onClick()
+                  return true
+                }}
+                prefetch={false}
+                replace={false}
               >
                 {notification?.button_text || 'Check it Out!'}
               </ButtonLink>
             )}
-          </HStack>
+          </VStack>
+          <Icon
+            as={trashHover ? TrashHover : TrashIcon}
+            w={4}
+            h={4}
+            cursor="pointer"
+            title="Delete Notification"
+            onMouseOver={() => setTrashHover(true)}
+            onMouseOut={() => setTrashHover(false)}
+            onClick={async () => {
+              setWorking(true)
+              onDelete()
+              setMessage(undefined)
+              await onClick()
+            }}
+          />
         </Alert>
       </>
     )

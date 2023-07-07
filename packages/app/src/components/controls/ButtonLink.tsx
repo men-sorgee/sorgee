@@ -7,13 +7,30 @@ type Props = ButtonProps & {
   gradient?: boolean
   children: React.ReactNode | React.ReactNode[]
   onClick?: (e: any) => void
+  replace?: boolean
+  prefetch?: boolean
 }
 
 export const ButtonLink = chakra(
-  ({ href, gradient = false, colorScheme = 'secondary', children, onClick, ...props }: Props) => {
+  ({
+    href,
+    gradient = false,
+    colorScheme = 'secondary',
+    children,
+    onClick,
+    replace = true,
+    prefetch = true,
+    ...props
+  }: Props) => {
     const bgGradient = `linear(to-b, ${colorScheme}.400, ${colorScheme}.500, ${colorScheme}.600)`
     return (
-      <NextLink href={href} onClick={onClick} style={{ color: 'white', textDecoration: 'none' }}>
+      <NextLink
+        href={href}
+        onClick={onClick}
+        style={{ color: 'white', textDecoration: 'none' }}
+        replace={replace}
+        prefetch={prefetch}
+      >
         <Button
           bgGradient={gradient ? bgGradient : 'none'}
           bg={gradient ? null : `${colorScheme}.500`}

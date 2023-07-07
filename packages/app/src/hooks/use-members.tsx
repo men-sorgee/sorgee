@@ -19,15 +19,17 @@ export type MemberSearchContext = {
   error: string
 }
 
-export default function useMemberSearch(
+function useMemberSearch(
   page: number,
   size: number,
   sort: string,
   query: Record<string, any> = {}
 ) {
-  const key = `/api/members?limit=${size}&page=${page}&sort=${sort}&${new URLSearchParams(
-    query
-  ).toString()}`
+  const [key] = useState(
+    `/api/members?limit=${size}&page=${page}&sort=${sort}&${new URLSearchParams(
+      query
+    ).toString()}`
+  )
   const { data: response, error } = useSWR<ManyItems<Partial<Profile>>>(
     key,
     JsonFetcher
@@ -41,16 +43,15 @@ export default function useMemberSearch(
 
   useEffect(() => {
     if (response?.meta) {
+      const { total_count, filter_count } = response.meta
       setMeta({
-        total: response?.meta?.total_count || 0,
-        filtered: response?.meta?.filter_count || 0
+        total: total_count || 0,
+        filtered: filter_count || 0
       })
       setPageCount(Math.ceil(meta?.filtered ? meta.filtered / size : 1))
-    }
-    if (response.data) {
       setMembers(response.data)
     }
-  }, [key, meta.filtered, response.data, response?.meta, size])
+  }, [key, meta.filtered, response?.data, response?.meta, size])
 
   return {
     members,
@@ -63,3 +64,5 @@ export default function useMemberSearch(
     error
   }
 }
+
+export { useMemberSearch }

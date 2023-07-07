@@ -2,8 +2,11 @@ import { useCallback, useEffect, useState } from 'react'
 import { toLocalDate } from 'lib/utils'
 import { useAppNotifications } from 'hooks/use-app-notifications'
 import { AppNotification, Member } from 'lib/models'
-import { EnvelopeIcon } from '@heroicons/react/24/solid'
-import { EnvelopeOpenIcon } from '@heroicons/react/24/outline'
+import {
+  TrashIcon as TrashHover,
+  EnvelopeIcon
+} from '@heroicons/react/24/solid'
+import { TrashIcon, EnvelopeOpenIcon } from '@heroicons/react/24/outline'
 import {
   Text,
   Box,
@@ -23,7 +26,8 @@ import {
   Spacer,
   VStack,
   Collapse,
-  useColorModeValue
+  useColorModeValue,
+  Alert
 } from '@chakra-ui/react'
 import distance from 'date-fns/formatDistanceToNow'
 import { ButtonLink } from './ButtonLink'
@@ -84,23 +88,24 @@ export const AppNotificationCard = chakra(({ member, notification }: Props) => {
     })
   }, [deleteAppNotification, notification.id, onClose, reloadAppNotifications])
 
-  const bgNew = useColorModeValue('secondary.100', 'secondary.700')
-  const bgRead = useColorModeValue('white', 'secondary.800')
+  const [trashHover, setTrashHover] = useState<boolean>(false)
   const textNew = useColorModeValue('secondary.800', 'secondary.100')
   const textRead = useColorModeValue('text', 'secondary.300')
 
   return (
     <>
-      <HStack
-        px={4}
-        py={2}
+      <Alert
+        mb={4}
+        variant={notification?.read ? 'subtle' : 'left-accent'}
+        borderRadius={'md'}
+        alignItems="start"
+        justifyItems="space-between"
+        color="text"
+        status="success"
         cursor="pointer"
-        borderBottom={'1px solid'}
-        borderColor="text"
-        bg={isNew ? bgNew : bgRead}
+        p={2}
         onClick={openMessage}
-        alignItems="flex-start"
-        justify="left"
+        gap={2}
       >
         <Icon
           color={isNew ? textNew : textRead}
@@ -108,21 +113,45 @@ export const AppNotificationCard = chakra(({ member, notification }: Props) => {
           w={6}
           h={6}
         />
-        <VStack alignContent="left" justify="left">
-          <Text p={0} m={0} fontWeight={isNew ? 'bold' : 'normal'}>
+        <VStack alignItems="start" justify="center" w="full">
+          <Text
+            p={0}
+            m={0}
+            noOfLines={1}
+            fontWeight={isNew ? 'bold' : 'normal'}
+            flex={1}
+          >
             {subject}
           </Text>
-
-          <Collapse in={isMessageOpen} animateOpacity>
-            <Text as="div" noOfLines={3} textAlign="left" w="full">
-              <Markdown content={notification?.message} size="sm" />
+          <HStack w="full" gap={2} align="flex-start" justify="space-between">
+            <Text fontSize="xs" textAlign="right" w="full" m={0} p={0}>
+              Received {distance(toLocalDate(notification?.date_created))} ago
             </Text>
-          </Collapse>
-          <Text fontSize="xs" textAlign="right" w="full">
-            Received {distance(toLocalDate(notification?.date_created))} ago
-          </Text>
+          </HStack>
+          {notification?.button_url && (
+            <ButtonLink
+              size="xs"
+              href={notification?.button_url}
+              colorScheme="accent"
+              color="white"
+            >
+              {notification?.button_text || 'Check it Out!'}
+            </ButtonLink>
+          )}
         </VStack>
-      </HStack>
+        <Icon
+          as={trashHover ? TrashHover : TrashIcon}
+          w={4}
+          h={4}
+          cursor="pointer"
+          title="Delete Notification"
+          onMouseOver={() => setTrashHover(true)}
+          onMouseOut={() => setTrashHover(false)}
+          onClick={async () => {
+            markAsDeleted()
+          }}
+        />
+      </Alert>
       <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
         <ModalOverlay />
         <ModalContent>

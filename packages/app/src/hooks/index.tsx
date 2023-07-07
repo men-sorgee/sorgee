@@ -3,6 +3,7 @@ export { useSite } from './use-site'
 export { useIntersectionObserver } from './use-intersection-observer'
 export { UserContext, UserProvider, useUser } from './use-user'
 export { useMember } from './use-member'
+export { useMemberSearch } from './use-members'
 export { MetaContext, MetaContextProvider, useMeta } from './use-meta'
 export {
   AppNotificationsContext,
