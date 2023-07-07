@@ -10,6 +10,7 @@ import {
   EyeIcon as ViewIcon
 } from '@heroicons/react/24/outline'
 import { EyeSlashIcon as BlockedIcon } from '@heroicons/react/24/solid'
+import { UserBlock } from 'lib/models'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
   member: Partial<User>
@@ -39,13 +40,19 @@ export const MemberBlock = chakra(
     }, [isBlocked, member.id, reload])
 
     useEffect(() => {
-      const blocked = me?.blocked || []
-      const blockedBy = me?.blocked_by || []
-      if (!loading && blocked.length > 0) {
-        setIsBlocked(blocked.some((l) => l.block_id == member.id))
+      const blockedList = (me?.blocked || []) as UserBlock[]
+      const blockedByList = (me?.blocked_by || []) as UserBlock[]
+      let blocked = blockedList.some(
+        (l: UserBlock) => String(l.blocked_id as string) == member.id
+      )
+      if (!loading && blockedList.length > 0) {
+        setIsBlocked(blocked)
       }
-      if (!loading && blocked.length > 0) {
-        setMutual(blockedBy.some((l) => l.user_id == member.id))
+      if (!loading && blocked && blockedByList.length > 0) {
+        let blockedYou = blockedByList.some(
+          (l: UserBlock) => String(l.user_id as string) == member.id
+        )
+        setMutual(blocked && blockedYou)
       }
     }, [me, member.id, loading])
 

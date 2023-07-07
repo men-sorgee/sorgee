@@ -21,14 +21,16 @@ export const MemberLike = chakra(({ member, size = 'lg', ...props }: Props) => {
   const [mutual, setMutual] = useState<boolean>(false)
 
   const toggleLike = useCallback(() => {
+    setIsLiked(!isLiked)
     if (isLiked) {
-      deleteJSON(`/api/member/like/${member?.id}`).then(() => {
+      setMutual(false)
+      return deleteJSON(`/api/member/like/${member?.id}`).then(() => {
         setIsLiked(false)
         return reload()
       })
     } else {
       // add buddy
-      postJSON(`/api/member/like/${member?.id}`, {}).then((r) => {
+      return postJSON(`/api/member/like/${member?.id}`, {}).then((r) => {
         setIsLiked(true)
         return reload()
       })
@@ -55,6 +57,11 @@ export const MemberLike = chakra(({ member, size = 'lg', ...props }: Props) => {
     ? `Unlike ${member?.nickname}`
     : `Like ${member?.nickname}`
 
+  // SWAP BETWEEN LIKED AND HOVER
+  useEffect(() => {
+    setShowLike(isLiked ? !hover : hover)
+  }, [hover, isLiked, mutual])
+
   if (!hasFeature('flirt'))
     return (
       <UpgradeIcon
@@ -64,11 +71,6 @@ export const MemberLike = chakra(({ member, size = 'lg', ...props }: Props) => {
       />
     )
 
-  // SWAP BETWEEN SHARED AND HOVER
-  useEffect(() => {
-    setShowLike(isLiked ? !hover : hover)
-  }, [hover, isLiked, mutual])
-
   return (
     <>
       <IconButton
@@ -77,10 +79,12 @@ export const MemberLike = chakra(({ member, size = 'lg', ...props }: Props) => {
         title={label}
         aria-label={label}
         icon={
-          mutual ? (
-            <FireIcon width="30px" />
-          ) : showLike ? (
-            <LikedIcon width="30px" fill="white" />
+          showLike ? (
+            mutual ? (
+              <FireIcon width="30px" />
+            ) : (
+              <LikedIcon width="30px" fill="white" />
+            )
           ) : (
             <LikeIcon width="30px" stroke="white" />
           )

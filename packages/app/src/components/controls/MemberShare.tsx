@@ -21,15 +21,14 @@ export const MemberShare = chakra(
     const [isShared, setIsShared] = useState<boolean>(false)
 
     const toggleShare = useCallback(() => {
+      setIsShared(!isShared)
       if (isShared) {
         deleteJSON(`/api/member/share/${member?.id}`).then(() => {
-          setIsShared(false)
           return reload()
         })
       } else {
         // add buddy
         postJSON(`/api/member/share/${member?.id}`, {}).then((r) => {
-          setIsShared(true)
           return reload()
         })
       }
