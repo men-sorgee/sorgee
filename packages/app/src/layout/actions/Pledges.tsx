@@ -49,8 +49,8 @@ const PledgesAction = ({ member, active }: Props) => {
         />
         {count > 0 && (
           <Badge
-            bg={'accent.500'}
-            color={'white'}
+            bg={active ? 'accent.500' : 'white'}
+            color={active ? 'white' : 'accent.500'}
             ml={[-6, -8, -10]}
             zIndex="overlay"
             position="absolute"

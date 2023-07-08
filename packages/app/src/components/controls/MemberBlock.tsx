@@ -76,7 +76,7 @@ export const MemberBlock = chakra(
           aria-label={label}
           icon={
             showBlock ? (
-              <BlockedIcon width="30px" fill="white" />
+              <BlockedIcon width="30px" fill="red" />
             ) : (
               <ViewIcon width="30px" stroke="white" />
             )

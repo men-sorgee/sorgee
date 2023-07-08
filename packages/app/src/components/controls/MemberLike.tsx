@@ -78,7 +78,7 @@ export const MemberLike = chakra(
       <>
         <IconButton
           size={size}
-          color={mutual ? 'yellow' : 'white'}
+          color={mutual || isLiked ? 'yellow' : 'white'}
           title={label}
           aria-label={label}
           icon={
@@ -86,7 +86,7 @@ export const MemberLike = chakra(
               mutual ? (
                 <FireIcon width="30px" />
               ) : (
-                <LikedIcon width="30px" fill="white" />
+                <LikedIcon width="30px" />
               )
             ) : (
               <LikeIcon width="30px" stroke="white" />

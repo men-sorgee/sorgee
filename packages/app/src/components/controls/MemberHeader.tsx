@@ -63,7 +63,7 @@ export const MemberHeader = ({
           {children}
         </MemberIcon>
 
-        {minimal == false && (
+        {!minimal && (
           <Flex justify="left" align="start" my={2} w="full">
             {member?.mannerisms && (
               <Badge
@@ -99,11 +99,11 @@ export const MemberHeader = ({
             {sharedWithMe && (
               <Badge
                 fontSize={['xs', 'sm']}
-                bg="accent.300"
+                bg="primary.300"
                 color="white"
                 borderRadius="3px 3px 3px 3px"
               >
-                Unlocked
+                Album Unlocked
               </Badge>
             )}
             {likesYou && (
@@ -112,6 +112,7 @@ export const MemberHeader = ({
                 bg="accent.300"
                 color="white"
                 borderRadius="3px 3px 3px 3px"
+                ml={2}
               >
                 Likes You
               </Badge>

@@ -68,14 +68,14 @@ export const MemberShare = chakra(
       <>
         <IconButton
           size={size}
-          color="white"
+          color={isShared ? 'yellow' : 'white'}
           title={label}
           aria-label={label}
           zIndex="fixed"
           variant="ghost"
           icon={
             showLock ? (
-              <LockOpenIcon width="30px" fill="white" />
+              <LockOpenIcon width="30px" />
             ) : (
               <LockClosedIcon width="30px" stroke="white" />
             )

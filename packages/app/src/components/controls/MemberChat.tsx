@@ -79,7 +79,7 @@ export const MemberChat = chakra(
           variant="ghost"
           icon={
             hasConversation ? (
-              <ChatIconOn width="30px" />
+              <ChatIconOn width="30px" color="yellow" />
             ) : hover ? (
               <ChatIconOn width="30px" />
             ) : (

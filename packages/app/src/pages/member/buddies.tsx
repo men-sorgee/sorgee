@@ -76,6 +76,7 @@ export default function BuddiesPage({}: PageProps) {
                 size={['md', 'lg', 'xl']}
                 member={u as unknown as SearchableMember}
                 viewer={member}
+                minimal={false}
                 onClick={() => {
                   setMemberId(u.id)
                 }}

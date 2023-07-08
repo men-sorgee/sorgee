@@ -6,7 +6,7 @@ import { ChatMessage, Member, Message } from 'lib/models'
 import { postJSON } from 'lib/utils'
 import io, { Socket } from 'socket.io-client'
 
-import { IconButton, useDisclosure } from '@chakra-ui/react'
+import { IconButton, useDisclosure, Spacer } from '@chakra-ui/react'
 import {
   Avatar,
   ChatContainer,
@@ -28,7 +28,8 @@ import {
   MemberModal,
   MemberLike,
   MemberShare,
-  MemberBlock
+  MemberBlock,
+  MemberReport
 } from './'
 
 import MessagesStyles from './MessagesStyles'
@@ -374,6 +375,8 @@ export const Messages = ({ member }: { member: Member }) => {
               />
               <ConversationHeader.Actions>
                 <MemberBlock size="sm" member={activeConversation?.user} />
+                <MemberReport size="sm" member={activeConversation?.user} />
+                <Spacer />
                 <MemberLike size="sm" member={activeConversation?.user} />
                 <MemberConnect size="sm" member={activeConversation?.user} />
                 <MemberShare size="sm" member={activeConversation?.user} />
