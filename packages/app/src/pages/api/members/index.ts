@@ -78,7 +78,10 @@ export default async function FindMembers(
       } else if (key == 'nickname') {
         let nickname = params[key].join('')
         andSearchItems.push({
-          nickname: { _contains: nickname },
+          nickname: { _icontains: nickname },
+        })
+        orSearchItems.push({
+          first_name: { _icontains: nickname },
         })
       } else {
         andSearchItems.push({ [key]: { _in: params[key] } })
