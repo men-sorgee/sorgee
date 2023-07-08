@@ -11,6 +11,7 @@ import {
 } from 'lib/services/directus/server/messages'
 
 import { pruneUndefined } from 'lib/utils/index'
+import { sendNotification } from '../../../lib/services/twilio/server'
 
 export default async function getUserMessages(
   req: NextApiRequest,
@@ -47,6 +48,7 @@ export default async function getUserMessages(
           body,
           type,
         })
+
         return res.status(200).json(ApiResponse(message))
 
       case 'PUT':

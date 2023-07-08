@@ -5,13 +5,26 @@ import Page from 'components/Page'
 import { useUser } from 'hooks'
 import { MemberLevel, SearchableMember, User, UserBuddy } from 'lib/models'
 
-import { Alert, Flex, SimpleGrid, Spacer, Switch, Text } from '@chakra-ui/react'
+import {
+  Alert,
+  Button,
+  Flex,
+  Input,
+  InputGroup,
+  InputRightElement,
+  SimpleGrid,
+  Spacer,
+  Switch,
+  Text
+} from '@chakra-ui/react'
+import { XMarkIcon } from '@heroicons/react/24/outline'
 
 export type PageProps = {}
 
 export default function BuddiesPage({}: PageProps) {
   const [onlineOnly, setOnlineOnly] = useState(false)
   const [memberId, setMemberId] = useState<string>(undefined)
+  const [search, setSearch] = useState<string>(undefined)
   const { member, loading } = useUser({
     minLevel: MemberLevel.brother,
     requiredFeature: 'buddy_list',
@@ -43,6 +56,7 @@ export default function BuddiesPage({}: PageProps) {
           You have {buddies?.length} buddies with {onlineMembers?.length}{' '}
           online.
         </Text>
+
         <Spacer />
         <Flex
           direction="column"
@@ -61,6 +75,25 @@ export default function BuddiesPage({}: PageProps) {
           />
         </Flex>
       </Alert>
+      <InputGroup size="lg">
+        <Input
+          placeholder="Search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <InputRightElement width="4.5rem">
+          <Button
+            h="80%"
+            rounded="full"
+            size="sm"
+            onClick={() => setSearch('')}
+            title="Clear Search"
+          >
+            <XMarkIcon width="20px" />
+          </Button>
+        </InputRightElement>
+      </InputGroup>
+
       <SimpleGrid
         my={4}
         columns={[1, 1, 1, 2]}
@@ -69,20 +102,28 @@ export default function BuddiesPage({}: PageProps) {
         justifyItems="stretch"
       >
         {members &&
-          members?.map((u: User) => (
-            <Lazy key={u.id}>
-              <MemberCard
-                key={u.id}
-                size={['md', 'lg', 'xl']}
-                member={u as unknown as SearchableMember}
-                viewer={member}
-                full
-                onClick={() => {
-                  setMemberId(u.id)
-                }}
-              />
-            </Lazy>
-          ))}
+          members
+            ?.filter((u) =>
+              search
+                ? u.nickname
+                    ?.toLocaleLowerCase()
+                    .includes(search.toLocaleLowerCase())
+                : true
+            )
+            .map((u: User) => (
+              <Lazy key={u.id}>
+                <MemberCard
+                  key={u.id}
+                  size={['md', 'lg', 'xl']}
+                  member={u as unknown as SearchableMember}
+                  viewer={member}
+                  full
+                  onClick={() => {
+                    setMemberId(u.id)
+                  }}
+                />
+              </Lazy>
+            ))}
       </SimpleGrid>
       <MemberModal
         isOpen={memberId != undefined}
