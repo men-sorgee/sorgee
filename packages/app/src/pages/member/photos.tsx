@@ -102,9 +102,9 @@ export default function PhotoAlbums({}: Props) {
                   failureMessage="Avatar not deleted"
                   mt={'-3rem'}
                   variant="ghost"
-                  bg="white"
-                  opacity=".15"
-                  color="black"
+                  bg="bg"
+                  opacity=".5"
+                  color="text"
                   _hover={{ opacity: 1, bg: 'white' }}
                 >
                   Are you sure you want to delete this photo?
@@ -195,7 +195,7 @@ function PhotoList({ title, field, images, memberId, reload }: PhotoListProps) {
             mt={'-6rem'}
             variant="ghost"
             bg="white"
-            opacity=".15"
+            opacity=".5"
             color="black"
             _hover={{ opacity: 1, bg: 'white' }}
           >
@@ -269,11 +269,11 @@ const AddPhoto = chakra(
     return (
       <>
         <HStack
-          p={2}
+          py={2}
           align="center"
           justify="center"
           border="2px dashed"
-          borderColor="primary"
+          borderColor="text"
           overflow="clip"
           padding={4}
           rounded={rounded}
@@ -289,9 +289,8 @@ const AddPhoto = chakra(
             onClick={takePhoto}
             color="white"
             rounded="full"
-            bg="primary.500"
-            opacity=".15"
-            _hover={{ opacity: 1, bg: 'primary.500' }}
+            bg="accent.500"
+            _hover={{ shadow: 'md' }}
             p={2}
           />
           <IconButton
@@ -302,9 +301,8 @@ const AddPhoto = chakra(
             color="white"
             rounded="full"
             size="lg"
-            bg="primary.500"
-            opacity=".15"
-            _hover={{ opacity: 1, bg: 'primary.500' }}
+            bg="accent.500"
+            _hover={{ shadow: 'md' }}
             p={2}
           />
         </HStack>

@@ -100,8 +100,8 @@ const ChatActions = ({ member, hasFeature }: Props) => {
           />
           {hasNewMessages && (
             <Badge
-              bg="accent.500"
-              color="white"
+              bg="white"
+              color="black"
               ml={[-6, -8, -10]}
               zIndex="overlay"
               position="absolute"

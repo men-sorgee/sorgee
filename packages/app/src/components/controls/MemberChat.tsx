@@ -74,7 +74,7 @@ export const MemberChat = chakra(
       )
 
     return (
-      <>
+      <div style={{ position: 'relative' }}>
         <IconButton
           variant="ghost"
           icon={
@@ -86,7 +86,7 @@ export const MemberChat = chakra(
               <ChatIconOff width="30px" />
             )
           }
-          zIndex="fixed"
+          position="relative"
           color="white"
           onClick={() => {
             chatWith(member as Member)
@@ -102,18 +102,19 @@ export const MemberChat = chakra(
         {hasNewMessages && (
           <Badge
             bg="red"
+            fontSize=".7rem"
             color="white"
-            ml={-4}
             zIndex="overlay"
-            position="absolute"
             rounded="full"
-            px={2}
-            py={0.5}
+            position="absolute"
+            ml={-5}
+            mt={2}
+            px={1}
           >
             {newMessageCount}
           </Badge>
         )}
-      </>
+      </div>
     )
   }
 )

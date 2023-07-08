@@ -55,6 +55,7 @@ export const MemberCard = chakra(
           color="white"
           minW="full"
           overflow="hidden"
+          title={member?.nickname || member?.first_name}
           _hover={{ shadow: '2xl', borderColor: 'accent.500' }}
           {...props}
         >

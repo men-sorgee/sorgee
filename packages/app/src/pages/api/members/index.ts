@@ -73,14 +73,14 @@ export default async function FindMembers(
       })
     }
 
-    console.dir({
-      params,
-      andSearchItems,
-      orSearchItems,
-      postQueryParams,
-    }, {
-      depth: 10
-    })
+    // console.dir({
+    //   params,
+    //   andSearchItems,
+    //   orSearchItems,
+    //   postQueryParams,
+    // }, {
+    //   depth: 10
+    // })
 
     Object.keys(params).forEach((key) => {
       if (Array.isArray(member[key])) {
