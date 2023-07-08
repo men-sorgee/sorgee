@@ -346,7 +346,7 @@ export const Messages = ({ member }: { member: Member }) => {
                   <Avatar
                     key={id}
                     id={id}
-                    src={picture ? picture : null}
+                    src={picture ? picture : undefined}
                     name={nickname}
                     style={conversationAvatarStyle}
                     status={presence == 'online' ? 'available' : 'unavailable'}

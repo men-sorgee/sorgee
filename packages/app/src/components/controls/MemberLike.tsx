@@ -46,7 +46,7 @@ export const MemberLike = chakra(({ member, size = 'lg', ...props }: Props) => {
     if (!loading && likes.length > 0) {
       setMutual(likedBy.some((l) => l?.user_id == member?.id))
     }
-  }, [me, member.id, loading])
+  }, [me, member?.id, loading])
 
   if (loading || !me || me?.id == member?.id) return null
   if (level < MemberLevel.brother) return null

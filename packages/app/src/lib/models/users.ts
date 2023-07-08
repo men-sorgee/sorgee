@@ -515,11 +515,11 @@ export type Member = Applicant & {
 
 export type Membership = 'none' | 'free' | 'basic' | 'plus' | 'pro'
 export enum MembershipType {
-  none = -1,
-  free = 0,
-  basic = 1,
-  plus = 2,
-  pro = 3,
+  none = 0,
+  free = 1,
+  basic = 2,
+  plus = 3,
+  pro = 4,
 }
 
 export type SearchableMember = Omit<

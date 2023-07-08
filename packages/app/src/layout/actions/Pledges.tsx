@@ -10,23 +10,24 @@ import NextLink from 'next/link'
 
 import { Badge, Icon, IconButton, Link } from '@chakra-ui/react'
 import { UserCircleIcon } from '@heroicons/react/24/outline'
+import { useMemberSearch } from '../../hooks'
 
 interface Props {
   member: Member
   active: boolean
-  hasFeature: boolean
 }
 
-const PledgesAction = ({ member, active, hasFeature }: Props) => {
+const PledgesAction = ({ member, active }: Props) => {
   const level = MemberLevel[member?.user_type]
+
+  const { meta } = useMemberSearch(1, 20, 'last_login', {
+    user_type: MemberLevel[MemberLevel.pledge]
+  })
+  const { filtered: count } = meta
+
   if (level < MemberLevel.brother) {
     return null
   }
-
-  const buddies = member?.buddies as UserBuddy[]
-  const online = buddies?.filter(({ buddy_id: buddy }: UserBuddy) => {
-    return (buddy as User)?.presence == 'online'
-  }).length
 
   return (
     <>
@@ -46,10 +47,10 @@ const PledgesAction = ({ member, active, hasFeature }: Props) => {
           aria-label="Review Pledges"
           title="Review Pledges"
         />
-        {online > 0 && (
+        {count > 0 && (
           <Badge
-            bg={active ? 'accent.500' : 'white'}
-            color={active ? 'white' : 'accent.500'}
+            bg={'accent.500'}
+            color={'white'}
             ml={[-6, -8, -10]}
             zIndex="overlay"
             position="absolute"
@@ -57,7 +58,7 @@ const PledgesAction = ({ member, active, hasFeature }: Props) => {
             px={2}
             py={0.5}
           >
-            {online}
+            {count}
           </Badge>
         )}
       </Link>

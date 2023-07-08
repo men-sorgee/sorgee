@@ -4,11 +4,19 @@ import { useUser } from 'hooks'
 import { Button, HStack, Spacer } from '@chakra-ui/react'
 
 import { Plans } from 'components'
+import { useRouter } from 'next/router'
+import { MembershipType } from 'lib/models'
 
 type Params = {}
 
-const Pricing = ({}: Params) => {
+const AccountPage = ({}: Params) => {
   const { member, loading } = useUser()
+  const router = useRouter()
+  const { plan: p } = router.query
+  let plan = undefined
+  if (p) {
+    plan = Number(p) as MembershipType
+  }
 
   return (
     <Page
@@ -17,7 +25,7 @@ const Pricing = ({}: Params) => {
       description="Add features to your experience"
       requireAuth
     >
-      <Plans allowSubscribe />
+      <Plans allowSubscribe highlightedPlan={plan} />
       <HStack mt={14} hidden>
         <Button
           size="lg"
@@ -56,4 +64,4 @@ const Pricing = ({}: Params) => {
   )
 }
 
-export default Pricing
+export default AccountPage

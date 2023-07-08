@@ -117,7 +117,13 @@ const ChatActions = ({ member, hasFeature }: Props) => {
         <UpgradeIcon
           title="Member Chat"
           membershipType={MembershipType.plus}
-          icon={<ChatIcon height="50px" width="50px" />}
+          icon={
+            <Icon
+              as={ChatIcon}
+              width={['35px', '40px', '50px']}
+              height={['35px', '40px', '50px']}
+            />
+          }
           size={['sm', 'md', 'lg']}
         />
       )}

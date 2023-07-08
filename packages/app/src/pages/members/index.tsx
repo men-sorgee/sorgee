@@ -185,6 +185,9 @@ export default function MemberListPage({ fields, id: i }: PageProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [response?.data, response?.meta, key, size])
 
+  const sortDir = sort?.startsWith('-') ? '-' : ''
+  const sortTerm = sort?.startsWith('-') ? sort.slice(1) : sort || 'last_login'
+
   const { isOpen, onOpen, onClose } = useDisclosure()
   useEffect(() => {
     if (id) {
@@ -193,9 +196,6 @@ export default function MemberListPage({ fields, id: i }: PageProps) {
       onClose()
     }
   }, [id, setId, onOpen, onClose])
-
-  const sortDir = sort?.startsWith('-') ? '-' : ''
-  const sortTerm = sort?.startsWith('-') ? sort.slice(1) : sort || 'last_login'
 
   const close = useCallback(() => {
     onClose()

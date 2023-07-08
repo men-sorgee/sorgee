@@ -2,7 +2,12 @@ import { useState } from 'react'
 import { sentenceCase } from 'change-case'
 import { ButtonLink } from 'components'
 import { useUser } from 'hooks'
-import { memberFeatures, MemberLevel, ProductView } from 'lib/models'
+import {
+  memberFeatures,
+  MemberLevel,
+  MembershipType,
+  ProductView
+} from 'lib/models'
 
 import {
   Badge,
@@ -22,11 +27,13 @@ import { CheckCircleIcon } from '@heroicons/react/24/solid'
 
 import { useProducts } from 'hooks'
 import { getJSON } from 'lib/utils'
+
 type Params = {
   allowSubscribe?: boolean
+  highlightedPlan?: MembershipType
 }
 
-const Plans = ({ allowSubscribe = false }: Params) => {
+const Plans = ({ allowSubscribe = false, highlightedPlan }: Params) => {
   const { products, loading: productsLoading } = useProducts()
   const { member, loading, authenticated, level } = useUser({
     redirectsEnabled: false
@@ -58,6 +65,14 @@ const Plans = ({ allowSubscribe = false }: Params) => {
 
   const showButtons = allowSubscribe && authenticated && !loading
 
+  const shouldHighlight = (plan: ProductView) => {
+    if (highlightedPlan) {
+      return plan.type == MembershipType[highlightedPlan]
+    } else {
+      return !!plan.label
+    }
+  }
+
   if (loading || productsLoading) {
     return <></>
   }
@@ -78,7 +93,7 @@ const Plans = ({ allowSubscribe = false }: Params) => {
               w={['full', 'full', 'fit']}
               rounded="md"
               shadow={'dark-lg'}
-              border={plan.label ? '3px solid' : ''}
+              border={shouldHighlight(plan) ? '3px solid' : ''}
               borderColor={'accent.500'}
               px={[4, 4, 6]}
               gap={2}
@@ -86,9 +101,9 @@ const Plans = ({ allowSubscribe = false }: Params) => {
               py={4}
             >
               <Box h={4}>
-                {plan.label && (
+                {shouldHighlight(plan) && (
                   <Badge variant="solid" bg="accent.500" size="xl" rounded="md">
-                    {plan.label}
+                    {plan.label || 'Recommended'}
                   </Badge>
                 )}
               </Box>
@@ -98,7 +113,7 @@ const Plans = ({ allowSubscribe = false }: Params) => {
                 </Heading>
 
                 <Heading as="h3">
-                  ${plan.prices[interval] / 100} / {interval}
+                  ${plan.prices[interval] / 100} / {interval.substring(0, 2)}
                 </Heading>
               </VStack>
               <Text m={0} p={0}>

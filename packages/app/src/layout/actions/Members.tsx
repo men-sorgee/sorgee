@@ -22,7 +22,13 @@ const MembersAction = ({ member, active, hasFeature }: Props) => {
       <UpgradeIcon
         title="Member Directory"
         membershipType={MembershipType.free}
-        icon={<UserGroupIcon height="50px" width="50px" />}
+        icon={
+          <Icon
+            as={UserGroupIcon}
+            width={['35px', '40px', '50px']}
+            height={['35px', '40px', '50px']}
+          />
+        }
         size={['sm', 'md', 'lg']}
       />
     )

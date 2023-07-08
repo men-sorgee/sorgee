@@ -14,7 +14,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 
 import { ManyItems } from '@directus/sdk'
 
-type MemberSearch = SearchableMember & {
+export type MemberSearch = SearchableMember & {
   offset?: number
   limit?: number
   sort: string
@@ -127,7 +127,7 @@ export default async function FindMembers(
 
     return res.status(200).json(ApiResponse(results))
   } catch (e) {
-    console.error(e.message || e, e.stack)
+    console.error(e)
     res.status(400).json(ApiResponse(null, e.message || e))
   }
 }

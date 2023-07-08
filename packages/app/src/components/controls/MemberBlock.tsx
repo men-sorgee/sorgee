@@ -37,26 +37,26 @@ export const MemberBlock = chakra(
           return reload()
         })
       }
-    }, [isBlocked, member.id, reload])
+    }, [isBlocked, member?.id, reload])
 
     useEffect(() => {
       const blockedList = (me?.blocked || []) as UserBlock[]
       const blockedByList = (me?.blocked_by || []) as UserBlock[]
       let blocked = blockedList.some(
-        (l: UserBlock) => String(l.blocked_id as string) == member.id
+        (l: UserBlock) => String(l.blocked_id as string) == member?.id
       )
       if (!loading && blockedList.length > 0) {
         setIsBlocked(blocked)
       }
       if (!loading && blocked && blockedByList.length > 0) {
         let blockedYou = blockedByList.some(
-          (l: UserBlock) => String(l.user_id as string) == member.id
+          (l: UserBlock) => String(l.user_id as string) == member?.id
         )
         setMutual(blocked && blockedYou)
       }
-    }, [me, member.id, loading])
+    }, [me, member?.id, loading])
 
-    if (loading || !me || me.id == member.id) return null
+    if (loading || !me || me?.id == member?.id) return null
 
     const label = isBlocked
       ? `Unblock ${member?.nickname || 'this member'}`

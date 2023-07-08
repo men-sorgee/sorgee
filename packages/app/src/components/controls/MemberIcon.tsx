@@ -91,12 +91,13 @@ export const MemberIcon = chakra(
               <Heading
                 size={['md', 'lg']}
                 textTransform="uppercase"
+                noOfLines={1}
                 m={0}
                 color={color}
                 w="full"
-                title={member?.nickname || 'Anon'}
+                title={member?.nickname || member.first_name}
               >
-                {member?.nickname || 'Anon'}
+                {member?.nickname || member.first_name}
               </Heading>
               <Flex
                 gap={4}

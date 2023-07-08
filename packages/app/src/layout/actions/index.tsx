@@ -12,6 +12,7 @@ import Chat from './Chat'
 import Events from './Events'
 import Members from './Members'
 import AppNotifications from './Notifications'
+import Pledges from './Pledges'
 
 export default function ActionsNav() {
   const router = useRouter()
@@ -49,19 +50,21 @@ export default function ActionsNav() {
       bottom={0}
       pr="16px"
     >
-      <Flex justify="center" w="full" gap={[1, 2, 4, 6]} p={4} {...constrained}>
+      <Flex justify="center" w="full" gap={[1, 1, 4, 6]} p={4} {...constrained}>
         <Chat member={member} hasFeature={hasChat} />
         <Events member={member} active={path.startsWith('/events')} />
         <Members
           member={member}
-          active={path.startsWith('/members')}
+          active={path == '/members'}
           hasFeature={hasDirectory}
         />
+        <Pledges member={member} active={path.startsWith('/members/pledges')} />
         <Buddies
           member={member}
           active={path.startsWith('/member/buddies')}
           hasFeature={hasBuddyList}
         />
+
         <AppNotifications member={member} />
       </Flex>
     </Box>

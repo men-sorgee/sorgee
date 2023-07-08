@@ -33,7 +33,13 @@ const BuddiesAction = ({ member, active, hasFeature }: Props) => {
         size={['sm', 'md', 'lg']}
         title="Buddy List"
         membershipType={MembershipType.basic}
-        icon={<UsersIcon height="50px" width="50px" />}
+        icon={
+          <Icon
+            as={UsersIcon}
+            width={['35px', '40px', '50px']}
+            height={['35px', '40px', '50px']}
+          />
+        }
       />
     )
 
