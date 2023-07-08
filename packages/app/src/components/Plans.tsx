@@ -100,12 +100,20 @@ const Plans = ({ allowSubscribe = false, highlightedPlan }: Params) => {
               justify="space-between"
               py={4}
             >
-              <Box h={4}>
-                {shouldHighlight(plan) && (
-                  <Badge variant="solid" bg="accent.500" size="xl" rounded="md">
+              <Box h={5} position="relative">
+                {(shouldHighlight(plan) && (
+                  <Badge
+                    variant="solid"
+                    bg="accent.500"
+                    size="xl"
+                    rounded="md"
+                    m={0}
+                    position="static"
+                    mx="auto"
+                  >
                     {plan.label || 'Recommended'}
                   </Badge>
-                )}
+                )) || <span>&nbsp;</span>}
               </Box>
               <VStack>
                 <Heading as="h2" fontSize="3xl" mt={0}>
@@ -113,14 +121,15 @@ const Plans = ({ allowSubscribe = false, highlightedPlan }: Params) => {
                 </Heading>
 
                 <Heading as="h3">
-                  ${plan.prices[interval] / 100} / {interval.substring(0, 2)}
+                  ${plan.prices[interval] / 100} /{' '}
+                  {interval == 'month' ? 'mo' : 'yr'}
                 </Heading>
               </VStack>
               <Text m={0} p={0}>
                 {plan.description}
               </Text>
 
-              <VStack>
+              <VStack gap={1} justify="space-between" align="start">
                 {memberFeatures.map((feature) => (
                   <Flex key={feature} justify="evenly" w="full" align="center">
                     <CheckCircleIcon
@@ -140,7 +149,7 @@ const Plans = ({ allowSubscribe = false, highlightedPlan }: Params) => {
                   </Flex>
                 ))}
               </VStack>
-
+              <Spacer />
               {showButtons && (
                 <Box>
                   {showSubscribeButton && (
@@ -168,16 +177,17 @@ const Plans = ({ allowSubscribe = false, highlightedPlan }: Params) => {
                     )}
                   {showManageSubscriptionButton &&
                     member.membership_type == plan.type && (
-                      <Badge
+                      <Button
+                        disabled
+                        cursor="default"
                         variant="solid"
                         bg="secondary.500"
-                        size="xl"
-                        rounded="md"
+                        _hover={{ bg: 'secondary.500' }}
                         px={4}
                         py={2}
                       >
                         Current Plan
-                      </Badge>
+                      </Button>
                     )}
                 </Box>
               )}
