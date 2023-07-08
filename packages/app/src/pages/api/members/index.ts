@@ -35,12 +35,14 @@ export default async function FindMembers(
 
     const allowedLevels = getAllowedUsers(level)
     const params = normalize<SearchableMember>(props)
+
     const postQueryParams = {}
 
     const orSearchItems = []
     const andSearchItems = []
 
     let blockList = [member.id, ...member.blocked?.map((u) => u.blocked_id) || []]
+      .filter(i => i)
 
     andSearchItems.push({
       show_profile: {
@@ -71,6 +73,15 @@ export default async function FindMembers(
       })
     }
 
+    console.dir({
+      params,
+      andSearchItems,
+      orSearchItems,
+      postQueryParams,
+    }, {
+      depth: 10
+    })
+
     Object.keys(params).forEach((key) => {
       if (Array.isArray(member[key])) {
         let filter = params[key]
@@ -84,7 +95,7 @@ export default async function FindMembers(
           first_name: { _icontains: nickname },
         })
       } else {
-        andSearchItems.push({ [key]: { _in: params[key] } })
+        // andSearchItems.push({ [key]: { _eq: params[key] } })
       }
     })
 
