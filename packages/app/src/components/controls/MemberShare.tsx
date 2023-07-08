@@ -14,7 +14,7 @@ type Props = Omit<IconButtonProps, 'aria-label'> & {
 }
 
 export const MemberShare = chakra(
-  ({ member, size = 'lg', ...props }: Props) => {
+  ({ member, size = ['sm', 'md', 'lg'], ...props }: Props) => {
     const { loading, member: me, reload, level, hasFeature } = useUser()
     const [hover, setHover] = useState(false)
     const [showLock, setShowLock] = useState(false)
@@ -54,6 +54,8 @@ export const MemberShare = chakra(
           title={label}
           membershipType={MembershipType.plus}
           icon={<LockClosedIcon width="30px" />}
+          size={size}
+          _hover={{ bg: 'primary.500' }}
         />
       )
 
@@ -69,6 +71,8 @@ export const MemberShare = chakra(
           color="white"
           title={label}
           aria-label={label}
+          zIndex="fixed"
+          variant="ghost"
           icon={
             showLock ? (
               <LockOpenIcon width="30px" fill="white" />
@@ -76,7 +80,6 @@ export const MemberShare = chakra(
               <LockClosedIcon width="30px" stroke="white" />
             )
           }
-          variant="ghost"
           _hover={{
             bg: 'primary.500'
           }}

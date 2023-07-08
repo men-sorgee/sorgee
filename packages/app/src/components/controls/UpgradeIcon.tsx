@@ -23,27 +23,33 @@ type Props = Omit<IconButtonProps, 'aria-label'> & {
 }
 
 const UpgradeIcon = chakra(
-  ({ title, icon, membershipType, ...props }: Props) => {
+  ({
+    title,
+    icon,
+    membershipType,
+    size = ['sm', 'md', 'lg'],
+    ...props
+  }: Props) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const cancelRef = useRef()
 
     return (
       <>
-        <Box>
-          <IconButton
-            aria-label={title}
-            title={title}
-            variant="primary"
-            zIndex="fixed"
-            icon={icon}
-            onClick={onOpen}
-            color={'gray.100'}
-            stroke={'gray.100'}
-            ref={cancelRef}
-            size={['sm', 'md', 'lg']}
-            {...props}
-          />
-        </Box>
+        <IconButton
+          variant="ghost"
+          icon={icon}
+          zIndex="fixed"
+          color={'gray.100'}
+          stroke={'gray.100'}
+          onClick={onOpen}
+          aria-label={title}
+          title={title}
+          ref={cancelRef}
+          size={size}
+          p={0}
+          {...props}
+        />
+
         <AlertDialog
           size={'lg'}
           isOpen={isOpen}

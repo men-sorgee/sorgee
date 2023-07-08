@@ -17,7 +17,7 @@ type Props = Omit<IconButtonProps, 'aria-label'> & {
 }
 
 export const MemberBlock = chakra(
-  ({ member, size = 'lg', ...props }: Props) => {
+  ({ member, size = ['sm', 'md', 'lg'], ...props }: Props) => {
     const { loading, member: me, reload, level } = useUser()
     const [hover, setHover] = useState(false)
     const [showBlock, setShowBlock] = useState(false)

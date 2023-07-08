@@ -52,7 +52,8 @@ import {
   MemberHeader,
   MemberLike,
   MemberPropertyGroup,
-  MemberShare
+  MemberShare,
+  MemberReport
 } from './'
 import { ImageGallery } from './ImageGallery'
 import { Loading } from './Loading'
@@ -150,15 +151,18 @@ export const MemberSpotlight = chakra(
           </MemberHeader>
           <Text>{member?.biography}</Text>
           {full && (
-            <Box>
+            <Box my={2}>
               <Flex w="full">
-                <MemberBlock member={member} />
+                <ButtonGroup>
+                  <MemberBlock member={member} size="lg" />
+                  <MemberReport member={member} size="lg" />
+                </ButtonGroup>
                 <Spacer />
                 <ButtonGroup>
-                  <MemberLike member={member} />
-                  <MemberChat member={member} />
-                  <MemberConnect member={member} />
-                  <MemberShare member={member} />
+                  <MemberLike member={member} size="lg" />
+                  <MemberChat member={member} size="lg" />
+                  <MemberConnect member={member} size="lg" />
+                  <MemberShare member={member} size="lg" />
                 </ButtonGroup>
               </Flex>
               <Flex w="full">

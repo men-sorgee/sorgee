@@ -37,7 +37,12 @@ type Props = Omit<IconButtonProps, 'aria-label'> & {
 }
 
 export const MemberVouch = chakra(
-  ({ member, hideVouch = false, size = 'lg', ...props }: Props) => {
+  ({
+    member,
+    hideVouch = false,
+    size = ['sm', 'md', 'lg'],
+    ...props
+  }: Props) => {
     const { user_type: level, nickname: name } = member
     const {
       loading: userLoading,

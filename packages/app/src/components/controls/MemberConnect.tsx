@@ -26,7 +26,7 @@ type Props = Omit<IconButtonProps, 'aria-label'> & {
 }
 
 export const MemberConnect = chakra(
-  ({ member, size = 'lg', ...props }: Props) => {
+  ({ member, size = ['sm', 'md', 'lg'], ...props }: Props) => {
     const {
       loading: userLoading,
       member: me,
@@ -80,6 +80,8 @@ export const MemberConnect = chakra(
           title="Add Buddy"
           membershipType={MembershipType.basic}
           icon={<UserIcon width="30px" />}
+          _hover={{ bg: 'primary.500' }}
+          size={size}
         />
       )
     return (
