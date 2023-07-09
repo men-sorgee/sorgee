@@ -9,6 +9,8 @@ import {
   Alert,
   Button,
   Flex,
+  FormControl,
+  FormLabel,
   Input,
   InputGroup,
   InputRightElement,
@@ -18,6 +20,7 @@ import {
   Text
 } from '@chakra-ui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
+import { debouncedPromise } from '../../lib/utils'
 
 export type PageProps = {}
 
@@ -40,59 +43,63 @@ export default function BuddiesPage({}: PageProps) {
 
   return (
     <Page title="Buddies" loading={loading} requireAuth={true}>
-      <Alert
-        bg={'secondary.300'}
-        color="white"
-        flexDirection={['column', 'row']}
-        alignItems="start"
-        justifyItems="space-between"
-        my={4}
+      <Text mt={0} fontSize={['md', 'lg', 'xl']}>
+        Buddies are guys you are want to keep in touch with. You can see their
+        online status easily from here.
+      </Text>
+
+      <Flex
+        direction={['column', 'column', 'row']}
+        align="center"
+        textAlign={['center', 'center', 'left']}
+        justify="space-around"
+        minWidth={['full', '15%']}
+        bg="gray.700"
         p={4}
-        borderRadius="md"
+        rounded="md"
         shadow="md"
-        gap={2}
+        gap={4}
+        mt={4}
       >
-        <Text mt={0} fontSize={['md', 'lg', 'xl']}>
+        <InputGroup size="lg" w={['full', 'full', '50%']}>
+          <Flex alignItems="center" direction="row" gap={4} mr={4}>
+            <FormLabel htmlFor="onlineOnly" p={0} m={0}>
+              Online
+            </FormLabel>
+            <Switch
+              id="onlineOnly"
+              mt={1}
+              title="Online Only"
+              defaultChecked={onlineOnly}
+              onChange={(e) => setOnlineOnly(e.target.checked)}
+            ></Switch>
+          </Flex>
+          <Input
+            placeholder="Search"
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value)
+            }}
+          />
+          {search && (
+            <InputRightElement width="4.5rem">
+              <Button
+                h="80%"
+                rounded="full"
+                size="sm"
+                onClick={() => setSearch('')}
+                title="Clear Search"
+              >
+                <XMarkIcon width="20px" />
+              </Button>
+            </InputRightElement>
+          )}
+        </InputGroup>
+        <Text align="center" w={['full', 'full', '40%']}>
           You have {buddies?.length} buddies with {onlineMembers?.length}{' '}
           online.
         </Text>
-
-        <Spacer />
-        <Flex
-          direction="column"
-          align="center"
-          justify="space-around"
-          minWidth={['full', '15%']}
-        >
-          <Text as="label" htmlFor="onlineOnly" fontWeight="bold" m={0}>
-            Online Only
-          </Text>
-          <Switch
-            id="onlineOnly"
-            mt={4}
-            defaultChecked={onlineOnly}
-            onChange={(e) => setOnlineOnly(e.target.checked)}
-          />
-        </Flex>
-      </Alert>
-      <InputGroup size="lg">
-        <Input
-          placeholder="Search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <InputRightElement width="4.5rem">
-          <Button
-            h="80%"
-            rounded="full"
-            size="sm"
-            onClick={() => setSearch('')}
-            title="Clear Search"
-          >
-            <XMarkIcon width="20px" />
-          </Button>
-        </InputRightElement>
-      </InputGroup>
+      </Flex>
 
       <SimpleGrid
         my={4}

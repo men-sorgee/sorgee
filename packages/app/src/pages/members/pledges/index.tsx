@@ -45,10 +45,9 @@ export default function PledgeListPage() {
   return (
     <Page title="Pledges" requireAuth={true} loading={loading}>
       <Text fontSize="xl" fontWeight="bold" mb={4}>
-        Pledges are men who have accepted a bid to join the fraternity, but have
-        not yet been vouched for by a brother. If you want to reach out to a
-        Pledge, please do. If you want to vouch for a Pledge, use the vouch
-        button on their profile.
+        These men have pledged a bid to join the brotherhood, but no one has
+        vouched for them yet. To vouch for a Pledge, use the vouch button on
+        their profile.
       </Text>
       <SimpleGrid
         my={4}
