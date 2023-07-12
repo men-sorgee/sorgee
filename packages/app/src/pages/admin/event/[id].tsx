@@ -79,9 +79,7 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
         }
       })
   }
-  let checkinLink
   const emailRef = useRef<HTMLInputElement>(null)
-
   const emailCheckin = () => {
     const email = emailRef.current.value
     if (email) {
@@ -115,27 +113,19 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
               >
                 Scan Invite
               </ButtonLink>
-              {(checkinLink && <a href={checkinLink}>Check In</a>) || (
-                <>
-                  <Input
-                    rounded={'md'}
-                    p={1}
-                    w="30%"
-                    name="email"
-                    ref={emailRef}
-                    size="sm"
-                    placeholder="Email"
-                  />
-                  <Button
-                    size={'md'}
-                    ml={2}
-                    p={1}
-                    onClick={() => emailCheckin()}
-                  >
-                    Email Checkin
-                  </Button>
-                </>
-              )}
+
+              <Input
+                rounded={'md'}
+                p={1}
+                w="30%"
+                name="email"
+                ref={emailRef}
+                size="sm"
+                placeholder="Email"
+              />
+              <Button size={'md'} ml={2} p={1} onClick={() => emailCheckin()}>
+                Email Checkin
+              </Button>
             </>
           }
         >
