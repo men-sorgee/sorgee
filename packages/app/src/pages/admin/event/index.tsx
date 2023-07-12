@@ -1,7 +1,7 @@
 import { EventCard } from 'components/controls'
 import Page from 'components/Page'
 import { useUser } from 'hooks'
-import { GroupEvent, MemberLevel } from 'lib/models'
+import { EventUser, GroupEvent, MemberLevel } from 'lib/models'
 import { GetServerSidePropsResult, NextPageContext } from 'next'
 import { getServerSession } from 'next-auth/next'
 import Link from 'next/link'
@@ -10,6 +10,9 @@ import {
   Heading,
   LinkBox,
   LinkOverlay,
+  Stat,
+  StatLabel,
+  StatNumber,
   Tab,
   TabList,
   TabPanel,
@@ -53,9 +56,15 @@ export default function AdminEventList({ events }: Props) {
     }) || []
   const today = new Date(new Date().toDateString())
 
-  const upcoming = eventList?.filter((event) => event.date > today)
-  const past = eventList?.filter((event) => event.date < today)
-  past.sort((a, b) => {
+  let upcoming = eventList?.filter((event) => event.date >= today)
+  upcoming = upcoming.sort((a, b) => {
+    const dateA = new Date(a.datetime).getTime()
+    const dateB = new Date(b.datetime).getTime()
+    return dateA - dateB
+  })
+
+  let past = eventList?.filter((event) => event.date < today)
+  past = past.sort((a, b) => {
     const dateA = new Date(a.datetime).getTime()
     const dateB = new Date(b.datetime).getTime()
     return dateB - dateA
@@ -64,6 +73,15 @@ export default function AdminEventList({ events }: Props) {
   const activeEvent = eventList?.find(
     (event) => Number(event.date) == Number(today)
   )
+
+  const getCollected = (event: GroupEvent) => {
+    const users = event.users as EventUser[]
+    const collected = users?.reduce((acc: number, invite: EventUser) => {
+      if (invite?.paid) return acc + Number(event.cost || 0)
+      return acc
+    }, 0)
+    return collected
+  }
 
   return (
     <Page
@@ -118,6 +136,10 @@ export default function AdminEventList({ events }: Props) {
                   <LinkOverlay as={Link} href={`/admin/event/${event.id}`}>
                     View Event
                   </LinkOverlay>
+                  <Stat>
+                    <StatLabel>Collected</StatLabel>
+                    <StatNumber>${getCollected(event)}</StatNumber>
+                  </Stat>
                 </EventCard>
               </LinkBox>
             ))}

@@ -47,11 +47,16 @@ export default async function FindMembers(
     andSearchItems.push({
       show_profile: {
         _eq: true,
-      },
-      id: {
-        _nin: blockList,
-      },
+      }
     })
+
+    if (blockList.length > 0)
+      andSearchItems.push({
+        id: {
+          _nin: blockList,
+        }
+      })
+
 
     if (sort.includes('last_login')) {
       andSearchItems.push({ last_login: { _nnull: true } })
@@ -95,7 +100,7 @@ export default async function FindMembers(
           first_name: { _icontains: nickname },
         })
       } else {
-        // andSearchItems.push({ [key]: { _eq: params[key] } })
+        andSearchItems.push({ [key]: { _eq: params[key] } })
       }
     })
 
@@ -108,11 +113,19 @@ export default async function FindMembers(
     andSearchItems.push({ status: { _eq: 'active' } })
     andSearchItems.push({ application_status: { _eq: 'approved' } })
 
-    andSearchItems.push({
-      user_type: {
-        _in: searchLevels,
-      },
-    })
+    if (searchLevels.length > 1) {
+      andSearchItems.push({
+        user_type: {
+          _in: searchLevels,
+        },
+      })
+    } else {
+      andSearchItems.push({
+        user_type: {
+          _eq: 'brother',
+        },
+      })
+    }
 
     if (orSearchItems.length > 0) andSearchItems.push({ _or: orSearchItems })
 
@@ -120,13 +133,20 @@ export default async function FindMembers(
       _and: andSearchItems,
     }
 
-    const results = await searchUsers<Partial<User>>(
-      searchParams as any,
-      searchableMemberFields,
-      limit,
-      page,
-      sort
-    )
+    let results = null
+    try {
+      results = await searchUsers<Partial<User>>(
+        searchParams as any,
+        searchableMemberFields,
+        limit,
+        page,
+        sort
+      )
+    } catch (e) {
+      console.error('Errored with params:', JSON.stringify(searchParams, null, 2))
+      console.dir(searchParams, { depth: 10 })
+      throw e
+    }
 
     if (Object.keys(postQueryParams).length > 0) {
       const filtered = results.data.filter((user) => {

@@ -717,7 +717,7 @@ export const memberFields: Array<keyof Member> = [
 
 export const getAllowedUsers = (level: MemberLevel) => {
   let allowedLevels: UserType[] = ['brother', 'big_brother', 'staff']
-  if (level >= MemberLevel.brother) allowedLevels = [...allowedLevels, 'inductee', 'pledge']
-
+  if (level >= MemberLevel.brother)
+    return [...allowedLevels, 'inductee', 'pledge']
   return allowedLevels
 }
