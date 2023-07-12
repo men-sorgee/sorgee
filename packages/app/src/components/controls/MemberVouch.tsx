@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import { useUser } from 'hooks'
-import { MemberLevel, User, VouchingUser } from 'lib/models'
+import { MemberLevel, Member, VouchingUser } from 'lib/models'
 import { JsonFetcher, postJSON } from 'lib/utils'
 import swr from 'swr'
 
@@ -32,7 +32,7 @@ import { MemberAvatar } from './MemberAvatar'
 import { CheckIcon } from '@chakra-ui/icons'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
-  member: Partial<User>
+  member: Partial<Member>
   hideVouch?: boolean
 }
 

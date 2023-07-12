@@ -78,22 +78,22 @@ export type UserContactAttempt = {
 
 export type User = {
   id: string
-  presence?: string
-  status: string | UserStatusType
+  presence: PresenceType
+  status: UserStatusType
   last_login?: string
   session_expire?: string
   date_created?: string
   date_updated?: string
   first_name: string
   last_name?: string
-  user_type: string | UserType
+  user_type: UserType
   approved_date?: string
   phone?: string
   phone_verified?: boolean
   email?: string
   email_verified?: boolean
   sessions: string[] | UserSession[]
-  contact_preference: string | ContactPreferenceType
+  contact_preference: ContactPreferenceType
   weight?: number
   cock_length?: number
   build?: string
@@ -171,7 +171,7 @@ export type User = {
   promo: number | Promo
   rating: number
   ratings: string[] | Rating[]
-  allow_messages: 'anyone' | 'buddies' | 'staff'
+  allow_messages: AllowedMessageType
   photo_shares: string[] | UserShare[]
   private_folder?: string
   public_folder?: string
@@ -183,12 +183,14 @@ export type User = {
   blocked: string[] | UserBlock[]
   blocked_by: string[] | UserBlock[]
 
-  membership_type?: Membership
+  membership_type?: MembershipNames
   customer_id?: string
   membership_start?: string
   renewal_type?: string
   has_features: Array<MemberFeature>
 }
+
+export type AllowedMessageType = 'anyone' | 'buddies' | 'staff' | 'none'
 
 type Color = {
   DEFAULT: string
@@ -427,9 +429,11 @@ export const memberFeatures: MemberFeature[] = [
   'share_photos',
 ]
 
+export type PresenceType = 'offline' | 'online' | 'away'
+
 export type Member = Applicant & {
   signed_waiver: boolean
-  presence: 'offline' | 'online' | 'away'
+  presence: PresenceType
   ratings: Rating[]
 
   video_consent: boolean
@@ -493,27 +497,32 @@ export type Member = Applicant & {
   their_spectrum?: OrientationType[]
   their_relationship_status?: string[]
 
-  allow_messages: 'anyone' | 'buddies' | 'staff'
-  buddies: string[] | UserBuddy[]
-  buddy_of: string[] | UserBuddy[]
-  photo_shares: string[] | UserShare[]
-  likes: UserLike[]
-  liked_by: UserLike[]
-  blocked: string[] | UserBlock[]
-  blocked_by: string[] | UserBlock[]
+  allow_messages: AllowedMessageType
+
+  buddies: Pick<UserBuddy, 'buddy_id'>[]
+  buddy_of: Pick<UserBuddy, 'user_id'>[]
+
+  photo_shares: Pick<UserShare, 'viewer_id'>[]
+
+  likes: Pick<UserLike, 'like_id'>[]
+  liked_by: Pick<UserLike, 'user_id'>[]
+
+  blocked: Pick<UserBlock, 'blocked_id'>[]
+  blocked_by: Pick<UserBlock, 'user_id'>[]
 
   rating: number
   private_folder?: string
   public_folder?: string
 
-  membership_type?: Membership
+  membership_type?: MembershipNames
   customer_id?: string
   membership_start?: string
   renewal_type?: string
   has_features: Array<MemberFeature>
 }
 
-export type Membership = 'none' | 'free' | 'basic' | 'plus' | 'pro'
+export type MembershipNames = 'none' | 'free' | 'basic' | 'plus' | 'pro'
+
 export enum MembershipType {
   none = 0,
   free = 1,
@@ -669,10 +678,10 @@ export const searchableMemberFields: Array<keyof Member> = [
   'allow_messages',
   'last_login',
   'date_created',
-  'buddies.*' as any,
-  'buddy_of.*' as any,
-  'likes.*' as any,
-  'liked_by.*' as any,
+  'buddies.buddy_id' as any,
+  'buddy_of.user_id' as any,
+  'likes.like_id' as any,
+  'liked_by.user_id' as any,
   'blocked.block_id' as any,
   'blocked_by.user_id' as any,
 ]

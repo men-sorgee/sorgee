@@ -6,6 +6,7 @@ import {
   searchableMemberFields,
   User,
   UserType,
+  UserBlock,
 } from 'lib/models'
 import { searchUsers } from 'lib/services/directus/server/users'
 import { normalize } from 'lib/utils'
@@ -41,21 +42,25 @@ export default async function FindMembers(
     const orSearchItems = []
     const andSearchItems = []
 
-    let blockList = [member.id, ...member.blocked?.map((u) => u.blocked_id) || []]
-      .filter(i => i)
-
     andSearchItems.push({
       show_profile: {
         _eq: true,
-      }
+      },
     })
 
-    if (blockList.length > 0)
+    let blockList = [
+      ...member.blocked.map((u) => u.blocked_id),
+      ...member.blocked_by.map((u) => u.user_id),
+    ]
+
+    if (blockList.length > 0) {
+
       andSearchItems.push({
         id: {
           _nin: blockList,
         }
       })
+    }
 
 
     if (sort.includes('last_login')) {
@@ -100,7 +105,7 @@ export default async function FindMembers(
           first_name: { _icontains: nickname },
         })
       } else {
-        andSearchItems.push({ [key]: { _eq: params[key] } })
+        // andSearchItems.push({ [key]: { _eq: params[key] } })
       }
     })
 
@@ -113,16 +118,10 @@ export default async function FindMembers(
     andSearchItems.push({ status: { _eq: 'active' } })
     andSearchItems.push({ application_status: { _eq: 'approved' } })
 
-    if (searchLevels.length > 1) {
+    if (searchLevels.length > 0) {
       andSearchItems.push({
         user_type: {
           _in: searchLevels,
-        },
-      })
-    } else {
-      andSearchItems.push({
-        user_type: {
-          _eq: 'brother',
         },
       })
     }

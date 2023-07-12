@@ -1,10 +1,10 @@
-import { SearchableMember } from 'lib/models'
+import { Member } from 'lib/models'
 import { getAssetUrl } from 'lib/utils'
 
 import { Avatar, AvatarProps, chakra } from '@chakra-ui/react'
 
 type Props = AvatarProps & {
-  member: Partial<SearchableMember>
+  member: Partial<Member>
   children?: React.ReactNode | React.ReactNode[]
 }
 

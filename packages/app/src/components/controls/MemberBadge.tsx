@@ -1,4 +1,4 @@
-import { MemberLevel, MemberLevelColorMap, User } from 'lib/models'
+import { MemberLevel, MemberLevelColorMap, Member } from 'lib/models'
 
 import { Badge, BadgeProps, chakra, HStack, Icon } from '@chakra-ui/react'
 import { CheckBadgeIcon, SparklesIcon } from '@heroicons/react/24/solid'
@@ -6,7 +6,7 @@ import { MemberVouch } from './MemberVouch'
 import { useUser } from '../../hooks'
 
 type Props = BadgeProps & {
-  member: Partial<User>
+  member: Partial<Member>
   size?: string
 }
 

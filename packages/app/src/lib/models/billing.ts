@@ -1,4 +1,4 @@
-import { Membership, User } from './users'
+import { MembershipNames, User } from './users'
 
 export type BillingEvent = {
   id: string
@@ -17,6 +17,6 @@ export type ProductView = {
   }
   currency: string
   features: string[]
-  type: Membership
+  type: MembershipNames
   label?: string
 }

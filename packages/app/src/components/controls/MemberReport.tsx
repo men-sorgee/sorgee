@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import { useUser } from 'hooks'
-import { User } from 'lib/models'
+import { Member } from 'lib/models'
 import { postJSON } from 'lib/utils'
 
 import {
@@ -28,7 +28,7 @@ import { FlagIcon as ReportIcon } from '@heroicons/react/24/outline'
 import { FlagIcon as ReportIconHover } from '@heroicons/react/24/solid'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
-  member: Partial<User>
+  member: Partial<Member>
 }
 
 export const MemberReport = chakra(

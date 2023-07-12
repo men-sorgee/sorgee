@@ -9,7 +9,7 @@ import {
 import { FieldSwitch } from 'components/forms'
 import Page from 'components/Page'
 import { useEvent, useUser } from 'hooks'
-import { EventUser, GroupEvent, MemberLevel, User } from 'lib/models'
+import { EventUser, GroupEvent, MemberLevel, Member, User } from 'lib/models'
 import { getAssetUrl, postJSON } from 'lib/utils'
 import { useRouter } from 'next/router'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -30,7 +30,7 @@ import {
 type Props = {
   event: GroupEvent
   invite: EventUser
-  user: User
+  user: Member
 }
 const visible = (show: boolean) => (show ? 'flex' : 'none')
 
@@ -59,7 +59,7 @@ export const getServerSideProps = async (context) => {
     props: {
       invite,
       event,
-      user
+      user: user as unknown as Member
     }
   }
 }

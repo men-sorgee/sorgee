@@ -1,5 +1,11 @@
 import { formatDistanceToNowStrict } from 'date-fns'
-import { Member, MemberLevel, MemberLevelColorMap, User } from 'lib/models'
+import {
+  Member,
+  MemberLevel,
+  MemberLevelColorMap,
+  SearchableMember,
+  User
+} from 'lib/models'
 import NextLink from 'next/link'
 
 import { LockIcon } from '@chakra-ui/icons'
@@ -33,7 +39,7 @@ import {
 
 type Props = CardProps & {
   viewer: Member
-  member: Partial<User>
+  member: Partial<Member>
   full?: boolean
   onClick?: () => void
 }

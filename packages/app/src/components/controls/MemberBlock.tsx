@@ -1,19 +1,16 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import { useUser } from 'hooks'
-import { User } from 'lib/models'
+import { Member } from 'lib/models'
 import { deleteJSON, postJSON } from 'lib/utils'
 
 import { chakra, IconButton, IconButtonProps } from '@chakra-ui/react'
-import {
-  EyeSlashIcon as BlockIcon,
-  EyeIcon as ViewIcon
-} from '@heroicons/react/24/outline'
+import { EyeIcon as ViewIcon } from '@heroicons/react/24/outline'
 import { EyeSlashIcon as BlockedIcon } from '@heroicons/react/24/solid'
 import { UserBlock } from 'lib/models'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
-  member: Partial<User>
+  member: Partial<Member>
 }
 
 export const MemberBlock = chakra(

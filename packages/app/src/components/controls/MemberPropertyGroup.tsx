@@ -14,7 +14,7 @@ import {
 
 type Props = {
   k: string
-  member: Member
+  member: Partial<Member>
   show: boolean
   fieldList: string[]
   fields: Record<string, DirectusField>

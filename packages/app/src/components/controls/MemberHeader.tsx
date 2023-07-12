@@ -22,7 +22,7 @@ import { MemberIcon, MemberIconProps } from './MemberIcon'
 
 export type MemberHeaderProps = MemberIconProps & {
   children?: ReactNode
-  member: Partial<User>
+  member: Partial<Member>
   viewer: Member
   color?: string
   zoom?: boolean

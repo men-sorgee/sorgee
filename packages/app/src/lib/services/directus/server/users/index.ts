@@ -25,7 +25,7 @@ export async function createUser(member: Partial<User>): Promise<User> {
   const adminClient = await getAdminClient()
   const user = await adminClient.items('users').createOne(member)
   if (!user) throw new Error('Failed to create user')
-  return user as User
+  return user as unknown as User
 }
 
 export async function updateUser<T = User>(id: string, userData: Partial<T>) {

@@ -15,7 +15,7 @@ import { ChatBubbleBottomCenterIcon as ChatIconOff } from '@heroicons/react/24/o
 import { ChatBubbleBottomCenterIcon as ChatIconOn } from '@heroicons/react/24/solid'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
-  member: Partial<User | Member>
+  member: Partial<Member>
 }
 
 export const MemberChat = chakra(

@@ -1,5 +1,5 @@
 import { DirectusFile, DirectusUser } from './directus'
-import { User } from './users'
+import { PresenceType, User } from './users'
 
 export type Room = {
   id: string
@@ -47,8 +47,9 @@ export type ChatUser = {
   nickname: string
   picture: string
   last_login: string
-  presence: string
+  presence: PresenceType
 }
+
 export type MessageStatusType = 'new' | 'read' | 'edited' | 'archived'
 export type MessageType = 'text' | 'image' | 'html'
 export type MessageDirection = 'incoming' | 'outgoing'

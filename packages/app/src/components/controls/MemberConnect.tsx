@@ -22,7 +22,7 @@ import {
 } from '@heroicons/react/24/solid'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
-  member: Partial<User> | { id: string; nickname: string }
+  member: Partial<Member>
 }
 
 export const MemberConnect = chakra(

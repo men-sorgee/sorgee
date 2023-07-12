@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react'
 
 import { formatDistanceToNowStrict } from 'date-fns'
-import { User } from 'lib/models'
+import { Member } from 'lib/models'
 import { getAssetUrl, toLocalDate } from 'lib/utils'
 
 import {
@@ -23,7 +23,7 @@ import { ImageModal } from './ImageModal'
 export type MemberIconProps = AvatarProps & {
   zoom?: boolean
   color?: string
-  member: Partial<User>
+  member: Partial<Member>
   children?: ReactNode
 }
 
