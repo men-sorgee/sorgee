@@ -25,7 +25,6 @@ import {
   Icon,
   Spacer,
   VStack,
-  Collapse,
   useColorModeValue,
   Alert
 } from '@chakra-ui/react'
@@ -40,7 +39,6 @@ type Props = {
 
 export const AppNotificationCard = chakra(({ member, notification }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { isOpen: isMessageOpen, onToggle: toggleMessage } = useDisclosure()
   const { readAppNotification, deleteAppNotification, reloadAppNotifications } =
     useAppNotifications()
   const [isNew, setIsNew] = useState<boolean>(undefined)
@@ -125,7 +123,7 @@ export const AppNotificationCard = chakra(({ member, notification }: Props) => {
           </Text>
           <HStack w="full" gap={2} align="flex-start" justify="space-between">
             <Text fontSize="xs" textAlign="right" w="full" m={0} p={0}>
-              Received {distance(toLocalDate(notification?.date_created))} ago
+              Received {distance(new Date(notification?.date_created))} ago
             </Text>
           </HStack>
           {notification?.button_url && (

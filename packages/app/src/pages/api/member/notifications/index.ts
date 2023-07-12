@@ -1,5 +1,5 @@
 import { ApiResponse, UserNotification } from 'lib/models'
-import { withMethods, withUser } from 'lib/utils/server'
+import { withUser } from 'lib/utils/server'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { getUserNotifications } from 'lib/services/directus/server/notifications'
@@ -9,7 +9,6 @@ export default async function GetUserNotifications(
   res: NextApiResponse<ApiResponse>
 ) {
   try {
-    //withMethods(req, ['GET'])
     const user = await withUser(req, res)
     let notifications: UserNotification[] = await getUserNotifications(user.id)
     return res.status(200).json(ApiResponse(notifications))

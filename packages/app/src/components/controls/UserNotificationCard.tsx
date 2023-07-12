@@ -79,7 +79,7 @@ export const UserNotificationCard = chakra(
             )}
             <HStack w="full" gap={2} align="flex-start" justify="space-between">
               <Text fontSize="xs" w="full" m={0} p={0}>
-                Received {distance(toLocalDate(notification?.date_created))} ago
+                Received {distance(new Date(notification?.date_created))} ago
               </Text>
             </HStack>
             {notification?.button_url && (
