@@ -7,6 +7,7 @@ import {
   Badge,
   Flex,
   Heading,
+  HStack,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -15,6 +16,7 @@ import {
   PopoverHeader,
   PopoverTrigger,
   Spacer,
+  VStack,
   Text
 } from '@chakra-ui/react'
 
@@ -44,6 +46,7 @@ export const MemberHeader = ({
   )
   const likes = (member.likes as UserLike[]) || []
   const likesYou = likes?.some((l: UserLike) => String(l.like_id) == viewer?.id)
+  const isYou = String(member.id) == viewer?.id
 
   const needsVoucher =
     !member.vouched_by &&
@@ -56,11 +59,45 @@ export const MemberHeader = ({
         direction="column"
         justify="space-between"
         align="center"
-        alignItems="center"
+        alignItems="start"
         gap={2}
       >
         <MemberIcon member={member} size={size} {...props}>
           {children}
+          {!minimal && (
+            <VStack gap={1}>
+              {sharedWithMe && (
+                <Badge
+                  fontSize={['xs', 'sm']}
+                  bg="primary.300"
+                  color="white"
+                  borderRadius="3px 3px 3px 3px"
+                >
+                  Unlocked
+                </Badge>
+              )}
+              {likesYou && (
+                <Badge
+                  fontSize={['xs', 'sm']}
+                  bg="accent.300"
+                  color="white"
+                  borderRadius="3px 3px 3px 3px"
+                >
+                  Likes You
+                </Badge>
+              )}
+              {isYou && (
+                <Badge
+                  fontSize={['xs', 'sm']}
+                  bg="secondary.500"
+                  color="white"
+                  borderRadius="3px 3px 3px 3px"
+                >
+                  You
+                </Badge>
+              )}
+            </VStack>
+          )}
         </MemberIcon>
 
         {!minimal && (
@@ -96,27 +133,6 @@ export const MemberHeader = ({
               </Badge>
             )}
             <Spacer />
-            {sharedWithMe && (
-              <Badge
-                fontSize={['xs', 'sm']}
-                bg="primary.300"
-                color="white"
-                borderRadius="3px 3px 3px 3px"
-              >
-                Album Unlocked
-              </Badge>
-            )}
-            {likesYou && (
-              <Badge
-                fontSize={['xs', 'sm']}
-                bg="accent.300"
-                color="white"
-                borderRadius="3px 3px 3px 3px"
-                ml={2}
-              >
-                Likes You
-              </Badge>
-            )}
 
             {needsVoucher && (
               <Popover>

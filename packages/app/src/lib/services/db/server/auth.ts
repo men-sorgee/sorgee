@@ -50,12 +50,12 @@ export async function recordUserLogin(id: string) {
 
 export async function extendUserPresence(id: string) {
   const repo = await getRepository(User)
-  const now = getUTCNow()
+  const threeHours = addHours(getUTCNow(), 3)
   await repo.update(
     { id },
     {
       presence: 'online',
-      sessionExpire: addHours(now, 3),
+      sessionExpire: threeHours
     }
   )
   await expireSessions()
@@ -63,7 +63,7 @@ export async function extendUserPresence(id: string) {
 
 export async function expireSessions() {
   const repo = await getRepository<User>(User)
-  const now = addHours(getUTCNow(), -4)
+  const now = getUTCNow()
   const expired = await repo.find({
     select: ['id'],
     where: {

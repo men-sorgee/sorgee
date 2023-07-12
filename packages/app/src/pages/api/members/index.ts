@@ -48,13 +48,8 @@ export default async function FindMembers(
       },
     })
 
-    let blockList = [
-      ...member.blocked.map((u) => u.blocked_id),
-      ...member.blocked_by.map((u) => u.user_id),
-    ]
-
+    let blockList = member.blocked_by.map((u) => u.user_id)
     if (blockList.length > 0) {
-
       andSearchItems.push({
         id: {
           _nin: blockList,

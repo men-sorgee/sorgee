@@ -339,22 +339,7 @@ export type Profile = {
   auth_with_phone: boolean
 }
 export const profileFields: Array<keyof Profile> = [
-  'id',
-  'picture',
-  'nickname',
-  'first_name',
-  'last_name',
-  'email',
-  'email_verified',
-  'phone',
-  'phone_verified',
-  'last_login',
-  'user_type',
-  'application_status',
-  'status',
-  'accounts',
-  'sessions',
-  'auth_with_phone',
+
 ]
 
 export type ContactPreferenceType = 'email' | 'phone_text' | 'phone_call'
@@ -387,8 +372,20 @@ export type Applicant = Profile & {
   date_updated: string
 }
 export const applicantFields: Array<keyof Applicant> = [
-  ...profileFields,
-  'notifications.*' as any,
+  'id',
+  'picture',
+  'nickname',
+  'first_name',
+  'last_name',
+  'email',
+  'email_verified',
+  'phone',
+  'phone_verified',
+  'last_login',
+  'user_type',
+  'application_status',
+  'status',
+  'auth_with_phone',
   'vouched_by',
   'show_contact',
   'contact_preference',
@@ -654,7 +651,7 @@ export const memberProfileHealthFields: Array<keyof Member> = [
 
 export const memberProfilePhotoFields: Array<keyof Member> = [
   'my_photos.*' as any,
-  'photo_shares.*' as any,
+
 ]
 
 export const searchableMemberFields: Array<keyof Member> = [
@@ -684,6 +681,7 @@ export const searchableMemberFields: Array<keyof Member> = [
   'liked_by.user_id' as any,
   'blocked.block_id' as any,
   'blocked_by.user_id' as any,
+  'photo_shares.viewer_id' as any,
 ]
 
 export const memberSubscriptionFields: Array<keyof Member> = [
@@ -716,12 +714,7 @@ export const memberFields: Array<keyof Member> = [
   'show_photos',
   ...memberProfilePhotoFields,
   ...memberSubscriptionFields,
-  'has_features',
-  'buddy_of',
-  'likes',
-  'liked_by',
-  'blocked_by',
-  'blocked',
+  'has_features'
 ]
 
 export const getAllowedUsers = (level: MemberLevel) => {
