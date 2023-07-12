@@ -11,7 +11,9 @@ import {
 } from 'lib/services/directus/server/messages'
 
 import { pruneUndefined } from 'lib/utils/index'
-import { sendNotification } from '../../../lib/services/twilio/server'
+import { getMember } from 'lib/services/directus/server'
+import { SendGridTemplate, SendGridCategory, sendNotificationEmail } from 'lib/services/sendgrid/server'
+import { baseUrl } from 'lib/config'
 
 export default async function getUserMessages(
   req: NextApiRequest,
@@ -21,7 +23,7 @@ export default async function getUserMessages(
   let message: Message = {} as any
   try {
     const method = withMethods(req, ['GET', 'POST', 'PUT'])
-    const user = await withUser(req, res)
+    const me = await withUser(req, res)
     const { body: c, to: t, status: s, ids: messageIds, type } = req.body
     const { id: i } = req.query
     let id = i ? String(i) : null
@@ -37,17 +39,43 @@ export default async function getUserMessages(
           message = await getMessage(id)
           return res.status(200).json(ApiResponse(message))
         } else {
-          messages = await getMessages(user.id)
+          messages = await getMessages(me.id)
           return res.status(200).json(ApiResponse(messages))
         }
 
       case 'POST':
+        const them = await getMember(to)
+        if (them == null || them.allow_messages == "none") {
+          return res.status(404).json(ApiResponse(null, 'Not Found'))
+        } else if (them.allow_messages == "buddies" && !them.buddies?.some((f) => f.buddy_id == me.id)) {
+          return res.status(404).json(ApiResponse(null, 'Not Found'))
+        } else if (them.allow_messages == "staff" && me.user_type != "staff") {
+          return res.status(404).json(ApiResponse(null, 'Not Found'))
+        }
+
         message = await sendMessage({
-          from: user.id,
+          from: me.id,
           to,
           body,
           type,
         })
+
+        if (them.presence != "online") {
+          let myName = me.nickname || me.first_name
+          await sendNotificationEmail(
+            them.email,
+            them.first_name,
+            `${myName} has sent you a message`,
+            `From ${myName}:\n> \`${body}\``,
+            {
+              button_text: 'View Profile',
+              button_url: `${baseUrl}/members/${me.id}`,
+              user_id: them.id
+            },
+            SendGridTemplate.AppNotification,
+            SendGridCategory.Notification
+          )
+        }
 
         return res.status(200).json(ApiResponse(message))
 
@@ -57,7 +85,7 @@ export default async function getUserMessages(
           return res.status(200).json(ApiResponse(message))
         } else if (ids) {
           await markAs(ids, status)
-          messages = await getMessages(user.id)
+          messages = await getMessages(me.id)
           return res.status(200).json(ApiResponse(messages))
         }
 

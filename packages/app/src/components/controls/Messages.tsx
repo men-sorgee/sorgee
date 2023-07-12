@@ -6,7 +6,7 @@ import { ChatMessage, Member, Message } from 'lib/models'
 import { postJSON } from 'lib/utils'
 import io, { Socket } from 'socket.io-client'
 
-import { IconButton, useDisclosure, Spacer } from '@chakra-ui/react'
+import { Flex, IconButton, useDisclosure, Spacer } from '@chakra-ui/react'
 import {
   Avatar,
   ChatContainer,
@@ -21,7 +21,7 @@ import {
   Sidebar,
   TypingIndicator
 } from '@chatscope/chat-ui-kit-react'
-import { UserCircleIcon, XMarkIcon } from '@heroicons/react/24/solid'
+import { CheckIcon, XMarkIcon } from '@heroicons/react/24/solid'
 
 import {
   MemberConnect,
@@ -376,9 +376,8 @@ export const Messages = ({ member }: { member: Member }) => {
               <ConversationHeader.Actions>
                 <MemberBlock size="sm" member={activeConversation?.user} />
                 <MemberReport size="sm" member={activeConversation?.user} />
-                <Spacer />
-                <MemberLike size="sm" member={activeConversation?.user} />
-                <MemberConnect size="sm" member={activeConversation?.user} />
+                <Spacer w={20} />
+
                 <MemberShare size="sm" member={activeConversation?.user} />
               </ConversationHeader.Actions>
             </ConversationHeader>
@@ -404,6 +403,7 @@ export const Messages = ({ member }: { member: Member }) => {
                             style={{
                               flexDirection: 'row-reverse'
                             }}
+                            itemType={m.type}
                           >
                             <IconButton
                               variant={'ghost'}
@@ -431,10 +431,34 @@ export const Messages = ({ member }: { member: Member }) => {
                             textAlign:
                               m.direction == 'outgoing' ? 'right' : 'left'
                           }}
-                          sentTime={
-                            formatDistanceToNow(m.timestamp as Date) + ' ago'
-                          }
-                        ></MessageCtrl.Footer>
+                          itemType={m.type}
+                        >
+                          <Flex
+                            color="text"
+                            justify="space-between"
+                            align="self-start"
+                          >
+                            {m.status == 'read' &&
+                              m.direction == 'outgoing' && (
+                                <CheckIcon
+                                  fill={'white'}
+                                  width={11}
+                                  height={11}
+                                  title="Read"
+                                  style={{
+                                    marginTop: '-5',
+                                    marginRight: '5'
+                                  }}
+                                />
+                              )}
+                            <Spacer />
+                            <small title={m.timestamp.toISOString()}>
+                              {formatDistanceToNow(
+                                (m.timestamp as Date) || new Date()
+                              ) + ' ago'}
+                            </small>
+                          </Flex>
+                        </MessageCtrl.Footer>
                       </MessageCtrl>
                     </MessageGroup.Messages>
                   </MessageGroup>

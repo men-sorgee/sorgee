@@ -132,24 +132,27 @@ export function MessagesProvider({
       // create empty conversation
       const convo = conversations?.find((c) => c.user.id == user.id)
 
-      setConversations([
-        {
-          id: user.id,
-          messages: [],
-          newMessageCount: 0,
-          lastMessage: null,
-          hasNewMessages: false,
-          user: {
+      if (convo == undefined)
+        setConversations([
+          {
             id: user.id,
-            nickname: user.nickname,
-            presence: user.presence,
-            last_login: user.last_login,
-            picture:
-              user.picture && `/api/asset/${user.picture}?w=100&h=100&fit=crop`
-          }
-        },
-        ...conversations
-      ])
+            messages: [],
+            newMessageCount: 0,
+            lastMessage: null,
+            hasNewMessages: false,
+            user: {
+              id: user.id,
+              nickname: user.nickname,
+              presence: user.presence,
+              last_login: user.last_login,
+              picture:
+                user.picture &&
+                `/api/asset/${user.picture}?w=100&h=100&fit=crop`
+            }
+          },
+          ...conversations
+        ])
+
       setActiveId(user.id)
       setActiveConversation(convo)
     },

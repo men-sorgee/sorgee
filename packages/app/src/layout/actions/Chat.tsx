@@ -80,8 +80,8 @@ const ChatActions = ({ member, hasFeature }: Props) => {
       {hasFeature || hasNewMessages ? (
         <Box hidden={!show}>
           <IconButton
-            aria-label="Messages"
-            title="Messages"
+            aria-label="Chat"
+            title="Chat"
             variant="primary"
             zIndex="fixed"
             color={isOpen ? 'accent.500' : 'white'}
@@ -139,7 +139,7 @@ const ChatActions = ({ member, hasFeature }: Props) => {
 
         <DrawerContent position="absolute" zIndex={2147484000}>
           <DrawerHeader bg="primary.900" color="white" m={0} p={2}>
-            Messages (beta)
+            Brother Chat
             <DrawerCloseButton />
           </DrawerHeader>
           <DrawerBody p={0} position="relative">

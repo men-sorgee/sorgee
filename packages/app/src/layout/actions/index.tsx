@@ -55,7 +55,7 @@ export default function ActionsNav() {
         <Events member={member} active={path.startsWith('/events')} />
         <Members
           member={member}
-          active={path == '/members'}
+          active={path.startsWith('/members') && !path.includes('/pledges')}
           hasFeature={hasDirectory}
         />
         <Pledges member={member} active={path.startsWith('/members/pledges')} />
