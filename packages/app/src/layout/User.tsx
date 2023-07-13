@@ -18,8 +18,7 @@ import {
   MenuItem,
   MenuList,
   Spinner,
-  useColorMode,
-  useToast
+  useColorMode
 } from '@chakra-ui/react'
 import {
   ArrowRightOnRectangleIcon,
@@ -36,9 +35,10 @@ import {
   SquaresPlusIcon,
   SunIcon,
   UserGroupIcon,
-  UserIcon,
+  UserCircleIcon,
   UsersIcon,
-  ViewfinderCircleIcon
+  ViewfinderCircleIcon,
+  ChatBubbleBottomCenterIcon as ChatIcon
 } from '@heroicons/react/24/outline'
 
 interface Props {}
@@ -64,6 +64,7 @@ export default function UserMenu(_props: Props) {
   const hasDirectory =
     level >= MemberLevel.brother && hasFeature('view_directory')
   const hasBuddyList = level >= MemberLevel.brother && hasFeature('buddy_list')
+  const hasChat = level >= MemberLevel.brother && hasFeature('chat')
 
   if (loading) return <Spinner />
 
@@ -197,7 +198,17 @@ export default function UserMenu(_props: Props) {
                     >
                       Events
                     </MenuItem>
-
+                    {hasChat && (
+                      <MenuItem
+                        icon={<ChatIcon color={'white'} width={'1.5rem'} />}
+                        bg="black"
+                        _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                        as={Link}
+                        href="/members/chat"
+                      >
+                        Brother Chat
+                      </MenuItem>
+                    )}
                     {hasDirectory && (
                       <MenuItem
                         icon={
@@ -209,6 +220,19 @@ export default function UserMenu(_props: Props) {
                         href="/members"
                       >
                         Members
+                      </MenuItem>
+                    )}
+                    {level >= MemberLevel.brother && (
+                      <MenuItem
+                        icon={
+                          <UserCircleIcon color={'white'} width={'1.5rem'} />
+                        }
+                        bg="black"
+                        _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                        as={Link}
+                        href="/members/pledges"
+                      >
+                        Meet Pledges
                       </MenuItem>
                     )}
                     {hasBuddyList && (
@@ -223,17 +247,22 @@ export default function UserMenu(_props: Props) {
                       </MenuItem>
                     )}
                     {level >= MemberLevel.brother && (
-                      <MenuItem
-                        icon={
-                          <PaperAirplaneIcon color={'white'} width={'1.5rem'} />
-                        }
-                        bg="black"
-                        _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                        as={Link}
-                        href="/members/invite"
-                      >
-                        Invite Friend
-                      </MenuItem>
+                      <>
+                        <MenuItem
+                          icon={
+                            <PaperAirplaneIcon
+                              color={'white'}
+                              width={'1.5rem'}
+                            />
+                          }
+                          bg="black"
+                          _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                          as={Link}
+                          href="/members/invite"
+                        >
+                          Invite Friend
+                        </MenuItem>
+                      </>
                     )}
                   </>
                 )}
