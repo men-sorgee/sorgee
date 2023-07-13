@@ -14,6 +14,7 @@ import { withMember } from 'lib/utils/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 import { ManyItems } from '@directus/sdk'
+import { cpSync } from 'fs'
 
 export type MemberSearch = SearchableMember & {
   offset?: number
@@ -35,9 +36,12 @@ export default async function FindMembers(
     const limit = Number(l)
 
     const allowedLevels = getAllowedUsers(level)
-    const params = normalize<SearchableMember>(props)
+    const params = normalize<{
+      nickname?: string[]
+      keywords?: string[],
+      user_type?: UserType[]
+    }>(props)
 
-    const postQueryParams = {}
 
     const orSearchItems = []
     const andSearchItems = []
@@ -78,31 +82,39 @@ export default async function FindMembers(
       })
     }
 
-    // console.dir({
-    //   params,
-    //   andSearchItems,
-    //   orSearchItems,
-    //   postQueryParams,
-    // }, {
-    //   depth: 10
-    // })
+
 
     Object.keys(params).forEach((key) => {
-      if (Array.isArray(member[key])) {
-        let filter = params[key]
-        postQueryParams[key] = Array.isArray(filter) ? filter : [filter]
-      } else if (key == 'nickname') {
-        let nickname = params[key].join('')
-        andSearchItems.push({
-          nickname: { _icontains: nickname },
-        })
-        orSearchItems.push({
-          first_name: { _icontains: nickname },
-        })
-      } else {
-        // andSearchItems.push({ [key]: { _eq: params[key] } })
+      switch (key) {
+        case 'nickname':
+          let nickname = params[key].join('')
+          andSearchItems.push({
+            _or: [
+              { nickname: { _icontains: nickname } },
+              { first_name: { _icontains: nickname } },
+            ]
+          })
+          break
+        case 'keywords':
+          let keywords = params[key].join(' ')
+          andSearchItems.push({
+            _or: [
+              { nickname: { _icontains: keywords } },
+              { first_name: { _icontains: keywords } },
+              { biography: { _icontains: keywords } }
+            ],
+          })
+
+          break
+        case 'user_type':
+          andSearchItems.push({
+            user_type: { _in: params[key] },
+          })
+          break
       }
+
     })
+
 
     let userTypes = params.user_type as UserType[]
     let searchLevels = allowedLevels
@@ -127,6 +139,10 @@ export default async function FindMembers(
       _and: andSearchItems,
     }
 
+    // console.dir({
+    //   searchParams,
+    // }, { depth: 10 })
+
     let results = null
     try {
       results = await searchUsers<Partial<User>>(
@@ -140,17 +156,6 @@ export default async function FindMembers(
       console.error('Errored with params:', JSON.stringify(searchParams, null, 2))
       console.dir(searchParams, { depth: 10 })
       throw e
-    }
-
-    if (Object.keys(postQueryParams).length > 0) {
-      const filtered = results.data.filter((user) => {
-        return Object.keys(postQueryParams).every((key) => {
-          return postQueryParams[key].some((i: string) => user[key] && user[key].includes(i))
-        })
-      })
-
-      results.meta.filter_count = filtered.length
-      results.data = filtered
     }
 
     return res.status(200).json(ApiResponse(results))

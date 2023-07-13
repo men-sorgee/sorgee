@@ -438,7 +438,7 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
           <AccordionPanel>
             <SimpleGrid columns={[1, 1, 2]} spacing={4} mb={4}>
               <FieldInput field="nickname" label="Nickname" />
-              <FieldInput field="biography" label="Keywords" />
+              <FieldInput field="keywords" label="Keywords" />
               <FieldCheckbox field="online" label="Is Online" />
               <FieldCheckbox field="photos" label="Has Photos" />
             </SimpleGrid>
