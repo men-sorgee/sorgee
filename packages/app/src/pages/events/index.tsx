@@ -49,19 +49,13 @@ export default function EventsPage({}: PageProps) {
     upcoming,
     past,
     reload,
-    loading: eventsLoading
+    loading: eventsLoading,
+    activeInvite
   } = useUserEvents()
 
   const onEventsChange = useCallback(() => {
     reload()
   }, [reload])
-
-  const activeInvite = upcoming.find(
-    (invite: EventInvite) =>
-      isToday(new Date(invite.event.datetime)) &&
-      invite.rsvp == 'confirmed' &&
-      !isAfter(new Date(), new Date(invite.event.datetime_end))
-  )
 
   return (
     <Page

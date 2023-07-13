@@ -20,6 +20,7 @@ import MicrosoftProvider from 'next-auth/providers/azure-ad'
 import EmailProvider from 'next-auth/providers/email'
 import GoogleProvider from 'next-auth/providers/google'
 import { TwitterLegacy } from 'next-auth/providers/twitter'
+import { setUserAverageRating } from 'lib/services/directus/server'
 
 import { authAdapter } from './adapter'
 import YahooProvider from './yahoo'
@@ -113,6 +114,7 @@ export const authOptions: AuthOptions = {
     async signIn({ user }) {
       console.log('event:signIn')
       await recordUserLogin(user.id)
+      await setUserAverageRating(user.id)
     },
     async signOut(props) {
       console.log('event:signOut', props)

@@ -46,7 +46,7 @@ type Props = CardProps & {
 
 export const MemberCard = chakra(
   ({ member, onClick, full = false, size = 'lg', ...props }: Props) => {
-    const levelValue = MemberLevel[member?.user_type]
+    const levelValue = MemberLevel[member?.user_type || 'applicant']
     const levelColor = MemberLevelColorMap[levelValue]
     const { member: viewer, reload, loading } = useUser()
     return (
@@ -127,8 +127,8 @@ export const MemberCard = chakra(
             flexDir="column"
             justify="space-between"
             alignItems="end"
-            bg="primary.700"
-            p={2}
+            bg="primary.800"
+            p={4}
           >
             <Flex w="full">
               <ButtonGroup>

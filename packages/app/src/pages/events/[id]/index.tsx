@@ -43,8 +43,9 @@ import {
   StatLabel,
   StatNumber,
   Text,
-  useColorModeValue,
-  Wrap
+  Center,
+  Wrap,
+  Show
 } from '@chakra-ui/react'
 
 export type PageProps = {
@@ -87,7 +88,7 @@ export default function EventPage({ id }: PageProps) {
       )
     }
     if (member?.events && !invite) {
-      const i = member.events.find((e) => e.events_id == eventId)
+      const i = member.events.find((e) => String(e.events_id) == eventId)
       setInvite(i)
     }
   }, [event, eventId, eventLoading, invite, member?.events, member?.id, stats])
@@ -95,7 +96,7 @@ export default function EventPage({ id }: PageProps) {
   const getAttendees = (rsvp: string) => {
     return event?.attendance
       ?.filter((u) => u.rsvp == rsvp)
-      .map(({ users_id: u }: EventUser) => u as User)
+      .map(({ users_id: u }: EventUser) => u as Member)
       .map((u) => {
         const picture = u.picture as string
         const name = u.nickname || u.first_name || 'Brother'
@@ -122,7 +123,7 @@ export default function EventPage({ id }: PageProps) {
         <>
           <EventCard
             event={event}
-            showDescription
+            showDescription={event.status != 'occurred'}
             showLocation={invite != null}
             showAddToCalendar={invite != null}
             isGuest={invite?.guest}
@@ -250,7 +251,7 @@ const AttendedEvent = ({
 }) => {
   const attendees = event.attendance
     .filter((u) => u.attended)
-    .map((u) => u.users_id as User)
+    .map((u) => u.users_id as Member)
     .filter((u) => u.id != member.id)
 
   return (
@@ -269,6 +270,7 @@ const AttendedEvent = ({
         <RateItem
           item_id={event.id}
           collection="events"
+          size="lg"
           aria-label={'Rate Event'}
         />
         <Spacer />
@@ -301,27 +303,26 @@ const AttendedEvent = ({
               behavior and attitude at the event!
             </strong>
           </Alert>
-          {attendees.map((u: User) => (
-            <Box
-              as={Lazy}
-              key={event.id + '-' + u.id}
-              bg="gray.400"
-              mb={4}
-              rounded="lg"
-            >
-              <MemberSpotlight size="md" id={u.id} color="white" mb={4}>
-                <RateItem
-                  onChange={() => {
-                    reloadUser()
-                  }}
-                  item_id={u.id}
-                  collection="users"
-                  aria-label={'Rate this member'}
-                >
-                  Your Rating:
-                </RateItem>
+          {attendees.map((m: Member) => (
+            <Lazy key={event.id + '-' + m.id}>
+              <MemberSpotlight size="xl" mb={4} id={m.id} mt={4}>
+                <Center p={2}>
+                  <Show above="md">
+                    <Text>Your Rating:</Text>
+                  </Show>
+                  <RateItem
+                    onChange={() => {
+                      reloadUser()
+                    }}
+                    size="md"
+                    item_id={m.id}
+                    collection="users"
+                    aria-label={'Rate this member'}
+                    simple
+                  ></RateItem>
+                </Center>
               </MemberSpotlight>
-            </Box>
+            </Lazy>
           ))}
         </>
       )}

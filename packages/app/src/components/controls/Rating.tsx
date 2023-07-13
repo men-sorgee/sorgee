@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react'
 
-import { Box, Icon, IconButton, IconButtonProps, Stack, Tooltip } from '@chakra-ui/react'
+import {
+  Box,
+  Icon,
+  IconButton,
+  IconButtonProps,
+  HStack,
+  Tooltip
+} from '@chakra-ui/react'
 import { StarIcon } from '@heroicons/react/24/solid'
 
 export type RatingControlProps = IconButtonProps & {
@@ -11,6 +18,7 @@ export type RatingControlProps = IconButtonProps & {
   fillColor?: string
   strokeColor?: string
   simple?: boolean
+  tooltip?: string
 }
 
 export const Rating = ({
@@ -24,10 +32,11 @@ export const Rating = ({
   simple = false,
   mt,
   onRateChange,
+  'aria-label': ariaLabel,
+  tooltip = 'Rate this item',
   ...props
 }: RatingControlProps) => {
   const [rating, setRating] = useState<number>(undefined)
-  const [tooltip, setTooltip] = useState('')
   const buttons = []
 
   useEffect(() => {
@@ -35,13 +44,6 @@ export const Rating = ({
       setRating(value)
     }
   }, [value])
-
-  useEffect(() => {
-    if (!tooltip) {
-      if (rating == 0) setTooltip('No rating')
-      else setTooltip(`${rating} / ${scale}`)
-    }
-  }, [rating, tooltip, scale])
 
   const onClick = (index: number) => {
     if (readonly) return
@@ -82,15 +84,18 @@ export const Rating = ({
     buttons.push(<RatingButton key={i} index={i} fill={i <= rating} />)
   }
 
-  return (
-    <Tooltip
-      label="Ratings are based on the number of stars a member has received from other members and event hosts. No-shows automatically receive -1 star ratings by the event."
-      aria-label="User Rating"
-    >
-      <Stack isInline mt={mt} spacing={1}>
+  if (simple)
+    return (
+      <HStack mt={mt} spacing={1}>
         {buttons}
-        {!simple && <Box textAlign="center">{rating} stars</Box>}
-      </Stack>
+      </HStack>
+    )
+
+  return (
+    <Tooltip label={tooltip} aria-label={ariaLabel}>
+      <HStack mt={mt} spacing={1}>
+        {buttons}
+      </HStack>
     </Tooltip>
   )
 }

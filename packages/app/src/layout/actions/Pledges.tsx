@@ -15,9 +15,11 @@ import { useMemberSearch } from '../../hooks'
 interface Props {
   member: Member
   active: boolean
+  iconSize?: string[]
+  iconDimensions?: string[]
 }
 
-const PledgesAction = ({ member, active }: Props) => {
+const PledgesAction = ({ member, active, iconSize, iconDimensions }: Props) => {
   const level = MemberLevel[member?.user_type]
 
   const { meta } = useMemberSearch(1, 20, 'last_login', {
@@ -35,13 +37,9 @@ const PledgesAction = ({ member, active }: Props) => {
         <IconButton
           variant="primary"
           zIndex="fixed"
-          size={['sm', 'md', 'lg']}
+          size={iconSize}
           icon={
-            <Icon
-              as={UserCircleIcon}
-              w={['35px', '40px', '50px']}
-              h={['35px', '40px', '50px']}
-            />
+            <Icon as={UserCircleIcon} w={iconDimensions} h={iconDimensions} />
           }
           color={active ? 'accent.500' : 'white'}
           aria-label="Review Pledges"

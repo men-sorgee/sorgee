@@ -33,6 +33,7 @@ import {
   FlexProps,
   Heading,
   Spacer,
+  Show,
   Stat,
   StatGroup,
   StatLabel,
@@ -84,7 +85,7 @@ export const MemberSpotlight = chakra(
     ...props
   }: Props) => {
     const [blocked, setBlocked] = useState(false)
-    const { member, name, picture, loading, reload } = useMember(id)
+    const { member, name, picture, loading } = useMember(id)
     const { member: me } = useUser()
     const { setMeta } = useMeta()
 
@@ -129,12 +130,15 @@ export const MemberSpotlight = chakra(
 
     if (blocked) {
       return (
-        <Box
-          px={5}
-          py={4}
+        <Flex
+          direction="column"
+          justify="space-between"
+          border="1px solid"
+          borderColor={'primary.500'}
+          rounded="lg"
           bgGradient={`linear(to-bl, ${levelColor[1]}, ${levelColor[0]})`}
           color="white"
-          rounded="md"
+          {...props}
         >
           <MemberIcon member={member} size="lg">
             <Center>
@@ -144,7 +148,7 @@ export const MemberSpotlight = chakra(
               </VStack>
             </Center>
           </MemberIcon>
-        </Box>
+        </Flex>
       )
     }
 
@@ -152,10 +156,10 @@ export const MemberSpotlight = chakra(
       <Flex
         direction="column"
         justify="space-between"
-        {...props}
         border="1px solid"
         borderColor={'primary.500'}
         rounded="lg"
+        {...props}
       >
         <Box
           px={5}
@@ -164,6 +168,7 @@ export const MemberSpotlight = chakra(
           color="white"
           borderTopRightRadius="lg"
           borderTopLeftRadius="lg"
+          overflow="clip"
         >
           <MemberHeader
             viewer={me}
@@ -173,19 +178,20 @@ export const MemberSpotlight = chakra(
             size={size}
             minimal={member?.show_profile == false || full == false}
           >
-            {children}
-            <Spacer />
             {member?.rating > 0 && (
-              <Rating
-                value={member.rating || 0}
-                mt={2}
-                aria-label="User Rating"
-                size="xs"
-                simple
-              />
+              <Show above="md">
+                <Rating
+                  value={member.rating || 0}
+                  mt={2}
+                  aria-label="User Rating"
+                  size="xs"
+                  tooltip="Ratings are based on the number of stars a member has received from other members and event hosts. No-shows automatically receive -1 star ratings by the event."
+                />
+              </Show>
             )}
           </MemberHeader>
-          <Text>{member?.biography}</Text>
+
+          {full && <Text>{member?.biography}</Text>}
           {full && (
             <Box my={2}>
               <Flex w="full">
@@ -422,6 +428,7 @@ export const MemberSpotlight = chakra(
               </AccordionPanel>
             </AccordionItem>
           )}
+          {children}
           {full && member.show_events && (
             <AccordionItem>
               <AccordionButton>

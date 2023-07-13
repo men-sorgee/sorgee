@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ButtonLink, EventCard } from 'components/controls'
 import Page from 'components/Page'
 import { useUser } from 'hooks'
-import { EventDetail, EventStats, MemberLevel, User } from 'lib/models'
+import { EventDetail, EventStats, Member, MemberLevel } from 'lib/models'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 
@@ -66,7 +66,7 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
       ?.filter((u) => u.rsvp == rsvp)
 
       .map((u) => {
-        const user = u.users_id as User
+        const user = u.users_id as Member
         const picture = user.picture as string
         const name = `${user.first_name} ${user.last_name} (${user.nickname})`
         const src = picture ? '/api/asset/' + picture : undefined

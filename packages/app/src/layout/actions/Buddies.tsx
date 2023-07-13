@@ -15,9 +15,17 @@ interface Props {
   member: Member
   active: boolean
   hasFeature: boolean
+  iconSize?: string[]
+  iconDimensions?: string[]
 }
 
-const BuddiesAction = ({ member, active, hasFeature }: Props) => {
+const BuddiesAction = ({
+  member,
+  active,
+  hasFeature,
+  iconSize,
+  iconDimensions
+}: Props) => {
   const level = MemberLevel[member?.user_type]
   if (level < MemberLevel.brother) {
     return null
@@ -30,15 +38,11 @@ const BuddiesAction = ({ member, active, hasFeature }: Props) => {
   if (!hasFeature)
     return (
       <UpgradeIcon
-        size={['sm', 'md', 'lg']}
+        size={iconSize}
         title="Buddy List"
         membershipType={MembershipType.basic}
         icon={
-          <Icon
-            as={UsersIcon}
-            width={['35px', '40px', '50px']}
-            height={['35px', '40px', '50px']}
-          />
+          <Icon as={UsersIcon} width={iconDimensions} height={iconDimensions} />
         }
       />
     )
@@ -49,14 +53,8 @@ const BuddiesAction = ({ member, active, hasFeature }: Props) => {
         <IconButton
           variant="primary"
           zIndex="fixed"
-          size={['sm', 'md', 'lg']}
-          icon={
-            <Icon
-              as={UsersIcon}
-              w={['35px', '40px', '50px']}
-              h={['35px', '40px', '50px']}
-            />
-          }
+          size={iconSize}
+          icon={<Icon as={UsersIcon} w={iconDimensions} h={iconDimensions} />}
           color={active ? 'accent.500' : 'white'}
           aria-label="View Buddies"
           title="View Buddies"

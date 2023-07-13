@@ -14,7 +14,7 @@ export type Rating = {
   rate: number
 }
 
-export type RatingCollection = string | 'users' | 'events' | 'photo' | 'location'
+export type RatingCollection = 'users' | 'events' | 'photo' | 'location'
 
 export type Survey = {
   id: string

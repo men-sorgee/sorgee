@@ -9,9 +9,17 @@ interface Props {
   member: Member
   active: boolean
   hasFeature: boolean
+  iconSize?: string[]
+  iconDimensions?: string[]
 }
 
-const MembersAction = ({ member, active, hasFeature }: Props) => {
+const MembersAction = ({
+  member,
+  active,
+  hasFeature,
+  iconSize,
+  iconDimensions
+}: Props) => {
   const level = MemberLevel[member?.user_type]
   if (level < MemberLevel.brother) {
     return <></>
@@ -25,11 +33,11 @@ const MembersAction = ({ member, active, hasFeature }: Props) => {
         icon={
           <Icon
             as={UserGroupIcon}
-            width={['35px', '40px', '50px']}
-            height={['35px', '40px', '50px']}
+            width={iconDimensions}
+            height={iconDimensions}
           />
         }
-        size={['sm', 'md', 'lg']}
+        size={iconSize}
       />
     )
 
@@ -38,13 +46,9 @@ const MembersAction = ({ member, active, hasFeature }: Props) => {
       <Link href="/members" as={NextLink} zIndex="fixed">
         <IconButton
           variant="primary"
-          size={['sm', 'md', 'lg']}
+          size={iconSize}
           icon={
-            <Icon
-              as={UserGroupIcon}
-              w={['35px', '40px', '50px']}
-              h={['35px', '40px', '50px']}
-            />
+            <Icon as={UserGroupIcon} w={iconDimensions} h={iconDimensions} />
           }
           zIndex="fixed"
           color={active ? 'accent.500' : 'white'}

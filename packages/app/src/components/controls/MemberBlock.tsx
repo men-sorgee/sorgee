@@ -67,7 +67,8 @@ export const MemberBlock = chakra(
 
     if (loading || !me || me?.id == member?.id) return <></>
 
-    if (MemberLevel[member.user_type] == MemberLevel.staff) return <></>
+    if (MemberLevel[member?.user_type || 'applicant'] == MemberLevel.staff)
+      return <></>
 
     return (
       <>

@@ -1,12 +1,14 @@
 'use client'
 import { EventInvite } from 'lib/models'
 import { JsonFetcher } from 'lib/utils'
+import { isAfter, isToday } from 'date-fns'
 import useSWR from 'swr'
 
 type InvitesResults = {
   invitations: EventInvite[]
   newInvitationCount: number
   upcoming: EventInvite[]
+  activeInvite: EventInvite
   past: EventInvite[]
   error?: any
   loading: boolean
@@ -35,7 +37,8 @@ export const useUserEvents = (): InvitesResults => {
       upcoming: [],
       past: [],
       loading: true,
-      reload: () => {}
+      reload: () => {},
+      activeInvite: null
     }
 
   const upComing = ['scheduled', 'planned']
@@ -47,10 +50,19 @@ export const useUserEvents = (): InvitesResults => {
   const upcoming = invites?.filter(
     (i) => attending.includes(i.rsvp) && upComing.includes(i.event.status)
   )
-  const past = invites?.filter((i) => i.event.status == 'occurred')
+  const past = invites?.filter(
+    (i) => i.event.status == 'occurred' && i.rsvp == 'confirmed'
+  )
   const newInvitationCount = invitations?.filter(
     (i) => i.rsvp == 'invited'
   ).length
+
+  let activeInvite = upcoming.find(
+    (invite: EventInvite) =>
+      isToday(new Date(invite.event.datetime)) &&
+      invite.rsvp == 'confirmed' &&
+      !isAfter(new Date(), new Date(invite.event.datetime_end))
+  )
 
   return {
     invitations,
@@ -61,6 +73,7 @@ export const useUserEvents = (): InvitesResults => {
     loading: isLoading,
     reload: () => {
       mutate()
-    }
+    },
+    activeInvite
   }
 }

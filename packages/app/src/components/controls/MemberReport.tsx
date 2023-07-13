@@ -20,7 +20,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Textarea,
-  Toast,
+  Spinner,
   useDisclosure,
   useToast
 } from '@chakra-ui/react'
@@ -33,7 +33,7 @@ type Props = Omit<IconButtonProps, 'aria-label'> & {
 
 export const MemberReport = chakra(
   ({ member, size = ['sm', 'md', 'lg'], ...props }: Props) => {
-    const { loading, member: me, reload } = useUser()
+    const { loading, member: me } = useUser()
     const [hover, setHover] = useState(false)
     const [message, setMessage] = useState<string>('')
     const { isOpen, onClose, onOpen } = useDisclosure()
@@ -58,9 +58,12 @@ export const MemberReport = chakra(
 
     if (loading || !me || me?.id == member?.id) return <></>
 
-    if (MemberLevel[member.user_type] == MemberLevel.staff) return <></>
+    if (MemberLevel[member?.user_type || 'applicant'] == MemberLevel.staff)
+      return <></>
 
     const label = `Report ${member?.nickname}`
+
+    if (loading) return <Spinner size="sm" title={label} aria-label={label} />
 
     return (
       <>

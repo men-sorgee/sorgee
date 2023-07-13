@@ -4,15 +4,18 @@ import NextLink from 'next/link'
 
 import { Badge, Icon, IconButton, Link } from '@chakra-ui/react'
 import { CalendarIcon } from '@heroicons/react/24/outline'
+import { TicketIcon } from '@heroicons/react/24/solid'
 
 interface Props {
   member: Member
   active: boolean
+  iconSize?: string[]
+  iconDimensions?: string[]
 }
 
-const EventsAction = ({ member, active }: Props) => {
+const EventsAction = ({ member, active, iconSize, iconDimensions }: Props) => {
   const level = MemberLevel[member?.user_type]
-  const { newInvitationCount } = useUserEvents()
+  const { newInvitationCount, activeInvite } = useUserEvents()
   if (level < MemberLevel.inductee) {
     return null
   }
@@ -22,13 +25,9 @@ const EventsAction = ({ member, active }: Props) => {
         <IconButton
           variant="primary"
           zIndex="fixed"
-          size={['sm', 'md', 'lg']}
+          size={iconSize}
           icon={
-            <Icon
-              as={CalendarIcon}
-              w={['35px', '40px', '50px']}
-              h={['35px', '40px', '50px']}
-            />
+            <Icon as={CalendarIcon} w={iconDimensions} h={iconDimensions} />
           }
           color={active ? 'accent.500' : 'white'}
           aria-label={'Calendar'}
@@ -49,6 +48,21 @@ const EventsAction = ({ member, active }: Props) => {
           </Badge>
         )}
       </Link>
+      {activeInvite && (
+        <Link href={`/events/${activeInvite.event.id}/ticket`} as={NextLink}>
+          <IconButton
+            variant="primary"
+            zIndex="fixed"
+            size={iconSize}
+            icon={
+              <Icon as={TicketIcon} w={iconDimensions} h={iconDimensions} />
+            }
+            color="yellow.500"
+            aria-label={`Ticket to ${activeInvite.event.name}`}
+            title={`Ticket to ${activeInvite.event.name}`}
+          />
+        </Link>
+      )}
     </>
   )
 }

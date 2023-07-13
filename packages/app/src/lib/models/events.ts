@@ -76,7 +76,7 @@ export type GroupEvent = {
 export type EventUser = {
   id: number
   events_id: string | GroupEvent
-  users_id: string | User
+  users_id: string | Member
   engagement?: unknown
   attended?: boolean
   flags?: unknown

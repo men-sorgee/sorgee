@@ -26,9 +26,11 @@ import { useAppNotifications, useUserNotifications } from 'hooks'
 
 interface Props {
   member: Member
+  iconSize?: string[]
+  iconDimensions?: string[]
 }
 
-const NotificationsAction = ({ member }: Props) => {
+const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const {
@@ -72,14 +74,8 @@ const NotificationsAction = ({ member }: Props) => {
           variant="primary"
           zIndex="fixed"
           color={isOpen ? 'accent.500' : 'white'}
-          size={['sm', 'md', 'lg']}
-          icon={
-            <Icon
-              as={BellIcon}
-              w={['35px', '40px', '50px']}
-              h={['35px', '40px', '50px']}
-            />
-          }
+          size={iconSize}
+          icon={<Icon as={BellIcon} w={iconDimensions} h={iconDimensions} />}
           onClick={onOpen}
         />
         {totalNew > 0 && (

@@ -9,7 +9,7 @@ import {
 import { FieldSwitch } from 'components/forms'
 import Page from 'components/Page'
 import { useEvent, useUser } from 'hooks'
-import { EventUser, GroupEvent, MemberLevel, Member, User } from 'lib/models'
+import { EventUser, GroupEvent, MemberLevel, Member } from 'lib/models'
 import { getAssetUrl, postJSON } from 'lib/utils'
 import { useRouter } from 'next/router'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -53,7 +53,7 @@ export const getServerSideProps = async (context) => {
     }
   }
   const event = invite.events_id as GroupEvent
-  const user = invite.users_id as User
+  const user = invite.users_id as Member
 
   return {
     props: {

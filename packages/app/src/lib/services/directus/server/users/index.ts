@@ -1,5 +1,3 @@
-//@ts-ignore-file
-
 import {
   Applicant,
   applicantFields,
@@ -7,8 +5,6 @@ import {
   memberFields,
   Profile,
   profileFields,
-  Rating,
-  RatingCollection,
   User,
   UserEmailEvent,
   UserFields,
@@ -154,88 +150,6 @@ export async function listUsersByLevel<T = Member>(
   return data as T[]
 }
 
-export async function getRating(user_id: string, collection: RatingCollection, item_id: string) {
-  const adminClient = await getAdminClient()
-  const filter = {
-    user: {
-      _eq: user_id,
-    },
-    collection: {
-      _eq: collection,
-    },
-  }
-  switch (collection) {
-    case 'events': {
-      filter['event'] = {
-        _eq: item_id,
-      }
-      break
-    }
-    case 'users': {
-      filter['member'] = {
-        _eq: item_id,
-      }
-      break
-    }
-  }
-
-  const { data: ratings } = await adminClient.items('rating').readByQuery({
-    filter,
-  })
-
-  if (ratings && ratings.length > 0) {
-    return ratings[0] as Rating
-  } else {
-    return null
-  }
-}
-
-export async function getRatings(user_id: string) {
-  const adminClient = await getAdminClient()
-
-  const { data: ratings } = await adminClient.items('rating').readByQuery({
-    filter: {
-      user: {
-        _eq: user_id,
-      },
-    },
-  })
-
-  return ratings as Rating[]
-}
-
-export async function setRating(
-  user_id: string,
-  collection: RatingCollection,
-  item: string,
-  rate: number
-) {
-  const adminClient = await getAdminClient()
-  const existingRating = await getRating(user_id, collection, item)
-  if (existingRating) {
-    return (await adminClient.items('rating').updateOne(existingRating.id, {
-      rate,
-    })) as Rating
-  } else {
-    let value = {} as Partial<Rating>
-    switch (collection) {
-      case 'events': {
-        value.event = item
-        break
-      }
-      case 'users': {
-        value.member = item
-        break
-      }
-    }
-    return (await adminClient.items('rating').createOne({
-      user: user_id,
-      collection,
-      rate,
-      ...value,
-    })) as Rating
-  }
-}
 
 export async function getUserStats(start: string): Promise<{
   subscribers: number
@@ -302,3 +216,4 @@ export * from './buddies'
 export * from './shares'
 export * from './likes'
 export * from './blocks'
+export * from './ratings'

@@ -22,9 +22,16 @@ import { ChatBubbleBottomCenterIcon as ChatIcon } from '@heroicons/react/24/outl
 type Props = {
   member: Member
   hasFeature: boolean
+  iconSize?: string[]
+  iconDimensions?: string[]
 }
 
-const ChatActions = ({ member, hasFeature }: Props) => {
+const ChatActions = ({
+  member,
+  hasFeature,
+  iconSize,
+  iconDimensions
+}: Props) => {
   const {
     conversations,
     hasNewMessages,
@@ -85,14 +92,8 @@ const ChatActions = ({ member, hasFeature }: Props) => {
             variant="primary"
             zIndex="fixed"
             color={isOpen ? 'accent.500' : 'white'}
-            size={['sm', 'md', 'lg']}
-            icon={
-              <Icon
-                as={ChatIcon}
-                w={['35px', '40px', '50px']}
-                h={['35px', '40px', '50px']}
-              />
-            }
+            size={iconSize}
+            icon={<Icon as={ChatIcon} w={iconDimensions} h={iconDimensions} />}
             onClick={() => {
               setActiveId(lastActiveId)
               onOpen()
@@ -120,11 +121,11 @@ const ChatActions = ({ member, hasFeature }: Props) => {
           icon={
             <Icon
               as={ChatIcon}
-              width={['35px', '40px', '50px']}
-              height={['35px', '40px', '50px']}
+              width={iconDimensions}
+              height={iconDimensions}
             />
           }
-          size={['sm', 'md', 'lg']}
+          size={iconSize}
         />
       )}
       <audio ref={audioRef} src="/sounds/click.mp3" preload="auto" />

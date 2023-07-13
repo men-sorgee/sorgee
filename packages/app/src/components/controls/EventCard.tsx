@@ -45,7 +45,7 @@ type EventCardProps = CardProps & {
 
 export const EventCard = ({
   event,
-  showDescription = true,
+  showDescription = false,
   showLocation = false,
   showAddToCalendar = false,
   isGuest = false,
