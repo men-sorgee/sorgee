@@ -51,7 +51,7 @@ const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
       onClose()
     }
   }, [
-    appNotifications.length,
+    appNotifications?.length,
     appNotifications,
     isOpen,
     newAppNotificationCount,
