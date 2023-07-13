@@ -44,7 +44,10 @@ export type UserVerificationToken = {
 export type UserBuddy = {
   id: string
   user_id: string
-  buddy_id: string | User
+  buddy_id: string | {
+    id: string
+    presence: PresenceType
+  } | User
   sort: number
 }
 
@@ -680,7 +683,8 @@ export const searchableMemberFields: Array<keyof Member> = [
   'vouched_by.nickname' as any,
   'vouched_by.picture' as any,
   'show_contact',
-  'buddies.buddy_id' as any,
+  'buddies.buddy_id.id' as any,
+  'buddies.buddy_id.presence' as any,
   'buddy_of.user_id' as any,
   'likes.like_id' as any,
   'liked_by.user_id' as any,
