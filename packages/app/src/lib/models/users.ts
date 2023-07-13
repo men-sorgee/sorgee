@@ -112,7 +112,7 @@ export type User = {
   height?: string
   nickname?: string
   auth_with_phone: boolean
-  vouched_by?: string | User
+  vouched_by?: string | VouchingUser
   needs_guidance?: boolean
   signed_waiver?: boolean
   biography?: string
@@ -349,7 +349,7 @@ export type Applicant = Profile & {
   show_contact: boolean
   notifications: string[] | NotificationUser[]
   contact_preference: ContactPreferenceType
-  vouched_by: string
+  vouched_by: VouchingUser
   biography: string
   needs_guidance: boolean
   spectrum: string
@@ -386,7 +386,7 @@ export const applicantFields: Array<keyof Applicant> = [
   'application_status',
   'status',
   'auth_with_phone',
-  'vouched_by',
+
   'show_contact',
   'contact_preference',
   'biography',
@@ -675,6 +675,11 @@ export const searchableMemberFields: Array<keyof Member> = [
   'allow_messages',
   'last_login',
   'date_created',
+  'vouched_by',
+  'vouched_by.id' as any,
+  'vouched_by.nickname' as any,
+  'vouched_by.picture' as any,
+  'show_contact',
   'buddies.buddy_id' as any,
   'buddy_of.user_id' as any,
   'likes.like_id' as any,

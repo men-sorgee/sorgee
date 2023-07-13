@@ -43,7 +43,7 @@ export const MemberVouch = chakra(
     size = ['sm', 'md', 'lg'],
     ...props
   }: Props) => {
-    const { user_type: level, nickname: name } = member
+    const { user_type: level, nickname: name, vouched_by: voucher } = member
     const {
       loading: userLoading,
       member: me,
@@ -52,24 +52,26 @@ export const MemberVouch = chakra(
     } = useUser()
     const [showVouchButton, setShowVouchButton] = useState(false)
 
-    const {
-      data: voucher,
-      isLoading,
-      mutate
-    } = swr<VouchingUser>(`/api/member/vouch/${member?.id}`, JsonFetcher, {})
+    //const {
+    //  data: voucher,
+    //  isLoading,
+    //  mutate
+    //} = swr<VouchingUser>(`/api/member/vouch/${member?.id}`, JsonFetcher, {
+    //  fallbackData: member?.vouched_by
+    //})
 
     const vouchForPledge = useCallback(() => {
       // add buddy
       postJSON<any, VouchingUser>(`/api/member/vouch/${member?.id}`, {}).then(
         (r) => {
-          mutate(r.data, true)
+          //mutate(r.data, true)
           return reload()
         }
       )
-    }, [member?.id, mutate, reload])
+    }, [member?.id, reload])
 
     useEffect(() => {
-      if (!userLoading && !isLoading && voucher?.id == undefined) {
+      if (!userLoading && voucher?.id == undefined) {
         if (MemberLevel[level] == MemberLevel.pledge) {
           setShowVouchButton(true)
         }
@@ -82,7 +84,6 @@ export const MemberVouch = chakra(
       member?.id,
       userLoading,
       setShowVouchButton,
-      isLoading,
       voucher,
       level,
       myLevel
