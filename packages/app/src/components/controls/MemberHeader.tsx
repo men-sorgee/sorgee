@@ -1,7 +1,15 @@
 import { ReactNode } from 'react'
 
 import { capitalCase } from 'change-case'
-import { Member, MemberLevel, User, UserLike, UserShare } from 'lib/models'
+import {
+  Member,
+  MemberLevel,
+  PresenceType,
+  User,
+  UserBuddy,
+  UserLike,
+  UserShare
+} from 'lib/models'
 
 import {
   Badge,
@@ -50,9 +58,9 @@ export const MemberHeader = ({
   const blocksYou = member?.blocked?.some(
     (b) => String(b.blocked_id) == viewer?.id
   )
-  const buddiesYou = member?.buddies?.some(
-    (b) => String(b.buddy_id) == viewer?.id
-  )
+  const buddiesYou = member?.buddies
+    ?.map((b: UserBuddy) => b.buddy_id as Partial<Member>)
+    .some((b) => b.id == viewer?.id)
 
   const needsVoucher =
     !member.vouched_by &&
@@ -69,10 +77,10 @@ export const MemberHeader = ({
         gap={2}
       >
         <MemberIcon member={member} size={size} {...props}>
-          <VStack align="end">
+          <VStack align="center" justify="stretch">
             {children}
             {!minimal && (
-              <HStack gap={1} mt={2}>
+              <HStack flexWrap="wrap" gap={1} mt={2}>
                 {sharedWithMe && (
                   <Badge
                     fontSize={['xs']}
@@ -80,7 +88,7 @@ export const MemberHeader = ({
                     color="white"
                     borderRadius="3px 3px 3px 3px"
                   >
-                    Unlocked
+                    Photos Unlocked
                   </Badge>
                 )}
                 {likesYou && (
@@ -90,7 +98,7 @@ export const MemberHeader = ({
                     color="white"
                     borderRadius="3px 3px 3px 3px"
                   >
-                    Likes You
+                    He Likes You
                   </Badge>
                 )}
                 {buddiesYou && (
@@ -100,7 +108,7 @@ export const MemberHeader = ({
                     color="white"
                     borderRadius="3px 3px 3px 3px"
                   >
-                    His Buddy
+                    Your His Buddy
                   </Badge>
                 )}
 
@@ -111,7 +119,7 @@ export const MemberHeader = ({
                     color="white"
                     borderRadius="3px 3px 3px 3px"
                   >
-                    Blocks You
+                    He Blocked You
                   </Badge>
                 )}
                 {isYou && (

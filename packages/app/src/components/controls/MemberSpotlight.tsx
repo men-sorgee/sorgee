@@ -108,6 +108,11 @@ export const MemberSpotlight = chakra(
     const headingColor = useColorModeValue('primary.700', 'primary.300')
     if (loading || !id || !member) return <Loading />
     const photos = member.my_photos || []
+
+    photos.sort((a, b) => {
+      if (a.is_public && !b.is_public) return -1
+      return 1
+    })
     const levelValue = MemberLevel[member?.user_type || 'subscriber']
     const levelColor = MemberLevelColorMap[levelValue]
     const eventsAttended =
@@ -229,7 +234,7 @@ export const MemberSpotlight = chakra(
           )}
         </Box>
         <Accordion defaultIndex={0} rounded="lg">
-          {full && member.show_photos && member.my_photos?.length > 0 && (
+          {full && member.show_photos && photos?.length > 0 && (
             <AccordionItem>
               <AccordionButton>
                 <Box as="span" flex="1" textAlign="left" color="text">
@@ -239,16 +244,14 @@ export const MemberSpotlight = chakra(
               </AccordionButton>
               <AccordionPanel pb={4}>
                 <Box p={2} flex="grow">
-                  {photos.length > 0 && (
-                    <ImageGallery
-                      images={photos.map((p: UserPhoto) => {
-                        return {
-                          src: `/api/asset/${p.directus_files_id}`,
-                          private: p.is_public == false
-                        }
-                      })}
-                    />
-                  )}
+                  <ImageGallery
+                    images={photos.map((p: UserPhoto) => {
+                      return {
+                        src: `/api/asset/${p.directus_files_id}`,
+                        private: p.is_public == false
+                      }
+                    })}
+                  />
                 </Box>
               </AccordionPanel>
             </AccordionItem>
