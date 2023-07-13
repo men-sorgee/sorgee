@@ -32,8 +32,11 @@ export const MemberPropertyGroup = ({
   maxCols = 3
 }: Props) => {
   const populatedFields =
-    fieldList?.filter((f) => member[f] != undefined && member[f]?.length > 0) ||
-    []
+    fieldList?.filter(
+      (f) =>
+        member[f] != undefined &&
+        (Array.isArray(member[f]) ? member[f]?.length > 0 : true)
+    ) || []
   const color = useColorModeValue('primary.500', 'white')
   if (!show)
     return (
