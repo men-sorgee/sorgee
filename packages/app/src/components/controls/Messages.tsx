@@ -219,8 +219,10 @@ export const Messages = ({ member, id }: { member: Member; id: string }) => {
   }, [activeId, member?.id, socket])
 
   const handleInputChange = (e) => {
-    setInputValue(e.target.value)
-    userTyping()
+    if (e.target?.value) {
+      setInputValue(e.target.value)
+      userTyping()
+    }
   }
 
   const typingIndicator = useMemo(() => {
