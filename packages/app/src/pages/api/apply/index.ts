@@ -9,7 +9,7 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     const user = await withAuthUser(req, res)
     if (!user) throw new Error('Unauthorized')
 
-    const userDetails = req.body as Applicant & Partial<User>
+    const userDetails = req.body as Applicant
     userDetails.email = user.email.toLocaleLowerCase()
     userDetails.user_type = 'applicant'
     if (userDetails?.invite) {
@@ -25,7 +25,7 @@ async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     userDetails.in_sendgrid = true
     userDetails.application_status = 'verify'
 
-    await updateUser(user.id!, userDetails as User)
+    await updateUser(user.id!, userDetails)
   } catch (e: any) {
     console.error(e)
     res.status(400).json(ApiResponse(null, e.message || e))

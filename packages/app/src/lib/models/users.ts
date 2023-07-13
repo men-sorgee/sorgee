@@ -340,6 +340,7 @@ export type Profile = {
   sessions: string[] | UserSession[]
   accounts: string[] | UserAccount[]
   auth_with_phone: boolean
+  vouched_by: string | VouchingUser
 }
 export const profileFields: Array<keyof Profile> = [
 
@@ -352,7 +353,7 @@ export type Applicant = Profile & {
   show_contact: boolean
   notifications: string[] | NotificationUser[]
   contact_preference: ContactPreferenceType
-  vouched_by: VouchingUser
+
   biography: string
   needs_guidance: boolean
   spectrum: string
@@ -432,6 +433,7 @@ export const memberFeatures: MemberFeature[] = [
 export type PresenceType = 'offline' | 'online' | 'away'
 
 export type Member = Applicant & {
+  vouched_by: VouchingUser
   signed_waiver: boolean
   presence: PresenceType
   ratings: Rating[]

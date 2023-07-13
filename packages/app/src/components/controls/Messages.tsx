@@ -178,7 +178,7 @@ export const Messages = ({ member, id }: { member: Member; id: string }) => {
 
   useEffect(() => {
     if (socket == undefined) return socketInitializer()
-  }, [])
+  }, [socket, socketInitializer])
 
   const { isOpen, onClose, onOpen } = useDisclosure()
   // Get current user data

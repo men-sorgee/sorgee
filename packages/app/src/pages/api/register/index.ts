@@ -52,7 +52,7 @@ export default async function Register(
         notes: 'registered via app',
         status: 'active',
         user_type: 'applicant',
-        vouched_by: promo ? promo.vouching_user : null,
+        vouched_by: promo ? promo.vouching_user as string : null,
         promo: promo ? promo.id : null,
       })
       return res.status(200).json(ApiResponse(newUser))

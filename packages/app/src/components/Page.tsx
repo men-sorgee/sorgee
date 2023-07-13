@@ -17,9 +17,9 @@ type Props = BoxProps & {
   header?: React.ReactNode
   children: React.ReactNode | React.ReactNode[]
   description?: string
-  sectionClass?: string
   requireAuth?: boolean
   requiredLevel?: MemberLevel
+  hideHeader?: boolean
 }
 
 const Page = ({
@@ -31,6 +31,7 @@ const Page = ({
   image,
   children,
   requireAuth = false,
+  hideHeader = false,
   requiredLevel,
   ...props
 }: Props) => {
@@ -73,11 +74,13 @@ const Page = ({
       w="full"
       {...props}
     >
-      <div className="no-print">
-        <Heading as="h1" size="h1" textAlign="center" mb={8}>
-          {title}
-        </Heading>
-      </div>
+      {!hideHeader && (
+        <div className="no-print">
+          <Heading as="h1" size="h1" textAlign="center" mb={8}>
+            {title}
+          </Heading>
+        </div>
+      )}
       {header}
       {(loading && (
         <Loading size="xl" mt={10}>
