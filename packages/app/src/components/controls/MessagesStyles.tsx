@@ -1,5 +1,5 @@
+'use client'
 import { brand } from 'lib/config/brand'
-
 import { useColorModeValue } from '@chakra-ui/react'
 
 export default function MessagesStyles() {
@@ -32,13 +32,11 @@ export default function MessagesStyles() {
         display: flex;
         bottom: 0;
         flex-direction: row;
-        height: 100%;
-        
+        height: calc(100vh - 145px);
         overflow: auto;
-        
         box-sizing: border-box;
         color: ${color};
-        background-color: ${bg};
+        background-color: transparent;
         font-size: 1rem;
       }
       .cs-main-container > .cs-conversation-list {
@@ -51,6 +49,7 @@ export default function MessagesStyles() {
         border-left: solid 0px ${borderColor};
         /* Hmm without this, box shadow is cut at bottom */
         z-index: 2;
+        background-color: ${bg};
       }
       .cs-main-container > .cs-sidebar.cs-sidebar--left {
         order: 0;
@@ -84,6 +83,7 @@ export default function MessagesStyles() {
         order: 2;
         height: 100%;
         z-index: 3;
+        
       }
       .cs-main-container .cs-sidebar .cs-expansion-panel {
         border-left: 0;
@@ -104,7 +104,7 @@ export default function MessagesStyles() {
       }
       @media (max-width: 768px) {
         .cs-main-container--responsive {
-          min-width: calc( 1.6em + 40px + 180px );
+          
         }
         .cs-main-container--responsive .cs-search {
           display: none;
@@ -124,8 +124,9 @@ export default function MessagesStyles() {
           margin-right: 0;
         }
         .cs-main-container--responsive .cs-conversation-list .cs-conversation__content,
-        .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__content {
-          
+        .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__content,
+        .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__last-activity-time {
+          display: none;
         }
         .cs-main-container--responsive .cs-conversation-list .cs-conversation__operations,
       .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__operations {
@@ -156,9 +157,7 @@ export default function MessagesStyles() {
         .cs-main-container--responsive .cs-chat-container .cs-conversation-header .cs-conversation-header__back {
           display: flex;
         }
-        .cs-chat-container {
-          height: calc(95vh - 8rem);
-        }
+        
       }
 
       .cs-message {
@@ -612,14 +611,15 @@ export default function MessagesStyles() {
         background-color: ${bg};
       }
       .cs-message-list__scroll-wrapper {
+        -webkit-overflow-scrolling: touch;
         box-sizing: border-box;
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        overflow: hidden;
-        /*overflow-y: scroll*/
+        overflow-x: hidden;
+        overflow-y: auto;
         padding: 0 1.2em 0 0.8em;
       }
       .cs-message-list__scroll-to:first-child {
@@ -1102,6 +1102,7 @@ export default function MessagesStyles() {
         
         order: 1;
       }
+=
       .cs-conversation-header__back button {
         font-size: 1.4em;
         

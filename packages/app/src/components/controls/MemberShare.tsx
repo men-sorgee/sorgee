@@ -41,12 +41,17 @@ export const MemberShare = chakra(
       }
     }, [me, member?.id, loading])
 
-    if (loading || !me || me.id == member?.id) return null
-    if (level < MemberLevel.brother) return null
-
     const label = isShared
       ? `Unshare Private Photos with ${member?.nickname || 'this member'}`
       : `Share Private Photos with ${member?.nickname || 'this member'}`
+
+    // SWAP BETWEEN SHARED AND HOVER
+    useEffect(() => {
+      setShowLock(isShared ? !hover : hover)
+    }, [hover, isShared])
+
+    if (loading || !me || me.id == member?.id) return null
+    if (level < MemberLevel.brother) return null
 
     if (!hasFeature('share_photos'))
       return (
@@ -58,11 +63,6 @@ export const MemberShare = chakra(
           _hover={{ bg: 'primary.500' }}
         />
       )
-
-    // SWAP BETWEEN SHARED AND HOVER
-    useEffect(() => {
-      setShowLock(isShared ? !hover : hover)
-    }, [hover, isShared])
 
     return (
       <>

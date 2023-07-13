@@ -1,5 +1,5 @@
+'use client'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-
 import { formatDistanceToNow } from 'date-fns'
 import { useMessages } from 'hooks'
 import { ChatMessage, Member, Message } from 'lib/models'
@@ -32,11 +32,14 @@ import {
   MemberReport
 } from './'
 
-import MessagesStyles from './MessagesStyles'
+import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
+import { initialize } from 'next/dist/server/lib/render-server'
 
-let socket: Socket
+const MessagesStyles = dynamic(() => import('./MessagesStyles'), { ssr: false })
 
-export const Messages = ({ member }: { member: Member }) => {
+export const Messages = ({ member, id }: { member: Member; id: string }) => {
+  const [socket, setSocket] = useState<Socket>(undefined)
   const {
     conversations,
     activeConversation,
@@ -46,6 +49,7 @@ export const Messages = ({ member }: { member: Member }) => {
     setActiveId,
     delete: d
   } = useMessages()
+  const router = useRouter()
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isTyping, setIsTyping] = useState(false)
   const [sidebarVisible, setSidebarVisible] = useState(false)
@@ -54,19 +58,29 @@ export const Messages = ({ member }: { member: Member }) => {
   const [conversationContentStyle, setConversationContentStyle] = useState({})
   const [conversationAvatarStyle, setConversationAvatarStyle] = useState({})
 
-  const handleBackClick = () => {
-    setSidebarVisible(!sidebarVisible)
-    setActiveId(null)
-  }
+  useEffect(() => {
+    if (id) {
+      setActiveId(id)
+    } else {
+      setActiveId(conversations[0]?.id)
+    }
+  }, [conversations, id, setActiveId])
+
+  const handleBackClick = useCallback(() => {
+    setSidebarVisible(true)
+    router.push('/members/chat')
+  }, [router])
 
   const handleConversationClick = useCallback(
     (activeId: string) => {
       if (sidebarVisible) {
         setSidebarVisible(false)
       }
-      setActiveId(activeId)
+      router.push('/members/chat/[id]', `/members/chat/${activeId}`, {
+        shallow: true
+      })
     },
-    [sidebarVisible, setActiveId]
+    [sidebarVisible, router]
   )
 
   useEffect(() => {
@@ -104,40 +118,8 @@ export const Messages = ({ member }: { member: Member }) => {
     conversations
   ])
 
-  useEffect(() => {
-    if (socket == undefined) return socketInitializer()
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   const audioRef = useRef<HTMLAudioElement>(null)
 
-  const socketInitializer = () => {
-    fetch('/api/socket').catch((err) => {
-      console.error(err)
-    })
-    socket = io({
-      path: '/api/socket.io',
-      addTrailingSlash: false
-    })
-    socket.on('connect', () => {
-      socket.emit('join', member?.id)
-    })
-    socket.on('receive-message', (message: ChatMessage) => {
-      receiveMessage(message)
-    })
-    socket.on('user-typing', (from: string) => {
-      if (from == activeId) {
-        setIsTyping(true)
-        setTimeout(() => {
-          setIsTyping(false)
-        }, 1000)
-      }
-    })
-    return () => {
-      socket.disconnect()
-    }
-  }
   const messagesSeen = useCallback(() => {
     if (activeConversation) {
       markAsRead(
@@ -165,6 +147,39 @@ export const Messages = ({ member }: { member: Member }) => {
     },
     [activeId, messagesSeen]
   )
+
+  const socketInitializer = useCallback(() => {
+    fetch('/api/socket').catch((err) => {
+      console.error(err)
+    })
+    let socket = io({
+      path: '/api/socket.io',
+      addTrailingSlash: false
+    })
+    socket.on('connect', () => {
+      socket.emit('join', member?.id)
+    })
+    socket.on('receive-message', (message: ChatMessage) => {
+      receiveMessage(message)
+    })
+    socket.on('user-typing', (from: string) => {
+      if (from == activeId) {
+        setIsTyping(true)
+        setTimeout(() => {
+          setIsTyping(false)
+        }, 3000)
+      }
+    })
+    setSocket(socket)
+    return () => {
+      socket.disconnect()
+    }
+  }, [activeId, member?.id, receiveMessage])
+
+  useEffect(() => {
+    if (socket == undefined) return socketInitializer()
+  }, [])
+
   const { isOpen, onClose, onOpen } = useDisclosure()
   // Get current user data
   const [convoUserAvatar, convoUserName] = useMemo(() => {
@@ -191,7 +206,6 @@ export const Messages = ({ member }: { member: Member }) => {
         ]
       }
     }
-
     return [undefined, undefined]
   }, [activeConversation, onOpen])
 
@@ -202,10 +216,10 @@ export const Messages = ({ member }: { member: Member }) => {
         from: member?.id
       })
     }
-  }, [activeId, member?.id])
+  }, [activeId, member?.id, socket])
 
   const handleInputChange = (e) => {
-    //setInputValue(e.target.value)
+    setInputValue(e.target.value)
     userTyping()
   }
 
@@ -216,7 +230,7 @@ export const Messages = ({ member }: { member: Member }) => {
     return null
   }, [isTyping])
 
-  function decodeHtml(html: string) {
+  const decodeHtml = (html: string) => {
     var txt = document.createElement('textarea')
     txt.innerHTML = html
     return txt.value
@@ -297,7 +311,8 @@ export const Messages = ({ member }: { member: Member }) => {
       member?.nickname,
       member?.picture,
       member?.presence,
-      messages
+      messages,
+      socket
     ]
   )
 
@@ -314,7 +329,7 @@ export const Messages = ({ member }: { member: Member }) => {
       <MessagesStyles />
       <audio ref={audioRef} src="/sounds/click.mp3" preload="auto" />
 
-      <MainContainer responsive className="bg" style={{}}>
+      <MainContainer responsive className="bg">
         <Sidebar position="left" style={sidebarStyle}>
           <ConversationList>
             {conversations.map((c) => {
@@ -467,6 +482,9 @@ export const Messages = ({ member }: { member: Member }) => {
             </MessageList>
 
             <MessageInput
+              style={{
+                marginBlock: '1rem'
+              }}
               attachButton={false}
               onAttachClick={() => {
                 fileInputRef.current.click()

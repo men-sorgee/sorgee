@@ -60,7 +60,7 @@ export const MemberChat = chakra(
 
     if (
       member.user_type !== 'pledge' &&
-      me?.id != them?.vouched_by &&
+      me?.id != them?.vouched_by?.id &&
       !hasFeature('chat')
     )
       return (

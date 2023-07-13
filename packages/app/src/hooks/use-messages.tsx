@@ -18,6 +18,7 @@ import {
 import { JsonFetcher, putJSON } from 'lib/utils'
 import useCookie from 'react-use-cookie'
 import useSWR, { KeyedMutator } from 'swr'
+import { useRouter } from 'next/router'
 
 export type MessagesContextData = {
   activeId?: string
@@ -60,6 +61,8 @@ export function MessagesProvider({
   children: ReactNode | ReactNode[]
 }) {
   const key = `/api/member/messages`
+
+  const router = useRouter()
   const {
     data: userMessages = {},
     mutate,
@@ -145,9 +148,9 @@ export function MessagesProvider({
               nickname: user.nickname,
               presence: user.presence,
               last_login: user.last_login,
-              picture:
-                user.picture &&
-                `/api/asset/${user.picture}?w=100&h=100&fit=crop`
+              picture: user.picture
+                ? `/api/asset/${user.picture}?w=100&h=100&fit=crop`
+                : null
             }
           },
           ...conversations
@@ -155,8 +158,9 @@ export function MessagesProvider({
 
       setActiveId(user.id)
       setActiveConversation(convo)
+      router.push(`/members/chat/${user.id}`)
     },
-    [conversations, setActiveId]
+    [conversations, setActiveId, router]
   )
 
   const mark = useCallback(

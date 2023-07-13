@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useUser } from 'hooks'
 import { useRouter } from 'next/router'
 
-import { Box, Flex, useColorModeValue } from '@chakra-ui/react'
+import { Box, Flex, Spacer, useColorModeValue } from '@chakra-ui/react'
 
 import { constrained } from '../'
 import { MemberLevel } from 'lib/models'
@@ -51,24 +51,29 @@ export default function ActionsNav() {
       position="fixed"
       zIndex="fixed"
       bottom={0}
-      pr="16px"
+      px={8}
     >
       <Flex justify="center" w="full" gap={0} p={4} {...constrained}>
-        <Chat
-          member={member}
-          hasFeature={hasChat}
-          iconSize={iconSize}
-          iconDimensions={iconDimensions}
-        />
         <Events
           member={member}
           active={path.startsWith('/events')}
           iconSize={iconSize}
           iconDimensions={iconDimensions}
         />
+        <Chat
+          member={member}
+          hasFeature={hasChat}
+          active={path.startsWith('/members/chat')}
+          iconSize={iconSize}
+          iconDimensions={iconDimensions}
+        />
         <Members
           member={member}
-          active={path.startsWith('/members') && !path.includes('/pledges')}
+          active={
+            path.startsWith('/members') &&
+            !path.includes('/pledges') &&
+            !path.includes('/chat')
+          }
           hasFeature={hasDirectory}
           iconSize={iconSize}
           iconDimensions={iconDimensions}

@@ -65,6 +65,8 @@ function Layout({
     return <>{children}</>
   }
 
+  const isChat = path.startsWith('/members/chat')
+
   return (
     <>
       <Meta />
@@ -92,8 +94,8 @@ function Layout({
             >
               <ErrorBoundary>{children}</ErrorBoundary>
             </Box>
-            <Spacer h="1rem" />
-            <Footer />
+            {!isChat && <Spacer h="1rem" />}
+            {!isChat && <Footer />}
           </Box>
         </Flex>
         <ErrorBoundary>

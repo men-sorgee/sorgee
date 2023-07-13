@@ -54,8 +54,6 @@ export const MemberBlock = chakra(
       }
     }, [me, member?.id, loading])
 
-    if (loading || !me || me?.id == member?.id) return null
-
     const label = isBlocked
       ? `Unblock ${member?.nickname || 'this member'}`
       : `Block ${member?.nickname || 'this member'}`

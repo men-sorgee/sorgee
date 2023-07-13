@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Messages, UpgradeIcon } from 'components'
 import { useMessages } from 'hooks'
 import { Member, MemberLevel, MembershipType } from 'lib/models'
-
+import NextLink from 'next/link'
 import {
   Badge,
   Box,
@@ -15,13 +15,15 @@ import {
   DrawerOverlay,
   Icon,
   IconButton,
-  useDisclosure
+  useDisclosure,
+  Link
 } from '@chakra-ui/react'
 import { ChatBubbleBottomCenterIcon as ChatIcon } from '@heroicons/react/24/outline'
 
 type Props = {
   member: Member
   hasFeature: boolean
+  active: boolean
   iconSize?: string[]
   iconDimensions?: string[]
 }
@@ -29,6 +31,7 @@ type Props = {
 const ChatActions = ({
   member,
   hasFeature,
+  active,
   iconSize,
   iconDimensions
 }: Props) => {
@@ -40,10 +43,7 @@ const ChatActions = ({
     setActiveId,
     lastActiveId
   } = useMessages()
-  const { isOpen, onOpen, onClose } = useDisclosure({
-    onClose: () => setActiveId(undefined)
-  })
-  const [show, setShow] = useState<boolean>(undefined)
+
   const [prevMessagesCount, setPrevMessagesCount] = useState<number>(undefined)
   const audioRef = useRef<HTMLAudioElement>(null)
 
@@ -55,99 +55,60 @@ const ChatActions = ({
       audioRef.current?.play()
       setPrevMessagesCount(newMessageCount)
     }
-    if (show == undefined && member) {
-      setShow(
-        MemberLevel[member.user_type] >= MemberLevel.brother ||
-          Object.keys(conversations).length > 0
-      )
-    }
-    if (show == false && hasNewMessages) setShow(true)
-    if (activeId && !isOpen) onOpen()
-  }, [
-    setActiveId,
-    conversations,
-    hasNewMessages,
-    isOpen,
-    member,
-    member.user_type,
-    newMessageCount,
-    onOpen,
-    prevMessagesCount,
-    show,
-    activeId
-  ])
+  }, [newMessageCount, prevMessagesCount])
 
-  const level = MemberLevel[member?.user_type]
-  if (level < MemberLevel.brother) {
-    return null
-  }
+  const level = MemberLevel[member.user_type]
+
+  const ActionIcon = () => (
+    <Link
+      href={`/members/chat${activeId ? '/' + activeId : ''}`}
+      as={NextLink}
+      zIndex="fixed"
+    >
+      <IconButton
+        aria-label="Brother Chat"
+        title="Brother Chat"
+        variant="primary"
+        zIndex="fixed"
+        color={active ? 'accent.500' : 'white'}
+        size={iconSize}
+        icon={<Icon as={ChatIcon} w={iconDimensions} h={iconDimensions} />}
+      />
+      {hasNewMessages && (
+        <Badge
+          bg="white"
+          color="black"
+          ml={[-6, -8, -10]}
+          zIndex="overlay"
+          position="absolute"
+          rounded="full"
+          px={2}
+          py={0.5}
+        >
+          {newMessageCount}
+        </Badge>
+      )}
+    </Link>
+  )
+
+  if (hasNewMessages) return <ActionIcon />
+
+  if (!hasFeature && level >= MemberLevel.brother)
+    return (
+      <UpgradeIcon
+        size={iconSize}
+        title="Brother Chat"
+        membershipType={MembershipType.basic}
+        icon={<Icon as={ChatIcon} w={iconDimensions} h={iconDimensions} />}
+      />
+    )
+
+  if (!hasNewMessages && level < MemberLevel.brother) return null
 
   return (
     <>
-      {hasFeature || hasNewMessages ? (
-        <Box hidden={!show}>
-          <IconButton
-            aria-label="Chat"
-            title="Chat"
-            variant="primary"
-            zIndex="fixed"
-            color={isOpen ? 'accent.500' : 'white'}
-            size={iconSize}
-            icon={<Icon as={ChatIcon} w={iconDimensions} h={iconDimensions} />}
-            onClick={() => {
-              setActiveId(lastActiveId)
-              onOpen()
-            }}
-          />
-          {hasNewMessages && (
-            <Badge
-              bg="white"
-              color="black"
-              ml={[-6, -8, -10]}
-              zIndex="overlay"
-              position="absolute"
-              rounded="full"
-              px={2}
-              py={0.5}
-            >
-              {newMessageCount}
-            </Badge>
-          )}
-        </Box>
-      ) : (
-        <UpgradeIcon
-          title="Member Chat"
-          membershipType={MembershipType.plus}
-          icon={
-            <Icon
-              as={ChatIcon}
-              width={iconDimensions}
-              height={iconDimensions}
-            />
-          }
-          size={iconSize}
-        />
-      )}
       <audio ref={audioRef} src="/sounds/click.mp3" preload="auto" />
-      <Drawer
-        placement={'left'}
-        onClose={onClose}
-        isOpen={isOpen}
-        size={['full', 'lg']}
-        blockScrollOnMount={false}
-      >
-        <DrawerOverlay />
-
-        <DrawerContent position="absolute" zIndex={2147484000}>
-          <DrawerHeader bg="primary.900" color="white" m={0} p={2}>
-            Brother Chat
-            <DrawerCloseButton />
-          </DrawerHeader>
-          <DrawerBody p={0} position="relative">
-            <Messages member={member} />
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
+      <ActionIcon />
     </>
   )
 }

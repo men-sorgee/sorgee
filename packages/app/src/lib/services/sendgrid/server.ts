@@ -84,9 +84,10 @@ export async function sendNotificationEmail(
   data: Record<string, any>,
   templateId: SendGridTemplate = SendGridTemplate.AppNotification,
   category: SendGridCategory = SendGridCategory.Notification,
-  notification_id: string = null
+  notification_id: string = null,
+  html: string = null
 ) {
-  body = await convertMarkdownToHtml(body)
+  body = await convertMarkdownToHtml(body) + html
 
   const email: MailDataRequired = {
     personalizations: [
