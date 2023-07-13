@@ -13,7 +13,8 @@ import {
   UserEmailEvent,
   UserFields,
   UserType,
-  MemberStats
+  MemberStats,
+  searchableMemberFields
 } from 'lib/models'
 
 import { FieldFilter } from '@directus/sdk'
@@ -53,7 +54,8 @@ export async function getUser<T = User>(
       },
       buddy_of: {
         _limit: -1,
-      },
+      }
+
     },
   })
   return (user as T) || null
@@ -82,7 +84,7 @@ export async function findUser<T = Profile>(
 
 export async function searchUsers<T = User>(
   filter: FieldFilter<T>,
-  fields: UserFields = memberFields,
+  fields: UserFields = searchableMemberFields,
   limit: number = 20,
   page: number = 1,
   sort: any = '-last_login'

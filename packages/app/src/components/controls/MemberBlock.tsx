@@ -7,7 +7,7 @@ import { deleteJSON, postJSON } from 'lib/utils'
 import { chakra, IconButton, IconButtonProps } from '@chakra-ui/react'
 import { EyeIcon as ViewIcon } from '@heroicons/react/24/outline'
 import { EyeSlashIcon as BlockedIcon } from '@heroicons/react/24/solid'
-import { UserBlock } from 'lib/models'
+import { UserBlock, MemberLevel } from 'lib/models'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
   member: Partial<Member>
@@ -15,13 +15,14 @@ type Props = Omit<IconButtonProps, 'aria-label'> & {
 
 export const MemberBlock = chakra(
   ({ member, size = ['sm', 'md', 'lg'], ...props }: Props) => {
-    const { loading, member: me, reload, level } = useUser()
+    const { loading, member: me, reload } = useUser()
     const [hover, setHover] = useState(false)
     const [showBlock, setShowBlock] = useState(false)
     const [isBlocked, setIsBlocked] = useState<boolean>(false)
     const [mutual, setMutual] = useState<boolean>(false)
 
     const toggleBlock = useCallback(() => {
+      setIsBlocked(!isBlocked)
       if (isBlocked) {
         deleteJSON(`/api/member/block/${member.id}`).then(() => {
           setIsBlocked(false)
@@ -63,6 +64,10 @@ export const MemberBlock = chakra(
     useEffect(() => {
       setShowBlock(isBlocked ? !hover : hover)
     }, [hover, isBlocked])
+
+    if (loading || !me || me?.id == member?.id) return <></>
+
+    if (MemberLevel[member.user_type] == MemberLevel.staff) return <></>
 
     return (
       <>

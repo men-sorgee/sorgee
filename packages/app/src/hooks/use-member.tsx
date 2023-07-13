@@ -15,7 +15,7 @@ type MemberResults = {
 
 export const useMember = (
   id: string,
-  refreshIntervalMinutes: number = 5
+  refreshIntervalMinutes: number = 1
 ): MemberResults => {
   const {
     data: member,
@@ -25,6 +25,10 @@ export const useMember = (
   } = useSWR<Member, Error>(`/api/member/${id || ''}`, JsonFetcher, {
     refreshInterval: 1000 * 60 * refreshIntervalMinutes,
     isPaused: () => !id || id === 'null' || id === 'undefined',
+    revalidateIfStale: true,
+    revalidateOnFocus: true,
+    refreshWhenOffline: true,
+    refreshWhenHidden: true,
     fallback: {
       '/api/member/': null
     }

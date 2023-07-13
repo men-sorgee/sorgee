@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 import { formatDistanceToNowStrict } from 'date-fns'
 import { useMember, useMeta, useUser } from 'hooks'
@@ -16,7 +16,7 @@ import {
   memberProfileHealthFields,
   UserPhoto
 } from 'lib/models'
-import { toLocalDate } from 'lib/utils'
+import { EyeSlashIcon } from '@heroicons/react/24/solid'
 
 import {
   Accordion,
@@ -27,6 +27,7 @@ import {
   AvatarProps,
   Box,
   ButtonGroup,
+  Center,
   chakra,
   Flex,
   FlexProps,
@@ -42,7 +43,8 @@ import {
   TabPanels,
   Tabs,
   Text,
-  useColorModeValue
+  useColorModeValue,
+  VStack
 } from '@chakra-ui/react'
 
 import {
@@ -53,7 +55,8 @@ import {
   MemberLike,
   MemberPropertyGroup,
   MemberShare,
-  MemberReport
+  MemberReport,
+  MemberIcon
 } from './'
 import { ImageGallery } from './ImageGallery'
 import { Loading } from './Loading'
@@ -80,6 +83,7 @@ export const MemberSpotlight = chakra(
     children,
     ...props
   }: Props) => {
+    const [blocked, setBlocked] = useState(false)
     const { member, name, picture, loading, reload } = useMember(id)
     const { member: me } = useUser()
     const { setMeta } = useMeta()
@@ -88,6 +92,17 @@ export const MemberSpotlight = chakra(
       if (full && updateMeta)
         setMeta(name || 'Brother', member?.biography, picture)
     }, [member, name, picture, full, updateMeta, setMeta])
+
+    useEffect(() => {
+      if (!loading && member && me) {
+        if (
+          member.blocked.map((b) => b.blocked_id).includes(me.id) &&
+          me.user_type != 'staff'
+        ) {
+          setBlocked(true)
+        }
+      }
+    }, [id, loading, member, me])
 
     const headingColor = useColorModeValue('primary.700', 'primary.300')
     if (loading || !id || !member) return <Loading />
@@ -111,6 +126,27 @@ export const MemberSpotlight = chakra(
     const eventsDeclined =
       member?.events?.filter((e: EventUser) => e.rsvp == 'declined')?.length ||
       0
+
+    if (blocked) {
+      return (
+        <Box
+          px={5}
+          py={4}
+          bgGradient={`linear(to-bl, ${levelColor[1]}, ${levelColor[0]})`}
+          color="white"
+          rounded="md"
+        >
+          <MemberIcon member={member} size="lg">
+            <Center>
+              <VStack>
+                <EyeSlashIcon width="30%" fill="red" />
+                <Text> You are blocked from viewing this member.</Text>
+              </VStack>
+            </Center>
+          </MemberIcon>
+        </Box>
+      )
+    }
 
     return (
       <Flex

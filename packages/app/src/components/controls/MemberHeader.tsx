@@ -40,13 +40,19 @@ export const MemberHeader = ({
   minimal = false,
   ...props
 }: MemberHeaderProps) => {
-  const photo_shares = (member.photo_shares as UserShare[]) || []
-  const sharedWithMe = photo_shares?.some(
+  const sharedWithMe = member.photo_shares?.some(
     (s: UserShare) => String(s.viewer_id) == viewer?.id
   )
-  const likes = (member.likes as UserLike[]) || []
-  const likesYou = likes?.some((l: UserLike) => String(l.like_id) == viewer?.id)
+  const likesYou = member.likes?.some(
+    (l: UserLike) => String(l.like_id) == viewer?.id
+  )
   const isYou = String(member.id) == viewer?.id
+  const blocksYou = member?.blocked?.some(
+    (b) => String(b.blocked_id) == viewer?.id
+  )
+  const buddiesYou = member?.buddies?.some(
+    (b) => String(b.buddy_id) == viewer?.id
+  )
 
   const needsVoucher =
     !member.vouched_by &&
@@ -63,41 +69,64 @@ export const MemberHeader = ({
         gap={2}
       >
         <MemberIcon member={member} size={size} {...props}>
-          {children}
-          {!minimal && (
-            <VStack gap={1}>
-              {sharedWithMe && (
-                <Badge
-                  fontSize={['xs', 'sm']}
-                  bg="primary.300"
-                  color="white"
-                  borderRadius="3px 3px 3px 3px"
-                >
-                  Unlocked
-                </Badge>
-              )}
-              {likesYou && (
-                <Badge
-                  fontSize={['xs', 'sm']}
-                  bg="accent.300"
-                  color="white"
-                  borderRadius="3px 3px 3px 3px"
-                >
-                  Likes You
-                </Badge>
-              )}
-              {isYou && (
-                <Badge
-                  fontSize={['xs', 'sm']}
-                  bg="secondary.500"
-                  color="white"
-                  borderRadius="3px 3px 3px 3px"
-                >
-                  You
-                </Badge>
-              )}
-            </VStack>
-          )}
+          <VStack align="end">
+            {children}
+            {!minimal && (
+              <HStack gap={1} mt={2}>
+                {sharedWithMe && (
+                  <Badge
+                    fontSize={['xs']}
+                    bg="primary.300"
+                    color="white"
+                    borderRadius="3px 3px 3px 3px"
+                  >
+                    Unlocked
+                  </Badge>
+                )}
+                {likesYou && (
+                  <Badge
+                    fontSize={['xs']}
+                    bg="accent.500"
+                    color="white"
+                    borderRadius="3px 3px 3px 3px"
+                  >
+                    Likes You
+                  </Badge>
+                )}
+                {buddiesYou && (
+                  <Badge
+                    fontSize={['xs']}
+                    bg="accent.300"
+                    color="white"
+                    borderRadius="3px 3px 3px 3px"
+                  >
+                    His Buddy
+                  </Badge>
+                )}
+
+                {blocksYou && (
+                  <Badge
+                    fontSize={['xs']}
+                    bg="red.500"
+                    color="white"
+                    borderRadius="3px 3px 3px 3px"
+                  >
+                    Blocks You
+                  </Badge>
+                )}
+                {isYou && (
+                  <Badge
+                    fontSize={['xs']}
+                    bg="secondary.500"
+                    color="white"
+                    borderRadius="3px 3px 3px 3px"
+                  >
+                    This is You!
+                  </Badge>
+                )}
+              </HStack>
+            )}
+          </VStack>
         </MemberIcon>
 
         {!minimal && (

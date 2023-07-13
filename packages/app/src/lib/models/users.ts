@@ -679,7 +679,7 @@ export const searchableMemberFields: Array<keyof Member> = [
   'buddy_of.user_id' as any,
   'likes.like_id' as any,
   'liked_by.user_id' as any,
-  'blocked.block_id' as any,
+  'blocked.blocked_id' as any,
   'blocked_by.user_id' as any,
   'photo_shares.viewer_id' as any,
 ]

@@ -102,7 +102,7 @@ export const MemberIcon = chakra(
               <Flex
                 gap={4}
                 direction="row"
-                align="start"
+                align="end"
                 justify="space-between"
                 w="full"
               >

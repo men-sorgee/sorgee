@@ -38,8 +38,8 @@ export default async function Member(
     if (me) {
       fields = [
         ...memberFields,
-        'buddies.buddy_id.*' as any,
-        'likes.liked_id.*' as any]
+        'buddies.buddy_id.id' as any,
+        'likes.liked_id.id' as any]
     }
 
     let user = await getUser<Member>(user_id, fields)

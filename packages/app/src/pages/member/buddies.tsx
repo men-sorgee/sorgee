@@ -3,8 +3,14 @@ import { useState } from 'react'
 import { Lazy, MemberCard, MemberModal } from 'components/controls'
 import Page from 'components/Page'
 import { useUser } from 'hooks'
-import { MemberLevel, SearchableMember, User, UserBuddy } from 'lib/models'
-
+import {
+  Member,
+  MemberLevel,
+  SearchableMember,
+  User,
+  UserBuddy
+} from 'lib/models'
+import swr from 'swr'
 import {
   Alert,
   Button,
@@ -20,7 +26,7 @@ import {
   Text
 } from '@chakra-ui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import { debouncedPromise } from '../../lib/utils'
+import { JsonFetcher } from '../../lib/utils'
 
 export type PageProps = {}
 
@@ -34,15 +40,27 @@ export default function BuddiesPage({}: PageProps) {
     redirectsEnabled: true
   })
 
-  const buddies = member?.buddies as UserBuddy[]
-  let members = buddies?.map((buddy) => buddy.buddy_id as User)
-  let onlineMembers = members?.filter((m) => m.presence == 'online')
+  const { data: buddies, isLoading } = swr<SearchableMember[]>(
+    '/api/member/buddy',
+    JsonFetcher,
+    {
+      refreshInterval: 1000 * 60 * 5,
+      revalidateIfStale: true,
+      revalidateOnFocus: true,
+      refreshWhenOffline: true,
+      refreshWhenHidden: true,
+      fallbackData: []
+    }
+  )
+
+  let members = buddies?.map((b) => b) || []
+  const onlineMembers = buddies?.filter((m) => m.presence == 'online') || []
   if (onlineOnly) {
     members = onlineMembers
   }
 
   return (
-    <Page title="Buddies" loading={loading} requireAuth={true}>
+    <Page title="Buddies" loading={loading || isLoading} requireAuth={true}>
       <Text mt={0} fontSize={['md', 'lg', 'xl']}>
         Buddies are guys you are want to keep in touch with. You can see their
         online status easily from here.
@@ -117,12 +135,12 @@ export default function BuddiesPage({}: PageProps) {
                     .includes(search.toLocaleLowerCase())
                 : true
             )
-            .map((u: User) => (
+            ?.map((u: SearchableMember) => (
               <Lazy key={u.id}>
                 <MemberCard
                   key={u.id}
                   size={['md', 'lg', 'xl']}
-                  member={u as unknown as SearchableMember}
+                  member={u}
                   viewer={member}
                   full
                   onClick={() => {

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import { useUser } from 'hooks'
-import { Member } from 'lib/models'
+import { Member, MemberLevel } from 'lib/models'
 import { postJSON } from 'lib/utils'
 
 import {
@@ -56,8 +56,12 @@ export const MemberReport = chakra(
       })
     }, [member?.id, member?.nickname, message, onClose, toast])
 
-    if (loading || !me || me?.id == member?.id) return null
+    if (loading || !me || me?.id == member?.id) return <></>
+
+    if (MemberLevel[member.user_type] == MemberLevel.staff) return <></>
+
     const label = `Report ${member?.nickname}`
+
     return (
       <>
         <IconButton

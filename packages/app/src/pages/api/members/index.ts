@@ -49,7 +49,7 @@ export default async function FindMembers(
     })
 
     let blockList = member.blocked_by.map((u) => u.user_id)
-    if (blockList.length > 0) {
+    if (blockList.length > 0 && level < MemberLevel.staff) {
       andSearchItems.push({
         id: {
           _nin: blockList,

@@ -31,7 +31,7 @@ export default async function ShareWithMember(
     let existingShare = sharedWith?.find((s) => s.viewer_id == user_id)
     if (method == 'DELETE') {
       if (existingShare) {
-        await deleteUserShare(existingShare.id)
+        await deleteUserShare(me.id, user_id)
         return res.status(200).json(ApiResponse({}))
       } else {
         return res.status(200).json(ApiResponse({}))
@@ -67,7 +67,7 @@ export default async function ShareWithMember(
     }
     return res.status(200).end()
   } catch (e) {
-    console.error(e.message || e, e.stack)
+    console.error(e)
     res.status(405).json(ApiResponse(null, e.message || e))
   }
 }
