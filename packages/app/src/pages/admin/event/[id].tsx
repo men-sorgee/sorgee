@@ -159,12 +159,6 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
                     <StatNumber>{stats.paid_count}</StatNumber>
                   </Stat>
                 )}
-                {fees != undefined && (
-                  <Stat>
-                    <StatLabel>Collected</StatLabel>
-                    <StatNumber>${fees}</StatNumber>
-                  </Stat>
-                )}
               </>
             )}
           </SimpleGrid>
