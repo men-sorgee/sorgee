@@ -55,12 +55,13 @@ export const MemberHeader = ({
     (l: UserLike) => String(l.like_id) == viewer?.id
   )
   const isYou = String(member.id) == viewer?.id
+
   const blocksYou = member?.blocked?.some(
     (b) => String(b.blocked_id) == viewer?.id
   )
-  const buddiesYou = member?.buddies
-    ?.map((b: UserBuddy) => b.buddy_id as Partial<Member>)
-    .some((b) => b.id == viewer?.id)
+  const buddiesYou = member?.buddies?.some(
+    (b: UserBuddy) => b.user_id == viewer?.id
+  )
 
   const needsVoucher =
     !member.vouched_by &&
