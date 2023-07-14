@@ -2,6 +2,8 @@ import {
   DirectusFile,
   DirectusUser,
   EventUser,
+  MembershipNames,
+  MembershipRenewalType,
   NotificationUser,
   Promo,
   Rating,
@@ -519,19 +521,11 @@ export type Member = Applicant & {
   membership_type?: MembershipNames
   customer_id?: string
   membership_start?: string
-  renewal_type?: string
+  renewal_type?: MembershipRenewalType
   has_features: Array<MemberFeature>
 }
 
-export type MembershipNames = 'none' | 'free' | 'basic' | 'plus' | 'pro'
 
-export enum MembershipType {
-  none = 0,
-  free = 1,
-  basic = 2,
-  plus = 3,
-  pro = 4,
-}
 
 export type SearchableMember = Omit<
   Member,

@@ -109,7 +109,19 @@ export default function UserMenu(_props: Props) {
               <>
                 {!isStaff && isBrother && (
                   <>
-                    {member.membership_type != 'none' ? (
+                    <MenuItem
+                      icon={
+                        <SquaresPlusIcon color={'white'} width={'1.5rem'} />
+                      }
+                      bg="black"
+                      _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                      as={Link}
+                      rel="noopener noreferrer"
+                      href="/member/account"
+                    >
+                      Account
+                    </MenuItem>
+                    {member.membership_type != 'none' && (
                       <MenuItem
                         icon={
                           <CreditCardIcon color={'white'} width={'1.5rem'} />
@@ -122,19 +134,6 @@ export default function UserMenu(_props: Props) {
                         href="/api/stripe/portal"
                       >
                         Billing
-                      </MenuItem>
-                    ) : (
-                      <MenuItem
-                        icon={
-                          <SquaresPlusIcon color={'white'} width={'1.5rem'} />
-                        }
-                        bg="black"
-                        _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                        as={Link}
-                        rel="noopener noreferrer"
-                        href="/member/account"
-                      >
-                        Upgrade Subscription
                       </MenuItem>
                     )}
                   </>

@@ -14,6 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           const product = await stripe.products.retrieve(price.product as string)
           return {
             id: price.id,
+            product: product.id,
             name: product.name,
             description: product.description,
             price: price.unit_amount,

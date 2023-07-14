@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { use, useEffect, useState } from 'react'
 import { sentenceCase } from 'change-case'
 import { ButtonLink } from 'components'
 import { useUser } from 'hooks'
@@ -8,14 +8,13 @@ import {
   MembershipType,
   ProductView
 } from 'lib/models'
-
+import { event } from 'nextjs-google-analytics'
 import {
   Badge,
   Box,
   Button,
   Flex,
   Heading,
-  HStack,
   Radio,
   RadioGroup,
   Spacer,
@@ -24,38 +23,72 @@ import {
   VStack
 } from '@chakra-ui/react'
 import { CheckCircleIcon } from '@heroicons/react/24/solid'
-
 import { useProducts } from 'hooks'
 import { getJSON } from 'lib/utils'
+import { baseUrl } from 'lib/config'
 
 type Params = {
   allowSubscribe?: boolean
   highlightedPlan?: MembershipType
 }
 
-const Plans = ({ allowSubscribe = false, highlightedPlan }: Params) => {
+const Plans = ({
+  allowSubscribe = false,
+  highlightedPlan = MembershipType.basic
+}: Params) => {
   const { products, loading: productsLoading } = useProducts()
   const { member, loading, authenticated, level } = useUser({
     redirectsEnabled: false
   })
   const [interval, setInterval] = useState('month')
 
+  useEffect(() => {
+    if (!loading && !productsLoading && products && member) {
+      event('plans_view', {
+        category: 'monetization',
+        highlighted_plan: products.find(
+          (p) => p.type == MembershipType[highlightedPlan]
+        )?.id,
+        userId: member?.id
+      })
+    }
+  }, [highlightedPlan, loading, member, products, productsLoading])
+
   const bgColor = useColorModeValue('secondary.500', 'gray.700')
 
-  const processSubscription = async (planId: string) => {
+  const processSubscription = async (productId: string) => {
     const { loadStripe } = await import('@stripe/stripe-js')
-    const { data, error, success } = await getJSON<{ id: string }>(
-      `/api/stripe/purchase/${planId}`
-    )
-    if (!success) {
-      console.error(error)
-      return
-    }
     const stripe = await loadStripe(
       process.env.STRIPE_PUBLIC_KEY ||
         'pk_live_51LoPw1EoEUGL2Bgubxo5vTjGRx0ONP4JHo6A0zVJivv7ToiCBoRnKdmRoCIWFbikTTenBSQZ7xy8wmF0woyx4NBH00MykU8UsN'
     )
-    await stripe.redirectToCheckout({ sessionId: data.id })
+    const { data, error, success } = await getJSON<{
+      id: string
+      amount: number
+    }>(`/api/stripe/session?productId=${productId}`)
+    if (!success) {
+      console.error(error)
+      return
+    }
+    const subscription = products.find((p) => p.id == productId)
+    event('plans_purchase_start', {
+      category: 'monetization',
+      plan: MembershipType[subscription.type],
+      productId,
+      userId: member?.id,
+      value: data.amount,
+      currency: 'usd',
+      sessionId: data.id
+    })
+
+    await stripe.redirectToCheckout({
+      sessionId: data.id,
+      customerEmail: member?.email,
+      clientReferenceId: member?.id,
+      mode: 'subscription',
+      cancelUrl: `${baseUrl}/member/subscription/cancelled?product=${productId}&session=${data.id}`,
+      successUrl: `${baseUrl}/member/subscription/success?product=${productId}&session=${data.id}`
+    })
   }
 
   const showSubscribeButton =
@@ -87,13 +120,13 @@ const Plans = ({ allowSubscribe = false, highlightedPlan }: Params) => {
         gap={[2, 3, 4]}
       >
         {products &&
-          products.map((plan: ProductView) => (
+          products.map((product: ProductView) => (
             <VStack
-              key={plan.id}
+              key={product.id}
               w={['full', 'full', 'fit']}
               rounded="md"
               shadow={'dark-lg'}
-              border={shouldHighlight(plan) ? '3px solid' : ''}
+              border={shouldHighlight(product) ? '3px solid' : ''}
               borderColor={'accent.500'}
               px={[4, 4, 6]}
               gap={2}
@@ -101,7 +134,7 @@ const Plans = ({ allowSubscribe = false, highlightedPlan }: Params) => {
               py={4}
             >
               <Box h={5} position="relative">
-                {(shouldHighlight(plan) && (
+                {(shouldHighlight(product) && (
                   <Badge
                     variant="solid"
                     bg="accent.500"
@@ -111,22 +144,22 @@ const Plans = ({ allowSubscribe = false, highlightedPlan }: Params) => {
                     position="static"
                     mx="auto"
                   >
-                    {plan.label || 'Recommended'}
+                    {product.label || 'Recommended'}
                   </Badge>
                 )) || <span>&nbsp;</span>}
               </Box>
               <VStack>
                 <Heading as="h2" fontSize="3xl" mt={0}>
-                  {plan.name}
+                  {product.name}
                 </Heading>
 
                 <Heading as="h3">
-                  ${plan.prices[interval] / 100} /{' '}
+                  ${product.prices[interval] / 100} /{' '}
                   {interval == 'month' ? 'mo' : 'yr'}
                 </Heading>
               </VStack>
               <Text m={0} p={0}>
-                {plan.description}
+                {product.description}
               </Text>
 
               <VStack gap={1} justify="space-between" align="start">
@@ -134,7 +167,9 @@ const Plans = ({ allowSubscribe = false, highlightedPlan }: Params) => {
                   <Flex key={feature} justify="evenly" w="full" align="center">
                     <CheckCircleIcon
                       width="20px"
-                      color={plan.features.includes(feature) ? 'green' : 'gray'}
+                      color={
+                        product.features.includes(feature) ? 'green' : 'gray'
+                      }
                     />
                     <Text
                       textAlign="left"
@@ -154,7 +189,7 @@ const Plans = ({ allowSubscribe = false, highlightedPlan }: Params) => {
                 <Box>
                   {showSubscribeButton && (
                     <Button
-                      onClick={() => processSubscription(plan.id)}
+                      onClick={() => processSubscription(product.id)}
                       variant="solid"
                       bg="primary.500"
                       color="white"
@@ -164,7 +199,7 @@ const Plans = ({ allowSubscribe = false, highlightedPlan }: Params) => {
                     </Button>
                   )}
                   {showManageSubscriptionButton &&
-                    member.membership_type != plan.type && (
+                    member.membership_type != product.type && (
                       <ButtonLink
                         href="/api/stripe/portal"
                         variant="solid"
@@ -172,11 +207,11 @@ const Plans = ({ allowSubscribe = false, highlightedPlan }: Params) => {
                         color="white"
                         _hover={{ bg: 'accent.600' }}
                       >
-                        Switch to {plan.name}
+                        Switch to {product.name}
                       </ButtonLink>
                     )}
                   {showManageSubscriptionButton &&
-                    member.membership_type == plan.type && (
+                    member.membership_type == product.type && (
                       <Button
                         disabled
                         cursor="default"

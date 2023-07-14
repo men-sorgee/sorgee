@@ -25,11 +25,11 @@ const handler = async (req, res) => {
       })
     }
 
-    const { priceId } = req.query
+    const { productId } = req.query
 
     const lineItems = [
       {
-        price: priceId,
+        price: productId,
         quantity: 1
       },
     ]
@@ -38,8 +38,6 @@ const handler = async (req, res) => {
       customer: member.customer_id,
       mode: 'subscription',
       line_items: lineItems,
-      success_url: `${baseUrl}/member/account?message=success`,
-      cancel_url: `${baseUrl}/member/account`,
       metadata: {
         userId: member.id,
       },
@@ -47,6 +45,8 @@ const handler = async (req, res) => {
 
     res.json(ApiResponse({
       id: session.id,
+      amount: session.amount_total,
+      ...session
     }))
   } catch (error) {
     console.log(error)

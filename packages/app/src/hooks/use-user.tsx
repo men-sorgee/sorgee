@@ -175,7 +175,7 @@ export const useUser = ({
           return
         }
         if (requiredFeature && !hasFeature(requiredFeature)) {
-          const destination = '/member/account'
+          const destination = '/member/subscription'
           if (router.asPath != destination)
             router.push(destination, {
               query: {
