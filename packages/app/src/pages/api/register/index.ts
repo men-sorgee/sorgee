@@ -1,4 +1,4 @@
-import { ApiResponse, Applicant, SignUpForm, User } from 'lib/models'
+import { ApiResponse, Applicant, MemberLevel, SignUpForm, User, UserStatusType } from 'lib/models'
 import { findPromo } from 'lib/services/directus/server'
 import { createUser, findUser, updateUser } from 'lib/services/directus/server/users'
 import { withMethods } from 'lib/utils/server'
@@ -20,9 +20,9 @@ export default async function Register(
       promo: promoCode,
     } = req.body as SignUpForm
 
-    const email = e?.toLocaleLowerCase()
+    const email = e.toLocaleLowerCase()
 
-    if ([first_name, last_name, birth_month, birth_year, email].some((v) => v == undefined)) {
+    if ([first_name, birth_month, birth_year, email].some((v) => v == undefined)) {
       return res.status(400).json(ApiResponse(null, 'Missing required fields'))
     }
 
@@ -30,14 +30,22 @@ export default async function Register(
 
     const existingUser = await findUser<User>(email)
     if (existingUser) {
+      const { notes, status, user_type, application_status } = existingUser
+      if (MemberLevel[user_type] > MemberLevel.applicant) {
+        return res.status(400).json(ApiResponse(null, 'User already exists'))
+      }
+      if (status == 'banned') {
+        return res.status(400).json(ApiResponse(null, 'User is banned'))
+      }
+
       const updatedUser = await updateUser(existingUser.id, {
         first_name,
         last_name,
         birth_month,
         birth_year,
-        vouched_by: promo ? promo.vouching_user : null,
-        notes: existingUser.notes + ': registered via app',
-        promo: promo ? promo.id : null,
+        vouched_by: (promo ? promo.vouching_user : null),
+        notes: (notes ? `${notes}: ` : '') + 'registered via app' + (promoCode ? ` with promo ${promoCode}` : ''),
+        promo: (promo ? promo.id : null),
         status: 'active',
         user_type: 'applicant',
       })

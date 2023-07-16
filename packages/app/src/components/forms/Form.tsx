@@ -19,6 +19,7 @@ type FormProps<T = any> = {
   autoSave?: boolean
   onSubmit: (data: T) => Promise<ApiResult<T>>
   onSuccess?: (data: T) => void
+  onError?: (error: ApiError) => void
 }
 
 export default function Form<T = any>({
@@ -27,6 +28,7 @@ export default function Form<T = any>({
   children,
   onSubmit,
   onSuccess = () => {},
+  onError = () => {},
   autoSave = false
 }: FormProps<T>) {
   const methods = useForm<T>({
@@ -72,6 +74,7 @@ export default function Form<T = any>({
       } else if (error?.field) {
         // @ts-ignore
         setError(error!.field, error.message)
+        onError(error)
       } else {
         toast({
           title: 'Error',
@@ -80,9 +83,18 @@ export default function Form<T = any>({
           duration: 9000,
           isClosable: true
         })
+        onError(error)
       }
     },
-    [autoSave, debouncedSubmit, onSuccess, reset, successMessage, toast]
+    [
+      autoSave,
+      debouncedSubmit,
+      onSuccess,
+      onError,
+      reset,
+      successMessage,
+      toast
+    ]
   )
 
   const debouncedTrigger = debouncedPromise(trigger, 1000)
