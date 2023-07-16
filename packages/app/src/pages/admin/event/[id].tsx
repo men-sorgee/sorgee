@@ -1,9 +1,15 @@
-import { useEffect, useRef, useState } from 'react'
-
+import { use, useCallback, useEffect, useRef, useState } from 'react'
+import { isPast, isFuture, isBefore } from 'date-fns'
 import { ButtonLink, EventCard } from 'components/controls'
 import Page from 'components/Page'
-import { useUser } from 'hooks'
-import { EventDetail, EventStats, Member, MemberLevel } from 'lib/models'
+import { useEvent, useUser } from 'hooks'
+import {
+  EventDetail,
+  EventStats,
+  EventStatusType,
+  Member,
+  MemberLevel
+} from 'lib/models'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 
@@ -14,52 +20,52 @@ import {
   Avatar,
   Box,
   Button,
+  Flex,
   Heading,
   HStack,
   Input,
   Link,
   SimpleGrid,
+  Spacer,
   Stat,
   StatLabel,
   StatNumber,
+  Text,
+  useToast,
   Wrap
 } from '@chakra-ui/react'
 
-export const getServerSideProps = async (context) => {
-  const { getEventDetail } = await import('lib/services/directus/server/events')
-  const eventId = String(context.query.id)
-  if (!eventId) {
-    return {
-      notFound: true
-    }
-  }
-  const event = await getEventDetail(eventId)
-  if (!event) {
-    return {
-      notFound: true
-    }
-  }
-
-  return {
-    props: {
-      event
-    }
-  }
-}
-
-export default function EventAdmin({ event }: { event: EventDetail }) {
+export default function EventAdmin() {
   const router = useRouter()
-  const { member, authorized, loading } = useUser({
+  const {
+    member,
+    authorized,
+    loading: userLoading
+  } = useUser({
     minLevel: MemberLevel.staff
   })
-  const [fees, setFees] = useState<number>(undefined)
-  const [stats] = useState<EventStats>(event.stats)
+
+  const [fees, setFees] = useState<number>()
+  const eventId = router.query.id as string
+  const { event, loading: eventLoading, closeEvent } = useEvent(eventId)
+  const [stats, setStats] = useState<EventStats>()
   const { error } = router.query
+  const toast = useToast()
   useEffect(() => {
-    if (event.stats && !fees) {
+    if (!eventLoading && event && event.stats && !fees) {
       setFees(event.stats.paid_count * event.cost)
+      setStats(event.stats)
     }
-  }, [authorized, event, fees, loading, member, router, stats])
+  }, [
+    authorized,
+    event,
+    eventLoading,
+    fees,
+    userLoading,
+    member,
+    router,
+    stats
+  ])
 
   const getAttendees = (rsvp: string) => {
     return event.attendance
@@ -87,10 +93,34 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
     }
   }
 
+  useEffect(() => {
+    // do nothing
+  }, [event])
+
+  const closeEventClicked = useCallback(() => {
+    closeEvent().then(
+      ({ success, noShows }: { success: boolean; noShows: number }) => {
+        if (success) {
+          toast({
+            title: 'Event Closed',
+            description:
+              'The event has been closed. There were ' + noShows + ' no shows.',
+            status: 'success',
+            duration: 5000,
+            isClosable: true
+          })
+        }
+      }
+    )
+  }, [closeEvent, toast])
+
+  const collected =
+    event?.cost * event?.attendance.filter((a) => a.paid).length || 0
+
   return (
     <Page
       title={'Event Admin'}
-      loading={loading}
+      loading={userLoading && eventLoading}
       requireAuth={true}
       requiredLevel={MemberLevel.staff}
     >
@@ -105,28 +135,43 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
           event={event}
           showDescription={false}
           footer={
-            <>
-              <ButtonLink
-                colorScheme="primary"
-                href="/admin/scan"
-                color="white"
-              >
-                Scan Invite
-              </ButtonLink>
+            <Flex w="full" gap={3}>
+              {event.status == EventStatusType.Scheduled &&
+                isBefore(new Date(event.datetime_end), new Date()) && (
+                  <>
+                    <ButtonLink
+                      colorScheme="primary"
+                      href="/admin/scan"
+                      color="white"
+                    >
+                      Scan Invite
+                    </ButtonLink>
+                    <Spacer />
 
-              <Input
-                rounded={'md'}
-                p={1}
-                w="30%"
-                name="email"
-                ref={emailRef}
-                size="sm"
-                placeholder="Email"
-              />
-              <Button size={'md'} ml={2} p={1} onClick={() => emailCheckin()}>
-                Email Checkin
-              </Button>
-            </>
+                    <Input
+                      rounded={'md'}
+                      p={1}
+                      w="30%"
+                      name="email"
+                      ref={emailRef}
+                      size="sm"
+                      placeholder="Email"
+                      h="auto"
+                    />
+                    <Button size={'md'} onClick={() => emailCheckin()}>
+                      Email Checkin
+                    </Button>
+                  </>
+                )}
+              <Spacer />
+              <Text>Status: {event.status}</Text>
+              {event.status == EventStatusType.Scheduled &&
+                isPast(new Date(event.datetime_end)) && (
+                  <Button bg="red.500" onClick={closeEventClicked}>
+                    Close Event
+                  </Button>
+                )}
+            </Flex>
           }
         >
           <SimpleGrid columns={[2, 4, 6]} spacing={4} mb={4}>
@@ -157,6 +202,12 @@ export default function EventAdmin({ event }: { event: EventDetail }) {
                   <Stat>
                     <StatLabel>Paid</StatLabel>
                     <StatNumber>{stats.paid_count}</StatNumber>
+                  </Stat>
+                )}
+                {event?.status == EventStatusType.Occurred && (
+                  <Stat>
+                    <StatLabel>Total Fees</StatLabel>
+                    <StatNumber>${collected}</StatNumber>
                   </Stat>
                 )}
               </>
