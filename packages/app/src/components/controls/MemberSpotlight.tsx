@@ -57,7 +57,8 @@ import {
   MemberPropertyGroup,
   MemberShare,
   MemberReport,
-  MemberIcon
+  MemberIcon,
+  Markdown
 } from './'
 import { ImageGallery } from './ImageGallery'
 import { Loading } from './Loading'
@@ -196,7 +197,7 @@ export const MemberSpotlight = chakra(
             )}
           </MemberHeader>
 
-          {full && <Text>{member?.biography}</Text>}
+          {full && <Markdown content={member?.biography} />}
           {full && (
             <Box my={2}>
               <Flex w="full">
