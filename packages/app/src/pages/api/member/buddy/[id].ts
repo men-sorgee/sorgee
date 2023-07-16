@@ -61,7 +61,7 @@ export default async function MemberBuddy(
             button_url: `${baseUrl}/members/${me.id}`,
             user_id: them.id,
           },
-          SendGridTemplate.AppNotification,
+          SendGridTemplate.Notification,
           SendGridCategory.Notification
         )
 

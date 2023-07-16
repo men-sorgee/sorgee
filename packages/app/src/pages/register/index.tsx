@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { Markdown } from 'components/controls'
+import { Markdown, BusyButton } from 'components/controls'
 import { FieldInput, FieldSelect, Form } from 'components/forms'
 import Page from 'components/Page'
 import { useSite } from 'hooks/use-site'
@@ -12,7 +12,6 @@ import { useRouter } from 'next/router'
 
 import {
   Box,
-  Button,
   Center,
   GridItem,
   Heading,
@@ -140,9 +139,9 @@ export default function Register({
                   <Markdown content={promo?.description} />
                 </>
               )}
-              <Button bg="accent.500" size="lg" type="submit" mt={4}>
+              <BusyButton type="submit" bg="accent.500" size="lg" mt={4}>
                 Start Application
-              </Button>
+              </BusyButton>
             </>
           )}
         </Form>

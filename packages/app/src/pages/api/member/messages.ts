@@ -72,7 +72,7 @@ export default async function getUserMessages(
               button_url: `${baseUrl}/members/chat/${me.id}`,
               user_id: them.id
             },
-            SendGridTemplate.AppNotification,
+            SendGridTemplate.Notification,
             SendGridCategory.Notification
           )
         }

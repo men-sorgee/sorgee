@@ -59,7 +59,7 @@ export default async function ShareWithMember(
           button_url: `${baseUrl}/members/${me.id}`,
           user_id: them.id,
         },
-        SendGridTemplate.AppNotification,
+        SendGridTemplate.Notification,
         SendGridCategory.Notification
       )
 

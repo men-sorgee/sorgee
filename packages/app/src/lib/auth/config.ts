@@ -178,7 +178,7 @@ export const authOptions: AuthOptions = {
               button_text: 'Sign In',
               button_url: url,
             },
-            SendGridTemplate.AppNotification,
+            SendGridTemplate.Notification,
             SendGridCategory.Notification
           )
         } else {

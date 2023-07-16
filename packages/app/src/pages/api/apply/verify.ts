@@ -48,7 +48,7 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse<Appl
         button_text: 'Check Application Results',
         button_url: 'https://guysnheat.com/apply',
       },
-      SendGridTemplate.AppNotification,
+      SendGridTemplate.Notification,
       SendGridCategory.Notification
     )
 

@@ -26,9 +26,9 @@ export enum SendGridList {
 }
 
 export enum SendGridTemplate {
-  AppNotification = 'd-7fe0a94b7c0b40b2a68b5d998ee6f7af',
-  EventInvitation = 'd-2ddc88724bf2494dab869838dc87cb50',
-  EventConfirmation = 'd-a06f70ac86cd4d69b6c43cb2621d1e9f',
+  Notification = 'd-7fe0a94b7c0b40b2a68b5d998ee6f7af',
+  Invitation = 'd-2ddc88724bf2494dab869838dc87cb50',
+  Confirmation = 'd-a06f70ac86cd4d69b6c43cb2621d1e9f',
   Survey = 'd-80ca3146dcc74b6ca1a7d4be4f4a36ba',
 }
 
@@ -82,7 +82,7 @@ export async function sendNotificationEmail(
   subject: string,
   body: string,
   data: Record<string, any>,
-  templateId: SendGridTemplate = SendGridTemplate.AppNotification,
+  templateId: SendGridTemplate = SendGridTemplate.Notification,
   category: SendGridCategory = SendGridCategory.Notification,
   notification_id: string = null,
   html: string = null

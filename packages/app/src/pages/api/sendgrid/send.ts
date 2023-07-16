@@ -21,7 +21,7 @@ async function SendNotification(req: NextApiRequest, res: NextApiResponse<ApiRes
       subject,
       body,
       data,
-      template = SendGridTemplate.AppNotification,
+      template = SendGridTemplate.Notification,
       category = SendGridCategory.Notification,
       notification_id = null,
     } = req.body

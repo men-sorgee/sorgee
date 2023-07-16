@@ -335,12 +335,12 @@ export type Profile = {
   session_expire: string | null
   in_sendgrid: boolean
   user_type: UserType
-  application_status: string
+  application_status: ApplicationStatusType
   status: UserStatusType
   sessions: string[] | UserSession[]
   accounts: string[] | UserAccount[]
   auth_with_phone: boolean
-  vouched_by: string | VouchingUser
+  vouched_by?: string | VouchingUser
 }
 export const profileFields: Array<keyof Profile> = [
 
