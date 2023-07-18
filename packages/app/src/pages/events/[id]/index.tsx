@@ -48,31 +48,18 @@ import {
   Show
 } from '@chakra-ui/react'
 
-export type PageProps = {
-  id?: string
-}
-
-export const getServerSideProps = async (context: NextPageContext) => {
-  return {
-    props: {
-      id: context.query.id
-    }
-  }
-}
-
-export default function EventPage({ id }: PageProps) {
+export default function EventPage() {
   const router = useRouter()
-  const { id: i } = router.query
+  const { id } = router.query
   const {
     member,
-    loading,
     isStaff,
     reload: reloadUser,
     authenticated,
     hasFeature
   } = useUser({ minLevel: MemberLevel.inductee, redirectsEnabled: true })
 
-  const [eventId] = useState<string>(String(i) || id)
+  const [eventId] = useState<string>(id as string)
   const [showTicket, setShowTicket] = useState<boolean>(false)
   const { event, loading: eventLoading } = useEvent(eventId)
   const [stats, setStats] = useState<EventStats>(undefined)
@@ -109,17 +96,15 @@ export default function EventPage({ id }: PageProps) {
       })
   }
 
-  if (!authenticated) return null
-
   const canViewAttendees = hasFeature('view_attendees')
 
   return (
     <Page
-      title="Event Details"
-      loading={loading || eventLoading}
-      requireAuth={true}
+      title={event?.name || 'Event Details'}
+      description={event?.description}
+      loading={eventLoading}
     >
-      {authenticated && member && event && (
+      {event && (
         <>
           <EventCard
             event={event}
@@ -128,110 +113,122 @@ export default function EventPage({ id }: PageProps) {
             showAddToCalendar={invite != null}
             isGuest={invite?.guest}
           >
-            {showTicket && invite && invite.rsvp == 'confirmed' && (
-              <EventTicket open event={event} member={member} />
-            )}
-            <Divider my={4} />
-            <SimpleGrid columns={{ base: 2, md: 4 }} spacing={4} mb={4}>
-              {stats && isStaff && (
-                <StatGroup>
-                  {event?.invite_only && stats.invited_count && (
-                    <Stat>
-                      <StatLabel>Invited</StatLabel>
-                      <StatNumber>{stats.invited_count}</StatNumber>
-                    </Stat>
-                  )}
+            {member && (
+              <>
+                {showTicket && invite && invite.rsvp == 'confirmed' && (
+                  <EventTicket open event={event} member={member} />
+                )}
+                <Divider my={4} />
+                <SimpleGrid columns={{ base: 2, md: 4 }} spacing={4} mb={4}>
+                  {stats && isStaff && (
+                    <StatGroup>
+                      {event?.invite_only && stats.invited_count && (
+                        <Stat>
+                          <StatLabel>Invited</StatLabel>
+                          <StatNumber>{stats.invited_count}</StatNumber>
+                        </Stat>
+                      )}
 
-                  {stats.attended_count > 0 && (
-                    <Stat>
-                      <StatLabel>Attended</StatLabel>
-                      <StatNumber>{stats.attended_count}</StatNumber>
-                    </Stat>
+                      {stats.attended_count > 0 && (
+                        <Stat>
+                          <StatLabel>Attended</StatLabel>
+                          <StatNumber>{stats.attended_count}</StatNumber>
+                        </Stat>
+                      )}
+                    </StatGroup>
                   )}
-                </StatGroup>
-              )}
-            </SimpleGrid>
-            {stats && event.status != 'occurred' && invite && (
-              <Flex direction={canViewAttendees ? 'column' : 'row'} gap={4}>
-                <HStack align="start" justify="end">
-                  <Stat>
-                    <StatLabel>Confirmed</StatLabel>
-                    <StatNumber>{stats.confirmed_count}</StatNumber>
-                  </Stat>
-                  {canViewAttendees && (
-                    <Wrap spacing={-2}>
-                      {getAttendees('confirmed').map(({ id, name, src }) => (
-                        <Avatar
-                          key={id}
-                          name={name}
-                          src={src}
-                          title={name}
-                          cursor="pointer"
-                          onClick={() => {
-                            if (invite?.rsvp == 'confirmed') setMemberId(id)
-                          }}
-                        />
-                      ))}
-                    </Wrap>
-                  )}
-                </HStack>
+                </SimpleGrid>
+                {stats && event.status != 'occurred' && invite && (
+                  <Flex direction={canViewAttendees ? 'column' : 'row'} gap={4}>
+                    <HStack align="start" justify="end">
+                      <Stat>
+                        <StatLabel>Confirmed</StatLabel>
+                        <StatNumber>{stats.confirmed_count}</StatNumber>
+                      </Stat>
+                      {canViewAttendees && (
+                        <Wrap spacing={-2}>
+                          {getAttendees('confirmed').map(
+                            ({ id, name, src }) => (
+                              <Avatar
+                                key={id}
+                                name={name}
+                                src={src}
+                                title={name}
+                                cursor="pointer"
+                                onClick={() => {
+                                  if (invite?.rsvp == 'confirmed')
+                                    setMemberId(id)
+                                }}
+                              />
+                            )
+                          )}
+                        </Wrap>
+                      )}
+                    </HStack>
 
-                <HStack align="start" justify="right">
-                  <Stat>
-                    <StatLabel>Maybe</StatLabel>
-                    <StatNumber>{stats.maybe_count}</StatNumber>
-                  </Stat>
-                  {canViewAttendees && (
-                    <Wrap spacing={-2}>
-                      {getAttendees('maybe').map(({ id, name, src }) => (
-                        <Avatar
-                          key={id}
-                          name={name}
-                          src={src}
-                          title={name}
-                          cursor="pointer"
-                          onClick={() => {
-                            if (invite?.rsvp == 'confirmed') setMemberId(id)
-                          }}
-                        />
-                      ))}
-                    </Wrap>
+                    <HStack align="start" justify="right">
+                      <Stat>
+                        <StatLabel>Maybe</StatLabel>
+                        <StatNumber>{stats.maybe_count}</StatNumber>
+                      </Stat>
+                      {canViewAttendees && (
+                        <Wrap spacing={-2}>
+                          {getAttendees('maybe').map(({ id, name, src }) => (
+                            <Avatar
+                              key={id}
+                              name={name}
+                              src={src}
+                              title={name}
+                              cursor="pointer"
+                              onClick={() => {
+                                if (invite?.rsvp == 'confirmed') setMemberId(id)
+                              }}
+                            />
+                          ))}
+                        </Wrap>
+                      )}
+                    </HStack>
+                  </Flex>
+                )}
+                {event.status == 'occurred' && invite?.attended && (
+                  <AttendedEvent
+                    event={event}
+                    member={member}
+                    invite={invite}
+                    reloadUser={reloadUser}
+                  />
+                )}
+                {event.status != 'occurred' &&
+                  (invite || !event?.invite_only) && (
+                    <EventRSVP
+                      memberId={member.id}
+                      eventId={eventId}
+                      rsvp={invite?.rsvp}
+                    />
                   )}
-                </HStack>
-              </Flex>
-            )}
-            {event.status == 'occurred' && invite?.attended && (
-              <AttendedEvent
-                event={event}
-                member={member}
-                invite={invite}
-                reloadUser={reloadUser}
-              />
-            )}
-            {event.status != 'occurred' && (invite || !event.invite_only) && (
-              <EventRSVP
-                memberId={member.id}
-                eventId={id}
-                rsvp={invite?.rsvp}
-              />
+              </>
             )}
           </EventCard>
-          <MemberModal
-            isOpen={memberId != undefined}
-            memberId={memberId}
-            onClose={() => setMemberId(undefined)}
-          />
-          <HStack spacing={4} mt={4}>
-            <Link as={NextLink} href="/events">
-              <ArrowBackIcon mr={2} w="50" />
-              Back to Events
-            </Link>
-            {isStaff && (
-              <Link as={NextLink} href={`/admin/event/${eventId}`} my={4}>
-                Event Admin
-              </Link>
-            )}
-          </HStack>
+          {member && (
+            <>
+              <MemberModal
+                isOpen={memberId != undefined}
+                memberId={memberId}
+                onClose={() => setMemberId(undefined)}
+              />
+              <HStack spacing={4} mt={4}>
+                <Link as={NextLink} href="/events">
+                  <ArrowBackIcon mr={2} w="50" />
+                  Back to Events
+                </Link>
+                {isStaff && (
+                  <Link as={NextLink} href={`/admin/event/${eventId}`} my={4}>
+                    Event Admin
+                  </Link>
+                )}
+              </HStack>
+            </>
+          )}
         </>
       )}
     </Page>

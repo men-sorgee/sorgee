@@ -1,1 +1,853 @@
-if(!self.define){let e,s={};const i=(i,a)=>(i=new URL(i+".js",a).href,s[i]||new Promise((s=>{if("document"in self){const e=document.createElement("script");e.src=i,e.onload=s,document.head.appendChild(e)}else e=i,importScripts(i),s()})).then((()=>{let e=s[i];if(!e)throw new Error(`Module ${i} didn’t register its module`);return e})));self.define=(a,c)=>{const n=e||("document"in self?document.currentScript.src:"")||location.href;if(s[n])return;let r={};const t=e=>i(e,n),d={module:{uri:n},exports:r,require:t};s[n]=Promise.all(a.map((e=>d[e]||t(e)))).then((e=>(c(...e),r)))}}define(["./workbox-c5ed321c"],(function(e){"use strict";importScripts("fallback-959viKEpAi86Zwyhhmo_o.js"),self.skipWaiting(),e.clientsClaim(),e.precacheAndRoute([{url:"/_next/static/959viKEpAi86Zwyhhmo_o/_buildManifest.js",revision:"6b3292d4d93bfeed90fb2c2f890ff950"},{url:"/_next/static/959viKEpAi86Zwyhhmo_o/_ssgManifest.js",revision:"b6652df95db52feb4daf4eca35380933"},{url:"/_next/static/chunks/1087-978e7211fbf54160.js",revision:"978e7211fbf54160"},{url:"/_next/static/chunks/161.16b9a51d68195e7a.js",revision:"16b9a51d68195e7a"},{url:"/_next/static/chunks/2264-a28640b89e08f39b.js",revision:"a28640b89e08f39b"},{url:"/_next/static/chunks/2966.11a4a082e3df489a.js",revision:"11a4a082e3df489a"},{url:"/_next/static/chunks/3602-6fd57cadb812bacd.js",revision:"6fd57cadb812bacd"},{url:"/_next/static/chunks/4262.3b3ae1621c8ce101.js",revision:"3b3ae1621c8ce101"},{url:"/_next/static/chunks/5166-b6468bea06791746.js",revision:"b6468bea06791746"},{url:"/_next/static/chunks/5233.2732fab9f06d56c1.js",revision:"2732fab9f06d56c1"},{url:"/_next/static/chunks/7935.7a044a15ceac3833.js",revision:"7a044a15ceac3833"},{url:"/_next/static/chunks/8121.83132eb9d53937d8.js",revision:"83132eb9d53937d8"},{url:"/_next/static/chunks/framework-bc9e8d1125680491.js",revision:"bc9e8d1125680491"},{url:"/_next/static/chunks/main-3aa8e5268142fd7b.js",revision:"3aa8e5268142fd7b"},{url:"/_next/static/chunks/pages/%5B...slug%5D-29393ede10550506.js",revision:"29393ede10550506"},{url:"/_next/static/chunks/pages/404-188f23ad526a8d44.js",revision:"188f23ad526a8d44"},{url:"/_next/static/chunks/pages/500-e0af8f0c5f6b88c5.js",revision:"e0af8f0c5f6b88c5"},{url:"/_next/static/chunks/pages/_app-310894b53a617448.js",revision:"310894b53a617448"},{url:"/_next/static/chunks/pages/_error-10174e80ad0c0cf2.js",revision:"10174e80ad0c0cf2"},{url:"/_next/static/chunks/pages/_offline-70bb24a4e98b97ba.js",revision:"70bb24a4e98b97ba"},{url:"/_next/static/chunks/pages/admin/event-5f0820dd4b1ff012.js",revision:"5f0820dd4b1ff012"},{url:"/_next/static/chunks/pages/admin/event/%5Bid%5D-e1b7f3d205c0c388.js",revision:"e1b7f3d205c0c388"},{url:"/_next/static/chunks/pages/admin/event/invite/%5Bid%5D-335bd90532e7ee0a.js",revision:"335bd90532e7ee0a"},{url:"/_next/static/chunks/pages/admin/scan-8533462befa933e4.js",revision:"8533462befa933e4"},{url:"/_next/static/chunks/pages/apply-8ec82a21851f056b.js",revision:"8ec82a21851f056b"},{url:"/_next/static/chunks/pages/apply/%5Binvite%5D-553f98e9388abb26.js",revision:"553f98e9388abb26"},{url:"/_next/static/chunks/pages/apply/_steps-080ec7cd230d48c6.js",revision:"080ec7cd230d48c6"},{url:"/_next/static/chunks/pages/apply/agreement-a36f89f233bee668.js",revision:"a36f89f233bee668"},{url:"/_next/static/chunks/pages/apply/apply-e603e857ffba667d.js",revision:"e603e857ffba667d"},{url:"/_next/static/chunks/pages/apply/approved-a74f44495e2754cb.js",revision:"a74f44495e2754cb"},{url:"/_next/static/chunks/pages/apply/denied-5f07175d8c44f920.js",revision:"5f07175d8c44f920"},{url:"/_next/static/chunks/pages/apply/resume-fa037dc5e4068b61.js",revision:"fa037dc5e4068b61"},{url:"/_next/static/chunks/pages/apply/review-a3209f22e6cf7d1d.js",revision:"a3209f22e6cf7d1d"},{url:"/_next/static/chunks/pages/apply/verify-2a262d258167dfcd.js",revision:"2a262d258167dfcd"},{url:"/_next/static/chunks/pages/blog-687a7559baf3dc7e.js",revision:"687a7559baf3dc7e"},{url:"/_next/static/chunks/pages/blog/%5Bslug%5D-327c33df2377fe19.js",revision:"327c33df2377fe19"},{url:"/_next/static/chunks/pages/code/%5B...args%5D-61f0537a256bac8b.js",revision:"61f0537a256bac8b"},{url:"/_next/static/chunks/pages/cookies-e33f555369fb1650.js",revision:"e33f555369fb1650"},{url:"/_next/static/chunks/pages/events-82b388f989e5fe64.js",revision:"82b388f989e5fe64"},{url:"/_next/static/chunks/pages/events/%5Bid%5D-9af713f0eaacd52b.js",revision:"9af713f0eaacd52b"},{url:"/_next/static/chunks/pages/events/%5Bid%5D/ticket-7cb84a28e730f1d5.js",revision:"7cb84a28e730f1d5"},{url:"/_next/static/chunks/pages/index-32844d5afd941f40.js",revision:"32844d5afd941f40"},{url:"/_next/static/chunks/pages/member-7f3b36c1d0216906.js",revision:"7f3b36c1d0216906"},{url:"/_next/static/chunks/pages/member/account-491b4b085ed9de1f.js",revision:"491b4b085ed9de1f"},{url:"/_next/static/chunks/pages/member/buddies-ee2072df5ca09ba7.js",revision:"ee2072df5ca09ba7"},{url:"/_next/static/chunks/pages/member/photos-053d431e6b25e3c2.js",revision:"053d431e6b25e3c2"},{url:"/_next/static/chunks/pages/member/profile-2482f4132fff17bc.js",revision:"2482f4132fff17bc"},{url:"/_next/static/chunks/pages/member/settings-431058ceba82a1a2.js",revision:"431058ceba82a1a2"},{url:"/_next/static/chunks/pages/member/subscription/cancelled-d91383e3501264c1.js",revision:"d91383e3501264c1"},{url:"/_next/static/chunks/pages/member/subscription/success-5167fcbc07070945.js",revision:"5167fcbc07070945"},{url:"/_next/static/chunks/pages/members-2394ee538f14bad1.js",revision:"2394ee538f14bad1"},{url:"/_next/static/chunks/pages/members/%5Bid%5D-fa516ee8132be951.js",revision:"fa516ee8132be951"},{url:"/_next/static/chunks/pages/members/chat-bff0730a27d05ed1.js",revision:"bff0730a27d05ed1"},{url:"/_next/static/chunks/pages/members/chat/%5Bid%5D-e731458e63d0a959.js",revision:"e731458e63d0a959"},{url:"/_next/static/chunks/pages/members/invite-4b7264529352b7b9.js",revision:"4b7264529352b7b9"},{url:"/_next/static/chunks/pages/members/pledges-cc2613aec1697ca0.js",revision:"cc2613aec1697ca0"},{url:"/_next/static/chunks/pages/pricing-1bf71d387862671d.js",revision:"1bf71d387862671d"},{url:"/_next/static/chunks/pages/privacy-c77dd25708361358.js",revision:"c77dd25708361358"},{url:"/_next/static/chunks/pages/register-682fa3e8953e181c.js",revision:"682fa3e8953e181c"},{url:"/_next/static/chunks/pages/register/%5Bcode%5D-a0c9e66a378f2ddd.js",revision:"a0c9e66a378f2ddd"},{url:"/_next/static/chunks/pages/sitemap.xml-d1e980b7f33c89f2.js",revision:"d1e980b7f33c89f2"},{url:"/_next/static/chunks/pages/styles-019a95830d6adc53.js",revision:"019a95830d6adc53"},{url:"/_next/static/chunks/pages/survey/%5Bid%5D-50ec3f193c33bc21.js",revision:"50ec3f193c33bc21"},{url:"/_next/static/chunks/pages/survey/%5Bid%5D/%5Bstep%5D-0805b5f396b8dd16.js",revision:"0805b5f396b8dd16"},{url:"/_next/static/chunks/pages/terms-2754f7ab1e981cb4.js",revision:"2754f7ab1e981cb4"},{url:"/_next/static/chunks/pages/unauthorized-1d5cb95b3e25e702.js",revision:"1d5cb95b3e25e702"},{url:"/_next/static/chunks/pages/video-1f8d039ea8a0c84c.js",revision:"1f8d039ea8a0c84c"},{url:"/_next/static/chunks/pages/video/%5Bid%5D-00ed9a5c8f783aa5.js",revision:"00ed9a5c8f783aa5"},{url:"/_next/static/chunks/pages/video/ended-71baca5bfe09b2e3.js",revision:"71baca5bfe09b2e3"},{url:"/_next/static/chunks/polyfills-78c92fac7aa8fdd8.js",revision:"79330112775102f91e1010318bae2bd3"},{url:"/_next/static/chunks/webpack-33aa00649ce3a925.js",revision:"33aa00649ce3a925"},{url:"/_next/static/css/99941a662b94eace.css",revision:"99941a662b94eace"},{url:"/_next/static/media/008f2e8b4aae291f-s.woff2",revision:"54718ab24898dc8cd382ef3f285cfd0d"},{url:"/_next/static/media/104274daeea7a91a-s.woff2",revision:"4bcd2f1191248afd32a6bec09c776d5c"},{url:"/_next/static/media/2108f4c0758ecb90-s.p.woff2",revision:"1e6f5212028613964033548ec4291473"},{url:"/_next/static/media/2360d073f19183cd-s.p.woff2",revision:"235a9e95823e49744e35aaea0bb293aa"},{url:"/_next/static/media/3534416bbfdcc9be-s.p.woff2",revision:"8951283ba1faa0d2c460f42df9366ca1"},{url:"/_next/static/media/3c46462b57ac880e-s.woff2",revision:"3942629d96d5cee049ce769cefb891e1"},{url:"/_next/static/media/4529092560591ab4-s.woff2",revision:"4f8626e31885b0732c32a2358239d9cf"},{url:"/_next/static/media/78187650dd6b50b3-s.woff2",revision:"d84d7157146a9c9347d9c07d172dc651"},{url:"/_next/static/media/7e380d3170051f13-s.woff2",revision:"8172216fe2502d3e1bbe8fdb65841081"},{url:"/_next/static/media/88ba9021cc1d0e98-s.woff2",revision:"b269ee91e18d0586bfc59edc0d4ef25d"},{url:"/_next/static/media/8e992d4bd80b0720-s.p.woff2",revision:"5d088d6214fe5044cd235e19850d56f6"},{url:"/_next/static/media/a913ea2790b1a249-s.woff2",revision:"d049d7e0854afba0c43a3e37dfa9b825"},{url:"/_next/static/media/b8222d26e20b2e06-s.woff2",revision:"6c7142c441804cd078afe45be959fa78"},{url:"/_next/static/media/e653d759d3cc808f-s.woff2",revision:"a0a5bf7813fe465f0942b4fba5c126fa"},{url:"/_offline",revision:"959viKEpAi86Zwyhhmo_o"},{url:"/browserconfig.xml",revision:"c2e72b3d6151578456abffe23b15accc"},{url:"/favicon.ico",revision:"8d5c44a546e575ecebefb01d71065a3f"},{url:"/icons/android-chrome-192x192.png",revision:"2781ab9cb1a3ffbd9af4f79c2dc35169"},{url:"/icons/android-chrome-512x512.png",revision:"23d37f6bdd79c3f54a40481ba8bb79c0"},{url:"/icons/android-icon-144x144.png",revision:"d95ad08c303f8154677254e953a2e928"},{url:"/icons/android-icon-192x192.png",revision:"5fd2ea78946c132e69f5aa18253736a6"},{url:"/icons/android-icon-36x36.png",revision:"00a3e0e654b1e92c2667fe57b80221aa"},{url:"/icons/android-icon-48x48.png",revision:"2b974398a3732bdfaa876c310712c102"},{url:"/icons/android-icon-72x72.png",revision:"929be04561ea65345b1a156753fa72e0"},{url:"/icons/android-icon-96x96.png",revision:"9768e79dc41198bd242421999e9af64f"},{url:"/icons/apple-icon-114x114.png",revision:"627b6996e7f523b1f808c22c31288c88"},{url:"/icons/apple-icon-120x120.png",revision:"cfe0c3810517f70a8dec41c5a4ad5874"},{url:"/icons/apple-icon-144x144.png",revision:"d95ad08c303f8154677254e953a2e928"},{url:"/icons/apple-icon-152x152.png",revision:"2df1d01da9d7529d9e05938e3b392cc9"},{url:"/icons/apple-icon-180x180.png",revision:"ccb3d6d66d723fb3c74093bd485ffcb2"},{url:"/icons/apple-icon-57x57.png",revision:"0e8c0b49fbdfdd3ca675c0715e800533"},{url:"/icons/apple-icon-60x60.png",revision:"1d34326656d2c516f581dfc919622d6b"},{url:"/icons/apple-icon-72x72.png",revision:"929be04561ea65345b1a156753fa72e0"},{url:"/icons/apple-icon-76x76.png",revision:"14eb2063666776f4ce5548ac35e64429"},{url:"/icons/apple-icon-precomposed.png",revision:"d7fe0de5a67b907c6bfb39b6811721e0"},{url:"/icons/apple-icon.png",revision:"d7fe0de5a67b907c6bfb39b6811721e0"},{url:"/icons/apple-touch-icon-114x114.png",revision:"c1a57b7333d27675b22dc5fdc7b584ef"},{url:"/icons/apple-touch-icon-120x120.png",revision:"46512c2d4540e82b05d1d65343a8e943"},{url:"/icons/apple-touch-icon-144x144.png",revision:"4491e892fd7ef10854f5fc50d245a7ae"},{url:"/icons/apple-touch-icon-152x152.png",revision:"ce09d4c000f0c2d058058254d9192f3e"},{url:"/icons/apple-touch-icon-57x57.png",revision:"b77a0c9e8bc16688238386001c01b749"},{url:"/icons/apple-touch-icon-60x60.png",revision:"d903c121d42ddd38a64936e6b4c97448"},{url:"/icons/apple-touch-icon-72x72.png",revision:"683d37494ab664939143d2688eeb3738"},{url:"/icons/apple-touch-icon-76x76.png",revision:"9108cef39f4cba0320046176a148aad5"},{url:"/icons/apple-touch-icon-precomposed.png",revision:"d7fe0de5a67b907c6bfb39b6811721e0"},{url:"/icons/apple-touch-icon.png",revision:"4e7364920f65b53659b99d0cf3b19dd2"},{url:"/icons/favicon-128.png",revision:"1a9c2e469e0e1dd57a1d2f25da955528"},{url:"/icons/favicon-16x16.png",revision:"f8dcfa58f049cc3937dc0ef0bf5667b0"},{url:"/icons/favicon-196x196.png",revision:"d83905d7288456207d4a191f4aef6ecb"},{url:"/icons/favicon-32x32.png",revision:"d3164f8c0b0eb1c4260cb9a72b41200d"},{url:"/icons/favicon-96x96.png",revision:"9768e79dc41198bd242421999e9af64f"},{url:"/icons/ms-icon-144x144.png",revision:"d95ad08c303f8154677254e953a2e928"},{url:"/icons/ms-icon-150x150.png",revision:"be5b4fa52b440d791a30561a4257dae2"},{url:"/icons/ms-icon-310x310.png",revision:"c6c42c713ed1a216f8a3034ad40bbffb"},{url:"/icons/ms-icon-70x70.png",revision:"116db8c17f851231d5e87d60235426a4"},{url:"/icons/mstile-144x144.png",revision:"4491e892fd7ef10854f5fc50d245a7ae"},{url:"/icons/mstile-150x150.png",revision:"e526fc0999415d91efd1fa9a7939ac03"},{url:"/icons/mstile-310x150.png",revision:"3849285fd6a5854fa0fa47c06fc53e6f"},{url:"/icons/mstile-310x310.png",revision:"10a56ce6e7486b82be670ce5f371a634"},{url:"/icons/mstile-70x70.png",revision:"1a9c2e469e0e1dd57a1d2f25da955528"},{url:"/images/adult-content-3-overlay.jpeg",revision:"fe85bf69dbf536c984b5c3188a38656d"},{url:"/images/biguy.jpg",revision:"f5d1aa83283b74c4b1d37d6b7415f348"},{url:"/images/butt-on-fence.jpg",revision:"65986d9364ae2e8680634bd245f66830"},{url:"/images/dudes-standing.jpg",revision:"5392ea6d31d9470eaa469eb8f2454618"},{url:"/images/guy-with-hat.jpg",revision:"ad6ba0badffe87cea49a9c310cb4e5e2"},{url:"/images/guys-bar.jpg",revision:"0f64f037a5d098854112c385960b56f4"},{url:"/images/guys-bw.jpg",revision:"b22735333ca2a0125f1afdf49b64df1f"},{url:"/images/guys-drinking.jpg",revision:"a98c14039c4c67da3555ac231c04aff2"},{url:"/images/guys-holding-hands.jpg",revision:"bb419783fcad158e03eeed86efb39ca9"},{url:"/images/guys-hugging-ai.jpg",revision:"12ffd68668f37f51b66e8d185bca3073"},{url:"/images/guys-kissing.jpg",revision:"1a839d78e60643e3054326023a16f8cf"},{url:"/images/guys-mountain.jpg",revision:"f21508c7b81d018e921c87d77e8a66d5"},{url:"/images/guys-pool-ai.jpg",revision:"11e289a586b443ce452c22433e7c547b"},{url:"/images/guys-silouhette.jpg",revision:"14cfbb35649292211e6860ccf3f1c116"},{url:"/images/guys-toast.jpg",revision:"3f3f91186da01ac64114f0f865f8a3d1"},{url:"/images/locker-room.jpg",revision:"b06fefac4eda6b8282ad545cf6741592"},{url:"/images/muscle.jpg",revision:"46029a7c3a8b396d4b7e40b0591f961d"},{url:"/images/sad-panda.png",revision:"b712c22b4e61107e08094b09298b696b"},{url:"/images/undiemen.jpg",revision:"16c331e879ac25f60f0270f4a8fe32b1"},{url:"/logo.png",revision:"2294739297d890b01f0bef83e2340280"},{url:"/logo.svg",revision:"7d8c8a5d59704923971231bc80a35883"},{url:"/robots.txt",revision:"d41d8cd98f00b204e9800998ecf8427e"},{url:"/safari-pinned-tab.svg",revision:"d46e67c845df90b307dc881cb590bc6b"},{url:"/site.webmanifest",revision:"4c5375beda7db8974f718809cfacdb55"},{url:"/sounds/click-2.mp3",revision:"a5af872de8b9ad2b14109916664ce2f7"},{url:"/sounds/click.mp3",revision:"8cbfdbf09c2cc68dfdc0082d2669285e"},{url:"/sounds/ding.mp3",revision:"696474147c5076928d539b76798711a8"}],{ignoreURLParametersMatching:[]}),e.cleanupOutdatedCaches(),e.registerRoute("/",new e.NetworkFirst({cacheName:"start-url",plugins:[{cacheWillUpdate:async({request:e,response:s,event:i,state:a})=>s&&"opaqueredirect"===s.type?new Response(s.body,{status:200,statusText:"OK",headers:s.headers}):s},{handlerDidError:async({request:e})=>self.fallback(e)}]}),"GET"),e.registerRoute(/^https:\/\/fonts\.(?:gstatic)\.com\/.*/i,new e.CacheFirst({cacheName:"google-fonts-webfonts",plugins:[new e.ExpirationPlugin({maxEntries:4,maxAgeSeconds:31536e3}),{handlerDidError:async({request:e})=>self.fallback(e)}]}),"GET"),e.registerRoute(/^https:\/\/fonts\.(?:googleapis)\.com\/.*/i,new e.StaleWhileRevalidate({cacheName:"google-fonts-stylesheets",plugins:[new e.ExpirationPlugin({maxEntries:4,maxAgeSeconds:604800}),{handlerDidError:async({request:e})=>self.fallback(e)}]}),"GET"),e.registerRoute(/\.(?:eot|otf|ttc|ttf|woff|woff2|font.css)$/i,new e.StaleWhileRevalidate({cacheName:"static-font-assets",plugins:[new e.ExpirationPlugin({maxEntries:4,maxAgeSeconds:604800}),{handlerDidError:async({request:e})=>self.fallback(e)}]}),"GET"),e.registerRoute(/\.(?:jpg|jpeg|gif|png|svg|ico|webp)$/i,new e.StaleWhileRevalidate({cacheName:"static-image-assets",plugins:[new e.ExpirationPlugin({maxEntries:64,maxAgeSeconds:86400}),{handlerDidError:async({request:e})=>self.fallback(e)}]}),"GET"),e.registerRoute(/\/_next\/image\?url=.+$/i,new e.StaleWhileRevalidate({cacheName:"next-image",plugins:[new e.ExpirationPlugin({maxEntries:64,maxAgeSeconds:86400}),{handlerDidError:async({request:e})=>self.fallback(e)}]}),"GET"),e.registerRoute(/\.(?:mp3|wav|ogg)$/i,new e.CacheFirst({cacheName:"static-audio-assets",plugins:[new e.RangeRequestsPlugin,new e.ExpirationPlugin({maxEntries:32,maxAgeSeconds:86400}),{handlerDidError:async({request:e})=>self.fallback(e)}]}),"GET"),e.registerRoute(/\.(?:mp4)$/i,new e.CacheFirst({cacheName:"static-video-assets",plugins:[new e.RangeRequestsPlugin,new e.ExpirationPlugin({maxEntries:32,maxAgeSeconds:86400}),{handlerDidError:async({request:e})=>self.fallback(e)}]}),"GET"),e.registerRoute(/\.(?:js)$/i,new e.StaleWhileRevalidate({cacheName:"static-js-assets",plugins:[new e.ExpirationPlugin({maxEntries:32,maxAgeSeconds:86400}),{handlerDidError:async({request:e})=>self.fallback(e)}]}),"GET"),e.registerRoute(/\.(?:css|less)$/i,new e.StaleWhileRevalidate({cacheName:"static-style-assets",plugins:[new e.ExpirationPlugin({maxEntries:32,maxAgeSeconds:86400}),{handlerDidError:async({request:e})=>self.fallback(e)}]}),"GET"),e.registerRoute(/\/_next\/data\/.+\/.+\.json$/i,new e.StaleWhileRevalidate({cacheName:"next-data",plugins:[new e.ExpirationPlugin({maxEntries:32,maxAgeSeconds:86400}),{handlerDidError:async({request:e})=>self.fallback(e)}]}),"GET"),e.registerRoute(/\.(?:json|xml|csv)$/i,new e.NetworkFirst({cacheName:"static-data-assets",plugins:[new e.ExpirationPlugin({maxEntries:32,maxAgeSeconds:86400}),{handlerDidError:async({request:e})=>self.fallback(e)}]}),"GET"),e.registerRoute((({url:e})=>{if(!(self.origin===e.origin))return!1;const s=e.pathname;return!s.startsWith("/api/auth/")&&!!s.startsWith("/api/")}),new e.NetworkFirst({cacheName:"apis",networkTimeoutSeconds:10,plugins:[new e.ExpirationPlugin({maxEntries:16,maxAgeSeconds:86400}),{handlerDidError:async({request:e})=>self.fallback(e)}]}),"GET"),e.registerRoute((({url:e})=>{if(!(self.origin===e.origin))return!1;return!e.pathname.startsWith("/api/")}),new e.NetworkFirst({cacheName:"others",networkTimeoutSeconds:10,plugins:[new e.ExpirationPlugin({maxEntries:32,maxAgeSeconds:86400}),{handlerDidError:async({request:e})=>self.fallback(e)}]}),"GET"),e.registerRoute((({url:e})=>!(self.origin===e.origin)),new e.NetworkFirst({cacheName:"cross-origin",networkTimeoutSeconds:10,plugins:[new e.ExpirationPlugin({maxEntries:32,maxAgeSeconds:3600}),{handlerDidError:async({request:e})=>self.fallback(e)}]}),"GET")}));
+if (!self.define) {
+  let e,
+    s = {}
+  const i = (i, a) => (
+    (i = new URL(i + '.js', a).href),
+    s[i] ||
+      new Promise((s) => {
+        if ('document' in self) {
+          const e = document.createElement('script')
+          ;(e.src = i), (e.onload = s), document.head.appendChild(e)
+        } else (e = i), importScripts(i), s()
+      }).then(() => {
+        let e = s[i]
+        if (!e) throw new Error(`Module ${i} didn’t register its module`)
+        return e
+      })
+  )
+  self.define = (a, c) => {
+    const n =
+      e ||
+      ('document' in self ? document.currentScript.src : '') ||
+      location.href
+    if (s[n]) return
+    let r = {}
+    const t = (e) => i(e, n),
+      d = { module: { uri: n }, exports: r, require: t }
+    s[n] = Promise.all(a.map((e) => d[e] || t(e))).then((e) => (c(...e), r))
+  }
+}
+define(['./workbox-c5ed321c'], function (e) {
+  'use strict'
+  importScripts('fallback-959viKEpAi86Zwyhhmo_o.js'),
+    self.skipWaiting(),
+    e.clientsClaim(),
+    e.precacheAndRoute(
+      [
+        {
+          url: '/_next/static/959viKEpAi86Zwyhhmo_o/_buildManifest.js',
+          revision: '6b3292d4d93bfeed90fb2c2f890ff950'
+        },
+        {
+          url: '/_next/static/959viKEpAi86Zwyhhmo_o/_ssgManifest.js',
+          revision: 'b6652df95db52feb4daf4eca35380933'
+        },
+        {
+          url: '/_next/static/chunks/1087-978e7211fbf54160.js',
+          revision: '978e7211fbf54160'
+        },
+        {
+          url: '/_next/static/chunks/161.16b9a51d68195e7a.js',
+          revision: '16b9a51d68195e7a'
+        },
+        {
+          url: '/_next/static/chunks/2264-a28640b89e08f39b.js',
+          revision: 'a28640b89e08f39b'
+        },
+        {
+          url: '/_next/static/chunks/2966.11a4a082e3df489a.js',
+          revision: '11a4a082e3df489a'
+        },
+        {
+          url: '/_next/static/chunks/3602-6fd57cadb812bacd.js',
+          revision: '6fd57cadb812bacd'
+        },
+        {
+          url: '/_next/static/chunks/4262.3b3ae1621c8ce101.js',
+          revision: '3b3ae1621c8ce101'
+        },
+        {
+          url: '/_next/static/chunks/5166-b6468bea06791746.js',
+          revision: 'b6468bea06791746'
+        },
+        {
+          url: '/_next/static/chunks/5233.2732fab9f06d56c1.js',
+          revision: '2732fab9f06d56c1'
+        },
+        {
+          url: '/_next/static/chunks/7935.7a044a15ceac3833.js',
+          revision: '7a044a15ceac3833'
+        },
+        {
+          url: '/_next/static/chunks/8121.83132eb9d53937d8.js',
+          revision: '83132eb9d53937d8'
+        },
+        {
+          url: '/_next/static/chunks/framework-bc9e8d1125680491.js',
+          revision: 'bc9e8d1125680491'
+        },
+        {
+          url: '/_next/static/chunks/main-3aa8e5268142fd7b.js',
+          revision: '3aa8e5268142fd7b'
+        },
+        {
+          url: '/_next/static/chunks/pages/%5B...slug%5D-29393ede10550506.js',
+          revision: '29393ede10550506'
+        },
+        {
+          url: '/_next/static/chunks/pages/404-188f23ad526a8d44.js',
+          revision: '188f23ad526a8d44'
+        },
+        {
+          url: '/_next/static/chunks/pages/500-e0af8f0c5f6b88c5.js',
+          revision: 'e0af8f0c5f6b88c5'
+        },
+        {
+          url: '/_next/static/chunks/pages/_app-310894b53a617448.js',
+          revision: '310894b53a617448'
+        },
+        {
+          url: '/_next/static/chunks/pages/_error-10174e80ad0c0cf2.js',
+          revision: '10174e80ad0c0cf2'
+        },
+        {
+          url: '/_next/static/chunks/pages/_offline-70bb24a4e98b97ba.js',
+          revision: '70bb24a4e98b97ba'
+        },
+        {
+          url: '/_next/static/chunks/pages/admin/event-5f0820dd4b1ff012.js',
+          revision: '5f0820dd4b1ff012'
+        },
+        {
+          url: '/_next/static/chunks/pages/admin/event/%5Bid%5D-e1b7f3d205c0c388.js',
+          revision: 'e1b7f3d205c0c388'
+        },
+        {
+          url: '/_next/static/chunks/pages/admin/event/invite/%5Bid%5D-335bd90532e7ee0a.js',
+          revision: '335bd90532e7ee0a'
+        },
+        {
+          url: '/_next/static/chunks/pages/admin/scan-8533462befa933e4.js',
+          revision: '8533462befa933e4'
+        },
+        {
+          url: '/_next/static/chunks/pages/apply-8ec82a21851f056b.js',
+          revision: '8ec82a21851f056b'
+        },
+        {
+          url: '/_next/static/chunks/pages/apply/%5Binvite%5D-553f98e9388abb26.js',
+          revision: '553f98e9388abb26'
+        },
+        {
+          url: '/_next/static/chunks/pages/apply/_steps-080ec7cd230d48c6.js',
+          revision: '080ec7cd230d48c6'
+        },
+        {
+          url: '/_next/static/chunks/pages/apply/agreement-a36f89f233bee668.js',
+          revision: 'a36f89f233bee668'
+        },
+        {
+          url: '/_next/static/chunks/pages/apply/apply-e603e857ffba667d.js',
+          revision: 'e603e857ffba667d'
+        },
+        {
+          url: '/_next/static/chunks/pages/apply/approved-a74f44495e2754cb.js',
+          revision: 'a74f44495e2754cb'
+        },
+        {
+          url: '/_next/static/chunks/pages/apply/denied-5f07175d8c44f920.js',
+          revision: '5f07175d8c44f920'
+        },
+        {
+          url: '/_next/static/chunks/pages/apply/resume-fa037dc5e4068b61.js',
+          revision: 'fa037dc5e4068b61'
+        },
+        {
+          url: '/_next/static/chunks/pages/apply/review-a3209f22e6cf7d1d.js',
+          revision: 'a3209f22e6cf7d1d'
+        },
+        {
+          url: '/_next/static/chunks/pages/apply/verify-2a262d258167dfcd.js',
+          revision: '2a262d258167dfcd'
+        },
+        {
+          url: '/_next/static/chunks/pages/blog-687a7559baf3dc7e.js',
+          revision: '687a7559baf3dc7e'
+        },
+        {
+          url: '/_next/static/chunks/pages/blog/%5Bslug%5D-327c33df2377fe19.js',
+          revision: '327c33df2377fe19'
+        },
+        {
+          url: '/_next/static/chunks/pages/code/%5B...args%5D-61f0537a256bac8b.js',
+          revision: '61f0537a256bac8b'
+        },
+        {
+          url: '/_next/static/chunks/pages/cookies-e33f555369fb1650.js',
+          revision: 'e33f555369fb1650'
+        },
+        {
+          url: '/_next/static/chunks/pages/events-82b388f989e5fe64.js',
+          revision: '82b388f989e5fe64'
+        },
+        {
+          url: '/_next/static/chunks/pages/events/%5Bid%5D-9af713f0eaacd52b.js',
+          revision: '9af713f0eaacd52b'
+        },
+        {
+          url: '/_next/static/chunks/pages/events/%5Bid%5D/ticket-7cb84a28e730f1d5.js',
+          revision: '7cb84a28e730f1d5'
+        },
+        {
+          url: '/_next/static/chunks/pages/index-32844d5afd941f40.js',
+          revision: '32844d5afd941f40'
+        },
+        {
+          url: '/_next/static/chunks/pages/member-7f3b36c1d0216906.js',
+          revision: '7f3b36c1d0216906'
+        },
+        {
+          url: '/_next/static/chunks/pages/member/account-491b4b085ed9de1f.js',
+          revision: '491b4b085ed9de1f'
+        },
+        {
+          url: '/_next/static/chunks/pages/member/buddies-ee2072df5ca09ba7.js',
+          revision: 'ee2072df5ca09ba7'
+        },
+        {
+          url: '/_next/static/chunks/pages/member/photos-053d431e6b25e3c2.js',
+          revision: '053d431e6b25e3c2'
+        },
+        {
+          url: '/_next/static/chunks/pages/member/profile-2482f4132fff17bc.js',
+          revision: '2482f4132fff17bc'
+        },
+        {
+          url: '/_next/static/chunks/pages/member/settings-431058ceba82a1a2.js',
+          revision: '431058ceba82a1a2'
+        },
+        {
+          url: '/_next/static/chunks/pages/member/subscription/cancelled-d91383e3501264c1.js',
+          revision: 'd91383e3501264c1'
+        },
+        {
+          url: '/_next/static/chunks/pages/member/subscription/success-5167fcbc07070945.js',
+          revision: '5167fcbc07070945'
+        },
+        {
+          url: '/_next/static/chunks/pages/members-2394ee538f14bad1.js',
+          revision: '2394ee538f14bad1'
+        },
+        {
+          url: '/_next/static/chunks/pages/members/%5Bid%5D-fa516ee8132be951.js',
+          revision: 'fa516ee8132be951'
+        },
+        {
+          url: '/_next/static/chunks/pages/members/chat-bff0730a27d05ed1.js',
+          revision: 'bff0730a27d05ed1'
+        },
+        {
+          url: '/_next/static/chunks/pages/members/chat/%5Bid%5D-e731458e63d0a959.js',
+          revision: 'e731458e63d0a959'
+        },
+        {
+          url: '/_next/static/chunks/pages/members/invite-4b7264529352b7b9.js',
+          revision: '4b7264529352b7b9'
+        },
+        {
+          url: '/_next/static/chunks/pages/members/pledges-cc2613aec1697ca0.js',
+          revision: 'cc2613aec1697ca0'
+        },
+        {
+          url: '/_next/static/chunks/pages/pricing-1bf71d387862671d.js',
+          revision: '1bf71d387862671d'
+        },
+        {
+          url: '/_next/static/chunks/pages/privacy-c77dd25708361358.js',
+          revision: 'c77dd25708361358'
+        },
+        {
+          url: '/_next/static/chunks/pages/register-682fa3e8953e181c.js',
+          revision: '682fa3e8953e181c'
+        },
+        {
+          url: '/_next/static/chunks/pages/register/%5Bcode%5D-a0c9e66a378f2ddd.js',
+          revision: 'a0c9e66a378f2ddd'
+        },
+        {
+          url: '/_next/static/chunks/pages/sitemap.xml-d1e980b7f33c89f2.js',
+          revision: 'd1e980b7f33c89f2'
+        },
+        {
+          url: '/_next/static/chunks/pages/styles-019a95830d6adc53.js',
+          revision: '019a95830d6adc53'
+        },
+        {
+          url: '/_next/static/chunks/pages/survey/%5Bid%5D-50ec3f193c33bc21.js',
+          revision: '50ec3f193c33bc21'
+        },
+        {
+          url: '/_next/static/chunks/pages/survey/%5Bid%5D/%5Bstep%5D-0805b5f396b8dd16.js',
+          revision: '0805b5f396b8dd16'
+        },
+        {
+          url: '/_next/static/chunks/pages/terms-2754f7ab1e981cb4.js',
+          revision: '2754f7ab1e981cb4'
+        },
+        {
+          url: '/_next/static/chunks/pages/unauthorized-1d5cb95b3e25e702.js',
+          revision: '1d5cb95b3e25e702'
+        },
+        {
+          url: '/_next/static/chunks/pages/video-1f8d039ea8a0c84c.js',
+          revision: '1f8d039ea8a0c84c'
+        },
+        {
+          url: '/_next/static/chunks/pages/video/%5Bid%5D-00ed9a5c8f783aa5.js',
+          revision: '00ed9a5c8f783aa5'
+        },
+        {
+          url: '/_next/static/chunks/pages/video/ended-71baca5bfe09b2e3.js',
+          revision: '71baca5bfe09b2e3'
+        },
+        {
+          url: '/_next/static/chunks/polyfills-78c92fac7aa8fdd8.js',
+          revision: '79330112775102f91e1010318bae2bd3'
+        },
+        {
+          url: '/_next/static/chunks/webpack-33aa00649ce3a925.js',
+          revision: '33aa00649ce3a925'
+        },
+        {
+          url: '/_next/static/css/99941a662b94eace.css',
+          revision: '99941a662b94eace'
+        },
+        {
+          url: '/_next/static/media/008f2e8b4aae291f-s.woff2',
+          revision: '54718ab24898dc8cd382ef3f285cfd0d'
+        },
+        {
+          url: '/_next/static/media/104274daeea7a91a-s.woff2',
+          revision: '4bcd2f1191248afd32a6bec09c776d5c'
+        },
+        {
+          url: '/_next/static/media/2108f4c0758ecb90-s.p.woff2',
+          revision: '1e6f5212028613964033548ec4291473'
+        },
+        {
+          url: '/_next/static/media/2360d073f19183cd-s.p.woff2',
+          revision: '235a9e95823e49744e35aaea0bb293aa'
+        },
+        {
+          url: '/_next/static/media/3534416bbfdcc9be-s.p.woff2',
+          revision: '8951283ba1faa0d2c460f42df9366ca1'
+        },
+        {
+          url: '/_next/static/media/3c46462b57ac880e-s.woff2',
+          revision: '3942629d96d5cee049ce769cefb891e1'
+        },
+        {
+          url: '/_next/static/media/4529092560591ab4-s.woff2',
+          revision: '4f8626e31885b0732c32a2358239d9cf'
+        },
+        {
+          url: '/_next/static/media/78187650dd6b50b3-s.woff2',
+          revision: 'd84d7157146a9c9347d9c07d172dc651'
+        },
+        {
+          url: '/_next/static/media/7e380d3170051f13-s.woff2',
+          revision: '8172216fe2502d3e1bbe8fdb65841081'
+        },
+        {
+          url: '/_next/static/media/88ba9021cc1d0e98-s.woff2',
+          revision: 'b269ee91e18d0586bfc59edc0d4ef25d'
+        },
+        {
+          url: '/_next/static/media/8e992d4bd80b0720-s.p.woff2',
+          revision: '5d088d6214fe5044cd235e19850d56f6'
+        },
+        {
+          url: '/_next/static/media/a913ea2790b1a249-s.woff2',
+          revision: 'd049d7e0854afba0c43a3e37dfa9b825'
+        },
+        {
+          url: '/_next/static/media/b8222d26e20b2e06-s.woff2',
+          revision: '6c7142c441804cd078afe45be959fa78'
+        },
+        {
+          url: '/_next/static/media/e653d759d3cc808f-s.woff2',
+          revision: 'a0a5bf7813fe465f0942b4fba5c126fa'
+        },
+        { url: '/_offline', revision: '959viKEpAi86Zwyhhmo_o' },
+        {
+          url: '/browserconfig.xml',
+          revision: 'c2e72b3d6151578456abffe23b15accc'
+        },
+        { url: '/favicon.ico', revision: '8d5c44a546e575ecebefb01d71065a3f' },
+        {
+          url: '/icons/android-chrome-192x192.png',
+          revision: '2781ab9cb1a3ffbd9af4f79c2dc35169'
+        },
+        {
+          url: '/icons/android-chrome-512x512.png',
+          revision: '23d37f6bdd79c3f54a40481ba8bb79c0'
+        },
+        {
+          url: '/icons/android-icon-144x144.png',
+          revision: 'd95ad08c303f8154677254e953a2e928'
+        },
+        {
+          url: '/icons/android-icon-192x192.png',
+          revision: '5fd2ea78946c132e69f5aa18253736a6'
+        },
+        {
+          url: '/icons/android-icon-36x36.png',
+          revision: '00a3e0e654b1e92c2667fe57b80221aa'
+        },
+        {
+          url: '/icons/android-icon-48x48.png',
+          revision: '2b974398a3732bdfaa876c310712c102'
+        },
+        {
+          url: '/icons/android-icon-72x72.png',
+          revision: '929be04561ea65345b1a156753fa72e0'
+        },
+        {
+          url: '/icons/android-icon-96x96.png',
+          revision: '9768e79dc41198bd242421999e9af64f'
+        },
+        {
+          url: '/icons/apple-icon-114x114.png',
+          revision: '627b6996e7f523b1f808c22c31288c88'
+        },
+        {
+          url: '/icons/apple-icon-120x120.png',
+          revision: 'cfe0c3810517f70a8dec41c5a4ad5874'
+        },
+        {
+          url: '/icons/apple-icon-144x144.png',
+          revision: 'd95ad08c303f8154677254e953a2e928'
+        },
+        {
+          url: '/icons/apple-icon-152x152.png',
+          revision: '2df1d01da9d7529d9e05938e3b392cc9'
+        },
+        {
+          url: '/icons/apple-icon-180x180.png',
+          revision: 'ccb3d6d66d723fb3c74093bd485ffcb2'
+        },
+        {
+          url: '/icons/apple-icon-57x57.png',
+          revision: '0e8c0b49fbdfdd3ca675c0715e800533'
+        },
+        {
+          url: '/icons/apple-icon-60x60.png',
+          revision: '1d34326656d2c516f581dfc919622d6b'
+        },
+        {
+          url: '/icons/apple-icon-72x72.png',
+          revision: '929be04561ea65345b1a156753fa72e0'
+        },
+        {
+          url: '/icons/apple-icon-76x76.png',
+          revision: '14eb2063666776f4ce5548ac35e64429'
+        },
+        {
+          url: '/icons/apple-icon-precomposed.png',
+          revision: 'd7fe0de5a67b907c6bfb39b6811721e0'
+        },
+        {
+          url: '/icons/apple-icon.png',
+          revision: 'd7fe0de5a67b907c6bfb39b6811721e0'
+        },
+        {
+          url: '/icons/apple-touch-icon-114x114.png',
+          revision: 'c1a57b7333d27675b22dc5fdc7b584ef'
+        },
+        {
+          url: '/icons/apple-touch-icon-120x120.png',
+          revision: '46512c2d4540e82b05d1d65343a8e943'
+        },
+        {
+          url: '/icons/apple-touch-icon-144x144.png',
+          revision: '4491e892fd7ef10854f5fc50d245a7ae'
+        },
+        {
+          url: '/icons/apple-touch-icon-152x152.png',
+          revision: 'ce09d4c000f0c2d058058254d9192f3e'
+        },
+        {
+          url: '/icons/apple-touch-icon-57x57.png',
+          revision: 'b77a0c9e8bc16688238386001c01b749'
+        },
+        {
+          url: '/icons/apple-touch-icon-60x60.png',
+          revision: 'd903c121d42ddd38a64936e6b4c97448'
+        },
+        {
+          url: '/icons/apple-touch-icon-72x72.png',
+          revision: '683d37494ab664939143d2688eeb3738'
+        },
+        {
+          url: '/icons/apple-touch-icon-76x76.png',
+          revision: '9108cef39f4cba0320046176a148aad5'
+        },
+        {
+          url: '/icons/apple-touch-icon-precomposed.png',
+          revision: 'd7fe0de5a67b907c6bfb39b6811721e0'
+        },
+        {
+          url: '/icons/apple-touch-icon.png',
+          revision: '4e7364920f65b53659b99d0cf3b19dd2'
+        },
+        {
+          url: '/icons/favicon-128.png',
+          revision: '1a9c2e469e0e1dd57a1d2f25da955528'
+        },
+        {
+          url: '/icons/favicon-16x16.png',
+          revision: 'f8dcfa58f049cc3937dc0ef0bf5667b0'
+        },
+        {
+          url: '/icons/favicon-196x196.png',
+          revision: 'd83905d7288456207d4a191f4aef6ecb'
+        },
+        {
+          url: '/icons/favicon-32x32.png',
+          revision: 'd3164f8c0b0eb1c4260cb9a72b41200d'
+        },
+        {
+          url: '/icons/favicon-96x96.png',
+          revision: '9768e79dc41198bd242421999e9af64f'
+        },
+        {
+          url: '/icons/ms-icon-144x144.png',
+          revision: 'd95ad08c303f8154677254e953a2e928'
+        },
+        {
+          url: '/icons/ms-icon-150x150.png',
+          revision: 'be5b4fa52b440d791a30561a4257dae2'
+        },
+        {
+          url: '/icons/ms-icon-310x310.png',
+          revision: 'c6c42c713ed1a216f8a3034ad40bbffb'
+        },
+        {
+          url: '/icons/ms-icon-70x70.png',
+          revision: '116db8c17f851231d5e87d60235426a4'
+        },
+        {
+          url: '/icons/mstile-144x144.png',
+          revision: '4491e892fd7ef10854f5fc50d245a7ae'
+        },
+        {
+          url: '/icons/mstile-150x150.png',
+          revision: 'e526fc0999415d91efd1fa9a7939ac03'
+        },
+        {
+          url: '/icons/mstile-310x150.png',
+          revision: '3849285fd6a5854fa0fa47c06fc53e6f'
+        },
+        {
+          url: '/icons/mstile-310x310.png',
+          revision: '10a56ce6e7486b82be670ce5f371a634'
+        },
+        {
+          url: '/icons/mstile-70x70.png',
+          revision: '1a9c2e469e0e1dd57a1d2f25da955528'
+        },
+        {
+          url: '/images/adult-content-3-overlay.jpeg',
+          revision: 'fe85bf69dbf536c984b5c3188a38656d'
+        },
+        {
+          url: '/images/biguy.jpg',
+          revision: 'f5d1aa83283b74c4b1d37d6b7415f348'
+        },
+        {
+          url: '/images/butt-on-fence.jpg',
+          revision: '65986d9364ae2e8680634bd245f66830'
+        },
+        {
+          url: '/images/dudes-standing.jpg',
+          revision: '5392ea6d31d9470eaa469eb8f2454618'
+        },
+        {
+          url: '/images/guy-with-hat.jpg',
+          revision: 'ad6ba0badffe87cea49a9c310cb4e5e2'
+        },
+        {
+          url: '/images/guys-bar.jpg',
+          revision: '0f64f037a5d098854112c385960b56f4'
+        },
+        {
+          url: '/images/guys-bw.jpg',
+          revision: 'b22735333ca2a0125f1afdf49b64df1f'
+        },
+        {
+          url: '/images/guys-drinking.jpg',
+          revision: 'a98c14039c4c67da3555ac231c04aff2'
+        },
+        {
+          url: '/images/guys-holding-hands.jpg',
+          revision: 'bb419783fcad158e03eeed86efb39ca9'
+        },
+        {
+          url: '/images/guys-hugging-ai.jpg',
+          revision: '12ffd68668f37f51b66e8d185bca3073'
+        },
+        {
+          url: '/images/guys-kissing.jpg',
+          revision: '1a839d78e60643e3054326023a16f8cf'
+        },
+        {
+          url: '/images/guys-mountain.jpg',
+          revision: 'f21508c7b81d018e921c87d77e8a66d5'
+        },
+        {
+          url: '/images/guys-pool-ai.jpg',
+          revision: '11e289a586b443ce452c22433e7c547b'
+        },
+        {
+          url: '/images/guys-silouhette.jpg',
+          revision: '14cfbb35649292211e6860ccf3f1c116'
+        },
+        {
+          url: '/images/guys-toast.jpg',
+          revision: '3f3f91186da01ac64114f0f865f8a3d1'
+        },
+        {
+          url: '/images/locker-room.jpg',
+          revision: 'b06fefac4eda6b8282ad545cf6741592'
+        },
+        {
+          url: '/images/muscle.jpg',
+          revision: '46029a7c3a8b396d4b7e40b0591f961d'
+        },
+        {
+          url: '/images/sad-panda.png',
+          revision: 'b712c22b4e61107e08094b09298b696b'
+        },
+        {
+          url: '/images/undiemen.jpg',
+          revision: '16c331e879ac25f60f0270f4a8fe32b1'
+        },
+        { url: '/logo.png', revision: '2294739297d890b01f0bef83e2340280' },
+        { url: '/logo.svg', revision: '7d8c8a5d59704923971231bc80a35883' },
+        { url: '/robots.txt', revision: 'd41d8cd98f00b204e9800998ecf8427e' },
+        {
+          url: '/safari-pinned-tab.svg',
+          revision: 'd46e67c845df90b307dc881cb590bc6b'
+        },
+        {
+          url: '/site.webmanifest',
+          revision: '4c5375beda7db8974f718809cfacdb55'
+        },
+        {
+          url: '/sounds/click-2.mp3',
+          revision: 'a5af872de8b9ad2b14109916664ce2f7'
+        },
+        {
+          url: '/sounds/click.mp3',
+          revision: '8cbfdbf09c2cc68dfdc0082d2669285e'
+        },
+        {
+          url: '/sounds/ding.mp3',
+          revision: '696474147c5076928d539b76798711a8'
+        }
+      ],
+      { ignoreURLParametersMatching: [] }
+    ),
+    e.cleanupOutdatedCaches(),
+    e.registerRoute(
+      '/',
+      new e.NetworkFirst({
+        cacheName: 'start-url',
+        plugins: [
+          {
+            cacheWillUpdate: async ({
+              request: e,
+              response: s,
+              event: i,
+              state: a
+            }) =>
+              s && 'opaqueredirect' === s.type
+                ? new Response(s.body, {
+                    status: 200,
+                    statusText: 'OK',
+                    headers: s.headers
+                  })
+                : s
+          },
+          { handlerDidError: async ({ request: e }) => self.fallback(e) }
+        ]
+      }),
+      'GET'
+    ),
+    e.registerRoute(
+      /^https:\/\/fonts\.(?:gstatic)\.com\/.*/i,
+      new e.CacheFirst({
+        cacheName: 'google-fonts-webfonts',
+        plugins: [
+          new e.ExpirationPlugin({ maxEntries: 4, maxAgeSeconds: 31536e3 }),
+          { handlerDidError: async ({ request: e }) => self.fallback(e) }
+        ]
+      }),
+      'GET'
+    ),
+    e.registerRoute(
+      /^https:\/\/fonts\.(?:googleapis)\.com\/.*/i,
+      new e.StaleWhileRevalidate({
+        cacheName: 'google-fonts-stylesheets',
+        plugins: [
+          new e.ExpirationPlugin({ maxEntries: 4, maxAgeSeconds: 604800 }),
+          { handlerDidError: async ({ request: e }) => self.fallback(e) }
+        ]
+      }),
+      'GET'
+    ),
+    e.registerRoute(
+      /\.(?:eot|otf|ttc|ttf|woff|woff2|font.css)$/i,
+      new e.StaleWhileRevalidate({
+        cacheName: 'static-font-assets',
+        plugins: [
+          new e.ExpirationPlugin({ maxEntries: 4, maxAgeSeconds: 604800 }),
+          { handlerDidError: async ({ request: e }) => self.fallback(e) }
+        ]
+      }),
+      'GET'
+    ),
+    e.registerRoute(
+      /\.(?:jpg|jpeg|gif|png|svg|ico|webp)$/i,
+      new e.StaleWhileRevalidate({
+        cacheName: 'static-image-assets',
+        plugins: [
+          new e.ExpirationPlugin({ maxEntries: 64, maxAgeSeconds: 86400 }),
+          { handlerDidError: async ({ request: e }) => self.fallback(e) }
+        ]
+      }),
+      'GET'
+    ),
+    e.registerRoute(
+      /\/_next\/image\?url=.+$/i,
+      new e.StaleWhileRevalidate({
+        cacheName: 'next-image',
+        plugins: [
+          new e.ExpirationPlugin({ maxEntries: 64, maxAgeSeconds: 86400 }),
+          { handlerDidError: async ({ request: e }) => self.fallback(e) }
+        ]
+      }),
+      'GET'
+    ),
+    e.registerRoute(
+      /\.(?:mp3|wav|ogg)$/i,
+      new e.CacheFirst({
+        cacheName: 'static-audio-assets',
+        plugins: [
+          new e.RangeRequestsPlugin(),
+          new e.ExpirationPlugin({ maxEntries: 32, maxAgeSeconds: 86400 }),
+          { handlerDidError: async ({ request: e }) => self.fallback(e) }
+        ]
+      }),
+      'GET'
+    ),
+    e.registerRoute(
+      /\.(?:mp4)$/i,
+      new e.CacheFirst({
+        cacheName: 'static-video-assets',
+        plugins: [
+          new e.RangeRequestsPlugin(),
+          new e.ExpirationPlugin({ maxEntries: 32, maxAgeSeconds: 86400 }),
+          { handlerDidError: async ({ request: e }) => self.fallback(e) }
+        ]
+      }),
+      'GET'
+    ),
+    e.registerRoute(
+      /\.(?:js)$/i,
+      new e.StaleWhileRevalidate({
+        cacheName: 'static-js-assets',
+        plugins: [
+          new e.ExpirationPlugin({ maxEntries: 32, maxAgeSeconds: 86400 }),
+          { handlerDidError: async ({ request: e }) => self.fallback(e) }
+        ]
+      }),
+      'GET'
+    ),
+    e.registerRoute(
+      /\.(?:css|less)$/i,
+      new e.StaleWhileRevalidate({
+        cacheName: 'static-style-assets',
+        plugins: [
+          new e.ExpirationPlugin({ maxEntries: 32, maxAgeSeconds: 86400 }),
+          { handlerDidError: async ({ request: e }) => self.fallback(e) }
+        ]
+      }),
+      'GET'
+    ),
+    e.registerRoute(
+      /\/_next\/data\/.+\/.+\.json$/i,
+      new e.StaleWhileRevalidate({
+        cacheName: 'next-data',
+        plugins: [
+          new e.ExpirationPlugin({ maxEntries: 32, maxAgeSeconds: 86400 }),
+          { handlerDidError: async ({ request: e }) => self.fallback(e) }
+        ]
+      }),
+      'GET'
+    ),
+    e.registerRoute(
+      /\.(?:json|xml|csv)$/i,
+      new e.NetworkFirst({
+        cacheName: 'static-data-assets',
+        plugins: [
+          new e.ExpirationPlugin({ maxEntries: 32, maxAgeSeconds: 86400 }),
+          { handlerDidError: async ({ request: e }) => self.fallback(e) }
+        ]
+      }),
+      'GET'
+    ),
+    e.registerRoute(
+      ({ url: e }) => {
+        if (!(self.origin === e.origin)) return !1
+        const s = e.pathname
+        return !s.startsWith('/api/auth/') && !!s.startsWith('/api/')
+      },
+      new e.NetworkFirst({
+        cacheName: 'apis',
+        networkTimeoutSeconds: 10,
+        plugins: [
+          new e.ExpirationPlugin({ maxEntries: 16, maxAgeSeconds: 86400 }),
+          { handlerDidError: async ({ request: e }) => self.fallback(e) }
+        ]
+      }),
+      'GET'
+    ),
+    e.registerRoute(
+      ({ url: e }) => {
+        if (!(self.origin === e.origin)) return !1
+        return !e.pathname.startsWith('/api/')
+      },
+      new e.NetworkFirst({
+        cacheName: 'others',
+        networkTimeoutSeconds: 10,
+        plugins: [
+          new e.ExpirationPlugin({ maxEntries: 32, maxAgeSeconds: 86400 }),
+          { handlerDidError: async ({ request: e }) => self.fallback(e) }
+        ]
+      }),
+      'GET'
+    ),
+    e.registerRoute(
+      ({ url: e }) => !(self.origin === e.origin),
+      new e.NetworkFirst({
+        cacheName: 'cross-origin',
+        networkTimeoutSeconds: 10,
+        plugins: [
+          new e.ExpirationPlugin({ maxEntries: 32, maxAgeSeconds: 3600 }),
+          { handlerDidError: async ({ request: e }) => self.fallback(e) }
+        ]
+      }),
+      'GET'
+    )
+})

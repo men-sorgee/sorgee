@@ -1,5 +1,5 @@
 import { notifications } from 'lib/config'
-import { AgreementData, ApiResponse, Applicant, Profile } from 'lib/models'
+import { AgreementData, ApiResponse, Applicant, Profile, UserType } from 'lib/models'
 import { getAppNotification, getUserEvents, updateUser } from 'lib/services/directus/server'
 import {
   SendGridCategory,
@@ -19,27 +19,33 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     if (applicant.application_status == 'approved') return res.status(200).end()
 
     if (applicant && applicant.application_status == 'agreement' && agree) {
-      sendNotificationEmail(
-        applicant.email,
-        applicant.nickname || applicant.first_name + ' ' + applicant.last_name,
-        `Application Approved`,
-        `Your application is approved. Congratulations, you are now an official pledge of Guys'n Heat! ` +
-        `A brother will be reaching out to finalize your onboarding process and if all goes well, invite you to the next event.`,
-        {
-          button_text: 'Complete Profile',
-          button_url: 'https://guysnheat.com/member/profile',
-        }
-      )
+
       const userEvents = await getUserEvents(applicant.id)
       const hasAttendedEvent = userEvents.some((e) => e.attended)
+      const user_type: UserType = hasAttendedEvent ? 'brother' : (applicant.vouched_by != undefined ? 'inductee' : 'pledge')
 
       const updatedUser = (await updateUser<Applicant>(applicant.id, {
         application_status: 'approved',
-        user_type: hasAttendedEvent ? 'brother' : applicant.vouched_by ? 'inductee' : 'pledge',
+        user_type,
         approved_date: new Date().toISOString(),
       })) as Applicant
 
       await updateSendGrid(updatedUser as Profile)
+
+      const body = `Your application was verified and approved. You are now an official ${user_type} of Guys'n Heat! `
+
+      sendNotificationEmail(
+        applicant.email,
+        applicant.nickname || applicant.first_name,
+        `Your Application was Approved, ${user_type}!`,
+        body,
+        {
+          button_text: user_type == 'brother' ? 'Get More Features!' : 'Complete Profile',
+          button_url: user_type == 'brother' ? 'https://guysnheat.com/member/account' : 'https://guysnheat.com/member/profile',
+        },
+        SendGridTemplate.Notification,
+        SendGridCategory.Notification
+      )
 
       if (updatedUser.user_type !== 'pledge') {
         // send congrats email

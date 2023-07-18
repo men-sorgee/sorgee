@@ -144,8 +144,7 @@ function Header({ userType, children, ...props }: Props) {
   const bg = useColorModeValue('primary.800', 'black')
 
   const NavMenu = ({
-    navItems,
-    ...props
+    navItems
   }: StackProps & { navItems: NavItem[] }) => {
     return (
       <Accordion

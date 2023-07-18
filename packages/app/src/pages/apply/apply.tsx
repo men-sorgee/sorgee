@@ -365,7 +365,7 @@ function ApplyForm({
               />
               <input type="hidden" {...register('invite')} />
             </SimpleGrid>
-            <BusyButton type="submit" mt={4} colorScheme={'primary'}>
+            <BusyButton type="submit" mt={4} bg="accent.500">
               Save & Continue
             </BusyButton>
           </>

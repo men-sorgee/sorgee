@@ -1,22 +1,25 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
-import { Markdown } from 'components/controls'
-import { ConnectForm, FieldInput, FieldSelect, Form } from 'components/forms'
+import { Markdown, BusyButton } from 'components/controls'
+import { FieldInput, FieldSelect, Form } from 'components/forms'
 import Page from 'components/Page'
 import { useSite } from 'hooks/use-site'
 import { pages } from 'lib/config'
-import { ApiError, FieldOptions, Promo, SignUpForm, User } from 'lib/models'
+import { FieldOptions, Promo, SignUpForm, User } from 'lib/models'
 import { postJSON } from 'lib/utils'
-import { signIn, useSession } from 'next-auth/react'
+import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/router'
 
 import {
-  Button,
+  Box,
+  Center,
   GridItem,
   Heading,
   SimpleGrid,
+  Spinner,
   useToast
 } from '@chakra-ui/react'
+import { set } from 'date-fns'
 
 export type Props = {
   promo?: Promo
@@ -42,9 +45,6 @@ export default function Register({
   const { site, loading } = useSite()
   const toast = useToast()
   const router = useRouter()
-  const { status, data: session } = useSession()
-  const { user } = session || {}
-  const { email } = user || {}
 
   useEffect(() => {
     if (!loading && site && site.invite_only && !promo) {
@@ -59,10 +59,7 @@ export default function Register({
         }
       })
     }
-    if (status == 'authenticated') {
-      router.push('/apply')
-    }
-  }, [loading, promo, router, site, status, toast])
+  }, [loading, promo, router, site, toast])
 
   const required = {
     required: 'This field is required'
@@ -71,76 +68,88 @@ export default function Register({
   const minYear = new Date().getFullYear() - 100
   const maxYear = new Date().getFullYear() - 21
 
+  const [submitted, setSubmitted] = useState<boolean>(false)
+
   return (
     <Page title="Register" loading={loading}>
-      <Heading size="lg" maxW="xl">
-        Use the form below to enter your email address and basic info to
-        register.
-      </Heading>
-      <Markdown content={markdown} />
-      <Form<SignUpForm>
-        defaultValues={{
-          promo: promo?.code,
-          email
-        }}
-        onSuccess={({ email }) => {
-          signIn('email', {
-            callbackUrl: '/apply',
-            email: email || ''
-          })
-        }}
-        onSubmit={(data) => {
-          return postJSON<SignUpForm>('/api/register', data)
-        }}
-        successMessage={'Your account has been created.'}
-      >
-        {({ register }) => (
-          <>
-            <SimpleGrid columns={[1, 2]} spacing={4}>
-              <FieldInput
-                field="first_name"
-                label="First Name"
-                registerOptions={required}
-              />
-              <FieldInput field="last_name" label="Last Name" />
-              <GridItem colSpan={[1, 2]}>
+      <Box mb={4}>
+        <Markdown content={markdown} />
+      </Box>
+
+      {(!submitted && (
+        <Form<SignUpForm>
+          defaultValues={{
+            promo: promo?.code
+          }}
+          onSubmit={(data) => {
+            setSubmitted(true)
+            return postJSON<SignUpForm>('/api/register', data)
+          }}
+          onSuccess={({ email }) => {
+            signIn('email', {
+              callbackUrl: '/apply',
+              email
+            })
+          }}
+          onError={(error) => {
+            console.error(error)
+            setSubmitted(false)
+          }}
+          successMessage={`Your account has been created. Check your email inbox for the sign-in link. (If you don't see the link, check your spam folder)`}
+        >
+          {({ register }) => (
+            <>
+              <SimpleGrid columns={[1, 2]} spacing={4}>
                 <FieldInput
-                  type="email"
-                  field="email"
-                  label="Email"
+                  field="first_name"
+                  label="First Name"
                   registerOptions={required}
                 />
-              </GridItem>
-              <FieldSelect
-                field="birth_month"
-                label="Birth Month"
-                options={birthMonthOptions}
-                registerOptions={required}
-              />
-              <FieldInput
-                type="number"
-                field="birth_year"
-                label="Birth Year"
-                min={minYear}
-                max={maxYear}
-                registerOptions={required}
-              />
-              <input type="hidden" {...register('promo')} />
-            </SimpleGrid>
-            {promo?.code && (
-              <>
-                <Heading>
-                  Promo Code: <strong>{promo?.code}</strong>
-                </Heading>
-                <Markdown content={promo?.description} />
-              </>
-            )}
-            <Button color="accent" type="submit" mt={4}>
-              Start Application
-            </Button>
-          </>
-        )}
-      </Form>
+                <FieldInput field="last_name" label="Last Name" />
+                <GridItem colSpan={[1, 2]}>
+                  <FieldInput
+                    type="email"
+                    field="email"
+                    label="Email"
+                    registerOptions={required}
+                    help="Email using Microsoft, Google, Yahoo or Twitter is recommended, for fastest authentication. Other email providers will be sent a link to login."
+                  />
+                </GridItem>
+                <FieldSelect
+                  field="birth_month"
+                  label="Birth Month"
+                  options={birthMonthOptions}
+                  registerOptions={required}
+                />
+                <FieldInput
+                  type="number"
+                  field="birth_year"
+                  label="Birth Year"
+                  min={minYear}
+                  max={maxYear}
+                  registerOptions={required}
+                />
+                <input type="hidden" {...register('promo')} />
+              </SimpleGrid>
+              {promo?.code && (
+                <>
+                  <Heading>
+                    Promo Code: <strong>{promo?.code}</strong>
+                  </Heading>
+                  <Markdown content={promo?.description} />
+                </>
+              )}
+              <BusyButton type="submit" bg="accent.500" size="lg" mt={4}>
+                Start Application
+              </BusyButton>
+            </>
+          )}
+        </Form>
+      )) || (
+        <Center>
+          <Spinner />
+        </Center>
+      )}
     </Page>
   )
 }

@@ -66,7 +66,7 @@ export default async function MemberLike(
             button_text: action,
             button_url: `${baseUrl}/members/${me.id}`,
           },
-          SendGridTemplate.AppNotification,
+          SendGridTemplate.Notification,
           SendGridCategory.Notification
         )
 

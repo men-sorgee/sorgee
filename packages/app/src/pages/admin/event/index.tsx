@@ -11,6 +11,7 @@ import {
   LinkBox,
   LinkOverlay,
   Stat,
+  StatGroup,
   StatLabel,
   StatNumber,
   Tab,
@@ -76,11 +77,14 @@ export default function AdminEventList({ events }: Props) {
 
   const getCollected = (event: GroupEvent) => {
     const users = event.users as EventUser[]
-    const collected = users?.reduce((acc: number, invite: EventUser) => {
-      if (invite?.paid) return acc + Number(event.cost || 0)
-      return acc
-    }, 0)
-    return collected
+    const attended = users?.filter((m) => m.attended == true).length
+    const paid = users?.filter((m) => m.paid == true).length
+    const collected = paid * event.cost
+    return {
+      attended,
+      paid,
+      collected
+    }
   }
 
   return (
@@ -133,13 +137,24 @@ export default function AdminEventList({ events }: Props) {
             {past.map((event) => (
               <LinkBox key={event.id} cursor="pointer" mb={4}>
                 <EventCard event={event} showDescription={false}>
-                  <LinkOverlay as={Link} href={`/admin/event/${event.id}`}>
-                    View Event
-                  </LinkOverlay>
-                  <Stat>
-                    <StatLabel>Collected</StatLabel>
-                    <StatNumber>${getCollected(event)}</StatNumber>
-                  </Stat>
+                  <LinkOverlay
+                    as={Link}
+                    href={`/admin/event/${event.id}`}
+                  ></LinkOverlay>
+                  <StatGroup>
+                    <Stat>
+                      <StatLabel>Attended</StatLabel>
+                      <StatNumber>{getCollected(event).attended}</StatNumber>
+                    </Stat>
+                    <Stat>
+                      <StatLabel>Paid</StatLabel>
+                      <StatNumber>{getCollected(event).paid}</StatNumber>
+                    </Stat>
+                    <Stat>
+                      <StatLabel>Collected</StatLabel>
+                      <StatNumber>${getCollected(event).collected}</StatNumber>
+                    </Stat>
+                  </StatGroup>
                 </EventCard>
               </LinkBox>
             ))}

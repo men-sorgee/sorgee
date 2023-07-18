@@ -45,6 +45,11 @@ export async function listAdminEvents(): Promise<GroupEvent[]> {
     filter,
     fields: ['*.*'],
     sort: ['datetime'],
+    deep: {
+      users: {
+        _limit: -1,
+      }
+    }
   })
   if (!data || data.length == 0) return []
   return data as unknown as GroupEvent[]
@@ -64,7 +69,7 @@ export async function registerForEvent(
   return invite as unknown as EventUser
 }
 
-export async function getEvent(id: string): Promise<GroupEvent> {
+export async function getEvent(id: string, filter?: any): Promise<GroupEvent> {
   const client = await getAdminClient()
   const event: GroupEvent = (await client.items('events').readOne(id, {
     fields: [
@@ -82,9 +87,22 @@ export async function getEvent(id: string): Promise<GroupEvent> {
         _limit: -1,
       },
     },
+    filter: filter || {},
   })) as any as GroupEvent
   if (!event) return null
   return event as GroupEvent
+}
+
+export async function updateEvent(id: string, data: Partial<GroupEvent>): Promise<GroupEvent> {
+  const client = await getAdminClient()
+  const event = await client.items('events').updateOne(id, data)
+  return event as unknown as GroupEvent
+}
+
+export async function updateEventUsers(ids: number[], data: Partial<EventUser>): Promise<EventUser[]> {
+  const client = await getAdminClient()
+  const attendees = await client.items('events_users').updateMany(ids, data)
+  return attendees as unknown as EventUser[]
 }
 
 export async function getEventDetail(id: string): Promise<EventDetail> {

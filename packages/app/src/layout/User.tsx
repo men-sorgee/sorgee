@@ -136,6 +136,18 @@ export default function UserMenu(_props: Props) {
                         Billing
                       </MenuItem>
                     )}
+                    <MenuItem
+                      icon={
+                        <SquaresPlusIcon color={'white'} width={'1.5rem'} />
+                      }
+                      bg="black"
+                      _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                      as={Link}
+                      rel="noopener noreferrer"
+                      href="/member/account"
+                    >
+                      Upgrade Subscription
+                    </MenuItem>
                   </>
                 )}
 
@@ -374,15 +386,11 @@ export default function UserMenu(_props: Props) {
           </ButtonLink>
           {showApply && (
             <ButtonLink
-              href={`/apply`}
+              href={`/register`}
               color="white"
               _hover={{ textDecoration: 'none' }}
               fontWeight={600}
               colorScheme={'accent'}
-              onClick={(e) => {
-                e.preventDefault()
-                signIn(null, { callbackUrl: '/apply' })
-              }}
             >
               apply
             </ButtonLink>

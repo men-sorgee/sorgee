@@ -1,17 +1,20 @@
-import { ApiResponse, EventDetail, MemberLevel } from 'lib/models'
-import { getEventDetail } from 'lib/services/directus/server'
-import { withMember } from 'lib/utils/server'
+import { ApiResponse, EventDetail, EventUser, Member, MemberLevel } from 'lib/models'
+import { getEventDetail, setUserAverageRating, updateEvent, updateEventUsers } from 'lib/services/directus/server'
+import { withMember, withMethods } from 'lib/utils/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function Event(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<EventDetail>>
+  res: NextApiResponse<ApiResponse<EventDetail | EventUser[]>>
 ) {
   try {
+    const method = withMethods(req, ['GET'])
     const user = await withMember(req, res)
     const { id: i } = req.query
     const id = String(i)
+
     const event = await getEventDetail(id)
+    if (!event) throw new Error('Event not found')
 
     const level = MemberLevel[user.user_type]
 
@@ -22,9 +25,12 @@ export default async function Event(
     }
 
     return res.status(200).json(ApiResponse(event))
+
   } catch (e) {
     if (e.message == 'Unauthorized') return res.status(200).json(ApiResponse(null))
     console.error(e)
     return res.status(401).json(ApiResponse(null, e))
   }
 }
+
+

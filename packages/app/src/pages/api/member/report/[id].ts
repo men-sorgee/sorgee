@@ -37,7 +37,7 @@ export default async function MemberReport(
         button_text: 'View Reported in Admin',
         button_url: `${adminBaseUrl}/admin/content/users/${me.id}`,
       },
-      SendGridTemplate.AppNotification,
+      SendGridTemplate.Notification,
       SendGridCategory.Notification
     )
 
