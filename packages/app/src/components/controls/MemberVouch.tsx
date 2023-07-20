@@ -89,6 +89,8 @@ export const MemberVouch = chakra(
       myLevel
     ])
 
+    if (member?.id == me?.id) return null
+
     return (
       <>
         {(voucher?.id && (
