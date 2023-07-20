@@ -44,13 +44,20 @@ const Plans = ({
 
   useEffect(() => {
     if (!loading && !productsLoading && products && member) {
-      event('plans_view', {
+      event('session_start', {
         category: 'monetization',
-        highlighted_plan: products.find(
-          (p) => p.type == MembershipType[highlightedPlan]
-        )?.id,
         userId: member?.id
       })
+
+      if (highlightedPlan) {
+        event('view_item', {
+          category: 'monetization',
+          productId: products.find(
+            (p) => p.type == MembershipType[highlightedPlan]
+          )?.id,
+          userId: member?.id
+        })
+      }
     }
   }, [highlightedPlan, loading, member, products, productsLoading])
 
@@ -71,7 +78,17 @@ const Plans = ({
       return
     }
     const subscription = products.find((p) => p.id == productId)
-    event('plans_purchase_start', {
+    event('add_to_cart', {
+      category: 'monetization',
+      plan: MembershipType[subscription.type],
+      productId,
+      userId: member?.id,
+      value: data.amount,
+      currency: 'usd',
+      sessionId: data.id
+    })
+
+    event('begin_checkout', {
       category: 'monetization',
       plan: MembershipType[subscription.type],
       productId,

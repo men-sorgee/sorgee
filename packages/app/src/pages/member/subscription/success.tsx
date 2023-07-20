@@ -34,7 +34,7 @@ export default function SubscriptionSuccessPage() {
       productId &&
       product
     ) {
-      event('plans_purchase_complete', {
+      event('purchase', {
         category: 'monetization',
         plan: MembershipType[product.type],
         productId,
