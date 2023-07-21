@@ -3,16 +3,18 @@ import { ClipboardDocumentListIcon } from '@heroicons/react/24/outline'
 import { Text, Heading, Box, Alert, AlertIcon } from '@chakra-ui/react'
 import { useUser } from 'hooks'
 import { MemberLevel } from 'lib/models'
+import { capitalCase } from 'change-case'
 
 export default function MemberHomePage() {
   const { member, level, loading } = useUser()
+  const levelName = level ? capitalCase(MemberLevel[level]) : 'Member'
   return (
     <Page title="Member Home" hideHeader loading={loading}>
+      <Heading as="h1" size="2xl" textAlign="center">
+        Welcome {levelName}!
+      </Heading>
       {level == MemberLevel.pledge && (
         <>
-          <Heading as="h1" size="2xl" textAlign="center">
-            Welcome Pledge!
-          </Heading>
           <Box maxWidth="xl" mx="auto">
             <Text fontSize="xl">
               You joined the site without an existing Brother to vouch for you.
