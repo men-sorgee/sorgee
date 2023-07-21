@@ -76,7 +76,7 @@ export default function UserMenu(_props: Props) {
             {member && <MemberAvatar member={member} />}
           </MenuButton>
 
-          <MenuList bg="black" maxH="80vh" overflowY="auto">
+          <MenuList bg="black" maxH="80vh" overflowY="auto" zIndex="10">
             <Box
               p={4}
               m={2}
@@ -379,10 +379,12 @@ export default function UserMenu(_props: Props) {
             color="white"
             onClick={(e) => {
               e.preventDefault()
-              signIn()
+              signIn(null, {
+                callbackUrl: '/member'
+              })
             }}
           >
-            members
+            Existing Members
           </ButtonLink>
           {showApply && (
             <ButtonLink
@@ -392,7 +394,7 @@ export default function UserMenu(_props: Props) {
               fontWeight={600}
               colorScheme={'accent'}
             >
-              apply
+              Apply to Join
             </ButtonLink>
           )}
         </>
