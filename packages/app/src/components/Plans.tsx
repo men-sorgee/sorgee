@@ -204,7 +204,7 @@ const Plans = ({
               <Spacer />
               {showButtons && (
                 <Box>
-                  {showSubscribeButton && (
+                  {(showSubscribeButton && (
                     <Button
                       onClick={() => processSubscription(product.id)}
                       variant="solid"
@@ -213,6 +213,10 @@ const Plans = ({
                       _hover={{ bg: 'accent.600' }}
                     >
                       Subscribe
+                    </Button>
+                  )) || (
+                    <Button disabled cursor="not-allowed">
+                      Brothers Only
                     </Button>
                   )}
                   {showManageSubscriptionButton &&
