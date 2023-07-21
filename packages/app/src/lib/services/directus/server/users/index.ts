@@ -37,7 +37,7 @@ export async function getUser<T = User>(
   fields: UserFields = memberFields
 ): Promise<T | null> {
   const adminClient = await getAdminClient()
-  const user: any = await adminClient.items('users').readOne(id, {
+  const user: T = await adminClient.items('users').readOne(id, {
     fields: fields as any,
     filter: {
       status: {

@@ -118,6 +118,7 @@ export type User = {
   nickname?: string
   auth_with_phone: boolean
   vouched_by?: string | VouchingUser
+  progress: ProgressType[]
   needs_guidance?: boolean
   signed_waiver?: boolean
   biography?: string
@@ -434,11 +435,14 @@ export const memberFeatures: MemberFeature[] = [
 
 export type PresenceType = 'offline' | 'online' | 'away'
 
+export type ProgressType = 'avatar' | 'contact' | 'events' | 'interests' | 'profile' | 'explicit' | 'roles' | 'health' | 'photos' | 'location'
+
 export type Member = Applicant & {
   vouched_by: VouchingUser
   signed_waiver: boolean
   presence: PresenceType
   ratings: Rating[]
+  progress: ProgressType[]
 
   video_consent: boolean
   photo_consent: boolean
@@ -586,6 +590,7 @@ export const memberProfilePrivateFields: Array<keyof Member> = [
   'public_folder',
   'approved_date',
   'ratings',
+  'progress'
 ]
 
 export const memberProfileContactFields: Array<keyof Member> = [
