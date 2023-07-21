@@ -5,16 +5,32 @@ import { useRouter } from 'next/router'
 import { Text } from '@chakra-ui/react'
 
 import { Page } from 'components'
+import { MemberLevel } from '../lib/models'
 
 export default function UnauthorizedPage() {
   const router = useRouter()
-  const { level } = router.query
+  const { level, plan } = router.query
   return (
     <Page title="Unauthorized">
       <Text align="center">
         Unfortunately, the page you tried to access is only available to{' '}
-        {level || 'member'}s. Learn how to advance your level in our{' '}
-        <Link href="/brothers">brotherhood guide</Link>.
+        {level || 'brother'}s.
+        {(plan && (
+          <>
+            <br />
+            You will also need the {plan || 'plus'} plan:{' '}
+            <Link href={`/member/subscription?plan=${plan}`}>
+              Subscribe Here
+            </Link>
+            .
+          </>
+        )) || (
+          <>
+            {' '}
+            Learn how to advance your level in our{' '}
+            <Link href="/brothers">brotherhood guide</Link>.
+          </>
+        )}
       </Text>
 
       <Image

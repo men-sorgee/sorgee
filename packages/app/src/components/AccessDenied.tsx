@@ -8,14 +8,6 @@ import { ButtonLink } from './controls'
 
 const AccessDenied = () => {
   const { status } = useSession()
-
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      setTimeout(() => {
-        signIn()
-      }, 1000)
-    }
-  })
   return (
     <Box mx={[4, 4, 0]}>
       <Heading as="h1" size="h1">

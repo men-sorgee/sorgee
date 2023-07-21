@@ -161,27 +161,20 @@ export const useUser = ({
         const status = ApplicationStatus[member.application_status]
         if (status < minAppStatus) {
           const destination = '/apply/' + member.application_status
-          if (router.asPath != destination) router.push(destination)
+          if (router.asPath != destination)
+            router.push(destination, destination).catch(console.error)
           return
         }
         if (level < minLevel) {
-          const destination = '/unauthorized'
+          const destination = `/unauthorized?level=${MemberLevel[minLevel]}`
           if (router.asPath != destination)
-            router.push(destination, {
-              query: {
-                level: minLevel
-              }
-            })
+            router.push(destination, destination).catch(console.error)
           return
         }
         if (requiredFeature && !hasFeature(requiredFeature)) {
-          const destination = '/member/subscription'
+          const destination = `/member/subscription?feature=${requiredFeature}`
           if (router.asPath != destination)
-            router.push(destination, {
-              query: {
-                feature: requiredFeature
-              }
-            })
+            router.push(destination, destination).catch(console.error)
           return
         }
       } else {
