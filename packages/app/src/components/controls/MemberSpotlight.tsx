@@ -1,5 +1,4 @@
 import { ReactNode, useEffect, useState } from 'react'
-
 import { formatDistanceToNowStrict } from 'date-fns'
 import { useMember, useMeta, useUser } from 'hooks'
 import {
@@ -17,7 +16,6 @@ import {
   UserPhoto
 } from 'lib/models'
 import { EyeSlashIcon } from '@heroicons/react/24/solid'
-
 import {
   Accordion,
   AccordionButton,
@@ -47,7 +45,6 @@ import {
   useColorModeValue,
   VStack
 } from '@chakra-ui/react'
-
 import {
   MemberBlock,
   MemberChat,
@@ -63,6 +60,7 @@ import {
 import { ImageGallery } from './ImageGallery'
 import { Loading } from './Loading'
 import { Rating } from './Rating'
+import { toLocalDate } from 'lib/utils/index'
 
 type Props = FlexProps & {
   id: string
@@ -218,7 +216,9 @@ export const MemberSpotlight = chakra(
                   {member?.show_profile && member.last_login && (
                     <>
                       Last Login:{' '}
-                      {formatDistanceToNowStrict(new Date(member.last_login))}{' '}
+                      {formatDistanceToNowStrict(
+                        toLocalDate(member.last_login)
+                      )}{' '}
                       ago
                     </>
                   )}
@@ -226,7 +226,7 @@ export const MemberSpotlight = chakra(
                 <Spacer />
                 <Text fontSize="xs">
                   Member Since:{' '}
-                  {new Date(
+                  {toLocalDate(
                     member.approved_date || member.date_created
                   ).toLocaleDateString()}
                 </Text>

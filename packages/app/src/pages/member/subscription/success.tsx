@@ -11,10 +11,7 @@ export default function SubscriptionSuccessPage() {
   const router = useRouter()
   const { products, loading: productsLoading } = useProducts()
   const { member, loading } = useUser()
-  const { product: productId, session: sessionId } = router.query
-  const { session, loading: sessionLoading } = useStripeSession(
-    sessionId as string
-  )
+  const { product: productId } = router.query
 
   useEffect(() => {
     if (!loading && !productsLoading && products && productId) {
@@ -28,7 +25,6 @@ export default function SubscriptionSuccessPage() {
     if (
       !loading &&
       !productsLoading &&
-      !sessionLoading &&
       products &&
       member?.id &&
       productId &&
@@ -39,27 +35,14 @@ export default function SubscriptionSuccessPage() {
         plan: MembershipType[product.type],
         productId,
         userId: member.id,
-        value: session.amount_total,
-        currency: session.currency,
-        sessionId
+        value: product.prices[member?.renewal_type || 'monthly'],
+        currency: product.currency
       })
       setTimeout(async () => {
-        await router.push('/member/account')
+        await router.push('/member/account/plan')
       }, 5000)
     }
-  }, [
-    member,
-    loading,
-    productId,
-    router,
-    productsLoading,
-    products,
-    session?.amount_total,
-    session?.currency,
-    sessionId,
-    sessionLoading,
-    product
-  ])
+  }, [member, loading, productId, router, productsLoading, products, product])
 
   return (
     <Page title="Subscription Success" requireAuth loading={loading}>

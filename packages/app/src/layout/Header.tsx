@@ -30,11 +30,12 @@ import { constrained } from './index'
 import User from './User'
 
 export type Props = BoxProps & {
+  isAuthenticated?: boolean
   userType?: UserType
   children?: React.ReactNode | React.ReactNode[]
 }
 
-function Header({ userType, children, ...props }: Props) {
+function Header({ isAuthenticated, userType, children, ...props }: Props) {
   const router = useRouter()
   const { isOpen, onToggle, onClose } = useDisclosure()
   const [pages, setPages] = useState<PageItem[]>()
@@ -143,9 +144,7 @@ function Header({ userType, children, ...props }: Props) {
   ]
   const bg = useColorModeValue('primary.800', 'black')
 
-  const NavMenu = ({
-    navItems
-  }: StackProps & { navItems: NavItem[] }) => {
+  const NavMenu = ({ navItems }: StackProps & { navItems: NavItem[] }) => {
     return (
       <Accordion
         allowToggle
@@ -205,7 +204,7 @@ function Header({ userType, children, ...props }: Props) {
             />
           </Box>
 
-          <Logo />
+          <Logo isAuthenticated={isAuthenticated} />
           <Box w="50%" textAlign="right">
             <User />
           </Box>

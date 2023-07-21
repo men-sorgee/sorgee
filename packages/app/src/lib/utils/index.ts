@@ -2,7 +2,7 @@ import { addMinutes, format } from 'date-fns'
 import { ApiError, ApiResponse } from 'lib/models'
 
 export function toLocalDate(value: string) {
-  return addMinutes(new Date(value), new Date().getTimezoneOffset())
+  return new Date(value)
 }
 
 export const getUTCNow = () => {
@@ -18,6 +18,13 @@ export const getUTCNow = () => {
       now.getUTCMilliseconds()
     )
   )
+}
+
+export const uuidv4 = () => {
+  return 'xxxxxxxx-xxxx-4xxx'.replace(/[xy]/g, function (c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8)
+    return v.toString(16)
+  });
 }
 
 export function getEventDate(eventStart: string) {

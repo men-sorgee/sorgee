@@ -7,12 +7,12 @@ import { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    let user = await withMember(req, res)
+    let member = await withMember(req, res)
 
     const stripe = getClient()
 
-    if (!user.customer_id) {
-      const { id, email, first_name, last_name } = user
+    if (!member.customer_id) {
+      const { id, email, first_name, last_name } = member
 
       const customer = await stripe.customers.create({
         email,
@@ -22,19 +22,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         },
       })
 
-      user = await updateUser<Member>(user.id, {
+      member = await updateUser<Member>(member.id, {
         customer_id: customer.id,
       })
     }
 
     const session = await stripe.billingPortal.sessions.create({
-      customer: user.customer_id,
-      return_url: `${baseUrl}/member/account`,
+      customer: member.customer_id,
+      return_url: `${baseUrl}/member/account/plan`
     })
 
     res.redirect(session.url)
   } catch (error) {
     console.error(error)
-    res.redirect(req.headers.referer || '/member/account')
+    res.redirect(req.headers.referer || '/member/account/plan')
   }
 }

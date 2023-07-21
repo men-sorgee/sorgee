@@ -72,7 +72,7 @@ const Plans = ({
     const { data, error, success } = await getJSON<{
       id: string
       amount: number
-    }>(`/api/stripe/session?productId=${productId}`)
+    }>(`/api/stripe/purchase/${productId}`)
     if (!success) {
       console.error(error)
       return
@@ -99,17 +99,13 @@ const Plans = ({
     })
 
     await stripe.redirectToCheckout({
-      sessionId: data.id,
-      customerEmail: member?.email,
-      clientReferenceId: member?.id,
-      mode: 'subscription',
-      cancelUrl: `${baseUrl}/member/subscription/cancelled?product=${productId}&session=${data.id}`,
-      successUrl: `${baseUrl}/member/subscription/success?product=${productId}&session=${data.id}`
+      sessionId: data.id
     })
   }
 
   const showSubscribeButton =
     !!member && member.membership_type == 'none' && level == MemberLevel.brother
+  const showNoButton = level < MemberLevel.brother
   const showManageSubscriptionButton =
     !!member && member.membership_type != 'none'
 
@@ -204,7 +200,7 @@ const Plans = ({
               <Spacer />
               {showButtons && (
                 <Box>
-                  {(showSubscribeButton && (
+                  {showSubscribeButton && (
                     <Button
                       onClick={() => processSubscription(product.id)}
                       variant="solid"
@@ -214,11 +210,13 @@ const Plans = ({
                     >
                       Subscribe
                     </Button>
-                  )) || (
+                  )}
+                  {showNoButton && (
                     <Button disabled cursor="not-allowed">
                       Brothers Only
                     </Button>
                   )}
+
                   {showManageSubscriptionButton &&
                     member.membership_type != product.type && (
                       <ButtonLink

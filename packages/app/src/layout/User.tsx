@@ -107,48 +107,28 @@ export default function UserMenu(_props: Props) {
             <MenuDivider />
             {isMember && (
               <>
-                {!isStaff && isBrother && (
-                  <>
-                    <MenuItem
-                      icon={
-                        <SquaresPlusIcon color={'white'} width={'1.5rem'} />
-                      }
-                      bg="black"
-                      _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                      as={Link}
-                      rel="noopener noreferrer"
-                      href="/member/account"
-                    >
-                      Account
-                    </MenuItem>
-                    {member.membership_type != 'none' && (
-                      <MenuItem
-                        icon={
-                          <CreditCardIcon color={'white'} width={'1.5rem'} />
-                        }
-                        bg="black"
-                        _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                        as={Link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href="/api/stripe/portal"
-                      >
-                        Billing
-                      </MenuItem>
-                    )}
-                    <MenuItem
-                      icon={
-                        <SquaresPlusIcon color={'white'} width={'1.5rem'} />
-                      }
-                      bg="black"
-                      _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                      as={Link}
-                      rel="noopener noreferrer"
-                      href="/member/account"
-                    >
-                      Upgrade Subscription
-                    </MenuItem>
-                  </>
+                <MenuItem
+                  icon={<SquaresPlusIcon color={'white'} width={'1.5rem'} />}
+                  bg="black"
+                  _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                  as={Link}
+                  rel="noopener noreferrer"
+                  href="/member/account"
+                >
+                  Account
+                </MenuItem>
+                {!isStaff && isBrother && member.membership_type != 'none' && (
+                  <MenuItem
+                    icon={<CreditCardIcon color={'white'} width={'1.5rem'} />}
+                    bg="black"
+                    _hover={{ bg: 'gray.400', textDecoration: 'none' }}
+                    as={Link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="/api/stripe/portal"
+                  >
+                    Billing
+                  </MenuItem>
                 )}
 
                 <MenuItem

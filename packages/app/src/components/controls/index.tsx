@@ -30,6 +30,7 @@ export { MemberLike } from './MemberLike'
 export { MemberBlock } from './MemberBlock'
 export { MemberReport } from './MemberReport'
 export { MemberProgressCheck } from './MemberProgressCheck'
+export { MemberProgress } from './MemberProgress'
 
 export { ImageModal } from './ImageModal'
 export { ImageGallery } from './ImageGallery'
@@ -49,7 +50,5 @@ export { AppNotificationCard } from './AppNotificationCard'
 export { UserNotificationCard } from './UserNotificationCard'
 export { UserNotifications } from './UserNotifications'
 export { Messages } from './Messages'
-
-export { SubscribeBox } from './SubscribeBox'
 
 export { UpgradeIcon } from './UpgradeIcon'

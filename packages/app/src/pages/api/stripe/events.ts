@@ -17,11 +17,12 @@ async function getRawBody(readable: Readable): Promise<Buffer> {
 }
 
 function extractFromSubscription(subscription: Stripe.Subscription & any) {
-  const { customer, status, plan, start_date: start, items } = subscription
+  const { id, customer, status, plan, start_date: start, items } = subscription
   const { product } = plan
   const { type, features } = subscriptionData[product]
   const interval = items.data[0]?.price?.recurring?.interval
   return {
+    id,
     type,
     customer,
     product,
@@ -67,7 +68,7 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
         }
         break
       case 'subscription':
-        const { customer: customerId } = extractFromSubscription(subscription)
+        const { id: subscriptionId, customer: customerId } = extractFromSubscription(subscription)
         user = (await findUserByCustomer(customerId)) as User
         break
     }
@@ -107,6 +108,7 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
     case 'customer.subscription.resumed':
     case 'customer.subscription.updated':
       let {
+        id: subscription_id,
         customer: customer_id,
         type: membership_type,
         features,
@@ -120,6 +122,7 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
       membership_type = active ? membership_type : user.membership_type || 'free'
 
       await updateUser(user.id, {
+        subscription_id,
         customer_id,
         has_features,
         membership_type,
@@ -127,10 +130,16 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
         renewal_type,
       })
       break
-
-    case 'customer.subscription.deleted':
-    case 'customer.subscription.paused':
     case 'customer.subscription.expired':
+    case 'customer.subscription.deleted':
+      await updateUser(user.id, {
+        has_features: [],
+        membership_type: 'none',
+        renewal_type: null,
+        subscription_id: null,
+      })
+      break
+    case 'customer.subscription.paused':
       await updateUser(user.id, {
         has_features: [],
         membership_type: 'none',

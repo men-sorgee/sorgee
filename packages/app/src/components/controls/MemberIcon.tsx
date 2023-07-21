@@ -108,9 +108,11 @@ export const MemberIcon = chakra(
               >
                 <Box>
                   <MemberBadge member={member} my={2} />
-                  <Text fontSize="sm" color={color} mt={0}>
-                    {member?.city} {member?.state}
-                  </Text>
+                  {member.show_location && (
+                    <Text fontSize="sm" color={color} mt={0}>
+                      {member?.city} {member?.state}
+                    </Text>
+                  )}
                 </Box>
 
                 <Spacer flex="grow" />

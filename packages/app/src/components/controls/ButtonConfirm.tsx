@@ -11,25 +11,27 @@ import {
   ButtonProps,
   chakra,
   useDisclosure,
-  useToast,
+  useToast
 } from '@chakra-ui/react'
 
 export type ConfirmButtonProps = ButtonProps & {
-  promise: () => Promise<any>
+  promise?: () => Promise<any>
   complete: (bool: boolean, data: any, error?: string) => void
   title: string
   buttonText: string
   confirmColorScheme?: string
-  successMessage: string
-  failureMessage: string
-  focusRef?: RefObject<HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement>
+  successMessage?: string
+  failureMessage?: string
+  focusRef?: RefObject<
+    HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement
+  >
   children: ReactNode | ReactNode[]
 }
 
 export const ButtonConfirm = chakra(
   ({
-    promise,
-    complete,
+    promise = () => Promise.resolve(),
+    complete = () => null,
     title,
     buttonText,
     confirmColorScheme = 'red',
@@ -47,21 +49,23 @@ export const ButtonConfirm = chakra(
       return promise()
         .then((data) => {
           complete(true, data, null)
-          toast({
-            title,
-            description: successMessage,
-            status: 'success',
-            duration: 3000,
-          })
+          if (successMessage)
+            toast({
+              title,
+              description: successMessage,
+              status: 'success',
+              duration: 3000
+            })
         })
         .catch((err) => {
           complete(false, null, err)
-          toast({
-            title,
-            description: failureMessage + ' ' + err?.message || err,
-            status: 'error',
-            duration: 5000,
-          })
+          if (failureMessage)
+            toast({
+              title,
+              description: failureMessage + ' ' + err?.message || err,
+              status: 'error',
+              duration: 5000
+            })
         })
     }, [complete, failureMessage, promise, successMessage, title, toast])
     return (

@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import {
+  ButtonLink,
   FieldCheckboxes,
   FieldInput,
   FieldNumber,
@@ -7,7 +8,8 @@ import {
   FieldSwitch,
   FieldText,
   Form,
-  MemberHeader,
+  MemberCard,
+  MemberModal,
   Page
 } from 'components'
 import { useUser } from 'hooks/use-user'
@@ -27,8 +29,11 @@ import {
   TabPanels,
   Tabs,
   Text,
-  useColorModeValue
+  useColorModeValue,
+  useDisclosure
 } from '@chakra-ui/react'
+import { id } from 'date-fns/locale'
+import { ApiResult } from '../../../lib/utils'
 
 type PageProps = {
   fieldMap: FieldMap
@@ -57,13 +62,21 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function ProfilePage(props: PageProps) {
-  const { member, loading } = useUser({
+export default function ProfilePage({ fieldMap, section }: PageProps) {
+  const { member, loading, level, mutate } = useUser({
     minLevel: MemberLevel.pledge
   })
   return (
-    <Page title="Edit Profile" loading={loading} requireAuth={true}>
-      {member && <ProfileForm {...props} />}
+    <Page title="Your Profile" loading={loading} requireAuth={true}>
+      {member && (
+        <ProfileForm
+          member={member}
+          level={level}
+          mutate={mutate}
+          fieldMap={fieldMap}
+          section={section}
+        />
+      )}
     </Page>
   )
 }
@@ -113,10 +126,21 @@ enum PageSection {
   health
 }
 
-const ProfileForm = ({ fieldMap, section: s = 'explicit' }: PageProps) => {
+type FormProps = PageProps & {
+  member: Member
+  level: MemberLevel
+  mutate: (member: Member) => Promise<ApiResult<Member>>
+}
+
+const ProfileForm = ({
+  member,
+  mutate,
+  level,
+  fieldMap,
+  section: s = 'explicit'
+}: FormProps) => {
   const section = PageSection[s]
   const [tabValue, setTabValue] = useState(section)
-  const { member, mutate, level } = useUser()
 
   const setSection = useCallback(
     (tab: number) => {
@@ -210,27 +234,44 @@ const ProfileForm = ({ fieldMap, section: s = 'explicit' }: PageProps) => {
     return fieldMap[field]?.meta.options.choices
   }
 
-  const bg = useColorModeValue('gray.100', 'dark.700')
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
-  let showProfile: boolean | undefined
   const isPledge = level == MemberLevel.pledge
   return (
     <>
-      <Text size="lg">
+      <Text size="lg" mb={4}>
         This is your profile. We use this information to match you with
         brothers. Verified brothers can see your full profile, unless you choose
-        to make it private.
+        to make it private. <b>Click to open your full profile!</b>
       </Text>
-      {isPledge && (
+
+      <Collapse animateOpacity in={show_profile}>
+        <MemberCard member={member} viewer={member} full onClick={onOpen} />
+        <MemberModal isOpen={isOpen} memberId={member?.id} onClose={onClose} />
+      </Collapse>
+      {!show_profile && (
         <Alert
-          bg={'primary.300'}
           color="white"
           flexDirection="column"
           my={4}
           p={4}
           borderRadius="md"
           shadow="md"
-          status="error"
+          bg="orange.500"
+        >
+          You are not currently showing your profile. You can change this in the
+          Basic section.
+        </Alert>
+      )}
+      {isPledge && (
+        <Alert
+          color="white"
+          flexDirection="column"
+          my={4}
+          p={4}
+          borderRadius="md"
+          shadow="md"
+          bg="orange.500"
         >
           As a Pledge you are hoping someone sees enough of you in your profile
           that they choose to reach out and vet you for the group. Vague, short
@@ -244,69 +285,6 @@ const ProfileForm = ({ fieldMap, section: s = 'explicit' }: PageProps) => {
       >
         {({ watch, formState: { isDirty, isSubmitting } }) => (
           <>
-            {(showProfile = watch('show_profile'))}
-            <SimpleGrid
-              bg={bg}
-              columns={{ base: 1, lg: 2 }}
-              my={4}
-              rounded="lg"
-              shadow="lg"
-              border="1px solid transparent"
-              borderColor={showProfile ? 'accent.500' : 'text'}
-            >
-              <Collapse animateOpacity in={showProfile}>
-                <Flex direction="column" alignContent="center" p={4}>
-                  <MemberHeader member={member} viewer={member} />
-
-                  {member && (
-                    <Text noOfLines={2} py={0} my={0}>
-                      {member?.biography}
-                    </Text>
-                  )}
-                </Flex>
-              </Collapse>
-              <GridItem colSpan={showProfile ? 1 : 2}>
-                <Flex
-                  flexDirection="column"
-                  p={4}
-                  flexShrink={1}
-                  borderLeft={{
-                    base: 'none',
-                    lg: showProfile ? '4px dotted black' : ''
-                  }}
-                  borderTop={{
-                    base: showProfile ? '4px dotted black' : '',
-                    lg: 'none'
-                  }}
-                >
-                  <Text>
-                    You can choose to make your profile private if you do not
-                    wish to show up in member searches.*
-                  </Text>
-                  <Flex flexDirection={['column', 'row']} gap={4} mt={4}>
-                    <FieldSwitch
-                      mb={4}
-                      field="show_profile"
-                      label="Show Profile in Search"
-                      help="Turn this off, if do not wish to be searchable on the members page."
-                    />
-                    {showProfile && (
-                      <FieldSwitch
-                        mt={4}
-                        field="show_photos"
-                        label="Show Photos on Profile"
-                        help="Turn this off, if do not wish to be searchable on the members page."
-                      />
-                    )}
-                  </Flex>
-                </Flex>
-              </GridItem>
-            </SimpleGrid>
-            <Text fontSize="xs" as="em" mb={4}>
-              * This does not affect this information being used to recommend
-              you to other events and members.
-            </Text>
-
             <Tabs
               isFitted
               defaultIndex={tabValue}
@@ -318,31 +296,71 @@ const ProfileForm = ({ fieldMap, section: s = 'explicit' }: PageProps) => {
                 <Tab
                   fontSize={['md', 'lg', '2xl']}
                   fontWeight={tabValue == 0 ? 'bold' : null}
+                  px={[1, 2, 4]}
                 >
                   Basic
                 </Tab>
                 <Tab
                   fontSize={['md', 'lg', '2xl']}
                   fontWeight={tabValue == 1 ? 'bold' : null}
+                  px={[1, 2, 4]}
                 >
                   Explicit
                 </Tab>
                 <Tab
                   fontSize={['md', 'lg', '2xl']}
                   fontWeight={tabValue == 2 ? 'bold' : null}
+                  px={[1, 2, 4]}
                 >
                   Roles
                 </Tab>
                 <Tab
                   fontSize={['md', 'lg', '2xl']}
                   fontWeight={tabValue == 3 ? 'bold' : null}
+                  px={[1, 2, 4]}
                 >
                   Health
                 </Tab>
               </TabList>
               <TabPanels>
-                <TabPanel>
-                  <SimpleGrid spacing={4} columns={[1, 1, 3]} mt={10}>
+                <TabPanel p={0} pt={watch('show_profile') ? 0 : 4}>
+                  <Alert
+                    bg={'primary.300'}
+                    color="white"
+                    flexDirection="column"
+                    my={4}
+                    p={4}
+                    borderRadius="md"
+                    shadow="md"
+                  >
+                    <FieldSwitch
+                      mb={4}
+                      field="show_profile"
+                      label="Show Profile in Search"
+                      help="Turn this off, if do not wish to be searchable on the members page. This does not affect this information being used to
+                        recommend you to other events and members."
+                    />
+                    <Flex flexDirection={'row'} gap={4} mt={4} w="full">
+                      {watch('show_profile') && (
+                        <FieldSwitch
+                          mt={4}
+                          field="show_photos"
+                          label="Show Photos on Profile"
+                          help="Turn this off, if do not wish to be searchable on the members page."
+                        />
+                      )}
+                      {watch('show_profile') && watch('show_photos') && (
+                        <ButtonLink
+                          href="/member/photos"
+                          size="sm"
+                          variant="outline"
+                        >
+                          Manage Photos
+                        </ButtonLink>
+                      )}
+                    </Flex>
+                  </Alert>
+                  <SimpleGrid spacing={4} columns={[1, 1, 3]}>
                     <GridItem colSpan={[1, 1, 3]}>
                       <FieldInput
                         field="nickname"
@@ -436,8 +454,8 @@ const ProfileForm = ({ fieldMap, section: s = 'explicit' }: PageProps) => {
                     </GridItem>
                   </SimpleGrid>
                 </TabPanel>
-                <TabPanel p={0} pt={showProfile ? 0 : 4}>
-                  <Collapse animateOpacity in={showProfile}>
+                <TabPanel p={0} pt={watch('show_profile') ? 0 : 4}>
+                  <Collapse animateOpacity in={watch('show_profile')}>
                     <Alert
                       bg={'primary.300'}
                       color="white"
@@ -493,8 +511,8 @@ const ProfileForm = ({ fieldMap, section: s = 'explicit' }: PageProps) => {
                   </SimpleGrid>
                 </TabPanel>
 
-                <TabPanel p={0} pt={showProfile ? 0 : 4}>
-                  <Collapse animateOpacity in={showProfile}>
+                <TabPanel p={0} pt={watch('show_profile') ? 0 : 4}>
+                  <Collapse animateOpacity in={watch('show_profile')}>
                     <Alert
                       bg={'primary.300'}
                       color="white"
@@ -532,8 +550,8 @@ const ProfileForm = ({ fieldMap, section: s = 'explicit' }: PageProps) => {
                   </SimpleGrid>
                 </TabPanel>
 
-                <TabPanel p={0} pt={showProfile ? 0 : 4}>
-                  <Collapse animateOpacity in={showProfile}>
+                <TabPanel p={0} pt={watch('show_profile') ? 0 : 4}>
+                  <Collapse animateOpacity in={watch('show_profile')}>
                     <Alert
                       bg={'primary.300'}
                       color="white"
@@ -596,6 +614,7 @@ const ProfileForm = ({ fieldMap, section: s = 'explicit' }: PageProps) => {
               bottom={4}
               disabled={isSubmitting || !isDirty}
               _hover={{ bg: 'accent.500' }}
+              w={['full', 'auto']}
             >
               Update Profile
             </Button>

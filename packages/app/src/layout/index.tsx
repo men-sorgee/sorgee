@@ -71,7 +71,7 @@ function Layout({
     <>
       <Meta />
       <Flex direction="column" flex="1" overflowX="clip">
-        <Header userType={member?.user_type} />
+        <Header isAuthenticated={authenticated} userType={member?.user_type} />
         <Flex
           as="main"
           flex="1 100%"

@@ -5,8 +5,7 @@ import {
   SearchableMember,
   searchableMemberFields,
   User,
-  UserType,
-  UserBlock,
+  UserType
 } from 'lib/models'
 import { searchUsers } from 'lib/services/directus/server/users'
 import { normalize } from 'lib/utils'
@@ -145,7 +144,7 @@ export default async function FindMembers(
 
     let results = null
     try {
-      results = await searchUsers<Partial<User>>(
+      results = await searchUsers<SearchableMember>(
         searchParams as any,
         searchableMemberFields,
         limit,

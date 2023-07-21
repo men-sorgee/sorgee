@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { sentenceCase } from 'change-case'
-import { ButtonLink } from 'components'
+import { ButtonLink, ButtonConfirm } from 'components'
 import {
   memberFeatures,
   MembershipNames,
@@ -35,10 +35,6 @@ export default function Plan({ plan, interval }: Params) {
       <Flex
         direction={['column', 'column', 'row']}
         w={'full'}
-        rounded="md"
-        shadow={'dark-lg'}
-        border={'3px solid'}
-        borderColor={'accent.500'}
         px={[4, 4, 6]}
         gap={2}
         justify="space-between"
@@ -81,7 +77,7 @@ export default function Plan({ plan, interval }: Params) {
           <ButtonLink
             w="full"
             position="inherit"
-            href="/member/subscription"
+            href="/api/stripe/portal"
             size="lg"
             bg="secondary.500"
             color="white"
@@ -90,18 +86,22 @@ export default function Plan({ plan, interval }: Params) {
           >
             Update Plan
           </ButtonLink>
-          <ButtonLink
+          <ButtonConfirm
             w="full"
             position="inherit"
-            href="/member/subscription"
+            complete={(success) => {
+              if (success) window.location.href = '/api/stripe/cancel'
+            }}
             size="lg"
             bg="red.500"
             color="white"
             bottom={4}
             _hover={{ bg: 'accent.500' }}
+            buttonText="Cancel Plan"
+            title="Cancel Plan"
           >
-            Cancel Plan
-          </ButtonLink>
+            <Text>Are you sure you want to cancel your plan?</Text>
+          </ButtonConfirm>
         </Flex>
       </Flex>
     </>

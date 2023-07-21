@@ -10,7 +10,8 @@ import {
   UserFields,
   UserType,
   MemberStats,
-  searchableMemberFields
+  searchableMemberFields,
+  SearchableMember
 } from 'lib/models'
 
 import { FieldFilter } from '@directus/sdk'
@@ -25,19 +26,19 @@ export async function createUser(member: Partial<User>): Promise<User> {
   return user as unknown as User
 }
 
-export async function updateUser<T = User>(id: string, userData: Partial<T>) {
+export async function updateUser<T extends User | Member | Applicant | Profile = User>(id: string, userData: Partial<T>) {
   const adminClient = await getAdminClient()
 
   const user = await adminClient.items('users').updateOne(id, userData)
   return user as T
 }
 
-export async function getUser<T = User>(
+export async function getUser<T extends User | Member | Applicant | Profile = User>(
   id: string,
   fields: UserFields = memberFields
 ): Promise<T | null> {
   const adminClient = await getAdminClient()
-  const user: T = await adminClient.items('users').readOne(id, {
+  const user = await adminClient.items('users').readOne(id, {
     fields: fields as any,
     filter: {
       status: {
@@ -57,7 +58,7 @@ export async function getUser<T = User>(
   return (user as T) || null
 }
 
-export async function findUser<T = Profile>(
+export async function findUser<T extends User | Member | Applicant | Profile = Profile>(
   email: string,
   fields: UserFields = profileFields
 ): Promise<T | null> {
@@ -78,7 +79,7 @@ export async function findUser<T = Profile>(
   return user as T
 }
 
-export async function searchUsers<T = User>(
+export async function searchUsers<T extends User | SearchableMember = SearchableMember>(
   filter: FieldFilter<T>,
   fields: UserFields = searchableMemberFields,
   limit: number = 20,
@@ -88,7 +89,7 @@ export async function searchUsers<T = User>(
   const adminClient = await getAdminClient()
 
   const results = await adminClient.items('users').readByQuery({
-    filter,
+    filter: filter as any,
     fields,
     limit,
     page,

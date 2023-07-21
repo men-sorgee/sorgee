@@ -1,5 +1,5 @@
 import { notifications } from 'lib/config'
-import { ApiResponse, EventUser, MemberLevel } from 'lib/models'
+import { ApiResponse, EventUser, MemberLevel, UserType } from 'lib/models'
 import {
   getInvite,
   getAppNotification,
@@ -50,7 +50,7 @@ export default async function Invite(
         await updateInvite(invite_id, { paid, attended: true })
 
         // if they are an inductee or pledge, make them a brother
-        const user_type: string =
+        const user_type: UserType =
           MemberLevel[attendee.user_type] < MemberLevel.brother ? 'brother' : attendee.user_type
 
         await updateUser(user_id, {

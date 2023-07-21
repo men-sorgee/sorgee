@@ -101,7 +101,8 @@ type SettingsProp = Pick<
 enum PageSection {
   contact,
   events,
-  interests
+  interests,
+  location
 }
 
 function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps) {
@@ -125,14 +126,10 @@ function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps) {
   )
 
   const {
-    first_name,
-    last_name,
     email,
     phone,
     city,
     state,
-    birth_month,
-    birth_year,
     contact_preference,
     allow_messages,
     photo_consent,
@@ -152,14 +149,10 @@ function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps) {
     auth_with_phone
   } = member
   const defaultValues = {
-    first_name,
-    last_name,
     email,
     phone,
     city,
     state,
-    birth_month,
-    birth_year,
     contact_preference,
     allow_messages,
     photo_consent,
@@ -180,11 +173,6 @@ function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps) {
   }
 
   const required = { value: true, message: 'Required' }
-  const minYear = new Date().getFullYear() - 100
-  const maxYear = new Date().getFullYear() - 21
-
-  let hasChat = hasFeature('chat')
-
   return (
     <>
       <Form<SettingsProp>
@@ -204,91 +192,35 @@ function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps) {
                 <Tab
                   fontSize={['md', 'lg', '2xl']}
                   fontWeight={tabValue == 0 ? 'bold' : null}
+                  px={[1, 2, 4]}
                 >
                   Contact
                 </Tab>
                 <Tab
                   fontSize={['md', 'lg', '2xl']}
                   fontWeight={tabValue == 1 ? 'bold' : null}
+                  px={[1, 2, 4]}
                 >
                   Events
                 </Tab>
                 <Tab
                   fontSize={['md', 'lg', '2xl']}
                   fontWeight={tabValue == 2 ? 'bold' : null}
+                  px={[1, 2, 4]}
                 >
-                  Interests{' '}
+                  Interests
+                </Tab>
+                <Tab
+                  fontSize={['md', 'lg', '2xl']}
+                  fontWeight={tabValue == 3 ? 'bold' : null}
+                  px={[1, 2, 4]}
+                >
+                  Location
                 </Tab>
               </TabList>
               <TabPanels>
                 <TabPanel px={0} py={4}>
-                  <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
-                    <FieldInput
-                      field="first_name"
-                      label="First Name"
-                      registerOptions={{ required }}
-                    />
-                    <FieldInput
-                      field="last_name"
-                      label="Last Name"
-                      registerOptions={{ required }}
-                    />
-                    <FieldWrapper label="City / State">
-                      <InputGroup>
-                        <Input {...register('city')} w={'65%'} mr={2} />
-                        <Select {...register('state')} w={'35%'}>
-                          {getOptions('state').map((option) => (
-                            <option key={option.value} value={option.value}>
-                              {option.text}
-                            </option>
-                          ))}
-                        </Select>
-                      </InputGroup>
-                    </FieldWrapper>
-
-                    <FieldWrapper field="birth_month" label="Birth Month/Year">
-                      <InputGroup>
-                        <Select
-                          mr={2}
-                          {...register('birth_month', {
-                            required: 'You must provide your month of birth'
-                          })}
-                        >
-                          {getOptions('birth_month').map((option) => (
-                            <option key={option.value} value={option.value}>
-                              {option.text}
-                            </option>
-                          ))}
-                        </Select>
-                        <Input
-                          type="number"
-                          min={minYear}
-                          max={maxYear}
-                          step={1}
-                          {...register('birth_year', {
-                            required: 'You must provide your year of birth'
-                          })}
-                        />
-                      </InputGroup>
-                    </FieldWrapper>
-                  </SimpleGrid>
-
-                  {watch('allow_messages') == 'staff' && (
-                    <Alert
-                      status="warning"
-                      flexDirection="row"
-                      my={4}
-                      p={4}
-                      borderRadius="md"
-                    >
-                      <AlertIcon />
-                      <Text>
-                        If you choose to only receive messages from staff, you
-                        will not be able to send messages to other members.
-                      </Text>
-                    </Alert>
-                  )}
-                  {false && (
+                  {watch('show_profile') && (
                     <Alert
                       bg="primary"
                       color="white"
@@ -300,10 +232,8 @@ function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps) {
                       gap={4}
                     >
                       <Text w="full" mb={2}>
-                        Your name and birthday is always private. You city is
-                        always public. You can display your email and phone
-                        number to other members if you want, by enabling this
-                        setting.
+                        You can display your email and phone number to other
+                        members if you want, by enabling this setting.
                       </Text>
                       <FieldSwitch
                         mt={4}
@@ -313,6 +243,7 @@ function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps) {
                       />
                     </Alert>
                   )}
+
                   <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
                     <FieldInput
                       field="email"
@@ -333,17 +264,7 @@ function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps) {
                       }}
                       placeholder="000 456 7890"
                     />
-                    <GridItem colSpan={[1, 2]}>
-                      <FieldRadioButtons
-                        field="auth_with_phone"
-                        label="Sign-in Link"
-                        help="If you are having issues receiving the sign-in link, you can switch it to use your cell number instead."
-                        options={[
-                          { value: 'false', text: 'Send via Email' },
-                          { value: 'true', text: 'Send via SMS' }
-                        ]}
-                      />
-                    </GridItem>
+                    <GridItem colSpan={[1, 2]}></GridItem>
                   </SimpleGrid>
                   <SimpleGrid spacing={4} my={4} columns={[1, 2]}>
                     <FieldSelect
@@ -353,17 +274,29 @@ function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps) {
                       options={getOptions('contact_preference')}
                       help="This is your preference for how the staff may contact you."
                     />
-
-                    {hasChat && (
-                      <FieldSelect
-                        mt={4}
-                        field="allow_messages"
-                        label="Messaging Preference"
-                        options={getOptions('allow_messages')}
-                        help="This is your preference for how other members may contact you via in-app messaging."
-                      />
-                    )}
+                    <FieldSelect
+                      mt={4}
+                      field="allow_messages"
+                      label="Messaging Preference"
+                      options={getOptions('allow_messages')}
+                      help="This is your preference for how other members may contact you via in-app messaging."
+                    />
                   </SimpleGrid>
+                  {watch('allow_messages') == 'staff' && (
+                    <Alert
+                      status="warning"
+                      flexDirection="row"
+                      my={4}
+                      p={4}
+                      borderRadius="md"
+                    >
+                      <AlertIcon />
+                      <Text>
+                        If you choose to only receive messages from staff, you
+                        will not be able to send messages to other members.
+                      </Text>
+                    </Alert>
+                  )}
                 </TabPanel>
                 <TabPanel px={0} py={4}>
                   <Alert
@@ -376,7 +309,7 @@ function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps) {
                     shadow="md"
                     gap={4}
                   >
-                    <Text>
+                    <Text w="full" textAlign="left">
                       These settings let us know which events you are interested
                       in attending. our system will auto-match you with events
                       that meet your interests. You can also manually RSVP to
@@ -425,7 +358,7 @@ function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps) {
                       shadow="md"
                     >
                       <Stack direction={'column'} spacing={2}>
-                        <Text>
+                        <Text w="full" textAlign="left">
                           <strong>Are you an exhibitionist?</strong> If so, you
                           can opt-in to be a part of our marketing efforts. We
                           will never share your personal information with
@@ -466,7 +399,7 @@ function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps) {
                       shadow="md"
                     >
                       <Stack direction={'column'} spacing={2}>
-                        <Text>
+                        <Text w="full" textAlign="left">
                           <strong>Are you interested in hosting?</strong> If so,
                           let us know by checking the box below. We are always
                           looking for new hosts.
@@ -500,7 +433,7 @@ function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps) {
                       shadow="md"
                       gap={4}
                     >
-                      <Text>
+                      <Text w="full" textAlign="left">
                         What are you looking for and compatible with? We use
                         this information to optimize compatibility for events.
                         If you choose to display this info, other members can
@@ -539,6 +472,45 @@ function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps) {
                     />
                   </SimpleGrid>
                 </TabPanel>
+                <TabPanel px={0}>
+                  {watch('show_profile') && (
+                    <Alert
+                      bg={'primary'}
+                      color="white"
+                      flexDirection="column"
+                      my={4}
+                      p={4}
+                      borderRadius="md"
+                      shadow="md"
+                      gap={4}
+                    >
+                      <Text w="full" textAlign="left">
+                        Display your location information to make it easier for
+                        people to find other brothers near them.
+                      </Text>
+                      <FieldSwitch
+                        mt={4}
+                        field="show_location"
+                        label="Show Location "
+                        help="Turn this off, if you'd prefer to not display this information to other verified members."
+                      />
+                    </Alert>
+                  )}
+                  <SimpleGrid spacing={4}>
+                    <FieldWrapper label="City / State">
+                      <InputGroup>
+                        <Input {...register('city')} w={'65%'} mr={2} />
+                        <Select {...register('state')} w={'35%'}>
+                          {getOptions('state').map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.text}
+                            </option>
+                          ))}
+                        </Select>
+                      </InputGroup>
+                    </FieldWrapper>
+                  </SimpleGrid>
+                </TabPanel>
               </TabPanels>
             </Tabs>
 
@@ -558,6 +530,7 @@ function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps) {
               disabled={isSubmitting || !isDirty}
               position="sticky"
               bottom={4}
+              w={['full', 'auto']}
               _hover={{ bg: 'accent.500' }}
             >
               Update Settings

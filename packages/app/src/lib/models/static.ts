@@ -2,7 +2,7 @@ import { Block } from 'editorjs-blocks-react-renderer'
 import { UserType } from 'lib/models'
 
 import { DirectusFile, DirectusUser } from './directus'
-import { User } from './users'
+import { User, VouchingUser } from './users'
 
 export type File = {
   filepath: string
@@ -71,7 +71,7 @@ export type Promo = {
   override?: {
     site?: Partial<Site>
   }
-  vouching_user?: string | User
+  vouching_user?: string | VouchingUser
 }
 
 export type Promos = {

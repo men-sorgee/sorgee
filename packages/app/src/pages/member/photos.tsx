@@ -220,6 +220,7 @@ type PhotoProps = StackProps & {
   memberId: string
   reload: () => void
 }
+
 const AddPhoto = chakra(
   ({
     title,

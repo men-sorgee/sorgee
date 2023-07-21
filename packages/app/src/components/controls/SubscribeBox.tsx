@@ -1,23 +1,10 @@
 import { useState } from 'react'
 import { SubscriptionData } from 'lib/models'
 import { postJSON } from 'lib/utils'
+import { Box, BoxProps, chakra, Flex, Heading, Text } from '@chakra-ui/react'
+import { FieldInput, Form, BusyButton } from '../.'
 
-import {
-  Box,
-  BoxProps,
-  Button,
-  chakra,
-  Flex,
-  Heading,
-  Text
-} from '@chakra-ui/react'
-
-import { FieldInput, Form } from '../forms'
-import { BusyButton } from './BusyButton'
-
-type Props = BoxProps
-
-export const SubscribeBox = chakra(({ ...props }: Props) => {
+export const SubscribeBox = chakra(({ ...props }: BoxProps) => {
   const [subscribed, setSubscribed] = useState(false)
 
   if (subscribed)
@@ -41,9 +28,7 @@ export const SubscribeBox = chakra(({ ...props }: Props) => {
       </Text>
 
       <Form<SubscriptionData>
-        onSubmit={(data: SubscriptionData) =>
-          postJSON<SubscriptionData>('/api/subscribe', data)
-        }
+        onSubmit={(data) => postJSON<SubscriptionData>('/api/subscribe', data)}
         onSuccess={() => setSubscribed(true)}
         successMessage="Successfully subscribed to our newsletter"
       >

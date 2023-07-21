@@ -11,11 +11,7 @@ export default function SubscriptionCancelledPage() {
   const router = useRouter()
   const { products, loading: productsLoading } = useProducts()
   const { member, loading } = useUser()
-  const { product: productId, session: sessionId } = router.query
-
-  const { session, loading: sessionLoading } = useStripeSession(
-    sessionId as string
-  )
+  const { product: productId } = router.query
 
   useEffect(() => {
     if (!loading && !productsLoading && products && productId) {
@@ -29,7 +25,6 @@ export default function SubscriptionCancelledPage() {
     if (
       !loading &&
       !productsLoading &&
-      !sessionLoading &&
       products &&
       member?.id &&
       productId &&
@@ -39,36 +34,19 @@ export default function SubscriptionCancelledPage() {
         category: 'monetization',
         plan: MembershipType[product.type],
         productId,
-        userId: member.id,
-        sessionId
+        userId: member.id
       })
       setTimeout(async () => {
-        await router.push('/member/account')
+        await router.push('/member/subscription')
       }, 1000)
     }
-  }, [
-    member,
-    loading,
-    productId,
-    router,
-    productsLoading,
-    products,
-    session?.amount_total,
-    session?.currency,
-    sessionId,
-    sessionLoading,
-    product
-  ])
+  }, [member, loading, productId, router, productsLoading, products, product])
 
   return (
-    <Page title="Subscription Cancelled" requireAuth loading={loading}>
-      <Text>Your membership subscription purchase was cancelled.</Text>
-      {member && (
-        <>
-          <Heading>Your Plan</Heading>
-          <Plan plan={member.membership_type} interval={member.renewal_type} />
-        </>
-      )}
+    <Page title="Subscription" requireAuth loading={loading}>
+      <Text fontSize="xl" textAlign="center">
+        Your purchase was cancelled.
+      </Text>
     </Page>
   )
 }

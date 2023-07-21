@@ -12,6 +12,8 @@ import {
 } from 'lib/models'
 import { ProviderType } from 'next-auth/providers'
 
+export type UserEmailChange = { email: string; email_new: string }
+
 export type UserAccount = {
   id?: string
   user?: string | User
@@ -95,7 +97,9 @@ export type User = {
   approved_date?: string
   phone?: string
   phone_verified?: boolean
-  email?: string
+  email: string
+  email_new?: string
+  email_token?: string
   email_verified?: boolean
   sessions: string[] | UserSession[]
   contact_preference: ContactPreferenceType
@@ -191,6 +195,7 @@ export type User = {
 
   membership_type?: MembershipNames
   customer_id?: string
+  subscription_id?: string
   membership_start?: string
   renewal_type?: string
   has_features: Array<MemberFeature>
@@ -318,7 +323,7 @@ export type UserPhoto = {
   status?: 'new' | 'approved' | 'rejected'
 }
 
-export type UserStatusType = 'new' | 'active' | 'inactive' | 'stale' | 'deleted' | 'banned'
+export type UserStatusType = 'new' | 'active' | 'inactive' | 'stale' | 'delete' | 'banned'
 
 export type UserPhotoFieldType = 'photo' | 'picture' | 'public' | 'private'
 
@@ -331,6 +336,8 @@ export type Profile = {
   first_name: string
   last_name: string
   email: string
+  email_new?: string
+  email_token?: string
   email_verified: boolean
   phone: string
   phone_verified: boolean
@@ -385,6 +392,8 @@ export const applicantFields: Array<keyof Applicant> = [
   'first_name',
   'last_name',
   'email',
+  'email_new',
+  'email_token',
   'email_verified',
   'phone',
   'phone_verified',
@@ -424,6 +433,7 @@ export type MemberFeature =
   | 'buddy_list'
   | 'flirt'
   | 'view_attendees'
+
 export const memberFeatures: MemberFeature[] = [
   'view_directory',
   'flirt',
@@ -523,6 +533,7 @@ export type Member = Applicant & {
   public_folder?: string
 
   membership_type?: MembershipNames
+  subscription_id?: string
   customer_id?: string
   membership_start?: string
   renewal_type?: MembershipRenewalType
@@ -697,6 +708,7 @@ export const searchableMemberFields: Array<keyof Member> = [
 export const memberSubscriptionFields: Array<keyof Member> = [
   'membership_type',
   'customer_id',
+  'subscription_id',
   'membership_start',
   'renewal_type',
 ]

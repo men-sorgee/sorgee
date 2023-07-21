@@ -25,7 +25,7 @@ import {
   Spacer,
   Text
 } from '@chakra-ui/react'
-
+import { ReactNode } from 'react'
 import { useUser } from 'hooks'
 import {
   MemberChat,
@@ -42,10 +42,18 @@ type Props = CardProps & {
   member: Partial<Member>
   full?: boolean
   onClick?: () => void
+  children?: ReactNode | ReactNode[]
 }
 
 export const MemberCard = chakra(
-  ({ member, onClick, full = false, size = 'lg', ...props }: Props) => {
+  ({
+    member,
+    onClick,
+    full = false,
+    size = 'lg',
+    children,
+    ...props
+  }: Props) => {
     const levelValue = MemberLevel[member?.user_type || 'applicant']
     const levelColor = MemberLevelColorMap[levelValue]
     const { member: viewer, reload, loading } = useUser()
@@ -113,14 +121,14 @@ export const MemberCard = chakra(
                 </MemberHeader>
               </LinkOverlay>
             </CardHeader>
-
-            {full && member?.show_profile && (
-              <CardBody>
+            <CardBody>
+              {full && member?.show_profile && (
                 <Text noOfLines={2} py={0} my={0}>
                   {member.biography}
                 </Text>
-              </CardBody>
-            )}
+              )}
+              {children}
+            </CardBody>
           </LinkBox>
           <Spacer />
           <CardFooter

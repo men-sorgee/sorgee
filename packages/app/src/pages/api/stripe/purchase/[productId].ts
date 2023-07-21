@@ -4,7 +4,7 @@ import { updateUser } from 'lib/services/directus/server'
 import { getClient } from 'lib/services/stripe/server'
 import { withMember } from 'lib/utils/server'
 
-const handler = async (req, res) => {
+export default async function PurchaseProduct(req, res) {
   try {
     let member = await withMember(req, res)
     const stripe = getClient()
@@ -41,6 +41,10 @@ const handler = async (req, res) => {
       metadata: {
         userId: member.id,
       },
+      client_reference_id: member.id,
+      allow_promotion_codes: true,
+      cancel_url: `${baseUrl}/member/subscription/cancelled?product=${productId}`,
+      success_url: `${baseUrl}/member/subscription/success?product=${productId}`
     })
 
     res.json(ApiResponse({
@@ -53,5 +57,3 @@ const handler = async (req, res) => {
     res.status(500).json({ error: error.message })
   }
 }
-
-export default handler

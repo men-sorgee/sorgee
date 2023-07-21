@@ -1,7 +1,5 @@
 import { useEffect } from 'react'
-
-import { ButtonLink, Markdown, SubscribeBox } from 'components/controls'
-import Section from 'components/Section'
+import { ButtonLink, Markdown, Section } from 'components'
 import { useMeta, useUser } from 'hooks'
 import { pages } from 'lib/config'
 import { Page } from 'lib/models'
@@ -10,7 +8,6 @@ import Link from 'next/link'
 
 import {
   Box,
-  Center,
   Flex,
   Heading,
   HStack,
@@ -142,7 +139,6 @@ export default function HomePage({ page }: Props) {
             <Section key={i} content={s} />
           ))}
         </Flex>
-        <SubscribeBox mt={[5, 10, 20]} />
       </Box>
     </>
   )

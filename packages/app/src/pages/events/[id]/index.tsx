@@ -55,7 +55,6 @@ export default function EventPage() {
     member,
     isStaff,
     reload: reloadUser,
-    authenticated,
     hasFeature
   } = useUser({ minLevel: MemberLevel.inductee, redirectsEnabled: true })
 
@@ -67,7 +66,7 @@ export default function EventPage() {
   const [memberId, setMemberId] = useState<string>(undefined)
 
   useEffect(() => {
-    if (!eventLoading && event?.stats && !stats) {
+    if (!eventLoading && event?.stats && stats == undefined) {
       setStats(event.stats)
       setShowTicket(
         isToday(new Date(event.datetime)) &&

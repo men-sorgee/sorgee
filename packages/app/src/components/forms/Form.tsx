@@ -1,28 +1,26 @@
 import type { ReactElement } from 'react'
 import { ReactNode, useCallback, useEffect } from 'react'
-
 import { useWarnIfUnsavedChanges } from 'hooks/use-warn-if-unsaved'
 import { ApiError } from 'lib/models'
 import type { UseFormReturn } from 'react-hook-form'
 import { FormProvider, useForm, useFormContext } from 'react-hook-form'
-
 import { useToast } from '@chakra-ui/react'
-
 import { ApiResult, debouncedPromise } from 'lib/utils'
+import { Loading } from 'components'
 
-type FormProps<T = any> = {
+type FormProps<TData = any, TResponse = TData> = {
   successMessage?: string
-  defaultValues?: Partial<T> | Promise<Partial<T>>
+  defaultValues?: Partial<TData> | Promise<Partial<TResponse>>
   children: (
-    context: UseFormReturn<T>
+    context: UseFormReturn<TData>
   ) => ReactElement | ReactNode | ReactNode[]
   autoSave?: boolean
-  onSubmit: (data: T) => Promise<ApiResult<T>>
-  onSuccess?: (data: T) => void
+  onSubmit: (data: TData) => Promise<ApiResult<TResponse>>
+  onSuccess?: (data: TResponse) => void
   onError?: (error: ApiError) => void
 }
 
-export default function Form<T = any>({
+export default function Form<TData = any, TResponse = TData>({
   successMessage = 'Success',
   defaultValues,
   children,
@@ -30,8 +28,8 @@ export default function Form<T = any>({
   onSuccess = () => {},
   onError = () => {},
   autoSave = false
-}: FormProps<T>) {
-  const methods = useForm<T>({
+}: FormProps<TData, TResponse>) {
+  const methods = useForm<TData>({
     defaultValues: defaultValues as any,
     values: defaultValues as any,
     resetOptions: {
@@ -56,8 +54,8 @@ export default function Form<T = any>({
   const debouncedSubmit = debouncedPromise(onSubmit, 1000)
 
   const onSubmitWrapper = useCallback(
-    async (data: T) => {
-      const { success, error } = await debouncedSubmit(data)
+    async (data: TData) => {
+      const { data: response, success, error } = await debouncedSubmit(data)
 
       if (success) {
         toast({
@@ -68,7 +66,7 @@ export default function Form<T = any>({
           isClosable: true,
           onCloseComplete: () => {
             reset()
-            onSuccess(data)
+            onSuccess(response)
           }
         })
       } else if (error?.field) {
@@ -126,7 +124,9 @@ export default function Form<T = any>({
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmitWrapper)}>{children(methods)}</form>
+      <form onSubmit={handleSubmit(onSubmitWrapper)}>
+        {isSubmitting ? <Loading /> : children(methods)}
+      </form>
     </FormProvider>
   )
 }
