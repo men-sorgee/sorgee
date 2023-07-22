@@ -11,7 +11,7 @@ export const MemberProgress = ({ member }: MemberProgressProps) => {
   return (
     <>
       <VStack>
-        <Heading mt={0} as="h2" mb={4} fontSize="xl">
+        <Heading mt={0} as="h2" mb={4} fontSize="xl" color="white">
           Provide as much information as you can about yourself.
         </Heading>
         <List alignItems="start" justifyItems="start" w="full" spacing={2}>

@@ -40,7 +40,6 @@ type EventCardProps = CardProps & {
   footer?: ReactNode | ReactNode[]
   isGuest?: boolean
   event: Partial<GroupEvent>
-  href?: string
 }
 
 export const EventCard = ({
@@ -51,7 +50,6 @@ export const EventCard = ({
   isGuest = false,
   children,
   footer,
-  href,
   ...props
 }: EventCardProps) => {
   const [eventStartDate, setEventStartDate] = useState<{

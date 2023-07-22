@@ -6,13 +6,16 @@ import {
 } from 'components/controls'
 import { useSite, useUser } from 'hooks'
 import { pledgeSurvey } from 'lib/config'
-import { MemberLevel } from 'lib/models'
+import { MemberLevel, MembershipType } from 'lib/models'
 import { signIn, signOut } from 'next-auth/react'
 import NextLink from 'next/link'
 
 import {
   Box,
+  Button,
   Flex,
+  Hide,
+  Show,
   Link,
   Menu,
   MenuButton,
@@ -42,6 +45,7 @@ import {
   ViewfinderCircleIcon,
   ChatBubbleBottomCenterIcon as ChatIcon
 } from '@heroicons/react/24/outline'
+import { useRouter } from 'next/router'
 
 interface Props {}
 
@@ -51,6 +55,7 @@ export default function UserMenu(_props: Props) {
   const {
     member,
     authenticated,
+    subscription,
     isApplicant,
     isMember,
     isBrother,
@@ -62,6 +67,8 @@ export default function UserMenu(_props: Props) {
     redirectsEnabled: false
   })
   const showApply = !site?.invite_only
+  const router = useRouter()
+  const hideSubscribe = router.pathname.startsWith('/member/subscription')
 
   const hasDirectory =
     level >= MemberLevel.brother && hasFeature('view_directory')
@@ -74,10 +81,24 @@ export default function UserMenu(_props: Props) {
     <>
       {authenticated ? (
         <Menu placement="bottom">
-          <MenuButton cursor={'pointer'}>
-            {member && <MemberAvatar member={member} />}
-          </MenuButton>
-
+          <Flex gap={4} justify="end" align="center">
+            {level == MemberLevel.brother &&
+              subscription == MembershipType.none &&
+              !hideSubscribe && (
+                <ButtonLink
+                  size="sm"
+                  href="/member/subscription"
+                  bg="primary.500"
+                  color="white"
+                >
+                  <Hide below="md">Want More Features?</Hide>
+                  <Show below="md">Upgrade</Show>
+                </ButtonLink>
+              )}
+            <MenuButton cursor={'pointer'}>
+              {member && <MemberAvatar member={member} size="md" />}
+            </MenuButton>
+          </Flex>
           <MenuList bg="black" maxH="80vh" overflowY="auto" zIndex="10">
             <Box
               p={4}

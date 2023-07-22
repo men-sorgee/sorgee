@@ -295,87 +295,10 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
   const level = MemberLevel[currentMember?.user_type || 'inductee']
   const allowedUserTypes = getAllowedUsers(level)
   const router = useRouter()
-  const [stats, setStats] = useState<MemberStats>()
-  const [statsR, setStatsR] = useState<MemberStats>()
 
-  useEffect(() => {
-    getJSON(`/api/stats`).then(({ data }) => {
-      setStats(data)
-    })
-    getJSON(`/api/stats?start=${addDays(new Date(), -14).toISOString()}`).then(
-      ({ data }) => {
-        setStatsR(data)
-      }
-    )
-  }, [])
   if (fields == undefined) return null
   return (
     <>
-      {level >= MemberLevel.big_brother && (
-        <StatGroup
-          alignContent="center"
-          justifyContent="space-between"
-          justifyItems="stretch"
-          as={Flex}
-          w="full"
-          flexWrap={'wrap'}
-          gap={4}
-          shadow={0}
-          p={[1, 2, 4]}
-        >
-          {stats && statsR && (
-            <>
-              <Stat textAlign="center">
-                <StatLabel>Applicants</StatLabel>
-                <StatNumber>{stats.applicants}</StatNumber>
-                {statsR.applicants > 0 && (
-                  <StatHelpText title="In the past 14 days">
-                    <StatArrow type="increase" />+ {statsR.applicants}
-                  </StatHelpText>
-                )}
-              </Stat>
-              <Stat textAlign="center">
-                <StatLabel>Pledges</StatLabel>
-                <StatNumber>{stats.pledges}</StatNumber>
-                {statsR.pledges > 0 && (
-                  <StatHelpText title="In the past 14 days">
-                    <StatArrow type="increase" />+ {statsR.pledges}
-                  </StatHelpText>
-                )}
-              </Stat>
-              <Stat textAlign="center">
-                <StatLabel>Inductees</StatLabel>
-                <StatNumber>{stats.inductees}</StatNumber>
-
-                {statsR.inductees > 0 && (
-                  <StatHelpText title="In the past 14 days">
-                    <StatArrow type="increase" />+ {statsR.inductees}
-                  </StatHelpText>
-                )}
-              </Stat>
-              <Stat textAlign="center">
-                <StatLabel>Brothers</StatLabel>
-                <StatNumber>{stats.brothers}</StatNumber>
-                {statsR.brothers > 0 && (
-                  <StatHelpText title="In the past 14 days">
-                    <StatArrow type="increase" />+ {statsR.brothers}
-                  </StatHelpText>
-                )}
-              </Stat>
-
-              <Stat textAlign="center">
-                <StatLabel whiteSpace="nowrap">Big-Brothers</StatLabel>
-                <StatNumber>{stats.big_brothers}</StatNumber>
-                {statsR.big_brothers > 0 && (
-                  <StatHelpText title="In the past 14 days">
-                    <StatArrow type="increase" />+ {statsR.big_brothers}
-                  </StatHelpText>
-                )}
-              </Stat>
-            </>
-          )}
-        </StatGroup>
-      )}
       <Accordion
         allowToggle
         w="full"

@@ -23,15 +23,26 @@ export const MemberProgressCheck = ({
     <Flex dir="row" gap={2} align="start" justify="start">
       <Box>
         {(hasStep && (
-          <Icon
-            as={CheckIcon}
-            blockSize={size}
+          <Box
             h={size}
             w={size}
-            color="green.500"
-          />
+            border="2px solid"
+            borderColor="white"
+            bg="white"
+          >
+            {' '}
+            <Icon
+              as={CheckIcon}
+              blockSize={size}
+              h={size + 2}
+              w={size + 2}
+              color="green.500"
+              ml={-1}
+              mt={-2}
+            />
+          </Box>
         )) || (
-          <Box h={size} w={size} border="2px solid" borderColor="text"></Box>
+          <Box h={size} w={size} border="2px solid" borderColor="white"></Box>
         )}
       </Box>
       <Text
