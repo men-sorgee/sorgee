@@ -92,7 +92,7 @@ export default function MemberHomePage() {
           </Box>
         </>
       )}
-      {level == MemberLevel.brother && (
+      {level >= MemberLevel.brother && (
         <>
           {stats && statsR && (
             <Box>

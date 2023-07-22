@@ -1,9 +1,7 @@
-import { useEffect } from 'react'
-import { ButtonLink, Markdown, Section } from 'components'
-import { useMeta, useUser } from 'hooks'
+import { ButtonLink, Markdown, Section, Page as PageControl } from 'components'
+import { useUser } from 'hooks'
 import { pages } from 'lib/config'
 import { Page } from 'lib/models'
-import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 
 import {
@@ -44,7 +42,7 @@ export const getStaticProps = async () => {
 
 export default function HomePage({ page }: Props) {
   const { authenticated } = useUser()
-  const { setMeta } = useMeta()
+
   const {
     title,
     description,
@@ -55,12 +53,14 @@ export default function HomePage({ page }: Props) {
     next_page_params
   } = page
   const { site } = useSite()
-  useEffect(() => {
-    setMeta(title, description, image?.id)
-  })
+
   const color = useColorModeValue('gray.700', 'gray.100')
   return (
-    <>
+    <PageControl
+      title={site?.site_title}
+      hideHeader
+      description={site?.description}
+    >
       <Box
         p={[5, 10, 20, 30]}
         px={4}
@@ -142,6 +142,6 @@ export default function HomePage({ page }: Props) {
           ))}
         </Flex>
       </Box>
-    </>
+    </PageControl>
   )
 }
