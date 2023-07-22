@@ -53,7 +53,7 @@ export default async function MemberLike(
           user_id: them.id,
           message,
           button_text: action,
-          button_url: `/members/${me.id}`,
+          button_url: `/member/${me.id}`,
         })
 
         await sendNotificationEmail(
@@ -64,7 +64,7 @@ export default async function MemberLike(
           {
             user_id: them.id,
             button_text: action,
-            button_url: `${baseUrl}/members/${me.id}`,
+            button_url: `${baseUrl}/member/${me.id}`,
           },
           SendGridTemplate.Notification,
           SendGridCategory.Notification

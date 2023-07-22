@@ -47,7 +47,7 @@ export default async function MemberBuddy(
           user_id: them.id,
           message: title,
           button_text: action,
-          button_url: `/members/${me.id}`,
+          button_url: `/member/${me.id}`,
         })
 
         // send email
@@ -58,7 +58,7 @@ export default async function MemberBuddy(
           `${myName} has added you to their buddy list! Click the button below to view their profile.`,
           {
             button_text: 'View Profile',
-            button_url: `${baseUrl}/members/${me.id}`,
+            button_url: `${baseUrl}/member/${me.id}`,
             user_id: them.id,
           },
           SendGridTemplate.Notification,

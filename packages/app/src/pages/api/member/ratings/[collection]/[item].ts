@@ -35,7 +35,7 @@ export default async function MemberItemRating(
             user_id: item,
             message: `Someone rated your event behavior as ${rate} stars`,
             button_text: `View Your Rating`,
-            button_url: `/members/${item}`,
+            button_url: `/member/${item}`,
           })
         }
         return res.status(200).json(ApiResponse(rating))

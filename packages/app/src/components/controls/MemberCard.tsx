@@ -77,7 +77,7 @@ export const MemberCard = chakra(
             <CardHeader>
               <LinkOverlay
                 as={NextLink}
-                href={`/members/${member.id}`}
+                href={`/member/${member.id}`}
                 onClick={(e) => {
                   e.preventDefault()
                   if (member.show_profile) onClick()

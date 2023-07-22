@@ -63,7 +63,6 @@ export type QueryParams = Record<keyof SearchableMember, string[]> & {
 
 export type PageProps = {
   fields: FieldMap
-  id?: string
 }
 
 export async function getServerSideProps(
@@ -82,16 +81,16 @@ type Meta = {
   total: number
   filtered: number
 }
-export default function MemberListPage({ fields, id: i }: PageProps) {
+export default function MemberListPage({ fields }: PageProps) {
   const { member: currentMember, loading } = useUser({
     minLevel: MemberLevel.brother,
     requiredFeature: 'view_directory',
     redirectsEnabled: true
   })
   const router = useRouter()
-  const { page: p, size: s, sort: o, id: i2, ...q } = router.query
+  const { page: p, size: s, sort: o, ...q } = router.query
 
-  const [id, setId] = useState(i || i2)
+  const [id, setId] = useState(undefined)
   const [page, setPage] = useState<number>(undefined)
   const [size, setSize] = useState<number>(undefined)
   const [sort, setSort] = useState<string>(undefined)
@@ -99,8 +98,6 @@ export default function MemberListPage({ fields, id: i }: PageProps) {
   const [pageCount, setPageCount] = useState<number>(undefined)
   const [members, setMembers] = useState<SearchableMember[]>(undefined)
   const [query, setQuery] = useState<QueryParams>(undefined)
-  const [title, setTitle] = useState<string>(undefined)
-  const [description, setDescription] = useState<string>(undefined)
   const [meta, setMeta] = useState<Meta>({
     total: 0,
     filtered: 0
@@ -127,29 +124,13 @@ export default function MemberListPage({ fields, id: i }: PageProps) {
       return
     }
 
-    if (id) {
-      window.history.pushState({}, null, `/members/${id}`)
-    } else {
-      if (
-        loading ||
-        page == undefined ||
-        size == undefined ||
-        sort == undefined
-      )
-        return
-      const filter = query ? serialize<SearchableMember>(query) : ''
-      window.history.pushState(
-        null,
-        'Men Nearby',
-        `/members?page=${page}&size=${size}&sort=${sort}${filter}`
-      )
-      setTitle('Men Nearby')
-      setDescription('View and find other men.')
+    if (loading || page == undefined || size == undefined || sort == undefined)
+      return
+    const filter = query ? serialize<SearchableMember>(query) : ''
+    setKey(`/api/members?limit=${size}&page=${page}&sort=${sort}${filter}`)
 
-      setKey(`/api/members?limit=${size}&page=${page}&sort=${sort}${filter}`)
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, setId, page, size, sort, query, loading, currentMember])
+  }, [page, size, sort, query, loading, currentMember])
 
   const methods = useForm<QueryParams>({
     mode: 'onBlur',
@@ -200,16 +181,12 @@ export default function MemberListPage({ fields, id: i }: PageProps) {
   const close = useCallback(() => {
     onClose()
     setId(undefined)
-    setTimeout(() => {
-      setTitle('Men Nearby')
-      setDescription('View and find other men.'), 500
-    })
   }, [onClose])
 
   return (
     <Page
-      title={title || 'Men Nearby'}
-      description={description}
+      title={'Men Nearby'}
+      description={''}
       loading={loading}
       w="full"
       requireAuth={true}

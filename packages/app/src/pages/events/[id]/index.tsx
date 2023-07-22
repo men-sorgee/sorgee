@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-
 import {
   ButtonLink,
   EventCard,
@@ -18,13 +17,9 @@ import {
   EventStats,
   EventUser,
   Member,
-  MemberLevel,
-  User
+  MemberLevel
 } from 'lib/models'
-import { NextPageContext } from 'next'
 import NextLink from 'next/link'
-import { useRouter } from 'next/router'
-
 import { ArrowBackIcon } from '@chakra-ui/icons'
 import {
   Alert,
@@ -48,9 +43,15 @@ import {
   Show
 } from '@chakra-ui/react'
 
-export default function EventPage() {
-  const router = useRouter()
-  const { id } = router.query
+export async function getServerSideProps({ params }) {
+  return {
+    props: {
+      id: params.id
+    }
+  }
+}
+
+export default function EventPage({ id }: { id: string }) {
   const {
     member,
     isStaff,
@@ -144,25 +145,25 @@ export default function EventPage() {
                         <StatLabel>Confirmed</StatLabel>
                         <StatNumber>{stats.confirmed_count}</StatNumber>
                       </Stat>
-                      {canViewAttendees && (
-                        <Wrap spacing={-2}>
-                          {getAttendees('confirmed').map(
-                            ({ id, name, src }) => (
-                              <Avatar
-                                key={id}
-                                name={name}
-                                src={src}
-                                title={name}
-                                cursor="pointer"
-                                onClick={() => {
-                                  if (invite?.rsvp == 'confirmed')
-                                    setMemberId(id)
-                                }}
-                              />
-                            )
-                          )}
-                        </Wrap>
-                      )}
+
+                      <Wrap spacing={-2}>
+                        {getAttendees('confirmed').map(({ id, name, src }) => (
+                          <Avatar
+                            key={id}
+                            name={name}
+                            src={src}
+                            title={name}
+                            cursor="pointer"
+                            onClick={() => {
+                              if (
+                                invite?.rsvp == 'confirmed' &&
+                                canViewAttendees
+                              )
+                                setMemberId(id)
+                            }}
+                          />
+                        ))}
+                      </Wrap>
                     </HStack>
 
                     <HStack align="start" justify="right">
@@ -170,22 +171,25 @@ export default function EventPage() {
                         <StatLabel>Maybe</StatLabel>
                         <StatNumber>{stats.maybe_count}</StatNumber>
                       </Stat>
-                      {canViewAttendees && (
-                        <Wrap spacing={-2}>
-                          {getAttendees('maybe').map(({ id, name, src }) => (
-                            <Avatar
-                              key={id}
-                              name={name}
-                              src={src}
-                              title={name}
-                              cursor="pointer"
-                              onClick={() => {
-                                if (invite?.rsvp == 'confirmed') setMemberId(id)
-                              }}
-                            />
-                          ))}
-                        </Wrap>
-                      )}
+
+                      <Wrap spacing={-2}>
+                        {getAttendees('maybe').map(({ id, name, src }) => (
+                          <Avatar
+                            key={id}
+                            name={name}
+                            src={src}
+                            title={name}
+                            cursor="pointer"
+                            onClick={() => {
+                              if (
+                                invite?.rsvp == 'confirmed' &&
+                                canViewAttendees
+                              )
+                                setMemberId(id)
+                            }}
+                          />
+                        ))}
+                      </Wrap>
                     </HStack>
                   </Flex>
                 )}
