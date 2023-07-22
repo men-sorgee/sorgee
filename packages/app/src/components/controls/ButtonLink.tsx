@@ -1,6 +1,6 @@
 import NextLink from 'next/link'
 
-import { Button, ButtonProps, chakra } from '@chakra-ui/react'
+import { Link, Button, ButtonProps, chakra } from '@chakra-ui/react'
 
 type Props = ButtonProps & {
   href: string
@@ -20,16 +20,22 @@ export const ButtonLink = chakra(
     onClick,
     replace = true,
     prefetch = true,
+    w,
+    flex,
     ...props
   }: Props) => {
     const bgGradient = `linear(to-b, ${colorScheme}.400, ${colorScheme}.500, ${colorScheme}.600)`
     return (
-      <NextLink
+      <Link
+        as={NextLink}
         href={href}
         onClick={onClick}
         style={{ color: 'white', textDecoration: 'none' }}
         replace={replace}
         prefetch={prefetch}
+        w={w}
+        flex={flex}
+        display="block"
       >
         <Button
           bgGradient={gradient ? bgGradient : 'none'}
@@ -38,7 +44,7 @@ export const ButtonLink = chakra(
         >
           {children}
         </Button>
-      </NextLink>
+      </Link>
     )
   }
 )

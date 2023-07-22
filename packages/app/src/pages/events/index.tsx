@@ -82,14 +82,21 @@ export default function EventsPage({}: PageProps) {
                 showAddToCalendar={false}
                 showLocation={true}
               >
-                <Flex direction={['column', 'row']} gap={2}>
+                <Flex
+                  direction={['column', 'row']}
+                  gap={2}
+                  alignItems="stretch"
+                  justifyContent="stretch"
+                  w="full"
+                >
                   <ButtonLink
                     gradient={true}
                     rounded="lg"
                     w="full"
-                    colorScheme="accent"
+                    colorScheme="primary"
                     href={`/events/${activeInvite.event.id}`}
                     p={6}
+                    flex={1}
                   >
                     View Details
                   </ButtonLink>
@@ -97,9 +104,10 @@ export default function EventsPage({}: PageProps) {
                     gradient={true}
                     rounded="lg"
                     w="full"
-                    colorScheme="accent"
+                    colorScheme="primary"
                     href={`/events/${activeInvite.event.id}/ticket`}
                     p={6}
+                    flex={1}
                   >
                     View Ticket
                   </ButtonLink>

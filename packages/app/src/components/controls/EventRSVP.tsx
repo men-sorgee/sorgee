@@ -238,6 +238,7 @@ export const EventRSVP = ({
 
   if (working || eventLoading) return <Spinner m="2rem auto" />
   const rsvp = invite?.rsvp || 'invited'
+  const bgGradient = `linear(to-b, accent.400, accent.500, accent.600)`
   switch (rsvp) {
     case 'confirmed':
       return (
@@ -245,12 +246,7 @@ export const EventRSVP = ({
           <RSVPView
             heading="Your Are Attending"
             body={
-              <Button
-                size="lg"
-                bg="accent.500"
-                color="white"
-                onClick={processFee}
-              >
+              <Button bgGradient={bgGradient} size="lg" onClick={processFee}>
                 Pre-pay Event Fee
               </Button>
             }
