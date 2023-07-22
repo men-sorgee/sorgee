@@ -13,7 +13,8 @@ import {
   ApplicationStatus,
   Member,
   MemberFeature,
-  MemberLevel
+  MemberLevel,
+  MembershipType
 } from 'lib/models'
 import { ApiResult, getAssetUrl, JsonFetcher, postJSON } from 'lib/utils'
 import { signIn, useSession } from 'next-auth/react'
@@ -29,6 +30,7 @@ export type UserContextData = {
   mutate: (data: Partial<Member>) => Promise<ApiResult<Member>>
   reload: () => Promise<Member>
   level: MemberLevel
+  subscription?: MembershipType
   authenticated: boolean
   isMember: boolean
   isBrother: boolean
@@ -46,6 +48,7 @@ export const UserContext = createContext<UserContextData>({
   mutate: () => Promise.resolve(null),
   reload: () => Promise.resolve(null),
   level: MemberLevel.subscriber,
+  subscription: MembershipType.none,
   authenticated: false,
   isMember: false,
   isBrother: false,
@@ -79,7 +82,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     refreshInterval: 1000 * 60 * 5
   })
 
-  const { application_status, user_type } = member || {}
+  const { application_status, user_type, membership_type } = member || {}
   const name = member?.nickname || member?.first_name || 'Brother'
   const picture = getAssetUrl(member?.picture)
   const approved =
@@ -125,6 +128,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     },
     loading,
     level,
+    subscription: MembershipType[membership_type],
     authenticated,
     isMember,
     isBrother,
