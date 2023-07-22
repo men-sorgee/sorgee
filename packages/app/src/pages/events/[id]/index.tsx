@@ -16,6 +16,7 @@ import {
   EventDetail,
   EventStats,
   EventUser,
+  GroupEvent,
   Member,
   MemberLevel
 } from 'lib/models'
@@ -75,7 +76,10 @@ export default function EventPage({ id }: { id: string }) {
       )
     }
     if (member?.events && !invite) {
-      const i = member.events.find((e) => String(e.events_id) == eventId)
+      const i = member.events.find((e) => {
+        let event = e.events_id as GroupEvent
+        return event.id == eventId
+      })
       setInvite(i)
     }
   }, [event, eventId, eventLoading, invite, member?.events, member?.id, stats])
@@ -112,8 +116,8 @@ export default function EventPage({ id }: { id: string }) {
           <EventCard
             event={event}
             showDescription={event.status != 'occurred'}
-            showLocation={invite != null}
-            showAddToCalendar={invite != null}
+            showLocation={invite != undefined}
+            showAddToCalendar={invite != undefined}
             isGuest={invite?.guest}
             isPaid={invite?.paid}
           >

@@ -1,5 +1,4 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-
 import { EventUser, InviteRSVPType, RSVPInfo } from 'lib/models'
 import { getJSON, JsonFetcher, postJSON } from 'lib/utils'
 import useSWR from 'swr'
@@ -36,6 +35,7 @@ export const EventRSVP = ({
 }: RSVPProps) => {
   if (!eventId) throw new Error('EventRSVP requires an event or invite.')
   const [working, setWorking] = useState(false)
+  const [showPayButton, setShowPayButton] = useState(false)
   const [invite, setInvite] = useState<Partial<EventUser>>(undefined)
   const {
     data: eventUser,
@@ -58,6 +58,7 @@ export const EventRSVP = ({
   useEffect(() => {
     if (eventLoading == false && invite == undefined && eventUser) {
       setInvite(eventUser)
+      setShowPayButton(eventUser.paid == false && eventUser.guest == false)
     }
   }, [eventLoading, eventUser, invite])
 
@@ -239,6 +240,7 @@ export const EventRSVP = ({
   if (working || eventLoading) return <Spinner m="2rem auto" />
   const rsvp = invite?.rsvp || 'invited'
   const bgGradient = `linear(to-b, accent.400, accent.500, accent.600)`
+
   switch (rsvp) {
     case 'confirmed':
       return (
@@ -246,9 +248,11 @@ export const EventRSVP = ({
           <RSVPView
             heading="Your Are Attending"
             body={
-              <Button bgGradient={bgGradient} size="lg" onClick={processFee}>
-                Pre-pay Event Fee
-              </Button>
+              showPayButton && (
+                <Button bgGradient={bgGradient} size="lg" onClick={processFee}>
+                  Pre-pay Event Fee
+                </Button>
+              )
             }
           >
             <MaybeRSVPButton>May Not Attend</MaybeRSVPButton>
@@ -291,11 +295,11 @@ export const EventRSVP = ({
     case 'invited':
       return (
         <>
-          <HStack>
+          <RSVPView heading="You Are Invited">
             <ConfirmRSVPButton />
             <MaybeRSVPButton />
             <DeclineRSVPButton />
-          </HStack>
+          </RSVPView>
         </>
       )
     default:

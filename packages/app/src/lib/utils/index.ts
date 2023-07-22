@@ -2,7 +2,7 @@ import { addMinutes, format } from 'date-fns'
 import { ApiError, ApiResponse } from 'lib/models'
 
 export function toLocalDate(value: string) {
-  return new Date(value)
+  return addMinutes(new Date(value), new Date().getTimezoneOffset())
 }
 
 export const getUTCNow = () => {

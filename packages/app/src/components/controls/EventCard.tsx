@@ -31,7 +31,6 @@ import {
 import { MapPinIcon } from '@heroicons/react/24/solid'
 
 import { Markdown } from './Markdown'
-import Invite from '../../pages/api/invite/[id]'
 
 type EventCardProps = CardProps & {
   showDescription?: boolean
@@ -61,6 +60,7 @@ export const EventCard = ({
   padding,
   ...props
 }: EventCardProps) => {
+  const [viewLocation, setViewLocation] = useState<boolean>(undefined)
   const [eventStartDate, setEventStartDate] = useState<{
     day: string
     short: string
@@ -116,22 +116,37 @@ export const EventCard = ({
     }
   }
 
+  const location = event?.location as Location
   useEffect(() => {
-    if (event && !eventStartDate) {
+    if (event && eventStartDate == undefined) {
       setEventStartDate(getEventDate(event.datetime))
       setEventEndDate(getEventDate(event.datetime_end))
     }
-  }, [event, eventStartDate])
-  const mode = useColorModeValue('light', 'dark')
-  if (!event) return null
+    if (
+      showLocation &&
+      location &&
+      eventStartDate?.date &&
+      eventEndDate?.date &&
+      viewLocation == undefined
+    ) {
+      let canView =
+        differenceInDays(eventStartDate.date, new Date()) <
+          location.display_threshold && !isAfter(new Date(), eventEndDate.date)
 
-  const location = event.location as Location
-  const viewLocation =
-    showLocation &&
-    location &&
-    differenceInDays(toLocalDate(event.datetime), new Date()) <
-      location.display_threshold &&
-    !isAfter(new Date(), toLocalDate(event.datetime))
+      setViewLocation(canView && showLocation)
+    }
+  }, [
+    event,
+    eventEndDate,
+    eventStartDate,
+    location,
+    showLocation,
+    viewLocation
+  ])
+
+  const mode = useColorModeValue('light', 'dark')
+
+  if (!event) return null
 
   return (
     <Card

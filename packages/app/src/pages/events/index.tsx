@@ -81,37 +81,20 @@ export default function EventsPage({}: PageProps) {
                 mb={4}
                 showAddToCalendar={false}
                 showLocation={true}
+                hideBody={false}
               >
-                <Flex
-                  direction={['column', 'row']}
-                  gap={2}
-                  alignItems="stretch"
-                  justifyContent="stretch"
+                <ButtonLink
+                  gradient={true}
+                  rounded="lg"
                   w="full"
+                  colorScheme="primary"
+                  href={`/events/${activeInvite.event.id}`}
+                  p={6}
+                  flex={1}
                 >
-                  <ButtonLink
-                    gradient={true}
-                    rounded="lg"
-                    w="full"
-                    colorScheme="primary"
-                    href={`/events/${activeInvite.event.id}`}
-                    p={6}
-                    flex={1}
-                  >
-                    View Details
-                  </ButtonLink>
-                  <ButtonLink
-                    gradient={true}
-                    rounded="lg"
-                    w="full"
-                    colorScheme="primary"
-                    href={`/events/${activeInvite.event.id}/ticket`}
-                    p={6}
-                    flex={1}
-                  >
-                    View Ticket
-                  </ButtonLink>
-                </Flex>
+                  View Details
+                </ButtonLink>
+
                 <EventRSVP
                   canConfirm={canConfirm}
                   memberId={member?.id}
@@ -119,6 +102,18 @@ export default function EventsPage({}: PageProps) {
                   rsvp={activeInvite.rsvp}
                   onChange={onEventsChange}
                 />
+                <ButtonLink
+                  gradient={true}
+                  rounded="lg"
+                  w="full"
+                  colorScheme="secondary"
+                  href={`/events/${activeInvite.event.id}/ticket`}
+                  p={6}
+                  flex={1}
+                  mt={4}
+                >
+                  View Ticket
+                </ButtonLink>
               </EventCard>
             </Box>
           )}
