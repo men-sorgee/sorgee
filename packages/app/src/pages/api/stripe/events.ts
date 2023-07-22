@@ -2,11 +2,13 @@ import type { Readable } from 'node:stream'
 
 import { IncomingMessage } from 'http'
 import { User } from 'lib/models'
-import { findUser, getUser, updateUser } from 'lib/services/directus/server/users'
+import { findUser, getUser, updateInvite, updateUser } from 'lib/services/directus/server/users'
 import { findUserByCustomer, saveBillingEvent } from 'lib/services/directus/server/users/billing'
 import { getClient, subscriptionData, webhookSecret } from 'lib/services/stripe/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 import Stripe from 'stripe'
+import { chakra } from '@chakra-ui/react';
+import { CheckBadgeIcon } from '@heroicons/react/24/solid';
 
 async function getRawBody(readable: Readable): Promise<Buffer> {
   const chunks = []
@@ -56,6 +58,7 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
 
   const customer = data as Stripe.Customer
   const subscription = data as Stripe.Subscription
+  const checkoutSession = data as Stripe.Checkout.Session
 
   try {
     switch (dataType) {
@@ -70,6 +73,12 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
       case 'subscription':
         const { id: subscriptionId, customer: customerId } = extractFromSubscription(subscription)
         user = (await findUserByCustomer(customerId)) as User
+        break
+      case 'checkout.session':
+        const { metadata: {
+          userId,
+        } } = checkoutSession
+        user = await getUser(userId)
         break
     }
 
@@ -92,6 +101,13 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
 
   // Handle the event
   switch (event.type) {
+    case 'checkout.session.completed':
+      const { metadata: {
+        inviteId,
+      } } = checkoutSession
+      if (inviteId)
+        await updateInvite(Number(inviteId), { paid: true, rsvp: 'confirmed' })
+      break
     case 'customer.created':
     case 'customer.updated':
       await updateUser(user.id, { customer_id: customer.id })

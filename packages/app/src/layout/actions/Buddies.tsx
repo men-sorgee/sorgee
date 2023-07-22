@@ -58,6 +58,7 @@ const BuddiesAction = ({
           color={active ? 'accent.500' : 'white'}
           aria-label="View Buddies"
           title="View Buddies"
+          w={iconDimensions}
         />
         {online > 0 && (
           <Badge

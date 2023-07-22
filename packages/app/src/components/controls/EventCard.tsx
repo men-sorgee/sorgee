@@ -31,6 +31,7 @@ import {
 import { MapPinIcon } from '@heroicons/react/24/solid'
 
 import { Markdown } from './Markdown'
+import Invite from '../../pages/api/invite/[id]'
 
 type EventCardProps = CardProps & {
   showDescription?: boolean
@@ -41,6 +42,7 @@ type EventCardProps = CardProps & {
   children?: ReactNode | ReactNode[]
   footer?: ReactNode | ReactNode[]
   isGuest?: boolean
+  isPaid?: boolean
   event: Partial<GroupEvent>
 }
 
@@ -50,6 +52,7 @@ export const EventCard = ({
   showLocation = false,
   showAddToCalendar = false,
   isGuest = false,
+  isPaid = false,
   hideBody = false,
   hideFooter = false,
   children,
@@ -201,112 +204,121 @@ export const EventCard = ({
         </Flex>
       </CardHeader>
 
-      {!hideBody && (
-        <CardBody w="full" pb={0}>
-          <Flex
-            my={2}
-            gap={4}
-            justify="space-between"
-            wrap={['wrap', 'nowrap']}
-          >
-            <Show above={'md'}>
+      <CardBody w="full" pb={0}>
+        {!hideBody && (
+          <>
+            <Flex
+              my={2}
+              gap={4}
+              justify="space-between"
+              wrap={['wrap', 'nowrap']}
+            >
+              <Show above={'md'}>
+                <Stat>
+                  <StatLabel>Event Type</StatLabel>
+                  <StatNumber fontSize={['lg', 'xl', '2xl']}>
+                    {capitalCase(event.type)}
+                  </StatNumber>
+                </Stat>
+                <Stat>
+                  <StatLabel>Invite Type</StatLabel>
+                  <StatNumber fontSize={['lg', 'xl', '2xl']}>
+                    {event.invite_only ? 'Exclusive' : 'Open'}
+                  </StatNumber>
+                </Stat>
+              </Show>
               <Stat>
-                <StatLabel>Event Type</StatLabel>
+                <StatLabel>Where</StatLabel>
+                <StatNumber fontSize={['lg', 'xl', '2xl']}>Denver</StatNumber>
+              </Stat>
+              <Stat>
+                <StatLabel>Start Time</StatLabel>
                 <StatNumber fontSize={['lg', 'xl', '2xl']}>
-                  {capitalCase(event.type)}
+                  {eventStartDate?.time}
                 </StatNumber>
               </Stat>
               <Stat>
-                <StatLabel>Invite Type</StatLabel>
+                <StatLabel>End Time</StatLabel>
                 <StatNumber fontSize={['lg', 'xl', '2xl']}>
-                  {event.invite_only ? 'Exclusive' : 'Open'}
+                  {eventEndDate?.time}
                 </StatNumber>
               </Stat>
-            </Show>
-            <Stat>
-              <StatLabel>Where</StatLabel>
-              <StatNumber fontSize={['lg', 'xl', '2xl']}>Denver</StatNumber>
-            </Stat>
-            <Stat>
-              <StatLabel>Start Time</StatLabel>
-              <StatNumber fontSize={['lg', 'xl', '2xl']}>
-                {eventStartDate?.time}
-              </StatNumber>
-            </Stat>
-            <Stat>
-              <StatLabel>End Time</StatLabel>
-              <StatNumber fontSize={['lg', 'xl', '2xl']}>
-                {eventEndDate?.time}
-              </StatNumber>
-            </Stat>
-            {event.status == 'scheduled' && (
-              <Stat flex="shrink">
-                <StatLabel>Fee</StatLabel>
-                <StatNumber
-                  fontSize={['lg', 'xl', '2xl']}
-                  textDecoration={isGuest ? 'line-through' : ''}
-                >
-                  ${event.cost}
-                </StatNumber>
-                {isGuest && <StatHelpText>WAIVED</StatHelpText>}
-              </Stat>
-            )}
-          </Flex>
-
-          {showDescription && (
-            <>
-              <Divider my={4} />
-              <Markdown content={event.description} size="md" />
-            </>
-          )}
-
-          {viewLocation && (
-            <>
-              <Heading as="h5" textTransform="uppercase" size="md">
-                Location:
-              </Heading>
-
-              <LinkBox>
-                <Flex
-                  w={['full', 'full', 'fit-content']}
-                  mt={[4, 4, 0]}
-                  ml={[0, 0, 4]}
-                  mb={4}
-                  border="1px dashed"
-                  p={2}
-                  rounded="lg"
-                  borderColor="text"
-                  float={['none', 'none', 'right']}
-                >
-                  <Icon
-                    h={20}
-                    w={20}
-                    as={MapPinIcon}
-                    color="primary.200"
-                    fill="primary.500"
-                  />
-
-                  <LinkOverlay
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={`https://www.google.com/maps/place/${location.street} ${location.city} ${location.state} ${location.zip}`}
+              {event.status == 'scheduled' && (
+                <Stat flex="shrink">
+                  <StatLabel>Fee</StatLabel>
+                  <StatNumber
+                    fontSize={['lg', 'xl', '2xl']}
+                    textDecoration={isGuest || isPaid ? 'line-through' : ''}
                   >
-                    <Text fontWeight="bold" ml={3} colorScheme="primary" my={0}>
-                      {location.name}
-                      <br />
-                      {location.street} {location.unit}
-                      <br />
-                      {location.city}, {location.state} {location.zip}
-                    </Text>
-                  </LinkOverlay>
-                </Flex>
-              </LinkBox>
-              <Markdown size="xs" content={location.notes} />
-            </>
-          )}
-          {children}
-        </CardBody>
-      )}
+                    ${event.cost}
+                  </StatNumber>
+                  {isGuest && <StatHelpText>WAIVED</StatHelpText>}
+                  {isPaid && <StatHelpText>PAID</StatHelpText>}
+                </Stat>
+              )}
+            </Flex>
+
+            {showDescription && (
+              <>
+                <Divider my={4} />
+                <Markdown content={event.description} size="md" />
+              </>
+            )}
+
+            {viewLocation && (
+              <>
+                <Heading as="h5" textTransform="uppercase" size="md">
+                  Location:
+                </Heading>
+
+                <LinkBox>
+                  <Flex
+                    w={['full', 'full', 'fit-content']}
+                    mt={[4, 4, 0]}
+                    ml={[0, 0, 4]}
+                    mb={4}
+                    border="1px dashed"
+                    p={2}
+                    rounded="lg"
+                    borderColor="text"
+                    float={['none', 'none', 'right']}
+                  >
+                    <Icon
+                      h={20}
+                      w={20}
+                      as={MapPinIcon}
+                      color="primary.200"
+                      fill="primary.500"
+                    />
+
+                    <LinkOverlay
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={`https://www.google.com/maps/place/${location.street} ${location.city} ${location.state} ${location.zip}`}
+                    >
+                      <Text
+                        fontWeight="bold"
+                        ml={3}
+                        colorScheme="primary"
+                        my={0}
+                      >
+                        {location.name}
+                        <br />
+                        {location.street} {location.unit}
+                        <br />
+                        {location.city}, {location.state} {location.zip}
+                      </Text>
+                    </LinkOverlay>
+                  </Flex>
+                </LinkBox>
+                <Markdown size="xs" content={location.notes} />
+              </>
+            )}
+          </>
+        )}
+        {children}
+      </CardBody>
+
       {!hideFooter && (
         <CardFooter>
           <Flex direction={['column', 'row']} gap={4} w="full" align="center">

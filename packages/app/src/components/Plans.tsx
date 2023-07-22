@@ -72,7 +72,7 @@ const Plans = ({
     const { data, error, success } = await getJSON<{
       id: string
       amount: number
-    }>(`/api/stripe/purchase/${productId}`)
+    }>(`/api/stripe/subscribe/${productId}`)
     if (!success) {
       console.error(error)
       return

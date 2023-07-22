@@ -47,6 +47,7 @@ const MembersAction = ({
         <IconButton
           variant="primary"
           size={iconSize}
+          w={iconDimensions}
           icon={
             <Icon as={UserGroupIcon} w={iconDimensions} h={iconDimensions} />
           }

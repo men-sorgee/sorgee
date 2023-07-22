@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 import { EventCard, EventTicket } from 'components/controls'
-import Page from 'components/Page'
 import { useEvent, useUser } from 'hooks'
 import { EventUser, MemberLevel } from 'lib/models'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
-
 import { ArrowBackIcon } from '@chakra-ui/icons'
 import { HStack, Link } from '@chakra-ui/react'
+import useSWR from 'swr'
+import { JsonFetcher } from 'lib/utils'
+import { Page } from 'components'
 
 export default function EventTicketPage() {
   const router = useRouter()
@@ -16,15 +17,20 @@ export default function EventTicketPage() {
     minLevel: MemberLevel.inductee,
     redirectsEnabled: false
   })
+  const key = `/api/events/rsvp?event_id=${String(id)}`
   const { event, loading: eventLoading, reload } = useEvent(id as string)
-  const [invite, setInvite] = useState<EventUser>(undefined)
+  const [invite, setInvite] = useState<Partial<EventUser>>(undefined)
+  const { data: eventUser, isLoading: inviteLoading } = useSWR<
+    Partial<EventUser>
+  >(key, JsonFetcher, {
+    isPaused: () => eventLoading
+  })
 
   useEffect(() => {
-    if (member?.events && !invite) {
-      const i = member.events.find((e) => String(e.events_id) == id)
-      setInvite(i)
+    if (eventLoading == false && invite == undefined && eventUser) {
+      setInvite(eventUser)
     }
-  }, [id, invite, member?.events, member?.id])
+  }, [eventLoading, eventUser, invite])
 
   return (
     <Page
@@ -38,10 +44,9 @@ export default function EventTicketPage() {
             event={event}
             showDescription={false}
             isGuest={invite?.guest}
+            isPaid={invite?.paid}
           >
-            {invite && invite.rsvp == 'confirmed' && (
-              <EventTicket open event={event} member={member} />
-            )}
+            {invite && <EventTicket open event={event} member={member} />}
           </EventCard>
 
           <HStack spacing={4} mt={4}>

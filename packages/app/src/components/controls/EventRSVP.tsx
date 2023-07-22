@@ -1,7 +1,7 @@
-import { ReactNode, useCallback, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import { EventUser, InviteRSVPType, RSVPInfo } from 'lib/models'
-import { JsonFetcher, postJSON } from 'lib/utils'
+import { getJSON, JsonFetcher, postJSON } from 'lib/utils'
 import useSWR from 'swr'
 
 import {
@@ -9,6 +9,7 @@ import {
   AlertIcon,
   Box,
   BoxProps,
+  Button,
   Heading,
   HStack,
   Spinner,
@@ -35,7 +36,12 @@ export const EventRSVP = ({
 }: RSVPProps) => {
   if (!eventId) throw new Error('EventRSVP requires an event or invite.')
   const [working, setWorking] = useState(false)
-  const { data: eventUser, mutate } = useSWR<Partial<EventUser>>(
+  const [invite, setInvite] = useState<Partial<EventUser>>(undefined)
+  const {
+    data: eventUser,
+    mutate,
+    isLoading: eventLoading
+  } = useSWR<Partial<EventUser>>(
     `/api/events/rsvp?event_id=${eventId}`,
     JsonFetcher,
     {
@@ -44,41 +50,31 @@ export const EventRSVP = ({
         events_id: eventId,
         rsvp: r || 'invited'
       },
-      isPaused: () => r != undefined
+      isPaused: () =>
+        r != undefined || memberId == undefined || eventId == undefined
     }
   )
 
-  const invite = eventUser
+  useEffect(() => {
+    if (eventLoading == false && invite == undefined && eventUser) {
+      setInvite(eventUser)
+    }
+  }, [eventLoading, eventUser, invite])
 
-  const respond = async (data: Partial<RSVPInfo>) => {
-    setWorking(true)
-    const {
-      success,
-      data: response,
-      error
-    } = await postJSON<RSVPInfo>('/api/events/rsvp', {
-      event_id: eventId,
-      user_id: memberId,
-      ...data
-    })
-    if (!success) throw new Error(error?.message || 'Something went wrong.')
-    return response
-  }
+  const reasonRef = useRef<HTMLTextAreaElement>(null)
 
   const complete = useCallback(
     (success: boolean, data: EventUser) => {
       if (success) {
-        invite.id = data.id
+        setInvite(data)
         mutate(data as EventUser).then(() => {
           if (onChange) onChange()
           setWorking(false)
         })
       }
     },
-    [invite, mutate, onChange]
+    [mutate, onChange]
   )
-
-  const rsvp = invite?.rsvp || 'invited'
 
   const CancelRSVPButton = ({ children = 'Something Came Up' }) => (
     <ButtonConfirm
@@ -87,7 +83,9 @@ export const EventRSVP = ({
       failureMessage="Unable to cancel."
       successMessage="Your RSVP has been cancelled."
       promise={() =>
-        respond({
+        postJSON<RSVPInfo>('/api/events/rsvp', {
+          event_id: eventId,
+          user_id: memberId,
           rsvp: 'cancelled',
           reason: reasonRef.current.value
         })
@@ -97,6 +95,11 @@ export const EventRSVP = ({
     >
       <>
         <Text>Are you sure you want to cancel your RSVP?</Text>
+        {invite?.paid && (
+          <Text mt={4}>
+            There are no refunds if you are within 24 hours of the event-start.
+          </Text>
+        )}
         <Textarea ref={reasonRef} placeholder="Reason..." w="full" required />
       </>
     </ButtonConfirm>
@@ -111,7 +114,9 @@ export const EventRSVP = ({
       colorScheme="primary"
       disabled={!canConfirm}
       promise={() =>
-        respond({
+        postJSON<RSVPInfo>('/api/events/rsvp', {
+          event_id: eventId,
+          user_id: memberId,
           rsvp: 'confirmed'
         })
       }
@@ -136,7 +141,9 @@ export const EventRSVP = ({
       successMessage="Your RSVP has been registered."
       colorScheme="secondary"
       promise={() =>
-        respond({
+        postJSON<RSVPInfo>('/api/events/rsvp', {
+          event_id: eventId,
+          user_id: memberId,
           rsvp: 'maybe'
         })
       }
@@ -161,7 +168,9 @@ export const EventRSVP = ({
       successMessage="This invitation has been declined. It will not show anymore."
       colorScheme="red"
       promise={() =>
-        respond({
+        postJSON<RSVPInfo>('/api/events/rsvp', {
+          event_id: eventId,
+          user_id: memberId,
           rsvp: 'declined'
         })
       }
@@ -198,14 +207,54 @@ export const EventRSVP = ({
     </>
   )
 
-  const reasonRef = useRef<HTMLTextAreaElement>(null)
-  if (working) return <Spinner m="2rem auto" />
+  const processFee = async () => {
+    const { loadStripe } = await import('@stripe/stripe-js')
+    const stripe = await loadStripe(
+      process.env.STRIPE_PUBLIC_KEY ||
+        'pk_live_51LoPw1EoEUGL2Bgubxo5vTjGRx0ONP4JHo6A0zVJivv7ToiCBoRnKdmRoCIWFbikTTenBSQZ7xy8wmF0woyx4NBH00MykU8UsN'
+    )
+    const { data, error, success } = await getJSON<{
+      id: string
+      amount: number
+    }>(`/api/stripe/event/${invite.id}`)
+    if (!success) {
+      console.error(error)
+      return
+    }
 
+    await stripe.redirectToCheckout({
+      sessionId: data.id
+    })
+  }
+
+  if (invite?.paid) {
+    return (
+      <RSVPView heading="You are confirmed and paid for this event.">
+        <MaybeRSVPButton>May Not Attend</MaybeRSVPButton>
+        <CancelRSVPButton>Can Not Attend</CancelRSVPButton>
+      </RSVPView>
+    )
+  }
+
+  if (working || eventLoading) return <Spinner m="2rem auto" />
+  const rsvp = invite?.rsvp || 'invited'
   switch (rsvp) {
     case 'confirmed':
       return (
         <>
-          <RSVPView heading="Your Are Attending">
+          <RSVPView
+            heading="Your Are Attending"
+            body={
+              <Button
+                size="lg"
+                bg="accent.500"
+                color="white"
+                onClick={processFee}
+              >
+                Pre-pay Event Fee
+              </Button>
+            }
+          >
             <MaybeRSVPButton>May Not Attend</MaybeRSVPButton>
             <CancelRSVPButton>Can Not Attend</CancelRSVPButton>
           </RSVPView>

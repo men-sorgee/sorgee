@@ -405,8 +405,8 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps) => {
           </Alert>{' '}
           {(member && member?.membership_type != 'none' && (
             <Plan
-              plan={member?.membership_type}
-              interval={member?.renewal_type}
+              plan={member.membership_type}
+              interval={member.renewal_type}
             />
           )) || (
             <ButtonLink

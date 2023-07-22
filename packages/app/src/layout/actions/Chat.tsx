@@ -57,6 +57,7 @@ const ChatActions = ({
         title="Brother Chat"
         variant="primary"
         zIndex="fixed"
+        w={iconDimensions}
         color={active ? 'accent.500' : 'white'}
         size={iconSize}
         icon={<Icon as={ChatIcon} w={iconDimensions} h={iconDimensions} />}

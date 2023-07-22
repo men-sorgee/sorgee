@@ -2,9 +2,9 @@ import { useUserEvents } from 'hooks'
 import { Member, MemberLevel } from 'lib/models'
 import NextLink from 'next/link'
 
-import { Badge, Icon, IconButton, Link } from '@chakra-ui/react'
+import { Badge, Box, Icon, IconButton, Link } from '@chakra-ui/react'
 import { CalendarIcon } from '@heroicons/react/24/outline'
-import { TicketIcon } from '@heroicons/react/24/solid'
+import { TicketIcon } from '@heroicons/react/24/outline'
 
 interface Props {
   member: Member
@@ -20,12 +20,13 @@ const EventsAction = ({ member, active, iconSize, iconDimensions }: Props) => {
     return null
   }
   return (
-    <>
+    <Box>
       <Link href="/events" as={NextLink}>
         <IconButton
           variant="primary"
           zIndex="fixed"
           size={iconSize}
+          w={iconDimensions}
           icon={
             <Icon as={CalendarIcon} w={iconDimensions} h={iconDimensions} />
           }
@@ -57,13 +58,14 @@ const EventsAction = ({ member, active, iconSize, iconDimensions }: Props) => {
             icon={
               <Icon as={TicketIcon} w={iconDimensions} h={iconDimensions} />
             }
+            w={iconDimensions}
             color="yellow.500"
             aria-label={`Ticket to ${activeInvite.event.name}`}
             title={`Ticket to ${activeInvite.event.name}`}
           />
         </Link>
       )}
-    </>
+    </Box>
   )
 }
 

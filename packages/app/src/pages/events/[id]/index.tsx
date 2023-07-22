@@ -104,6 +104,7 @@ export default function EventPage({ id }: { id: string }) {
       title={event?.name || 'Event Details'}
       description={event?.description}
       loading={eventLoading}
+      hideHeader
     >
       {event && (
         <>
@@ -113,6 +114,7 @@ export default function EventPage({ id }: { id: string }) {
             showLocation={invite != null}
             showAddToCalendar={invite != null}
             isGuest={invite?.guest}
+            isPaid={invite?.paid}
           >
             {member && (
               <>

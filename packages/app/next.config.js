@@ -50,10 +50,7 @@ const getConfig = (phase) => {
       ]
     },
     poweredByHeader: false,
-    crossOrigin: false,
-    env: {
-      STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY
-    }
+    crossOrigin: false
   }
   return nextConfig
 }

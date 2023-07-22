@@ -77,6 +77,7 @@ const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
           size={iconSize}
           icon={<Icon as={BellIcon} w={iconDimensions} h={iconDimensions} />}
           onClick={onOpen}
+          w={iconDimensions}
         />
         {totalNew > 0 && (
           <Badge

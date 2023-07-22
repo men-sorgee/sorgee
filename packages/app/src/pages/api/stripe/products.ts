@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const plans = await Promise.all(
       prices
-        .filter((p) => p.active)
+        .filter((p) => p.active && p.type === 'recurring')
         .map(async (price) => {
           const product = await stripe.products.retrieve(price.product as string)
           return {

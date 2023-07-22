@@ -77,6 +77,7 @@ export default function EventsPage({}: PageProps) {
                 event={activeInvite.event as GroupEvent}
                 showDescription={false}
                 isGuest={activeInvite.guest}
+                isPaid={activeInvite.paid}
                 mb={4}
                 showAddToCalendar={false}
                 showLocation={true}
@@ -257,6 +258,7 @@ function Invitations({
               showDescription={false}
               showLocation={false}
               isGuest={invite.guest || false}
+              isPaid={invite.paid || false}
               showAddToCalendar={
                 invite.rsvp == 'confirmed' || invite.rsvp == 'maybe'
               }

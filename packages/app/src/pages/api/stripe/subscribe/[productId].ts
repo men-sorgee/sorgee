@@ -4,7 +4,7 @@ import { updateUser } from 'lib/services/directus/server'
 import { getClient } from 'lib/services/stripe/server'
 import { withMember } from 'lib/utils/server'
 
-export default async function PurchaseProduct(req, res) {
+export default async function SubscribeProduct(req, res) {
   try {
     let member = await withMember(req, res)
     const stripe = getClient()

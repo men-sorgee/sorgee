@@ -38,6 +38,7 @@ const PledgesAction = ({ member, active, iconSize, iconDimensions }: Props) => {
           variant="primary"
           zIndex="fixed"
           size={iconSize}
+          w={iconDimensions}
           icon={
             <Icon as={UserCircleIcon} w={iconDimensions} h={iconDimensions} />
           }
