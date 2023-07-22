@@ -36,6 +36,8 @@ type EventCardProps = CardProps & {
   showDescription?: boolean
   showLocation?: boolean
   showAddToCalendar?: boolean
+  hideBody?: boolean
+  hideFooter?: boolean
   children?: ReactNode | ReactNode[]
   footer?: ReactNode | ReactNode[]
   isGuest?: boolean
@@ -48,8 +50,12 @@ export const EventCard = ({
   showLocation = false,
   showAddToCalendar = false,
   isGuest = false,
+  hideBody = false,
+  hideFooter = false,
   children,
   footer,
+  size,
+  padding,
   ...props
 }: EventCardProps) => {
   const [eventStartDate, setEventStartDate] = useState<{
@@ -79,25 +85,25 @@ export const EventCard = ({
       return (
         <Flex flex="shrink" gap={2} align="center">
           <Stat>
-            <StatNumber textAlign="center" fontSize={['lg', 'xl', '2xl']}>
+            <StatNumber textAlign="center" fontSize={['lg', 'xl']}>
               {days.toString().padStart(2, '0')}
             </StatNumber>
             <StatHelpText>Days</StatHelpText>
           </Stat>
           <Stat>
-            <StatNumber textAlign="center" fontSize={['lg', 'xl', '2xl']}>
+            <StatNumber textAlign="center" fontSize={['lg', 'xl']}>
               {hours.toString().padStart(2, '0')}
             </StatNumber>
             <StatHelpText>Hours</StatHelpText>
           </Stat>
           <Stat>
-            <StatNumber textAlign="center" fontSize={['lg', 'xl', '2xl']}>
+            <StatNumber textAlign="center" fontSize={['lg', 'xl']}>
               {minutes.toString().padStart(2, '0')}
             </StatNumber>
             <StatHelpText>Minutes</StatHelpText>
           </Stat>
           <Stat>
-            <StatNumber textAlign="center" fontSize={['lg', 'xl', '2xl']}>
+            <StatNumber textAlign="center" fontSize={['lg', 'xl']}>
               {seconds.toString().padStart(2, '0')}
             </StatNumber>
             <StatHelpText>Seconds</StatHelpText>
@@ -149,11 +155,11 @@ export const EventCard = ({
             w="75%"
             align="center"
             justify="center"
-            p={4}
+            p={padding || 4}
           >
             <Heading
               as="h3"
-              size="2xl"
+              size={size || '2xl'}
               w="full"
               textAlign="center"
               color="white!important"
@@ -169,7 +175,7 @@ export const EventCard = ({
             direction="column"
             bg="primary.700"
             borderRadius="0 15px 0  0"
-            p={4}
+            p={padding || 4}
             w="25%"
           >
             <Text fontSize={['xs', 'sm', 'sm', 'md']} color="white" m={0} p={0}>
@@ -180,7 +186,7 @@ export const EventCard = ({
               p={0}
               color="white"
               justifyContent="middle"
-              fontSize={['2xl', '3xl']}
+              fontSize={size || ['2xl', '3xl']}
               whiteSpace="nowrap"
               fontWeight="extrabold"
             >
@@ -195,151 +201,166 @@ export const EventCard = ({
         </Flex>
       </CardHeader>
 
-      <CardBody w="full" pb={0}>
-        <Flex my={2} gap={4} justify="space-between" wrap={['wrap', 'nowrap']}>
-          <Show above={'md'}>
+      {!hideBody && (
+        <CardBody w="full" pb={0}>
+          <Flex
+            my={2}
+            gap={4}
+            justify="space-between"
+            wrap={['wrap', 'nowrap']}
+          >
+            <Show above={'md'}>
+              <Stat>
+                <StatLabel>Event Type</StatLabel>
+                <StatNumber fontSize={['lg', 'xl', '2xl']}>
+                  {capitalCase(event.type)}
+                </StatNumber>
+              </Stat>
+              <Stat>
+                <StatLabel>Invite Type</StatLabel>
+                <StatNumber fontSize={['lg', 'xl', '2xl']}>
+                  {event.invite_only ? 'Exclusive' : 'Open'}
+                </StatNumber>
+              </Stat>
+            </Show>
             <Stat>
-              <StatLabel>Event Type</StatLabel>
+              <StatLabel>Where</StatLabel>
+              <StatNumber fontSize={['lg', 'xl', '2xl']}>Denver</StatNumber>
+            </Stat>
+            <Stat>
+              <StatLabel>Start Time</StatLabel>
               <StatNumber fontSize={['lg', 'xl', '2xl']}>
-                {capitalCase(event.type)}
+                {eventStartDate?.time}
               </StatNumber>
             </Stat>
             <Stat>
-              <StatLabel>Invite Type</StatLabel>
+              <StatLabel>End Time</StatLabel>
               <StatNumber fontSize={['lg', 'xl', '2xl']}>
-                {event.invite_only ? 'Exclusive' : 'Open'}
+                {eventEndDate?.time}
               </StatNumber>
             </Stat>
-          </Show>
-          <Stat>
-            <StatLabel>Where</StatLabel>
-            <StatNumber fontSize={['lg', 'xl', '2xl']}>Denver</StatNumber>
-          </Stat>
-          <Stat>
-            <StatLabel>Start Time</StatLabel>
-            <StatNumber fontSize={['lg', 'xl', '2xl']}>
-              {eventStartDate?.time}
-            </StatNumber>
-          </Stat>
-          <Stat>
-            <StatLabel>End Time</StatLabel>
-            <StatNumber fontSize={['lg', 'xl', '2xl']}>
-              {eventEndDate?.time}
-            </StatNumber>
-          </Stat>
-          {event.status == 'scheduled' && (
-            <Stat flex="shrink">
-              <StatLabel>Fee</StatLabel>
-              <StatNumber
-                fontSize={['lg', 'xl', '2xl']}
-                textDecoration={isGuest ? 'line-through' : ''}
-              >
-                ${event.cost}
-              </StatNumber>
-              {isGuest && <StatHelpText>WAIVED</StatHelpText>}
-            </Stat>
-          )}
-        </Flex>
-
-        {showDescription && (
-          <>
-            <Divider my={4} />
-            <Markdown content={event.description} size="md" />
-          </>
-        )}
-
-        {viewLocation && (
-          <>
-            <Heading as="h5" textTransform="uppercase" size="md">
-              Location:
-            </Heading>
-
-            <LinkBox>
-              <Flex
-                w={['full', 'full', 'fit-content']}
-                mt={[4, 4, 0]}
-                ml={[0, 0, 4]}
-                mb={4}
-                border="1px dashed"
-                p={2}
-                rounded="lg"
-                borderColor="text"
-                float={['none', 'none', 'right']}
-              >
-                <Icon
-                  h={20}
-                  w={20}
-                  as={MapPinIcon}
-                  color="primary.200"
-                  fill="primary.500"
-                />
-
-                <LinkOverlay
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={`https://www.google.com/maps/place/${location.street} ${location.city} ${location.state} ${location.zip}`}
+            {event.status == 'scheduled' && (
+              <Stat flex="shrink">
+                <StatLabel>Fee</StatLabel>
+                <StatNumber
+                  fontSize={['lg', 'xl', '2xl']}
+                  textDecoration={isGuest ? 'line-through' : ''}
                 >
-                  <Text fontWeight="bold" ml={3} colorScheme="primary" my={0}>
-                    {location.name}
-                    <br />
-                    {location.street} {location.unit}
-                    <br />
-                    {location.city}, {location.state} {location.zip}
-                  </Text>
-                </LinkOverlay>
-              </Flex>
-            </LinkBox>
-            <Markdown size="xs" content={location.notes} />
-          </>
-        )}
-        {children}
-      </CardBody>
-      <CardFooter>
-        <Flex direction={['column', 'row']} gap={4} w="full" align="center">
-          {event.status == 'scheduled' &&
-            eventStartDate?.dateOnly &&
-            showAddToCalendar && (
-              <>
-                <AddToCalendarButton
-                  uid={event.id}
-                  size="2"
-                  trigger="click"
-                  name={event.name}
-                  description={event.description}
-                  startDate={event.datetime}
-                  endDate={event.datetime_end}
-                  location={
-                    viewLocation
-                      ? [
-                          location?.street,
-                          location?.unit,
-                          location?.city,
-                          location?.state,
-                          location?.zip
-                        ].join(' ')
-                      : ''
-                  }
-                  timeZone="America/Denver"
-                  options={['Apple', 'Google', 'Outlook.com', 'Yahoo', 'iCal']}
-                  buttonStyle="text"
-                  hideBackground
-                  lightMode={mode}
-                />
-                <Spacer />
-              </>
+                  ${event.cost}
+                </StatNumber>
+                {isGuest && <StatHelpText>WAIVED</StatHelpText>}
+              </Stat>
             )}
-          {footer}
-          <Spacer />
-          {(event.status == 'planned' && (
+          </Flex>
+
+          {showDescription && (
             <>
-              <Text as="em">* This is date is subject to change.</Text>
+              <Divider my={4} />
+              <Markdown content={event.description} size="md" />
             </>
-          )) ||
-            (event.status == 'scheduled' && (
-              <Countdown date={date} renderer={renderer} />
-            ))}
-        </Flex>
-      </CardFooter>
+          )}
+
+          {viewLocation && (
+            <>
+              <Heading as="h5" textTransform="uppercase" size="md">
+                Location:
+              </Heading>
+
+              <LinkBox>
+                <Flex
+                  w={['full', 'full', 'fit-content']}
+                  mt={[4, 4, 0]}
+                  ml={[0, 0, 4]}
+                  mb={4}
+                  border="1px dashed"
+                  p={2}
+                  rounded="lg"
+                  borderColor="text"
+                  float={['none', 'none', 'right']}
+                >
+                  <Icon
+                    h={20}
+                    w={20}
+                    as={MapPinIcon}
+                    color="primary.200"
+                    fill="primary.500"
+                  />
+
+                  <LinkOverlay
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={`https://www.google.com/maps/place/${location.street} ${location.city} ${location.state} ${location.zip}`}
+                  >
+                    <Text fontWeight="bold" ml={3} colorScheme="primary" my={0}>
+                      {location.name}
+                      <br />
+                      {location.street} {location.unit}
+                      <br />
+                      {location.city}, {location.state} {location.zip}
+                    </Text>
+                  </LinkOverlay>
+                </Flex>
+              </LinkBox>
+              <Markdown size="xs" content={location.notes} />
+            </>
+          )}
+          {children}
+        </CardBody>
+      )}
+      {!hideFooter && (
+        <CardFooter>
+          <Flex direction={['column', 'row']} gap={4} w="full" align="center">
+            {event.status == 'scheduled' &&
+              eventStartDate?.dateOnly &&
+              showAddToCalendar && (
+                <>
+                  <AddToCalendarButton
+                    uid={event.id}
+                    size="2"
+                    trigger="click"
+                    name={event.name}
+                    description={event.description}
+                    startDate={event.datetime}
+                    endDate={event.datetime_end}
+                    location={
+                      viewLocation
+                        ? [
+                            location?.street,
+                            location?.unit,
+                            location?.city,
+                            location?.state,
+                            location?.zip
+                          ].join(' ')
+                        : ''
+                    }
+                    timeZone="America/Denver"
+                    options={[
+                      'Apple',
+                      'Google',
+                      'Outlook.com',
+                      'Yahoo',
+                      'iCal'
+                    ]}
+                    buttonStyle="text"
+                    hideBackground
+                    lightMode={mode}
+                  />
+                  <Spacer />
+                </>
+              )}
+            {footer}
+            <Spacer />
+            {(event.status == 'planned' && (
+              <>
+                <Text as="em">* This is date is subject to change.</Text>
+              </>
+            )) ||
+              (event.status == 'scheduled' && (
+                <Countdown date={date} renderer={renderer} />
+              ))}
+          </Flex>
+        </CardFooter>
+      )}
     </Card>
   )
 }

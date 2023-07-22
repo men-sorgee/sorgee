@@ -649,7 +649,7 @@ export const memberInterestsFields: Array<keyof Member> = [
 ]
 
 export const memberEventFields: Array<keyof Member> = [
-  'events.*' as any,
+  'events.*.*' as any,
   'event_invites',
   'can_host',
   'event_availability',

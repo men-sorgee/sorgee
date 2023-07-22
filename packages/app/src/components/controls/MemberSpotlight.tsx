@@ -4,6 +4,7 @@ import { useMember, useMeta, useUser } from 'hooks'
 import {
   DirectusField,
   EventUser,
+  GroupEvent,
   memberEventFields,
   memberInterestsFields,
   MemberLevel,
@@ -27,6 +28,8 @@ import {
   ButtonGroup,
   Center,
   chakra,
+  LinkOverlay,
+  LinkBox,
   Flex,
   FlexProps,
   Heading,
@@ -55,12 +58,14 @@ import {
   MemberShare,
   MemberReport,
   MemberIcon,
-  Markdown
+  Markdown,
+  EventCard
 } from './'
 import { ImageGallery } from './ImageGallery'
 import { Loading } from './Loading'
 import { Rating } from './Rating'
 import { toLocalDate } from 'lib/utils/index'
+import NextLink from 'next/link'
 
 type Props = FlexProps & {
   id: string
@@ -508,6 +513,38 @@ export const MemberSpotlight = chakra(
                     </Stat>
                   )}
                 </Flex>
+                {member?.events?.length > 0 && (
+                  <>
+                    <Heading
+                      as="h3"
+                      mt={0}
+                      size="sm"
+                      mb={2}
+                      borderBottom="1px solid"
+                      borderColor={headingColor}
+                      color={headingColor}
+                      textTransform="uppercase"
+                    >
+                      His Upcoming Events
+                    </Heading>
+                    {member?.events
+                      ?.filter((e) => ['maybe', 'confirmed'].includes(e.rsvp))
+                      .map((e) => e.events_id as GroupEvent)
+                      .filter((e) => e.status == 'scheduled')
+                      .map((e) => (
+                        <LinkBox key={e.id}>
+                          <EventCard
+                            size="lg"
+                            event={e}
+                            hideBody
+                            hideFooter
+                            p={2}
+                          />
+                          <LinkOverlay as={NextLink} href={`/events/${e.id}`} />
+                        </LinkBox>
+                      ))}
+                  </>
+                )}
               </AccordionPanel>
             </AccordionItem>
           )}
