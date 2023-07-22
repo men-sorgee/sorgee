@@ -3,16 +3,21 @@ import { EventCard, EventTicket } from 'components/controls'
 import { useEvent, useUser } from 'hooks'
 import { EventUser, MemberLevel } from 'lib/models'
 import NextLink from 'next/link'
-import { useRouter } from 'next/router'
 import { ArrowBackIcon } from '@chakra-ui/icons'
 import { HStack, Link } from '@chakra-ui/react'
 import useSWR from 'swr'
 import { JsonFetcher } from 'lib/utils'
 import { Page } from 'components'
 
-export default function EventTicketPage() {
-  const router = useRouter()
-  const { id } = router.query
+export async function getServerSideProps({ params }) {
+  return {
+    props: {
+      id: params.id
+    }
+  }
+}
+
+export default function EventTicketPage({ id }: { id: string }) {
   const { member, loading, authenticated } = useUser({
     minLevel: MemberLevel.inductee,
     redirectsEnabled: false
@@ -20,21 +25,19 @@ export default function EventTicketPage() {
   const key = `/api/events/rsvp?event_id=${String(id)}`
   const { event, loading: eventLoading, reload } = useEvent(id as string)
   const [invite, setInvite] = useState<Partial<EventUser>>(undefined)
-  const { data: eventUser, isLoading: inviteLoading } = useSWR<
-    Partial<EventUser>
-  >(key, JsonFetcher, {
+  const { data: eventUser } = useSWR<Partial<EventUser>>(key, JsonFetcher, {
     isPaused: () => eventLoading
   })
 
   useEffect(() => {
-    if (eventLoading == false && invite == undefined && eventUser) {
+    if (eventLoading == false && invite == undefined && eventUser && event) {
       setInvite(eventUser)
     }
-  }, [eventLoading, eventUser, invite])
+  }, [eventLoading, eventUser, event, invite])
 
   return (
     <Page
-      title="Event Details"
+      title="Event Ticket"
       loading={loading || eventLoading}
       requireAuth={true}
     >
@@ -52,7 +55,11 @@ export default function EventTicketPage() {
           <HStack spacing={4} mt={4}>
             <Link as={NextLink} href={`/events/${id}`}>
               <ArrowBackIcon mr={2} w="50" />
-              Back to Event
+              Go to Event Details
+            </Link>
+            <Link as={NextLink} href={`/events/${id}`}>
+              <ArrowBackIcon mr={2} w="50" />
+              Go to All Events
             </Link>
           </HStack>
         </>
