@@ -191,7 +191,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps) => {
           fontWeight={tabValue == 3 ? 'bold' : null}
           px={[1, 2, 4]}
         >
-          Account
+          Delete
         </Tab>
       </TabList>
       <TabPanels>

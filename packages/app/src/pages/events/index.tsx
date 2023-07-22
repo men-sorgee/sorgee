@@ -76,11 +76,6 @@ export default function EventsPage({}: PageProps) {
                 event={activeInvite.event as GroupEvent}
                 showDescription={false}
                 isGuest={activeInvite.guest}
-                href={
-                  activeInvite.attended
-                    ? `/events/${activeInvite.event.id}`
-                    : undefined
-                }
                 mb={4}
                 showAddToCalendar={false}
                 showLocation={true}
@@ -248,7 +243,6 @@ function Invitations({
             <EventCard
               mb={8}
               event={invite.event}
-              href={`/events/${invite.event.id}`}
               showDescription={false}
               showLocation={false}
               isGuest={invite.guest || false}
@@ -343,7 +337,6 @@ function PastEvents({ member, list }: { list: EventInvite[]; member: Member }) {
           <EventCard
             event={invite.event as GroupEvent}
             showDescription={false}
-            href={invite.attended ? `/events/${invite.event.id}` : undefined}
             mb={4}
             showAddToCalendar={false}
           >
