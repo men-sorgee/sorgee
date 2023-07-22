@@ -25,9 +25,7 @@ export default function EventTicketPage({ id }: { id: string }) {
   const key = `/api/events/rsvp?event_id=${String(id)}`
   const { event, loading: eventLoading, reload } = useEvent(id as string)
   const [invite, setInvite] = useState<Partial<EventUser>>(undefined)
-  const { data: eventUser } = useSWR<Partial<EventUser>>(key, JsonFetcher, {
-    isPaused: () => eventLoading
-  })
+  const { data: eventUser } = useSWR<Partial<EventUser>>(key, JsonFetcher)
 
   useEffect(() => {
     if (eventLoading == false && invite == undefined && eventUser && event) {
