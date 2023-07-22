@@ -105,6 +105,7 @@ export default function EventPage({ id }: { id: string }) {
       description={event?.description}
       loading={eventLoading}
       hideHeader
+      pt={2}
     >
       {event && (
         <>

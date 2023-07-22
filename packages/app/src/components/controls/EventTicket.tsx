@@ -22,23 +22,18 @@ export const EventTicket = ({
     event?.invite_only ? 'invite' : 'events'
   }/checkin?user_id=${member?.id}&event_id=${event?.id}`
   return (
-    <Box mt={4} borderTop="2px dotted">
+    <Box p={2}>
       <Image
         className="print-only"
         rounded="xl"
         shadow="lg"
         maxW="sm"
-        mt={-8}
         src={`/api/code${checkinUrl}`}
         alt="Ticket"
         w="full"
       />
       <div className="no-print">
-        <Text textAlign="center">
-          <strong>Important:</strong> Present this ticket to the host when you
-          arrive for access.
-        </Text>
-        <Flex direction="column" my={4}>
+        <Flex direction="column">
           {!open && (
             <Flex
               alignContent="center"
@@ -46,8 +41,6 @@ export const EventTicket = ({
               align="center"
               bg="gray.200"
               color="white"
-              px={2}
-              py={2}
               cursor="pointer"
               _hover={{ bg: 'primary' }}
               rounded="lg"
@@ -59,24 +52,21 @@ export const EventTicket = ({
             </Flex>
           )}
           <SlideFade in={open || showTicket} unmountOnExit>
-            <Heading textAlign="center" mb={0}>
-              Admit: {member?.first_name} {member?.last_name}
-            </Heading>
+            <Text p={0} m={0} textAlign="center">
+              Present this ticket to the host.
+            </Text>
 
             <Image
               rounded="xl"
               shadow="lg"
               maxW="md"
-              mt={4}
               mx="auto"
               src={`/api/code${checkinUrl}`}
               alt="Ticket"
               w="full"
             />
-            <Text textAlign="center" my={1} color="gray.200">
-              U: {member?.id}
-              <br />
-              e: {event?.id}
+            <Text textAlign="center" m={0} p={0}>
+              Admit: {member?.first_name} {member?.last_name}
             </Text>
           </SlideFade>
         </Flex>

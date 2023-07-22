@@ -23,6 +23,7 @@ import {
   Badge,
   Box,
   Heading,
+  Flex,
   LinkBox,
   LinkOverlay,
   Show,
@@ -64,14 +65,13 @@ export default function EventsPage({}: PageProps) {
       title="Events"
       description="Upcoming events."
       requireAuth={true}
+      hideHeader
+      pt={2}
     >
       {authorized ? (
         <>
           {activeInvite && member && (
             <Box mb={4}>
-              <Heading mb={4} className="no-print">
-                Active Event
-              </Heading>
               <EventCard
                 key={activeInvite.id}
                 event={activeInvite.event as GroupEvent}
@@ -82,16 +82,28 @@ export default function EventsPage({}: PageProps) {
                 showAddToCalendar={false}
                 showLocation={true}
               >
-                <ButtonLink
-                  gradient={true}
-                  rounded="lg"
-                  w="full"
-                  colorScheme="accent"
-                  href={`/events/${activeInvite.event.id}`}
-                  p={6}
-                >
-                  View Details
-                </ButtonLink>
+                <Flex direction={['column', 'row']} gap={2}>
+                  <ButtonLink
+                    gradient={true}
+                    rounded="lg"
+                    w="full"
+                    colorScheme="accent"
+                    href={`/events/${activeInvite.event.id}`}
+                    p={6}
+                  >
+                    View Details
+                  </ButtonLink>
+                  <ButtonLink
+                    gradient={true}
+                    rounded="lg"
+                    w="full"
+                    colorScheme="accent"
+                    href={`/events/${activeInvite.event.id}/ticket`}
+                    p={6}
+                  >
+                    View Ticket
+                  </ButtonLink>
+                </Flex>
                 <EventRSVP
                   canConfirm={canConfirm}
                   memberId={member?.id}
@@ -99,9 +111,6 @@ export default function EventsPage({}: PageProps) {
                   rsvp={activeInvite.rsvp}
                   onChange={onEventsChange}
                 />
-                {activeInvite.rsvp == 'confirmed' && (
-                  <EventTicket event={activeInvite.event} member={member} />
-                )}
               </EventCard>
             </Box>
           )}

@@ -36,8 +36,10 @@ export default function EventTicketPage({ id }: { id: string }) {
   return (
     <Page
       title="Event Ticket"
+      hideHeader
       loading={loading || eventLoading}
       requireAuth={true}
+      pt={4}
     >
       {authenticated && member && event && (
         <>
@@ -46,6 +48,8 @@ export default function EventTicketPage({ id }: { id: string }) {
             showDescription={false}
             isGuest={invite?.guest}
             isPaid={invite?.paid}
+            hideBody
+            hideFooter
           >
             {invite && <EventTicket open event={event} member={member} />}
           </EventCard>
