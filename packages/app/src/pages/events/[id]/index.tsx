@@ -98,6 +98,7 @@ export default function EventPage({ id }: { id: string }) {
 
   const canViewAttendees = hasFeature('view_attendees')
 
+  const canConfirm = member?.rating && member?.rating > 2
   return (
     <Page
       title={event?.name || 'Event Details'}
@@ -204,6 +205,7 @@ export default function EventPage({ id }: { id: string }) {
                 {event.status != 'occurred' &&
                   (invite || !event?.invite_only) && (
                     <EventRSVP
+                      canConfirm={canConfirm}
                       memberId={member.id}
                       eventId={eventId}
                       rsvp={invite?.rsvp}

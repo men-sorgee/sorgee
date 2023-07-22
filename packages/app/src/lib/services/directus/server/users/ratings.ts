@@ -105,6 +105,19 @@ export async function setUserAverageRating(user_id: string) {
 
   const average = ratings.reduce((acc, rating) => acc + rating.rate, 0) / ratings.length
 
+  const attendedEvents = await adminClient.items('events_users').readByQuery({
+    filter: {
+      users_id: {
+        id: {
+          _eq: user_id,
+        }
+      },
+      attended: {
+        _eq: true,
+      }
+    }
+  })
+
   const missedEvents = await adminClient.items('events_users').readByQuery({
     filter: {
       users_id: {
@@ -118,9 +131,10 @@ export async function setUserAverageRating(user_id: string) {
     }
   })
 
-  const missedEventsCount = missedEvents.data.length
 
-  let rating = Math.floor(average) - (missedEventsCount * 1)
+  const missedEventsCount = missedEvents.data.length - (attendedEvents.data.length / 2)
+
+  let rating = Math.floor(average - missedEventsCount)
   if (rating < 1) rating = 1
 
   return await adminClient.items('users').updateOne(user_id, {

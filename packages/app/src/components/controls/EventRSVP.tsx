@@ -23,13 +23,15 @@ type RSVPProps = BoxProps & {
   rsvp?: InviteRSVPType
   eventId: string
   onChange?: () => void
+  canConfirm: boolean
 }
 
 export const EventRSVP = ({
   memberId,
   rsvp: r,
   eventId,
-  onChange
+  onChange,
+  canConfirm
 }: RSVPProps) => {
   if (!eventId) throw new Error('EventRSVP requires an event or invite.')
   const [working, setWorking] = useState(false)
@@ -107,6 +109,7 @@ export const EventRSVP = ({
       failureMessage="Unable to confirm."
       successMessage="Your RSVP has been registered."
       colorScheme="primary"
+      disabled={!canConfirm}
       promise={() =>
         respond({
           rsvp: 'confirmed'

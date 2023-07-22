@@ -56,6 +56,7 @@ export default function EventsPage({}: PageProps) {
   const onEventsChange = useCallback(() => {
     reload()
   }, [reload])
+  const canConfirm = member?.rating && member?.rating > 2
 
   return (
     <Page
@@ -91,6 +92,7 @@ export default function EventsPage({}: PageProps) {
                   View Details
                 </ButtonLink>
                 <EventRSVP
+                  canConfirm={canConfirm}
                   memberId={member?.id}
                   eventId={activeInvite.event.id}
                   rsvp={activeInvite.rsvp}
@@ -105,6 +107,14 @@ export default function EventsPage({}: PageProps) {
           <EventCalendar
             events={[...upcoming, ...invitations].map((i) => i.event)}
           />
+
+          {!canConfirm && (
+            <Alert status="warning" rounded="lg" shadow="lg" my={4}>
+              <AlertIcon />
+              You cannot confirm events. Your reputation for attending events is
+              too low. Showing up to events you RSVP to will improve your
+            </Alert>
+          )}
 
           <Tabs
             isFitted
@@ -235,6 +245,7 @@ function Invitations({
     return dateA - dateB
   })
   if (!member) return null
+  const canConfirm = member?.rating && member?.rating > 2
   return (
     <>
       {list.map((invite, index) => {
@@ -264,6 +275,7 @@ function Invitations({
                 </ButtonLink>
               )}
               <EventRSVP
+                canConfirm={canConfirm}
                 memberId={member.id}
                 eventId={invite.event.id}
                 rsvp={invite.rsvp}
