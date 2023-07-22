@@ -11,6 +11,7 @@ import {
   Flex,
   Heading,
   HStack,
+  Stack,
   Text,
   useColorModeValue
 } from '@chakra-ui/react'
@@ -57,7 +58,7 @@ export default function HomePage({ page }: Props) {
   useEffect(() => {
     setMeta(title, description, image?.id)
   })
-
+  const color = useColorModeValue('gray.700', 'gray.100')
   return (
     <>
       <Box
@@ -69,7 +70,7 @@ export default function HomePage({ page }: Props) {
         shadow="lg"
         bg={useColorModeValue('white', 'gray.700')}
       >
-        <Heading as="h1" textAlign={['left', 'center']} size={['2xl', '3xl']}>
+        <Heading as="h1" textAlign={'center'} size={['2xl', '3xl']}>
           <Text as={'div'} color={'accent.400'}>
             Group Play
           </Text>
@@ -80,14 +81,20 @@ export default function HomePage({ page }: Props) {
           maxW={['lg', 'xl', '2xl', '3xl']}
           mx="auto"
           my={6}
-          textAlign={['left', 'center']}
+          textAlign={'center'}
         >
           A hot new approach to meeting men
         </Text>
         {!authenticated && (
-          <HStack my={[4, 4, 8]} gap={4} align="top" justify={'center'}>
+          <Flex
+            my={[4, 4, 8]}
+            gap={4}
+            align="center"
+            justify={'center'}
+            direction={['column', 'row']}
+          >
             {site && !site.invite_only && (
-              <ButtonLink size="lg" fontSize="3xl" href="/apply" color="white">
+              <ButtonLink size="lg" fontSize="xl" href="/apply" color="white">
                 Get Started
               </ButtonLink>
             )}
@@ -95,25 +102,25 @@ export default function HomePage({ page }: Props) {
             {next_page && (
               <ButtonLink
                 size="lg"
-                fontSize="3xl"
+                fontSize="xl"
                 href={next_page.slug}
                 color="white"
               >
                 {next_page.title}
               </ButtonLink>
             )}
-          </HStack>
+          </Flex>
         )}
       </Box>
       <Box mx={[4, 4, 0]}>
-        <Text
-          fontStyle="italic"
-          textAlign={['left', 'center']}
-          size="xs"
-          color={useColorModeValue('gray.700', 'gray.100')}
-          mb={[5, 10, 20]}
-        >
-          {site && site.invite_only && (
+        {site && site.invite_only && (
+          <Text
+            fontStyle="italic"
+            textAlign={['left', 'center']}
+            size="xs"
+            color={color}
+            mb={[5, 10, 20]}
+          >
             <>
               Access to this site is by invite-only while we build and test this
               site. If you would like to join our beta-program and apply for
@@ -126,13 +133,8 @@ export default function HomePage({ page }: Props) {
                 @guysnheat
               </Link>
             </>
-          )}{' '}
-          Existing members can{' '}
-          <Link href="/api/auth/signin" onClick={() => signIn()}>
-            enter here
-          </Link>
-          .{' '}
-        </Text>
+          </Text>
+        )}
         <Flex direction="column" gap={8}>
           <Markdown content={markdown} />
           {content?.map((s, i) => (

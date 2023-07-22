@@ -22,8 +22,18 @@ export default function MemberHomePage() {
               and reach out to those they want to contact and potentially vouch
               for.
             </Text>
-
-            <Text fontSize="xl"></Text>
+          </Box>
+        </>
+      )}
+      {level == MemberLevel.inductee && (
+        <>
+          <Box maxWidth="xl" mx="auto">
+            <Text fontSize="xl">
+              As an Inductee, your primary mission is to attend an event and get
+              approval from the group. Once you have been approved, you will
+              graduate to Brother and be able to see the full list of Brothers
+              and their contact information.
+            </Text>
           </Box>
         </>
       )}

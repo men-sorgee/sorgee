@@ -449,7 +449,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps) => {
             bottom={4}
             my={8}
             _hover={{ bg: 'red.500' }}
-            w={['full', 'auto']}
+            w={['full', 'full', 'auto']}
             complete={(success) => {
               if (success) {
                 location.href = '/api/member/delete'

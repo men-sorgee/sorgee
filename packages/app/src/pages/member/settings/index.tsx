@@ -264,7 +264,6 @@ function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps) {
                       }}
                       placeholder="000 456 7890"
                     />
-                    <GridItem colSpan={[1, 2]}></GridItem>
                   </SimpleGrid>
                   <SimpleGrid spacing={4} my={4} columns={[1, 2]}>
                     <FieldSelect
@@ -530,7 +529,7 @@ function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps) {
               disabled={isSubmitting || !isDirty}
               position="sticky"
               bottom={4}
-              w={['full', 'auto']}
+              w={['full', 'full', 'auto']}
               _hover={{ bg: 'accent.500' }}
             >
               Update Settings

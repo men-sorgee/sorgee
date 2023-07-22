@@ -126,7 +126,7 @@ export default function MessagesStyles() {
         .cs-main-container--responsive .cs-conversation-list .cs-conversation__content,
         .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__content,
         .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__last-activity-time {
-          display: none;
+          display: inherit;
         }
         .cs-main-container--responsive .cs-conversation-list .cs-conversation__operations,
       .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__operations {

@@ -8,10 +8,12 @@ import { useSite, useUser } from 'hooks'
 import { pledgeSurvey } from 'lib/config'
 import { MemberLevel } from 'lib/models'
 import { signIn, signOut } from 'next-auth/react'
-import Link from 'next/link'
+import NextLink from 'next/link'
 
 import {
   Box,
+  Flex,
+  Link,
   Menu,
   MenuButton,
   MenuDivider,
@@ -349,13 +351,13 @@ export default function UserMenu(_props: Props) {
           </MenuList>
         </Menu>
       ) : (
-        <>
-          <ButtonLink
+        <Flex justify="end">
+          <Link
             mr={2}
+            as={NextLink}
             href={`/api/auth/signin`}
             fontWeight={600}
-            variant="ghost"
-            _hover={{ textDecoration: 'none' }}
+            size={['sm', 'md']}
             color="white"
             onClick={(e) => {
               e.preventDefault()
@@ -364,20 +366,21 @@ export default function UserMenu(_props: Props) {
               })
             }}
           >
-            Existing Members
-          </ButtonLink>
+            Members
+          </Link>{' '}
+          | &nbsp;
           {showApply && (
-            <ButtonLink
+            <Link
+              as={NextLink}
+              size={['sm', 'md']}
               href={`/register`}
               color="white"
-              _hover={{ textDecoration: 'none' }}
               fontWeight={600}
-              colorScheme={'accent'}
             >
-              Apply to Join
-            </ButtonLink>
+              Applicants
+            </Link>
           )}
-        </>
+        </Flex>
       )}
     </>
   )

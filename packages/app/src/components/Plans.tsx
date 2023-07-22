@@ -98,9 +98,11 @@ const Plans = ({
       sessionId: data.id
     })
 
-    await stripe.redirectToCheckout({
-      sessionId: data.id
-    })
+    await stripe
+      .redirectToCheckout({
+        sessionId: data.id
+      })
+      .catch(console.error)
   }
 
   const showSubscribeButton =

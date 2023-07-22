@@ -614,7 +614,7 @@ const ProfileForm = ({
               bottom={4}
               disabled={isSubmitting || !isDirty}
               _hover={{ bg: 'accent.500' }}
-              w={['full', 'auto']}
+              w={['full', 'full', 'auto']}
             >
               Update Profile
             </Button>
