@@ -34,7 +34,7 @@ type Params = {
 
 const Plans = ({
   allowSubscribe = false,
-  highlightedPlan = MembershipType.basic
+  highlightedPlan = MembershipType.plus
 }: Params) => {
   const { products, loading: productsLoading } = useProducts()
   const { member, loading, authenticated, level } = useUser({

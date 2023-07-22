@@ -7,7 +7,7 @@ type Params = {}
 
 export default function AccountSubscriptionPage({}: Params) {
   const router = useRouter()
-  const { plan: p } = router.query
+  const { plan: p = MembershipType.plus } = router.query
   let plan = undefined
   if (p) {
     plan = Number(p) as MembershipType
