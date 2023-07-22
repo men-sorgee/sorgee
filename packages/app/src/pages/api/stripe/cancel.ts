@@ -4,10 +4,12 @@ import { withMethods, withUser } from 'lib/utils/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { callbackUrl = '/member/account/plan' } = req.query
+
   try {
     withMethods(req, ['GET'])
     let user = await withUser(req, res)
-    const { callbackUrl } = req.query
+
     const stripe = getClient()
     const { subscription_id, notes } = user
     if (!subscription_id)
@@ -20,11 +22,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await updateUser(user.id, {
       notes: `${notes}\nCancelled subscription via app at ${new Date().toISOString()}`
     })
-
-
-    return res.redirect(String(callbackUrl) || '/member/account/plan')
   } catch (error) {
     console.error(error)
+  }
+  finally {
     res.redirect('/member/account/plan')
   }
 }
