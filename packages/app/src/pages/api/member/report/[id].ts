@@ -15,7 +15,7 @@ export default async function MemberReport(
   res: NextApiResponse<ApiResponse<UserLike> | ApiResponse>
 ) {
   try {
-    const method = withMethods(req, ['POST'])
+    withMethods(req, ['POST'])
     const me = await withMember(req, res)
 
     const { id } = req.query
@@ -35,7 +35,7 @@ export default async function MemberReport(
       {
         user_id: them.id,
         button_text: 'View Reported in Admin',
-        button_url: `${adminBaseUrl}/admin/content/users/${me.id}`,
+        button_url: `${adminBaseUrl}/admin/content/users/${them.id}`,
       },
       SendGridTemplate.Notification,
       SendGridCategory.Notification

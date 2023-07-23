@@ -12,9 +12,9 @@ export default function Index({}) {
   useEffect(() => {
     if (loading) return
     if (member) {
-      const { application_status } = member || {}
+      const { application_status } = member
       if (application_status === 'approved') {
-        router.push('/members')
+        router.push('/member')
       } else {
         router.push('/apply/' + application_status)
       }
@@ -26,8 +26,8 @@ export default function Index({}) {
   }, [loading, router, member])
 
   return (
-    <Page title="Application" requireAuth={true}>
-      <Loading>Sit tight</Loading>
+    <Page title="Application" requireAuth={true} loading={true}>
+      <Loading />
     </Page>
   )
 }

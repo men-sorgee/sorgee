@@ -68,7 +68,7 @@ enum PageSection {
   info,
   email,
   plan,
-  account
+  close
 }
 
 type SettingsProp = Pick<
@@ -191,7 +191,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps) => {
           fontWeight={tabValue == 3 ? 'bold' : null}
           px={[1, 2, 4]}
         >
-          Delete
+          Close
         </Tab>
       </TabList>
       <TabPanels>
@@ -432,7 +432,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps) => {
           >
             <VStack>
               <Heading as="h3" fontSize="xl" mt={0}>
-                Delete Account
+                Delete Data
               </Heading>
               <Text>
                 Deleting your account will remove all of your data from our
@@ -455,8 +455,9 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps) => {
                 location.href = '/api/member/delete'
               }
             }}
-            buttonText="Delete Account"
+            buttonText="Delete Data"
             title="Permanently Delete Account"
+            aria-label="Permanently Delete Account"
           >
             <Text>
               Are you sure you want to completely delete your account? There is
@@ -464,6 +465,25 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps) => {
               completely removed from our servers. You will be immediately
               signed out and will not be able to sign in again.
             </Text>
+          </ButtonConfirm>
+          <ButtonConfirm
+            size="lg"
+            type="submit"
+            bg="primary.500"
+            color="white"
+            bottom={4}
+            my={8}
+            _hover={{ bg: 'red.500' }}
+            w={['full', 'full', 'auto']}
+            complete={(success) => {
+              if (success) {
+                location.href = '/api/member/delete'
+              }
+            }}
+            buttonText="Deactivate Account"
+            title="Deactivate Account"
+          >
+            <Text>Are you sure you want to deactivate your account?</Text>
           </ButtonConfirm>
         </TabPanel>
       </TabPanels>

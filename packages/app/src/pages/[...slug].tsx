@@ -185,7 +185,7 @@ export default function DynamicPage({ page }: Props) {
       </Flex>
       <HStack spacing={4}>
         {!site.invite_only && (
-          <ButtonLink my={8} colorScheme="accent" size="lg" href="/apply">
+          <ButtonLink my={8} colorScheme="accent" size="lg" href="/register">
             Get Started
           </ButtonLink>
         )}

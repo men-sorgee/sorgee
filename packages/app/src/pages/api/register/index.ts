@@ -31,11 +31,13 @@ export default async function Register(
     const existingUser = await findUser<User>(email)
     if (existingUser) {
       const { notes, status, user_type, application_status } = existingUser
-      if (MemberLevel[user_type] > MemberLevel.applicant) {
-        return res.status(400).json(ApiResponse(null, 'User already exists'))
-      }
+
       if (status == 'banned') {
         return res.status(400).json(ApiResponse(null, 'User is banned'))
+      }
+
+      if (MemberLevel[user_type] > MemberLevel.applicant && status == 'active' && application_status == 'approved') {
+        return res.status(200).json(ApiResponse(existingUser, 'User exists'))
       }
 
       const updatedUser = await updateUser(existingUser.id, {
@@ -47,7 +49,7 @@ export default async function Register(
         notes: (notes ? `${notes}: ` : '') + 'registered via app' + (promoCode ? ` with promo ${promoCode}` : ''),
         promo: (promo ? promo.id : null),
         status: 'active',
-        user_type: 'applicant',
+        user_type: status == 'inactive' ? user_type : 'applicant',
       })
       return res.status(200).json(ApiResponse(updatedUser))
     } else {

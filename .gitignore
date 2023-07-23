@@ -39,3 +39,4 @@ data
 
 packages/app/results/*
 packages/app/coverage/*
+localhost*
