@@ -8,7 +8,6 @@ type Props = ButtonProps & {
   children: React.ReactNode | React.ReactNode[]
   onClick?: (e: any) => void
   replace?: boolean
-  prefetch?: boolean
 }
 
 export const ButtonLink = chakra(
@@ -19,7 +18,6 @@ export const ButtonLink = chakra(
     children,
     onClick,
     replace = true,
-    prefetch = true,
     w,
     flex,
     ...props
@@ -32,7 +30,6 @@ export const ButtonLink = chakra(
         onClick={onClick}
         style={{ color: 'white', textDecoration: 'none' }}
         replace={replace}
-        prefetch={prefetch}
         w={w}
         flex={flex}
         display="block"
