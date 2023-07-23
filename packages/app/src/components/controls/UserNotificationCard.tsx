@@ -93,7 +93,6 @@ export const UserNotificationCard = chakra(
                   await onClick()
                   return true
                 }}
-                prefetch={false}
                 replace={false}
               >
                 {notification?.button_text || 'Check it Out!'}

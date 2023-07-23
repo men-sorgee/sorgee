@@ -51,7 +51,7 @@ export default async function VouchForMember(
       })
 
       // send congrats email
-      const congratsInducteeEmail = await getAppNotification(notifications.congratsInductee)
+      const congratsInducteeEmail = await getAppNotification(notifications.congratsEmail.inductee)
       if (congratsInducteeEmail == null) throw new Error('Notification not found')
 
       const { button_text, button_url, subject, body, data, template, category } =

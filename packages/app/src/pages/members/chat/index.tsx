@@ -5,7 +5,6 @@ import {
   MemberModal,
   MemberReport,
   MemberShare,
-  Messages,
   Page
 } from 'components'
 import { useDisclosure, Flex, HStack, IconButton } from '@chakra-ui/react'

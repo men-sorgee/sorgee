@@ -61,7 +61,7 @@ export default async function Invite(
 
         if (MemberLevel[attendee.user_type] < MemberLevel.brother) {
           // send congrats email
-          const congratsBrotherEmail = await getAppNotification(notifications.congratsBrother)
+          const congratsBrotherEmail = await getAppNotification(notifications.congratsEmail.brother)
           if (congratsBrotherEmail == null) throw new Error('Notification not found')
 
           const { button_text, button_url, subject, body, data, template, category } =
