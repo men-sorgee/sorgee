@@ -83,7 +83,7 @@ const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
           <Badge
             bg="accent.500"
             color="white"
-            ml={[-6, -8, -10]}
+            ml={-4}
             zIndex="overlay"
             position="absolute"
             rounded="full"

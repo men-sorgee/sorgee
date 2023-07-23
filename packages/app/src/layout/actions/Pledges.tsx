@@ -50,7 +50,7 @@ const PledgesAction = ({ member, active, iconSize, iconDimensions }: Props) => {
           <Badge
             bg={active ? 'accent.500' : 'white'}
             color={active ? 'white' : 'accent.500'}
-            ml={[-6, -8, -10]}
+            ml={-4}
             zIndex="overlay"
             position="absolute"
             rounded="full"

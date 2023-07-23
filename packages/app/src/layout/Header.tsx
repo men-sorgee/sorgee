@@ -40,22 +40,24 @@ function Header({ isAuthenticated, userType, children, ...props }: Props) {
   const { isOpen, onToggle, onClose } = useDisclosure()
   const [pages, setPages] = useState<PageItem[]>()
   const ref = useRef()
+
   useOutsideClick({
     ref: ref,
     handler: () => {
       onClose()
     }
   })
+
+  const routeComplete = useCallback(() => {
+    if (isOpen) onClose()
+  }, [isOpen, onClose])
+
   useEffect(() => {
-    const routeComplete = () => {
-      if (isOpen) onClose()
-    }
     router.events.on('routeChangeComplete', routeComplete)
     return () => {
       router.events.off('routeChangeComplete', routeComplete)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.events, isOpen])
+  }, [router.events, isOpen, routeComplete])
 
   const canSee = useCallback(
     (visibility: UserType[] = []) => {
@@ -187,7 +189,7 @@ function Header({ isAuthenticated, userType, children, ...props }: Props) {
           align="center"
           {...constrained}
         >
-          <Box w="50%">
+          <Box flex={1}>
             <IconButton
               size="md"
               onClick={onToggle}
@@ -199,13 +201,13 @@ function Header({ isAuthenticated, userType, children, ...props }: Props) {
                 )
               }
               variant="primary"
-              ml={[0, 2, -4]}
+              ml={[0, 1]}
               aria-label="Toggle Navigation"
             />
           </Box>
 
           <Logo isAuthenticated={isAuthenticated} />
-          <Box w="50%" textAlign="right">
+          <Box flex={1} textAlign="right">
             <User />
           </Box>
         </HStack>

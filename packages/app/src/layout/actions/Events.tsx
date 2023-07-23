@@ -36,7 +36,7 @@ const EventsAction = ({ member, active, iconSize, iconDimensions }: Props) => {
         />
         {newInvitationCount > 0 && (
           <Badge
-            ml={[-6, -8, -10]}
+            ml={-4}
             zIndex="overlay"
             position="absolute"
             rounded="full"

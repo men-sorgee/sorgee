@@ -53,7 +53,7 @@ export default function ActionsNav() {
       bottom={0}
       px={8}
     >
-      <Flex justify="center" w="full" gap={[1, 2, 4, 6]} p={4} {...constrained}>
+      <Flex justify="center" w="full" gap={[2, 4, 6]} p={4} {...constrained}>
         <Events
           member={member}
           active={path.startsWith('/events')}

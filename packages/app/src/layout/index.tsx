@@ -1,4 +1,10 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react'
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 
 import { ErrorBoundary } from 'components/ErrorBoundary'
 import { useUser } from 'hooks'
@@ -13,6 +19,7 @@ import Footer from './Footer'
 import Header from './Header'
 import Meta from './Meta'
 import Splash from './Splash'
+import { url } from 'inspector'
 
 export const constrained = {
   maxW: brand.breakPoints,
@@ -31,10 +38,14 @@ function Layout({
     redirectsEnabled: false
   })
   const router = useRouter()
-  const [path] = useState<string>(router?.asPath)
+  const [path, setPath] = useState<string>()
+  const [hideFooter, setHideFooter] = useState<boolean>(false)
   const { isOpen, onOpen } = useDisclosure()
   const showActions = authenticated && level >= MemberLevel.pledge
   useEffect(() => {
+    if (path == undefined) {
+      setPath(router?.asPath)
+    }
     if (!loading && authenticated) {
       if (showActions && !isOpen) {
         setTimeout(() => {
@@ -42,30 +53,49 @@ function Layout({
         }, 1000)
       }
     }
-  }, [authenticated, loading, onOpen, isOpen, showActions, level])
+  }, [
+    authenticated,
+    loading,
+    onOpen,
+    isOpen,
+    showActions,
+    level,
+    path,
+    router?.asPath
+  ])
   const headerRef = useRef<HTMLDivElement>(null)
+
+  const handleRouteChange = useCallback((url: string) => {
+    setHideFooter(url.startsWith('/members/chat') || url.endsWith('/ticket'))
+    setTimeout(() => {
+      if (headerRef.current != null) {
+        headerRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        })
+      }
+    }, 100)
+  }, [])
+
   useEffect(() => {
-    const handleRouteChange = () => {
-      setTimeout(() => {
-        if (headerRef.current != null) {
-          headerRef.current.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          })
-        }
-      }, 100)
-    }
     router.events.on('routeChangeComplete', handleRouteChange)
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange)
     }
-  }, [router.events, loading, authenticated, level, showActions, isOpen])
+  }, [
+    router.events,
+    loading,
+    authenticated,
+    level,
+    showActions,
+    isOpen,
+    hideFooter,
+    handleRouteChange
+  ])
 
   if (path?.startsWith('/code')) {
     return <>{children}</>
   }
-
-  const isChat = path.startsWith('/members/chat')
 
   return (
     <>
@@ -77,7 +107,7 @@ function Layout({
           flex="1 100%"
           direction="column"
           maxH={`calc(100vh - ${showActions ? '146px' : '75px'})`}
-          overflowY="auto"
+          overflowY={hideFooter ? 'hidden' : 'auto'}
           overflowX="hidden"
           w="full"
         >
@@ -94,8 +124,12 @@ function Layout({
             >
               <ErrorBoundary>{children}</ErrorBoundary>
             </Box>
-            {!isChat && <Spacer h="1rem" />}
-            {!isChat && <Footer />}
+            {!hideFooter && (
+              <>
+                <Spacer h="1rem" />
+                <Footer />
+              </>
+            )}
           </Box>
         </Flex>
         <ErrorBoundary>
