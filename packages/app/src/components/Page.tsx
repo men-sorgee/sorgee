@@ -20,6 +20,7 @@ type Props = BoxProps & {
   requireAuth?: boolean
   requiredLevel?: MemberLevel
   hideHeader?: boolean
+  full?: boolean
 }
 
 const Page = ({
@@ -33,6 +34,7 @@ const Page = ({
   requireAuth = false,
   hideHeader = false,
   requiredLevel,
+  full = false,
   ...props
 }: Props) => {
   const { setMeta } = useMeta()
@@ -63,6 +65,10 @@ const Page = ({
     return <AccessDenied />
   }
 
+  if (loading) {
+    return <Loading size="xl" mt={10} />
+  }
+
   return (
     <Box
       id={id}
@@ -70,7 +76,7 @@ const Page = ({
       as="article"
       alignItems={'center'}
       justifyItems="stretch"
-      px={[2, 2, 2, 0]}
+      px={full ? 0 : [2, 0]}
       w="full"
       {...props}
     >
@@ -82,12 +88,7 @@ const Page = ({
         </div>
       )}
       {header}
-      {(loading && (
-        <Loading size="xl" mt={10}>
-          <h2>hold please</h2>
-        </Loading>
-      )) ||
-        children}
+      {children}
     </Box>
   )
 }
