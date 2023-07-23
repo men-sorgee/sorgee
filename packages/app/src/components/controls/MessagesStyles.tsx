@@ -118,26 +118,28 @@ export default function MessagesStyles() {
         }
         .cs-main-container--responsive > .cs-conversation-list {
           flex-basis: calc(1.6em + 40px);
+          display:none;
         }
         .cs-main-container--responsive .cs-conversation-list .cs-conversation > .cs-avatar,
         .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation > .cs-avatar {
           margin-right: 0;
+          
         }
         .cs-main-container--responsive .cs-conversation-list .cs-conversation__content,
         .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__content,
         .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__last-activity-time {
-          display: inherit;
-        }
-        .cs-main-container--responsive .cs-conversation-list .cs-conversation__operations,
-      .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__operations {
           display: none;
         }
+        .cs-main-container--responsive .cs-conversation-list .cs-conversation__operations,
+        .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__operations {
+           display: none;
+        }
         .cs-main-container--responsive .cs-conversation-list .cs-conversation__last-activity-time,
-      .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__last-activity-time {
-          dis-play: none;
+        .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__last-activity-time {
+            dis-play: none;
         }
         .cs-main-container--responsive .cs-conversation-list .cs-conversation__unread-dot,
-      .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__unread-dot {
+        .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__unread-dot {
           position: absolute;
           top: 0.3em;
           right: 0.3em;
@@ -1312,11 +1314,11 @@ export default function MessagesStyles() {
       }
       .cs-conversation__last-activity-time {
         box-sizing: border-box;
-        margin: 0 0 0 auto;
         font-size: 0.8em;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
+        display: inherit;
+        position: absolute;
+        right: 0.5em;
+        bottom: 0.5em;
       }
       .cs-conversation__last-activity-time + .cs-conversation__operations {
         margin-left: 0.5em;
@@ -2102,7 +2104,7 @@ export default function MessagesStyles() {
         height: 100%;
       }
 
-      .cs-main-container svg {
+      .cs-button svg {
         min-height: 1.5rem;
         color: ${color};
       }

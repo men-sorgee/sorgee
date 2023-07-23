@@ -44,7 +44,7 @@ export async function getMessages(user_id: string) {
   const userMessages: Record<string, ChatMessage[]> = {}
 
   messages.forEach((message: Message) => {
-    let { from, to, image } = message as { to: User; from: User; image: DirectusFile }
+    let { from, to, image } = message as { to: User; from: User; image: string }
     const user = (from.id === user_id ? to : from) as ChatUser
     const direction = from.id === user_id ? 'outgoing' : 'incoming'
     const { body, status, date_created, edited, expires, type } = message
@@ -58,12 +58,12 @@ export async function getMessages(user_id: string) {
       timestamp: new Date(date_created),
       edited,
       body,
-      image: image ? getAssetUrl(image.id) : null,
+      image,
       expires,
       user,
       direction,
       type,
-    })
+    } as ChatMessage)
   })
 
   return userMessages

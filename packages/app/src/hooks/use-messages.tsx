@@ -111,8 +111,7 @@ export function MessagesProvider({
         lastMessage,
         hasNewMessages,
         user: {
-          ...user,
-          picture: `/api/asset/${user.picture}?w=100&h=100&fit=crop`
+          ...user
         }
       })
       // @ts-ignore

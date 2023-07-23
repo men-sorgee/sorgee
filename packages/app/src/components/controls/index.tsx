@@ -49,6 +49,5 @@ export { EventCard } from './EventCard'
 export { AppNotificationCard } from './AppNotificationCard'
 export { UserNotificationCard } from './UserNotificationCard'
 export { UserNotifications } from './UserNotifications'
-export { Messages } from './Messages'
 
 export { UpgradeIcon } from './UpgradeIcon'
