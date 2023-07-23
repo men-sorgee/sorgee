@@ -8,13 +8,14 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Button,
-  ButtonProps,
+  IconButton,
+  IconButtonProps,
   chakra,
   useDisclosure,
   useToast
 } from '@chakra-ui/react'
 
-export type ConfirmButtonProps = ButtonProps & {
+export type ConfirmButtonProps = Omit<IconButtonProps, 'aria-label'> & {
   promise?: () => Promise<any>
   complete: (bool: boolean, data: any, error?: string) => void
   title: string
@@ -39,6 +40,7 @@ export const ButtonConfirm = chakra(
     failureMessage,
     children,
     focusRef,
+    icon,
     ...props
   }: ConfirmButtonProps) => {
     const toast = useToast()
@@ -70,9 +72,19 @@ export const ButtonConfirm = chakra(
     }, [complete, failureMessage, promise, successMessage, title, toast])
     return (
       <>
-        <Button onClick={onOpen} {...props}>
-          {buttonText}
-        </Button>
+        {(icon && (
+          <IconButton
+            onClick={onOpen}
+            aria-label={title}
+            title={title}
+            icon={icon}
+            {...props}
+          />
+        )) || (
+          <Button onClick={onOpen} aria-label={title} title={title} {...props}>
+            {buttonText}
+          </Button>
+        )}
 
         <AlertDialog
           isOpen={isOpen}

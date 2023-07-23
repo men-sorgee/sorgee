@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
-
+import { ButtonConfirm } from './ButtonConfirm'
 import { useUser } from 'hooks'
 import { Member } from 'lib/models'
 import { deleteJSON, postJSON } from 'lib/utils'
 
-import { chakra, IconButton, IconButtonProps } from '@chakra-ui/react'
+import { chakra, Text, IconButtonProps, Icon } from '@chakra-ui/react'
 import { EyeIcon as ViewIcon } from '@heroicons/react/24/outline'
 import { EyeSlashIcon as BlockedIcon } from '@heroicons/react/24/solid'
 import { UserBlock, MemberLevel } from 'lib/models'
@@ -24,13 +24,13 @@ export const MemberBlock = chakra(
     const toggleBlock = useCallback(() => {
       setIsBlocked(!isBlocked)
       if (isBlocked) {
-        deleteJSON(`/api/member/block/${member.id}`).then(() => {
+        return deleteJSON(`/api/member/block/${member.id}`).then(() => {
           setIsBlocked(false)
           return reload()
         })
       } else {
         // add buddy
-        postJSON(`/api/member/block/${member.id}`, {}).then((r) => {
+        return postJSON(`/api/member/block/${member.id}`, {}).then((r) => {
           setIsBlocked(true)
           return reload()
         })
@@ -70,11 +70,19 @@ export const MemberBlock = chakra(
 
     return (
       <>
-        <IconButton
+        <ButtonConfirm
           size={size}
           color={mutual ? 'yellow' : 'white'}
           title={label}
-          aria-label={label}
+          variant="secondary"
+          _hover={{ bg: 'primary.500' }}
+          promise={toggleBlock}
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+          successMessage="The user was blocked"
+          failureMessage="The user could not be blocked"
+          buttonText={isBlocked ? 'Unblock' : 'Block'}
+          
           icon={
             showBlock ? (
               <BlockedIcon width="30px" fill="red" />
@@ -82,13 +90,18 @@ export const MemberBlock = chakra(
               <ViewIcon width="30px" stroke="white" />
             )
           }
-          variant="ghost"
-          _hover={{ bg: 'primary.500' }}
-          onClick={toggleBlock}
           {...props}
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => setHover(false)}
-        />
+        >
+          {(isBlocked && (
+            <Text>Are you sure you want to unblock {member?.nickname}?</Text>
+          )) || (
+            <Text>
+              Are you sure you want to block {member?.nickname}? They will not
+              be able to see you in the directory or view your profile. They
+              will see your avatar on the event page.{' '}
+            </Text>
+          )}
+        </ButtonConfirm>
       </>
     )
   }

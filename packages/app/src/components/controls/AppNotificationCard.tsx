@@ -130,6 +130,9 @@ export const AppNotificationCard = chakra(({ member, notification }: Props) => {
             <ButtonLink
               size="xs"
               href={notification?.button_url}
+              onClick={(e) => {
+                e.stopPropagation()
+              }}
               colorScheme="accent"
               color="white"
             >
@@ -145,7 +148,9 @@ export const AppNotificationCard = chakra(({ member, notification }: Props) => {
           title="Delete Notification"
           onMouseOver={() => setTrashHover(true)}
           onMouseOut={() => setTrashHover(false)}
-          onClick={async () => {
+          onClick={async (e) => {
+            e.stopPropagation()
+            e.preventDefault()
             markAsDeleted()
           }}
         />

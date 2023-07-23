@@ -15,8 +15,13 @@ const config = {
   pledgeSurvey: '118dc4ac-356e-4349-a35c-3013679e655b',
   userImageId: 'b063b5ac-fcec-46ae-8225-bbfb4a0184b5',
   notifications: {
-    congratsBrother: 'c25e8f2e-669e-43f5-b126-d3a1527eb61f',
-    congratsInductee: '581ffb86-a3cc-4951-a31a-296988c12703',
+    congratsEmail: {
+      big_brother: '3e1b9fff-42d0-41a5-ba1d-9450cc05b598',
+      brother: 'c25e8f2e-669e-43f5-b126-d3a1527eb61f',
+      inductee: '581ffb86-a3cc-4951-a31a-296988c12703',
+      pledge: '52ff07f3-32d1-4d9e-ad39-e925a0a9e3cf'
+    }
+
   },
 }
 const {
