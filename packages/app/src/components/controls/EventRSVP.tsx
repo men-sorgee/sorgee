@@ -63,6 +63,8 @@ export const EventRSVP = ({
   }, [eventLoading, eventUser, invite])
 
   const reasonRef = useRef<HTMLTextAreaElement>(null)
+  const bgGradient = (color) =>
+    `linear(to-b, ${color}.400, ${color}.500, ${color}.600)`
 
   const complete = useCallback(
     (success: boolean, data: EventUser) => {
@@ -93,6 +95,8 @@ export const EventRSVP = ({
       }
       complete={complete}
       focusRef={reasonRef}
+      bgGradient={bgGradient('gray')}
+      color="white"
     >
       <>
         <Text>Are you sure you want to cancel your RSVP?</Text>
@@ -122,6 +126,8 @@ export const EventRSVP = ({
         })
       }
       complete={complete}
+      bgGradient={bgGradient('accent')}
+      color="white"
     >
       <Text>
         <strong>
@@ -140,7 +146,6 @@ export const EventRSVP = ({
       buttonText={children}
       failureMessage="Unable to RSVP."
       successMessage="Your RSVP has been registered."
-      colorScheme="secondary"
       promise={() =>
         postJSON<RSVPInfo>('/api/events/rsvp', {
           event_id: eventId,
@@ -149,6 +154,8 @@ export const EventRSVP = ({
         })
       }
       complete={complete}
+      bgGradient={bgGradient('secondary')}
+      color="white"
     >
       <Text>
         <strong>
@@ -167,7 +174,6 @@ export const EventRSVP = ({
       buttonText={children}
       failureMessage="Unable to RSVP."
       successMessage="This invitation has been declined. It will not show anymore."
-      colorScheme="red"
       promise={() =>
         postJSON<RSVPInfo>('/api/events/rsvp', {
           event_id: eventId,
@@ -176,6 +182,8 @@ export const EventRSVP = ({
         })
       }
       complete={complete}
+      bgGradient={bgGradient('red')}
+      color="white"
     >
       <Text>
         <strong>
@@ -239,17 +247,20 @@ export const EventRSVP = ({
 
   if (working || eventLoading) return <Spinner m="2rem auto" />
   const rsvp = invite?.rsvp || 'invited'
-  const bgGradient = `linear(to-b, accent.400, accent.500, accent.600)`
 
   switch (rsvp) {
     case 'confirmed':
       return (
         <>
           <RSVPView
-            heading="Your Are Attending"
+            heading="You are attending"
             body={
               showPayButton && (
-                <Button bgGradient={bgGradient} size="lg" onClick={processFee}>
+                <Button
+                  bgGradient={bgGradient('accent')}
+                  size="lg"
+                  onClick={processFee}
+                >
                   Pre-pay Event Fee
                 </Button>
               )
@@ -264,7 +275,7 @@ export const EventRSVP = ({
       return (
         <>
           <RSVPView
-            heading="You May Attend"
+            heading="You may attend"
             body={
               <Alert rounded="lg">
                 <AlertIcon />
@@ -287,7 +298,7 @@ export const EventRSVP = ({
     case 'cancelled':
     case 'declined':
       return (
-        <RSVPView heading="You Are Not Attending">
+        <RSVPView heading="You are not attending">
           <ConfirmRSVPButton />
           <MaybeRSVPButton />
         </RSVPView>
@@ -295,7 +306,7 @@ export const EventRSVP = ({
     case 'invited':
       return (
         <>
-          <RSVPView heading="You Are Invited">
+          <RSVPView heading="You are invited">
             <ConfirmRSVPButton />
             <MaybeRSVPButton />
             <DeclineRSVPButton />
