@@ -117,14 +117,14 @@ export const EventRSVP = ({
       failureMessage="Unable to confirm."
       successMessage="Your RSVP has been registered."
       colorScheme="primary"
-      disabled={!canConfirm}
-      promise={() =>
-        postJSON<RSVPInfo>('/api/events/rsvp', {
+      promise={() => {
+        if (!canConfirm) return Promise.reject('You cannot confirm events.')
+        return postJSON<RSVPInfo>('/api/events/rsvp', {
           event_id: eventId,
           user_id: memberId,
           rsvp: 'confirmed'
         })
-      }
+      }}
       complete={complete}
       bgGradient={bgGradient('accent')}
       color="white"
@@ -290,7 +290,9 @@ export const EventRSVP = ({
               </Alert>
             }
           >
-            <ConfirmRSVPButton>Can Attend Now</ConfirmRSVPButton>
+            {canConfirm && (
+              <ConfirmRSVPButton>Can Attend Now</ConfirmRSVPButton>
+            )}
             <CancelRSVPButton>Can Not Attend</CancelRSVPButton>
           </RSVPView>
         </>
@@ -299,7 +301,7 @@ export const EventRSVP = ({
     case 'declined':
       return (
         <RSVPView heading="You are not attending">
-          <ConfirmRSVPButton />
+          {canConfirm && <ConfirmRSVPButton />}
           <MaybeRSVPButton />
         </RSVPView>
       )
@@ -307,7 +309,7 @@ export const EventRSVP = ({
       return (
         <>
           <RSVPView heading="You are invited">
-            <ConfirmRSVPButton />
+            {canConfirm && <ConfirmRSVPButton />}
             <MaybeRSVPButton />
             <DeclineRSVPButton />
           </RSVPView>
