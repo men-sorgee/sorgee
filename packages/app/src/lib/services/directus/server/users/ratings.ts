@@ -131,11 +131,23 @@ export async function setUserAverageRating(user_id: string) {
     }
   })
 
+  let penalPoints = 0
+  const missedEventsCount = missedEvents.data.length
+  const attendedEventsCount = attendedEvents.data.length
+  if (missedEventsCount > 0) {
+    // penalize 1 point for every missed events
 
-  const missedEventsCount = missedEvents.data.length - (attendedEvents.data.length / 2)
+    penalPoints = missedEventsCount
+    if (attendedEventsCount > 0) {
+      // you get one point back for every 3 events attended
+      penalPoints = penalPoints - Math.floor(attendedEventsCount / 3)
+    }
+  }
 
-  let rating = Math.floor(average - missedEventsCount)
+  let rating = Math.floor(average - penalPoints)
+
   if (rating < 1) rating = 1
+  if (rating > 5) rating = 5
 
   return await adminClient.items('users').updateOne(user_id, {
     rating,
