@@ -15,10 +15,6 @@ export default async function GetUserBuddies(
       ...memberFields,
       ...searchableMemberFields.map(f => `buddies.buddy_id.${f}` as any),]
 
-    console.dir({
-      fields,
-      id: user.id,
-    })
     let me = await getUser<Member>(user.id, fields)
     let blocked = [
       ...me.blocked.map(blocked => blocked.blocked_id),

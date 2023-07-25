@@ -13,7 +13,7 @@ export default async function EventRSVPHandler(
 
     const { event_id, rsvp, reason } = { ...req.query, ...req.body } as RSVPInfo
 
-    console.dir({ event_id, rsvp, reason })
+    //console.dir({ event_id, rsvp, reason })
 
     if (!event_id)
       throw new Error('Missing event_id or rsvp')
