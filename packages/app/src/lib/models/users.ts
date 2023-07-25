@@ -601,7 +601,8 @@ export const memberProfilePrivateFields: Array<keyof Member> = [
   'public_folder',
   'approved_date',
   'ratings',
-  'progress'
+  'progress',
+  'event_invites'
 ]
 
 export const memberProfileContactFields: Array<keyof Member> = [
@@ -649,12 +650,9 @@ export const memberInterestsFields: Array<keyof Member> = [
 ]
 
 export const memberEventFields: Array<keyof Member> = [
-  'events.*.*' as any,
-  'event_invites',
-  'can_host',
+
   'event_availability',
-  'social_scenes',
-  'can_host_events',
+  'social_scenes'
 ]
 
 export const memberProfileHealthFields: Array<keyof Member> = [
@@ -730,6 +728,9 @@ export const memberFields: Array<keyof Member> = [
   'show_interests',
   ...memberInterestsFields,
   'show_events',
+  'events.*.*' as any,
+  'can_host',
+  'can_host_events',
   ...memberEventFields,
   'show_location',
   ...memberProfileLocationFields,

@@ -1,4 +1,3 @@
-import { capitalCase } from 'change-case'
 import { DirectusField, Member } from 'lib/models'
 
 import { LockIcon } from '@chakra-ui/icons'
@@ -57,13 +56,14 @@ export const MemberPropertyGroup = ({
       </Flex>
     )
 
+  const normalize = (text: string | number | boolean) =>
+    text?.toString() ? text?.toString()?.toLowerCase() : text
   const getValue = (field: string, value: string) => {
     if (fields[field]?.meta?.options?.choices) {
       const option = fields[field].meta.options.choices.find(
-        (choice: any) =>
-          choice.value?.toLowerCase() == value?.toString()?.toLowerCase()
+        (choice: any) => normalize(choice.value) == normalize(value)
       )
-      return capitalCase(option?.text || value)
+      return option?.text ? option.text : value
     }
     return value
   }
@@ -86,8 +86,8 @@ export const MemberPropertyGroup = ({
             >
               {Array.isArray(member[field]) ? (
                 <>
-                  <Heading as="h4" size="sm" my={2}>
-                    {capitalCase(fields[field].field)}:
+                  <Heading as="h4" size="sm" my={2} textTransform="capitalize">
+                    {fields[field].field}
                   </Heading>
                   <Box gap={2} mb={2}>
                     {member[field]?.map((item: any, d: number) => (
@@ -107,8 +107,8 @@ export const MemberPropertyGroup = ({
                 </>
               ) : (
                 <Box mb={2}>
-                  <Heading as="h4" size="sm" my={2}>
-                    {capitalCase(fields[field].field)}:
+                  <Heading as="h4" size="sm" my={2} textTransform="capitalize">
+                    {fields[field].field}:
                   </Heading>
                   <Text
                     m={0}
