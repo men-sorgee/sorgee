@@ -43,15 +43,7 @@ export const getStaticProps = async () => {
 export default function HomePage({ page }: Props) {
   const { authenticated } = useUser()
 
-  const {
-    title,
-    description,
-    content,
-    markdown,
-    image,
-    next_page,
-    next_page_params
-  } = page
+  const { content, markdown, next_page } = page
   const { site } = useSite()
 
   const color = useColorModeValue('gray.700', 'gray.100')
@@ -94,7 +86,12 @@ export default function HomePage({ page }: Props) {
             direction={['column', 'row']}
           >
             {site && !site.invite_only && (
-              <ButtonLink size="lg" fontSize="xl" href="/apply" color="white">
+              <ButtonLink
+                size="lg"
+                fontSize="xl"
+                href="/register"
+                color="white"
+              >
                 Get Started
               </ButtonLink>
             )}

@@ -28,7 +28,6 @@ import {
 import { useEvents, useMemberSearch, useUser } from 'hooks'
 import { MemberLevel, MemberStats } from 'lib/models'
 import { capitalCase } from 'change-case'
-import { useRouter } from 'next/router'
 import { addDays } from 'date-fns'
 import { useState, useEffect } from 'react'
 import { getJSON } from 'lib/utils'

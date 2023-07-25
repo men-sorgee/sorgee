@@ -372,7 +372,7 @@ export default function UserMenu(_props: Props) {
           </MenuList>
         </Menu>
       ) : (
-        <Flex justify="end">
+        <Flex direction={['column', 'row']} align="center" justify="end">
           <Link
             mr={2}
             as={NextLink}
@@ -387,9 +387,9 @@ export default function UserMenu(_props: Props) {
               })
             }}
           >
-            Members
-          </Link>{' '}
-          | &nbsp;
+            members
+          </Link>
+          <Show above="sm">&nbsp;| &nbsp;</Show>
           {showApply && (
             <Link
               as={NextLink}
@@ -398,7 +398,7 @@ export default function UserMenu(_props: Props) {
               color="white"
               fontWeight={600}
             >
-              Applicants
+              apply
             </Link>
           )}
         </Flex>
