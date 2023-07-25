@@ -16,19 +16,19 @@
   "dependencies": {
     "@wellenplan/directus-extension-duration-display": "^0.1.18",
     "@wellenplan/directus-extension-duration-interface": "^0.1.16",
-    "directus": "^10.4.3",
-    "directus-extension-ai-operation-bundle": "^1.0.6",
+    "directus": "^10.5.0",
+    "directus-extension-ai-operation-bundle": "^1.0.8",
     "directus-extension-api-trigger-interface": "^1.0.0",
     "directus-extension-display-link": "^1.6.1",
     "directus-extension-editorjs": "^1.5.0",
     "directus-extension-grid-layout": "^1.0.2",
     "directus-extension-group-modal-interface": "^1.2.0",
     "directus-extension-masked-interface": "^1.1.0",
-    "directus-extension-schema-management-module": "^1.2.0",
+    "directus-extension-schema-management-module": "^1.3.0",
     "directus-extension-sparkline-display": "^1.0.5",
     "directus-extension-tags-m2m-interface": "^0.8.0",
     "directus-extension-vgrid-interface": "^1.0.15",
-    "pg": "^8.10.0",
+    "pg": "^8.11.1",
     "typescript": "^4.9.5"
   }
 }
