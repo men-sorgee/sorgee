@@ -23,6 +23,7 @@ export const ButtonLink = chakra(
     ...props
   }: Props) => {
     const bgGradient = `linear(to-b, ${colorScheme}.400, ${colorScheme}.500, ${colorScheme}.600)`
+    const bgGradientHover = `linear(to-b, ${colorScheme}.300, ${colorScheme}.400, ${colorScheme}.500)`
     return (
       <Link
         as={NextLink}
@@ -37,6 +38,10 @@ export const ButtonLink = chakra(
         <Button
           bgGradient={gradient ? bgGradient : 'none'}
           bg={gradient ? null : `${colorScheme}.500`}
+          _hover={{
+            bgGradient: gradient ? bgGradientHover : 'none',
+            bg: gradient ? null : `${colorScheme}.400`
+          }}
           {...props}
         >
           {children}

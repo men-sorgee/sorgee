@@ -389,17 +389,19 @@ export default function UserMenu(_props: Props) {
           >
             members
           </Link>
-          <Show above="sm">&nbsp;| &nbsp;</Show>
           {showApply && (
-            <Link
-              as={NextLink}
-              size={['sm', 'md']}
-              href={`/register`}
-              color="white"
-              fontWeight={600}
-            >
-              apply
-            </Link>
+            <>
+              <Show above="sm">&nbsp;| &nbsp;</Show>
+              <Link
+                as={NextLink}
+                size={['sm', 'md']}
+                href={`/register`}
+                color="white"
+                fontWeight={600}
+              >
+                apply
+              </Link>
+            </>
           )}
         </Flex>
       )}

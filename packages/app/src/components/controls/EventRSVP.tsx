@@ -2,20 +2,17 @@ import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { EventUser, InviteRSVPType, RSVPInfo } from 'lib/models'
 import { getJSON, JsonFetcher, postJSON } from 'lib/utils'
 import useSWR from 'swr'
-
 import {
   Alert,
   AlertIcon,
   Box,
   BoxProps,
-  Button,
   Heading,
-  HStack,
+  Flex,
   Spinner,
   Text,
   Textarea
 } from '@chakra-ui/react'
-
 import { ButtonConfirm } from './ButtonConfirm'
 
 type RSVPProps = BoxProps & {
@@ -24,6 +21,10 @@ type RSVPProps = BoxProps & {
   eventId: string
   onChange?: () => void
   canConfirm: boolean
+}
+type PurchaseResponse = {
+  id: string
+  amount: number
 }
 
 export const EventRSVP = ({
@@ -35,12 +36,13 @@ export const EventRSVP = ({
 }: RSVPProps) => {
   if (!eventId) throw new Error('EventRSVP requires an event or invite.')
   const [working, setWorking] = useState(false)
-  const [showPayButton, setShowPayButton] = useState(false)
+  const [showPayButton, setShowPayButton] = useState<boolean>(undefined)
   const [invite, setInvite] = useState<Partial<EventUser>>(undefined)
+
   const {
     data: eventUser,
     mutate,
-    isLoading: eventLoading
+    isLoading: inviteLoading
   } = useSWR<Partial<EventUser>>(
     `/api/events/rsvp?event_id=${eventId}`,
     JsonFetcher,
@@ -49,22 +51,29 @@ export const EventRSVP = ({
         users_id: memberId,
         events_id: eventId,
         rsvp: r || 'invited'
-      },
-      isPaused: () =>
-        r != undefined || memberId == undefined || eventId == undefined
+      }
     }
   )
 
   useEffect(() => {
-    if (eventLoading == false && invite == undefined && eventUser) {
+    if (!inviteLoading && invite == undefined && eventUser) {
       setInvite(eventUser)
-      setShowPayButton(eventUser.paid == false && eventUser.guest == false)
     }
-  }, [eventLoading, eventUser, invite])
+  }, [inviteLoading, eventUser, invite])
+
+  useEffect(() => {
+    if (invite && showPayButton == undefined) {
+      setShowPayButton(!invite.paid && !invite.guest)
+    }
+  }, [invite, showPayButton])
 
   const reasonRef = useRef<HTMLTextAreaElement>(null)
+
   const bgGradient = (color) =>
     `linear(to-b, ${color}.400, ${color}.500, ${color}.600)`
+
+  const bgGradientHover = (color) =>
+    `linear(to-b, ${color}.300, ${color}.400, ${color}.500)`
 
   const complete = useCallback(
     (success: boolean, data: EventUser) => {
@@ -79,55 +88,110 @@ export const EventRSVP = ({
     [mutate, onChange]
   )
 
-  const CancelRSVPButton = ({ children = 'Something Came Up' }) => (
+  const completePurchase = useCallback(async (success, data, error) => {
+    if (!success) {
+      console.error(error)
+      return
+    }
+    const { loadStripe } = await import('@stripe/stripe-js')
+    const stripe = await loadStripe(
+      process.env.STRIPE_PUBLIC_KEY ||
+        'pk_live_51LoPw1EoEUGL2Bgubxo5vTjGRx0ONP4JHo6A0zVJivv7ToiCBoRnKdmRoCIWFbikTTenBSQZ7xy8wmF0woyx4NBH00MykU8UsN'
+    )
+    await stripe.redirectToCheckout({
+      sessionId: data.id
+    })
+  }, [])
+
+  const PrePayButton = ({ children = 'Pre-Pay' }) => (
     <ButtonConfirm
-      title="Event RSVP"
+      flex={1}
+      alertTitle="Confirm your RSVP"
       buttonText={children}
-      failureMessage="Unable to cancel."
-      successMessage="Your RSVP has been cancelled."
       promise={() =>
-        postJSON<RSVPInfo>('/api/events/rsvp', {
-          event_id: eventId,
-          user_id: memberId,
-          rsvp: 'cancelled',
-          reason: reasonRef.current.value
-        })
+        getJSON<PurchaseResponse>(`/api/stripe/event/${invite.id}`)
       }
-      complete={complete}
-      focusRef={reasonRef}
-      bgGradient={bgGradient('gray')}
+      complete={completePurchase}
+      bgGradient={bgGradient('accent')}
+      _hover={{
+        bgGradient: bgGradientHover('accent')
+      }}
       color="white"
+      w={['full', 'full', 'auto']}
+      title="Guarantee your spot at this event and leave your cash at home. Pay now for less hassle later."
     >
-      <>
-        <Text>Are you sure you want to cancel your RSVP?</Text>
-        {invite?.paid && (
-          <Text mt={4}>
-            There are no refunds if you are within 24 hours of the event-start.
-          </Text>
-        )}
-        <Textarea ref={reasonRef} placeholder="Reason..." w="full" required />
-      </>
+      You will be charged for this event today, confirming your place at the
+      event.
     </ButtonConfirm>
   )
 
-  const ConfirmRSVPButton = ({ children = 'Confirm' }) => (
+  const ConfirmPayRSVPButton = ({ children = 'Confirm' }) => (
     <ButtonConfirm
-      title="Event RSVP"
+      flex={1}
+      alertTitle="Event RSVP"
       buttonText={children}
       failureMessage="Unable to confirm."
       successMessage="Your RSVP has been registered."
-      colorScheme="primary"
-      promise={() => {
-        if (!canConfirm) return Promise.reject('You cannot confirm events.')
-        return postJSON<RSVPInfo>('/api/events/rsvp', {
+      promise={() =>
+        postJSON<RSVPInfo, EventUser>('/api/events/rsvp', {
           event_id: eventId,
           user_id: memberId,
           rsvp: 'confirmed'
         })
+          .then((response) => {
+            complete(true, response.data)
+            return response.data
+          })
+          .then((i: EventUser) => {
+            return getJSON<PurchaseResponse>(`/api/stripe/event/${i.id}`)
+          })
+      }
+      complete={completePurchase}
+      bgGradient={bgGradient('accent')}
+      _hover={{
+        bgGradient: bgGradientHover('accent')
       }}
+      color="white"
+      w={['full', 'full', 'auto']}
+      title="Guarantee your spot at this event by paying for your spot now."
+    >
+      <Text>
+        <strong>
+          Only confirm to events you are absolutely sure you can attend.
+        </strong>{' '}
+        Hosts count on confirmed attendees to help cover the cost of the event.
+        You can cancel up to 24 hours before the event without affecting your
+        rating.
+      </Text>
+    </ButtonConfirm>
+  )
+
+  const PayButton = ({ children = 'Pay Now' }) =>
+    (showPayButton && <PrePayButton>{children}</PrePayButton>) || (
+      <ConfirmPayRSVPButton>{children}</ConfirmPayRSVPButton>
+    )
+
+  const ConfirmRSVPButton = ({ children = 'Confirm' }) => (
+    <ButtonConfirm
+      flex={1}
+      alertTitle="Event RSVP"
+      buttonText={children}
+      failureMessage="Unable to confirm."
+      successMessage="Your RSVP has been registered."
+      promise={() =>
+        postJSON<RSVPInfo, EventUser>('/api/events/rsvp', {
+          event_id: eventId,
+          user_id: memberId,
+          rsvp: 'confirmed'
+        })
+      }
       complete={complete}
       bgGradient={bgGradient('accent')}
+      _hover={{
+        bgGradient: bgGradientHover('accent')
+      }}
       color="white"
+      w={['full', 'full', 'auto']}
     >
       <Text>
         <strong>
@@ -142,12 +206,13 @@ export const EventRSVP = ({
 
   const MaybeRSVPButton = ({ children = 'Maybe' }) => (
     <ButtonConfirm
-      title="Event RSVP"
+      flex={1}
+      alertTitle="Event RSVP"
       buttonText={children}
       failureMessage="Unable to RSVP."
       successMessage="Your RSVP has been registered."
       promise={() =>
-        postJSON<RSVPInfo>('/api/events/rsvp', {
+        postJSON<RSVPInfo, EventUser>('/api/events/rsvp', {
           event_id: eventId,
           user_id: memberId,
           rsvp: 'maybe'
@@ -155,7 +220,11 @@ export const EventRSVP = ({
       }
       complete={complete}
       bgGradient={bgGradient('secondary')}
+      _hover={{
+        bgGradient: bgGradientHover('secondary')
+      }}
       color="white"
+      w={['full', 'full', 'auto']}
     >
       <Text>
         <strong>
@@ -168,106 +237,135 @@ export const EventRSVP = ({
     </ButtonConfirm>
   )
 
-  const DeclineRSVPButton = ({ children = 'Cannot Attend' }) => (
+  const DeclineRSVPButton = ({ children = 'Cannot Go' }) => (
     <ButtonConfirm
-      title="Event RSVP"
+      flex={1}
+      alertTitle="Event RSVP"
       buttonText={children}
       failureMessage="Unable to RSVP."
       successMessage="This invitation has been declined. It will not show anymore."
       promise={() =>
-        postJSON<RSVPInfo>('/api/events/rsvp', {
+        postJSON<RSVPInfo, EventUser>('/api/events/rsvp', {
           event_id: eventId,
           user_id: memberId,
           rsvp: 'declined'
         })
       }
       complete={complete}
-      bgGradient={bgGradient('red')}
+      bgGradient={bgGradient('gray')}
+      _hover={{
+        bgGradient: bgGradientHover('gray')
+      }}
       color="white"
+      w={['full', 'full', 'auto']}
     >
       <Text>
         <strong>
           Declined events will be hidden from your calendar and you will not be
           able to see them.
-        </strong>{' '}
+        </strong>
         Are you sure you want to decline this event?
       </Text>
+    </ButtonConfirm>
+  )
+
+  const CancelRSVPButton = ({ important = false, children = 'Cannot Go' }) => (
+    <ButtonConfirm
+      flex={1}
+      alertTitle="Event RSVP"
+      buttonText={children}
+      failureMessage="Unable to cancel."
+      successMessage="Your RSVP has been cancelled."
+      promise={() =>
+        postJSON<RSVPInfo, EventUser>('/api/events/rsvp', {
+          event_id: eventId,
+          user_id: memberId,
+          rsvp: 'cancelled',
+          reason: reasonRef.current.value
+        })
+      }
+      complete={complete}
+      focusRef={reasonRef}
+      bgGradient={bgGradient(important ? 'red' : 'gray')}
+      _hover={{
+        bgGradient: bgGradientHover(important ? 'red' : 'gray')
+      }}
+      color="white"
+      w={['full', 'full', 'auto']}
+    >
+      <>
+        <Text>
+          Are you sure you want to cancel your RSVP? If so, please provide a
+          reason and click the button below.
+          {invite?.paid && (
+            <strong>
+              There are no refunds if you are within 24 hours of the
+              event-start.
+            </strong>
+          )}
+        </Text>
+        <Textarea
+          mt={4}
+          ref={reasonRef}
+          placeholder="Reason..."
+          w="full"
+          required
+        />
+      </>
     </ButtonConfirm>
   )
 
   const RSVPView = ({
     heading,
     body,
-    children
+    children,
+    change = true
   }: {
-    heading: ReactNode
-    body?: ReactNode
-    children: ReactNode
+    heading: ReactNode | ReactNode[]
+    body?: ReactNode | ReactNode[]
+    children: ReactNode | ReactNode[]
+    change?: boolean
   }) => (
-    <>
-      <Heading as="h3" size="h3">
+    <Box rounded="lg" shadow="inset" bg="bg" color="text" mt={2} p={2}>
+      <Heading as="h4" size="h4" my={1} color="text">
         {heading}
       </Heading>
       {body}
-      <Box mt={4}>
-        <Text mt={0}>Change of plans?</Text>
-        <HStack mt={4}>{children}</HStack>
+      <Box mt={2}>
+        {change && <Text mt={0}>Change of plans?</Text>}
+        <Flex
+          direction={['column', 'row']}
+          mt={4}
+          w="full"
+          align="center"
+          justify="stretch"
+          gap="2"
+        >
+          {children}
+        </Flex>
       </Box>
-    </>
+    </Box>
   )
-
-  const processFee = async () => {
-    const { loadStripe } = await import('@stripe/stripe-js')
-    const stripe = await loadStripe(
-      process.env.STRIPE_PUBLIC_KEY ||
-        'pk_live_51LoPw1EoEUGL2Bgubxo5vTjGRx0ONP4JHo6A0zVJivv7ToiCBoRnKdmRoCIWFbikTTenBSQZ7xy8wmF0woyx4NBH00MykU8UsN'
-    )
-    const { data, error, success } = await getJSON<{
-      id: string
-      amount: number
-    }>(`/api/stripe/event/${invite.id}`)
-    if (!success) {
-      console.error(error)
-      return
-    }
-
-    await stripe.redirectToCheckout({
-      sessionId: data.id
-    })
-  }
 
   if (invite?.paid) {
     return (
-      <RSVPView heading="You are confirmed and paid for this event.">
-        <MaybeRSVPButton>May Not Attend</MaybeRSVPButton>
-        <CancelRSVPButton>Can Not Attend</CancelRSVPButton>
+      <RSVPView heading="You are guaranteed a spot at this event.">
+        <CancelRSVPButton important>Cancel Reservation</CancelRSVPButton>
       </RSVPView>
     )
   }
 
-  if (working || eventLoading) return <Spinner m="2rem auto" />
+  if (working || inviteLoading) return <Spinner m="2rem auto" />
   const rsvp = invite?.rsvp || 'invited'
 
   switch (rsvp) {
     case 'confirmed':
       return (
         <>
-          <RSVPView
-            heading="You are attending"
-            body={
-              showPayButton && (
-                <Button
-                  bgGradient={bgGradient('accent')}
-                  size="lg"
-                  onClick={processFee}
-                >
-                  Pre-pay Event Fee
-                </Button>
-              )
-            }
-          >
+          <RSVPView heading="You have a first-come, first-serve reservation.">
+            <PrePayButton>Pre-Pay</PrePayButton>
             <MaybeRSVPButton>May Not Attend</MaybeRSVPButton>
-            <CancelRSVPButton>Can Not Attend</CancelRSVPButton>
+            <CancelRSVPButton important>Cannot Attend</CancelRSVPButton>
           </RSVPView>
         </>
       )
@@ -275,7 +373,7 @@ export const EventRSVP = ({
       return (
         <>
           <RSVPView
-            heading="You may attend"
+            heading="You are interested, but have no reservation."
             body={
               <Alert rounded="lg">
                 <AlertIcon />
@@ -290,26 +388,39 @@ export const EventRSVP = ({
               </Alert>
             }
           >
-            {canConfirm && (
-              <ConfirmRSVPButton>Can Attend Now</ConfirmRSVPButton>
-            )}
-            <CancelRSVPButton>Can Not Attend</CancelRSVPButton>
+            {(canConfirm && (
+              <>
+                <ConfirmRSVPButton>Can Attend</ConfirmRSVPButton>
+                <PayButton>Can Pre-Pay</PayButton>
+              </>
+            )) || <PayButton>Can Attend</PayButton>}
+            <CancelRSVPButton>Not Interested</CancelRSVPButton>
           </RSVPView>
         </>
       )
     case 'cancelled':
     case 'declined':
       return (
-        <RSVPView heading="You are not attending">
-          {canConfirm && <ConfirmRSVPButton />}
+        <RSVPView heading="You are not attending.">
+          {(canConfirm && (
+            <>
+              <ConfirmRSVPButton>Can Attend</ConfirmRSVPButton>
+              <PayButton>Pre-Pay</PayButton>
+            </>
+          )) || <PayButton />}
           <MaybeRSVPButton />
         </RSVPView>
       )
     case 'invited':
       return (
         <>
-          <RSVPView heading="You are invited">
-            {canConfirm && <ConfirmRSVPButton />}
+          <RSVPView heading="You are invited!" change={false}>
+            {(canConfirm && (
+              <>
+                <ConfirmRSVPButton>Can Attend</ConfirmRSVPButton>
+                <PayButton>Pre-Pay</PayButton>
+              </>
+            )) || <PayButton>Pay to Confirm</PayButton>}
             <MaybeRSVPButton />
             <DeclineRSVPButton />
           </RSVPView>

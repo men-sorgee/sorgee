@@ -42,6 +42,8 @@ export function getEventDate(eventStart: string) {
   }
 }
 
+type DefaultTo<T, Fallback> = T extends null | undefined ? Fallback : T
+
 export type ApiResult<T = any> = {
   success: boolean
   data?: T
@@ -70,7 +72,7 @@ export async function putJSON<T = never | any, R = DefaultTo<null, T>>(
   return await fetchJSON<T, R>(url, data, 'PUT')
 }
 
-type DefaultTo<T, Fallback> = T extends null | undefined ? Fallback : T
+
 
 export async function deleteJSON<T = never | any, R = DefaultTo<null, T>>(
   url: string,

@@ -456,7 +456,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps) => {
               }
             }}
             buttonText="Delete Data"
-            title="Permanently Delete Account"
+            alertTitle="Permanently Delete Account"
             aria-label="Permanently Delete Account"
           >
             <Text>
@@ -481,7 +481,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps) => {
               }
             }}
             buttonText="Deactivate Account"
-            title="Deactivate Account"
+            alertTitle="Deactivate Account"
           >
             <Text>Are you sure you want to deactivate your account?</Text>
           </ButtonConfirm>

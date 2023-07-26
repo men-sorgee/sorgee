@@ -1,5 +1,4 @@
 import { ReactNode, RefObject, useCallback, useRef } from 'react'
-
 import {
   AlertDialog,
   AlertDialogBody,
@@ -10,15 +9,22 @@ import {
   Button,
   IconButton,
   IconButtonProps,
-  chakra,
   useDisclosure,
   useToast
 } from '@chakra-ui/react'
+import { ApiResult } from 'lib/utils'
 
-export type ConfirmButtonProps = Omit<IconButtonProps, 'aria-label'> & {
-  promise?: () => Promise<any>
-  complete: (bool: boolean, data: any, error?: string) => void
-  title: string
+export type ConfirmButtonProps<TResponse> = Omit<
+  IconButtonProps,
+  'aria-label'
+> & {
+  promise?: () => Promise<ApiResult<TResponse>>
+  complete: (
+    bool: boolean,
+    data: TResponse,
+    error?: string
+  ) => void | Promise<void>
+  alertTitle: string
   buttonText: string
   confirmColorScheme?: string
   successMessage?: string
@@ -29,97 +35,97 @@ export type ConfirmButtonProps = Omit<IconButtonProps, 'aria-label'> & {
   children: ReactNode | ReactNode[]
 }
 
-export const ButtonConfirm = chakra(
-  ({
-    promise = () => Promise.resolve(),
-    complete = () => null,
-    title,
-    buttonText,
-    confirmColorScheme = 'red',
-    successMessage,
-    failureMessage,
-    children,
-    focusRef,
-    icon,
-    ...props
-  }: ConfirmButtonProps) => {
-    const toast = useToast()
-    const { isOpen, onOpen, onClose } = useDisclosure()
-    const cancelRef = useRef<HTMLButtonElement>()
-    const goRef = useRef<HTMLButtonElement>()
-    const action = useCallback(() => {
-      return promise()
-        .then((data) => {
-          complete(true, data, null)
-          if (successMessage)
-            toast({
-              title,
-              description: successMessage,
-              status: 'success',
-              duration: 3000
-            })
+export function ButtonConfirm<TResponse>({
+  promise = () =>
+    Promise.resolve<ApiResult<TResponse>>(null as ApiResult<TResponse>),
+  complete = () => null,
+  alertTitle,
+  buttonText,
+  confirmColorScheme = 'red',
+  successMessage,
+  failureMessage,
+  children,
+  focusRef,
+  icon,
+  title,
+  ...props
+}: ConfirmButtonProps<TResponse>) {
+  const toast = useToast()
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const cancelRef = useRef<HTMLButtonElement>()
+  const goRef = useRef<HTMLButtonElement>()
+  const action = useCallback(async () => {
+    try {
+      const { data } = await promise()
+      complete(true, data, null)
+      if (successMessage)
+        toast({
+          title: alertTitle,
+          description: successMessage,
+          status: 'success',
+          duration: 3000
         })
-        .catch((err) => {
-          complete(false, null, err)
-          if (failureMessage)
-            toast({
-              title,
-              description: failureMessage + ' ' + err?.message || err,
-              status: 'error',
-              duration: 5000
-            })
+    } catch (err) {
+      complete(false, null, err)
+      if (failureMessage)
+        toast({
+          title: alertTitle,
+          description: failureMessage + ' ' + err?.message || err,
+          status: 'error',
+          duration: 5000
         })
-    }, [complete, failureMessage, promise, successMessage, title, toast])
-    return (
-      <>
-        {(icon && (
-          <IconButton
-            onClick={onOpen}
-            aria-label={title}
-            title={title}
-            icon={icon}
-            {...props}
-          />
-        )) || (
-          <Button onClick={onOpen} aria-label={title} title={title} {...props}>
-            {buttonText}
-          </Button>
-        )}
+    }
+  }, [complete, failureMessage, promise, successMessage, alertTitle, toast])
+  return (
+    <>
+      {(icon && (
+        <IconButton
+          onClick={onOpen}
+          aria-label={title}
+          title={title}
+          icon={icon}
+          {...props}
+        />
+      )) || (
+        <Button onClick={onOpen} aria-label={title} title={title} {...props}>
+          {buttonText}
+        </Button>
+      )}
 
-        <AlertDialog
-          isOpen={isOpen}
-          leastDestructiveRef={focusRef || goRef}
-          onClose={onClose}
-          autoFocus
-        >
-          <AlertDialogOverlay>
-            <AlertDialogContent>
-              <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                {title}
-              </AlertDialogHeader>
+      <AlertDialog
+        isOpen={isOpen}
+        leastDestructiveRef={focusRef || goRef}
+        onClose={onClose}
+        autoFocus
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              {alertTitle}
+            </AlertDialogHeader>
 
-              <AlertDialogBody>{children}</AlertDialogBody>
+            <AlertDialogBody>{children}</AlertDialogBody>
 
-              <AlertDialogFooter>
-                <Button ref={cancelRef} onClick={onClose}>
-                  Cancel
-                </Button>
-                <Button
-                  ref={goRef}
-                  colorScheme={confirmColorScheme}
-                  onClick={() => {
-                    onClose()
-                    return action()
-                  }}
-                  ml={3}
-                >
-                  {buttonText}
-                </Button>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialogOverlay>
-        </AlertDialog>
-      </>
-    )
-  }
-)
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onClose}>
+                Cancel
+              </Button>
+              <Button
+                ref={goRef}
+                colorScheme={confirmColorScheme}
+                onClick={() => {
+                  onClose()
+                  return action()
+                }}
+                ml={3}
+                title={title}
+              >
+                {buttonText}
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+    </>
+  )
+}

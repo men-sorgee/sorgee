@@ -17,25 +17,8 @@ export const MemberBlock = chakra(
   ({ member, size = ['sm', 'md', 'lg'], ...props }: Props) => {
     const { loading, member: me, reload } = useUser()
     const [hover, setHover] = useState(false)
-    const [showBlock, setShowBlock] = useState(false)
     const [isBlocked, setIsBlocked] = useState<boolean>(false)
     const [mutual, setMutual] = useState<boolean>(false)
-
-    const toggleBlock = useCallback(() => {
-      setIsBlocked(!isBlocked)
-      if (isBlocked) {
-        return deleteJSON(`/api/member/block/${member.id}`).then(() => {
-          setIsBlocked(false)
-          return reload()
-        })
-      } else {
-        // add buddy
-        return postJSON(`/api/member/block/${member.id}`, {}).then((r) => {
-          setIsBlocked(true)
-          return reload()
-        })
-      }
-    }, [isBlocked, member?.id, reload])
 
     useEffect(() => {
       const blockedList = (me?.blocked || []) as UserBlock[]
@@ -54,15 +37,6 @@ export const MemberBlock = chakra(
       }
     }, [me, member?.id, loading])
 
-    const label = isBlocked
-      ? `Unblock ${member?.nickname || 'this member'}`
-      : `Block ${member?.nickname || 'this member'}`
-
-    // SWAP BETWEEN BLOCK AND HOVER
-    useEffect(() => {
-      setShowBlock(isBlocked ? !hover : hover)
-    }, [hover, isBlocked])
-
     if (loading || !me || me?.id == member?.id) return <></>
 
     if (MemberLevel[member?.user_type || 'applicant'] == MemberLevel.staff)
@@ -70,38 +44,67 @@ export const MemberBlock = chakra(
 
     return (
       <>
-        <ButtonConfirm
-          size={size}
-          color={mutual ? 'yellow' : 'white'}
-          title={label}
-          variant="secondary"
-          _hover={{ bg: 'primary.500' }}
-          promise={toggleBlock}
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => setHover(false)}
-          successMessage="The user was blocked"
-          failureMessage="The user could not be blocked"
-          buttonText={isBlocked ? 'Unblock' : 'Block'}
-          
-          icon={
-            showBlock ? (
-              <BlockedIcon width="30px" fill="red" />
-            ) : (
-              <ViewIcon width="30px" stroke="white" />
-            )
-          }
-          {...props}
-        >
-          {(isBlocked && (
+        {(isBlocked && (
+          <ButtonConfirm
+            size={size}
+            color={mutual ? 'yellow' : 'white'}
+            alertTitle={`Unblock ${member?.nickname || 'this member'}`}
+            title={`Unblock ${member?.nickname || 'this member'}`}
+            variant="secondary"
+            _hover={{ bg: 'primary.500' }}
+            promise={() => deleteJSON(`/api/member/block/${member.id}`)}
+            complete={() => {
+              setIsBlocked(false)
+            }}
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+            successMessage="The user was blocked"
+            failureMessage="The user could not be blocked"
+            buttonText={isBlocked ? 'Unblock' : 'Block'}
+            icon={
+              !hover ? (
+                <BlockedIcon width="30px" fill="red" />
+              ) : (
+                <ViewIcon width="30px" stroke="white" />
+              )
+            }
+            {...props}
+          >
             <Text>Are you sure you want to unblock {member?.nickname}?</Text>
-          )) || (
+          </ButtonConfirm>
+        )) || (
+          <ButtonConfirm
+            size={size}
+            color={mutual ? 'yellow' : 'white'}
+            alertTitle={`Block ${member?.nickname || 'this member'}`}
+            title={`Block ${member?.nickname || 'this member'}`}
+            variant="secondary"
+            _hover={{ bg: 'primary.500' }}
+            promise={() => postJSON(`/api/member/block/${member.id}`, {})}
+            complete={() => {
+              setIsBlocked(true)
+            }}
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+            successMessage="The user was blocked"
+            failureMessage="The user could not be blocked"
+            buttonText={isBlocked ? 'Unblock' : 'Block'}
+            icon={
+              hover ? (
+                <BlockedIcon width="30px" fill="red" />
+              ) : (
+                <ViewIcon width="30px" stroke="white" />
+              )
+            }
+            {...props}
+          >
             <Text>
               Are you sure you want to block {member?.nickname}? They will not
               be able to see you in the directory or view your profile. They
-              will see your avatar on the event page.{' '}
+              will see your avatar on the event page.
             </Text>
-          )}
-        </ButtonConfirm>
+          </ButtonConfirm>
+        )}
       </>
     )
   }

@@ -98,7 +98,7 @@ export default function Plan({ plan, interval }: Params) {
             bottom={4}
             _hover={{ bg: 'accent.500' }}
             buttonText="Cancel Plan"
-            title="Cancel Plan"
+            alertTitle="Cancel Plan"
           >
             <Text>Are you sure you want to cancel your plan?</Text>
           </ButtonConfirm>

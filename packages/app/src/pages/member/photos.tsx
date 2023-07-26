@@ -82,7 +82,7 @@ export default function PhotoAlbums({}: Props) {
                   rounded="full"
                 />
                 <ButtonConfirm
-                  title="Delete Avatar"
+                  alertTitle="Delete Avatar"
                   buttonText="Delete"
                   promise={async () => {
                     const { success, data, error } = await deleteJSON(
@@ -176,7 +176,7 @@ function PhotoList({ title, field, images, memberId, reload }: PhotoListProps) {
             <ImageAsset fileId={image.fileId} rounded="md" shadow="md" />
           </Link>
           <ButtonConfirm
-            title="Delete Photo"
+            alertTitle="Delete Photo"
             buttonText="Delete"
             promise={async () => {
               const { success, data, error } = await deleteJSON(
