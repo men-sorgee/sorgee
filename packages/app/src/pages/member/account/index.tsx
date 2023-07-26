@@ -203,7 +203,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps) => {
             rounded="lg"
             mb={4}
           >
-            <VStack>
+            <Box>
               <Heading as="h3" fontSize="xl" mt={0}>
                 Private Information
               </Heading>
@@ -211,7 +211,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps) => {
                 This information is never shared. It is used to verify your
                 identity and to help us provide a better experience for you.
               </Text>
-            </VStack>
+            </Box>
           </Alert>
           <Form<SettingsProp>
             onSubmit={mutate}
@@ -318,7 +318,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps) => {
             rounded="lg"
             mb={4}
           >
-            <VStack>
+            <Box>
               <Heading as="h3" fontSize="xl" mt={0}>
                 Change Email Address
               </Heading>
@@ -326,7 +326,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps) => {
                 Changing your email address will require you to verify your new
                 email address. Are you sure you want to change your email?
               </Text>
-            </VStack>
+            </Box>
           </Alert>
           <Form<UserEmailChange, boolean>
             onSubmit={(data) =>
@@ -393,7 +393,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps) => {
             justifyItems="space-between"
             rounded="lg"
           >
-            <VStack>
+            <Box>
               <Heading as="h3" fontSize="xl" mt={0}>
                 Plan Subscription
               </Heading>
@@ -401,7 +401,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps) => {
                 Subscriptions enable additional features to enhance your
                 experience on the site. You can subscribe to a plan at any time.
               </Text>
-            </VStack>
+            </Box>
           </Alert>{' '}
           {(member && member?.membership_type != 'none' && (
             <Plan
@@ -429,8 +429,9 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps) => {
             gap={2}
             justifyItems="space-between"
             rounded="lg"
+            mb={10}
           >
-            <VStack>
+            <Box>
               <Heading as="h3" fontSize="xl" mt={0}>
                 Delete Data
               </Heading>
@@ -439,52 +440,58 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps) => {
                 servers. This includes your profile, messages, and any other
                 information you have provided.
               </Text>
-            </VStack>
+            </Box>
           </Alert>
-          <ButtonConfirm
-            size="lg"
-            type="submit"
-            bg="red.500"
-            color="white"
-            bottom={4}
-            my={8}
-            _hover={{ bg: 'red.500' }}
-            w={['full', 'full', 'auto']}
-            complete={(success) => {
-              if (success) {
-                location.href = '/api/member/delete'
-              }
-            }}
-            buttonText="Delete Data"
-            alertTitle="Permanently Delete Account"
-            aria-label="Permanently Delete Account"
+
+          <Flex
+            direction={['column', 'row']}
+            justify="space-between"
+            align="end"
+            mb={4}
+            h="full"
+            gap={2}
           >
-            <Text>
-              Are you sure you want to completely delete your account? There is
-              no undoing this. Your data may take up to two days to be
-              completely removed from our servers. You will be immediately
-              signed out and will not be able to sign in again.
-            </Text>
-          </ButtonConfirm>
-          <ButtonConfirm
-            size="lg"
-            type="submit"
-            bg="primary.500"
-            color="white"
-            bottom={4}
-            my={8}
-            _hover={{ bg: 'red.500' }}
-            w={['full', 'full', 'auto']}
-            complete={(success) => {
-              if (success) {
-                location.href = '/api/member/delete'
-              }
-            }}
-            buttonText="Deactivate Account"
-            alertTitle="Deactivate Account"
-          >
-            <Text>Are you sure you want to deactivate your account?</Text>
-          </ButtonConfirm>
+            <ButtonConfirm
+              size="lg"
+              type="submit"
+              bg="primary.500"
+              color="white"
+              _hover={{ bg: 'red.500' }}
+              w={['full', 'full', 'auto']}
+              complete={(success) => {
+                if (success) {
+                  location.href = '/api/member/delete'
+                }
+              }}
+              buttonText="Deactivate Account"
+              alertTitle="Deactivate Account"
+            >
+              <Text>Are you sure you want to deactivate your account?</Text>
+            </ButtonConfirm>
+            <ButtonConfirm
+              size="lg"
+              type="submit"
+              bg="red.500"
+              color="white"
+              _hover={{ bg: 'red.500' }}
+              w={['full', 'full', 'auto']}
+              complete={(success) => {
+                if (success) {
+                  location.href = '/api/member/delete'
+                }
+              }}
+              buttonText="Delete Data"
+              alertTitle="Permanently Delete Account"
+              aria-label="Permanently Delete Account"
+            >
+              <Text>
+                Are you sure you want to completely delete your account? There
+                is no undoing this. Your data may take up to two days to be
+                completely removed from our servers. You will be immediately
+                signed out and will not be able to sign in again.
+              </Text>
+            </ButtonConfirm>
+          </Flex>
         </TabPanel>
       </TabPanels>
     </Tabs>

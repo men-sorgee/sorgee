@@ -45,9 +45,14 @@ function VerificationPage() {
 
   useEffect(() => {
     if (complete) {
-      router.push('/apply/review')
+      router.push('/apply/review').catch(console.error)
+    } else if (
+      !loading &&
+      ApplicationStatus[member.application_status] !== ApplicationStatus.verify
+    ) {
+      router.push('/apply/' + member.application_status).catch(console.error)
     }
-  }, [complete, router])
+  }, [complete, router, loading, member?.application_status])
 
   return (
     <Page

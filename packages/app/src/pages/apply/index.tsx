@@ -14,14 +14,14 @@ export default function Index({}) {
     if (member) {
       const { application_status } = member
       if (application_status === 'approved') {
-        router.push('/member')
+        router.push('/member').catch(console.error)
       } else {
-        router.push('/apply/' + application_status)
+        router.push('/apply/' + application_status).catch(console.error)
       }
     } else {
       signIn('email', {
         callbackUrl: '/apply'
-      })
+      }).catch(console.error)
     }
   }, [loading, router, member])
 
