@@ -2118,10 +2118,10 @@
   dependencies:
     regenerator-runtime "^0.13.11"
 
-"@directus/api@12.1.0":
-  version "12.1.0"
-  resolved "https://registry.yarnpkg.com/@directus/api/-/api-12.1.0.tgz#7eb673e332610b4e760230a8c715c4c38d96a47d"
-  integrity sha512-RGrl/jb9LnmlRC8Jj+nCHKY7XTtNKIdpfjavMF5wnw5YPjPq29HZYluJLdfJfSoclWBHAY2tSSasMdAk1e+GuQ==
+"@directus/api@12.1.1":
+  version "12.1.1"
+  resolved "https://registry.yarnpkg.com/@directus/api/-/api-12.1.1.tgz#7085ecf5374135062aebc858421305a218ccfa5d"
+  integrity sha512-NAnuSpcpSuWqrdrSOREvaOGKHRh1YrbVRxR5Zo0D3JN0Qcp1azFpnzFK+XuRKbKjn9w/94kELgMvs6GdwIsTLA==
   dependencies:
     "@authenio/samlify-node-xmllint" "2.0.0"
     "@aws-sdk/client-ses" "3.332.0"
@@ -4929,12 +4929,12 @@ directus-extension-vgrid-interface@^1.0.15:
     apexcharts "^3.35.0"
     papaparse "^5.3.2"
 
-directus@^10.5.0:
-  version "10.5.0"
-  resolved "https://registry.yarnpkg.com/directus/-/directus-10.5.0.tgz#3c367f9007862452cbbc5e52e96a425519000988"
-  integrity sha512-YeSwaZOeYOJE6gwc19bDZIfaSodiI+m78pHbPKFkCafWVWPqwzCKJ7CZvRzSADMJcCPJjgOOTgw0OyOwpeZmEQ==
+directus@^10.5.1:
+  version "10.5.1"
+  resolved "https://registry.yarnpkg.com/directus/-/directus-10.5.1.tgz#7c5dc07dd933aeaede19cebd16d4ee875b887e57"
+  integrity sha512-0BxUE/CXbqlcr8SE+YzkFMpeniQ8ntjU4GaQfYrBXWpbHBNyV9ae53CuhPza6CLykO7txjTmvAbaHrKF4Ib/Bg==
   dependencies:
-    "@directus/api" "12.1.0"
+    "@directus/api" "12.1.1"
     "@directus/update-check" "11.0.2"
 
 directus@^9.23.1:
