@@ -126,10 +126,10 @@ export const AppNotificationCard = chakra(({ member, notification }: Props) => {
               Received {distance(new Date(notification?.date_created))} ago
             </Text>
           </HStack>
-          {notification?.button_url && (
+          {notification?.link && (
             <ButtonLink
               size="xs"
-              href={notification?.button_url}
+              href={notification?.link}
               onClick={(e) => {
                 e.stopPropagation()
               }}
