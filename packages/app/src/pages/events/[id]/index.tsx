@@ -41,8 +41,10 @@ import {
   Text,
   Center,
   Wrap,
-  Show
+  Show,
+  useToast
 } from '@chakra-ui/react'
+import { on } from 'events'
 
 export async function getServerSideProps({ params }) {
   return {
@@ -101,7 +103,7 @@ export default function EventPage({ id }: { id: string }) {
   }
 
   const canViewAttendees = hasFeature('view_attendees')
-
+  const toast = useToast()
   const canConfirm = member?.rating && member?.rating > 2
   return (
     <Page
@@ -147,14 +149,14 @@ export default function EventPage({ id }: { id: string }) {
                   )}
                 </SimpleGrid>
                 {stats && event.status != 'occurred' && invite && (
-                  <Flex direction={canViewAttendees ? 'column' : 'row'} gap={4}>
+                  <Flex direction={'column'} gap={4} mb={2}>
                     <HStack align="start" justify="end">
                       <Stat>
                         <StatLabel>Confirmed</StatLabel>
                         <StatNumber>{stats.confirmed_count}</StatNumber>
                       </Stat>
 
-                      <Wrap spacing={-2}>
+                      <Wrap spacing={1} justify="end">
                         {getAttendees('confirmed').map(({ id, name, src }) => (
                           <Avatar
                             key={id}
@@ -163,24 +165,30 @@ export default function EventPage({ id }: { id: string }) {
                             title={name}
                             cursor="pointer"
                             onClick={() => {
-                              if (
-                                invite?.rsvp == 'confirmed' &&
-                                canViewAttendees
-                              )
-                                setMemberId(id)
+                              if (canViewAttendees) {
+                                if (invite?.rsvp == 'confirmed') setMemberId(id)
+                              } else
+                                toast({
+                                  title: 'You cannot see attendee profiles',
+                                  description:
+                                    'Enable this feature with a subscription. Go to Account > Plan for more info.',
+                                  status: 'error',
+                                  duration: 5000,
+                                  isClosable: true
+                                })
                             }}
                           />
                         ))}
                       </Wrap>
                     </HStack>
 
-                    <HStack align="start" justify="right">
+                    <HStack align="start" justify="right" mb={2}>
                       <Stat>
                         <StatLabel>Maybe</StatLabel>
                         <StatNumber>{stats.maybe_count}</StatNumber>
                       </Stat>
 
-                      <Wrap spacing={-2}>
+                      <Wrap spacing={1} justify="end">
                         {getAttendees('maybe').map(({ id, name, src }) => (
                           <Avatar
                             key={id}
@@ -189,11 +197,17 @@ export default function EventPage({ id }: { id: string }) {
                             title={name}
                             cursor="pointer"
                             onClick={() => {
-                              if (
-                                invite?.rsvp == 'confirmed' &&
-                                canViewAttendees
-                              )
-                                setMemberId(id)
+                              if (canViewAttendees) {
+                                if (invite?.rsvp == 'confirmed') setMemberId(id)
+                              } else
+                                toast({
+                                  title: 'You cannot see attendee profiles',
+                                  description:
+                                    'Enable this feature with a subscription. Go to Account > Plan for more info.',
+                                  status: 'error',
+                                  duration: 5000,
+                                  isClosable: true
+                                })
                             }}
                           />
                         ))}

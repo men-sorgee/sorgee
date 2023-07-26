@@ -52,6 +52,7 @@ export default function ChatPage({ id }: { id?: string }) {
     delete: d
   } = useMessages()
   const router = useRouter()
+
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isTyping, setIsTyping] = useState(false)
   const [sidebarVisible, setSidebarVisible] = useState(true)
@@ -60,31 +61,35 @@ export default function ChatPage({ id }: { id?: string }) {
   const [conversationContentStyle, setConversationContentStyle] = useState({})
   const [conversationAvatarStyle, setConversationAvatarStyle] = useState({})
 
+  const { id: i } = router.query
   useEffect(() => {
     if (id) {
       setActiveId(id)
       setSidebarVisible(false)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  const handleBackClick = () => {
-    setSidebarVisible(true)
-    setActiveId(undefined)
-    router.push('/members/chat', '/members/chat', {
-      shallow: true
-    })
-  }
-
-  const handleConversationClick = (activeId: string) => {
-    if (sidebarVisible) {
+    } else if (i) {
+      setActiveId(i as string)
       setSidebarVisible(false)
-      setActiveId(activeId)
     }
-    router.push('/members/chat/[id]', `/members/chat/${activeId}`, {
-      shallow: true
-    })
-  }
+  }, [id, i, setActiveId])
+
+  const handleBackClick = useCallback(async () => {
+    setActiveId(undefined)
+    await router.push('/members/chat')
+    setSidebarVisible(true)
+  }, [router, setActiveId])
+
+  const handleConversationClick = useCallback(
+    async (activeId: string) => {
+      setActiveId(undefined)
+      if (sidebarVisible) {
+        setSidebarVisible(false)
+      }
+      await router.push(`/members/chat/${activeId}`)
+      setActiveId(activeId)
+    },
+    [router, setActiveId, sidebarVisible]
+  )
+
   useEffect(() => {
     if (sidebarVisible) {
       setSidebarStyle({
