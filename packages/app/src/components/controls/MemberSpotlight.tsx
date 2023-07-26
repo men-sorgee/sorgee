@@ -239,6 +239,7 @@ export const MemberSpotlight = chakra(
             </Box>
           )}
         </Box>
+        {children}
         <Accordion defaultIndex={0} rounded="lg">
           {full && member.show_photos && photos?.length > 0 && (
             <AccordionItem>
@@ -437,7 +438,7 @@ export const MemberSpotlight = chakra(
               </AccordionPanel>
             </AccordionItem>
           )}
-          {children}
+
           {full && member.show_events && (
             <AccordionItem>
               <AccordionButton>

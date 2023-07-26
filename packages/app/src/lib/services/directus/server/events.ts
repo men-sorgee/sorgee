@@ -163,7 +163,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
       paid_count: attendance.filter((u) => u.paid).length,
     },
     members: attendance.map((u) => u.users_id as any as SearchableMember),
-    surveys: survey as Survey[],
+    survey: survey[0] as Survey,
   }
   return detail
 }

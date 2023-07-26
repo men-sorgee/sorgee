@@ -98,3 +98,7 @@ export type SurveyAnswer = {
   answer_context?: string
   answer_choose?: any[]
 }
+
+export type UserSurvey = Pick<Survey, 'title' | 'description' | 'name'> & {
+  questions: Array<Question & { sort: number, answer: SurveyAnswer }>
+}

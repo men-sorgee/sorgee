@@ -15,6 +15,7 @@ export type MemberModalProps = {
   full?: boolean
   updateMeta?: boolean
   ref?: RefObject<Element & { focus: () => null }>
+  children?: React.ReactNode
 }
 
 export function MemberModal({
@@ -23,7 +24,8 @@ export function MemberModal({
   onClose,
   ref,
   full = true,
-  updateMeta = false
+  updateMeta = false,
+  children
 }: MemberModalProps) {
   const { data: fields, isLoading } = swr<FieldMap>(
     `/api/site/fields/users`,
@@ -45,7 +47,9 @@ export function MemberModal({
             fields={fields}
             full={full}
             updateMeta={updateMeta}
-          />
+          >
+            {children}
+          </MemberSpotlight>
         )}
       </ModalPopup>
     </>

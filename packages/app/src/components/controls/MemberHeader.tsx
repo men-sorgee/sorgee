@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-
+import { differenceInDays } from 'date-fns'
 import { capitalCase } from 'change-case'
 import {
   Member,
@@ -62,6 +62,11 @@ export const MemberHeader = ({
   const buddiesYou = member?.buddies?.some(
     (b: UserBuddy) => b.user_id == viewer?.id
   )
+
+  const pledgeAge =
+    member?.approved_date != undefined
+      ? differenceInDays(new Date(), new Date(member.approved_date))
+      : null
 
   const needsVoucher =
     !member.vouched_by &&
@@ -181,7 +186,7 @@ export const MemberHeader = ({
                     color="white"
                     borderRadius="3px 3px 3px 3px"
                   >
-                    Needs Vouching
+                    Pledged {pledgeAge} days ago
                   </Badge>
                 </PopoverTrigger>
                 <PopoverContent color="text">

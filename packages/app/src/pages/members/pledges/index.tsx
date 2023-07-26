@@ -1,14 +1,27 @@
 import { useCallback, useEffect, useState } from 'react'
-import { differenceInDays } from 'date-fns'
-import { Lazy, MemberCard, MemberModal, Pager } from 'components/controls'
+
+import {
+  Lazy,
+  MemberCard,
+  MemberModal,
+  Pager,
+  UserSurveyAnswers
+} from 'components/controls'
 import Page from 'components/Page'
 
 import { useUser } from 'hooks'
 import { MemberLevel, SearchableMember } from 'lib/models'
 
-import { Container, SimpleGrid, Text, useDisclosure } from '@chakra-ui/react'
+import {
+  Badge,
+  Container,
+  SimpleGrid,
+  Text,
+  useDisclosure
+} from '@chakra-ui/react'
 
 import { useMemberSearch } from 'hooks'
+import { pledgeSurvey } from '../../../lib/config'
 
 export const getServerSideProps = async (context) => {
   return {
@@ -56,44 +69,22 @@ export default function PledgeListPage() {
         w="full"
         justifyItems="stretch"
       >
-        {members
-          ?.map((member: SearchableMember) => {
-            return {
-              ...member,
-              pledgeAge: differenceInDays(
-                new Date(),
-                new Date(member.approved_date)
-              )
-            }
-          })
-          .map(
-            (
-              member: SearchableMember & {
-                pledgeAge: number
-              }
-            ) => (
-              <Lazy key={member.id}>
-                <MemberCard
-                  full
-                  size="xl"
-                  key={member.id}
-                  viewer={currentMember}
-                  member={member}
-                  onClick={() => setId(member.id)}
-                >
-                  <Text
-                    fontSize="xl"
-                    fontWeight="bold"
-                    color={member.pledgeAge > 30 ? 'accent.600' : 'white'}
-                  >
-                    Has waited {member.pledgeAge}&nbsp; days.
-                  </Text>
-                </MemberCard>
-              </Lazy>
-            )
-          )}
+        {members?.map((member: SearchableMember) => (
+          <Lazy key={member.id}>
+            <MemberCard
+              full
+              size="xl"
+              key={member.id}
+              viewer={currentMember}
+              member={member}
+              onClick={() => setId(member.id)}
+            ></MemberCard>
+          </Lazy>
+        ))}
       </SimpleGrid>
-      <MemberModal isOpen={isOpen} memberId={id as string} onClose={close} />
+      <MemberModal isOpen={isOpen} memberId={id as string} onClose={close}>
+        <UserSurveyAnswers userId={id as string} surveyId={pledgeSurvey} />
+      </MemberModal>
       {meta.filtered == 0 && (
         <Container w="4xl" textAlign="center">
           <Text>No results found</Text>

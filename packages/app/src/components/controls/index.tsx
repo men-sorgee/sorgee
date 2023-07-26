@@ -49,5 +49,5 @@ export { EventCard } from './EventCard'
 export { AppNotificationCard } from './AppNotificationCard'
 export { UserNotificationCard } from './UserNotificationCard'
 export { UserNotifications } from './UserNotifications'
-
+export { UserSurveyAnswers } from './UserSurveyAnswers'
 export { UpgradeIcon } from './UpgradeIcon'

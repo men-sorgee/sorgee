@@ -1,4 +1,4 @@
-import { Question, Survey, SurveyAnswer } from 'lib/models'
+import { Question, Survey, SurveyAnswer, UserSurvey } from 'lib/models'
 
 import { getAdminClient } from './'
 
@@ -30,8 +30,32 @@ export async function getQuestion(id: string): Promise<Question> {
   const question = await client.items('survey_questions').readOne(id)
 
   if (!question) return null
-  // TODO: Figure out how to do this in the query
   return question as unknown as Question
+}
+
+export async function getUserSurveyAnswers(surveyId: string, userId: string): Promise<UserSurvey> {
+  const client = await getAdminClient()
+  const survey = await getSurvey(surveyId)
+  const { data: answers } = await client.items('survey_answers').readByQuery({
+    filter: {
+      survey: { _eq: surveyId },
+      user: { _eq: userId },
+    },
+  })
+
+  const questions = survey.questions.map((q) => {
+    let question = q.survey_questions_id as Question
+
+    return {
+      ...question,
+      sort: q.sort,
+      answer: answers.find((a) => a.question == question.id),
+    }
+  })
+  return {
+    ...survey,
+    questions: questions.sort((a, b) => a.sort - b.sort)
+  }
 }
 
 export async function getSurveyAnswer(surveyId: String, userId: string, questionId: string) {
