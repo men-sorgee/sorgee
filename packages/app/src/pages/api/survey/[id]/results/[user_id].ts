@@ -1,11 +1,11 @@
-import { ApiResponse, Survey, SurveyAnswer } from 'lib/models'
+import { ApiResponse, UserSurvey } from 'lib/models'
 import { getUserSurveyAnswers } from 'lib/services/directus/server'
 import { withMember } from 'lib/utils/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function UserSurvey(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<SurveyAnswer[]>>
+  res: NextApiResponse<ApiResponse<UserSurvey>>
 ) {
   try {
     await withMember(req, res)
@@ -14,9 +14,9 @@ export default async function UserSurvey(
     const id = String(i)
     const userId = String(user_id)
 
-    const surveyAnswers = await getUserSurveyAnswers(id, userId)
+    const userSurvey = await getUserSurveyAnswers(id, userId)
 
-    return res.status(200).json(ApiResponse(surveyAnswers))
+    return res.status(200).json(ApiResponse(userSurvey))
   } catch (e) {
     if (e.message == 'Unauthorized') return res.status(200).json(ApiResponse(null, 'Unauthorized'))
     console.error(e)

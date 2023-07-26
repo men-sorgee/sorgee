@@ -63,27 +63,28 @@ export default function ChatPage({ id }: { id?: string }) {
   useEffect(() => {
     if (id) {
       setActiveId(id)
+      setSidebarVisible(false)
     }
-  }, [activeId, conversations, id, setActiveId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-  const handleBackClick = useCallback(() => {
+  const handleBackClick = () => {
     setSidebarVisible(true)
     setActiveId(undefined)
-    router.push('/members/chat')
-  }, [router, setActiveId])
+    router.push('/members/chat', '/members/chat', {
+      shallow: true
+    })
+  }
 
-  const handleConversationClick = useCallback(
-    (activeId: string) => {
-      if (sidebarVisible) {
-        setSidebarVisible(false)
-      }
-      router.push('/members/chat/[id]', `/members/chat/${activeId}`, {
-        shallow: true
-      })
-    },
-    [sidebarVisible, router]
-  )
-
+  const handleConversationClick = (activeId: string) => {
+    if (sidebarVisible) {
+      setSidebarVisible(false)
+      setActiveId(activeId)
+    }
+    router.push('/members/chat/[id]', `/members/chat/${activeId}`, {
+      shallow: true
+    })
+  }
   useEffect(() => {
     if (sidebarVisible) {
       setSidebarStyle({
@@ -122,13 +123,17 @@ export default function ChatPage({ id }: { id?: string }) {
   const audioRef = useRef<HTMLAudioElement>(null)
 
   const messagesSeen = useCallback(() => {
-    if (activeConversation) {
+    if (
+      activeConversation &&
+      activeConversation.messages.filter(
+        (m) => m.direction == 'incoming' && m.status == 'new'
+      ).length > 0
+    ) {
       markAsRead(
         activeConversation.messages
           .filter((m) => m.direction == 'incoming' && m.status == 'new')
           .map((m) => m.id)
-      )
-      mutate()
+      ).then(() => mutate())
     }
   }, [activeConversation, markAsRead, mutate])
 
@@ -143,7 +148,9 @@ export default function ChatPage({ id }: { id?: string }) {
             direction: 'incoming'
           }
         ])
-        messagesSeen()
+        setTimeout(() => {
+          messagesSeen()
+        }, 1000)
       }
     },
     [activeId, messagesSeen]
@@ -182,33 +189,6 @@ export default function ChatPage({ id }: { id?: string }) {
   }, [socket, socketInitializer])
 
   const { isOpen, onClose, onOpen } = useDisclosure()
-  // Get current user data
-  const [convoUserAvatar, convoUserName] = useMemo(() => {
-    if (activeConversation) {
-      const { user } = activeConversation
-
-      if (user) {
-        return [
-          <Avatar
-            key={user.id}
-            id={user.id}
-            src={getAssetUrl(user.picture || userImageId)}
-            name={user?.nickname}
-            status={user?.presence == 'online' ? 'available' : 'unavailable'}
-            active={user?.presence == 'online'}
-            aria-label="View Profile"
-            onClick={onOpen}
-            title="View Profile"
-            style={{
-              cursor: 'pointer'
-            }}
-          />,
-          user?.nickname
-        ]
-      }
-    }
-    return [undefined, undefined]
-  }, [activeConversation, onOpen])
 
   const userTyping = useCallback(() => {
     if (socket) {
@@ -382,7 +362,7 @@ export default function ChatPage({ id }: { id?: string }) {
             })}
           </ConversationList>
         </Sidebar>
-        {activeId && (
+        {activeConversation?.user && (
           <ChatContainer
             onFocus={() => {
               messagesSeen()
@@ -391,9 +371,22 @@ export default function ChatPage({ id }: { id?: string }) {
           >
             <ConversationHeader>
               <ConversationHeader.Back onClick={handleBackClick} />
-              {convoUserAvatar}
+              <Avatar
+                key={activeConversation.user.id}
+                id={id}
+                src={getAssetUrl(
+                  activeConversation.user.picture || userImageId
+                )}
+                name={activeConversation.user.nickname}
+                status={
+                  activeConversation.user.presence == 'online'
+                    ? 'available'
+                    : 'unavailable'
+                }
+                active={activeConversation.user.presence == 'online'}
+              />
               <ConversationHeader.Content
-                userName={convoUserName}
+                userName={activeConversation.user.nickname}
                 style={conversationContentStyle}
                 info={activeConversation?.user?.presence}
               />
