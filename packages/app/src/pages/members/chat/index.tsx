@@ -31,7 +31,7 @@ import { userImageId } from 'lib/config'
 import { getAssetUrl, postJSON } from 'lib/utils'
 import dynamic from 'next/dynamic'
 import { XMarkIcon, CheckIcon } from '@heroicons/react/24/solid'
-import { formatDistanceToNow } from 'date-fns'
+import { formatDistanceToNow, set } from 'date-fns'
 import { ChatMessage, Message, Member } from 'lib/models'
 
 const MessagesStyles = dynamic(
@@ -54,7 +54,7 @@ export default function ChatPage({ id }: { id?: string }) {
   const router = useRouter()
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isTyping, setIsTyping] = useState(false)
-  const [sidebarVisible, setSidebarVisible] = useState(false)
+  const [sidebarVisible, setSidebarVisible] = useState(true)
   const [sidebarStyle, setSidebarStyle] = useState({})
   const [chatContainerStyle, setChatContainerStyle] = useState({})
   const [conversationContentStyle, setConversationContentStyle] = useState({})
@@ -63,15 +63,14 @@ export default function ChatPage({ id }: { id?: string }) {
   useEffect(() => {
     if (id) {
       setActiveId(id)
-    } else {
-      setActiveId(conversations[0]?.id)
     }
-  }, [conversations, id, setActiveId])
+  }, [activeId, conversations, id, setActiveId])
 
   const handleBackClick = useCallback(() => {
     setSidebarVisible(true)
+    setActiveId(undefined)
     router.push('/members/chat')
-  }, [router])
+  }, [router, setActiveId])
 
   const handleConversationClick = useCallback(
     (activeId: string) => {
@@ -334,6 +333,7 @@ export default function ChatPage({ id }: { id?: string }) {
       requireAuth={true}
       hideHeader
       full
+      position="relative"
     >
       <MessagesStyles />
       <audio ref={audioRef} src="/sounds/click.mp3" preload="auto" />

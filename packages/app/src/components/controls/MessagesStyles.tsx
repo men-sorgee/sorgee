@@ -31,8 +31,10 @@ export default function MessagesStyles() {
         position: relative;
         display: flex;
         bottom: 0;
+        
         flex-direction: row;
         height: calc(100vh - 145px);
+      
         overflow: auto;
         box-sizing: border-box;
         color: ${color};
@@ -102,9 +104,14 @@ export default function MessagesStyles() {
       .cs-main-container--responsive .cs-chat-container .cs-conversation-header .cs-conversation-header__actions .cs-button--info {
         display: none;
       }
+      .cs-main-container--responsive .cs-conversation-list .cs-conversation__content,
+      .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__content,
+      .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__last-activity-time {
+        display: inherit;
+      }
       @media (max-width: 768px) {
         .cs-main-container--responsive {
-          
+          height: calc(100vh - 145px);
         }
         .cs-main-container--responsive .cs-search {
           display: none;
@@ -128,7 +135,7 @@ export default function MessagesStyles() {
         .cs-main-container--responsive .cs-conversation-list .cs-conversation__content,
         .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__content,
         .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__last-activity-time {
-          display: none;
+          display: inherit;
         }
         .cs-main-container--responsive .cs-conversation-list .cs-conversation__operations,
         .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__operations {
@@ -136,7 +143,7 @@ export default function MessagesStyles() {
         }
         .cs-main-container--responsive .cs-conversation-list .cs-conversation__last-activity-time,
         .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__last-activity-time {
-            dis-play: none;
+            display: none;
         }
         .cs-main-container--responsive .cs-conversation-list .cs-conversation__unread-dot,
         .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__unread-dot {
@@ -152,6 +159,7 @@ export default function MessagesStyles() {
       @media (max-width: 576px) {
         .cs-main-container--responsive {
           min-width: auto;
+          height: calc(100vh - 145px);
         }
         .cs-main-container--responsive > .cs-sidebar.cs-sidebar--left {
           display: none;
@@ -159,7 +167,11 @@ export default function MessagesStyles() {
         .cs-main-container--responsive .cs-chat-container .cs-conversation-header .cs-conversation-header__back {
           display: flex;
         }
-        
+        .cs-main-container--responsive .cs-conversation-list .cs-conversation__content,
+        .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__content,
+        .cs-main-container--responsive .cs-sidebar .cs-conversation-list .cs-conversation__last-activity-time {
+          display: inherit;
+        }
       }
 
       .cs-message {
