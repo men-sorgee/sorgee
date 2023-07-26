@@ -575,6 +575,7 @@ export const userPrivateFields: Array<keyof User> = [
   'accounts',
   'in_sendgrid',
   'application_status',
+  'approved_date',
   'contact_attempts',
   'sessions',
   'notes',
@@ -701,6 +702,7 @@ export const searchableMemberFields: Array<keyof Member> = [
   'blocked.blocked_id' as any,
   'blocked_by.user_id' as any,
   'photo_shares.viewer_id' as any,
+  'approved_date' as any
 ]
 
 export const memberSubscriptionFields: Array<keyof Member> = [

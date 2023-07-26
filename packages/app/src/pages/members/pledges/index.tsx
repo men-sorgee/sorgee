@@ -1,5 +1,5 @@
-import { createRef, useCallback, useEffect, useState } from 'react'
-
+import { useCallback, useEffect, useState } from 'react'
+import { differenceInDays } from 'date-fns'
 import { Lazy, MemberCard, MemberModal, Pager } from 'components/controls'
 import Page from 'components/Page'
 
@@ -24,7 +24,7 @@ export default function PledgeListPage() {
     redirectsEnabled: true
   })
 
-  const { members, meta } = useMemberSearch(1, 20, 'last_login', {
+  const { members, meta } = useMemberSearch(1, 20, 'approved_date', {
     user_type: MemberLevel[MemberLevel.pledge]
   })
 
@@ -56,18 +56,42 @@ export default function PledgeListPage() {
         w="full"
         justifyItems="stretch"
       >
-        {members?.map((member: SearchableMember) => (
-          <Lazy key={member.id}>
-            <MemberCard
-              full
-              size="xl"
-              key={member.id}
-              viewer={currentMember}
-              member={member}
-              onClick={() => setId(member.id)}
-            />
-          </Lazy>
-        ))}
+        {members
+          ?.map((member: SearchableMember) => {
+            return {
+              ...member,
+              pledgeAge: differenceInDays(
+                new Date(),
+                new Date(member.approved_date)
+              )
+            }
+          })
+          .map(
+            (
+              member: SearchableMember & {
+                pledgeAge: number
+              }
+            ) => (
+              <Lazy key={member.id}>
+                <MemberCard
+                  full
+                  size="xl"
+                  key={member.id}
+                  viewer={currentMember}
+                  member={member}
+                  onClick={() => setId(member.id)}
+                >
+                  <Text
+                    fontSize="xl"
+                    fontWeight="bold"
+                    color={member.pledgeAge > 30 ? 'accent.600' : 'white'}
+                  >
+                    Has waited {member.pledgeAge}&nbsp; days.
+                  </Text>
+                </MemberCard>
+              </Lazy>
+            )
+          )}
       </SimpleGrid>
       <MemberModal isOpen={isOpen} memberId={id as string} onClose={close} />
       {meta.filtered == 0 && (
