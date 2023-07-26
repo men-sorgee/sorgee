@@ -129,6 +129,7 @@ const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
                       key={notification.id}
                       member={member}
                       notification={notification}
+                      closeDrawer={onClose}
                     />
                   ))}
                 </TabPanel>
