@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import {
   ButtonConfirm,
-  ImageAsset,
+  PhotoAsset,
   MemberAvatar,
   PhotoCapture,
   PhotoUpload
@@ -173,7 +173,7 @@ function PhotoList({ title, field, images, memberId, reload }: PhotoListProps) {
       {images?.map((image: PhotoItem) => (
         <Box key={image.fileId}>
           <Link href={`/api/asset/${image.fileId}`} target="_blank">
-            <ImageAsset fileId={image.fileId} rounded="md" shadow="md" />
+            <PhotoAsset fileId={image.fileId} rounded="md" shadow="md" />
           </Link>
           <ButtonConfirm
             alertTitle="Delete Photo"
