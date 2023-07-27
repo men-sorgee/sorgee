@@ -18,7 +18,7 @@ import {
   AlertIcon,
   Box,
   Button,
-  GridItem,
+  Flex,
   Input,
   InputGroup,
   Select,
@@ -31,6 +31,7 @@ import {
   Tabs,
   Text
 } from '@chakra-ui/react'
+import { LocationCapture } from '../../../components/controls/LocationCapture'
 
 export type PageProps = {
   fieldMap: FieldMap
@@ -94,6 +95,7 @@ type SettingsProp = Pick<
   | 'show_interests'
   | 'show_contact'
   | 'show_events'
+  | 'show_location'
   | 'auth_with_phone'
   | 'can_host'
 >
@@ -146,9 +148,11 @@ function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps) {
     show_interests,
     show_contact,
     show_events,
-    auth_with_phone
+    auth_with_phone,
+    show_location
   } = member
   const defaultValues = {
+    show_location,
     email,
     phone,
     city,
@@ -487,14 +491,18 @@ function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps) {
                         Display your location information to make it easier for
                         people to find other brothers near them.
                       </Text>
-                      <FieldSwitch
-                        mt={4}
-                        field="show_location"
-                        label="Show Location "
-                        help="Turn this off, if you'd prefer to not display this information to other verified members."
-                      />
+                      <Flex gap={2} w="full">
+                        <FieldSwitch
+                          mt={4}
+                          field="show_location"
+                          label="Show Location "
+                          help="Turn this off, if you'd prefer to not display this information to other verified members."
+                        />
+                        {watch('show_location') && <LocationCapture />}
+                      </Flex>
                     </Alert>
                   )}
+
                   <SimpleGrid spacing={4}>
                     <FieldWrapper label="City / State">
                       <InputGroup>

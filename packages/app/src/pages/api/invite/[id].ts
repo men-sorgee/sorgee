@@ -49,9 +49,13 @@ export default async function Invite(
 
         await updateInvite(invite_id, { paid, attended: true })
 
+        let { user_type, rating } = attendee
+
         // if they are an inductee or pledge, make them a brother
-        const user_type: UserType =
-          MemberLevel[attendee.user_type] < MemberLevel.brother ? 'brother' : attendee.user_type
+        if (MemberLevel[attendee.user_type] < MemberLevel.brother) {
+          user_type = 'brother'
+          rating = 5
+        }
 
         await updateUser(user_id, {
           signed_waiver,

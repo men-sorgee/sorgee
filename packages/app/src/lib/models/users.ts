@@ -157,7 +157,7 @@ export type User = {
   photo_consent?: boolean
   photo_denial_reason?: string
   tags?: string[]
-  location?: string
+  location?: Coordinates
   state: string
   events: string[] | EventUser[]
   my_photos: string[] | UserPhoto[]
@@ -442,6 +442,10 @@ export const memberFeatures: MemberFeature[] = [
   'chat',
   'share_photos',
 ]
+export type Coordinates = {
+  type: 'Point'
+  coordinates: [number, number]
+}
 
 export type PresenceType = 'offline' | 'online' | 'away'
 
@@ -463,7 +467,7 @@ export type Member = Applicant & {
 
   //-location
   show_location?: boolean
-  location?: string
+  location?: Coordinates
   city?: string
   state?: string
 
