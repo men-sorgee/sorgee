@@ -14,6 +14,7 @@ import {
 import { MemberVouch } from './MemberVouch'
 import { useUser } from '../../hooks'
 import { sub } from 'date-fns'
+import Link from 'next/link'
 
 type Props = BadgeProps & {
   member: Partial<Member>
@@ -65,17 +66,19 @@ export const MemberBadge = chakra(
           />
         )}
         {subscription > MembershipType.none && (
-          <Icon
-            id={`subscribe-${member?.id}`}
-            as={CurrencyDollarIcon}
-            boxSize={9}
-            stroke="white"
-            color={`green.${subscription + 2}00`}
-            ml={1}
-            title={`Contributing Member - ${MembershipType[
-              subscription
-            ]?.toUpperCase()} Plan`}
-          />
+          <Link href={`/member/subscription`}>
+            <Icon
+              id={`subscribe-${member?.id}`}
+              as={CurrencyDollarIcon}
+              boxSize={9}
+              stroke="white"
+              color={`green.${subscription + 2}00`}
+              ml={1}
+              title={`Contributing Member - ${MembershipType[
+                subscription
+              ]?.toUpperCase()} Plan`}
+            />
+          </Link>
         )}
       </HStack>
     )

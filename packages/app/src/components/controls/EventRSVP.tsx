@@ -252,9 +252,9 @@ export const EventRSVP = ({
         })
       }
       complete={complete}
-      bgGradient={bgGradient('gray')}
+      bgGradient={bgGradient('black')}
       _hover={{
-        bgGradient: bgGradientHover('gray')
+        bgGradient: bgGradientHover('black')
       }}
       color="white"
       w={['full', 'full', 'auto']}
