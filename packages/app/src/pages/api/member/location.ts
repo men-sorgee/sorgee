@@ -10,11 +10,6 @@ export default async function Location(
   try {
     const member = await withMember(req, res)
     const { coordinates } = req.body
-
-    console.dir({
-      coordinates
-    })
-
     updateUser(member.id, { location: { type: "Point", coordinates } })
 
     res.status(200).send(ApiResponse(true))

@@ -10,6 +10,7 @@ export { Rating } from './Rating'
 export { RateItem } from './RateItem'
 export { Markdown } from './Markdown'
 export { LocationCoords } from './LocationCoords'
+export { LocationCapture } from './LocationCapture'
 
 export { Pager } from './Pager'
 

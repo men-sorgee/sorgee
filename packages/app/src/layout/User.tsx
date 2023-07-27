@@ -1,5 +1,6 @@
 import {
   ButtonLink,
+  LocationCapture,
   MemberAvatar,
   MemberIcon,
   UserNotifications
@@ -74,7 +75,7 @@ export default function UserMenu(_props: Props) {
     level >= MemberLevel.brother && hasFeature('view_directory')
   const hasBuddyList = level >= MemberLevel.brother && hasFeature('buddy_list')
   const hasChat = level >= MemberLevel.brother && hasFeature('chat')
-
+  const { show_location } = member || {}
   if (loading) return <Spinner />
 
   return (
@@ -110,6 +111,7 @@ export default function UserMenu(_props: Props) {
               <span id="account-email" hidden>
                 {member?.email}
               </span>
+              {show_location && <LocationCapture />}
             </Box>
             <MenuDivider />
             <MenuItem
