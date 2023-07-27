@@ -7,8 +7,7 @@ import { findUserByCustomer, saveBillingEvent } from 'lib/services/directus/serv
 import { getClient, subscriptionData, webhookSecret } from 'lib/services/stripe/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 import Stripe from 'stripe'
-import { chakra } from '@chakra-ui/react';
-import { CheckBadgeIcon } from '@heroicons/react/24/solid';
+
 
 async function getRawBody(readable: Readable): Promise<Buffer> {
   const chunks = []
@@ -65,14 +64,14 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
       case 'customer':
         const { id } = customer || {}
         if (!id) {
-          user = (await findUserByCustomer(id)) as User
+          user = (await findUserByCustomer(id)) as unknown as User
         } else {
           user = await findUser(customer.email)
         }
         break
       case 'subscription':
         const { id: subscriptionId, customer: customerId } = extractFromSubscription(subscription)
-        user = (await findUserByCustomer(customerId)) as User
+        user = (await findUserByCustomer(customerId)) as unknown as User
         break
       case 'checkout.session':
         const { metadata: {
