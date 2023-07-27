@@ -31,8 +31,7 @@ export default async function MemberItemRating(
           await setUserAverageRating(item)
 
           // send notification
-          await addUserNotification({
-            user_id: item,
+          await addUserNotification(item, {
             message: `Someone rated your event behavior as ${rate} stars`,
             button_text: `View Your Rating`,
             button_url: `/member/${item}`,

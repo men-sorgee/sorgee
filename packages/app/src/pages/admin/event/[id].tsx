@@ -104,7 +104,7 @@ export default function EventAdmin() {
           toast({
             title: 'Event Closed',
             description:
-              'The event has been closed. There were ' + noShows + ' no shows.',
+              'The event has been closed. No shows were rated and notified. A survey was created for the event, along with a notification for each of the attendees.',
             status: 'success',
             duration: 5000,
             isClosable: true
@@ -140,6 +140,7 @@ export default function EventAdmin() {
                 isBefore(new Date(event.datetime_end), new Date()) && (
                   <>
                     <ButtonLink
+                      size="md"
                       colorScheme="primary"
                       href="/admin/scan"
                       color="white"
@@ -147,7 +148,6 @@ export default function EventAdmin() {
                       Scan Invite
                     </ButtonLink>
                     <Spacer />
-
                     <Input
                       rounded={'md'}
                       p={1}
@@ -155,16 +155,14 @@ export default function EventAdmin() {
                       name="email"
                       ref={emailRef}
                       size="sm"
-                      placeholder="Email"
-                      h="auto"
                     />
-                    <Button size={'md'} onClick={() => emailCheckin()}>
+                    <Button size={'sm'} onClick={() => emailCheckin()}>
                       Email Checkin
                     </Button>
                   </>
                 )}
               <Spacer />
-              <Text>Status: {event.status}</Text>
+
               {event.status == EventStatusType.Scheduled &&
                 isPast(new Date(event.datetime_end)) && (
                   <Button bg="red.500" onClick={closeEventClicked}>

@@ -67,6 +67,13 @@ export type UserShare = {
   user_id: string
   viewer_id: string
 }
+
+export type UserView = {
+  id: string
+  user_id: string
+  viewed_id: string
+}
+
 export type UserBlock = {
   id: string
   user_id: string

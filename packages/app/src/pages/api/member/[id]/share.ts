@@ -42,8 +42,7 @@ export default async function ShareWithMember(
       let myName = me.nickname || me.first_name
 
       // send notification
-      await addUserNotification({
-        user_id: them.id,
+      await addUserNotification(them.id, {
         message: `${myName} shared their private photos!`,
         button_text: 'View Photos',
         button_url: `/member/${me.id}`,

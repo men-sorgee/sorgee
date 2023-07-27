@@ -15,11 +15,11 @@ export type Rating = {
 }
 
 export type RatingCollection = 'users' | 'events' | 'photo' | 'location'
-
+export type SurveyType = 'event' | 'user' | 'location' | 'generic'
 export type Survey = {
   id: string
   status: string
-  type: 'event' | 'user' | 'location' | 'generic'
+  type: SurveyType
   user_created?: string | DirectusUser
   date_created?: string
   user_updated?: string | DirectusUser
@@ -29,7 +29,7 @@ export type Survey = {
   description?: string
   closing?: string
   notification?: string | Notification
-  questions: Array<SurveyQuestion>
+  questions: Array<SurveyQuestion | Partial<SurveyQuestion>>
   location?: string | Location
   event?: string | GroupEvent
 }

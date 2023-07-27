@@ -210,7 +210,13 @@ export async function getUserStats(start: string): Promise<{
   } as MemberStats
 }
 
-
+export async function addUserView(user_id: string, viewed_id: string): Promise<void> {
+  const admin = await getAdminClient()
+  await admin.items('user_views').createOne({
+    user_id,
+    viewed_id,
+  })
+}
 
 export * from './invites'
 export * from './buddies'

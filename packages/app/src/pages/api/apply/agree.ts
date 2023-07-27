@@ -1,14 +1,13 @@
-import { notifications } from 'lib/config'
 import { AgreementData, ApiResponse, Applicant, MemberLevel, Profile, UserType } from 'lib/models'
-import { getAppNotification, getUserEvents, updateUser } from 'lib/services/directus/server'
+import { getUserEvents, updateUser } from 'lib/services/directus/server'
 import {
-  SendGridCategory,
-  SendGridTemplate,
-  sendNotificationEmail,
+  SendGridList,
+  sendCongratsEmail,
   updateSendGrid,
 } from 'lib/services/sendgrid/server'
 import { withApplicant, withMethods } from 'lib/utils/server'
 import { NextApiRequest, NextApiResponse } from 'next'
+
 
 async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
@@ -32,43 +31,12 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
         approved_date: new Date().toISOString(),
       })) as Applicant
 
-      await updateSendGrid(updatedUser as Profile)
+      await updateSendGrid(updatedUser as Profile,
+        [
+          SendGridList.Members
+        ])
 
-      sendNotificationEmail(
-        applicant.email,
-        applicant.nickname || applicant.first_name,
-        `Your Application was approved, ${user_type}!`,
-        `Your application was verified and approved. You are now an official ${user_type} of Guys'n Heat! `,
-        {
-          button_text: user_type == 'brother' ? 'Get More Features!' : 'Complete Profile',
-          button_url: user_type == 'brother' ? 'https://guysnheat.com/member/subscription' : 'https://guysnheat.com/member/profile',
-        },
-        SendGridTemplate.Notification,
-        SendGridCategory.Notification
-      )
-
-      // send congrats email
-      const notificationId = notifications.congratsEmail[user_type]
-      const congratsEmail = await getAppNotification(notificationId)
-      if (congratsEmail == null) throw new Error('Notification not found')
-
-      const { button_text, button_url, subject, body, data, template, category } = congratsEmail
-
-      await sendNotificationEmail(
-        updatedUser.email,
-        updatedUser.first_name,
-        subject.replace('$NAME$', updatedUser.first_name),
-        body.replace('$NAME$', updatedUser.first_name),
-        {
-          ...data,
-          button_text,
-          button_url,
-          user_id: updatedUser.id,
-        },
-        template as SendGridTemplate,
-        category as SendGridCategory,
-        notificationId
-      )
+      await sendCongratsEmail(applicant.email, applicant.first_name, user_type)
 
       return res.status(200).json(ApiResponse(updatedUser))
     }

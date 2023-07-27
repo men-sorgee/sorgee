@@ -72,8 +72,7 @@ export default async function VouchForMember(
         congratsInducteeEmail.id
       )
 
-      await addUserNotification({
-        user_id: them.id,
+      await addUserNotification(them.id, {
         message: `You have been vouched for by ${me.nickname}!`,
       })
 

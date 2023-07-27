@@ -15,7 +15,7 @@ import {
   User,
   UserShare,
 } from 'lib/models'
-import { getUser, updateUser } from 'lib/services/directus/server/users'
+import { addUserView, getUser, updateUser } from 'lib/services/directus/server/users'
 import { withMethods, withUser } from 'lib/utils/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 
@@ -60,6 +60,8 @@ export default async function Member(
             user.my_photos = user.my_photos.filter((p) => p.is_public)
           }
           filter(user)
+
+          await addUserView(viewer.id, user_id)
         }
 
         return res.status(200).json(ApiResponse(user))

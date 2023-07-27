@@ -28,6 +28,7 @@ import {
   UserSession,
   UserShare,
   UserVerificationToken,
+  UserView,
 } from 'lib/models'
 
 export type DirectusCollection = {
@@ -171,6 +172,7 @@ export type DirectusTypes = {
   user_buddy: UserBuddy
   user_like: UserLike
   user_shares: UserShare
+  user_views: UserView
   users: User
   users_files: UserFile
   users_photos: UserPhoto

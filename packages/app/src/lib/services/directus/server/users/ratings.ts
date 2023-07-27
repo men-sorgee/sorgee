@@ -149,7 +149,8 @@ export async function setUserAverageRating(user_id: string) {
   if (rating < 1) rating = 1
   if (rating > 5) rating = 5
 
-  return await adminClient.items('users').updateOne(user_id, {
+  await adminClient.items('users').updateOne(user_id, {
     rating,
   })
+  return rating
 }

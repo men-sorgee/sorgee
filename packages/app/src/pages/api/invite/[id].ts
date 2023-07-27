@@ -1,19 +1,13 @@
-import { notifications } from 'lib/config'
 import { ApiResponse, EventUser, MemberLevel, UserType } from 'lib/models'
 import {
   getInvite,
-  getAppNotification,
   getUser,
   updateInvite,
   updateUser,
 } from 'lib/services/directus/server'
-import {
-  SendGridCategory,
-  SendGridTemplate,
-  sendNotificationEmail,
-} from 'lib/services/sendgrid/server'
 import { withMethods, withStaff } from 'lib/utils/server'
 import { NextApiRequest, NextApiResponse } from 'next'
+import { sendCongratsEmail } from 'lib/services/sendgrid/server'
 
 export default async function Invite(
   req: NextApiRequest,
@@ -64,28 +58,7 @@ export default async function Invite(
         })
 
         if (MemberLevel[attendee.user_type] < MemberLevel.brother) {
-          // send congrats email
-          const congratsBrotherEmail = await getAppNotification(notifications.congratsEmail.brother)
-          if (congratsBrotherEmail == null) throw new Error('Notification not found')
-
-          const { button_text, button_url, subject, body, data, template, category } =
-            congratsBrotherEmail
-
-          await sendNotificationEmail(
-            attendee.email,
-            attendee.first_name,
-            subject.replace('$NAME$', attendee.first_name),
-            body.replace('$NAME$', attendee.first_name),
-            {
-              ...data,
-              button_text,
-              button_url,
-              user_id: attendee.id,
-            },
-            template as SendGridTemplate,
-            category as SendGridCategory,
-            congratsBrotherEmail.id
-          )
+          await sendCongratsEmail(attendee.email, attendee.first_name, user_type)
         }
     }
 

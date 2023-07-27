@@ -4,13 +4,20 @@ import {
   NotificationUser,
   Notification,
   UserNotification,
+  GroupEvent,
+  EventDetail,
 } from 'lib/models'
-
+import { notifications } from 'lib/config'
 import { getAdminClient } from './'
 
 export async function getAppNotification(id: string): Promise<Notification> {
   const adminClient = await getAdminClient()
   return (await adminClient.items('notifications').readOne(id)) as unknown as Notification
+}
+
+export async function createAppNotification(notification: Partial<Notification>) {
+  const admin = await getAdminClient()
+  return admin.items('notifications').createOne(notification)
 }
 
 export async function getAppNotifications(user_id: string): Promise<AppNotification[]> {
@@ -73,6 +80,34 @@ export async function updateAppNotificationUser(id: number, notification: Partia
   return admin.items('notifications_users').updateOne(id, notification)
 }
 
+export async function addAppNotificationUser(notificationId: string, userId: string) {
+  const admin = await getAdminClient()
+  return admin.items('notifications_users').createOne({
+    notification_id: notificationId,
+    user_id: userId,
+    status: 'new',
+    read: false,
+  })
+}
+
+export async function createEventSurveyNotification(surveyId: string, event: EventDetail) {
+  let template = await getAppNotification(notifications.eventSurvey);
+  delete template.id
+  Object.keys(template).forEach((key) => {
+    let value = template[key]
+    if (typeof value === "string") {
+      template[key] = value
+        .replaceAll("$EVENT$", event.name)
+        .replaceAll("$EVENT_ID$", event.id)
+        .replaceAll("$SURVEY_ID$", surveyId)
+    }
+  })
+  template.data = {
+    survey_id: surveyId,
+  }
+
+  return await createAppNotification(template)
+}
 
 
 // Individual Notifications
@@ -106,7 +141,10 @@ export async function markUserNotificationRead(id: string) {
   return admin.items('user_notification').updateOne(id, { read: true })
 }
 
-export async function addUserNotification(notification: Partial<UserNotification>) {
+export async function addUserNotification(user_id: string, notification: Partial<UserNotification>) {
   const admin = await getAdminClient()
-  return admin.items('user_notification').createOne(notification)
+  return admin.items('user_notification').createOne({
+    user_id,
+    ...notification,
+  })
 }

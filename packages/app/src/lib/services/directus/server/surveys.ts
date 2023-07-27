@@ -1,6 +1,13 @@
-import { Question, Survey, SurveyAnswer, UserSurvey } from 'lib/models'
-
+import { EventDetail, GroupEvent, Question, Survey, SurveyAnswer, UserSurvey } from 'lib/models'
+import { surveys } from 'lib/config'
 import { getAdminClient } from './'
+import { create } from 'domain'
+
+export async function createSurvey(survey: Partial<Survey>): Promise<Survey> {
+  const client = await getAdminClient()
+  const data = await client.items('surveys').createOne(survey)
+  return data as unknown as Survey
+}
 
 export async function getSurvey(id: string): Promise<Survey> {
   const client = await getAdminClient()
@@ -23,6 +30,12 @@ export async function getSurvey(id: string): Promise<Survey> {
   if (!survey) return null
 
   return survey as Survey
+}
+
+export async function updateSurvey(id: string, survey: Partial<Survey>): Promise<Survey> {
+  const client = await getAdminClient()
+  const data = await client.items('surveys').updateOne(id, survey)
+  return data as unknown as Survey
 }
 
 export async function getQuestion(id: string): Promise<Question> {
@@ -91,4 +104,22 @@ export async function setSurveyAnswer(
       ...answer,
     })) as SurveyAnswer
   }
+}
+
+export async function createEventSurvey(event: EventDetail) {
+  const template = surveys.event
+  const survey: Partial<Survey> = {
+    name: template.name.replace('$EVENT$', event.name),
+    title: template.title.replace('$EVENT$', event.name),
+    description: template.description.replace('$EVENT$', event.name),
+    type: template.type as any,
+    closing: template.closing,
+    event: event.id,
+    questions: template.questions.map((q, i) => ({
+      survey_questions_id: q,
+      sort: i,
+    })),
+    status: 'published',
+  }
+  return await createSurvey(survey)
 }

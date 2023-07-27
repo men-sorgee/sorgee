@@ -43,8 +43,7 @@ export default async function MemberBuddy(
         }
 
         // send notification
-        await addUserNotification({
-          user_id: them.id,
+        await addUserNotification(them.id, {
           message: title,
           button_text: action,
           button_url: `/member/${me.id}`,

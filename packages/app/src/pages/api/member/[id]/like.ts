@@ -49,8 +49,7 @@ export default async function MemberLike(
           message = `${myName} likes you back!`
         }
 
-        await addUserNotification({
-          user_id: them.id,
+        await addUserNotification(them.id, {
           message,
           button_text: action,
           button_url: `/member/${me.id}`,
