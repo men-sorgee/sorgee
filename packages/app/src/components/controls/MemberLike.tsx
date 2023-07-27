@@ -25,13 +25,13 @@ export const MemberLike = chakra(
       setIsLiked(!isLiked)
       if (isLiked) {
         setMutual(false)
-        return deleteJSON(`/api/member/like/${member?.id}`).then(() => {
+        return deleteJSON(`/api/member/${member?.id}/like`).then(() => {
           setIsLiked(false)
           return reload()
         })
       } else {
         // add buddy
-        return postJSON(`/api/member/like/${member?.id}`, {}).then((r) => {
+        return postJSON(`/api/member/${member?.id}/like`, {}).then((r) => {
           setIsLiked(true)
           return reload()
         })

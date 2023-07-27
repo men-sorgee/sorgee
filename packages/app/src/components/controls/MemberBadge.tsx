@@ -1,9 +1,19 @@
-import { MemberLevel, MemberLevelColorMap, Member } from 'lib/models'
+import {
+  MemberLevel,
+  MemberLevelColorMap,
+  Member,
+  MembershipType
+} from 'lib/models'
 
 import { Badge, BadgeProps, chakra, HStack, Icon } from '@chakra-ui/react'
-import { CheckBadgeIcon, SparklesIcon } from '@heroicons/react/24/solid'
+import {
+  CheckBadgeIcon,
+  SparklesIcon,
+  CurrencyDollarIcon
+} from '@heroicons/react/24/solid'
 import { MemberVouch } from './MemberVouch'
 import { useUser } from '../../hooks'
+import { sub } from 'date-fns'
 
 type Props = BadgeProps & {
   member: Partial<Member>
@@ -17,6 +27,9 @@ export const MemberBadge = chakra(
     const levelColor = MemberLevelColorMap[levelValue]
     const levelName = member.user_type.split('_').join(' ')
     const { isMember, loading } = useUser()
+    const subscription =
+      MembershipType[member ? member.membership_type : 'none']
+
     if (loading) return null
     return (
       <HStack spacing={0}>
@@ -46,9 +59,22 @@ export const MemberBadge = chakra(
             as={CheckBadgeIcon}
             boxSize={9}
             stroke="white"
-            color="green"
+            color="primary.500"
             title="Verified at an Event"
             aria-label="Verified at an Event"
+          />
+        )}
+        {subscription > MembershipType.none && (
+          <Icon
+            id={`subscribe-${member?.id}`}
+            as={CurrencyDollarIcon}
+            boxSize={9}
+            stroke="white"
+            color={`green.${subscription + 2}00`}
+            ml={1}
+            title={`Contributing Member - ${MembershipType[
+              subscription
+            ]?.toUpperCase()} Plan`}
           />
         )}
       </HStack>

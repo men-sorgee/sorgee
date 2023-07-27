@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react'
 
 import { MemberBadge } from './'
-import { ImageModal } from './ImageModal'
+import { PhotoModal } from './PhotoModal'
 
 export type MemberIconProps = AvatarProps & {
   zoom?: boolean
@@ -120,7 +120,7 @@ export const MemberIcon = chakra(
               </Flex>
             </Flex>
             {zoom && member?.picture && (
-              <ImageModal
+              <PhotoModal
                 isOpen={isOpen}
                 onClose={() => {
                   setOpen(false)

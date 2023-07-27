@@ -61,7 +61,7 @@ import {
   Markdown,
   EventCard
 } from './'
-import { ImageGallery } from './ImageGallery'
+import { PhotoGallery } from './PhotoGallery'
 import { Loading } from './Loading'
 import { Rating } from './Rating'
 import { toLocalDate } from 'lib/utils/index'
@@ -251,7 +251,7 @@ export const MemberSpotlight = chakra(
               </AccordionButton>
               <AccordionPanel pb={4}>
                 <Box p={2} flex="grow">
-                  <ImageGallery
+                  <PhotoGallery
                     images={photos.map((p: UserPhoto) => {
                       return {
                         src: `/api/asset/${p.directus_files_id}`,

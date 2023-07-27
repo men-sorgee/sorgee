@@ -80,7 +80,7 @@ export const MemberBlock = chakra(
             title={`Block ${member?.nickname || 'this member'}`}
             variant="secondary"
             _hover={{ bg: 'primary.500' }}
-            promise={() => postJSON(`/api/member/block/${member.id}`, {})}
+            promise={() => postJSON(`/api/member/${member.id}/block`, {})}
             complete={() => {
               setIsBlocked(true)
             }}

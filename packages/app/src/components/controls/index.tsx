@@ -32,9 +32,9 @@ export { MemberReport } from './MemberReport'
 export { MemberProgressCheck } from './MemberProgressCheck'
 export { MemberProgress } from './MemberProgress'
 
-export { ImageModal } from './ImageModal'
-export { ImageGallery } from './ImageGallery'
-export { ImageAsset } from './ImageAsset'
+export { PhotoModal } from './PhotoModal'
+export { PhotoGallery } from './PhotoGallery'
+export { PhotoAsset } from './PhotoAsset'
 
 export { Lazy } from './Lazy'
 

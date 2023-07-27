@@ -702,7 +702,8 @@ export const searchableMemberFields: Array<keyof Member> = [
   'blocked.blocked_id' as any,
   'blocked_by.user_id' as any,
   'photo_shares.viewer_id' as any,
-  'approved_date' as any
+  'approved_date' as any,
+  'membership_type' as any,
 ]
 
 export const memberSubscriptionFields: Array<keyof Member> = [

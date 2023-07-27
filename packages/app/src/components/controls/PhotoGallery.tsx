@@ -3,9 +3,9 @@ import { useCallback, useState } from 'react'
 import { Box, HStack } from '@chakra-ui/react'
 import { LockOpenIcon } from '@heroicons/react/24/outline'
 
-import { ImageModal } from './ImageModal'
+import { PhotoModal } from './PhotoModal'
 
-export const ImageGallery = ({
+export const PhotoGallery = ({
   images
 }: {
   images: Array<{ src: string; private: boolean }>
@@ -36,7 +36,7 @@ export const ImageGallery = ({
           }}
           cursor="pointer"
         >
-          <ImageModal
+          <PhotoModal
             key={'modal-' + index}
             isOpen={openIndex === index}
             onClose={() => setOpenIndex(-1)}
@@ -51,7 +51,7 @@ export const ImageGallery = ({
                 top: '5',
                 right: '5',
                 width: '20px',
-                zIndex: 20
+                zIndex: 'popover'
               }}
             />
           )}

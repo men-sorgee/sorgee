@@ -21,15 +21,14 @@ import {
   PopoverHeader,
   PopoverTrigger,
   Text,
-  Tooltip
+  Tooltip,
+  useToast
 } from '@chakra-ui/react'
-import {
-  HandRaisedIcon,
-  QuestionMarkCircleIcon
-} from '@heroicons/react/24/solid'
+import { HandRaisedIcon, HandThumbUpIcon } from '@heroicons/react/24/solid'
 
 import { MemberAvatar } from './MemberAvatar'
 import { CheckIcon } from '@chakra-ui/icons'
+import { Loading } from './Loading'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
   member: Partial<Member>
@@ -43,6 +42,8 @@ export const MemberVouch = chakra(
     size = ['sm', 'md', 'lg'],
     ...props
   }: Props) => {
+    const toast = useToast()
+    const [working, setWorking] = useState(false)
     const { user_type: level, nickname: name, vouched_by: voucher } = member
     const {
       loading: userLoading,
@@ -62,13 +63,23 @@ export const MemberVouch = chakra(
 
     const vouchForPledge = useCallback(() => {
       // add buddy
-      postJSON<any, VouchingUser>(`/api/member/vouch/${member?.id}`, {}).then(
+      setWorking(true)
+      postJSON<any, VouchingUser>(`/api/member/${member?.id}/vouch`, {}).then(
         (r) => {
-          //mutate(r.data, true)
-          return reload()
+          return reload().finally(() => {
+            setWorking(false)
+            setShowVouchButton(false)
+            toast({
+              title: 'Thanks!',
+              description: `You have vouched for ${member?.nickname}. It may take a few moments for their new status to appear.`,
+              status: 'success',
+              duration: 5000,
+              isClosable: true
+            })
+          })
         }
       )
-    }, [member?.id, reload])
+    }, [member?.id, member?.nickname, reload, toast])
 
     useEffect(() => {
       if (!userLoading && voucher?.id == undefined) {
@@ -91,9 +102,11 @@ export const MemberVouch = chakra(
 
     if (member?.id == me?.id) return null
 
+    if (working) return <Loading />
+
     return (
       <>
-        {(voucher?.id && (
+        {voucher?.id && (
           <MemberAvatar
             id={`vouched-${member?.id}`}
             size="sm"
@@ -109,28 +122,19 @@ export const MemberVouch = chakra(
               boxSize={4}
             />
           </MemberAvatar>
-        )) || (
-          <Icon
-            as={QuestionMarkCircleIcon}
-            boxSize={8}
-            ml={1}
-            color="white"
-            title="Integrity Unknown"
-            aria-label="Integrity Unknown"
-          />
         )}
         {showVouchButton && !hideVouch && (
           <Popover>
             <PopoverTrigger>
               <IconButton
-                size={size}
+                size={'sm'}
                 title={`Vouch for ${name}`}
                 aria-label={`Vouch for ${name}`}
-                icon={<HandRaisedIcon width="30px" />}
-                variant="ghost"
-                _hover={{ bg: 'primary.500' }}
+                icon={<HandThumbUpIcon width="30px" />}
+                _hover={{ color: 'primary.500' }}
+                mx={2}
                 {...props}
-                color="accent.500"
+                color="primary.300"
                 fill="white"
               />
             </PopoverTrigger>
@@ -158,7 +162,11 @@ export const MemberVouch = chakra(
                   bg="primary"
                   color="white"
                   _hover={{ bg: 'accent.500' }}
-                  onClick={vouchForPledge}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    e.preventDefault()
+                    vouchForPledge()
+                  }}
                 >
                   Vouch for {name}
                 </Button>
