@@ -95,7 +95,7 @@ export default function EventAdmin() {
 
   useEffect(() => {
     // do nothing
-  }, [event])
+  }, [event, member])
 
   const closeEventClicked = useCallback(() => {
     closeEvent().then(
@@ -137,7 +137,7 @@ export default function EventAdmin() {
           footer={
             <Flex w="full" gap={3}>
               {event.status == EventStatusType.Scheduled &&
-                isBefore(new Date(event.datetime_end), new Date()) && (
+                isBefore(new Date(), new Date(event.datetime_end)) && (
                   <>
                     <ButtonLink
                       size="md"

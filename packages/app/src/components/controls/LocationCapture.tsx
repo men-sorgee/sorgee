@@ -34,11 +34,5 @@ export const LocationCapture = () => {
     getLocation()
   }, [])
 
-  return (
-    <>
-      <Alert rounded="lg">
-        Please allow location access to use this feature.
-      </Alert>
-    </>
-  )
+  return <></>
 }
