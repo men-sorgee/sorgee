@@ -6,7 +6,7 @@ import { getAdminClient } from '../'
 export async function getInvite(inviteId: number): Promise<EventUser | null> {
   const client = await getAdminClient()
   const query = await client.items('events_users').readOne(inviteId, {
-    fields: ['*', '*.*'],
+    fields: ['*', 'events_id.*', 'users_id.*'],
   })
 
   return query as Invite

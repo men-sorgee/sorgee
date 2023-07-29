@@ -142,10 +142,13 @@ export function pruneUndefined<T = Record<string, any>>(
   ) as any as T
 }
 
-export function getAssetUrl(assetId: string | { id: string }) {
-  if (assetId == null) return null
-  if (typeof assetId == 'string') return `/api/asset/${assetId}`
-  else return `/api/asset/${assetId.id}`
+export function getAssetUrl(asset: string | { id: string }) {
+  if (asset == null) return null
+  if (typeof asset == 'string') return `/api/asset/${asset}`
+  else {
+    let { id } = asset
+    return `/api/asset/${id}`
+  }
 }
 
 export function normalize<T>(params: any): Record<keyof T, string[]> {

@@ -65,29 +65,29 @@ export const getServerSideProps = async (context) => {
 }
 
 export default function InviteAdmin({ event, invite, user }: Props) {
-  const { member, loading, level } = useUser({ minLevel: MemberLevel.staff })
-  const { photo: p } = user
+  const { loading } = useUser({
+    minLevel: MemberLevel.staff,
+    redirectsEnabled: true
+  })
+
   const [camera, setCamera] = useState(false)
-  const [picture, setPicture] = useState<string>()
+  const [picture, setPicture] = useState<string>(
+    getAssetUrl(user.picture || user.photo)
+  )
   const { reload } = useEvent(event.id)
   const toast = useToast()
 
   const [working, setWorking] = useState(false)
   const router = useRouter()
 
-  useEffect(() => {
-    if (!loading && member) {
-      if (event && level < MemberLevel.staff) {
-        router.push(
-          `/admin/event/${event?.id}?error=You+do+not+have+permission+to+view+admin+events.`
-        )
-      } else {
-        if (picture == undefined && p) {
-          setPicture(getAssetUrl(p))
-        }
-      }
-    }
-  }, [event, level, loading, member, p, picture, router])
+  //seEffect(() => {
+  // if (user && picture == undefined) {
+  //   if (user.photo) {
+  //     let p =
+  //     setPicture(p)
+  //   }
+  // }
+  //, [loading, picture, setPicture, user])
 
   const methods = useForm<FormValues>({
     mode: 'onBlur',
