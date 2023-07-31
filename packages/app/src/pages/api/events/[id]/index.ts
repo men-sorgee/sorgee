@@ -8,7 +8,7 @@ export default async function Event(
   res: NextApiResponse<ApiResponse<EventDetail | EventUser[]>>
 ) {
   try {
-    const method = withMethods(req, ['GET'])
+    withMethods(req, ['GET'])
     const user = await withMember(req, res)
     const { id: i } = req.query
     const id = String(i)

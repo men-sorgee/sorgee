@@ -41,7 +41,7 @@ export default function BuddiesPage({}: PageProps) {
   })
 
   const { data: buddies, isLoading } = swr<SearchableMember[]>(
-    '/api/member/buddy',
+    '/api/my/buddies',
     JsonFetcher,
     {
       refreshInterval: 1000 * 60 * 5,

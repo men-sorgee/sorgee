@@ -44,17 +44,11 @@ import {
   Show,
   useToast
 } from '@chakra-ui/react'
-import { on } from 'events'
+import { useRouter } from 'next/router'
 
-export async function getServerSideProps({ params }) {
-  return {
-    props: {
-      id: params.id
-    }
-  }
-}
-
-export default function EventPage({ id }: { id: string }) {
+export default function EventPage() {
+  const router = useRouter()
+  const { id } = router.query
   const {
     member,
     isStaff,

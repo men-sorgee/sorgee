@@ -24,7 +24,7 @@ export const LocationCapture = () => {
 
   useEffect(() => {
     if (location) {
-      postJSON<Partial<Coordinates>>('/api/member/location', {
+      postJSON<Partial<Coordinates>>('/api/my/location', {
         coordinates: [location.longitude, location.latitude]
       })
     }

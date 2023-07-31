@@ -40,7 +40,7 @@ export const MemberReport = chakra(
     const toast = useToast()
     const reportUser = useCallback(() => {
       // add buddy
-      postJSON(`/api/member/${member.id}/report`, {
+      postJSON(`/api/members/${member.id}/report`, {
         message
       }).then(() => {
         onClose()

@@ -1,4 +1,4 @@
-import { useUserEvents } from 'hooks'
+import { useInvites } from 'hooks'
 import { Member, MemberLevel } from 'lib/models'
 import NextLink from 'next/link'
 
@@ -15,7 +15,7 @@ interface Props {
 
 const EventsAction = ({ member, active, iconSize, iconDimensions }: Props) => {
   const level = MemberLevel[member?.user_type]
-  const { newInvitationCount, activeInvite } = useUserEvents()
+  const { newInvitationCount, activeInvite } = useInvites()
   if (level < MemberLevel.inductee) {
     return null
   }

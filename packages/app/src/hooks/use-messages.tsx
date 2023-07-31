@@ -60,7 +60,7 @@ export function MessagesProvider({
 }: {
   children: ReactNode | ReactNode[]
 }) {
-  const key = `/api/member/messages`
+  const key = `/api/my/messages`
 
   const router = useRouter()
   const {

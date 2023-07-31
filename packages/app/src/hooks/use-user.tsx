@@ -8,8 +8,6 @@ import {
 } from 'react'
 
 import {
-  ApiError,
-  ApiResponse,
   ApplicationStatus,
   Member,
   MemberFeature,
@@ -58,7 +56,7 @@ export const UserContext = createContext<UserContextData>({
 })
 
 export function UserProvider({ children }: { children: ReactNode }) {
-  const key = `/api/member/me`
+  const key = `/api/me`
   const { status } = useSession()
   const [authenticated, setAuthenticated] = useState(false)
 
@@ -97,14 +95,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
     await _mutate({ ...member, ...mutation } as Member, false)
     const result = await postJSON<Member>(key, mutation as any)
     const { success, data } = result
-    if (success) {
-      await _mutate(data, false)
-      return result
-    } else {
-      await _mutate(member, false)
-      return result
-    }
+    await _mutate(data, success)
+    return result
   }
+
   const hasFeature = (feature: MemberFeature): boolean => {
     if (!member) return false
     if (isStaff) return true

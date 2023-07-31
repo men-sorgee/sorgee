@@ -4,6 +4,7 @@ import {
   Member,
   memberFields,
   MemberLevel,
+  profileFields,
   User,
   UserInvite,
 } from 'lib/models'
@@ -40,15 +41,14 @@ export async function withApplicant(
   res: NextApiResponse
 ): Promise<Applicant | null> {
   let user = await withAuthUser(req, res)
-  if (!user) throw new Error('Unauthorized')
   const applicant = await findUser<Applicant>(user.email, applicantFields)
   return applicant
 }
 
 export async function withUser(req: NextApiRequest, res: NextApiResponse): Promise<User | null> {
   let user = await withAuthUser(req, res)
-  if (!user) throw new Error('Unauthorized')
-  const userData = await findUser<User>(user.email, ['*.*'])
+
+  const userData = await findUser<User>(user.email)
   return userData
 }
 
@@ -57,8 +57,6 @@ export async function withMember(
   res: NextApiResponse
 ): Promise<Member | null> {
   let user = await withAuthUser(req, res)
-  if (!user) throw new Error('Unauthorized')
-
   const member = await findUser<Member>(user.email, memberFields)
   if (
     member.status != 'active' ||
@@ -71,8 +69,6 @@ export async function withMember(
 
 export async function withStaff(req: NextApiRequest, res: NextApiResponse): Promise<Member | null> {
   let user = await withAuthUser(req, res)
-  if (!user) throw new Error('Unauthorized')
-
   const member = await findUser<Member>(user.email, memberFields)
   if (
     member.status != 'active' ||

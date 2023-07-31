@@ -30,7 +30,7 @@ function Review() {
   const router = useRouter()
   const [complete, setComplete] = useState<boolean>(false)
 
-  const { loading, member } = useUser({
+  const { loading, member, mutate } = useUser({
     minLevel: MemberLevel.applicant,
     minAppStatus: ApplicationStatus.review
   })
@@ -69,7 +69,7 @@ function Review() {
               defaultValues={{
                 contact_preference: member?.contact_preference || 'email'
               }}
-              onSubmit={(data) => postJSON('/api/member/me', data)}
+              onSubmit={mutate}
               onSuccess={() => setComplete(true)}
             >
               {() => (

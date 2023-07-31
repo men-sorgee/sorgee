@@ -1,4 +1,3 @@
-import { DirectusFile } from 'lib/models'
 import { User, UserSession, UserVerificationToken } from 'lib/services/db/entities'
 import { getAssetUrl } from 'lib/utils'
 import {
@@ -25,7 +24,7 @@ import {
   updateUser,
 } from 'lib/services/db/server/auth'
 
-import { importFile, UploadFolder } from '../services/directus/server/files'
+import { importFile, UploadFolder } from 'lib/services/directus/server/files'
 
 function mapUser(user: User): AdapterUser {
   return {
@@ -33,7 +32,7 @@ function mapUser(user: User): AdapterUser {
     email: user.email,
     emailVerified: new Date(user.dateCreated),
     name: user.firstName,
-    image: user.picture ? getAssetUrl(user.picture.id) : null,
+    image: getAssetUrl(user.picture)
   }
 }
 
@@ -62,7 +61,7 @@ const authAdapter: Adapter = {
   async createUser(user: AdapterUser & { picture: string }) {
     try {
       log('createUser', user)
-      let image: DirectusFile = null
+      let image
       if (user.image || user.picture) {
         const imageUrl = (user.image || user.picture) as string
         image = await importFile(imageUrl, UploadFolder.members, `avatar-${user.email}`)

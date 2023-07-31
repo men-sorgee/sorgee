@@ -18,9 +18,7 @@ export const EventTicket = ({
 
   if (!member || !event) return null
 
-  const checkinUrl = `/api/${
-    event?.invite_only ? 'invite' : 'events'
-  }/checkin?user_id=${member?.id}&event_id=${event?.id}`
+  const checkinUrl = `/api/events/${event?.id}/checkin?user_id=${member?.id}`
   return (
     <Box p={2}>
       <Image

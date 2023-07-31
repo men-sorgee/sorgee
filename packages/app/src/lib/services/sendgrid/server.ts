@@ -1,8 +1,6 @@
-import { MemberLevel, Profile, UserType } from 'lib/models'
+import { MemberLevel, Profile } from 'lib/models'
 import client from '@sendgrid/client'
 import mail, { MailDataRequired } from '@sendgrid/mail'
-import { notifications } from 'lib/config'
-import { getAppNotification } from '../directus/server/notifications'
 
 function getClient() {
   client.setApiKey(process.env.SENDGRID_API_KEY)
@@ -77,29 +75,7 @@ async function convertMarkdownToHtml(markdown: string) {
   return remark().use(html).processSync(markdown).toString()
 }
 
-export async function sendCongratsEmail(email: string, name: string, user_type: UserType) {
-  // send congrats email
-  const notificationId = notifications.congratsEmail[user_type]
-  const congratsEmail = await getAppNotification(notificationId)
-  if (congratsEmail == null) throw new Error('Notification not found')
 
-  const { button_text, button_url, subject, body, data, template, category } = congratsEmail
-
-  await sendNotificationEmail(
-    email,
-    name,
-    subject.replace('$NAME$', name),
-    body.replace('$NAME$', name),
-    {
-      ...data,
-      button_text,
-      button_url
-    },
-    template as SendGridTemplate,
-    category as SendGridCategory,
-    notificationId
-  )
-}
 
 
 export async function sendNotificationEmail(

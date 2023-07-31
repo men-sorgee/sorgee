@@ -42,7 +42,8 @@ export default function EventAdmin() {
     authorized,
     loading: userLoading
   } = useUser({
-    minLevel: MemberLevel.staff
+    minLevel: MemberLevel.staff,
+    redirectsEnabled: true
   })
 
   const [fees, setFees] = useState<number>()
@@ -89,7 +90,7 @@ export default function EventAdmin() {
   const emailCheckin = () => {
     const email = emailRef.current.value
     if (email) {
-      location.href = `/api/events/checkin?event_id=${event.id}&email=${email}`
+      location.href = `/api/events/${event.id}/checkin?email=${email}`
     }
   }
 

@@ -1,3 +1,4 @@
+'use client'
 import { useState } from 'react'
 
 import Page from 'components/Page'
@@ -32,21 +33,26 @@ export default function Scanner() {
   const [url, setUrl] = useState<string>()
   const [stopStream, setStopStream] = useState(false)
   const { member, loading } = useUser({ minLevel: MemberLevel.staff })
+
   const onScan = (err: string, result: { getText: () => any }) => {
     if (!err && result) {
       let data = result.getText()
       if (data) {
         setUrl(data)
         dismiss()
-        window?.open(data, '_blank')
+        setTimeout(() => {
+          location.href = data
+        }, 1000)
       }
     }
   }
+
   const dismiss = () => {
     // Stop the QR Reader stream (fixes issue where the browser freezes when closing the modal) and then dismiss the modal one tick later
     setStopStream(true)
     setTimeout(() => setShow(false), 0)
   }
+
   if (loading || typeof window == 'undefined' || !member) return null
   return (
     <Page title="Scan" requireAuth={true}>

@@ -57,14 +57,14 @@ export const MemberVouch = chakra(
     //  data: voucher,
     //  isLoading,
     //  mutate
-    //} = swr<VouchingUser>(`/api/member/vouch/${member?.id}`, JsonFetcher, {
+    //} = swr<VouchingUser>(`/api/members/${member?.id}/vouch`, JsonFetcher, {
     //  fallbackData: member?.vouched_by
     //})
 
     const vouchForPledge = useCallback(() => {
       // add buddy
       setWorking(true)
-      postJSON<any, VouchingUser>(`/api/member/${member?.id}/vouch`, {}).then(
+      postJSON<any, VouchingUser>(`/api/members/${member?.id}/vouch`, {}).then(
         (r) => {
           return reload().finally(() => {
             setWorking(false)

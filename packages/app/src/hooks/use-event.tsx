@@ -19,12 +19,9 @@ export const useEvent = (id: string): EventResults => {
     error,
     isLoading,
     mutate
-  } = useSWR<EventDetail, Error>(`/api/events/${id || ''}`, JsonFetcher, {
+  } = useSWR<EventDetail, Error>(`/api/events/${id}`, JsonFetcher, {
     refreshInterval: 1000 * 60 * 10,
-    isPaused: () => !id || id === 'null' || id === 'undefined',
-    fallback: {
-      '/api/event/': null
-    }
+    isPaused: () => !id || id === 'null' || id === 'undefined'
   })
 
   const closeEvent = useCallback(async () => {

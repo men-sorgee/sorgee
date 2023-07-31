@@ -1,8 +1,7 @@
 import { AgreementData, ApiResponse, Applicant, MemberLevel, Profile, UserType } from 'lib/models'
-import { getUserEvents, updateUser } from 'lib/services/directus/server'
+import { addUserToCongratsEmail, getUserEvents, updateUser } from 'lib/services/directus/server'
 import {
   SendGridList,
-  sendCongratsEmail,
   updateSendGrid,
 } from 'lib/services/sendgrid/server'
 import { withApplicant, withMethods } from 'lib/utils/server'
@@ -36,7 +35,7 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
           SendGridList.Members
         ])
 
-      await sendCongratsEmail(applicant.email, applicant.first_name, user_type)
+      await addUserToCongratsEmail(applicant.id, user_type)
 
       return res.status(200).json(ApiResponse(updatedUser))
     }

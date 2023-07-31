@@ -34,7 +34,10 @@ import { getJSON } from 'lib/utils'
 import NextLink from 'next/link'
 
 export default function MemberHomePage() {
-  const { member, level, loading } = useUser()
+  const { member, level, loading } = useUser({
+    minLevel: MemberLevel.pledge,
+    redirectsEnabled: true
+  })
   const levelName = level ? capitalCase(MemberLevel[level]) : 'Member'
 
   const { members: pledges, meta: pledgeMeta } = useMemberSearch(

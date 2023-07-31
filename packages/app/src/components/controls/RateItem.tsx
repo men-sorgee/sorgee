@@ -30,7 +30,7 @@ export const RateItem = ({
 }: RateItemProps) => {
   const [value, setValue] = useState<number>(undefined)
   const { data = [], mutate } = useSWR<Rating[], Error>(
-    `/api/member/ratings`,
+    `/api/my/ratings`,
     JsonFetcher,
     {
       fallbackData: []
@@ -55,7 +55,7 @@ export const RateItem = ({
   const onRateChange = useCallback(
     async (rate: number) => {
       const { success, data: r } = await postJSON<Rating>(
-        `/api/member/ratings/${collection}/${item_id}`,
+        `/api/my/ratings/${collection}/${item_id}`,
         { rate } as any
       )
       if (!success) {

@@ -19,9 +19,9 @@ import { AuthOptions } from 'next-auth'
 import MicrosoftProvider from 'next-auth/providers/azure-ad'
 import EmailProvider from 'next-auth/providers/email'
 import GoogleProvider from 'next-auth/providers/google'
+import DiscordProvider from 'next-auth/providers/discord'
 import { TwitterLegacy } from 'next-auth/providers/twitter'
 import { setUserAverageRating } from 'lib/services/directus/server'
-
 import { authAdapter } from './adapter'
 import YahooProvider from './yahoo'
 
@@ -127,11 +127,11 @@ export const authOptions: AuthOptions = {
       clientSecret: google.clientSecret,
       allowDangerousEmailAccountLinking: true,
     }),
-    //DiscordProvider({
-    //  clientId: discord.clientId,
-    //  clientSecret: discord.clientSecret,
-    //  allowDangerousEmailAccountLinking: true,
-    //}),
+    DiscordProvider({
+      clientId: discord.clientId,
+      clientSecret: discord.clientSecret,
+      allowDangerousEmailAccountLinking: true,
+    }),
     TwitterLegacy({
       id: 'twitter',
       name: 'Twitter',

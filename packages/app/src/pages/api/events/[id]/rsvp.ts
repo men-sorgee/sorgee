@@ -3,7 +3,7 @@ import { findInvite, getEvent, registerForEvent, updateInvite } from 'lib/servic
 import { withMember, withMethods } from 'lib/utils/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 
-export default async function EventRSVPHandler(
+export default async function EventRSVP(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<EventUser> | ApiResponse>
 ) {
@@ -11,15 +11,13 @@ export default async function EventRSVPHandler(
     const method = withMethods(req, ['POST', 'GET'])
     const member = await withMember(req, res)
 
-    const { event_id, rsvp, reason } = { ...req.query, ...req.body } as RSVPInfo
-
-    //console.dir({ event_id, rsvp, reason })
+    const { id: event_id, rsvp, reason } = { ...req.query, ...req.body } as any
 
     if (!event_id)
       throw new Error('Missing event_id or rsvp')
 
+    const event = await getEvent(event_id as string)
 
-    const event = (await getEvent(event_id as string)) as GroupEvent
     if (!event || !['planned', 'scheduled'].includes(event.status)) {
       throw new Error('Event not found')
     }

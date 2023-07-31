@@ -275,7 +275,7 @@ export default function ChatPage({ id }: { id?: string }) {
           user
         } as ChatMessage
       ])
-      postJSON<Message>('/api/member/messages', {
+      postJSON<Message>('/api/my/messages', {
         body,
         image,
         type,
@@ -311,6 +311,7 @@ export default function ChatPage({ id }: { id?: string }) {
       setActiveId(conversations[0]?.id)
     }
   }, [activeConversation, conversations, setActiveId])
+
   return (
     <Page
       title="Brother Chat"
@@ -389,6 +390,7 @@ export default function ChatPage({ id }: { id?: string }) {
                     : 'unavailable'
                 }
                 active={activeConversation.user.presence == 'online'}
+                onClick={() => onOpen()}
               />
               <ConversationHeader.Content
                 userName={activeConversation.user.nickname}
@@ -396,6 +398,11 @@ export default function ChatPage({ id }: { id?: string }) {
                 info={activeConversation?.user?.presence}
               />
               <ConversationHeader.Actions>
+                <MemberModal
+                  memberId={activeId}
+                  isOpen={isOpen}
+                  onClose={onClose}
+                />
                 <MemberBlock size="md" member={activeConversation?.user} />
                 <MemberReport size="md" member={activeConversation?.user} />
                 <MemberShare size="md" member={activeConversation?.user} />
@@ -513,7 +520,6 @@ export default function ChatPage({ id }: { id?: string }) {
         onChange={handleFileChange}
         style={{ display: 'none' }}
       />
-      <MemberModal memberId={activeId} isOpen={isOpen} onClose={onClose} />
     </Page>
   )
 }

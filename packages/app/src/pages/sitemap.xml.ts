@@ -13,6 +13,9 @@ function generateSiteMap(pages: Page[]) {
        <loc>${baseUrl}/pricing</loc>
      </url>
      <url>
+       <loc>${baseUrl}/register</loc>
+     </url>
+     <url>
        <loc>${baseUrl}/privacy</loc>
      </url>
      <url>
@@ -22,14 +25,14 @@ function generateSiteMap(pages: Page[]) {
        <loc>${baseUrl}/cookies</loc>
      </url>
      ${pages
-       .map((page) => {
-         return `
+      .map((page) => {
+        return `
        <url>
            <loc>${`${baseUrl}/${page.slug}`}</loc>
        </url>
      `
-       })
-       .join('')}
+      })
+      .join('')}
    </urlset>
  `
 }

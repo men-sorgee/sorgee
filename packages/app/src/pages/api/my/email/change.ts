@@ -32,7 +32,7 @@ export default async function listUserInvites(
       'You have requested to change your email address. Please click the button below to confirm the change.',
       {
         button_text: 'Confirm Email Change',
-        button_url: `${baseUrl}/api/member/email/verify?token=${encodeURIComponent(email_token)}&email=${encodeURIComponent(email)}`,
+        button_url: `${baseUrl}/api/my/email/verify?token=${encodeURIComponent(email_token)}&email=${encodeURIComponent(email)}`,
       },
       SendGridTemplate.Notification,
       SendGridCategory.Notification

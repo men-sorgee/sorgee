@@ -15,13 +15,13 @@ type InvitesResults = {
   reload: () => void
 }
 
-export const useUserEvents = (): InvitesResults => {
+export const useInvites = (): InvitesResults => {
   const {
     data: invites = [],
     mutate,
     error,
     isLoading
-  } = useSWR<EventInvite[], Error>(`/api/member/invites`, JsonFetcher, {
+  } = useSWR<EventInvite[], Error>(`/api/my/invites`, JsonFetcher, {
     refreshWhenHidden: true,
     refreshWhenOffline: true,
     revalidateOnFocus: true,

@@ -46,7 +46,10 @@ export async function getServerSideProps(
 }
 
 export default function AdminEventList({ events }: Props) {
-  const { loading } = useUser({ minLevel: MemberLevel.staff })
+  const { loading } = useUser({
+    minLevel: MemberLevel.staff,
+    redirectsEnabled: true
+  })
   const eventList =
     events?.map((event) => {
       const date = new Date(new Date(event.datetime).toDateString())

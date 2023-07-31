@@ -32,8 +32,7 @@ import {
   useColorModeValue,
   useDisclosure
 } from '@chakra-ui/react'
-import { id } from 'date-fns/locale'
-import { ApiResult } from '../../../lib/utils'
+import { ApiResult } from 'lib/utils'
 
 type PageProps = {
   fieldMap: FieldMap

@@ -4,7 +4,6 @@ import {
   Member,
   MembershipType
 } from 'lib/models'
-
 import { Badge, BadgeProps, chakra, HStack, Icon } from '@chakra-ui/react'
 import {
   CheckBadgeIcon,
@@ -12,9 +11,9 @@ import {
   CurrencyDollarIcon
 } from '@heroicons/react/24/solid'
 import { MemberVouch } from './MemberVouch'
-import { useUser } from '../../hooks'
-import { sub } from 'date-fns'
+import { useUser } from 'hooks'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
 type Props = BadgeProps & {
   member: Partial<Member>
@@ -23,15 +22,27 @@ type Props = BadgeProps & {
 
 export const MemberBadge = chakra(
   ({ member, size = 'md', ...props }: Props) => {
-    if (!member) return null
-    const levelValue: MemberLevel = MemberLevel[member.user_type]
-    const levelColor = MemberLevelColorMap[levelValue]
-    const levelName = member.user_type.split('_').join(' ')
+    const [levelValue, setLevelValue] = useState<MemberLevel>(undefined)
+    const [levelName, setLevelName] = useState<string>(undefined)
+    const [levelColor, setLevelColor] = useState<string[]>([
+      'red.500',
+      'red.100'
+    ])
+    const [subscription, setSubscription] = useState<MembershipType>(undefined)
     const { isMember, loading } = useUser()
-    const subscription =
-      MembershipType[member ? member.membership_type : 'none']
 
-    if (loading) return null
+    useEffect(() => {
+      if (member && levelValue == undefined) {
+        let value = MemberLevel[member.user_type]
+        let name = MemberLevel[value]
+        setLevelValue(value)
+        setLevelColor(MemberLevelColorMap[value])
+        setLevelName(name)
+        setSubscription(MembershipType[member.membership_type])
+      }
+    }, [isMember, levelValue, member, member?.id, member?.user_type])
+
+    if (!member || loading) return null
     return (
       <HStack spacing={0}>
         <Badge

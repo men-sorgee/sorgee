@@ -1,19 +1,17 @@
 import { useCallback, useEffect, useState } from 'react'
-
+import { useRouter } from 'next/router'
 import {
   ButtonLink,
   Loading,
   MemberBadge,
-  PhotoCapture
-} from 'components/controls'
-import { FieldSwitch } from 'components/forms'
-import Page from 'components/Page'
-import { useEvent, useUser } from 'hooks'
-import { EventUser, GroupEvent, MemberLevel, Member } from 'lib/models'
-import { getAssetUrl, postJSON } from 'lib/utils'
-import { useRouter } from 'next/router'
+  PhotoCapture,
+  Page,
+  FieldSwitch
+} from 'components'
+import { useUser, useInviteAdmin } from 'hooks'
+import { GroupEvent, MemberLevel, Member } from 'lib/models'
+import { getAssetUrl } from 'lib/utils'
 import { FormProvider, useForm } from 'react-hook-form'
-
 import {
   Alert,
   AlertIcon,
@@ -27,14 +25,7 @@ import {
   useToast
 } from '@chakra-ui/react'
 
-type Props = {
-  event: GroupEvent
-  invite: EventUser
-  user: Member
-}
-const visible = (show: boolean) => (show ? 'flex' : 'none')
-
-type FormValues = {
+type FormProps = {
   id: number
   user_id: string
   paid: boolean
@@ -42,54 +33,43 @@ type FormValues = {
   picture?: string
 }
 
-export const getServerSideProps = async (context) => {
-  const { getInvite } = await import('lib/services/directus/server/users')
-  const inviteId = Number(context.query.id)
-
-  const invite = await getInvite(inviteId)
-  if (!invite) {
-    return {
-      notFound: true
-    }
-  }
-  const event = invite.events_id as GroupEvent
-  const user = invite.users_id as Member
-
-  return {
-    props: {
-      invite,
-      event,
-      user: user as unknown as Member
-    }
-  }
-}
-
-export default function InviteAdmin({ event, invite, user }: Props) {
+export default function InviteAdmin() {
+  const router = useRouter()
+  const { id } = router.query
   const { loading } = useUser({
     minLevel: MemberLevel.staff,
     redirectsEnabled: true
   })
-
+  const [user, setUser] = useState<Member>(undefined)
+  const [event, setEvent] = useState<GroupEvent>(undefined)
   const [camera, setCamera] = useState(false)
-  const [picture, setPicture] = useState<string>(
-    getAssetUrl(user.picture || user.photo)
-  )
-  const { reload } = useEvent(event.id)
+  const [picture, setPicture] = useState<string>(undefined)
   const toast = useToast()
-
   const [working, setWorking] = useState(false)
-  const router = useRouter()
 
-  //seEffect(() => {
-  // if (user && picture == undefined) {
-  //   if (user.photo) {
-  //     let p =
-  //     setPicture(p)
-  //   }
-  // }
-  //, [loading, picture, setPicture, user])
+  const {
+    invite,
+    loading: inviteLoading,
+    checkin,
+    reload
+  } = useInviteAdmin(String(id))
 
-  const methods = useForm<FormValues>({
+  useEffect(() => {
+    if (
+      !loading &&
+      !inviteLoading &&
+      invite &&
+      user == undefined &&
+      event == undefined
+    ) {
+      setUser(invite.member)
+      setEvent(invite.event)
+      let { picture, photo } = invite.member
+      setPicture(getAssetUrl(picture || photo))
+    }
+  }, [inviteLoading, invite, setUser, setEvent, loading, user, event])
+
+  const methods = useForm<FormProps>({
     mode: 'onBlur',
     defaultValues: {
       id: invite?.id,
@@ -110,14 +90,14 @@ export default function InviteAdmin({ event, invite, user }: Props) {
   )
 
   const updateInvite = useCallback(
-    async (data: FormValues) => {
+    async ({ paid, signed_waiver }: FormProps) => {
       setWorking(true)
       if (picture) {
         const media = await fetch(picture!).then((res) => res.blob())
         let formData = new FormData()
         formData.append('media', media)
         await fetch(
-          `/api/member/${user.id}/photos/photo?name=${user.email}-face`,
+          `/api/members/${user.id}/photos/photo?name=${user.email}-face`,
           {
             method: 'POST',
             body: formData
@@ -125,12 +105,8 @@ export default function InviteAdmin({ event, invite, user }: Props) {
         )
       }
 
-      const { success, error } = await postJSON('/api/invite/' + invite.id, {
-        user_id: user.id,
-        paid: data.paid,
-        attended: true,
-        signed_waiver: data.signed_waiver
-      })
+      const { success, error } = await checkin(paid, signed_waiver)
+
       if (success) {
         toast({
           title: 'Invite Updated',
@@ -161,25 +137,27 @@ export default function InviteAdmin({ event, invite, user }: Props) {
       }
     },
     [
-      event.id,
-      invite.id,
+      checkin,
+      event?.id,
       picture,
       reload,
       router,
       setError,
       toast,
-      user.email,
-      user.id
+      user?.email,
+      user?.id
     ]
   )
   const paid = watch('paid')
   const signed_waiver = watch('signed_waiver')
-  const ready = picture && signed_waiver && (invite.guest || paid)
+  const ready = picture && signed_waiver && (invite?.guest || paid)
+  const visible = (show: boolean) => (show ? 'flex' : 'none')
+
   return (
     <Page
-      title={`Check-in ${event.name}`}
+      title={`Check-in`}
       description="Invite Admin"
-      loading={loading}
+      loading={loading || inviteLoading}
       requireAuth={true}
     >
       {(invite && (
@@ -226,7 +204,7 @@ export default function InviteAdmin({ event, invite, user }: Props) {
                       m={0}
                     >
                       {user?.first_name} {user?.last_name} <br />
-                      RSVP: {invite.rsvp}
+                      RSVP: {invite?.rsvp}
                     </Heading>
                     <MemberBadge size="lg" member={user} />
                     <Text fontSize="xs" color="gray.500">

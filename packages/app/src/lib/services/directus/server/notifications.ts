@@ -6,6 +6,7 @@ import {
   UserNotification,
   GroupEvent,
   EventDetail,
+  UserType,
 } from 'lib/models'
 import { notifications } from 'lib/config'
 import { getAdminClient } from './'
@@ -88,6 +89,12 @@ export async function addAppNotificationUser(notificationId: string, userId: str
     status: 'new',
     read: false,
   })
+}
+
+export async function addUserToCongratsEmail(user_id: string, user_type: UserType) {
+  // add to congrats email
+  const notificationId = notifications.congratsEmail[user_type]
+  await addAppNotificationUser(notificationId, user_id)
 }
 
 export async function createEventSurveyNotification(surveyId: string, event: EventDetail) {

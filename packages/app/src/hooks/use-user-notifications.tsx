@@ -42,7 +42,7 @@ export function UserNotificationsProvider({
 }: {
   children: ReactNode
 }) {
-  const key = `/api/member/notifications`
+  const key = `/api/my/notifications`
   const {
     data: notifications = [],
     mutate,

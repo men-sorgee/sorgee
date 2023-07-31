@@ -8,23 +8,20 @@ import { HStack, Link } from '@chakra-ui/react'
 import useSWR from 'swr'
 import { JsonFetcher } from 'lib/utils'
 import { Page } from 'components'
+import { useRouter } from 'next/router'
 
-export async function getServerSideProps({ params }) {
-  return {
-    props: {
-      id: params.id
-    }
-  }
-}
-
-export default function EventTicketPage({ id }: { id: string }) {
+export default function EventTicketPage() {
+  const router = useRouter()
+  const { id } = router.query
+  const eventId = String(id)
   const { member, loading, authenticated } = useUser({
     minLevel: MemberLevel.inductee,
     redirectsEnabled: false
   })
-  const key = `/api/events/rsvp?event_id=${String(id)}`
+  const key = `/api/events/${eventId}/rsvp`
   const { event, loading: eventLoading, reload } = useEvent(id as string)
   const [invite, setInvite] = useState<Partial<EventUser>>(undefined)
+
   const { data: eventUser } = useSWR<Partial<EventUser>>(key, JsonFetcher)
 
   useEffect(() => {

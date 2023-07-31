@@ -86,7 +86,7 @@ export default function PhotoAlbums({}: Props) {
                   buttonText="Delete"
                   promise={async () => {
                     const { success, data, error } = await deleteJSON(
-                      `/api/member/${member?.id}/photos/picture`
+                      `/api/members/${member?.id}/photos/picture`
                     )
                     if (!success) throw new Error(error.message)
                     return data
@@ -180,7 +180,7 @@ function PhotoList({ title, field, images, memberId, reload }: PhotoListProps) {
             buttonText="Delete"
             promise={async () => {
               const { success, data, error } = await deleteJSON(
-                `/api/member/photo/${image.photoId}`
+                `/api/my/photo/${image.photoId}`
               )
               if (!success) throw new Error(error.message)
               return data
@@ -318,7 +318,7 @@ const AddPhoto = chakra(
                   file={file}
                   name={`${memberId} ${field}-photo`}
                   description={`Uploaded on ${new Date().toLocaleDateString()}`}
-                  postUrl={`/api/member/${memberId}/photos/${field}`}
+                  postUrl={`/api/my/photo/${field}`}
                   onClear={() => {
                     setImage(undefined)
                     onClose()

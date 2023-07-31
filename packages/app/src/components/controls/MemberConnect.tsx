@@ -42,14 +42,14 @@ export const MemberConnect = chakra(
       if (isBuddy) {
         // remove buddy
 
-        deleteJSON(`/api/member/buddy/${member?.id}`).then(() => {
+        deleteJSON(`/api/members/${member?.id}/buddy`).then(() => {
           setIsBuddy(false)
           return reload()
         })
       } else {
         // add buddy
         postJSON<Partial<UserBuddy>>(
-          `/api/member/buddy/${member?.id}`,
+          `/api/members/${member?.id}/buddy`,
           {}
         ).then(() => {
           setIsBuddy(true)

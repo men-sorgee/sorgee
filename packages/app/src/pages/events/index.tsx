@@ -11,7 +11,7 @@ import {
 } from 'components/controls'
 import Page from 'components/Page'
 import { addDays, isAfter, isSameDay, isToday } from 'date-fns'
-import { useUser, useUserEvents } from 'hooks'
+import { useUser, useInvites } from 'hooks'
 import { brand } from 'lib/config/brand'
 import { EventInvite, GroupEvent, Member, MemberLevel } from 'lib/models'
 import Link from 'next/link'
@@ -52,7 +52,7 @@ export default function EventsPage({}: PageProps) {
     reload,
     loading: eventsLoading,
     activeInvite
-  } = useUserEvents()
+  } = useInvites()
 
   const onEventsChange = useCallback(() => {
     reload()

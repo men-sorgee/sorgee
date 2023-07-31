@@ -36,10 +36,8 @@ export async function updateUser(id: string, userData: Partial<User>) {
 }
 
 export async function recordUserLogin(id: string) {
-  const repo = await getRepository(User)
   const now = getUTCNow()
-  return await repo.update(
-    { id },
+  return await updateUser(id,
     {
       presence: 'online',
       lastLogin: now,
@@ -49,10 +47,8 @@ export async function recordUserLogin(id: string) {
 }
 
 export async function extendUserPresence(id: string) {
-  const repo = await getRepository(User)
   const threeHours = addHours(getUTCNow(), 3)
-  await repo.update(
-    { id },
+  await updateUser(id,
     {
       presence: 'online',
       sessionExpire: threeHours
@@ -73,10 +69,12 @@ export async function expireSessions() {
   })
 
   if (!expired?.length) return
+
   const ids = expired.map((u) => u.id)
 
   return await repo.update(ids, {
     presence: 'offline',
+    sessionExpire: null,
   })
 }
 
@@ -150,11 +148,10 @@ export async function deleteSession(sessionToken: string) {
   const { id: userId } = session.user as User
   await repo.delete(session.id)
 
-  const users = await getRepository(User)
-  await users.update(
-    { id: userId },
+  await updateUser(userId,
     {
       presence: 'offline',
+      sessionExpire: null,
     }
   )
 }

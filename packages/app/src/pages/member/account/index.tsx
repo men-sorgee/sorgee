@@ -330,10 +330,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps) => {
           </Alert>
           <Form<UserEmailChange, boolean>
             onSubmit={(data) =>
-              postJSON<UserEmailChange, boolean>(
-                '/api/member/email/change',
-                data
-              )
+              postJSON<UserEmailChange, boolean>('/api/my/email/change', data)
             }
             defaultValues={{
               email: member?.email,
@@ -460,7 +457,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps) => {
               w={['full', 'full', 'auto']}
               complete={(success) => {
                 if (success) {
-                  location.href = '/api/member/delete'
+                  location.href = '/api/me/delete'
                 }
               }}
               buttonText="Deactivate Account"
@@ -477,7 +474,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps) => {
               w={['full', 'full', 'auto']}
               complete={(success) => {
                 if (success) {
-                  location.href = '/api/member/delete'
+                  location.href = '/api/me/delete'
                 }
               }}
               buttonText="Delete Data"
