@@ -204,6 +204,7 @@ export type User = {
   customer_id?: string
   subscription_id?: string
   membership_start?: string
+  membership_end?: string
   renewal_type?: string
   has_features: Array<MemberFeature>
 }
@@ -547,6 +548,7 @@ export type Member = Applicant & {
   subscription_id?: string
   customer_id?: string
   membership_start?: string
+  membership_end?: string
   renewal_type?: MembershipRenewalType
   has_features: Array<MemberFeature>
 }
@@ -722,6 +724,7 @@ export const memberSubscriptionFields: Array<keyof Member> = [
   'customer_id',
   'subscription_id',
   'membership_start',
+  'membership_end',
   'renewal_type',
 ]
 

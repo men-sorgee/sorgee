@@ -18,7 +18,7 @@ async function getRawBody(readable: Readable): Promise<Buffer> {
 }
 
 function extractFromSubscription(subscription: Stripe.Subscription & any) {
-  const { id, customer, status, plan, start_date: start, items } = subscription
+  const { id, customer, status, plan, current_period_start: start, current_period_end: end, items } = subscription
   const { product } = plan
   const { type, features } = subscriptionData[product]
   const interval = items.data[0]?.price?.recurring?.interval
@@ -30,6 +30,7 @@ function extractFromSubscription(subscription: Stripe.Subscription & any) {
     status,
     features,
     start: new Date(start).toISOString(),
+    end: new Date(end).toISOString(),
     interval,
   }
 }
@@ -128,6 +129,7 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
         type: membership_type,
         features,
         start: membership_start,
+        end: membership_end,
         status,
         interval: renewal_type,
       } = extractFromSubscription(subscription)
@@ -142,6 +144,7 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
         has_features,
         membership_type,
         membership_start,
+        membership_end,
         renewal_type,
       })
       break
