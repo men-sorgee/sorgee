@@ -98,8 +98,9 @@ export async function addUserToCongratsEmail(user_id: string, user_type: UserTyp
 }
 
 export async function createEventSurveyNotification(surveyId: string, event: EventDetail) {
-  let template = await getAppNotification(notifications.eventSurvey);
+  let template = await getAppNotification(notifications.eventSurvey)
   delete template.id
+  template.static = false
   Object.keys(template).forEach((key) => {
     let value = template[key]
     if (typeof value === "string") {

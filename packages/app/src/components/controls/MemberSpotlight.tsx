@@ -50,7 +50,7 @@ import {
 } from '@chakra-ui/react'
 import {
   MemberBlock,
-  MemberChat,
+  MemberMessages,
   MemberConnect,
   MemberHeader,
   MemberLike,
@@ -66,30 +66,40 @@ import { Loading } from './Loading'
 import { Rating } from './Rating'
 import { toLocalDate } from 'lib/utils/index'
 import NextLink from 'next/link'
+import { ac } from 'vitest/dist/types-e3c9754d'
 
-type Props = FlexProps & {
-  id: string
+export type MemberSpotlightProps = FlexProps & {
+  memberId: string
   full?: boolean
   updateMeta?: boolean
   color?: string
   size?: AvatarProps['size']
   fields?: Record<string, DirectusField>
+  footer?: ReactNode
+  header?: ReactNode
+  accordionItems?: Array<{
+    title: string
+    content: ReactNode
+  }>
   children?: ReactNode
 }
 
 export const MemberSpotlight = chakra(
   ({
-    id,
+    memberId,
     fields,
     full = false,
     color,
     size = ['sm', 'md'],
     updateMeta = false,
+    header,
+    footer,
+    accordionItems,
     children,
     ...props
-  }: Props) => {
+  }: MemberSpotlightProps) => {
     const [blocked, setBlocked] = useState(false)
-    const { member, name, picture, loading } = useMember(id)
+    const { member, name, level, picture, loading } = useMember(memberId)
     const { member: me } = useUser()
     const { setMeta } = useMeta()
 
@@ -107,18 +117,18 @@ export const MemberSpotlight = chakra(
           setBlocked(true)
         }
       }
-    }, [id, loading, member, me])
+    }, [memberId, loading, member, me])
 
     const headingColor = useColorModeValue('primary.700', 'primary.300')
-    if (loading || !id || !member) return <Loading />
+    if (loading || !memberId || !member) return <Loading />
     const photos = member.my_photos || []
 
     photos.sort((a, b) => {
       if (a.is_public && !b.is_public) return -1
       return 1
     })
-    const levelValue = MemberLevel[member?.user_type || 'subscriber']
-    const levelColor = MemberLevelColorMap[levelValue]
+
+    const levelColor = MemberLevelColorMap[level]
     const eventsAttended =
       member?.events?.filter((e) => e.attended)?.length || 0
     const eventsFlaked =
@@ -198,49 +208,63 @@ export const MemberSpotlight = chakra(
                 />
               </Show>
             )}
+            {header}
           </MemberHeader>
-
+          {children}
           {full && <Markdown content={member?.biography} />}
-          {full && (
-            <Box my={2}>
-              <Flex w="full">
-                <ButtonGroup>
-                  <MemberBlock member={member} size="lg" />
-                  <MemberReport member={member} size="lg" />
-                </ButtonGroup>
-                <Spacer />
-                <ButtonGroup>
-                  <MemberLike member={member} size="lg" />
-                  <MemberChat member={member} size="lg" />
-                  <MemberConnect member={member} size="lg" />
-                  <MemberShare member={member} size="lg" />
-                </ButtonGroup>
-              </Flex>
-              <Flex w="full">
-                <Text fontSize="xs">
-                  {member?.show_profile && member.last_login && (
-                    <>
-                      Last Login:{' '}
-                      {formatDistanceToNowStrict(
-                        toLocalDate(member.last_login)
-                      )}{' '}
-                      ago
-                    </>
-                  )}
-                </Text>
-                <Spacer />
-                <Text fontSize="xs">
-                  Member Since:{' '}
-                  {toLocalDate(
-                    member.approved_date || member.date_created
-                  ).toLocaleDateString()}
-                </Text>
-              </Flex>
-            </Box>
-          )}
         </Box>
-        {children}
+        {full && (
+          <Box p={4} bg="primary.700">
+            <Flex w="full">
+              <ButtonGroup>
+                <MemberBlock member={member} size="lg" />
+                <MemberReport member={member} size="lg" />
+              </ButtonGroup>
+              <Spacer />
+              <ButtonGroup>
+                <MemberLike member={member} size="lg" />
+                <MemberMessages member={member} size="lg" />
+                <MemberConnect member={member} size="lg" />
+                <MemberShare member={member} size="lg" />
+              </ButtonGroup>
+            </Flex>
+            <Flex w="full">
+              <Text fontSize="xs">
+                {member?.show_profile && member.last_login && (
+                  <>
+                    Last Login:{' '}
+                    {formatDistanceToNowStrict(toLocalDate(member.last_login))}{' '}
+                    ago
+                  </>
+                )}
+              </Text>
+              <Spacer />
+              <Text fontSize="xs">
+                Member Since:{' '}
+                {toLocalDate(
+                  member.approved_date || member.date_created
+                ).toLocaleDateString()}
+              </Text>
+            </Flex>
+          </Box>
+        )}
         <Accordion defaultIndex={0} rounded="lg">
+          {accordionItems?.map((item, i) => (
+            <AccordionItem key={i}>
+              <AccordionButton>
+                <Box as="span" flex="1" textAlign="left" color="text">
+                  {item.title}
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+              <AccordionPanel pb={4}>
+                <Box p={2} flex="grow">
+                  {item.content}
+                </Box>
+              </AccordionPanel>
+            </AccordionItem>
+          ))}
+
           {full && member.show_photos && photos?.length > 0 && (
             <AccordionItem>
               <AccordionButton>
@@ -439,7 +463,7 @@ export const MemberSpotlight = chakra(
             </AccordionItem>
           )}
 
-          {full && member.show_events && (
+          {full && member.show_events && level > MemberLevel.pledge && (
             <AccordionItem>
               <AccordionButton>
                 <Box as="span" flex="1" textAlign="left" color="text">
@@ -550,6 +574,7 @@ export const MemberSpotlight = chakra(
             </AccordionItem>
           )}
         </Accordion>
+        {footer}
       </Flex>
     )
   }

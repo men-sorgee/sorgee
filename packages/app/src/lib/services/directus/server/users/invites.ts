@@ -21,7 +21,7 @@ export async function findInvite(eventId: string, userId: string): Promise<Event
     },
   })
 
-  return query.data[0] as EventUser
+  return query.data ? query.data[0] as EventUser : null
 }
 
 export async function listInvites(member: Member): Promise<EventUser[]> {

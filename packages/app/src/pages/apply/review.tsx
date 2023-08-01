@@ -32,7 +32,8 @@ function Review() {
 
   const { loading, member, mutate } = useUser({
     minLevel: MemberLevel.applicant,
-    minAppStatus: ApplicationStatus.review
+    minAppStatus: ApplicationStatus.review,
+    redirectsEnabled: true
   })
 
   useEffect(() => {
@@ -51,7 +52,6 @@ function Review() {
     <Page
       title="Verification Review"
       loading={loading}
-      requireAuth={true}
       header={<ApplicationSteps status={'review'} />}
     >
       <>

@@ -13,7 +13,7 @@ function Denied() {
   })
 
   return (
-    <Page title="Application Denied" loading={loading} requireAuth={true}>
+    <Page title="Application Denied" loading={loading}>
       <>
         <Heading as="h2" size="xl" pt={10}>
           Unfortunately, your application was denied.

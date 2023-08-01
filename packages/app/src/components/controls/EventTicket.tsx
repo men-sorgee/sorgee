@@ -2,17 +2,18 @@ import { useState } from 'react'
 
 import { EventDetail, GroupEvent, Member } from 'lib/models'
 
-import { Box, Flex, Heading, Image, SlideFade, Text } from '@chakra-ui/react'
+import { Box, Flex, Image, SlideFade, Text } from '@chakra-ui/react'
 
 type EventTicketProps = {
   member: Member
   event: EventDetail | GroupEvent
-  open?: boolean
+  responsive?: boolean
 }
+
 export const EventTicket = ({
   member,
   event,
-  open = false
+  responsive = false
 }: EventTicketProps) => {
   const [showTicket, setShowTicket] = useState<boolean>(undefined)
 
@@ -20,7 +21,7 @@ export const EventTicket = ({
 
   const checkinUrl = `/api/events/${event?.id}/checkin?user_id=${member?.id}`
   return (
-    <Box p={2}>
+    <>
       <Image
         className="print-only"
         rounded="xl"
@@ -31,44 +32,22 @@ export const EventTicket = ({
         w="full"
       />
       <div className="no-print">
-        <Flex direction="column">
-          {!open && (
-            <Flex
-              alignContent="center"
-              justifyContent="center"
-              align="center"
-              bg="gray.200"
-              color="white"
-              cursor="pointer"
-              _hover={{ bg: 'primary' }}
-              rounded="lg"
-              onClick={() => setShowTicket(!showTicket)}
-            >
-              <Text color="white" p={0} m={0}>
-                {showTicket ? 'Hide' : 'Show'} Ticket
-              </Text>
-            </Flex>
-          )}
-          <SlideFade in={open || showTicket} unmountOnExit>
-            <Text p={0} m={0} textAlign="center">
-              Present this ticket to the host.
-            </Text>
-
+        <Flex direction="column" pb={2}>
+          <a href={`/api/code${checkinUrl}`}>
             <Image
               rounded="xl"
               shadow="lg"
-              maxW="md"
               mx="auto"
               src={`/api/code${checkinUrl}`}
               alt="Ticket"
-              w="full"
+              w={responsive ? 'auto' : 'full'}
             />
-            <Text textAlign="center" m={0} p={0}>
-              Admit: {member?.first_name} {member?.last_name}
-            </Text>
-          </SlideFade>
+          </a>
+          <Text textAlign="center" m={0} p={0} fontSize={['sm', 'md']}>
+            Admit: {member?.first_name} {member?.last_name}
+          </Text>
         </Flex>
       </div>
-    </Box>
+    </>
   )
 }

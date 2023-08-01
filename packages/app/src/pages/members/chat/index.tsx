@@ -32,7 +32,7 @@ import { getAssetUrl, postJSON } from 'lib/utils'
 import dynamic from 'next/dynamic'
 import { XMarkIcon, CheckIcon } from '@heroicons/react/24/solid'
 import { formatDistanceToNow, set } from 'date-fns'
-import { ChatMessage, Message, Member } from 'lib/models'
+import { ChatMessage, Message, Member, MemberLevel } from 'lib/models'
 
 const MessagesStyles = dynamic(
   () => import('components/controls/MessagesStyles'),
@@ -40,7 +40,10 @@ const MessagesStyles = dynamic(
 )
 
 export default function ChatPage({ id }: { id?: string }) {
-  const { member, loading } = useUser()
+  const { member, loading } = useUser({
+    minLevel: MemberLevel.pledge,
+    redirectsEnabled: true
+  })
   const [socket, setSocket] = useState<Socket>(undefined)
   const {
     conversations,
@@ -316,7 +319,6 @@ export default function ChatPage({ id }: { id?: string }) {
     <Page
       title="Brother Chat"
       loading={loading}
-      requireAuth={true}
       hideHeader
       full
       position="relative"

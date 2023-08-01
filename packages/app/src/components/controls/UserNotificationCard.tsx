@@ -70,7 +70,6 @@ export const UserNotificationCard = chakra(
               <Text
                 p={0}
                 m={0}
-                noOfLines={1}
                 fontWeight={notification?.read ? 'normal' : 'bold'}
                 flex={1}
               >

@@ -1,6 +1,6 @@
 import { ApiResponse, EventDetail, EventUser, Member, MemberLevel } from 'lib/models'
 import { addAppNotificationUser, addUserNotification, createEventSurvey, createEventSurveyNotification, getEventDetail, setUserAverageRating, updateEvent, updateEventUsers, updateSurvey } from 'lib/services/directus/server'
-import { withMember, withMethods } from 'lib/utils/server'
+import { withStaff, withMethods } from 'lib/utils/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function Event(
@@ -8,8 +8,8 @@ export default async function Event(
   res: NextApiResponse<ApiResponse<EventDetail | EventUser[]>>
 ) {
   try {
-    const method = withMethods(req, ['GET'])
-    const user = await withMember(req, res)
+    withMethods(req, ['GET'])
+    await withStaff(req, res)
     const { id: i } = req.query
     const id = String(i)
 
@@ -28,6 +28,7 @@ export default async function Event(
     await updateSurvey(survey.id, {
       notification: notification.id
     })
+
     let attendees = event.attendance
       .filter(a => a.attended).map((a: EventUser) => a.users_id as Partial<Member>)
       .map((m: Partial<Member>) => m.id)
@@ -46,10 +47,15 @@ export default async function Event(
 
     const ratings = await Promise.all(userIds.map((i) => setUserAverageRating(i)))
 
-    await Promise.all(userIds.map((u, i) => addUserNotification(u, {
-      message: `You were marked as a no-show for ${event.name}. Your rating decreased to ${ratings[i].toFixed(2)}.` +
-        `Brothers with less than three stars can9not confirm events without pre-paying.`,
-    })))
+    await Promise.all(userIds.map((u, i) => {
+      let rating = ratings[i]
+      let message = (rating < 5) ? `Your rating decreased to ${rating}` : 'Your rating did not change.'
+      addUserNotification(u, {
+        message: `You were marked as a no-show for ${event.name}. ` + message,
+        button_text: 'View Event',
+        button_url: `/events/${event.id}`
+      })
+    }))
 
     return res.status(200).json(ApiResponse(event))
   } catch (e) {

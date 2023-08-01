@@ -10,14 +10,14 @@ import { Plans } from 'components'
 function Approved() {
   const { loading, level, member } = useUser({
     minLevel: MemberLevel.applicant,
-    minAppStatus: ApplicationStatus.approved
+    minAppStatus: ApplicationStatus.approved,
+    redirectsEnabled: true
   })
 
   return (
     <Page
       title="Application Approved"
       loading={loading}
-      requireAuth={true}
       header={<ApplicationSteps status={'approved'} />}
     >
       <>

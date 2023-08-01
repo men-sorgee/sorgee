@@ -22,6 +22,10 @@ export default async function Event(
       delete event.stats.paid_count
       delete event.stats.invited_count
       delete event.stats.attended_count
+      event.attendance.forEach((a: EventUser) => {
+        let user = a.users_id as Member
+        delete user.email
+      })
     }
 
     return res.status(200).json(ApiResponse(event))

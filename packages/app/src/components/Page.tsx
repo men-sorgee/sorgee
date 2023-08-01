@@ -17,8 +17,6 @@ type Props = BoxProps & {
   header?: React.ReactNode
   children: React.ReactNode | React.ReactNode[]
   description?: string
-  requireAuth?: boolean
-  requiredLevel?: MemberLevel
   hideHeader?: boolean
   full?: boolean
 }
@@ -31,39 +29,15 @@ const Page = ({
   header,
   image,
   children,
-  requireAuth = false,
   hideHeader = false,
-  requiredLevel,
   full = false,
   ...props
 }: Props) => {
   const { setMeta } = useMeta()
   const { data: session, status } = useSession()
-  const [denied, setDenied] = useState(false)
   useEffect(() => {
     setMeta(title, description, image)
-    if (status != 'loading' && requireAuth) {
-      if (status !== 'authenticated') setDenied(true)
-      else if (session.user) {
-        const level = MemberLevel[session.user.user_type as string]
-        setDenied(level < requiredLevel)
-      }
-    }
-  }, [
-    description,
-    image,
-    requireAuth,
-    requiredLevel,
-    session?.user,
-    session?.user.user_type,
-    setMeta,
-    status,
-    title
-  ])
-
-  if (denied) {
-    return <AccessDenied />
-  }
+  }, [description, image, setMeta, status, title])
 
   if (loading) {
     return <Loading size="xl" mt={10} />
@@ -76,7 +50,8 @@ const Page = ({
       as="article"
       alignItems={'center'}
       justifyItems="stretch"
-      px={full ? 0 : [2]}
+      pl={full ? 0 : [0, 1, 2]}
+      pr={2}
       w="full"
       {...props}
     >

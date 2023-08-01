@@ -4,7 +4,23 @@ import {
   Member,
   MembershipType
 } from 'lib/models'
-import { Badge, BadgeProps, chakra, HStack, Icon } from '@chakra-ui/react'
+import { differenceInDays } from 'date-fns'
+import {
+  Badge,
+  BadgeProps,
+  chakra,
+  Popover,
+  Heading,
+  HStack,
+  Icon,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+  Text
+} from '@chakra-ui/react'
 import {
   CheckBadgeIcon,
   SparklesIcon,
@@ -29,7 +45,7 @@ export const MemberBadge = chakra(
       'red.100'
     ])
     const [subscription, setSubscription] = useState<MembershipType>(undefined)
-    const { isMember, loading } = useUser()
+    const { isMember, level: viewerLevel, loading } = useUser()
 
     useEffect(() => {
       if (member && levelValue == undefined) {
@@ -37,34 +53,56 @@ export const MemberBadge = chakra(
         let name = MemberLevel[value]
         setLevelValue(value)
         setLevelColor(MemberLevelColorMap[value])
-        setLevelName(name)
+        setLevelName(name.replace(/^\w/, (c) => c.toUpperCase()))
         setSubscription(MembershipType[member.membership_type])
       }
     }, [isMember, levelValue, member, member?.id, member?.user_type])
 
+    const pledgeAge =
+      member?.approved_date != undefined
+        ? differenceInDays(new Date(), new Date(member.approved_date))
+        : null
+
+    const needsVoucher =
+      levelValue == MemberLevel.pledge && viewerLevel >= MemberLevel.brother
+
     if (!member || loading) return null
-    return (
-      <HStack spacing={0}>
+
+    const UserBadge = () =>
+      needsVoucher ? (
         <Badge
           {...props}
+          rounded={size}
+          fontSize={size}
+          textTransform="uppercase"
+          cursor="pointer"
+          color="white"
+          bg="accent.300"
+          py={1}
+          px={2}
+        >
+          {levelName}: {pledgeAge} days
+        </Badge>
+      ) : (
+        <Badge
           rounded={size}
           fontSize={size}
           textTransform={'uppercase'}
           color={levelColor[1]}
           bg="white"
+          py={1}
+          px={2}
+          {...props}
         >
           {levelName}
         </Badge>
-        {isMember && <MemberVouch member={member} size={size as any} />}
+      )
 
-        {levelValue == MemberLevel.pledge && (
-          <Icon
-            as={SparklesIcon}
-            boxSize={8}
-            color="yellow"
-            title="New Pledge!"
-          />
-        )}
+    return (
+      <HStack spacing={0}>
+        <UserBadge />
+        {needsVoucher && <MemberVouch member={member} size={size as any} />}
+
         {levelValue >= MemberLevel.brother && (
           <Icon
             id={`verified-${member?.id}`}

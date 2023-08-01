@@ -68,8 +68,10 @@ const BuddiesAction = ({
             zIndex="overlay"
             position="absolute"
             rounded="full"
-            px={2}
+            px={1.5}
             py={0.5}
+            fontSize={10}
+            size="xs"
           >
             {online}
           </Badge>

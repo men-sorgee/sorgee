@@ -1,43 +1,61 @@
-import { ApiResponse, EventUser, GroupEvent, RSVPInfo } from 'lib/models'
+import { ApiResponse, EventInvite } from 'lib/models'
 import { findInvite, getEvent, registerForEvent, updateInvite } from 'lib/services/directus/server'
 import { withMember, withMethods } from 'lib/utils/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function EventRSVP(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<EventUser> | ApiResponse>
+  res: NextApiResponse<ApiResponse<EventInvite> | ApiResponse>
 ) {
   try {
     const method = withMethods(req, ['POST', 'GET'])
     const member = await withMember(req, res)
 
-    const { id: event_id, rsvp, reason } = { ...req.query, ...req.body } as any
+    const { id, rsvp, reason } = { ...req.query, ...req.body } as any
+    const eventId = String(id)
 
-    if (!event_id)
-      throw new Error('Missing event_id or rsvp')
 
-    const event = await getEvent(event_id as string)
+    const event = await getEvent(eventId)
 
     if (!event || !['planned', 'scheduled'].includes(event.status)) {
       throw new Error('Event not found')
     }
 
-    let invite = await findInvite(event_id as string, member.id)
+    let eventUser = await findInvite(eventId, member.id)
 
     if (method == 'POST') {
       if (!rsvp) throw new Error('Missing rsvp')
-      if (invite) {
-        invite = await updateInvite(invite.id, { rsvp, reason })
+      if (eventUser) {
+        eventUser = await updateInvite(eventUser.id, { rsvp, reason })
       } else if (event.invite_only) {
         throw new Error('Invite not found')
       } else {
-        invite = await registerForEvent(event_id, member.id, rsvp)
+        eventUser = await registerForEvent(eventId, member.id, rsvp)
       }
-    } else if (!invite) {
+    } else if (!eventUser) {
       throw new Error('Invite not found')
     }
 
-    return res.status(200).json(ApiResponse(invite))
+    const { attended, paid, guest } = eventUser
+    let invite: EventInvite = {
+      id: eventUser.id,
+      member,
+      event,
+      attended,
+      paid,
+      guest,
+      rsvp: rsvp || eventUser.rsvp || 'not_invited',
+      reason: reason || eventUser.reason
+    }
+
+
+    return res.status(200).json(ApiResponse({
+      ...invite,
+      event,
+      member,
+      rsvp: invite.rsvp || 'not_invited',
+      reason: invite.reason || ''
+    }))
   } catch (e) {
     console.error(e)
     return res.status(200).json(ApiResponse(null, e))

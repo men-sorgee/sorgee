@@ -5,17 +5,18 @@ import { FieldMap } from 'lib/models'
 import swr from 'swr'
 
 import { JsonFetcher } from 'lib/utils'
-import { MemberSpotlight } from './MemberSpotlight'
+import { MemberSpotlight, MemberSpotlightProps } from './MemberSpotlight'
 import { ModalPopup } from './Modal'
 
-export type MemberModalProps = {
-  memberId?: string
+export type MemberModalProps = MemberSpotlightProps & {
+  memberId: string
   isOpen?: boolean
   onClose?: () => void
   full?: boolean
   updateMeta?: boolean
   ref?: RefObject<Element & { focus: () => null }>
   children?: React.ReactNode
+  childrenTitle?: string
 }
 
 export function MemberModal({
@@ -25,7 +26,9 @@ export function MemberModal({
   ref,
   full = true,
   updateMeta = false,
-  children
+  size = 'lg',
+  children,
+  ...props
 }: MemberModalProps) {
   const { data: fields, isLoading } = swr<FieldMap>(
     `/api/site/fields/users`,
@@ -43,10 +46,12 @@ export function MemberModal({
       >
         {memberId && fields && (
           <MemberSpotlight
-            id={memberId}
+            memberId={memberId}
             fields={fields}
             full={full}
             updateMeta={updateMeta}
+            size={size}
+            {...props}
           >
             {children}
           </MemberSpotlight>

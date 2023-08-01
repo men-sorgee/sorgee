@@ -23,8 +23,6 @@ export default async function CurrentMember(
 
     const user = await getUser<Member>(me.id, fields)
 
-    console.dir({ user })
-
     if (method == 'POST') {
       const userDetails = req.body as Partial<User>
       const updated = await updateUser(me.id, userDetails)

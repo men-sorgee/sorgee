@@ -40,8 +40,9 @@ const EventsAction = ({ member, active, iconSize, iconDimensions }: Props) => {
             zIndex="overlay"
             position="absolute"
             rounded="full"
-            px={2}
+            px={1.5}
             py={0.5}
+            fontSize={10}
             bg={active ? 'accent.500' : 'white'}
             color={active ? 'white' : 'accent.500'}
           >

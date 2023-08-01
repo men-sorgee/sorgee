@@ -49,9 +49,6 @@ export const MemberLike = chakra(
       }
     }, [me, member?.id, loading])
 
-    if (loading || !me || me?.id == member?.id) return null
-    if (level < MemberLevel.brother) return null
-
     const label = mutual
       ? `Mutual Like with ${member?.nickname}`
       : isLiked
@@ -62,6 +59,9 @@ export const MemberLike = chakra(
     useEffect(() => {
       setShowLike(isLiked ? !hover : hover)
     }, [hover, isLiked, mutual])
+
+    if (loading || !me || me?.id == member?.id) return null
+    if (level < MemberLevel.brother) return null
 
     if (!hasFeature('flirt'))
       return (

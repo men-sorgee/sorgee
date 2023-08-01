@@ -38,6 +38,7 @@ export const ButtonLink = chakra(
         <Button
           bgGradient={gradient ? bgGradient : 'none'}
           bg={gradient ? null : `${colorScheme}.500`}
+          color="white"
           _hover={{
             bgGradient: gradient ? bgGradientHover : 'none',
             bg: gradient ? null : `${colorScheme}.400`

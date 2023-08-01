@@ -18,7 +18,9 @@ export default async function InviteAdmin(
   try {
     withMethods(req, ['GET', 'POST'])
     await withStaff(req, res)
-    const { id: invite_id, paid: p, signed_waiver: w } = req.query
+    const { id: invite_id } = req.query
+    const { paid: p, signed_waiver: w } = req.body
+
     const paid = Boolean(p)
     const signed_waiver = Boolean(w)
 

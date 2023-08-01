@@ -14,7 +14,7 @@ export default function AccountSubscriptionPage({}: Params) {
   }
 
   return (
-    <Page title="Choose a Subscription" requireAuth>
+    <Page title="Choose a Subscription">
       <Plans allowSubscribe highlightedPlan={plan} />
     </Page>
   )

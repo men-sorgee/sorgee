@@ -1,5 +1,11 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import { EventUser, InviteRSVPType, RSVPInfo } from 'lib/models'
+import {
+  EventInvite,
+  EventUser,
+  GroupEvent,
+  InviteRSVPType,
+  RSVPInfo
+} from 'lib/models'
 import { getJSON, postJSON } from 'lib/utils'
 import { useInvite } from 'hooks'
 import {
@@ -15,22 +21,21 @@ import {
 } from '@chakra-ui/react'
 import { ButtonConfirm } from './ButtonConfirm'
 
-type RSVPProps = BoxProps & {
-  memberId: string
-  rsvp?: InviteRSVPType
+export type RSVPProps = BoxProps & {
   eventId: string
   onChange?: () => void
   canConfirm: boolean
+  invite?: EventInvite
 }
-type PurchaseResponse = {
+
+export type PurchaseResponse = {
   id: string
   amount: number
 }
 
 export const EventRSVP = ({
-  memberId,
-  rsvp: r,
   eventId,
+  invite: eventUser,
   onChange,
   canConfirm
 }: RSVPProps) => {
@@ -38,13 +43,13 @@ export const EventRSVP = ({
   const [working, setWorking] = useState(false)
   const [showPayButton, setShowPayButton] = useState<boolean>(undefined)
 
-  const { invite, mutate, loading } = useInvite(memberId, eventId)
+  const { invite, mutate, loading } = useInvite(eventId, eventUser)
 
   useEffect(() => {
-    if (invite && showPayButton == undefined) {
+    if (!loading && invite && showPayButton == undefined) {
       setShowPayButton(!invite.paid && !invite.guest)
     }
-  }, [invite, showPayButton])
+  }, [invite, showPayButton, loading])
 
   const reasonRef = useRef<HTMLTextAreaElement>(null)
 
@@ -114,7 +119,7 @@ export const EventRSVP = ({
             complete(true)
             return response.data
           })
-          .then((i: EventUser) => {
+          .then((i: EventInvite) => {
             return getJSON<PurchaseResponse>(`/api/stripe/event/${i.id}`)
           })
       }
@@ -358,7 +363,7 @@ export const EventRSVP = ({
           <MaybeRSVPButton />
         </RSVPView>
       )
-    case 'invited':
+    default:
       return (
         <>
           <RSVPView heading="You are invited!" change={false}>
@@ -373,7 +378,5 @@ export const EventRSVP = ({
           </RSVPView>
         </>
       )
-    default:
-      return null
   }
 }

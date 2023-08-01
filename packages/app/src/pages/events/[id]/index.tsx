@@ -48,7 +48,9 @@ import { useRouter } from 'next/router'
 
 export default function EventPage() {
   const router = useRouter()
+  const toast = useToast()
   const { id } = router.query
+  const eventId = String(id)
   const {
     member,
     isStaff,
@@ -56,12 +58,13 @@ export default function EventPage() {
     hasFeature
   } = useUser({ minLevel: MemberLevel.inductee, redirectsEnabled: true })
 
-  const [eventId] = useState<string>(id as string)
   const [showTicket, setShowTicket] = useState<boolean>(false)
-  const { event, loading: eventLoading } = useEvent(eventId)
+
   const [stats, setStats] = useState<EventStats>(undefined)
   const [invite, setInvite] = useState<EventUser>(undefined)
   const [memberId, setMemberId] = useState<string>(undefined)
+
+  const { event, loading: eventLoading } = useEvent(eventId)
 
   useEffect(() => {
     if (!eventLoading && event?.stats && stats == undefined) {
@@ -97,7 +100,7 @@ export default function EventPage() {
   }
 
   const canViewAttendees = hasFeature('view_attendees')
-  const toast = useToast()
+
   const canConfirm = member?.rating && member?.rating > 2
   return (
     <Page
@@ -120,7 +123,7 @@ export default function EventPage() {
             {member && (
               <>
                 {showTicket && invite && invite.rsvp == 'confirmed' && (
-                  <EventTicket open event={event} member={member} />
+                  <EventTicket event={event} member={member} />
                 )}
                 <Divider my={4} />
                 <SimpleGrid columns={{ base: 2, md: 4 }} spacing={4} mb={4}>
@@ -219,12 +222,7 @@ export default function EventPage() {
                 )}
                 {event.status != 'occurred' &&
                   (invite || !event?.invite_only) && (
-                    <EventRSVP
-                      canConfirm={canConfirm}
-                      memberId={member.id}
-                      eventId={eventId}
-                      rsvp={invite?.rsvp}
-                    />
+                    <EventRSVP canConfirm={canConfirm} eventId={eventId} />
                   )}
               </>
             )}
@@ -322,7 +320,7 @@ const AttendedEvent = ({
           </Alert>
           {attendees.map((m: Member) => (
             <Lazy key={event.id + '-' + m.id}>
-              <MemberSpotlight size="xl" mb={4} id={m.id} mt={4}>
+              <MemberSpotlight size="xl" mb={4} memberId={m.id} mt={4}>
                 <Center p={2}>
                   <Show above="md">
                     <Text>Your Rating:</Text>

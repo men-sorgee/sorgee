@@ -187,6 +187,7 @@ function Header({ isAuthenticated, userType, children, ...props }: Props) {
           py={2}
           pr={[4, 6, 2]}
           align="center"
+          w="full"
           {...constrained}
         >
           <Box flex={1}>

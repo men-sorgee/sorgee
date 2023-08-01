@@ -28,7 +28,7 @@ import {
 import { ReactNode } from 'react'
 import { useUser } from 'hooks'
 import {
-  MemberChat,
+  MemberMessages,
   MemberConnect,
   MemberHeader,
   MemberLike,
@@ -121,13 +121,13 @@ export const MemberCard = chakra(
                 </MemberHeader>
               </LinkOverlay>
             </CardHeader>
-            <CardBody>
+            <CardBody pt={0}>
+              {children}
               {full && member?.show_profile && (
                 <Text noOfLines={2} py={0} my={0}>
                   {member.biography}
                 </Text>
               )}
-              {children}
             </CardBody>
           </LinkBox>
           <Spacer />
@@ -146,7 +146,7 @@ export const MemberCard = chakra(
               <Spacer />
               <ButtonGroup>
                 <MemberLike member={member} size="lg" />
-                <MemberChat member={member} size="lg" />
+                <MemberMessages member={member} size="lg" />
                 <MemberConnect member={member} size="lg" />
                 <MemberShare member={member} size="lg" />
               </ButtonGroup>

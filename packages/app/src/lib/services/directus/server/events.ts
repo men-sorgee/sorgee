@@ -117,6 +117,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
       'users.users_id.nickname',
       'users.users_id.first_name',
       'users.users_id.last_name',
+      'users.users_id.email',
       'survey.*',
     ] as any,
     deep: {

@@ -35,7 +35,8 @@ export const getStaticProps = async () => {
 export default function Agreement({ markdown }: Props) {
   const { loading, reload } = useUser({
     minLevel: MemberLevel.applicant,
-    minAppStatus: ApplicationStatus.agreement
+    minAppStatus: ApplicationStatus.agreement,
+    redirectsEnabled: true
   })
   const [complete, setComplete] = useState<boolean>(false)
   const router = useRouter()
@@ -48,7 +49,6 @@ export default function Agreement({ markdown }: Props) {
     <Page
       title="Agreement"
       loading={loading}
-      requireAuth={true}
       header={<ApplicationSteps status={'agreement'} />}
     >
       {!complete && (

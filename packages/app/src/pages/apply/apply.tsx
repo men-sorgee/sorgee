@@ -90,7 +90,8 @@ function Apply({ promo, invite, markdown, ...props }: PageProps) {
     reload
   } = useUser({
     minLevel: MemberLevel.applicant,
-    minAppStatus: ApplicationStatus.apply
+    minAppStatus: ApplicationStatus.apply,
+    redirectsEnabled: true
   })
 
   const [formError, setFormError] = useState<string>()
@@ -127,7 +128,6 @@ function Apply({ promo, invite, markdown, ...props }: PageProps) {
     <Page
       title="Registration"
       loading={loading}
-      requireAuth={true}
       header={<ApplicationSteps status={'apply'} />}
     >
       <>

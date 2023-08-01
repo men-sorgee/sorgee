@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import { ListItem, UnorderedList } from '@chakra-ui/react'
+import { useUser } from 'hooks'
+import { MemberLevel } from 'lib/models'
 
 export const getServerSideProps = async () => {
   const key = process.env.WHEREBY_API_KEY
@@ -22,13 +24,17 @@ export const getServerSideProps = async () => {
 }
 
 export default function VideoChats({ meetings = [] }: { meetings: any[] }) {
+  const { member } = useUser({
+    minLevel: MemberLevel.brother,
+    redirectsEnabled: true
+  })
   const router = useRouter()
   if (meetings?.length == 1) {
     router.push(`/video/${meetings[0].meetingId}`)
     return null
   }
   return (
-    <Page title="Video Chats" requireAuth={true}>
+    <Page title="Video Chats" >
       <UnorderedList>
         {meetings?.map((meeting) => (
           <ListItem key={meeting.meetingId}>

@@ -50,7 +50,7 @@ export default function MessagesStyles() {
         border-bottom: solid 0px ${borderColor};
         border-left: solid 0px ${borderColor};
         /* Hmm without this, box shadow is cut at bottom */
-        z-index: 2;
+        
         background-color: ${bg};
       }
       .cs-main-container > .cs-sidebar.cs-sidebar--left {
@@ -60,7 +60,7 @@ export default function MessagesStyles() {
         flex-basis: 35%;
         border-right: solid 1px ${borderColor};
         /* Hmm without this, box shadow is cut at bottom */
-        z-index: 2;
+       
       }
       .cs-main-container > .cs-sidebar.cs-sidebar--right {
         flex-basis: 25%;
@@ -76,7 +76,7 @@ export default function MessagesStyles() {
       }
       .cs-main-container .cs-chat-container {
         order: 1;
-        z-index: 1;
+       
         flex-grow: 1;
         flex-basis: 65%;
         border-right: solid 0px ${borderColor};
@@ -84,7 +84,7 @@ export default function MessagesStyles() {
       .cs-main-container .cs-sidebar {
         order: 2;
         height: 100%;
-        z-index: 3;
+        
         
       }
       .cs-main-container .cs-sidebar .cs-expansion-panel {
@@ -96,7 +96,7 @@ export default function MessagesStyles() {
         border-bottom: 0;
       }
       .cs-main-container .cs-conversation-header {
-        z-index: 1;
+        
       }
       .cs-main-container--responsive .cs-chat-container .cs-conversation-header .cs-conversation-header__back {
         display: none;
@@ -683,7 +683,7 @@ export default function MessagesStyles() {
         left: 0;
         right: 0;
         height: 1.2em;
-        z-index: 1;
+       
       }
       .cs-message-list__loading-more .cs-loader {
         width: 1.2em;
@@ -699,7 +699,7 @@ export default function MessagesStyles() {
         bottom: 0;
       }
       .cs-message-list .ps__rail-y {
-        z-index: 2;
+    
       }
 
       .cs-avatar {
@@ -818,10 +818,10 @@ export default function MessagesStyles() {
         justify-content: flex-end;
       }
       .cs-avatar-group .cs-avatar--active {
-        z-index: 1;
+     
       }
       .cs-avatar-group .cs-avatar--active-on-hover:hover {
-        z-index: 2;
+        
       }
       .cs-avatar-group--xs {
         padding-left: 6.112px;
@@ -1357,7 +1357,7 @@ export default function MessagesStyles() {
         top: 1%;
         left: 5%;
         border-radius: 50%;
-        z-index: 2;
+        
         filter: blur(0);
         height: 80%;
         width: 40%;
@@ -1373,7 +1373,7 @@ export default function MessagesStyles() {
         height: 80%;
         border-radius: 100%;
         filter: blur(1px);
-        z-index: 2;
+       
         transform: rotateZ(-30deg);
         display: block;
         background: radial-gradient(circle at 50% 80%, black, black 74%, white 80%, white 84%, black 100%);
@@ -1394,7 +1394,7 @@ export default function MessagesStyles() {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        z-index: 100;
+      
         /* For grouped Avatar */
       }
       @keyframes cs-unread-anim {

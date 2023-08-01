@@ -1,103 +1,144 @@
 import { JsonFetcher } from 'lib/utils'
 import swr from 'swr'
+import { Box, Tag, Heading, HStack, Text, Avatar } from '@chakra-ui/react'
 import {
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-  Box,
-  Badge,
-  Heading,
-  Stack,
-  Text
-} from '@chakra-ui/react'
-import { UserSurvey, Question, SurveyAnswer, AnswerType } from 'lib/models'
+  UserSurvey,
+  Question,
+  SurveyAnswer,
+  AnswerType,
+  Member
+} from 'lib/models'
+import { ReactNode } from 'react'
+import { MemberAvatar } from './MemberAvatar'
 
 export type UserSurveyAnswersProps = {
   surveyId: string
-  userId: string
-  children?: React.ReactNode
+  member: Pick<Member, 'picture' | 'id' | 'nickname'>
+  headingSize?: string
 }
 
 export function UserSurveyAnswers({
   surveyId,
-  userId,
-  children
+  member,
+  headingSize = 'md'
 }: UserSurveyAnswersProps) {
   const { data: survey, isLoading } = swr<UserSurvey>(
-    `/api/survey/${surveyId}/results/${userId}`,
+    `/api/survey/${surveyId}/results/${member?.id}`,
     JsonFetcher
   )
 
-  if (isLoading) return <Text>Loading...</Text>
+  if (isLoading) return <Text p={2}>Loading...</Text>
+
+  let badgeProps = {
+    rounded: 'lg',
+    px: 2,
+    py: 1,
+    size: ['sm', 'md'],
+    color: 'white',
+    my: 1
+  }
 
   const Answer = ({
     question,
-    answer
+    answer,
+    children
   }: {
     question: Question
     answer: SurveyAnswer
+    children?: ReactNode
   }) => {
-    if (!answer) return <Text>No answer</Text>
+    if (!answer) return <>(No answer)</>
     switch (question.answer_type) {
       case 'number':
         return (
-          <Text>
-            <pre>{answer.answer_number}</pre>
-          </Text>
+          <>
+            {children}
+            <Tag bg="primary.400" {...badgeProps}>
+              <pre>{answer.answer_number}</pre>
+            </Tag>
+          </>
         )
       case 'number_array':
       case 'string_array':
         return (
-          <Stack direction="row" gap={2}>
+          <>
+            {children}
             {answer.answer_choose.map((a: string) => (
-              <Badge key={a} mr={1}>
+              <Tag key={a} bg="primary.400" {...badgeProps}>
                 {a}
-              </Badge>
+              </Tag>
             ))}
-          </Stack>
+          </>
         )
       case 'boolean':
-        return <Text>{answer.answer_boolean ? 'Yes' : 'No'}</Text>
+        return (
+          <>
+            {children}
+            <Tag bg="primary.400" {...badgeProps}>
+              {answer.answer_boolean ? 'Yes' : 'No'}
+            </Tag>
+          </>
+        )
       default:
+        if (answer.answer_text == undefined) return <>(no answer)</>
         return (
           (question.answer_type == 'color' && (
-            <Badge fontSize="lg" bgColor={answer.answer_text} color="white">
-              {answer.answer_text}
-            </Badge>
-          )) || <Text size="sm">{answer.answer_text}</Text>
+            <>
+              {children}
+              <Tag bg="primary.400" {...badgeProps}>
+                This color: &nbsp;
+                <Box bg={answer.answer_text} rounded="full" p={2}></Box>
+              </Tag>
+            </>
+          )) || (
+            <>
+              {children}
+              <Tag bg="primary.400" {...badgeProps}>
+                {answer.answer_text}
+              </Tag>
+            </>
+          )
         )
     }
   }
 
   return (
     <>
-      <Accordion allowToggle>
-        <AccordionItem>
-          <AccordionButton>
-            <Box as="span" flex="1" textAlign="left" color="text">
-              {survey?.name} Results {children}
+      <Heading as="h3" size={headingSize} mt={0} mb={4}>
+        {survey?.name} Results
+      </Heading>
+
+      {survey?.questions.map(
+        (
+          question: Question & { sort: number; answer: SurveyAnswer },
+          index: number
+        ) => (
+          <Box key={index} mb={2}>
+            <Box textAlign="right">
+              <HStack display="inline-flex">
+                <Tag bg="accent.400" {...badgeProps}>
+                  {question.question}
+                </Tag>
+                <Avatar
+                  size="xs"
+                  name="Admin"
+                  bg="accent.500"
+                  color="white"
+                  border={`1px solid white`}
+                />
+              </HStack>
             </Box>
-            <AccordionIcon />
-          </AccordionButton>
-          <AccordionPanel>
-            {survey?.questions.map(
-              (
-                question: Question & { sort: number; answer: SurveyAnswer },
-                index: number
-              ) => (
-                <Box key={index} mb={2}>
-                  <Heading as="h4" size="sm" my={2} textTransform="capitalize">
-                    {question.question}
-                  </Heading>
-                  <Answer question={question} answer={question.answer} />
-                </Box>
-              )
-            )}
-          </AccordionPanel>
-        </AccordionItem>
-      </Accordion>
+
+            <Box textAlign="left">
+              <HStack>
+                <Answer question={question} answer={question.answer}>
+                  <MemberAvatar member={member} size="xs" />
+                </Answer>
+              </HStack>
+            </Box>
+          </Box>
+        )
+      )}
     </>
   )
 }

@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import { useUser } from 'hooks'
 
 export default function Index({}) {
-  const { member, loading } = useUser()
+  const { member, loading } = useUser({})
   const router = useRouter()
 
   useEffect(() => {
@@ -26,7 +26,7 @@ export default function Index({}) {
   }, [loading, router, member])
 
   return (
-    <Page title="Application" requireAuth={true} loading={true}>
+    <Page title="Application" loading={true}>
       <Loading />
     </Page>
   )

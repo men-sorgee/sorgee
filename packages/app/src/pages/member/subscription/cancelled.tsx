@@ -43,7 +43,7 @@ export default function SubscriptionCancelledPage() {
   }, [member, loading, productId, router, productsLoading, products, product])
 
   return (
-    <Page title="Subscription" requireAuth loading={loading}>
+    <Page title="Subscription" loading={loading}>
       <Text fontSize="xl" textAlign="center">
         Your purchase was cancelled.
       </Text>

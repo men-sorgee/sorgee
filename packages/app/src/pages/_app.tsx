@@ -48,28 +48,30 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   }
 
   return (
-    <SessionProvider session={pageProps.session}>
-      <MetaContextProvider>
-        <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
-          <UserProvider>
-            <AppNotificationsProvider>
-              <UserNotificationsProvider>
-                <MessagesProvider>
-                  <React.StrictMode>
-                    <GoogleAnalytics trackPageViews />
-                    <Layout
-                      fonts={[heading.variable, body.variable, mono.variable]}
-                    >
-                      <Component {...pageProps} />
-                    </Layout>
-                  </React.StrictMode>
-                </MessagesProvider>
-              </UserNotificationsProvider>
-            </AppNotificationsProvider>
-          </UserProvider>
-        </ChakraProvider>
-      </MetaContextProvider>
-    </SessionProvider>
+    <>
+      <GoogleAnalytics trackPageViews gaMeasurementId="G-SJX78PVP26" />
+      <SessionProvider session={pageProps.session}>
+        <MetaContextProvider>
+          <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
+            <UserProvider>
+              <AppNotificationsProvider>
+                <UserNotificationsProvider>
+                  <MessagesProvider>
+                    <React.StrictMode>
+                      <Layout
+                        fonts={[heading.variable, body.variable, mono.variable]}
+                      >
+                        <Component {...pageProps} />
+                      </Layout>
+                    </React.StrictMode>
+                  </MessagesProvider>
+                </UserNotificationsProvider>
+              </AppNotificationsProvider>
+            </UserProvider>
+          </ChakraProvider>
+        </MetaContextProvider>
+      </SessionProvider>
+    </>
   )
 }
 

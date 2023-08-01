@@ -1,37 +1,25 @@
 import { useCallback, useEffect, useState } from 'react'
-
 import {
   Lazy,
   MemberCard,
   MemberModal,
-  Pager,
+  MemberMessageStats,
   UserSurveyAnswers
 } from 'components/controls'
+import { useUser } from 'hooks'
+import { Member, MemberLevel, SearchableMember } from 'lib/models'
+import { Container, SimpleGrid, Text, useDisclosure } from '@chakra-ui/react'
+import { useMemberSearch } from 'hooks'
+import { pledgeSurvey } from 'lib/config'
 import Page from 'components/Page'
 
-import { useUser } from 'hooks'
-import { MemberLevel, SearchableMember } from 'lib/models'
-
-import {
-  Badge,
-  Container,
-  SimpleGrid,
-  Text,
-  useDisclosure
-} from '@chakra-ui/react'
-
-import { useMemberSearch } from 'hooks'
-import { pledgeSurvey } from '../../../lib/config'
-
-export const getServerSideProps = async (context) => {
-  return {
-    props: {}
-  }
-}
-
 export default function PledgeListPage() {
-  const [id, setId] = useState<string>()
-  const { member: currentMember, loading } = useUser({
+  const [pledge, setPledge] = useState<SearchableMember>()
+  const {
+    member: currentMember,
+    level,
+    loading
+  } = useUser({
     minLevel: MemberLevel.brother,
     requiredFeature: 'view_directory',
     redirectsEnabled: true
@@ -43,20 +31,20 @@ export default function PledgeListPage() {
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   useEffect(() => {
-    if (id) {
+    if (pledge) {
       onOpen()
     } else {
       onClose()
     }
-  }, [id, setId, onOpen, onClose])
+  }, [pledge, setPledge, onOpen, onClose])
 
   const close = useCallback(() => {
     onClose()
-    setId(undefined)
+    setPledge(undefined)
   }, [onClose])
 
   return (
-    <Page title="Pledges" requireAuth={true} loading={loading}>
+    <Page title="Pledges" loading={loading}>
       <Text fontSize="xl" fontWeight="bold" mb={4}>
         These men have pledged a bid to join the brotherhood, but no one has
         vouched for them yet. To vouch for a Pledge, use the vouch button on
@@ -69,21 +57,41 @@ export default function PledgeListPage() {
         w="full"
         justifyItems="stretch"
       >
-        {members?.map((member: SearchableMember) => (
-          <Lazy key={member.id}>
+        {members?.map((m: SearchableMember) => (
+          <Lazy key={m.id}>
             <MemberCard
               full
               size="xl"
-              key={member.id}
+              key={m.id}
               viewer={currentMember}
-              member={member}
-              onClick={() => setId(member.id)}
-            ></MemberCard>
+              member={m}
+              onClick={() => setPledge(m)}
+            >
+              <MemberMessageStats memberId={m.id} viewerLevel={level} />
+            </MemberCard>
           </Lazy>
         ))}
       </SimpleGrid>
-      <MemberModal isOpen={isOpen} memberId={id as string} onClose={close}>
-        <UserSurveyAnswers userId={id as string} surveyId={pledgeSurvey} />
+      <MemberModal
+        isOpen={isOpen}
+        memberId={pledge?.id}
+        onClose={close}
+        size="xl"
+        childrenTitle="Pledge Survey Answers"
+        accordionItems={[
+          {
+            title: 'Pledge Survey Answers',
+            content: (
+              <UserSurveyAnswers
+                member={pledge}
+                surveyId={pledgeSurvey}
+                headingSize="sm"
+              />
+            )
+          }
+        ]}
+      >
+        <MemberMessageStats memberId={pledge?.id} viewerLevel={level} />
       </MemberModal>
       {meta.filtered == 0 && (
         <Container w="4xl" textAlign="center">

@@ -14,7 +14,7 @@ export default function MemberPage({ id }: { id: string }) {
 
   return (
     <Page hideHeader title={name} pt={10}>
-      <MemberSpotlight id={id} full />
+      <MemberSpotlight memberId={id} full />
     </Page>
   )
 }

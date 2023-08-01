@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useState } from 'react'
 
 import { AddToCalendarButton } from 'add-to-calendar-button-react'
 import { capitalCase } from 'change-case'
-import { differenceInDays, isAfter, isToday } from 'date-fns'
+import { differenceInDays, isAfter, isFuture, isToday } from 'date-fns'
 import { GroupEvent, Location } from 'lib/models'
 import { getEventDate, toLocalDate } from 'lib/utils'
 import Countdown from 'react-countdown'
@@ -79,8 +79,7 @@ export const EventCard = ({
     date: Date
     time: string
   }>()
-
-  let date = new Date(event.datetime)
+  const [date, setDate] = useState<Date>(undefined)
 
   const renderer = ({ days, hours, minutes, seconds, completed }) => {
     if (completed) return isToday(date) ? <h4>Event has started!</h4> : null
@@ -177,7 +176,7 @@ export const EventCard = ({
           >
             <Heading
               as="h3"
-              size={size || '2xl'}
+              size={size || ['lg', 'xl', '2xl', '3xl']}
               w="full"
               textAlign="center"
               color="white!important"
@@ -204,13 +203,13 @@ export const EventCard = ({
               p={0}
               color="white"
               justifyContent="middle"
-              fontSize={size || ['2xl', '3xl']}
+              fontSize={size || ['xl', '2xl']}
               whiteSpace="nowrap"
               fontWeight="extrabold"
             >
               {eventStartDate?.month.toUpperCase()}
             </Text>
-            <Text fontSize="4xl" color="white" m={0} p={0}>
+            <Text fontSize={['xl', '2xl', '4xl']} color="white" m={0} p={0}>
               {event.status == 'planned' && <>&nbsp;</>}
               {eventStartDate?.dayOfMonth}
               {event.status == 'planned' && <>*</>}
@@ -335,7 +334,7 @@ export const EventCard = ({
       </CardBody>
 
       {!hideFooter && (
-        <CardFooter>
+        <CardFooter as={Flex} direction="column">
           <Flex direction={['column', 'row']} gap={4} w="full" align="center">
             {event.status == 'scheduled' &&
               eventStartDate?.dateOnly &&
@@ -376,16 +375,14 @@ export const EventCard = ({
                 </>
               )}
             {footer}
-            <Spacer />
-            {(event.status == 'planned' && (
-              <>
-                <Text as="em">* This is date is subject to change.</Text>
-              </>
-            )) ||
-              (event.status == 'scheduled' && (
+          </Flex>
+          {(event.status == 'planned' && (
+            <Text as="em">* This is date is subject to change.</Text>
+          )) ||
+            (event.status == 'scheduled' &&
+              isFuture(eventEndDate?.date || new Date()) && (
                 <Countdown date={date} renderer={renderer} />
               ))}
-          </Flex>
         </CardFooter>
       )}
     </Card>

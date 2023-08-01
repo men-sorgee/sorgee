@@ -60,7 +60,7 @@ export default function BuddiesPage({}: PageProps) {
   }
 
   return (
-    <Page title="Buddies" loading={loading || isLoading} requireAuth={true}>
+    <Page title="Buddies" loading={loading || isLoading}>
       <Text mt={0} fontSize={['md', 'lg', 'xl']}>
         Buddies are guys you are want to keep in touch with. You can see their
         online status easily from here.

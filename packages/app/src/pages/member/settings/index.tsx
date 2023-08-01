@@ -61,9 +61,12 @@ export async function getServerSideProps(context) {
 }
 
 export default function SettingsPage(props: PageProps) {
-  const { member, loading } = useUser({ minLevel: MemberLevel.pledge })
+  const { member, loading } = useUser({
+    minLevel: MemberLevel.pledge,
+    redirectsEnabled: true
+  })
   return (
-    <Page title="Settings" loading={loading} requireAuth={true}>
+    <Page title="Settings" loading={loading}>
       {member && <SettingsForm {...props} />}
     </Page>
   )

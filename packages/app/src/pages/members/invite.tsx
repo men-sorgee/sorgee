@@ -12,10 +12,11 @@ import { Alert, AlertIcon, Button, Text, useToast } from '@chakra-ui/react'
 
 function Invite() {
   const { loading, member } = useUser({
-    minLevel: MemberLevel.brother
+    minLevel: MemberLevel.brother,
+    redirectsEnabled: true
   })
   return (
-    <Page title="Invite a Trusted Buddy" loading={loading} requireAuth={true}>
+    <Page title="Invite a Trusted Buddy" loading={loading}>
       {member && <Form member={member} />}
     </Page>
   )

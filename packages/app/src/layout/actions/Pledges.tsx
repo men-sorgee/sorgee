@@ -54,8 +54,9 @@ const PledgesAction = ({ member, active, iconSize, iconDimensions }: Props) => {
             zIndex="overlay"
             position="absolute"
             rounded="full"
-            px={2}
+            px={1.5}
             py={0.5}
+            fontSize={10}
           >
             {count}
           </Badge>

@@ -38,7 +38,8 @@ import ApplicationSteps from './_steps'
 function VerificationPage() {
   const { member, loading, reload } = useUser({
     minLevel: MemberLevel.applicant,
-    minAppStatus: ApplicationStatus.verify
+    minAppStatus: ApplicationStatus.verify,
+    redirectsEnabled: true
   })
   const [complete, setComplete] = useState(false)
   const router = useRouter()
@@ -58,7 +59,6 @@ function VerificationPage() {
     <Page
       title="Identification"
       loading={loading || complete}
-      requireAuth={true}
       header={<ApplicationSteps status={'verify'} />}
     >
       {member?.id && !complete && (

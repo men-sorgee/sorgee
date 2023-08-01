@@ -69,7 +69,7 @@ export default function PhotoAlbums({}: Props) {
   const privateImages = list.filter((image: PhotoItem) => !image.is_public)
 
   return (
-    <Page title="Your Photos" loading={loading} requireAuth={true}>
+    <Page title="Your Photos" loading={loading}>
       {member && (
         <>
           <Flex align="center" justify="center">

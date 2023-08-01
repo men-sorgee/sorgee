@@ -97,7 +97,9 @@ export default function UserMenu(_props: Props) {
                 </ButtonLink>
               )}
             <MenuButton cursor={'pointer'}>
-              {member && <MemberAvatar member={member} size="md" />}
+              {member && (
+                <MemberAvatar member={member} size={['sm', 'md', 'xl']} />
+              )}
             </MenuButton>
           </Flex>
           <MenuList bg="black" maxH="80vh" overflowY="auto" zIndex="10">
@@ -107,7 +109,7 @@ export default function UserMenu(_props: Props) {
               mt={0}
               bgGradient="linear(to-bl, primary.300, accent.300)"
             >
-              <MemberIcon member={member} />
+              <MemberIcon member={member} size={['sm', 'md', 'xl']} />
               <span id="account-email" hidden>
                 {member?.email}
               </span>

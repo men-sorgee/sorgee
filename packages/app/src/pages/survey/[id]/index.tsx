@@ -79,7 +79,8 @@ export const getServerSideProps = async (context) => {
 export default function SurveyPage({ survey, question, step }: Props) {
   const router = useRouter()
   const { loading: userLoading, member } = useUser({
-    minLevel: MemberLevel.pledge
+    minLevel: MemberLevel.pledge,
+    redirectsEnabled: true
   })
   const event = survey?.event as GroupEvent
 
@@ -155,7 +156,7 @@ export default function SurveyPage({ survey, question, step }: Props) {
     'horizontal'
   ])
   return (
-    <Page title={survey.name} loading={userLoading} requireAuth={true}>
+    <Page title={survey.name} loading={userLoading}>
       {member && survey && (
         <Flex
           gap={4}

@@ -65,17 +65,20 @@ function Layout({
   ])
   const headerRef = useRef<HTMLDivElement>(null)
 
-  const handleRouteChange = useCallback((url: string) => {
-    setHideFooter(url.startsWith('/members/chat') || url.endsWith('/ticket'))
-    setTimeout(() => {
-      if (headerRef.current != null) {
-        headerRef.current.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        })
-      }
-    }, 100)
-  }, [])
+  const handleRouteChange = useCallback(
+    (url: string) => {
+      setHideFooter(url.startsWith('/members/chat') || url.endsWith('/ticket'))
+      setTimeout(() => {
+        if (headerRef.current != null) {
+          headerRef.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          })
+        }
+      }, 100)
+    },
+    [hideFooter, router?.asPath]
+  )
 
   useEffect(() => {
     router.events.on('routeChangeComplete', handleRouteChange)
@@ -107,7 +110,7 @@ function Layout({
           flex="1 100%"
           direction="column"
           maxH={`calc(100vh - ${showActions ? '146px' : '75px'})`}
-          overflowY={hideFooter ? 'hidden' : 'auto'}
+          overflowY={'auto'}
           overflowX="hidden"
           w="full"
         >

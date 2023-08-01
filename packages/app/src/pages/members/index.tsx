@@ -184,13 +184,7 @@ export default function MemberListPage({ fields }: PageProps) {
   }, [onClose])
 
   return (
-    <Page
-      title={'Men Nearby'}
-      description={''}
-      loading={loading}
-      w="full"
-      requireAuth={true}
-    >
+    <Page title={'Men Nearby'} description={''} loading={loading} w="full">
       <FormProvider {...methods}>
         <form
           id="filter-form"

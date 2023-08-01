@@ -91,10 +91,11 @@ type FormProps = PageProps & {
 
 export default function AccountPage({ fieldMap, section }: PageProps) {
   const { member, loading, level, mutate } = useUser({
-    minLevel: MemberLevel.pledge
+    minLevel: MemberLevel.pledge,
+    redirectsEnabled: true
   })
   return (
-    <Page title="Account" loading={loading} requireAuth={true}>
+    <Page title="Account" loading={loading}>
       {member && (
         <AccountForm
           member={member}

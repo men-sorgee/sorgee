@@ -63,10 +63,11 @@ export async function getServerSideProps(context) {
 
 export default function ProfilePage({ fieldMap, section }: PageProps) {
   const { member, loading, level, mutate } = useUser({
-    minLevel: MemberLevel.pledge
+    minLevel: MemberLevel.pledge,
+    redirectsEnabled: true
   })
   return (
-    <Page title="Your Profile" loading={loading} requireAuth={true}>
+    <Page title="Your Profile" loading={loading}>
       {member && (
         <ProfileForm
           member={member}

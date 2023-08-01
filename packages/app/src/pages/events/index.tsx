@@ -64,7 +64,6 @@ export default function EventsPage({}: PageProps) {
       loading={loading || eventsLoading}
       title="Events"
       description="Upcoming events."
-      requireAuth={true}
       hideHeader
       pt={2}
     >
@@ -97,9 +96,7 @@ export default function EventsPage({}: PageProps) {
 
                 <EventRSVP
                   canConfirm={canConfirm}
-                  memberId={member?.id}
                   eventId={activeInvite.event.id}
-                  rsvp={activeInvite.rsvp}
                   onChange={onEventsChange}
                 />
                 <ButtonLink
@@ -290,9 +287,8 @@ function Invitations({
               )}
               <EventRSVP
                 canConfirm={canConfirm}
-                memberId={member.id}
                 eventId={invite.event.id}
-                rsvp={invite.rsvp}
+                invite={invite}
                 onChange={onChange}
                 mt={4}
               />

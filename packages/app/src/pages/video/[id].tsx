@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import Page from 'components/Page'
 import { useUser } from 'hooks'
 import { adminBaseUrl } from 'lib/config'
-import { DirectusFile } from 'lib/models'
+import { DirectusFile, MemberLevel } from 'lib/models'
 import { useRouter } from 'next/router'
 import Script from 'next/script'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
@@ -42,7 +42,10 @@ export default function VideoChat({
 }) {
   const router = useRouter()
   const chatRoom = useRef<HTMLElement>(null)
-  const { member, isStaff, loading, name, picture } = useUser()
+  const { member, isStaff, loading, name, picture } = useUser({
+    minLevel: MemberLevel.brother,
+    redirectsEnabled: true
+  })
   const [chatUrl, setChatUrl] = useState<string>(null)
   useEffect(() => {
     if (!loading && member && chatUrl == null) {
@@ -74,7 +77,7 @@ export default function VideoChat({
   const handle = useFullScreenHandle()
   handle
   return (
-    <Page title="Video Chat" requireAuth={true}>
+    <Page title="Video Chat">
       <Script
         id="whereby"
         strategy="lazyOnload"

@@ -25,6 +25,17 @@ export type RoomEvent = {
 
 //export type UserMessages = Record<string, Message[]>
 
+export type ConversationStats = {
+  id: string
+  name: string
+  picture: string
+  messageCount: number
+}
+
+export type UserMessageStats = {
+  conversations: Array<ConversationStats>
+}
+
 export type Conversation = {
   id: string
   status: 'active' | 'archived'
