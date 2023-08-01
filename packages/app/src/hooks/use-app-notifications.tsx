@@ -50,7 +50,7 @@ export function AppNotificationsProvider({
     error,
     isLoading
   } = useSWR<AppNotification[], Error>(key, JsonFetcher, {
-    refreshInterval: 1000 * 60 * 3, // 3 minutes
+    refreshInterval: 1000 * 60 * 10, // 3 minutes
     refreshWhenHidden: true,
     revalidateOnFocus: true,
     revalidateOnReconnect: true,

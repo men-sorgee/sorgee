@@ -10,20 +10,20 @@ type InviteAdminProps = {
     paid: boolean,
     signed_waiver: boolean
   ) => Promise<ApiResult<EventInvite>>
-  reload: () => void
+  reload: () => Promise<EventInvite>
 }
 
-export const useInviteAdmin = (id: string): InviteAdminProps => {
+export const useInviteAdmin = (inviteId: string): InviteAdminProps => {
   const {
     data: invite,
     mutate,
     isLoading
-  } = useSWR<EventInvite>(`/api/invite/${id}`, JsonFetcher, {
+  } = useSWR<EventInvite>(`/api/invite/${inviteId}`, JsonFetcher, {
     refreshWhenHidden: true,
     refreshWhenOffline: true,
     revalidateOnFocus: true,
     revalidateOnReconnect: true,
-    refreshInterval: 1000 * 60 * 10
+    isPaused: () => inviteId == undefined
   })
 
   return {
@@ -34,16 +34,16 @@ export const useInviteAdmin = (id: string): InviteAdminProps => {
         data: i,
         success,
         error
-      } = await postJSON<any, EventInvite>(`/api/invite/${id}/checkin`, {
+      } = await postJSON<any, EventInvite>(`/api/invite/${inviteId}/checkin`, {
         paid,
         signed_waiver
       })
       if (success) {
-        mutate(i)
+        await mutate(i)
       } else {
         throw new Error(error.message)
       }
-      return { data: i, success, error }
+      return { data: i, success, error } as ApiResult<EventInvite>
     },
     reload: () => mutate()
   }
