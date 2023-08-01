@@ -69,8 +69,10 @@ export function MessagesProvider({
     error,
     isLoading
   } = useSWR<UserMessages, Error>(key, JsonFetcher, {
-    refreshInterval: 1000 * 30, // 1 minutes
-    fallbackData: {}
+    refreshInterval: 1000 * 60, // 1 minute
+    refreshWhenHidden: true,
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true
   })
 
   const [conversations, setConversations] = useState<ChatConversation[]>([])

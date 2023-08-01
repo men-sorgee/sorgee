@@ -18,7 +18,7 @@ type Props = Omit<IconButtonProps, 'aria-label'> & {
   member: Partial<Member>
 }
 
-export const MemberChat = chakra(
+export const MemberMessages = chakra(
   ({ member, size = ['sm', 'md', 'lg'], ...props }: Props) => {
     const { loading: userLoading, level, member: me, hasFeature } = useUser()
     const { member: them, name, loading: memberLoading } = useMember(member.id)
