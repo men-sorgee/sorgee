@@ -45,7 +45,7 @@ export default function SubscriptionSuccessPage() {
   }, [member, loading, productId, router, productsLoading, products, product])
 
   return (
-    <Page title="Subscription Success" requireAuth loading={loading}>
+    <Page title="Subscription Success" loading={loading}>
       <Text>
         Thanks for contributing with your membership subscription. This money
         will go to help paying for the servers needed for all you horny fuckers.

@@ -48,6 +48,7 @@ export function ButtonConfirm<TResponse>({
   focusRef,
   icon,
   title,
+  py = 2,
   ...props
 }: ConfirmButtonProps<TResponse>) {
   const toast = useToast()
@@ -87,7 +88,13 @@ export function ButtonConfirm<TResponse>({
           {...props}
         />
       )) || (
-        <Button onClick={onOpen} aria-label={title} title={title} {...props}>
+        <Button
+          onClick={onOpen}
+          aria-label={title}
+          title={title}
+          py={py}
+          {...props}
+        >
           {buttonText}
         </Button>
       )}
