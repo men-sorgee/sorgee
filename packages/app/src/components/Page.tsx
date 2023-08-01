@@ -50,8 +50,7 @@ const Page = ({
       as="article"
       alignItems={'center'}
       justifyItems="stretch"
-      pl={full ? 0 : [1, 2]}
-      pr={full ? 0 : [1, 2]}
+      px={full ? 0 : [1, 2]}
       w="full"
       {...props}
     >

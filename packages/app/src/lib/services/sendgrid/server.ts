@@ -89,7 +89,7 @@ export async function sendNotificationEmail(
   notification_id: string = null,
   html: string = null
 ) {
-  body = await convertMarkdownToHtml(body) + html
+  body = await (await convertMarkdownToHtml(body)).replace('null', '') + html
 
   const email: MailDataRequired = {
     personalizations: [
