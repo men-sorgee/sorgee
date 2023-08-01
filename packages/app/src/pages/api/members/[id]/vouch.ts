@@ -5,6 +5,7 @@ import {
   getMember,
   getAppNotification,
   updateUser,
+  addUserToCongratsEmail,
 } from 'lib/services/directus/server'
 import {
   SendGridCategory,
@@ -51,29 +52,12 @@ export default async function VouchForMember(
       })
 
       // send congrats email
-      const congratsInducteeEmail = await getAppNotification(notifications.congratsEmail.inductee)
-      if (congratsInducteeEmail == null) throw new Error('Notification not found')
-
-      const { button_text, button_url, subject, body, data, template, category } =
-        congratsInducteeEmail
-      await sendNotificationEmail(
-        them.email,
-        them.first_name,
-        subject.replace('$NAME$', them.first_name),
-        body.replace('$NAME$', them.first_name),
-        {
-          ...data,
-          button_text,
-          button_url,
-          user_id: them.id,
-        },
-        template as SendGridTemplate,
-        category as SendGridCategory,
-        congratsInducteeEmail.id
-      )
+      await addUserToCongratsEmail(user_id, 'inductee')
 
       await addUserNotification(them.id, {
         message: `You have been vouched for by ${me.nickname}!`,
+        button_text: 'View Profile',
+        button_url: `/members/${me.id}`,
       })
 
       return res.status(200).json(
