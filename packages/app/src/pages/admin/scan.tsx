@@ -32,7 +32,10 @@ export default function Scanner() {
   const [show, setShow] = useState(true)
   const [url, setUrl] = useState<string>()
   const [stopStream, setStopStream] = useState(false)
-  const { member, loading } = useUser({ minLevel: MemberLevel.staff })
+  const { member, loading } = useUser({
+    minLevel: MemberLevel.staff,
+    redirectsEnabled: true
+  })
 
   const onScan = (err: string, result: { getText: () => any }) => {
     if (!err && result) {
@@ -55,7 +58,7 @@ export default function Scanner() {
 
   if (loading || typeof window == 'undefined' || !member) return null
   return (
-    <Page title="Scan" requireAuth={true}>
+    <Page title="Scan">
       <Flex direction="column">
         <>
           {url && (

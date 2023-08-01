@@ -1,19 +1,26 @@
-import { use, useCallback, useEffect, useRef, useState } from 'react'
+import { use, useCallback, useEffect, useRef, useState, useMemo } from 'react'
 import { isPast, isFuture, isBefore } from 'date-fns'
-import { ButtonLink, EventCard } from 'components/controls'
+import {
+  ButtonConfirm,
+  ButtonLink,
+  EventCard,
+  MemberAvatar
+} from 'components/controls'
 import Page from 'components/Page'
 import { useEvent, useUser } from 'hooks'
 import {
   EventDetail,
   EventStats,
   EventStatusType,
+  EventUser,
   Member,
   MemberLevel
 } from 'lib/models'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
+import { getAssetUrl } from 'lib/utils'
+import { ArrowBackIcon, CheckCircleIcon, CheckIcon } from '@chakra-ui/icons'
 
-import { ArrowBackIcon, CheckIcon } from '@chakra-ui/icons'
 import {
   Alert,
   AlertIcon,
@@ -25,6 +32,9 @@ import {
   HStack,
   Input,
   Link,
+  List,
+  ListItem,
+  ListIcon,
   SimpleGrid,
   Spacer,
   Stat,
@@ -37,6 +47,9 @@ import {
 
 export default function EventAdmin() {
   const router = useRouter()
+  const toast = useToast()
+  const { id, error } = router.query
+  const eventId = String(id)
   const {
     member,
     authorized,
@@ -45,13 +58,12 @@ export default function EventAdmin() {
     minLevel: MemberLevel.staff,
     redirectsEnabled: true
   })
-
+  const { event, loading: eventLoading, closeEvent } = useEvent(eventId, true)
   const [fees, setFees] = useState<number>()
-  const eventId = router.query.id as string
-  const { event, loading: eventLoading, closeEvent } = useEvent(eventId)
   const [stats, setStats] = useState<EventStats>()
-  const { error } = router.query
-  const toast = useToast()
+  const [collected, setCollected] = useState<number>(0)
+  const emailRef = useRef<HTMLInputElement>(null)
+
   useEffect(() => {
     if (!eventLoading && event && event.stats && !fees) {
       setFees(event.stats.paid_count * event.cost)
@@ -68,63 +80,26 @@ export default function EventAdmin() {
     stats
   ])
 
-  const getAttendees = (rsvp: string) => {
-    return event.attendance
-      ?.filter((u) => u.rsvp == rsvp)
-
-      .map((u) => {
-        const user = u.users_id as Member
-        const picture = user.picture as string
-        const name = `${user.first_name} ${user.last_name} (${user.nickname})`
-        const src = picture ? '/api/asset/' + picture : undefined
-        return {
-          id: u.id,
-          name,
-          rsvp: u.rsvp,
-          attended: u.attended,
-          src
-        }
-      })
-  }
-  const emailRef = useRef<HTMLInputElement>(null)
-  const emailCheckin = () => {
-    const email = emailRef.current.value
+  const getCheckinLink = (email: string) => {
     if (email) {
-      location.href = `/api/events/${event.id}/checkin?email=${email}`
+      return `/api/events/${event?.id}/checkin?email=${email}`
     }
+    return '/admin/events/' + event?.id
   }
 
   useEffect(() => {
-    // do nothing
-  }, [event, member])
+    if (!eventLoading && event && event.attendance) {
+      setCollected(
+        event?.cost * event?.attendance.filter((a) => a.paid).length || 0
+      )
+    }
+  }, [event, event?.attendance, member, eventLoading])
 
-  const closeEventClicked = useCallback(() => {
-    closeEvent().then(
-      ({ success, noShows }: { success: boolean; noShows: number }) => {
-        if (success) {
-          toast({
-            title: 'Event Closed',
-            description:
-              'The event has been closed. No shows were rated and notified. A survey was created for the event, along with a notification for each of the attendees.',
-            status: 'success',
-            duration: 5000,
-            isClosable: true
-          })
-        }
-      }
-    )
-  }, [closeEvent, toast])
-
-  const collected =
-    event?.cost * event?.attendance.filter((a) => a.paid).length || 0
+  const confirmedAttendees = getAttendees(event?.attendance, 'confirmed')
+  const maybeAttendees = getAttendees(event?.attendance, 'maybe')
 
   return (
-    <Page
-      title={'Event Admin'}
-      loading={userLoading && eventLoading}
-      requireAuth={true}
-      requiredLevel={MemberLevel.staff}
-    >
+    <Page title={'Event Admin'} loading={userLoading || eventLoading}>
       {error && (
         <Alert status="error" size="lg">
           <AlertIcon />
@@ -136,7 +111,12 @@ export default function EventAdmin() {
           event={event}
           showDescription={false}
           footer={
-            <Flex w="full" gap={3}>
+            <Flex
+              direction={['column', 'column', 'row']}
+              w="full"
+              gap={2}
+              justify="stretch"
+            >
               {event.status == EventStatusType.Scheduled &&
                 isBefore(new Date(), new Date(event.datetime_end)) && (
                   <>
@@ -145,30 +125,83 @@ export default function EventAdmin() {
                       colorScheme="primary"
                       href="/admin/scan"
                       color="white"
+                      w={['full', 'auto']}
                     >
-                      Scan Invite
+                      Scan
                     </ButtonLink>
                     <Spacer />
-                    <Input
-                      rounded={'md'}
-                      p={1}
-                      w="30%"
-                      name="email"
-                      ref={emailRef}
-                      size="sm"
-                    />
-                    <Button size={'sm'} onClick={() => emailCheckin()}>
-                      Email Checkin
-                    </Button>
+                    <HStack spacing={1} w={['full', 'fit-content']}>
+                      <Input
+                        type="email"
+                        rounded="full"
+                        p={1}
+                        name="email"
+                        ref={emailRef}
+                        size={['sm', 'md']}
+                        required
+                        placeholder="Email Address"
+                        flex={1}
+                      />
+                      <ButtonLink
+                        w={'auto'}
+                        href={getCheckinLink(emailRef?.current?.value)}
+                        size={['sm', 'md']}
+                      >
+                        Checkin
+                      </ButtonLink>
+                    </HStack>
                   </>
                 )}
               <Spacer />
 
               {event.status == EventStatusType.Scheduled &&
-                isPast(new Date(event.datetime_end)) && (
-                  <Button bg="red.500" onClick={closeEventClicked}>
-                    Close Event
-                  </Button>
+                isPast(new Date(event.datetime)) && (
+                  <ButtonConfirm
+                    bg="red.500"
+                    color="white"
+                    promise={closeEvent}
+                    alertTitle="Close"
+                    complete={(success) => {
+                      if (success) {
+                        toast({
+                          title: 'Event Closed',
+                          description:
+                            'The event has been closed. No shows were rated and notified. A survey was created for the event, along with a notification for each of the attendees.',
+                          status: 'success',
+                          duration: 5000,
+                          isClosable: true
+                        })
+                      }
+                    }}
+                    successMessage="Event Closed"
+                    failureMessage="Event could not be closed."
+                    buttonText="Close"
+                  >
+                    <>
+                      <Heading as="h4" size="md" mt={0}>
+                        Are you sure you want to close this event out?
+                      </Heading>
+                      <Text>This will perform the following:</Text>
+                      <List>
+                        <ListItem>
+                          <ListIcon as={CheckCircleIcon} color="green.500" />
+                          Set the status of the event to occurred.
+                        </ListItem>
+                        <ListItem>
+                          <ListIcon as={CheckCircleIcon} color="green.500" />
+                          Create a survey for the event.
+                        </ListItem>
+                        <ListItem>
+                          <ListIcon as={CheckCircleIcon} color="green.500" />
+                          Create a notification for each attendee.
+                        </ListItem>
+                        <ListItem>
+                          <ListIcon as={CheckCircleIcon} color="green.500" />
+                          Create a notification for each no-show.
+                        </ListItem>
+                      </List>
+                    </>
+                  </ButtonConfirm>
                 )}
             </Flex>
           }
@@ -212,46 +245,12 @@ export default function EventAdmin() {
               </>
             )}
           </SimpleGrid>
-          <Heading as="h3" size="h3">
-            Confirmed
-          </Heading>
-          <Wrap>
-            {getAttendees('confirmed').map(({ id, name, src, attended }) => (
-              <Box key={id} position="relative">
-                <Avatar
-                  opacity={attended ? 1 : 0.5}
-                  name={name}
-                  src={src}
-                  title={name}
-                />
-                {attended && (
-                  <CheckIcon
-                    color="green"
-                    boxSize={8}
-                    position="absolute"
-                    ml={-6}
-                  />
-                )}
-              </Box>
-            ))}
-          </Wrap>
-          <Heading as="h3" size="h3">
-            Maybe
-          </Heading>
-          <Wrap>
-            {getAttendees('maybe').map(({ id, name, src, attended }) => (
-              <Box key={id} position="relative">
-                <Avatar
-                  key={id}
-                  opacity={attended ? 1 : 0.5}
-                  name={name}
-                  src={src}
-                  title={name}
-                />
-                {attended && <CheckIcon boxSize={6} />}
-              </Box>
-            ))}
-          </Wrap>
+          <UserList
+            title="Confirmed"
+            attendees={confirmedAttendees}
+            event={event}
+          />
+          <UserList title="Maybe" attendees={maybeAttendees} event={event} />
         </EventCard>
       )}
       <HStack spacing={4} my={4}>
@@ -264,5 +263,80 @@ export default function EventAdmin() {
         </Link>
       </HStack>
     </Page>
+  )
+}
+
+const getAttendees = (attendance: EventUser[], rsvp: string) => {
+  return (
+    attendance
+      ?.filter((u) => u.rsvp == rsvp)
+      .map((u) => {
+        const user = u.users_id as Member
+        const picture = user.picture as string
+        const name = `${user.first_name} ${user.last_name} (${user.nickname})`
+        const src = getAssetUrl(picture)
+        const email = user.email
+        return {
+          id: u.id,
+          name,
+          rsvp: u.rsvp,
+          attended: u.attended,
+          email,
+          src,
+          user
+        }
+      }) || []
+  )
+}
+
+const UserList = ({ title, attendees, event }) => {
+  if (attendees.length == 0) return null
+  return (
+    <>
+      <Heading as="h3" size="h3">
+        {title}
+      </Heading>
+      <Wrap>
+        {attendees.map(({ id, name, src, attended, email, user }) => (
+          <Flex
+            key={id}
+            as="div"
+            direction="column"
+            align="center"
+            position="relative"
+            maxW="50px"
+            cursor={attended ? 'default' : 'pointer'}
+            title={attended ? name : `Click to check ${name} in`}
+          >
+            <Link
+              as={NextLink}
+              href={
+                attended
+                  ? `/admin/event/${event.id}`
+                  : `/api/events/${event.id}/checkin?email=${email}`
+              }
+            >
+              <MemberAvatar
+                member={user}
+                opacity={attended ? 1 : 0.5}
+                name={name}
+                src={src}
+              />
+            </Link>
+            {attended && (
+              <CheckIcon
+                color="green"
+                boxSize={8}
+                position="absolute"
+                ml={-6}
+              />
+            )}
+            <Box as="strong" fontSize="xs">
+              {name}
+            </Box>
+          </Flex>
+        ))}
+      </Wrap>
+    </>
   )
 }

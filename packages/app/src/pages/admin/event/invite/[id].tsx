@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import {
+  Form,
   ButtonLink,
-  Loading,
   MemberBadge,
   PhotoCapture,
   Page,
-  FieldSwitch
+  FieldSwitch,
+  MemberAvatar
 } from 'components'
 import { useUser, useInviteAdmin } from 'hooks'
-import { GroupEvent, MemberLevel, Member } from 'lib/models'
+import { GroupEvent, MemberLevel, Member, EventInvite } from 'lib/models'
 import { getAssetUrl } from 'lib/utils'
 import { FormProvider, useForm } from 'react-hook-form'
 import {
@@ -22,7 +23,8 @@ import {
   Heading,
   HStack,
   Text,
-  useToast
+  useToast,
+  VStack
 } from '@chakra-ui/react'
 
 type FormProps = {
@@ -36,15 +38,16 @@ type FormProps = {
 export default function InviteAdmin() {
   const router = useRouter()
   const { id } = router.query
+  const inviteId = String(id)
   const { loading } = useUser({
     minLevel: MemberLevel.staff,
     redirectsEnabled: true
   })
+
   const [user, setUser] = useState<Member>(undefined)
   const [event, setEvent] = useState<GroupEvent>(undefined)
   const [camera, setCamera] = useState(false)
   const [picture, setPicture] = useState<string>(undefined)
-  const toast = useToast()
   const [working, setWorking] = useState(false)
 
   const {
@@ -52,7 +55,7 @@ export default function InviteAdmin() {
     loading: inviteLoading,
     checkin,
     reload
-  } = useInviteAdmin(String(id))
+  } = useInviteAdmin(inviteId)
 
   useEffect(() => {
     if (
@@ -69,17 +72,12 @@ export default function InviteAdmin() {
     }
   }, [inviteLoading, invite, setUser, setEvent, loading, user, event])
 
-  const methods = useForm<FormProps>({
-    mode: 'onBlur',
-    defaultValues: {
-      id: invite?.id,
-      user_id: user?.id,
-      signed_waiver: user?.signed_waiver,
-      paid: invite?.paid
-    }
-  })
-
-  const { setError, handleSubmit, watch } = methods
+  const defaultValues = {
+    id: invite?.id,
+    user_id: user?.id,
+    signed_waiver: user?.signed_waiver,
+    paid: invite?.paid
+  }
 
   const takePhoto = useCallback(
     (data: string) => {
@@ -105,52 +103,11 @@ export default function InviteAdmin() {
         )
       }
 
-      const { success, error } = await checkin(paid, signed_waiver)
-
-      if (success) {
-        toast({
-          title: 'Invite Updated',
-          position: 'bottom',
-          description: 'The user is checked in.',
-          status: 'success',
-          duration: 2000,
-          isClosable: true,
-          onCloseComplete: () => {
-            reload()
-            router.push('/admin/event/' + event.id)
-            setWorking(false)
-          }
-        })
-      } else if (error?.field) {
-        setError(error!.field as any, error.message as any)
-        setWorking(false)
-      } else {
-        toast({
-          title: 'Something went wrong.',
-          position: 'bottom',
-          description: 'Please try again later.',
-          status: 'error',
-          duration: 5000,
-          isClosable: true
-        })
-        setWorking(false)
-      }
+      return checkin(paid, signed_waiver)
     },
-    [
-      checkin,
-      event?.id,
-      picture,
-      reload,
-      router,
-      setError,
-      toast,
-      user?.email,
-      user?.id
-    ]
+    [checkin, picture, user?.email, user?.id]
   )
-  const paid = watch('paid')
-  const signed_waiver = watch('signed_waiver')
-  const ready = picture && signed_waiver && (invite?.guest || paid)
+
   const visible = (show: boolean) => (show ? 'flex' : 'none')
 
   return (
@@ -158,89 +115,101 @@ export default function InviteAdmin() {
       title={`Check-in`}
       description="Invite Admin"
       loading={loading || inviteLoading}
-      requireAuth={true}
     >
-      {(invite && (
-        <FormProvider {...methods}>
-          <form
-            onSubmit={handleSubmit(updateInvite)}
-            style={{ marginTop: '2rem' }}
-          >
-            {(!working && (
+      <Form<FormProps, EventInvite>
+        onSubmit={updateInvite}
+        onSuccess={() =>
+          reload().then(() => router.push(`/admin/event/${event?.id}`))
+        }
+        defaultValues={defaultValues}
+        successMessage="The invite was successfully updated."
+      >
+        {({ formState: { isValid, isSubmitting }, register }) => (
+          <>
+            <Flex
+              mt={2}
+              direction={['column', 'column', 'row']}
+              alignItems="center"
+              justifyItems="center"
+              display={visible(!camera)}
+              gap={4}
+              w="full"
+              p={4}
+              border="1px solid"
+              borderColor="text"
+              shadow="lg"
+              rounded="lg"
+              my={4}
+            >
               <Flex
-                direction={['column', 'column', 'row']}
+                direction="row"
+                gap={2}
                 alignItems="center"
                 justifyItems="center"
-                display={visible(!camera)}
-                gap={4}
-                w="full"
-                p={4}
-                border="1px solid"
-                borderColor="text"
-                shadow="lg"
-                rounded="lg"
-                my={4}
               >
-                <Flex
-                  direction="row"
-                  gap={8}
-                  alignItems="center"
-                  justifyItems="center"
-                >
-                  <Avatar
-                    id={user.id}
-                    src={picture}
-                    size="2xl"
-                    color="white"
-                    bg="primary.300"
-                    title="Change Photo"
-                    onClick={() => setCamera(true)}
-                    _hover={{ cursor: 'pointer' }}
-                  />
-                  <Box>
-                    <Heading
-                      size={['sm', 'sm', 'md']}
-                      textTransform="uppercase"
-                      m={0}
-                    >
-                      {user?.first_name} {user?.last_name} <br />
-                      RSVP: {invite?.rsvp}
-                    </Heading>
-                    <MemberBadge size="lg" member={user} />
-                    <Text fontSize="xs" color="gray.500">
-                      <a href={'mailto:' + user?.email}>{user?.email}</a>
-                    </Text>
-                  </Box>
-                </Flex>
+                <MemberAvatar
+                  member={user}
+                  id={user?.id}
+                  size="xl"
+                  title="Change Photo"
+                  onClick={() => setCamera(true)}
+                  cursor="pointer"
+                />
+                <Box>
+                  <Heading
+                    size={['sm', 'sm', 'md']}
+                    textTransform="uppercase"
+                    mt={0}
+                    mb={2}
+                  >
+                    {user?.first_name} {user?.last_name}
+                  </Heading>
+                  <MemberBadge size="lg" member={user} />
+                  <Text fontSize="xs" color="gray.500">
+                    <a href={'mailto:' + user?.email}>{user?.email}</a>
+                  </Text>
+                </Box>
+              </Flex>
 
-                <Flex
-                  direction={['column', 'column', 'row']}
-                  w={[null, '50%', '30%']}
-                  justifyItems="space-between"
-                  align="center"
-                  mx="auto"
+              <Flex
+                direction={['column', 'column', 'row']}
+                w={[null, null, '30%']}
+                justifyItems="space-between"
+                align="center"
+                mx="auto"
+                gap={2}
+              >
+                {!invite?.attended && !invite?.guest && (
+                  <FieldSwitch
+                    field="paid"
+                    label="Paid"
+                    size="lg"
+                    registerOptions={{
+                      required: 'Member must pay'
+                    }}
+                  />
+                )}
+                {!invite?.attended && !user?.signed_waiver && (
+                  <FieldSwitch
+                    field="signed_waiver"
+                    label="Signed"
+                    size="lg"
+                    registerOptions={{
+                      required: 'Waiver must be signed'
+                    }}
+                  />
+                )}
+              </Flex>
+              <VStack align="center">
+                <Heading
+                  as="h4"
+                  fontSize="h6"
+                  textTransform="capitalize"
+                  p={0}
+                  m={0}
                 >
-                  {!invite.attended && invite?.guest == false && (
-                    <FieldSwitch
-                      field="paid"
-                      label="Paid"
-                      size="lg"
-                      registerOptions={{
-                        required: 'Member must pay'
-                      }}
-                    />
-                  )}
-                  {user?.signed_waiver == false && (
-                    <FieldSwitch
-                      field="signed_waiver"
-                      label="Signed"
-                      size="lg"
-                      registerOptions={{
-                        required: 'Waiver must be signed'
-                      }}
-                    />
-                  )}
-                </Flex>
+                  {invite?.rsvp}
+                </Heading>
                 {(picture && (
                   <Button
                     type="submit"
@@ -248,7 +217,8 @@ export default function InviteAdmin() {
                     colorScheme={'accent'}
                     p={8}
                     size="xl"
-                    disabled={working || !ready}
+                    w="full"
+                    disabled={!isValid || isSubmitting}
                   >
                     Check In
                   </Button>
@@ -261,6 +231,7 @@ export default function InviteAdmin() {
                     onClick={() => {
                       setCamera(true)
                     }}
+                    w="full"
                   >
                     Take Picture
                   </Button>
@@ -279,36 +250,36 @@ export default function InviteAdmin() {
                     </Text>
                   </Alert>
                 )}
-              </Flex>
-            )) || <Loading />}
-            {camera && (
-              <Box display={visible(camera)} w="full">
-                <PhotoCapture onAccept={takePhoto} facingMode="environment" />
-              </Box>
-            )}
-            {user?.needs_guidance && (
-              <Alert size="xl" status="warning" rounded="lg" shadow="lg">
-                <AlertIcon />
-                <Text fontSize="lg" m={0}>
-                  User needs guidance
-                </Text>
-              </Alert>
-            )}
-            <HStack spacing={4}>
-              <ButtonLink
-                colorScheme="gray"
-                href={'/admin/event/' + event?.id}
-                my={4}
-              >
-                Return to Event
-              </ButtonLink>
-              <ButtonLink colorScheme="primary" href="/admin/scan" my={4}>
-                Scan Another
-              </ButtonLink>
-            </HStack>
-          </form>
-        </FormProvider>
-      )) || <Text>Invite not found</Text>}
+              </VStack>
+            </Flex>
+          </>
+        )}
+      </Form>
+      {camera && (
+        <Box display={visible(camera)} w="full">
+          <PhotoCapture onAccept={takePhoto} facingMode="environment" />
+        </Box>
+      )}
+      {user?.needs_guidance && (
+        <Alert size="xl" status="warning" rounded="lg" shadow="lg">
+          <AlertIcon />
+          <Text fontSize="lg" m={0}>
+            User needs guidance
+          </Text>
+        </Alert>
+      )}
+      <HStack spacing={4}>
+        <ButtonLink
+          colorScheme="gray"
+          href={'/admin/event/' + event?.id}
+          my={4}
+        >
+          Return to Event
+        </ButtonLink>
+        <ButtonLink colorScheme="primary" href="/admin/scan" my={4}>
+          Scan Another
+        </ButtonLink>
+      </HStack>
     </Page>
   )
 }

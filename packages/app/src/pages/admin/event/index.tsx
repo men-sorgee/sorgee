@@ -1,11 +1,8 @@
 import { EventCard } from 'components/controls'
 import Page from 'components/Page'
-import { useUser } from 'hooks'
+import { useEventsAdmin, useUser } from 'hooks'
 import { EventUser, GroupEvent, MemberLevel } from 'lib/models'
-import { GetServerSidePropsResult, NextPageContext } from 'next'
-import { getServerSession } from 'next-auth/next'
 import Link from 'next/link'
-
 import {
   Heading,
   LinkBox,
@@ -20,63 +17,46 @@ import {
   TabPanels,
   Tabs
 } from '@chakra-ui/react'
+import { useEffect, useState } from 'react'
+import { isToday, isAfter } from 'date-fns'
 
-type Props = {
-  events: (GroupEvent & { moment?: any })[]
-}
-export async function getServerSideProps(
-  context: NextPageContext
-): Promise<GetServerSidePropsResult<Props>> {
-  const { authOptions } = await import('lib/auth/config')
-  const { req, res } = context
-  const session = await getServerSession(req as any, res, authOptions)
-  if (!session || session.user.userType != 'staff') {
-    return {
-      redirect: {
-        destination: '/auth/signin',
-        permanent: false
-      }
-    }
-  }
-  const { listAdminEvents } = await import(
-    'lib/services/directus/server/events'
-  )
-  const events = await listAdminEvents()
-  return { props: { events } }
-}
-
-export default function AdminEventList({ events }: Props) {
+export default function AdminEventList() {
+  const [eventList, setEventsList] = useState<
+    Array<GroupEvent & { date: Date }>
+  >([])
   const { loading } = useUser({
     minLevel: MemberLevel.staff,
     redirectsEnabled: true
   })
-  const eventList =
-    events?.map((event) => {
-      const date = new Date(new Date(event.datetime).toDateString())
-      return {
-        ...event,
-        date
-      }
-    }) || []
+  const { events, loading: eventsLoading } = useEventsAdmin()
+
+  useEffect(() => {
+    if (!eventsLoading && events && eventList.length == 0) {
+      setEventsList(
+        events?.map((event) => {
+          const date = new Date(event.datetime)
+          return {
+            ...event,
+            date
+          }
+        })
+      )
+    }
+  }, [eventsLoading, events, eventList?.length])
+
   const today = new Date(new Date().toDateString())
 
-  let upcoming = eventList?.filter((event) => event.date >= today)
+  let upcoming = eventList?.filter((event) => isAfter(today, event.date))
   upcoming = upcoming.sort((a, b) => {
-    const dateA = new Date(a.datetime).getTime()
-    const dateB = new Date(b.datetime).getTime()
-    return dateA - dateB
+    return a.date.getTime() - b.date.getTime()
   })
 
   let past = eventList?.filter((event) => event.date < today)
   past = past.sort((a, b) => {
-    const dateA = new Date(a.datetime).getTime()
-    const dateB = new Date(b.datetime).getTime()
-    return dateB - dateA
+    return b.date.getTime() - a.date.getTime()
   })
 
-  const activeEvent = eventList?.find(
-    (event) => Number(event.date) == Number(today)
-  )
+  const activeEvent = eventList?.find((event) => isToday(event.date))
 
   const getCollected = (event: GroupEvent) => {
     const users = event.users as EventUser[]
@@ -91,12 +71,7 @@ export default function AdminEventList({ events }: Props) {
   }
 
   return (
-    <Page
-      title="Event Admin"
-      requireAuth={true}
-      requiredLevel={MemberLevel.staff}
-      loading={loading}
-    >
+    <Page title="Event Admin" loading={loading}>
       <Tabs isFitted m={0}>
         <TabList>
           {activeEvent && <Tab>Active</Tab>}
