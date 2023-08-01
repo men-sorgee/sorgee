@@ -57,7 +57,7 @@ export default async function VouchForMember(
       await addUserNotification(them.id, {
         message: `You have been vouched for by ${me.nickname}!`,
         button_text: 'View Profile',
-        button_url: `/members/${me.id}`,
+        button_url: `/member/${me.id}`,
       })
 
       return res.status(200).json(
