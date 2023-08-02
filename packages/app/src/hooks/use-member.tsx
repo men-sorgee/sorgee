@@ -15,7 +15,7 @@ type MemberResults = {
 
 export const useMember = (
   id: string,
-  refreshIntervalMinutes: number = 1
+  refreshIntervalMinutes: number = 10
 ): MemberResults => {
   const {
     data: member,

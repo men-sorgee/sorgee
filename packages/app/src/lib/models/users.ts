@@ -72,6 +72,9 @@ export type UserView = {
   id: string
   user_id: string
   viewed_id: string
+  count: number
+  date_created: string
+  date_updated: string
 }
 
 export type UserBlock = {

@@ -49,6 +49,7 @@ export default async function Member(
 
     switch (method) {
       case 'GET': {
+
         if (level < MemberLevel.staff && !me) {
           if (!user.show_profile) {
             return res.status(404).json(ApiResponse(null, 'Not found'))
@@ -63,7 +64,7 @@ export default async function Member(
 
           await addUserView(viewer.id, user_id)
         }
-
+        res.setHeader('Cache-Control', 'cache, store, max-age=1')
         return res.status(200).json(ApiResponse(user))
       }
       case 'POST': {
