@@ -16,14 +16,12 @@ export const useStripeSession = (sessionId: string): ProductResults => {
     error,
     isLoading
   } = useSWR<Stripe.Checkout.Session, Error>(
-    `/api/stripe/session/${sessionId}`,
-    JsonFetcher,
+    sessionId ? `/api/stripe/session/${sessionId}` : null,
     {
       refreshWhenHidden: false,
       refreshWhenOffline: false,
       revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      isPaused: () => sessionId == null
+      revalidateOnReconnect: false
     }
   )
 

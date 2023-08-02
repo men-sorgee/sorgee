@@ -3,6 +3,7 @@ import { EventInvite } from 'lib/models'
 import { JsonFetcher } from 'lib/utils'
 import { isAfter, isToday } from 'date-fns'
 import useSWR from 'swr'
+import { useAuthenticated } from './use-authenticated'
 
 type InvitesResults = {
   invitations: EventInvite[]
@@ -16,16 +17,13 @@ type InvitesResults = {
 }
 
 export const useInvites = (): InvitesResults => {
+  const { authenticated } = useAuthenticated()
   const {
     data: invites = [],
     mutate,
     error,
     isLoading
-  } = useSWR<EventInvite[], Error>(`/api/my/invites`, JsonFetcher, {
-    refreshWhenHidden: true,
-    refreshWhenOffline: true,
-    revalidateOnFocus: true,
-    revalidateOnReconnect: true,
+  } = useSWR<EventInvite[], Error>(authenticated ? `/api/my/invites` : null, {
     refreshInterval: 1000 * 60 * 10,
     fallbackData: []
   })

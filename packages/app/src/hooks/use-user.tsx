@@ -1,11 +1,5 @@
 'use client'
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState
-} from 'react'
+import { createContext, ReactNode, useContext, useEffect } from 'react'
 
 import {
   ApplicationStatus,
@@ -15,9 +9,10 @@ import {
   MembershipType
 } from 'lib/models'
 import { ApiResult, getAssetUrl, JsonFetcher, postJSON } from 'lib/utils'
-import { signIn, useSession } from 'next-auth/react'
+import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import useSWR from 'swr'
+import { useAuthenticated } from './use-authenticated'
 
 export type UserContextData = {
   member: Member | null
@@ -57,23 +52,14 @@ export const UserContext = createContext<UserContextData>({
 
 export function UserProvider({ children }: { children: ReactNode }) {
   const key = `/api/me`
-  const { status } = useSession()
-  const [authenticated, setAuthenticated] = useState(false)
-
-  useEffect(() => {
-    if (status === 'authenticated') {
-      setAuthenticated(true)
-    } else {
-      setAuthenticated(false)
-    }
-  }, [status])
+  const { authenticated } = useAuthenticated()
 
   const {
     data: member,
     mutate: _mutate,
     error,
     isLoading: loading
-  } = useSWR<Member, Error>(key, JsonFetcher, {
+  } = useSWR<Member, Error>(authenticated ? key : null, JsonFetcher, {
     revalidateIfStale: true,
     revalidateOnFocus: true,
     revalidateOnReconnect: true,

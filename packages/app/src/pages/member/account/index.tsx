@@ -1,4 +1,4 @@
-import { useUser } from 'hooks'
+import { useFields, useUser } from 'hooks'
 import { useCallback, useState } from 'react'
 import {
   Alert,
@@ -46,11 +46,8 @@ export async function getServerSideProps(context) {
       }
     }
   const { section } = context.params
-  const { getFields } = await import('lib/services/directus/server')
-  const fieldMap = await getFields('users')
-  const props: PageProps = {
-    fieldMap
-  }
+
+  const props: PageProps = {}
   if (section) {
     props.section = String(section)
   }
@@ -60,7 +57,6 @@ export async function getServerSideProps(context) {
 }
 
 export type PageProps = {
-  fieldMap: FieldMap
   section?: string
 }
 
@@ -89,7 +85,8 @@ type FormProps = PageProps & {
   mutate: (member: Member) => Promise<ApiResult<Member>>
 }
 
-export default function AccountPage({ fieldMap, section }: PageProps) {
+export default function AccountPage({ section }: PageProps) {
+  const { fields: fieldMap, loading: fieldsLoading } = useFields('users')
   const { member, loading, level, mutate } = useUser({
     minLevel: MemberLevel.pledge,
     redirectsEnabled: true
@@ -109,7 +106,10 @@ export default function AccountPage({ fieldMap, section }: PageProps) {
   )
 }
 
-const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps) => {
+const AccountForm = ({
+  fieldMap,
+  section: s = 'info'
+}: FormProps & { fieldMap: FieldMap }) => {
   const router = useRouter()
   const section = PageSection[s]
   const [tabValue, setTabValue] = useState(section)

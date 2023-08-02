@@ -32,13 +32,9 @@ export const useInvite = (
     data: invite,
     mutate,
     isLoading
-  } = useSWR<EventInvite>(`/api/events/${eventId}/rsvp`, JsonFetcher, {
-    refreshWhenHidden: true,
-    refreshWhenOffline: true,
-    revalidateOnFocus: true,
-    revalidateOnReconnect: true,
+  } = useSWR<EventInvite>(eventId ? `/api/events/${eventId}/rsvp` : null, {
     fallbackData: invitation,
-    isPaused: () => eventId == undefined
+    keepPreviousData: false
   })
 
   useEffect(() => {
@@ -65,11 +61,10 @@ export const useInvite = (
           reason
         }
       )
-      if (success) {
-        mutate(i)
-      } else {
-        throw new Error(error.message)
+      if (!success) {
+        console.error(error)
       }
+      await mutate(i)
       return {
         data: i,
         success,

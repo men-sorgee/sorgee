@@ -10,7 +10,7 @@ import {
   Form
 } from 'components/forms'
 import Page from 'components/Page'
-import { useUser } from 'hooks/use-user'
+import { useUser, useFields } from 'hooks'
 import { FieldMap, Member, MemberLevel } from 'lib/models'
 
 import {
@@ -34,7 +34,6 @@ import {
 import { LocationCapture } from '../../../components/controls/LocationCapture'
 
 export type PageProps = {
-  fieldMap: FieldMap
   section?: string
 }
 
@@ -47,11 +46,8 @@ export async function getServerSideProps(context) {
       }
     }
   const { section } = context.params
-  const { getFields } = await import('lib/services/directus/server')
-  const fieldMap = await getFields('users')
-  const props: PageProps = {
-    fieldMap
-  }
+
+  const props: PageProps = {}
   if (section) {
     props.section = String(section)
   }
@@ -61,13 +57,14 @@ export async function getServerSideProps(context) {
 }
 
 export default function SettingsPage(props: PageProps) {
+  const { fields: fieldMap, loading: fieldsLoading } = useFields('users')
   const { member, loading } = useUser({
     minLevel: MemberLevel.pledge,
     redirectsEnabled: true
   })
   return (
-    <Page title="Settings" loading={loading}>
-      {member && <SettingsForm {...props} />}
+    <Page title="Settings" loading={loading || fieldsLoading}>
+      {member && <SettingsForm fieldMap={fieldMap} {...props} />}
     </Page>
   )
 }
@@ -110,7 +107,10 @@ enum PageSection {
   location
 }
 
-function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps) {
+function SettingsForm({
+  fieldMap,
+  section: s = 'contact'
+}: PageProps & { fieldMap: FieldMap }) {
   const router = useRouter()
   const section = PageSection[s]
   const [tabValue, setTabValue] = useState(section)

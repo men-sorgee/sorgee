@@ -30,10 +30,7 @@ function useMemberSearch(
       query
     ).toString()}`
   )
-  const { data: response, error } = useSWR<ManyItems<Partial<Profile>>>(
-    key,
-    JsonFetcher
-  )
+  const { data: response, error } = useSWR<ManyItems<Partial<Profile>>>(key)
   const [meta, setMeta] = useState<{ total: number; filtered: number }>({
     total: 0,
     filtered: 0

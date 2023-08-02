@@ -1,6 +1,5 @@
 'use client'
-
-import { UserMessages, UserMessageStats } from 'lib/models'
+import { UserMessageStats } from 'lib/models'
 import { JsonFetcher } from 'lib/utils'
 import useSWR from 'swr'
 
@@ -10,10 +9,8 @@ export type MessagesStatsContextData = {
 }
 
 export function useMessageStats(memberId: string): MessagesStatsContextData {
-  const key = `/api/members/${memberId}/messages`
-
   const { data: stats, isLoading } = useSWR<UserMessageStats, Error>(
-    key,
+    memberId ? `/api/members/${memberId}/messages` : null,
     JsonFetcher,
     {
       isPaused: () => memberId == undefined

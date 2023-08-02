@@ -17,7 +17,7 @@ export const useSite = (): SiteResults => {
     mutate,
     error,
     isLoading
-  } = useSWR<Site, Error>(`/api/site`, JsonFetcher, {
+  } = useSWR<Site, Error>(`/api/site`, {
     refreshWhenHidden: false,
     refreshWhenOffline: false,
     revalidateOnFocus: false,

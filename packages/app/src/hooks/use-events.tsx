@@ -2,6 +2,7 @@
 import { GroupEvent } from 'lib/models'
 import { JsonFetcher } from 'lib/utils'
 import useSWR, { KeyedMutator } from 'swr'
+import { useAuthenticated } from './use-authenticated'
 
 type EventsResults = {
   events: GroupEvent[]
@@ -12,18 +13,14 @@ type EventsResults = {
 }
 
 export const useEvents = (): EventsResults => {
+  const { authenticated } = useAuthenticated()
   const {
     data: events = [],
     mutate,
     error,
     isLoading
-  } = useSWR<GroupEvent[], Error>(`/api/events`, JsonFetcher, {
-    refreshWhenHidden: true,
-    refreshWhenOffline: true,
-    revalidateOnFocus: true,
-    revalidateOnReconnect: true,
+  } = useSWR<GroupEvent[], Error>(authenticated ? `/api/events` : null, {
     refreshInterval: 1000 * 60 * 10,
-    //isPaused: () => !authenticated,
     fallbackData: []
   })
 

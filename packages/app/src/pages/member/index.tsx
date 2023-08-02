@@ -3,65 +3,59 @@ import {
   MemberCard,
   Page,
   ButtonLink,
-  EventCard
+  EventCard,
+  LocationCapture,
+  MemberStats
 } from 'components'
 import { ClipboardDocumentListIcon } from '@heroicons/react/24/outline'
 import {
   Text,
   Heading,
-  Link,
   LinkBox,
   LinkOverlay,
   Box,
   Alert,
   AlertIcon,
   SimpleGrid,
-  Flex,
-  Stat,
-  StatArrow,
-  StatGroup,
-  StatHelpText,
-  StatLabel,
-  StatNumber,
   GridItem
 } from '@chakra-ui/react'
 import { useEvents, useMemberSearch, useUser } from 'hooks'
-import { MemberLevel, MemberStats } from 'lib/models'
-import { capitalCase } from 'change-case'
-import { addDays } from 'date-fns'
+import { MemberLevel, SearchableMember } from 'lib/models'
 import { useState, useEffect } from 'react'
-import { getJSON } from 'lib/utils'
+
 import NextLink from 'next/link'
+import { capitalCase } from 'change-case'
 
 export default function MemberHomePage() {
+  const [newestPledges, setNewestPledges] = useState<SearchableMember[]>([])
+  const [oldestPledges, setOldestPledges] = useState<SearchableMember[]>([])
   const { member, level, loading } = useUser({
     minLevel: MemberLevel.pledge,
     redirectsEnabled: true
   })
   const levelName = level ? capitalCase(MemberLevel[level]) : 'Member'
-
+  const { show_location, location } = member || {
+    show_location: false
+  }
   const { members: pledges, meta: pledgeMeta } = useMemberSearch(
     1,
-    4,
-    'date_created',
+    50,
+    '-approved_date',
     {
       user_type: MemberLevel[MemberLevel.pledge]
     }
   )
-  const [stats, setStats] = useState<MemberStats>()
-  const [statsR, setStatsR] = useState<MemberStats>()
-
   useEffect(() => {
-    if (stats && statsR) return
-    getJSON(`/api/stats`).then(({ data }) => {
-      setStats(data)
-    })
-    getJSON(`/api/stats?start=${addDays(new Date(), -14).toISOString()}`).then(
-      ({ data }) => {
-        setStatsR(data)
-      }
-    )
-  }, [stats, statsR])
+    if (
+      pledges &&
+      pledges.length > 0 &&
+      newestPledges.length == 0 &&
+      oldestPledges.length == 0
+    ) {
+      setNewestPledges(pledges.slice(0, 4))
+      setOldestPledges(pledges.slice(-4))
+    }
+  }, [newestPledges.length, oldestPledges.length, pledges])
 
   const { events } = useEvents()
 
@@ -70,6 +64,7 @@ export default function MemberHomePage() {
       <Heading as="h1" size="2xl" textAlign="center">
         Welcome {levelName}!
       </Heading>
+
       {level == MemberLevel.pledge && (
         <>
           <Box maxWidth="xl" mx="auto">
@@ -96,75 +91,24 @@ export default function MemberHomePage() {
       )}
       {level >= MemberLevel.brother && (
         <>
-          {stats && statsR && (
-            <Box>
-              <Heading as="h2" size="xl" textAlign="center" mt={10}>
-                Latest Stats
+          {show_location && location == undefined && (
+            <Box borderBottom="6px dotted black" pb={4}>
+              <Heading as="h2" size="xl" textAlign="center">
+                Share Your Location
               </Heading>
-
-              <StatGroup
-                alignContent="center"
-                justifyContent="space-between"
-                justifyItems="stretch"
-                as={Flex}
-                w="full"
-                flexWrap={'wrap'}
-                gap={4}
-                shadow={0}
-                p={[1, 2, 4]}
-              >
-                <Stat textAlign="center">
-                  <StatLabel>Applicants</StatLabel>
-                  <StatNumber>{stats.applicants}</StatNumber>
-                  {statsR.applicants > 0 && (
-                    <StatHelpText title="In the past 14 days">
-                      <StatArrow type="increase" />+ {statsR.applicants}
-                    </StatHelpText>
-                  )}
-                </Stat>
-                <Stat textAlign="center">
-                  <StatLabel>Pledges</StatLabel>
-                  <StatNumber>{stats.pledges}</StatNumber>
-                  {statsR.pledges > 0 && (
-                    <StatHelpText title="In the past 14 days">
-                      <StatArrow type="increase" />+ {statsR.pledges}
-                    </StatHelpText>
-                  )}
-                </Stat>
-                <Stat textAlign="center">
-                  <StatLabel>Inductees</StatLabel>
-                  <StatNumber>{stats.inductees}</StatNumber>
-
-                  {statsR.inductees > 0 && (
-                    <StatHelpText title="In the past 14 days">
-                      <StatArrow type="increase" />+ {statsR.inductees}
-                    </StatHelpText>
-                  )}
-                </Stat>
-                <Stat textAlign="center">
-                  <StatLabel>Brothers</StatLabel>
-                  <StatNumber>{stats.brothers}</StatNumber>
-                  {statsR.brothers > 0 && (
-                    <StatHelpText title="In the past 14 days">
-                      <StatArrow type="increase" />+ {statsR.brothers}
-                    </StatHelpText>
-                  )}
-                </Stat>
-
-                <Stat textAlign="center">
-                  <StatLabel whiteSpace="nowrap">Big-Brothers</StatLabel>
-                  <StatNumber>{stats.big_brothers}</StatNumber>
-                  {statsR.big_brothers > 0 && (
-                    <StatHelpText title="In the past 14 days">
-                      <StatArrow type="increase" />+ {statsR.big_brothers}
-                    </StatHelpText>
-                  )}
-                </Stat>
-              </StatGroup>
+              <LocationCapture />
             </Box>
           )}
+
+          <Box borderBottom="6px dotted black" pb={4}>
+            <Heading as="h2" size="xl" textAlign="center">
+              Latest Stats
+            </Heading>
+            <MemberStats />
+          </Box>
+
           {events && events.length > 0 && (
-            <Box borderTop="6px dotted black" mb={4}>
+            <Box borderBottom="6px dotted black" pb={8}>
               <Heading as="h2" size="xl" mb={2} textAlign="center">
                 Upcoming Event:
               </Heading>
@@ -176,43 +120,60 @@ export default function MemberHomePage() {
             </Box>
           )}
           {pledges && (
-            <Box pb={4} borderTop="6px dotted black">
-              <Heading as="h2" size="xl" textAlign="center">
-                Fresh Meet!
-              </Heading>
-              <Text fontSize="xl">
-                As a Brother, you can chat with any Pledge that has not been
-                adopted. If you think they are trustworthy, you can vouch for
-                them and they will become an Inductee.
-              </Text>
-              <Heading as="h3" size="lg" textAlign="center" mt={10}>
-                {pledges.length} of {pledgeMeta.filtered} New Pledges
-              </Heading>
-              <SimpleGrid columns={[1, 1, 2]} spacing={4}>
-                {pledges?.map((p) => (
-                  <MemberCard
-                    key={p.id}
-                    member={p}
-                    viewer={member}
-                    full={false}
-                  />
-                ))}
-                <GridItem colSpan={[1, 1, 2]} textAlign="center">
-                  <ButtonLink
-                    href="/members/pledges"
-                    bg="accent.500"
-                    color="white"
-                  >
-                    View All Pledges
-                  </ButtonLink>
-                </GridItem>
-              </SimpleGrid>
-            </Box>
+            <>
+              <Box borderBottom="6px dotted black" pb={8}>
+                <Heading as="h2" size="xl" textAlign="center">
+                  Fresh Meet!
+                </Heading>
+                <Text fontSize="xl" mb={2} textAlign="center">
+                  As a Brother, you can chat with any Pledge that has not been
+                  adopted. If you think they are trustworthy, you can vouch for
+                  them and they will become an Inductee.
+                </Text>
+
+                <SimpleGrid columns={[1, 1, 2]} spacing={4}>
+                  {newestPledges?.map((p) => (
+                    <MemberCard
+                      key={p.id}
+                      member={p}
+                      viewer={member}
+                      full={false}
+                    />
+                  ))}
+                </SimpleGrid>
+
+                <Text textAlign="center" my={2}>
+                  The oldest {oldestPledges.length} of {pledgeMeta.filtered}{' '}
+                  Pledges still waiting...
+                </Text>
+
+                <SimpleGrid columns={[1, 1, 2]} spacing={4}>
+                  {oldestPledges?.map((p) => (
+                    <MemberCard
+                      key={p.id}
+                      member={p}
+                      viewer={member}
+                      full={false}
+                    />
+                  ))}
+                  <GridItem colSpan={[1, 1, 2]} textAlign="center">
+                    <ButtonLink
+                      href="/members/pledges"
+                      bg="accent.500"
+                      color="white"
+                      fontSize={['md', 'lg', 'xl']}
+                    >
+                      View All Pledges
+                    </ButtonLink>
+                  </GridItem>
+                </SimpleGrid>
+              </Box>
+            </>
           )}
         </>
       )}
-      <Box borderTop="6px dotted black">
-        <Heading as="h2" size="xl" textAlign="center" mt={10}>
+      <Box pb={4}>
+        <Heading as="h2" size="xl" textAlign="center">
           Complete your profile!
         </Heading>
         <Alert

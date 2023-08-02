@@ -22,18 +22,13 @@ export const useMember = (
     error,
     isLoading,
     mutate
-  } = useSWR<Member, Error>(`/api/members/${id}`, JsonFetcher, {
-    refreshInterval: 1000 * 60 * refreshIntervalMinutes,
-    isPaused: () => !id || id === 'null' || id === 'undefined',
-    revalidateIfStale: true,
-    revalidateOnFocus: true,
-    refreshWhenOffline: true,
-    refreshWhenHidden: true
+  } = useSWR<Member, Error>(id ? `/api/members/${id}` : null, {
+    refreshInterval: 1000 * 60 * refreshIntervalMinutes
   })
   const level = MemberLevel[member?.user_type || 'subscriber']
   const name = member?.nickname || member?.first_name || null
   const picture = member?.picture ? getAssetUrl(member.picture) : null
-  
+
   return {
     member,
     error,

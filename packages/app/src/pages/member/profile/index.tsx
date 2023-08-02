@@ -12,7 +12,7 @@ import {
   MemberModal,
   Page
 } from 'components'
-import { useUser } from 'hooks/use-user'
+import { useUser, useFields } from 'hooks'
 import { FieldMap, Member, MemberLevel } from 'lib/models'
 
 import {
@@ -35,7 +35,6 @@ import {
 import { ApiResult } from 'lib/utils'
 
 type PageProps = {
-  fieldMap: FieldMap
   section?: string
 }
 
@@ -48,11 +47,8 @@ export async function getServerSideProps(context) {
       }
     }
   const { section } = context.params
-  const { getFields } = await import('lib/services/directus/server')
-  const fieldMap = await getFields('users')
-  const props: PageProps = {
-    fieldMap
-  }
+
+  const props: PageProps = {}
   if (section) {
     props.section = String(section)
   }
@@ -61,13 +57,14 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function ProfilePage({ fieldMap, section }: PageProps) {
+export default function ProfilePage({ section }: PageProps) {
+  const { fields: fieldMap, loading: fieldsLoading } = useFields('users')
   const { member, loading, level, mutate } = useUser({
     minLevel: MemberLevel.pledge,
     redirectsEnabled: true
   })
   return (
-    <Page title="Your Profile" loading={loading}>
+    <Page title="Your Profile" loading={loading || fieldsLoading}>
       {member && (
         <ProfileForm
           member={member}
@@ -138,7 +135,7 @@ const ProfileForm = ({
   level,
   fieldMap,
   section: s = 'explicit'
-}: FormProps) => {
+}: FormProps & { fieldMap: FieldMap }) => {
   const section = PageSection[s]
   const [tabValue, setTabValue] = useState(section)
 

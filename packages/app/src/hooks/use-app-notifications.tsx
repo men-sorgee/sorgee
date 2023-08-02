@@ -11,6 +11,7 @@ import {
 import { AppNotification, AppNotificationStatusType } from 'lib/models'
 import { deleteJSON, getJSON, JsonFetcher, putJSON } from 'lib/utils'
 import useSWR from 'swr'
+import { useAuthenticated } from './use-authenticated'
 
 export type AppNotificationsContextData = {
   appNotifications: AppNotification[]
@@ -43,17 +44,15 @@ export function AppNotificationsProvider({
 }: {
   children: ReactNode
 }) {
+  const { authenticated } = useAuthenticated()
   const key = `/api/notifications`
   const {
     data: notifications = [],
     mutate,
     error,
     isLoading
-  } = useSWR<AppNotification[], Error>(key, JsonFetcher, {
+  } = useSWR<AppNotification[], Error>(authenticated ? key : null, {
     refreshInterval: 1000 * 60 * 10, // 3 minutes
-    refreshWhenHidden: true,
-    revalidateOnFocus: true,
-    revalidateOnReconnect: true,
     fallbackData: []
   })
   const [hasNewNotifications, setHasNewNotifications] = useState(false)
@@ -66,9 +65,7 @@ export function AppNotificationsProvider({
 
   const readAppNotification = useCallback(
     async (id: number) => {
-      const { success, data: notification } = await getJSON<
-        Partial<Notification>
-      >(key + '/' + id)
+      const { success } = await getJSON<Partial<Notification>>(key + '/' + id)
       if (success) {
         await mutate(
           [

@@ -27,13 +27,8 @@ export const useEvent = (
     error,
     isLoading,
     mutate
-  } = useSWR<EventDetail, Error>(`/api/events/${eventId}`, JsonFetcher, {
-    refreshInterval: 1000 * 60 * (admin ? 1 : 10),
-    revalidateOnFocus: true,
-    revalidateOnReconnect: true,
-    revalidateIfStale: true,
-    revalidateOnMount: true,
-    isPaused: () => !eventId
+  } = useSWR<EventDetail, Error>(eventId ? `/api/events/${eventId}` : null, {
+    refreshInterval: 1000 * 60 * (admin ? 1 : 10)
   })
 
   const closeEvent = useCallback(async () => {

@@ -18,13 +18,7 @@ export const useInviteAdmin = (inviteId: string): InviteAdminProps => {
     data: invite,
     mutate,
     isLoading
-  } = useSWR<EventInvite>(`/api/invite/${inviteId}`, JsonFetcher, {
-    refreshWhenHidden: true,
-    refreshWhenOffline: true,
-    revalidateOnFocus: true,
-    revalidateOnReconnect: true,
-    isPaused: () => inviteId == undefined
-  })
+  } = useSWR<EventInvite>(inviteId ? `/api/invite/${inviteId}` : null)
 
   return {
     invite,

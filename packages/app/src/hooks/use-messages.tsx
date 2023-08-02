@@ -19,6 +19,7 @@ import { JsonFetcher, putJSON } from 'lib/utils'
 import useCookie from 'react-use-cookie'
 import useSWR, { KeyedMutator } from 'swr'
 import { useRouter } from 'next/router'
+import { useAuthenticated } from './use-authenticated'
 
 export type MessagesContextData = {
   activeId?: string
@@ -60,6 +61,7 @@ export function MessagesProvider({
 }: {
   children: ReactNode | ReactNode[]
 }) {
+  const { authenticated } = useAuthenticated()
   const key = `/api/my/messages`
 
   const router = useRouter()
@@ -68,11 +70,8 @@ export function MessagesProvider({
     mutate,
     error,
     isLoading
-  } = useSWR<UserMessages, Error>(key, JsonFetcher, {
-    refreshInterval: 1000 * 60, // 1 minute
-    refreshWhenHidden: true,
-    revalidateOnFocus: true,
-    revalidateOnReconnect: true
+  } = useSWR<UserMessages, Error>(authenticated ? key : null, JsonFetcher, {
+    refreshInterval: 1000 * 60 // 1 minute
   })
 
   const [conversations, setConversations] = useState<ChatConversation[]>([])

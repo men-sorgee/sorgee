@@ -10,6 +10,7 @@ import {
 import { UserNotification } from 'lib/models'
 import { deleteJSON, JsonFetcher, putJSON } from 'lib/utils'
 import useSWR from 'swr'
+import { useAuthenticated } from './use-authenticated'
 
 export type UserNotificationsContextData = {
   notifications: UserNotification[]
@@ -42,17 +43,15 @@ export function UserNotificationsProvider({
 }: {
   children: ReactNode
 }) {
+  const { authenticated } = useAuthenticated()
   const key = `/api/my/notifications`
   const {
     data: notifications = [],
     mutate,
     error,
     isLoading
-  } = useSWR<UserNotification[], Error>(key, JsonFetcher, {
+  } = useSWR<UserNotification[], Error>(authenticated ? key : null, {
     refreshInterval: 1000 * 60, // 1 minutes
-    refreshWhenHidden: true,
-    revalidateOnFocus: true,
-    revalidateOnReconnect: true,
     fallbackData: []
   })
   const [hasNewNotifications, setHasNewNotifications] = useState(false)
