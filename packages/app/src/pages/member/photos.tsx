@@ -318,7 +318,7 @@ const AddPhoto = chakra(
                   file={file}
                   name={`${memberId} ${field}-photo`}
                   description={`Uploaded on ${new Date().toLocaleDateString()}`}
-                  postUrl={`/api/my/photo/${field}`}
+                  postUrl={`/api/members/${memberId}/photos/${field}`}
                   onClear={() => {
                     setImage(undefined)
                     onClose()
