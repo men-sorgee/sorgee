@@ -48,6 +48,7 @@ export function ButtonConfirm<TResponse>({
   focusRef,
   icon,
   title,
+  disabled,
   py = 2,
   ...props
 }: ConfirmButtonProps<TResponse>) {
@@ -56,6 +57,7 @@ export function ButtonConfirm<TResponse>({
   const cancelRef = useRef<HTMLButtonElement>()
   const goRef = useRef<HTMLButtonElement>()
   const action = useCallback(async () => {
+    if (disabled) return
     try {
       const { data } = await promise()
       complete(true, data, null)
@@ -76,7 +78,15 @@ export function ButtonConfirm<TResponse>({
           duration: 5000
         })
     }
-  }, [complete, failureMessage, promise, successMessage, alertTitle, toast])
+  }, [
+    disabled,
+    promise,
+    complete,
+    successMessage,
+    toast,
+    alertTitle,
+    failureMessage
+  ])
   return (
     <>
       {(icon && (

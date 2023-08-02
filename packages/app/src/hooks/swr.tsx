@@ -1,6 +1,6 @@
 'use client'
 import { SWRConfig } from 'swr'
-import { JsonFetcher } from '../lib/utils'
+import { JsonFetcher } from 'lib/utils'
 export const SWRProvider = ({ children }) => {
   return (
     <SWRConfig

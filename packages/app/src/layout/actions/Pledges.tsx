@@ -10,7 +10,7 @@ import NextLink from 'next/link'
 
 import { Badge, Icon, IconButton, Link } from '@chakra-ui/react'
 import { UserCircleIcon } from '@heroicons/react/24/outline'
-import { useMemberSearch } from '../../hooks'
+import { useMemberSearch } from 'hooks'
 
 interface Props {
   member: Member

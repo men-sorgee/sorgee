@@ -1,38 +1,57 @@
-import { Alert } from '@chakra-ui/react'
-import React, { useEffect, useState } from 'react'
-import { Coordinates } from '../../lib/models'
-import { postJSON } from '../../lib/utils'
+'use client'
+import { Alert, Button } from '@chakra-ui/react'
+import { useCallback, useEffect, useState } from 'react'
+import { Coordinates } from 'lib/models'
+import { postJSON } from 'lib/utils'
+import { set } from 'date-fns'
+
+export type LocationCaptureProps = {}
 
 export const LocationCapture = () => {
-  const [location, setLocation] = useState(null)
+  const [sharedLocation, setSharedLocation] = useState<boolean>(undefined)
 
-  const getLocation = () => {
+  useEffect(() => {
+    // detect if we have permission to access location information
+    if (navigator.permissions) {
+      navigator.permissions
+        .query({ name: 'geolocation' })
+        .then((permissionStatus) => {
+          if (permissionStatus.state == 'granted') {
+            setSharedLocation(true)
+          }
+        })
+    }
+  }, [])
+
+  const getLocation = useCallback(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setSharedLocation(true)
+        const { latitude, longitude } = position.coords
+        postJSON<Partial<Coordinates>>('/api/my/location', {
+          coordinates: [longitude, latitude]
+        }).catch(console.error)
+      },
+      (error) => {
+        console.error('Error getting location:', error.message)
+      }
+    )
+  }, [])
+
+  useEffect(() => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords
-          setLocation({ latitude, longitude })
-        },
-        (error) => {
-          console.error('Error getting location:', error.message)
-        }
-      )
+      if (sharedLocation) {
+        getLocation()
+      }
     } else {
       console.error('Geolocation is not supported by this browser.')
     }
-  }
+  }, [getLocation, sharedLocation])
 
-  useEffect(() => {
-    if (location) {
-      postJSON<Partial<Coordinates>>('/api/my/location', {
-        coordinates: [location.longitude, location.latitude]
-      })
-    }
-  }, [location])
-
-  useEffect(() => {
-    getLocation()
-  }, [])
-
-  return <></>
+  if (sharedLocation) return null
+  return (
+    <>
+      <Button onClick={getLocation}>Share Location</Button>
+    </>
+  )
 }

@@ -5,13 +5,10 @@ import React, {
   useRef,
   useState
 } from 'react'
-
 import { ErrorBoundary } from 'components/ErrorBoundary'
 import { useUser } from 'hooks'
 import { useRouter } from 'next/router'
-
 import { Box, Flex, Slide, Spacer, useDisclosure } from '@chakra-ui/react'
-
 import { brand } from 'lib/config/brand'
 import { MemberLevel } from 'lib/models'
 import Actions from './actions'
@@ -65,20 +62,17 @@ function Layout({
   ])
   const headerRef = useRef<HTMLDivElement>(null)
 
-  const handleRouteChange = useCallback(
-    (url: string) => {
-      setHideFooter(url.startsWith('/members/chat') || url.endsWith('/ticket'))
-      setTimeout(() => {
-        if (headerRef.current != null) {
-          headerRef.current.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          })
-        }
-      }, 100)
-    },
-    [hideFooter, router?.asPath]
-  )
+  const handleRouteChange = useCallback((url: string) => {
+    setHideFooter(url.startsWith('/members/chat') || url.endsWith('/ticket'))
+    setTimeout(() => {
+      if (headerRef.current != null) {
+        headerRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        })
+      }
+    }, 100)
+  }, [])
 
   useEffect(() => {
     router.events.on('routeChangeComplete', handleRouteChange)
@@ -92,7 +86,6 @@ function Layout({
     level,
     showActions,
     isOpen,
-    hideFooter,
     handleRouteChange
   ])
 

@@ -289,7 +289,6 @@ function Invitations({
                 canConfirm={canConfirm}
                 eventId={invite.event.id}
                 invite={invite}
-                onChange={onChange}
                 mt={4}
               />
             </EventCard>

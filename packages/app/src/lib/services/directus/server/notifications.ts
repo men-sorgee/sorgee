@@ -10,6 +10,8 @@ import {
 } from 'lib/models'
 import { notifications } from 'lib/config'
 import { getAdminClient } from './'
+import { sendAdminNotification } from '../../webhooks/directus'
+
 
 export async function getAppNotification(id: string): Promise<Notification> {
   const adminClient = await getAdminClient()
@@ -95,6 +97,12 @@ export async function addUserToCongratsEmail(user_id: string, user_type: UserTyp
   // add to congrats email
   const notificationId = notifications.congratsEmail[user_type]
   await addAppNotificationUser(notificationId, user_id)
+
+  try {
+    await sendAdminNotification(notificationId)
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 export async function createEventSurveyNotification(surveyId: string, event: EventDetail) {

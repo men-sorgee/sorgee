@@ -81,7 +81,16 @@ export default function EventPage() {
       })
       setInvite(i)
     }
-  }, [event, eventId, eventLoading, invite, member?.events, member?.id, stats])
+  }, [
+    member,
+    event,
+    eventId,
+    eventLoading,
+    invite,
+    member?.events,
+    member?.id,
+    stats
+  ])
 
   const getAttendees = (rsvp: string) => {
     return event?.attendance
@@ -222,7 +231,11 @@ export default function EventPage() {
                 )}
                 {event.status != 'occurred' &&
                   (invite || !event?.invite_only) && (
-                    <EventRSVP canConfirm={canConfirm} eventId={eventId} />
+                    <EventRSVP
+                      canConfirm={canConfirm}
+                      eventId={eventId}
+                      onChange={reloadUser}
+                    />
                   )}
               </>
             )}

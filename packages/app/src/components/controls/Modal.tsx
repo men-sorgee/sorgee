@@ -10,7 +10,7 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalProps,
-  useColorModeValue,
+  useColorModeValue
 } from '@chakra-ui/react'
 
 type Props = ModalProps & {
@@ -32,7 +32,14 @@ export const ModalPopup = chakra(
         {...props}
       >
         <ModalOverlay backdropFilter="auto" backdropBlur="2px" />
-        <ModalContent bg={bg} mt={[0, 10, 20]} ml={[0, -4]} p={0} rounded="lg" shadow="lg">
+        <ModalContent
+          bg={bg}
+          mt={[0, 10, 20]}
+          ml={[0, -2]}
+          p={0}
+          rounded="lg"
+          shadow="lg"
+        >
           <ModalCloseButton color="white" />
           {header && <ModalHeader>{header}</ModalHeader>}
           <ModalBody m={0} p={0}>

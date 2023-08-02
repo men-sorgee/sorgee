@@ -24,11 +24,10 @@ export type RatingControlProps = IconButtonProps & {
 export const Rating = ({
   value,
   readonly = true,
-  size = 'xs',
   icon = <StarIcon />,
   scale = 5,
   fillColor = 'yellow.300',
-  strokeColor = 'yellow.700',
+  strokeColor = 'yellow.200',
   simple = false,
   mt,
   onRateChange,
@@ -63,13 +62,14 @@ export const Rating = ({
     return (
       <IconButton
         as={Icon}
-        _hover={{ bg: 'transparent', stroke: 'primary.500' }}
+        boxSize={[5, 6, 7, 8, 9]}
+        _hover={{ bg: 'transparent', stroke: 'white' }}
         aria-label={`Rate ${index}`}
         variant="ghost"
-        size={size}
         onClick={() => onClick(index)}
         _focus={{ outline: 0 }}
         icon={icon}
+        size="xx-small"
         color={fillColor}
         stroke={strokeColor}
         fill={fill}
@@ -92,7 +92,15 @@ export const Rating = ({
     )
 
   return (
-    <Tooltip label={tooltip} aria-label={ariaLabel}>
+    <Tooltip
+      label={tooltip}
+      aria-label={ariaLabel}
+      bg="black"
+      rounded="lg"
+      shadow="xl"
+      p={2}
+      color="white"
+    >
       <HStack mt={mt} spacing={1}>
         {buttons}
       </HStack>

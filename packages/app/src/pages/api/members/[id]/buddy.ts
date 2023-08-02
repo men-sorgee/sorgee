@@ -3,8 +3,8 @@ import { addUserNotification } from 'lib/services/directus/server'
 import { addBuddy, getBuddy, getUser, removeBuddy } from 'lib/services/directus/server/users'
 import { withMember, withMethods } from 'lib/utils/server'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { baseUrl } from '../../../../lib/config'
-import { sendNotificationEmail, SendGridTemplate, SendGridCategory } from '../../../../lib/services/sendgrid/server'
+import { baseUrl } from 'lib/config'
+import { sendNotificationEmail, SendGridTemplate, SendGridCategory } from 'lib/services/sendgrid/server'
 
 export default async function MemberBuddy(
   req: NextApiRequest,

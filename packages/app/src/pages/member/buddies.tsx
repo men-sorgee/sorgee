@@ -26,7 +26,7 @@ import {
   Text
 } from '@chakra-ui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import { JsonFetcher } from '../../lib/utils'
+import { JsonFetcher } from 'lib/utils'
 
 export type PageProps = {}
 

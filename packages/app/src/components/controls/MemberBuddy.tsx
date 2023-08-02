@@ -45,7 +45,7 @@ export const MemberBuddy = chakra(
       } else {
         postJSON<Partial<UserBuddy>>(`/api/members/${member?.id}/buddy`, {})
       }
-    }, [isBuddy, me?.id, member?.id, reload])
+    }, [isBuddy, me?.id, member?.id])
 
     useEffect(() => {
       if (!userLoading && me?.buddies && isBuddy == undefined) {

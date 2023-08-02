@@ -111,7 +111,6 @@ export default function UserMenu(_props: Props) {
               <span id="account-email" hidden>
                 {member?.email}
               </span>
-              {show_location && <LocationCapture />}
             </Box>
             <MenuDivider />
             <MenuItem

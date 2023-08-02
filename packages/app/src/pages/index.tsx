@@ -14,7 +14,7 @@ import {
   useColorModeValue
 } from '@chakra-ui/react'
 
-import { useMember, useSite } from '../hooks'
+import { useMember, useSite } from 'hooks'
 
 interface Props {
   page: Pick<

@@ -39,7 +39,6 @@ export const EventRSVP = ({
   onChange,
   canConfirm
 }: RSVPProps) => {
-  if (!eventId) throw new Error('EventRSVP requires an event or invite.')
   const [working, setWorking] = useState(false)
   const [showPayButton, setShowPayButton] = useState<boolean>(undefined)
 
@@ -59,21 +58,12 @@ export const EventRSVP = ({
   const bgGradientHover = (color) =>
     `linear(to-b, ${color}.300, ${color}.400, ${color}.500)`
 
-  const complete = useCallback(
-    (success: boolean) => {
-      if (success) {
-        if (onChange) onChange()
-        setWorking(false)
-      }
-    },
-    [onChange]
-  )
-
   const completePurchase = useCallback(async (success, data, error) => {
     if (!success) {
       console.error(error)
       return
     }
+    setWorking(false)
     const { loadStripe } = await import('@stripe/stripe-js')
     const stripe = await loadStripe(
       process.env.STRIPE_PUBLIC_KEY ||
@@ -115,13 +105,10 @@ export const EventRSVP = ({
       successMessage="Your RSVP has been registered."
       promise={() =>
         mutate('confirmed')
-          .then((response) => {
-            complete(true)
-            return response.data
-          })
-          .then((i: EventInvite) => {
-            return getJSON<PurchaseResponse>(`/api/stripe/event/${i.id}`)
-          })
+          .then(({ data }) => data)
+          .then((i: EventInvite) =>
+            getJSON<PurchaseResponse>(`/api/stripe/event/${i.id}`)
+          )
       }
       complete={completePurchase}
       bgGradient={bgGradient('accent')}
@@ -156,7 +143,10 @@ export const EventRSVP = ({
       failureMessage="Unable to confirm."
       successMessage="Your RSVP has been registered."
       promise={() => mutate('confirmed')}
-      complete={complete}
+      complete={() => {
+        if (onChange) onChange()
+        setWorking(false)
+      }}
       bgGradient={bgGradient('accent')}
       _hover={{
         bgGradient: bgGradientHover('accent')
@@ -183,7 +173,10 @@ export const EventRSVP = ({
       failureMessage="Unable to RSVP."
       successMessage="Your RSVP has been registered."
       promise={() => mutate('maybe')}
-      complete={complete}
+      complete={() => {
+        if (onChange) onChange()
+        setWorking(false)
+      }}
       bgGradient={bgGradient('secondary')}
       _hover={{
         bgGradient: bgGradientHover('secondary')
@@ -210,7 +203,10 @@ export const EventRSVP = ({
       failureMessage="Unable to RSVP."
       successMessage="This invitation has been declined. It will not show anymore."
       promise={() => mutate('declined')}
-      complete={complete}
+      complete={() => {
+        if (onChange) onChange()
+        setWorking(false)
+      }}
       bgGradient={bgGradient('black')}
       _hover={{
         bgGradient: bgGradientHover('black')
@@ -236,7 +232,10 @@ export const EventRSVP = ({
       failureMessage="Unable to cancel."
       successMessage="Your RSVP has been cancelled."
       promise={() => mutate('cancelled', reasonRef.current.value)}
-      complete={complete}
+      complete={() => {
+        if (onChange) onChange()
+        setWorking(false)
+      }}
       focusRef={reasonRef}
       bgGradient={bgGradient(important ? 'red' : 'gray')}
       _hover={{

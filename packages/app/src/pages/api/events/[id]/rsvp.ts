@@ -13,13 +13,10 @@ export default async function EventRSVP(
 
     const { id, rsvp, reason } = { ...req.query, ...req.body } as any
     const eventId = String(id)
-
-
     const event = await getEvent(eventId)
 
-    if (!event || !['planned', 'scheduled'].includes(event.status)) {
+    if (!event || !['planned', 'scheduled'].includes(event.status))
       throw new Error('Event not found')
-    }
 
     let eventUser = await findInvite(eventId, member.id)
 
@@ -27,16 +24,16 @@ export default async function EventRSVP(
       if (!rsvp) throw new Error('Missing rsvp')
       if (eventUser) {
         eventUser = await updateInvite(eventUser.id, { rsvp, reason })
-      } else if (event.invite_only) {
-        throw new Error('Invite not found')
       } else {
+        if (event.invite_only)
+          throw new Error('Invite not found')
+
         eventUser = await registerForEvent(eventId, member.id, rsvp)
       }
-    } else if (!eventUser) {
-      throw new Error('Invite not found')
     }
 
     const { attended, paid, guest } = eventUser
+
     let invite: EventInvite = {
       id: eventUser.id,
       member,
@@ -47,7 +44,6 @@ export default async function EventRSVP(
       rsvp: rsvp || eventUser.rsvp || 'not_invited',
       reason: reason || eventUser.reason
     }
-
 
     return res.status(200).json(ApiResponse({
       ...invite,
