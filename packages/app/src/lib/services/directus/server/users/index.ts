@@ -222,7 +222,7 @@ export async function getUserViews(user_id: string): Promise<UserView[]> {
       }
     },
     fields: ['*'],
-    sort: '-date_created',
+    sort: ['-date_created'],
   })
   return data as UserView[]
 }
