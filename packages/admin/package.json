@@ -6,6 +6,7 @@
   "scripts": {
     "build": "docker build -t gcr.io/tbg-gnh/gnh-admin .",
     "push": "docker push gcr.io/tbg-gnh/gnh-admin",
+    "run": "docker run -p 8055:8055 --name gnh-admin --env-file .env --rm gcr.io/tbg-gnh/gnh-admin",
     "dev": "docker run -p 8055:8055 --name gnh-admin --env-file .env --rm gcr.io/tbg-gnh/gnh-admin",
     "start": "node_modules/.bin/directus bootstrap; node_modules/.bin/directus start",
     "deploy": "gcloud run services replace service.yaml"
