@@ -28,13 +28,12 @@ import {
   ButtonGroup,
   Center,
   chakra,
-  LinkOverlay,
-  LinkBox,
   Flex,
   FlexProps,
   Heading,
   Spacer,
-  Show,
+  Link,
+  List,
   Stat,
   StatGroup,
   StatLabel,
@@ -46,12 +45,14 @@ import {
   Tabs,
   Text,
   useColorModeValue,
-  VStack
+  VStack,
+  ListItem,
+  ListIcon
 } from '@chakra-ui/react'
 import {
   MemberBlock,
   MemberMessages,
-  MemberConnect,
+  MemberBuddy,
   MemberHeader,
   MemberLike,
   MemberPropertyGroup,
@@ -59,14 +60,19 @@ import {
   MemberReport,
   MemberIcon,
   Markdown,
-  EventCard
+  PhotoGallery,
+  Loading,
+  MemberMessageStats
 } from './'
-import { PhotoGallery } from './PhotoGallery'
-import { Loading } from './Loading'
-import { Rating } from './Rating'
-import { toLocalDate } from 'lib/utils/index'
+
+import { toLocalDate } from 'lib/utils'
 import NextLink from 'next/link'
-import { ac } from 'vitest/dist/types-e3c9754d'
+import { capitalCase } from 'change-case'
+
+import {
+  QuestionMarkCircleIcon,
+  CheckCircleIcon
+} from '@heroicons/react/24/outline'
 
 export type MemberSpotlightProps = FlexProps & {
   memberId: string
@@ -100,7 +106,7 @@ export const MemberSpotlight = chakra(
   }: MemberSpotlightProps) => {
     const [blocked, setBlocked] = useState(false)
     const { member, name, level, picture, loading } = useMember(memberId)
-    const { member: me } = useUser()
+    const { member: me, level: viewerLevel } = useUser()
     const { setMeta } = useMeta()
 
     useEffect(() => {
@@ -189,27 +195,15 @@ export const MemberSpotlight = chakra(
           borderTopLeftRadius="lg"
           overflow="clip"
         >
-          <MemberHeader
-            viewer={me}
-            member={member}
-            zoom={true}
-            color={color}
-            size={size}
-            minimal={member?.show_profile == false || full == false}
-          >
-            {member?.rating > 0 && (
-              <Show above="md">
-                <Rating
-                  value={member.rating || 0}
-                  mt={2}
-                  aria-label="User Rating"
-                  size="xs"
-                  tooltip="Ratings are based on the number of stars a member has received from other members and event hosts. No-shows automatically receive -1 star ratings by the event."
-                />
-              </Show>
-            )}
+          <MemberHeader member={member} size={size}>
             {header}
           </MemberHeader>
+          {level == MemberLevel.pledge && (
+            <MemberMessageStats
+              memberId={member?.id}
+              viewerLevel={viewerLevel}
+            />
+          )}
           {children}
           {full && <Markdown content={member?.biography} />}
         </Box>
@@ -224,7 +218,7 @@ export const MemberSpotlight = chakra(
               <ButtonGroup>
                 <MemberLike member={member} size="lg" />
                 <MemberMessages member={member} size="lg" />
-                <MemberConnect member={member} size="lg" />
+                <MemberBuddy member={member} size="lg" />
                 <MemberShare member={member} size="lg" />
               </ButtonGroup>
             </Flex>
@@ -472,6 +466,18 @@ export const MemberSpotlight = chakra(
                 <AccordionIcon />
               </AccordionButton>
               <AccordionPanel pb={4}>
+                <Heading
+                  as="h3"
+                  mt={0}
+                  size="sm"
+                  mb={2}
+                  borderBottom="1px solid"
+                  borderColor={headingColor}
+                  color={headingColor}
+                  textTransform="uppercase"
+                >
+                  Event Stats
+                </Heading>
                 <Flex
                   as={StatGroup}
                   justify="space-between"
@@ -550,24 +556,43 @@ export const MemberSpotlight = chakra(
                       color={headingColor}
                       textTransform="uppercase"
                     >
-                      His Upcoming Events
+                      Event Schedule
                     </Heading>
-                    {member?.events
-                      ?.filter((e) => ['maybe', 'confirmed'].includes(e.rsvp))
-                      .map((e) => e.events_id as GroupEvent)
-                      .filter((e) => e.status == 'scheduled')
-                      .map((e) => (
-                        <LinkBox key={e.id}>
-                          <EventCard
-                            size="lg"
-                            event={e}
-                            hideBody
-                            hideFooter
-                            p={2}
-                          />
-                          <LinkOverlay as={NextLink} href={`/events/${e.id}`} />
-                        </LinkBox>
-                      ))}
+                    <List>
+                      {member?.events
+                        ?.filter((e) => ['maybe', 'confirmed'].includes(e.rsvp))
+                        .map((e) => {
+                          return {
+                            id: e.id,
+                            event: e.events_id as GroupEvent,
+                            rsvp: e.rsvp
+                          }
+                        })
+                        .filter((e) => e.event.status == 'scheduled')
+                        .map((e) => (
+                          <ListItem key={e.id} title={e.event.description}>
+                            <ListIcon
+                              as={
+                                e.rsvp == 'confirmed'
+                                  ? CheckCircleIcon
+                                  : QuestionMarkCircleIcon
+                              }
+                              color={
+                                e.rsvp == 'confirmed'
+                                  ? 'green.500'
+                                  : 'yellow.500'
+                              }
+                              boxSize={6}
+                            />
+                            <Link as={NextLink} href={`/events/${e.id}`}>
+                              {capitalCase(e.rsvp)} going to {e.event.name} on{' '}
+                              {toLocalDate(
+                                e.event.datetime
+                              ).toLocaleDateString()}
+                            </Link>
+                          </ListItem>
+                        ))}
+                    </List>
                   </>
                 )}
               </AccordionPanel>

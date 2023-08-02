@@ -23,16 +23,11 @@ export const MemberShare = chakra(
     const toggleShare = useCallback(() => {
       setIsShared(!isShared)
       if (isShared) {
-        deleteJSON(`/api/members/${member?.id}/share`).then(() => {
-          return reload()
-        })
+        deleteJSON(`/api/members/${member?.id}/share`)
       } else {
-        // add buddy
-        postJSON(`/api/members/${member?.id}/share`, {}).then((r) => {
-          return reload()
-        })
+        postJSON(`/api/members/${member?.id}/share`, {})
       }
-    }, [isShared, member?.id, reload])
+    }, [isShared, member?.id])
 
     useEffect(() => {
       const shares = me?.photo_shares || []
@@ -50,7 +45,7 @@ export const MemberShare = chakra(
       setShowLock(isShared ? !hover : hover)
     }, [hover, isShared])
 
-    if (loading || !me || me.id == member?.id) return null
+    if (loading || !me) return null
     if (level < MemberLevel.brother) return null
 
     if (!hasFeature('share_photos'))
@@ -83,9 +78,13 @@ export const MemberShare = chakra(
           _hover={{
             bg: 'primary.500'
           }}
-          onClick={toggleShare}
+          onClick={() => {
+            if (me?.id == member?.id) return
+            toggleShare()
+          }}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
+          disabled={me?.id === member?.id}
           {...props}
         />
       </>

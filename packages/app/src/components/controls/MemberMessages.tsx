@@ -43,7 +43,7 @@ export const MemberMessages = chakra(
     }, [conversations, hasConversation, loading, member?.id, memberLoading])
 
     if (loading || userLoading || level < MemberLevel.brother) return <></>
-    if (me?.id === member.id) return <></>
+
     if (me?.allow_messages == 'staff' && them?.user_type != 'staff')
       return <></>
     if (them?.allow_messages == 'staff' && me?.user_type != 'staff')
@@ -89,6 +89,7 @@ export const MemberMessages = chakra(
           position="relative"
           color="white"
           onClick={() => {
+            if (member?.id == me?.id) return
             chatWith(member as Member)
           }}
           aria-label={`Chat with ${member.nickname || 'this member'}`}
@@ -97,6 +98,7 @@ export const MemberMessages = chakra(
           _hover={{ bg: 'primary.500' }}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
+          disabled={me?.id === member?.id}
           {...props}
         />
         {hasNewMessages && (

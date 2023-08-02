@@ -71,7 +71,6 @@ export const MemberBadge = chakra(
     const UserBadge = () =>
       needsVoucher ? (
         <Badge
-          {...props}
           rounded={size}
           fontSize={size}
           textTransform="uppercase"
@@ -80,6 +79,8 @@ export const MemberBadge = chakra(
           bg="accent.300"
           py={1}
           px={2}
+          mr={1}
+          {...props}
         >
           {levelName}: {pledgeAge} days
         </Badge>
@@ -92,6 +93,7 @@ export const MemberBadge = chakra(
           bg="white"
           py={1}
           px={2}
+          mr={1}
           {...props}
         >
           {levelName}
@@ -99,13 +101,12 @@ export const MemberBadge = chakra(
       )
 
     return (
-      <HStack spacing={0}>
+      <HStack spacing={1} alignItems="center" justify="flex-start">
         <UserBadge />
         {needsVoucher && <MemberVouch member={member} size={size as any} />}
 
         {levelValue >= MemberLevel.brother && (
           <Icon
-            id={`verified-${member?.id}`}
             as={CheckBadgeIcon}
             boxSize={9}
             stroke="white"
@@ -115,19 +116,15 @@ export const MemberBadge = chakra(
           />
         )}
         {subscription > MembershipType.none && (
-          <Link href={`/member/subscription`}>
-            <Icon
-              id={`subscribe-${member?.id}`}
-              as={CurrencyDollarIcon}
-              boxSize={9}
-              stroke="white"
-              color={`green.${subscription + 2}00`}
-              ml={1}
-              title={`Contributing Member - ${MembershipType[
-                subscription
-              ]?.toUpperCase()} Plan`}
-            />
-          </Link>
+          <Icon
+            as={CurrencyDollarIcon}
+            boxSize={9}
+            stroke="white"
+            color={`green.${subscription + 2}00`}
+            title={`Contributing Member - ${MembershipType[
+              subscription
+            ]?.toUpperCase()} Plan`}
+          />
         )}
       </HStack>
     )

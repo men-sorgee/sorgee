@@ -4,7 +4,10 @@ import {
   MemberLevel,
   MemberLevelColorMap,
   SearchableMember,
-  User
+  User,
+  UserBuddy,
+  UserLike,
+  UserShare
 } from 'lib/models'
 import NextLink from 'next/link'
 
@@ -19,22 +22,29 @@ import {
   chakra,
   Flex,
   Heading,
-  HStack,
+  Show,
   LinkBox,
   LinkOverlay,
   Spacer,
-  Text
+  Text,
+  Badge
 } from '@chakra-ui/react'
 import { ReactNode } from 'react'
 import { useUser } from 'hooks'
+
 import {
+  MemberMessageStats,
   MemberMessages,
-  MemberConnect,
+  MemberBuddy,
   MemberHeader,
   MemberLike,
   MemberBlock,
   MemberShare,
-  MemberReport
+  MemberReport,
+  Rating,
+  MemberActions,
+  MemberAttributeBanner,
+  MemberRelationBanner
 } from './'
 
 type Props = CardProps & {
@@ -56,7 +66,29 @@ export const MemberCard = chakra(
   }: Props) => {
     const levelValue = MemberLevel[member?.user_type || 'applicant']
     const levelColor = MemberLevelColorMap[levelValue]
-    const { member: viewer, reload, loading } = useUser()
+    const { member: viewer, level } = useUser()
+    const sharedWithMe = member.photo_shares?.some(
+      (s: UserShare) => String(s.viewer_id) == viewer?.id
+    )
+    const likesYou = member.likes?.some(
+      (l: UserLike) => String(l.like_id) == viewer?.id
+    )
+    const isYou = String(member.id) == viewer?.id
+
+    const blocksYou = member?.blocked?.some(
+      (b) => String(b.blocked_id) == viewer?.id
+    )
+    const buddiesYou = member?.buddies?.some(
+      (b: UserBuddy) => b.user_id == viewer?.id
+    )
+    const badgeProps = {
+      px: 2,
+      py: 0.5,
+      fontSize: ['xs', 'sm'],
+      color: 'white',
+      rounded: 0
+    }
+
     return (
       <>
         <Card
@@ -69,7 +101,6 @@ export const MemberCard = chakra(
           color="white"
           minW="full"
           overflow="hidden"
-          title={member?.nickname || member?.first_name}
           _hover={{ shadow: '2xl', borderColor: 'accent.500' }}
           {...props}
         >
@@ -83,12 +114,7 @@ export const MemberCard = chakra(
                   if (member.show_profile) onClick()
                 }}
               >
-                <MemberHeader
-                  member={member}
-                  zoom={false}
-                  size={size}
-                  viewer={viewer}
-                >
+                <MemberHeader member={member} size={size}>
                   {!member.show_profile && (
                     <>
                       <Flex
@@ -118,19 +144,31 @@ export const MemberCard = chakra(
                       </Flex>
                     </>
                   )}
+                  <MemberAttributeBanner member={member} />
                 </MemberHeader>
               </LinkOverlay>
             </CardHeader>
+
             <CardBody pt={0}>
+              {levelValue == MemberLevel.pledge && (
+                <MemberMessageStats memberId={member?.id} viewerLevel={level} />
+              )}
               {children}
               {full && member?.show_profile && (
-                <Text noOfLines={2} py={0} my={0}>
-                  {member.biography}
-                </Text>
+                <>
+                  <Text noOfLines={2} py={0} my={0}>
+                    {member.biography}
+                  </Text>
+                </>
               )}
             </CardBody>
           </LinkBox>
           <Spacer />
+          <MemberRelationBanner
+            member={member}
+            viewer={viewer}
+            bg={'primary.900'}
+          />
           <CardFooter
             flexDir="column"
             justify="space-between"
@@ -138,36 +176,7 @@ export const MemberCard = chakra(
             bg="primary.800"
             p={4}
           >
-            <Flex w="full">
-              <ButtonGroup>
-                <MemberBlock member={member} size="lg" />
-                <MemberReport member={member} size="lg" />
-              </ButtonGroup>
-              <Spacer />
-              <ButtonGroup>
-                <MemberLike member={member} size="lg" />
-                <MemberMessages member={member} size="lg" />
-                <MemberConnect member={member} size="lg" />
-                <MemberShare member={member} size="lg" />
-              </ButtonGroup>
-            </Flex>
-            <Flex w="full">
-              <Text fontSize="xs">
-                {member?.show_profile && member.last_login && (
-                  <>
-                    Last Login:{' '}
-                    {formatDistanceToNowStrict(new Date(member.last_login))} ago
-                  </>
-                )}
-              </Text>
-              <Spacer />
-              <Text fontSize="xs">
-                Member Since:{' '}
-                {new Date(
-                  member.approved_date || member.date_created
-                ).toLocaleDateString()}
-              </Text>
-            </Flex>
+            <MemberActions member={member} size={size} />
           </CardFooter>
         </Card>
       </>

@@ -1,6 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react'
 
-import { formatDistanceToNowStrict } from 'date-fns'
 import { Member } from 'lib/models'
 import { getAssetUrl, toLocalDate } from 'lib/utils'
 
@@ -17,11 +16,10 @@ import {
   Tooltip
 } from '@chakra-ui/react'
 
-import { MemberBadge } from './'
+import { MemberAvatar, MemberBadge } from './'
 import { PhotoModal } from './PhotoModal'
 
 export type MemberIconProps = AvatarProps & {
-  zoom?: boolean
   color?: string
   member: Partial<Member>
   children?: ReactNode
@@ -30,80 +28,57 @@ export type MemberIconProps = AvatarProps & {
 export const MemberIcon = chakra(
   ({
     member,
-    zoom = false,
     size = 'lg',
     color = 'white',
     children,
     ...props
   }: MemberIconProps) => {
-    const [lastLogin, setLastLogin] = useState<string | null>(null)
-
-    useEffect(() => {
-      if (member && !lastLogin) {
-        setLastLogin(
-          member?.last_login
-            ? `Last login ${formatDistanceToNowStrict(
-                toLocalDate(member.last_login)
-              )} ago`
-            : undefined
-        )
-      }
-    }, [member, lastLogin])
-
     const [isOpen, setOpen] = useState<boolean>(undefined)
+    let name = member?.nickname || member?.first_name
     return (
       <>
         {member && (
-          <Flex gap={2} w="full" align="start">
-            <Avatar
-              id={member?.id}
-              src={
-                member?.picture
-                  ? getAssetUrl(member?.picture) +
-                    '?width=100&height=100&quality=80'
-                  : null
-              }
+          <Flex gap={2} align="start" position="relative">
+            <MemberAvatar
+              member={member}
               size={size}
               color={color}
-              name={member?.nickname || 'Brother'}
               bgGradient="linear(to-b, primary.500, primary.800)"
-              loading="lazy"
-              borderColor="accent.500"
-              borderWidth="2px"
               cursor={member?.picture ? 'pointer' : ''}
-              onClick={() => {
-                if (zoom && member?.picture) setOpen(true)
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                if (member?.picture) setOpen(true)
               }}
               {...props}
-            >
-              {member?.presence == 'online' && (
-                <Tooltip label={lastLogin} placement="top">
-                  <AvatarBadge
-                    borderWidth="thin"
-                    boxSize="1.5rem"
-                    bg="green.300"
-                  />
-                </Tooltip>
-              )}
-            </Avatar>
+            ></MemberAvatar>
 
-            <Flex w="full" direction="column" gap={1} textAlign="left">
+            <Flex
+              direction="column"
+              justify="center"
+              gap={1}
+              textAlign="left"
+              align="start"
+              overflow="hidden"
+            >
               <Heading
                 size={['md', 'lg']}
                 textTransform="uppercase"
                 noOfLines={1}
                 m={0}
                 color={color}
-                w="full"
                 title={member?.nickname || member.first_name}
+                maxW={['15ch', '30ch', '30ch', '15ch']}
+                whiteSpace="nowrap"
+                textOverflow="ellipse"
               >
-                {member?.nickname || member.first_name}
+                {name}
               </Heading>
               <Flex
                 gap={4}
                 direction="row"
-                align="end"
-                justify="space-between"
+                alignItems="center"
+                justifyItems="space-between"
                 w="full"
               >
                 <Box>
@@ -114,12 +89,11 @@ export const MemberIcon = chakra(
                     </Text>
                   )}
                 </Box>
-
-                <Spacer flex="grow" />
-                <Box>{children}</Box>
+                <Spacer flex={1} />
+                {children}
               </Flex>
             </Flex>
-            {zoom && member?.picture && (
+            {member?.picture && (
               <PhotoModal
                 isOpen={isOpen}
                 onClose={() => {

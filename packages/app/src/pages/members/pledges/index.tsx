@@ -25,7 +25,7 @@ export default function PledgeListPage() {
     redirectsEnabled: true
   })
 
-  const { members, meta } = useMemberSearch(1, 20, 'approved_date', {
+  const { members, meta } = useMemberSearch(1, 100, 'approved_date', {
     user_type: MemberLevel[MemberLevel.pledge]
   })
 
@@ -66,9 +66,7 @@ export default function PledgeListPage() {
               viewer={currentMember}
               member={m}
               onClick={() => setPledge(m)}
-            >
-              <MemberMessageStats memberId={m.id} viewerLevel={level} />
-            </MemberCard>
+            ></MemberCard>
           </Lazy>
         ))}
       </SimpleGrid>
@@ -77,7 +75,6 @@ export default function PledgeListPage() {
         memberId={pledge?.id}
         onClose={close}
         size="xl"
-        childrenTitle="Pledge Survey Answers"
         accordionItems={[
           {
             title: 'Pledge Survey Answers',
@@ -90,9 +87,7 @@ export default function PledgeListPage() {
             )
           }
         ]}
-      >
-        <MemberMessageStats memberId={pledge?.id} viewerLevel={level} />
-      </MemberModal>
+      ></MemberModal>
       {meta.filtered == 0 && (
         <Container w="4xl" textAlign="center">
           <Text>No results found</Text>

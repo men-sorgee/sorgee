@@ -25,7 +25,7 @@ type Props = Omit<IconButtonProps, 'aria-label'> & {
   member: Partial<Member>
 }
 
-export const MemberConnect = chakra(
+export const MemberBuddy = chakra(
   ({ member, size = ['sm', 'md', 'lg'], ...props }: Props) => {
     const {
       loading: userLoading,
@@ -38,25 +38,14 @@ export const MemberConnect = chakra(
     const [isBuddy, setIsBuddy] = useState<boolean | undefined>(undefined)
 
     const toggleBuddy = useCallback(() => {
+      if (me?.id === member?.id) return
       setIsBuddy(!isBuddy)
       if (isBuddy) {
-        // remove buddy
-
-        deleteJSON(`/api/members/${member?.id}/buddy`).then(() => {
-          setIsBuddy(false)
-          return reload()
-        })
+        deleteJSON(`/api/members/${member?.id}/buddy`)
       } else {
-        // add buddy
-        postJSON<Partial<UserBuddy>>(
-          `/api/members/${member?.id}/buddy`,
-          {}
-        ).then(() => {
-          setIsBuddy(true)
-          return reload()
-        })
+        postJSON<Partial<UserBuddy>>(`/api/members/${member?.id}/buddy`, {})
       }
-    }, [isBuddy, member?.id, reload, setIsBuddy])
+    }, [isBuddy, me?.id, member?.id, reload])
 
     useEffect(() => {
       if (!userLoading && me?.buddies && isBuddy == undefined) {
@@ -72,7 +61,6 @@ export const MemberConnect = chakra(
 
     if (level < MemberLevel.brother) return null
     if (userLoading || isBuddy == undefined) return null
-    if (me?.id === member?.id) return null
 
     if (!hasFeature('buddy_list'))
       return (
@@ -81,6 +69,7 @@ export const MemberConnect = chakra(
           membershipType={MembershipType.basic}
           icon={<UserIcon width="30px" />}
           _hover={{ bg: 'primary.500' }}
+          disabled={me?.id === member?.id}
           size={size}
         />
       )
@@ -111,6 +100,7 @@ export const MemberConnect = chakra(
             size={size}
             color="white"
             _hover={{ bg: 'primary.500' }}
+            disabled={me?.id === member?.id}
             {...props}
           />
         )) || (
@@ -136,6 +126,7 @@ export const MemberConnect = chakra(
             color="white"
             size={size}
             _hover={{ bg: 'primary.500' }}
+            disabled={me?.id === member?.id}
             {...props}
           />
         )}

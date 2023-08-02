@@ -37,10 +37,10 @@ export const MemberBlock = chakra(
       }
     }, [me, member?.id, loading])
 
-    if (loading || !me || me?.id == member?.id) return <></>
+    if (loading || !me) return <ViewIcon width="30px" stroke="white" />
 
     if (MemberLevel[member?.user_type || 'applicant'] == MemberLevel.staff)
-      return <></>
+      return <ViewIcon width="30px" stroke="white" />
 
     return (
       <>
@@ -68,6 +68,7 @@ export const MemberBlock = chakra(
                 <ViewIcon width="30px" stroke="white" />
               )
             }
+            disabled={me?.id === member?.id}
             {...props}
           >
             <Text>Are you sure you want to unblock {member?.nickname}?</Text>
@@ -96,6 +97,7 @@ export const MemberBlock = chakra(
                 <ViewIcon width="30px" stroke="white" />
               )
             }
+            disabled={me?.id === member?.id}
             {...props}
           >
             <Text>

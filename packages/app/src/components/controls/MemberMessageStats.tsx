@@ -21,8 +21,7 @@ type Props = Omit<IconProps, 'aria-label'> & {
 export const MemberMessageStats = chakra(
   ({ memberId, viewerLevel, boxSize = '20px', ...props }: Props) => {
     const [showStats, setShowStats] = useState<boolean>(undefined)
-    const [messageCount, setMessageCount] = useState<number>(undefined)
-
+    const [convoCount, setMessageCount] = useState<number>(undefined)
     const { stats, loading: statsLoading } = useMessageStats(memberId)
 
     useEffect(() => {
@@ -35,13 +34,13 @@ export const MemberMessageStats = chakra(
 
     if (!showStats) return null
 
-    const message = `${messageCount} ${
-      messageCount != 1 ? 'brothers have' : 'brother has'
+    const message = `${convoCount} ${
+      convoCount != 1 ? 'brothers have' : 'brother has'
     } chatted with him.`
 
-    const color = messageCount > 0 ? 'primary.400' : 'red.400'
+    const color = convoCount > 0 ? 'primary.400' : 'primary.200'
     return (
-      <Box bg={color} p={2} rounded="lg" mb={4}>
+      <Box bg={color} p={2} rounded="lg" mb={4} alignContent="right">
         <Flex align="center" gap={2}>
           <Icon
             as={ChatIconOn}
@@ -57,8 +56,8 @@ export const MemberMessageStats = chakra(
           </Text>
         </Flex>
 
-        {viewerLevel == MemberLevel.staff && (
-          <HStack align="middle" justify="middle" w="full" mt={2}>
+        {viewerLevel == MemberLevel.staff && convoCount > 0 && (
+          <HStack align="middle" justifyContent="middle" mt={2}>
             {stats.conversations.map((c) => (
               <MemberAvatar
                 key={c.id}

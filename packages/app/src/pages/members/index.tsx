@@ -1,31 +1,22 @@
+import Page from 'components/Page'
+import useSWR from 'swr'
 import { createRef, useCallback, useEffect, useState } from 'react'
-
 import { Lazy, MemberCard, MemberModal, Pager } from 'components/controls'
 import { FieldCheckbox, FieldCheckboxes, FieldInput } from 'components/forms'
-import Page from 'components/Page'
-import { addDays } from 'date-fns'
-import { useUser } from 'hooks'
+import { JsonFetcher, normalize, pruneUndefined, serialize } from 'lib/utils'
+import { useRouter } from 'next/router'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useFields, useUser } from 'hooks'
+import { ManyItems } from '@directus/sdk'
+import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/24/outline'
 import {
   FieldMap,
   getAllowedUsers,
   Member,
   MemberLevel,
   SearchableMember,
-  UserType,
-  MemberStats
+  UserType
 } from 'lib/models'
-import {
-  getJSON,
-  JsonFetcher,
-  normalize,
-  pruneUndefined,
-  serialize
-} from 'lib/utils'
-import { NextPageContext } from 'next'
-import { useRouter } from 'next/router'
-import { FormProvider, useForm } from 'react-hook-form'
-import useSWR from 'swr'
-
 import {
   Accordion,
   AccordionButton,
@@ -42,16 +33,12 @@ import {
   SimpleGrid,
   Spacer,
   Stat,
-  StatArrow,
   StatGroup,
-  StatHelpText,
   StatLabel,
   StatNumber,
   Text,
   useDisclosure
 } from '@chakra-ui/react'
-import { ManyItems } from '@directus/sdk'
-import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/24/outline'
 
 export type QueryParams = Record<keyof SearchableMember, string[]> & {
   online: boolean
@@ -61,27 +48,13 @@ export type QueryParams = Record<keyof SearchableMember, string[]> & {
   sort: string
 }
 
-export type PageProps = {
-  fields: FieldMap
-}
-
-export async function getServerSideProps(
-  context: NextPageContext
-): Promise<{ props: PageProps }> {
-  const { getFields } = await import('lib/services/directus/server')
-  const fields = await getFields('users')
-  return {
-    props: {
-      fields
-    }
-  }
-}
-
 type Meta = {
   total: number
   filtered: number
 }
-export default function MemberListPage({ fields }: PageProps) {
+
+export default function Members() {
+  const { fields, loading: fieldsLoading } = useFields('users')
   const { member: currentMember, loading } = useUser({
     minLevel: MemberLevel.brother,
     requiredFeature: 'view_directory',
@@ -184,7 +157,12 @@ export default function MemberListPage({ fields }: PageProps) {
   }, [onClose])
 
   return (
-    <Page title={'Men Nearby'} description={''} loading={loading} w="full">
+    <Page
+      title={'Men Nearby'}
+      description={''}
+      loading={loading || fieldsLoading}
+      w="full"
+    >
       <FormProvider {...methods}>
         <form
           id="filter-form"
@@ -274,7 +252,12 @@ export default function MemberListPage({ fields }: PageProps) {
         </form>
       </FormProvider>
 
-      <MemberModal isOpen={isOpen} memberId={id as string} onClose={close} />
+      <MemberModal
+        isOpen={isOpen}
+        memberId={id as string}
+        onClose={close}
+        size={['lg', 'xl', '2xl']}
+      />
     </Page>
   )
 }

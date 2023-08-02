@@ -6,8 +6,11 @@ import { MemberLevel, MembershipType, Member } from 'lib/models'
 import { deleteJSON, postJSON } from 'lib/utils'
 
 import { chakra, IconButton, IconButtonProps } from '@chakra-ui/react'
-import { StarIcon as LikeIcon } from '@heroicons/react/24/outline'
-import { FireIcon, StarIcon as LikedIcon } from '@heroicons/react/24/solid'
+import { HandThumbUpIcon as LikeIcon } from '@heroicons/react/24/outline'
+import {
+  FireIcon,
+  HandThumbUpIcon as LikedIcon
+} from '@heroicons/react/24/solid'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
   member: Partial<Member>
@@ -22,21 +25,15 @@ export const MemberLike = chakra(
     const [mutual, setMutual] = useState<boolean>(false)
 
     const toggleLike = useCallback(() => {
-      setIsLiked(!isLiked)
       if (isLiked) {
+        setIsLiked(false)
         setMutual(false)
-        return deleteJSON(`/api/members/${member?.id}/like`).then(() => {
-          setIsLiked(false)
-          return reload()
-        })
+        return deleteJSON(`/api/members/${member?.id}/like`)
       } else {
-        // add buddy
-        return postJSON(`/api/members/${member?.id}/like`, {}).then((r) => {
-          setIsLiked(true)
-          return reload()
-        })
+        setIsLiked(true)
+        return postJSON(`/api/members/${member?.id}/like`, {})
       }
-    }, [isLiked, member?.id, reload])
+    }, [isLiked, member?.id])
 
     useEffect(() => {
       const likes = me?.likes || []
@@ -60,7 +57,7 @@ export const MemberLike = chakra(
       setShowLike(isLiked ? !hover : hover)
     }, [hover, isLiked, mutual])
 
-    if (loading || !me || me?.id == member?.id) return null
+    if (loading || !me) return null
     if (level < MemberLevel.brother) return null
 
     if (!hasFeature('flirt'))
@@ -94,9 +91,13 @@ export const MemberLike = chakra(
           }
           variant="ghost"
           _hover={{ bg: 'primary.500' }}
-          onClick={toggleLike}
+          onClick={() => {
+            if (me?.id === member?.id) return
+            return toggleLike()
+          }}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
+          disabled={me?.id === member?.id}
           {...props}
         />
       </>

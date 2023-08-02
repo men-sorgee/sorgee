@@ -22,6 +22,7 @@ import {
   PopoverTrigger,
   Text,
   Tooltip,
+  useDisclosure,
   useToast
 } from '@chakra-ui/react'
 import { HandRaisedIcon, HandThumbUpIcon } from '@heroicons/react/24/solid'
@@ -44,7 +45,7 @@ export const MemberVouch = chakra(
   }: Props) => {
     const toast = useToast()
     const [working, setWorking] = useState(false)
-    const { user_type: level, nickname: name, vouched_by: voucher } = member
+    const { user_type: level, nickname: name, vouched_by } = member
     const {
       loading: userLoading,
       member: me,
@@ -53,33 +54,47 @@ export const MemberVouch = chakra(
     } = useUser()
     const [showVouchButton, setShowVouchButton] = useState(false)
 
-    //const {
-    //  data: voucher,
-    //  isLoading,
-    //  mutate
-    //} = swr<VouchingUser>(`/api/members/${member?.id}/vouch`, JsonFetcher, {
-    //  fallbackData: member?.vouched_by
-    //})
+    const {
+      data: voucher,
+      isLoading,
+      mutate
+    } = swr<VouchingUser>(
+      member?.id ? `/api/members/${member?.id}/vouch` : null,
+      {
+        fallbackData: vouched_by
+      }
+    )
 
     const vouchForPledge = useCallback(() => {
       // add buddy
       setWorking(true)
       postJSON<any, VouchingUser>(`/api/members/${member?.id}/vouch`, {}).then(
-        (r) => {
-          return reload().finally(() => {
+        ({ data: v, success }) => {
+          if (success) {
+            mutate(v).then(() => {
+              setWorking(false)
+              setShowVouchButton(false)
+              toast({
+                title: 'Thanks!',
+                description: `You have vouched for ${member?.nickname}. It may take a few moments for their new status to appear.`,
+                status: 'success',
+                duration: 5000,
+                isClosable: true
+              })
+            })
+          } else {
             setWorking(false)
-            setShowVouchButton(false)
             toast({
-              title: 'Thanks!',
-              description: `You have vouched for ${member?.nickname}. It may take a few moments for their new status to appear.`,
-              status: 'success',
+              title: 'Error',
+              description: `There was an error vouching for ${member?.nickname}. Please try again later.`,
+              status: 'error',
               duration: 5000,
               isClosable: true
             })
-          })
+          }
         }
       )
-    }, [member?.id, member?.nickname, reload, toast])
+    }, [member?.id, member?.nickname, mutate, toast])
 
     useEffect(() => {
       if (!userLoading && voucher?.id == undefined) {
@@ -99,6 +114,7 @@ export const MemberVouch = chakra(
       level,
       myLevel
     ])
+    const { onOpen, onClose, isOpen } = useDisclosure()
 
     if (member?.id == me?.id) return null
 
@@ -124,23 +140,32 @@ export const MemberVouch = chakra(
           </MemberAvatar>
         )}
         {showVouchButton && !hideVouch && (
-          <Popover>
-            <PopoverTrigger>
-              <IconButton
-                size={'sm'}
-                title={`Vouch for ${name}`}
-                aria-label={`Vouch for ${name}`}
-                icon={<HandThumbUpIcon width="30px" />}
-                _hover={{ color: 'primary.500' }}
-                mx={2}
-                {...props}
-                color="primary.300"
-                fill="white"
-              />
-            </PopoverTrigger>
+          <Popover isOpen={isOpen}>
+            <IconButton
+              size={'sm'}
+              title={`Vouch for ${name}`}
+              aria-label={`Vouch for ${name}`}
+              icon={<HandThumbUpIcon width="30px" />}
+              _hover={{ color: 'primary.500' }}
+              mx={2}
+              {...props}
+              color="primary.300"
+              fill="white"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                onOpen()
+              }}
+            />
             <PopoverContent color="text">
               <PopoverArrow />
-              <PopoverCloseButton />
+              <PopoverCloseButton
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  onClose()
+                }}
+              />
               <PopoverHeader>
                 <Heading fontSize="xl" m={0}>
                   Vouching for a {name}

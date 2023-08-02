@@ -56,7 +56,8 @@ export const MemberReport = chakra(
       })
     }, [member?.id, member?.nickname, message, onClose, toast])
 
-    if (loading || !me || me?.id == member?.id) return <></>
+    if (loading || !me || me?.id == member?.id)
+      return <ReportIcon width="30px" stroke="white" />
 
     if (MemberLevel[member?.user_type || 'applicant'] == MemberLevel.staff)
       return <></>
@@ -84,6 +85,7 @@ export const MemberReport = chakra(
           {...props}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
+          disabled={me?.id === member?.id}
         />
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
