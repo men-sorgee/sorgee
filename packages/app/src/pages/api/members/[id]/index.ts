@@ -61,11 +61,18 @@ export default async function Member(
             user.my_photos = user.my_photos.filter((p) => p.is_public)
           }
           filter(user)
+        }
 
+        try {
           await addUserView(viewer.id, user_id)
         }
+        catch (e) {
+          console.error(e.message || e, e.stack)
+        }
+
         res.setHeader('Cache-Control', 'cache, store, max-age=1')
         return res.status(200).json(ApiResponse(user))
+
       }
       case 'POST': {
         if (!me && level < MemberLevel.staff)
