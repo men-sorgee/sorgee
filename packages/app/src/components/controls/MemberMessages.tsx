@@ -6,7 +6,7 @@ import {
   Member,
   MemberLevel,
   MembershipType,
-  User,
+  SearchableMember,
   UserBuddy
 } from 'lib/models'
 
@@ -15,13 +15,13 @@ import { ChatBubbleBottomCenterIcon as ChatIconOff } from '@heroicons/react/24/o
 import { ChatBubbleBottomCenterIcon as ChatIconOn } from '@heroicons/react/24/solid'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
-  member: Partial<Member>
+  member: SearchableMember | Partial<Member>
 }
 
 export const MemberMessages = chakra(
-  ({ member, size = ['sm', 'md', 'lg'], ...props }: Props) => {
+  ({ member: them, size = ['sm', 'md', 'lg'], ...props }: Props) => {
     const { loading: userLoading, level, member: me, hasFeature } = useUser()
-    const { member: them, name, loading: memberLoading } = useMember(member.id)
+    //const { member: them, name, loading: memberLoading } = useMember(member.id)
     const { conversations, chatWith, loading } = useMessages()
     const [hasConversation, setHasConversation] = useState<boolean>(undefined)
     const [newMessageCount, setNewMessageCount] = useState<number>(undefined)
@@ -29,8 +29,8 @@ export const MemberMessages = chakra(
     const [hover, setHover] = useState(false)
 
     useEffect(() => {
-      if (!loading && !memberLoading) {
-        const convo = conversations?.find((c) => c.id == member?.id)
+      if (!loading && !userLoading && me && them) {
+        const convo = conversations?.find((c) => c.id == them?.id)
         if (convo && hasConversation == undefined) {
           setHasConversation(true)
           const newMessages = convo.messages?.filter(
@@ -40,7 +40,7 @@ export const MemberMessages = chakra(
           setHasNewMessages(newMessages.length > 0)
         }
       }
-    }, [conversations, hasConversation, loading, member?.id, memberLoading])
+    }, [conversations, hasConversation, loading, me, them, userLoading])
 
     if (loading || userLoading || level < MemberLevel.brother) return <></>
 
@@ -59,7 +59,7 @@ export const MemberMessages = chakra(
     }
 
     if (
-      member.user_type !== 'pledge' &&
+      them?.user_type !== 'pledge' &&
       me?.id != them?.vouched_by?.id &&
       !hasFeature('chat')
     )
@@ -89,16 +89,16 @@ export const MemberMessages = chakra(
           position="relative"
           color="white"
           onClick={() => {
-            if (member?.id == me?.id) return
-            chatWith(member as Member)
+            if (them?.id == me?.id) return
+            chatWith(them as Member)
           }}
-          aria-label={`Chat with ${member.nickname || 'this member'}`}
-          title={`Chat with ${member.nickname || 'this member'}`}
+          aria-label={`Chat with ${them?.nickname || 'this member'}`}
+          title={`Chat with ${them?.nickname || 'this member'}`}
           size={size}
           _hover={{ bg: 'primary.500' }}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
-          disabled={me?.id === member?.id}
+          disabled={me?.id === them?.id}
           {...props}
         />
         {hasNewMessages && (

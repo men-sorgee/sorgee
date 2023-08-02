@@ -4,17 +4,9 @@ import { pages } from 'lib/config'
 import { Page } from 'lib/models'
 import Link from 'next/link'
 
-import {
-  Box,
-  Flex,
-  Heading,
-  HStack,
-  Stack,
-  Text,
-  useColorModeValue
-} from '@chakra-ui/react'
+import { Box, Flex, Heading, Text, useColorModeValue } from '@chakra-ui/react'
 
-import { useMember, useSite } from 'hooks'
+import { useSite } from 'hooks'
 
 interface Props {
   page: Pick<
@@ -42,7 +34,6 @@ export const getStaticProps = async () => {
 
 export default function HomePage({ page }: Props) {
   const { authenticated } = useUser()
-
   const { content, markdown, next_page } = page
   const { site } = useSite()
 

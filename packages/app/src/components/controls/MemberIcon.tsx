@@ -1,19 +1,16 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useState } from 'react'
 
 import { Member } from 'lib/models'
-import { getAssetUrl, toLocalDate } from 'lib/utils'
+import { getAssetUrl } from 'lib/utils'
 
 import {
-  Avatar,
-  AvatarBadge,
   AvatarProps,
   Box,
   chakra,
   Flex,
   Heading,
   Spacer,
-  Text,
-  Tooltip
+  Text
 } from '@chakra-ui/react'
 
 import { MemberAvatar, MemberBadge } from './'

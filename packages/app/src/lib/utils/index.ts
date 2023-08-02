@@ -144,7 +144,8 @@ export function pruneUndefined<T = Record<string, any>>(
 
 export function getAssetUrl(asset: string | { id: string }) {
   if (asset == null) return null
-  if (typeof asset == 'string') return `/api/asset/${asset}`
+  if (typeof asset == 'string')
+    return asset.startsWith('/api') ? asset : `/api/asset/${asset}`
   else {
     let { id } = asset
     return `/api/asset/${id}`
