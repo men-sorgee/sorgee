@@ -30,30 +30,47 @@ export default async function EventRSVP(
 
         eventUser = await registerForEvent(eventId, member.id, rsvp)
       }
+      const { attended, paid, guest } = eventUser
+
+      let invite: EventInvite = {
+        id: eventUser.id,
+        member,
+        event,
+        attended,
+        paid,
+        guest,
+        rsvp: rsvp || eventUser.rsvp || 'not_invited',
+        reason: reason || eventUser.reason
+      }
+      return res.status(200).json(ApiResponse({
+        ...invite,
+        event,
+        member,
+        rsvp: invite.rsvp || 'not_invited',
+        reason: invite.reason || ''
+      }))
+    } else {
+      if (eventUser) {
+        return res.status(200).json(ApiResponse({
+          ...eventUser,
+          event,
+          member,
+          rsvp: eventUser.rsvp,
+        }))
+      } else {
+        if (event.invite_only)
+          throw new Error('Invite not found')
+
+        return res.status(200).json(ApiResponse({
+          event,
+          member,
+          rsvp: 'not_invited'
+        }))
+      }
     }
 
-    const { attended, paid, guest } = eventUser
-
-    let invite: EventInvite = {
-      id: eventUser.id,
-      member,
-      event,
-      attended,
-      paid,
-      guest,
-      rsvp: rsvp || eventUser.rsvp || 'not_invited',
-      reason: reason || eventUser.reason
-    }
-
-    return res.status(200).json(ApiResponse({
-      ...invite,
-      event,
-      member,
-      rsvp: invite.rsvp || 'not_invited',
-      reason: invite.reason || ''
-    }))
   } catch (e) {
     console.error(e)
-    return res.status(200).json(ApiResponse(null, e))
+    return res.status(400).json(ApiResponse(null, e))
   }
 }
