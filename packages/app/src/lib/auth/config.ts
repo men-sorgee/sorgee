@@ -88,7 +88,7 @@ export const authOptions: AuthOptions = {
       const fullUser = await findUser(user.email)
       session.user = fullUser
 
-      await extendUserPresence(fullUser.id)
+
       return session
     },
   },
