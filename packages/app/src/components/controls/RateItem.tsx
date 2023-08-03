@@ -1,13 +1,12 @@
-import { ReactNode, useCallback, useEffect, useState } from 'react'
+import { Rating as RatingControl } from "components/controls";
+import { Rating, RatingCollection } from "lib/models";
+import { JsonFetcher, postJSON } from "lib/utils";
+import { ReactNode, useCallback, useEffect, useState } from "react";
+import useSWR from "swr";
 
-import { Rating as RatingControl } from 'components/controls'
-import { Rating, RatingCollection } from 'lib/models'
-import { JsonFetcher, postJSON } from 'lib/utils'
-import useSWR from 'swr'
+import { Box, Flex } from "@chakra-ui/react";
 
-import { Box, Flex } from '@chakra-ui/react'
-
-import { RatingControlProps } from './Rating'
+import { RatingControlProps } from "./Rating";
 
 export type RateItemProps = RatingControlProps & {
   item_id: string

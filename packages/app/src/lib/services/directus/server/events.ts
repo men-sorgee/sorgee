@@ -8,10 +8,10 @@ import {
   SearchableMember,
   searchableMemberFields,
   Survey,
-  UserType,
-} from 'lib/models'
+  UserType
+} from "lib/models";
 
-import { getAdminClient } from './'
+import { getAdminClient } from "./";
 
 function count<T>(ary: T[], classifier: (i: T) => any) {
   classifier = classifier || String

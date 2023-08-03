@@ -1,18 +1,19 @@
-import { useCallback, useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
 import {
-  Form,
   ButtonLink,
-  MemberBadge,
-  PhotoCapture,
-  Page,
   FieldSwitch,
-  MemberAvatar
-} from 'components'
-import { useUser, useInviteAdmin } from 'hooks'
-import { GroupEvent, MemberLevel, Member, EventInvite } from 'lib/models'
-import { getAssetUrl } from 'lib/utils'
-import { FormProvider, useForm } from 'react-hook-form'
+  Form,
+  MemberAvatar,
+  MemberBadge,
+  Page,
+  PhotoCapture
+} from "components";
+import { useInviteAdmin, useUser } from "hooks";
+import { EventInvite, GroupEvent, Member, MemberLevel } from "lib/models";
+import { getAssetUrl } from "lib/utils";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+
 import {
   Alert,
   AlertIcon,
@@ -25,7 +26,7 @@ import {
   Text,
   useToast,
   VStack
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 
 type FormProps = {
   id: number

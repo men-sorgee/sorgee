@@ -1,7 +1,7 @@
-import { adminBaseUrl } from 'lib/config'
-import { Site } from 'lib/models'
-import { ApiResponse } from 'lib/utils'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { adminBaseUrl } from "lib/config";
+import { Site } from "lib/models";
+import { ApiResponse } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function Site(req: NextApiRequest, res: NextApiResponse<ApiResponse<Site>>) {
   const url = `${adminBaseUrl}/items/site`

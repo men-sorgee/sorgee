@@ -1,6 +1,6 @@
-import { ReactNode, useEffect, useState } from 'react'
-import { formatDistanceToNowStrict } from 'date-fns'
-import { useMember, useMeta, useUser } from 'hooks'
+import { capitalCase } from "change-case";
+import { formatDistanceToNowStrict } from "date-fns";
+import { useMember, useMeta, useUser } from "hooks";
 import {
   DirectusField,
   EventUser,
@@ -15,8 +15,11 @@ import {
   memberProfileFields,
   memberProfileHealthFields,
   UserPhoto
-} from 'lib/models'
-import { EyeSlashIcon } from '@heroicons/react/24/solid'
+} from "lib/models";
+import { toLocalDate } from "lib/utils";
+import NextLink from "next/link";
+import { ReactNode, useEffect, useState } from "react";
+
 import {
   Accordion,
   AccordionButton,
@@ -31,9 +34,11 @@ import {
   Flex,
   FlexProps,
   Heading,
-  Spacer,
   Link,
   List,
+  ListIcon,
+  ListItem,
+  Spacer,
   Stat,
   StatGroup,
   StatLabel,
@@ -45,34 +50,29 @@ import {
   Tabs,
   Text,
   useColorModeValue,
-  VStack,
-  ListItem,
-  ListIcon
-} from '@chakra-ui/react'
+  VStack
+} from "@chakra-ui/react";
 import {
+  CheckCircleIcon,
+  QuestionMarkCircleIcon
+} from "@heroicons/react/24/outline";
+import { EyeSlashIcon } from "@heroicons/react/24/solid";
+
+import {
+  Loading,
+  Markdown,
   MemberBlock,
-  MemberMessages,
   MemberBuddy,
   MemberHeader,
-  MemberLike,
-  MemberPropertyGroup,
-  MemberShare,
-  MemberReport,
   MemberIcon,
-  Markdown,
-  PhotoGallery,
-  Loading,
-  MemberMessageStats
-} from './'
-
-import { toLocalDate } from 'lib/utils'
-import NextLink from 'next/link'
-import { capitalCase } from 'change-case'
-
-import {
-  QuestionMarkCircleIcon,
-  CheckCircleIcon
-} from '@heroicons/react/24/outline'
+  MemberLike,
+  MemberMessages,
+  MemberMessageStats,
+  MemberPropertyGroup,
+  MemberReport,
+  MemberShare,
+  PhotoGallery
+} from "./";
 
 export type MemberSpotlightProps = FlexProps & {
   memberId: string

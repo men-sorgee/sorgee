@@ -8,9 +8,9 @@ import {
   Promo,
   Rating,
   UserEmailEvent,
-  UserInvite,
-} from 'lib/models'
-import { ProviderType } from 'next-auth/providers'
+  UserInvite
+} from "lib/models";
+import { ProviderType } from "next-auth/providers";
 
 export type UserEmailChange = { email: string; email_new: string }
 

@@ -1,10 +1,9 @@
-import React from 'react'
+import React from "react";
+import { RegisterOptions, useFormContext } from "react-hook-form";
 
-import { RegisterOptions, useFormContext } from 'react-hook-form'
+import { chakra, HStack, Switch, SwitchProps, Text } from "@chakra-ui/react";
 
-import { chakra, HStack, Switch, SwitchProps, Text } from '@chakra-ui/react'
-
-import FieldWrapper from './FieldWrapper'
+import FieldWrapper from "./FieldWrapper";
 
 type Props = SwitchProps & {
   field: string
@@ -37,7 +36,12 @@ const SwitchField = (props: Props) => {
   const classes = error ? 'error' : ''
 
   return (
-    <FieldWrapper size={size} field={field} className={className} {...{ mt, mb, mr, ml, my, mx }}>
+    <FieldWrapper
+      size={size}
+      field={field}
+      className={className}
+      {...{ mt, mb, mr, ml, my, mx }}
+    >
       <HStack>
         <Switch
           textAlign="left"

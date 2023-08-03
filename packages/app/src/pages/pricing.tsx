@@ -1,8 +1,8 @@
-import { Page, Plans } from 'components'
-import { useUser } from 'hooks'
-import Script from 'next/script'
+import { Page, Plans } from "components";
+import { useUser } from "hooks";
+import Script from "next/script";
 
-import { Text } from '@chakra-ui/react'
+import { Text } from "@chakra-ui/react";
 
 export default function PricingPage() {
   const { member, loading } = useUser({ redirectsEnabled: true })

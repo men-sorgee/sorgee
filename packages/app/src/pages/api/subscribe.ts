@@ -1,9 +1,8 @@
-import { Profile, SubscriptionData, User } from 'lib/models'
-import { ApiResponse } from 'lib/utils'
-import { createUser, findUser, updateUser } from 'lib/services/directus/server'
-import { updateSendGrid } from 'lib/services/sendgrid/server'
-import { withMethods } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { Profile, SubscriptionData, User } from "lib/models";
+import { createUser, findUser, updateUser } from "lib/services/directus/server";
+import { updateSendGrid } from "lib/services/sendgrid/server";
+import { ApiResponse, withMethods } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 async function Subscribe(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {

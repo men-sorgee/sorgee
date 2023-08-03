@@ -1,10 +1,9 @@
-import { InputHTMLAttributes } from 'react'
+import { InputHTMLAttributes } from "react";
+import { RegisterOptions, useFormContext } from "react-hook-form";
 
-import { RegisterOptions, useFormContext } from 'react-hook-form'
+import { chakra, Input, InputProps, useColorModeValue } from "@chakra-ui/react";
 
-import { chakra, Input, InputProps, useColorModeValue } from '@chakra-ui/react'
-
-import FieldWrapper from './FieldWrapper'
+import FieldWrapper from "./FieldWrapper";
 
 export type Props = InputProps &
   InputHTMLAttributes<HTMLInputElement> & {
@@ -16,7 +15,15 @@ export type Props = InputProps &
   }
 
 const InputField = (props: Props) => {
-  const { field, label, help, registerOptions = {}, type, className, ...opts } = props
+  const {
+    field,
+    label,
+    help,
+    registerOptions = {},
+    type,
+    className,
+    ...opts
+  } = props
   const { register } = useFormContext()
   const placeholderColor = useColorModeValue('gray.300', 'gray.100')
   return (

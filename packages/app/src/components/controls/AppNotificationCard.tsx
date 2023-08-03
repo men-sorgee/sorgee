@@ -1,19 +1,17 @@
-import { useCallback, useEffect, useState } from 'react'
-import { toLocalDate } from 'lib/utils'
-import { useAppNotifications } from 'hooks/use-app-notifications'
-import { AppNotification, Member } from 'lib/models'
+import distance from "date-fns/formatDistanceToNow";
+import { useAppNotifications } from "hooks/use-app-notifications";
+import { AppNotification, Member } from "lib/models";
+import { toLocalDate } from "lib/utils";
+import { useCallback, useEffect, useState } from "react";
+
 import {
-  TrashIcon as TrashHover,
-  EnvelopeIcon
-} from '@heroicons/react/24/solid'
-import { TrashIcon, EnvelopeOpenIcon } from '@heroicons/react/24/outline'
-import {
-  Text,
+  Alert,
   Box,
   Button,
   chakra,
   Heading,
   HStack,
+  Icon,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -21,16 +19,20 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  useDisclosure,
-  Icon,
   Spacer,
-  VStack,
+  Text,
   useColorModeValue,
-  Alert
-} from '@chakra-ui/react'
-import distance from 'date-fns/formatDistanceToNow'
-import { ButtonLink } from './ButtonLink'
-import { Markdown } from './Markdown'
+  useDisclosure,
+  VStack
+} from "@chakra-ui/react";
+import { EnvelopeOpenIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  EnvelopeIcon,
+  TrashIcon as TrashHover
+} from "@heroicons/react/24/solid";
+
+import { ButtonLink } from "./ButtonLink";
+import { Markdown } from "./Markdown";
 
 type Props = {
   notification: AppNotification

@@ -1,25 +1,27 @@
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { useInvite } from "hooks";
 import {
   EventInvite,
   EventUser,
   GroupEvent,
   InviteRSVPType,
   RSVPInfo
-} from 'lib/models'
-import { getJSON, postJSON } from 'lib/utils'
-import { useInvite } from 'hooks'
+} from "lib/models";
+import { getJSON, postJSON } from "lib/utils";
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
+
 import {
   Alert,
   AlertIcon,
   Box,
   BoxProps,
-  Heading,
   Flex,
+  Heading,
   Spinner,
   Text,
   Textarea
-} from '@chakra-ui/react'
-import { ButtonConfirm } from './ButtonConfirm'
+} from "@chakra-ui/react";
+
+import { ButtonConfirm } from "./ButtonConfirm";
 
 export type RSVPProps = BoxProps & {
   eventId: string

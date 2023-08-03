@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { UpgradeIcon } from "components";
+import { useMessages } from "hooks";
+import { Member, MemberLevel, MembershipType } from "lib/models";
+import NextLink from "next/link";
+import { useEffect, useRef, useState } from "react";
 
-import { UpgradeIcon } from 'components'
-import { useMessages } from 'hooks'
-import { Member, MemberLevel, MembershipType } from 'lib/models'
-import NextLink from 'next/link'
-import { Badge, Icon, IconButton, Link } from '@chakra-ui/react'
-import { ChatBubbleBottomCenterIcon as ChatIcon } from '@heroicons/react/24/outline'
+import { Badge, Icon, IconButton, Link } from "@chakra-ui/react";
+import { ChatBubbleBottomCenterIcon as ChatIcon } from "@heroicons/react/24/outline";
 
 type Props = {
   member: Member

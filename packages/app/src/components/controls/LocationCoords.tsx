@@ -8,8 +8,8 @@ import {
   StatHelpText,
   StatLabel,
   StatNumber,
-  VStack,
-} from '@chakra-ui/react'
+  VStack
+} from "@chakra-ui/react";
 
 export const LocationCoords = ({ coords, text, isCurrentUser }) => {
   return (

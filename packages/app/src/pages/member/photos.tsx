@@ -1,17 +1,16 @@
-import { useCallback, useEffect, useState } from 'react'
-
 import {
   ButtonConfirm,
-  PhotoAsset,
   MemberAvatar,
+  PhotoAsset,
   PhotoCapture,
   PhotoUpload
-} from 'components/controls'
-import Page from 'components/Page'
-import { UserPhoto } from 'lib/models'
-import { deleteJSON, getAssetUrl } from 'lib/utils'
+} from "components/controls";
+import Page from "components/Page";
+import { useUser } from "hooks/use-user";
+import { UserPhoto } from "lib/models";
+import { deleteJSON, getAssetUrl } from "lib/utils";
+import { useCallback, useEffect, useState } from "react";
 
-import { useUser } from 'hooks/use-user'
 import {
   Alert,
   AlertIcon,
@@ -35,8 +34,8 @@ import {
   Tabs,
   useDisclosure,
   Wrap
-} from '@chakra-ui/react'
-import { ArrowUpTrayIcon, CameraIcon } from '@heroicons/react/24/outline'
+} from "@chakra-ui/react";
+import { ArrowUpTrayIcon, CameraIcon } from "@heroicons/react/24/outline";
 
 type Props = {}
 

@@ -1,7 +1,7 @@
-import * as typeorm from 'typeorm'
+import * as typeorm from "typeorm";
 
-import { SurveyQuestions } from './SurveyQuestions'
-import { Surveys } from './Surveys'
+import { SurveyQuestions } from "./SurveyQuestions";
+import { Surveys } from "./Surveys";
 
 @typeorm.Index('surveys_survey_questions_pkey', ['id'], { unique: true })
 @typeorm.Entity('surveys_survey_questions', { schema: 'public' })

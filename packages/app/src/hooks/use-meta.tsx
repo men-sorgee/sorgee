@@ -1,16 +1,15 @@
 'use client'
+import { MetaProps } from "lib/models";
+import { useRouter } from "next/router";
 import {
   createContext,
   useCallback,
   useContext,
   useEffect,
   useState
-} from 'react'
+} from "react";
 
-import { MetaProps } from 'lib/models'
-import { useRouter } from 'next/router'
-
-import { useSite } from './use-site'
+import { useSite } from "./use-site";
 
 export type MetaContextData = MetaProps & {
   siteTitle: string

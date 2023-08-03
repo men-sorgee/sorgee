@@ -1,11 +1,19 @@
-import { UserBuddy } from 'lib/models'
-import { ApiResponse } from 'lib/utils'
-import { addUserNotification } from 'lib/services/directus/server'
-import { addBuddy, getBuddy, getUser, removeBuddy } from 'lib/services/directus/server/users'
-import { withMember, withMethods } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
-import { baseUrl } from 'lib/config'
-import { sendNotificationEmail, SendGridTemplate, SendGridCategory } from 'lib/services/sendgrid/server'
+import { baseUrl } from "lib/config";
+import { UserBuddy } from "lib/models";
+import { addUserNotification } from "lib/services/directus/server";
+import {
+  addBuddy,
+  getBuddy,
+  getUser,
+  removeBuddy
+} from "lib/services/directus/server/users";
+import {
+  SendGridCategory,
+  SendGridTemplate,
+  sendNotificationEmail
+} from "lib/services/sendgrid/server";
+import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function MemberBuddy(
   req: NextApiRequest,

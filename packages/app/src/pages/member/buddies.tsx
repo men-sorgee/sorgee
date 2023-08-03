@@ -1,16 +1,17 @@
-import { useState } from 'react'
-
-import { Lazy, MemberCard, MemberModal } from 'components/controls'
-import Page from 'components/Page'
-import { useUser } from 'hooks'
+import { Lazy, MemberCard, MemberModal } from "components/controls";
+import Page from "components/Page";
+import { useUser } from "hooks";
 import {
   Member,
   MemberLevel,
   SearchableMember,
   User,
   UserBuddy
-} from 'lib/models'
-import swr from 'swr'
+} from "lib/models";
+import { JsonFetcher } from "lib/utils";
+import { useState } from "react";
+import swr from "swr";
+
 import {
   Alert,
   Button,
@@ -24,9 +25,8 @@ import {
   Spacer,
   Switch,
   Text
-} from '@chakra-ui/react'
-import { XMarkIcon } from '@heroicons/react/24/outline'
-import { JsonFetcher } from 'lib/utils'
+} from "@chakra-ui/react";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 export type PageProps = {}
 

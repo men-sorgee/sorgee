@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-
-import { Page, PageItem, UserType } from 'lib/models'
-import NextLink from 'next/link'
-import { useRouter } from 'next/router'
+import { Logo } from "components/controls";
+import { Page, PageItem, UserType } from "lib/models";
+import NextLink from "next/link";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
   Accordion,
@@ -22,12 +22,11 @@ import {
   useColorModeValue,
   useDisclosure,
   useOutsideClick
-} from '@chakra-ui/react'
-import { Bars4Icon, XMarkIcon } from '@heroicons/react/24/solid'
+} from "@chakra-ui/react";
+import { Bars4Icon, XMarkIcon } from "@heroicons/react/24/solid";
 
-import { Logo } from 'components/controls'
-import { constrained } from './index'
-import User from './User'
+import { constrained } from "./index";
+import User from "./User";
 
 export type Props = BoxProps & {
   isAuthenticated?: boolean

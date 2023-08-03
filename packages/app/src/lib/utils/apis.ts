@@ -1,25 +1,9 @@
-import { pruneUndefined } from "."
-
-export function ApiResponse<T = any | any>(
-  data: T,
-  error?: string,
-  field?: string & keyof T
-): ApiResponse<T> {
-  return {
-    data: data || ({} as T),
-    error: { message: error, field },
-  }
-}
+import { pruneUndefined } from "./";
 
 export type ApiResult<T = any> = {
   success: boolean
   data?: T
   error?: ApiError
-}
-
-export type ApiResponse<T = (object & never) | any> = {
-  error: ApiError
-  data: T
 }
 
 export type ApiError = {
@@ -74,7 +58,7 @@ export async function fetchJSON<T = object | any, R = DefaultTo<null, T>>(
   })
   const { ok: success } = response
   try {
-    const body = (await response.json()) as ApiResponse<R>
+    const body = (await response.json()) as ApiResult<R>
     if (!body) {
       return { success, error: { message: 'No response body' } }
     }
@@ -97,7 +81,7 @@ export async function postForm<T = any>(
   })
   const { ok: success } = response
   try {
-    const body = (await response.json()) as ApiResponse<T>
+    const body = (await response.json()) as ApiResult<T>
     if (!body) {
       return { success, error: { message: 'No response body' } }
     }

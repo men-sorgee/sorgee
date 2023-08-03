@@ -1,4 +1,4 @@
-import { baseUrl } from 'lib/config'
+import { baseUrl } from "lib/config";
 
 export default async function Code(req, res: any) {
   const QRCode = await import('qrcode')

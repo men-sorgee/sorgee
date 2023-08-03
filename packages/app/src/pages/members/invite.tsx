@@ -1,14 +1,13 @@
-import { useState } from 'react'
+import { FieldInput } from "components/forms";
+import Page from "components/Page";
+import { useUser } from "hooks/use-user";
+import { baseUrl } from "lib/config";
+import { InviteLink, Member, MemberLevel, UserInvite } from "lib/models";
+import { postJSON } from "lib/utils";
+import { useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 
-import { FieldInput } from 'components/forms'
-import Page from 'components/Page'
-import { baseUrl } from 'lib/config'
-import { InviteLink, Member, MemberLevel, UserInvite } from 'lib/models'
-import { postJSON } from 'lib/utils'
-import { FormProvider, useForm } from 'react-hook-form'
-
-import { useUser } from 'hooks/use-user'
-import { Alert, AlertIcon, Button, Text, useToast } from '@chakra-ui/react'
+import { Alert, AlertIcon, Button, Text, useToast } from "@chakra-ui/react";
 
 function Invite() {
   const { loading, member } = useUser({

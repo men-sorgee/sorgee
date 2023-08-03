@@ -1,9 +1,10 @@
 'use client'
-import { EventInvite } from 'lib/models'
-import { JsonFetcher } from 'lib/utils'
-import { isAfter, isToday } from 'date-fns'
-import useSWR from 'swr'
-import { useAuthenticated } from './use-authenticated'
+import { isAfter, isToday } from "date-fns";
+import { EventInvite } from "lib/models";
+import { JsonFetcher } from "lib/utils";
+import useSWR from "swr";
+
+import { useAuthenticated } from "./use-authenticated";
 
 type InvitesResults = {
   invitations: EventInvite[]

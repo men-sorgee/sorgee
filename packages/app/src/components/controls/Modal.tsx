@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode } from "react";
 
 import {
   chakra,
@@ -11,7 +11,7 @@ import {
   ModalOverlay,
   ModalProps,
   useColorModeValue
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 
 type Props = ModalProps & {
   header?: ReactNode | ReactNode[]

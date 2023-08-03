@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
 import {
   Box,
+  HStack,
   Icon,
   IconButton,
   IconButtonProps,
-  HStack,
   Tooltip
-} from '@chakra-ui/react'
-import { StarIcon } from '@heroicons/react/24/solid'
+} from "@chakra-ui/react";
+import { StarIcon } from "@heroicons/react/24/solid";
 
 export type RatingControlProps = IconButtonProps & {
   onRateChange?: (rate: number) => void

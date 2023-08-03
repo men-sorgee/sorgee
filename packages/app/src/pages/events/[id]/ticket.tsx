@@ -1,11 +1,12 @@
-import { EventCard, EventTicket } from 'components/controls'
-import { useInvite, useUser } from 'hooks'
-import { MemberLevel } from 'lib/models'
-import NextLink from 'next/link'
-import { ArrowBackIcon } from '@chakra-ui/icons'
-import { HStack, Link } from '@chakra-ui/react'
-import { Page } from 'components'
-import { useRouter } from 'next/router'
+import { Page } from "components";
+import { EventCard, EventTicket } from "components/controls";
+import { useInvite, useUser } from "hooks";
+import { MemberLevel } from "lib/models";
+import NextLink from "next/link";
+import { useRouter } from "next/router";
+
+import { ArrowBackIcon } from "@chakra-ui/icons";
+import { HStack, Link } from "@chakra-ui/react";
 
 export default function EventTicketPage() {
   const router = useRouter()

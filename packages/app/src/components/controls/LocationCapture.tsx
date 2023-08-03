@@ -1,9 +1,10 @@
 'use client'
-import { Alert, Button } from '@chakra-ui/react'
-import { useCallback, useEffect, useState } from 'react'
-import { Coordinates } from 'lib/models'
-import { postJSON } from 'lib/utils'
-import { set } from 'date-fns'
+import { set } from "date-fns";
+import { Coordinates } from "lib/models";
+import { postJSON } from "lib/utils";
+import { useCallback, useEffect, useState } from "react";
+
+import { Alert, Button } from "@chakra-ui/react";
 
 export type LocationCaptureProps = {}
 

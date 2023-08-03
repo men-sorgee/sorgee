@@ -1,41 +1,40 @@
-import { useFields, useUser } from 'hooks'
-import { useCallback, useState } from 'react'
+import {
+  ButtonConfirm,
+  ButtonLink,
+  FieldInput,
+  FieldNumber,
+  FieldRadioButtons,
+  FieldSelect,
+  Form,
+  Page,
+  Plan
+} from "components";
+import { useFields, useUser } from "hooks";
+import { FieldMap, Member, MemberLevel, UserEmailChange } from "lib/models";
+import { ApiResult, postJSON } from "lib/utils";
+import { useRouter } from "next/router";
+import { useCallback, useState } from "react";
+
 import {
   Alert,
-  Text,
+  Box,
   Button,
+  Divider,
   Flex,
-  Input,
-  VStack,
+  GridItem,
   Heading,
-  Tabs,
+  Input,
+  InputGroup,
+  Select,
+  SimpleGrid,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
-  InputGroup,
-  Select,
-  SimpleGrid,
-  GridItem,
-  Box,
-  Divider
-} from '@chakra-ui/react'
-
-import {
-  Page,
-  Plan,
-  ButtonLink,
-  FieldInput,
-  ButtonConfirm,
-  FieldRadioButtons,
-  Form,
-  FieldSelect,
-  FieldNumber
-} from 'components'
-
-import { FieldMap, Member, MemberLevel, UserEmailChange } from 'lib/models'
-import { useRouter } from 'next/router'
-import { ApiResult, postJSON } from 'lib/utils'
+  Tabs,
+  Text,
+  VStack
+} from "@chakra-ui/react";
 
 export async function getServerSideProps(context) {
   if (context?.params == undefined)

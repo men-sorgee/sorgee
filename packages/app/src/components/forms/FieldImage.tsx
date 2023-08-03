@@ -1,8 +1,8 @@
-import { PhotoUpload, PhotoUploadProps } from 'components/controls/PhotoUpload'
+import { PhotoUpload, PhotoUploadProps } from "components/controls/PhotoUpload";
 
-import { chakra } from '@chakra-ui/react'
+import { chakra } from "@chakra-ui/react";
 
-import FieldWrapper from './FieldWrapper'
+import FieldWrapper from "./FieldWrapper";
 
 export type Props = PhotoUploadProps & {
   field: string

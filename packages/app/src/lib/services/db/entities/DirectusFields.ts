@@ -1,4 +1,4 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
 
 @Index('directus_fields_pkey', ['id'], { unique: true })
 @Entity('directus_fields', { schema: 'public' })

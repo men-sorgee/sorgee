@@ -1,8 +1,12 @@
-import { Rating, RatingCollection } from 'lib/models'
-import { ApiResponse } from 'lib/utils'
-import { getRating, setRating, addUserNotification, setUserAverageRating } from 'lib/services/directus/server'
-import { withMember, withMethods } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { Rating, RatingCollection } from "lib/models";
+import {
+  addUserNotification,
+  getRating,
+  setRating,
+  setUserAverageRating
+} from "lib/services/directus/server";
+import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function MemberItemRating(
   req: NextApiRequest,

@@ -1,7 +1,10 @@
-import { AppNotificationStatusType } from 'lib/models'
-import { ApiResponse } from 'lib/utils'
-import { getAppNotificationUser, updateAppNotificationUser } from 'lib/services/directus/server'
-import { withMethods, withUser } from 'lib/utils/server'
+import { AppNotificationStatusType } from "lib/models";
+import {
+  getAppNotificationUser,
+  updateAppNotificationUser
+} from "lib/services/directus/server";
+import { ApiResponse, withMethods, withUser } from "lib/utils/server";
+
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function getUserNotifications(

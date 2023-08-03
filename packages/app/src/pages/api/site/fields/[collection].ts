@@ -1,7 +1,7 @@
-import { FieldMap } from 'lib/models'
-import { ApiResponse } from 'lib/utils'
-import { getFields } from 'lib/services/directus/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { FieldMap } from "lib/models";
+import { getFields } from "lib/services/directus/server";
+import { ApiResponse } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function SiteFields(
   req: NextApiRequest,

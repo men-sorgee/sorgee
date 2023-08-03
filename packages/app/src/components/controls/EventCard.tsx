@@ -1,11 +1,10 @@
-import { ReactNode, useEffect, useState } from 'react'
-
-import { AddToCalendarButton } from 'add-to-calendar-button-react'
-import { capitalCase } from 'change-case'
-import { differenceInDays, isAfter, isFuture, isToday } from 'date-fns'
-import { GroupEvent, Location } from 'lib/models'
-import { getEventDate, toLocalDate } from 'lib/utils'
-import Countdown from 'react-countdown'
+import { AddToCalendarButton } from "add-to-calendar-button-react";
+import { capitalCase } from "change-case";
+import { differenceInDays, isAfter, isFuture, isToday } from "date-fns";
+import { GroupEvent, Location } from "lib/models";
+import { getEventDate, toLocalDate } from "lib/utils";
+import { ReactNode, useEffect, useState } from "react";
+import Countdown from "react-countdown";
 
 import {
   Card,
@@ -27,10 +26,10 @@ import {
   StatNumber,
   Text,
   useColorModeValue
-} from '@chakra-ui/react'
-import { MapPinIcon } from '@heroicons/react/24/solid'
+} from "@chakra-ui/react";
+import { MapPinIcon } from "@heroicons/react/24/solid";
 
-import { Markdown } from './Markdown'
+import { Markdown } from "./Markdown";
 
 type EventCardProps = CardProps & {
   showDescription?: boolean

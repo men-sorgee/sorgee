@@ -28,8 +28,8 @@ import {
   UserSession,
   UserShare,
   UserVerificationToken,
-  UserView,
-} from 'lib/models'
+  UserView
+} from "lib/models";
 
 export type DirectusCollection = {
   collection: string

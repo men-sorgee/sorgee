@@ -1,18 +1,22 @@
+import { differenceInDays } from "date-fns";
+import { useUser } from "hooks";
 import {
+  Member,
   MemberLevel,
   MemberLevelColorMap,
-  Member,
   MembershipType
-} from 'lib/models'
-import { differenceInDays } from 'date-fns'
+} from "lib/models";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+
 import {
   Badge,
   BadgeProps,
   chakra,
-  Popover,
   Heading,
   HStack,
   Icon,
+  Popover,
   PopoverArrow,
   PopoverBody,
   PopoverCloseButton,
@@ -20,16 +24,14 @@ import {
   PopoverHeader,
   PopoverTrigger,
   Text
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 import {
   CheckBadgeIcon,
-  SparklesIcon,
-  CurrencyDollarIcon
-} from '@heroicons/react/24/solid'
-import { MemberVouch } from './MemberVouch'
-import { useUser } from 'hooks'
-import Link from 'next/link'
-import { useEffect, useState } from 'react'
+  CurrencyDollarIcon,
+  SparklesIcon
+} from "@heroicons/react/24/solid";
+
+import { MemberVouch } from "./MemberVouch";
 
 type Props = BadgeProps & {
   member: Partial<Member>

@@ -98,5 +98,6 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "eslint.codeActionsOnSave.mode": "problems",
+  "importSorter.generalConfiguration.sortOnBeforeSave": true,
   "vs-code-prettier-eslint.prettierLast": true
 }

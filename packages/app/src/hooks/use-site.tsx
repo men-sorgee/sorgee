@@ -1,7 +1,7 @@
 'use client'
-import { Site } from 'lib/models'
-import { JsonFetcher } from 'lib/utils'
-import useSWR, { KeyedMutator } from 'swr'
+import { Site } from "lib/models";
+import { JsonFetcher } from "lib/utils";
+import useSWR, { KeyedMutator } from "swr";
 
 type SiteResults = {
   site: Site | null

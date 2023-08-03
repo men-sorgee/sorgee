@@ -1,11 +1,11 @@
-import { useEffect } from 'react'
-
 import {
   AppNotificationCard,
   UserNotificationCard,
   UserNotifications
-} from 'components/controls'
-import { Member } from 'lib/models'
+} from "components/controls";
+import { useAppNotifications, useUserNotifications } from "hooks";
+import { Member } from "lib/models";
+import { useEffect } from "react";
 
 import {
   Badge,
@@ -24,9 +24,8 @@ import {
   TabPanels,
   Tabs,
   useDisclosure
-} from '@chakra-ui/react'
-import { BellIcon } from '@heroicons/react/24/outline'
-import { useAppNotifications, useUserNotifications } from 'hooks'
+} from "@chakra-ui/react";
+import { BellIcon } from "@heroicons/react/24/outline";
 
 interface Props {
   member: Member

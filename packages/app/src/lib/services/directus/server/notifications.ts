@@ -1,17 +1,17 @@
+import { notifications } from "lib/config";
 import {
   AppNotification,
   AppNotificationStatusType,
-  NotificationUser,
-  Notification,
-  UserNotification,
-  GroupEvent,
   EventDetail,
-  UserType,
-} from 'lib/models'
-import { notifications } from 'lib/config'
-import { getAdminClient } from './'
-import { sendAdminNotification } from '../../webhooks/directus'
+  GroupEvent,
+  Notification,
+  NotificationUser,
+  UserNotification,
+  UserType
+} from "lib/models";
 
+import { sendAdminNotification } from "../../webhooks/directus";
+import { getAdminClient } from "./";
 
 export async function getAppNotification(id: string): Promise<Notification> {
   const adminClient = await getAdminClient()

@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react'
-
-import { Markdown, BusyButton } from 'components/controls'
-import { FieldInput, FieldSelect, Form } from 'components/forms'
-import Page from 'components/Page'
-import { useSite } from 'hooks/use-site'
-import { pages } from 'lib/config'
-import { FieldOptions, Promo, SignUpForm, User } from 'lib/models'
-import { postJSON } from 'lib/utils'
-import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/router'
+import { BusyButton, Markdown } from "components/controls";
+import { FieldInput, FieldSelect, Form } from "components/forms";
+import Page from "components/Page";
+import { set } from "date-fns";
+import { useSite } from "hooks/use-site";
+import { pages } from "lib/config";
+import { FieldOptions, Promo, SignUpForm, User } from "lib/models";
+import { postJSON } from "lib/utils";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 import {
   Box,
@@ -18,8 +18,7 @@ import {
   SimpleGrid,
   Spinner,
   useToast
-} from '@chakra-ui/react'
-import { set } from 'date-fns'
+} from "@chakra-ui/react";
 
 export type Props = {
   promo?: Promo

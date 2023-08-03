@@ -1,5 +1,11 @@
-import { EventInvite, EventUser, GroupEvent, Member, MemberLevel, UserType } from 'lib/models'
-import { ApiResponse } from 'lib/utils'
+import {
+  EventInvite,
+  EventUser,
+  GroupEvent,
+  Member,
+  MemberLevel,
+  UserType
+} from "lib/models";
 import {
   addUserToCongratsEmail,
   getEvent,
@@ -7,10 +13,10 @@ import {
   getUser,
   updateEventUsers,
   updateInvite,
-  updateUser,
-} from 'lib/services/directus/server'
-import { withMethods, withStaff } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+  updateUser
+} from "lib/services/directus/server";
+import { ApiResponse, withMethods, withStaff } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function InviteAdmin(
   req: NextApiRequest,

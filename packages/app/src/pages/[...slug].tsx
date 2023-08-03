@@ -1,15 +1,14 @@
-import { Key, useEffect, useState } from 'react'
+import { ButtonLink, Markdown } from "components/controls";
+import NotFound from "components/NotFound";
+import Page from "components/Page";
+import Section from "components/Section";
+import { useSite } from "hooks/use-site";
+import { Page as PageModel } from "lib/models";
+import NextLink from "next/link";
+import { ParsedUrlQuery } from "querystring";
+import { Key, useEffect, useState } from "react";
 
-import { ButtonLink, Markdown } from 'components/controls'
-import NotFound from 'components/NotFound'
-import Page from 'components/Page'
-import Section from 'components/Section'
-import { useSite } from 'hooks/use-site'
-import { Page as PageModel } from 'lib/models'
-import NextLink from 'next/link'
-import { ParsedUrlQuery } from 'querystring'
-
-import { ChevronRightIcon } from '@chakra-ui/icons'
+import { ChevronRightIcon } from "@chakra-ui/icons";
 import {
   Box,
   Breadcrumb,
@@ -18,7 +17,7 @@ import {
   Flex,
   HStack,
   useBreakpointValue
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 
 interface Params extends ParsedUrlQuery {
   slug: string[]

@@ -1,6 +1,6 @@
-import { DirectusField, Member } from 'lib/models'
+import { DirectusField, Member } from "lib/models";
 
-import { LockIcon } from '@chakra-ui/icons'
+import { LockIcon } from "@chakra-ui/icons";
 import {
   Box,
   Flex,
@@ -9,7 +9,7 @@ import {
   SimpleGrid,
   Text,
   useColorModeValue
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 
 type Props = {
   k: string

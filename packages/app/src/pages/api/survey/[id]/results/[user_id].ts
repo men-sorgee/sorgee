@@ -1,7 +1,7 @@
-import { ApiResponse, UserSurvey } from 'lib/models'
-import { getUserSurveyAnswers } from 'lib/services/directus/server'
-import { withMember } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { UserSurvey } from "lib/models";
+import { getUserSurveyAnswers } from "lib/services/directus/server";
+import { ApiResponse, withMember } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function UserSurvey(
   req: NextApiRequest,

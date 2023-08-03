@@ -1,5 +1,5 @@
 'use client'
-import { ApiResponse } from 'lib/models'
+import { ApiResponse } from "lib/utils/server";
 
 /// Fetches a JSON response from the given URL, and returns the data field.
 /// This fetcher hides any errors, and returns null if the response is not ok.

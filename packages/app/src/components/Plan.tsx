@@ -1,15 +1,16 @@
-import { useEffect, useState } from 'react'
-import { sentenceCase } from 'change-case'
-import { ButtonLink, ButtonConfirm } from 'components'
+import { sentenceCase } from "change-case";
+import { ButtonConfirm, ButtonLink } from "components";
+import { useProducts } from "hooks";
 import {
   memberFeatures,
   MembershipNames,
   MembershipRenewalType,
   ProductView
-} from 'lib/models'
-import { Center, Flex, Heading, Text, VStack, HStack } from '@chakra-ui/react'
-import { CheckCircleIcon } from '@heroicons/react/24/solid'
-import { useProducts } from 'hooks'
+} from "lib/models";
+import { useEffect, useState } from "react";
+
+import { Flex, Heading, Text, VStack } from "@chakra-ui/react";
+import { CheckCircleIcon } from "@heroicons/react/24/solid";
 
 type Params = {
   plan: MembershipNames
@@ -18,7 +19,7 @@ type Params = {
 
 export default function Plan({ plan, interval }: Params) {
   const { products, loading } = useProducts()
-  const [product, setProduct] = useState<ProductView>(null)
+  const [product, setProduct] = useState<ProductView>(undefined)
 
   useEffect(() => {
     if (!loading && products) {

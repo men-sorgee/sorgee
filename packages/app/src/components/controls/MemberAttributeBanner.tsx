@@ -1,12 +1,13 @@
-import { Member } from 'lib/models'
+import { capitalCase } from "change-case";
+import { Member } from "lib/models";
+
 import {
+  Badge,
   chakra,
   Flex,
-  Badge,
-  ResponsiveValue,
-  FlexProps
-} from '@chakra-ui/react'
-import { capitalCase } from 'change-case'
+  FlexProps,
+  ResponsiveValue
+} from "@chakra-ui/react";
 
 type Props = FlexProps & {
   member: Partial<Member>

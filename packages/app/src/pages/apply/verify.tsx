@@ -1,3 +1,9 @@
+import { BusyButton, PhotoCapture } from "components/controls";
+import Page from "components/Page";
+import { useUser } from "hooks/use-user";
+import { ApplicationStatus, Member, MemberLevel } from "lib/models";
+import { getAssetUrl, postForm, postJSON } from "lib/utils";
+import { useRouter } from "next/router";
 import {
   ChangeEvent,
   Dispatch,
@@ -6,15 +12,7 @@ import {
   useEffect,
   useRef,
   useState
-} from 'react'
-
-import { BusyButton, PhotoCapture } from 'components/controls'
-
-import Page from 'components/Page'
-import { useUser } from 'hooks/use-user'
-import { ApplicationStatus, Member, MemberLevel } from 'lib/models'
-import { getAssetUrl, postForm, postJSON } from 'lib/utils'
-import { useRouter } from 'next/router'
+} from "react";
 
 import {
   Alert,
@@ -31,9 +29,10 @@ import {
   Input,
   Stack,
   Text
-} from '@chakra-ui/react'
-import { ArrowUpTrayIcon, CameraIcon } from '@heroicons/react/24/outline'
-import ApplicationSteps from './_steps'
+} from "@chakra-ui/react";
+import { ArrowUpTrayIcon, CameraIcon } from "@heroicons/react/24/outline";
+
+import ApplicationSteps from "./_steps";
 
 function VerificationPage() {
   const { member, loading, reload } = useUser({

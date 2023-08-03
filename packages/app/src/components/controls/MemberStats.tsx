@@ -1,16 +1,18 @@
-import { addDays } from 'date-fns'
+import { addDays } from "date-fns";
+import { MemberStats } from "lib/models";
+import useSWR from "swr";
+
 import {
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatGroup,
   Flex,
+  Stat,
   StatArrow,
-  StatHelpText
-} from '@chakra-ui/react'
-import { Loading } from './Loading'
-import useSWR from 'swr'
-import { MemberStats } from 'lib/models'
+  StatGroup,
+  StatHelpText,
+  StatLabel,
+  StatNumber
+} from "@chakra-ui/react";
+
+import { Loading } from "./Loading";
 
 export function MemberStats() {
   const daysAgo = addDays(new Date(new Date().toDateString()), -14)

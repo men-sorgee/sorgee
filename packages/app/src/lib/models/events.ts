@@ -1,7 +1,7 @@
-import { DirectusFile } from 'lib/models'
+import { DirectusFile } from "lib/models";
 
-import { Rating, Survey } from './surveys'
-import { Member, SearchableMember, User, UserType } from './users'
+import { Rating, Survey } from "./surveys";
+import { Member, SearchableMember, User, UserType } from "./users";
 
 export type UserInvite = {
   e: string

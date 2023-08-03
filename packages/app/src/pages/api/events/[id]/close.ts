@@ -1,8 +1,17 @@
-import { EventDetail, EventUser, Member, MemberLevel } from 'lib/models'
-import { ApiResponse } from 'lib/utils'
-import { addAppNotificationUser, addUserNotification, createEventSurvey, createEventSurveyNotification, getEventDetail, setUserAverageRating, updateEvent, updateEventUsers, updateSurvey } from 'lib/services/directus/server'
-import { withStaff, withMethods } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { EventDetail, EventUser, Member, MemberLevel } from "lib/models";
+import {
+  addAppNotificationUser,
+  addUserNotification,
+  createEventSurvey,
+  createEventSurveyNotification,
+  getEventDetail,
+  setUserAverageRating,
+  updateEvent,
+  updateEventUsers,
+  updateSurvey
+} from "lib/services/directus/server";
+import { ApiResponse, withMethods, withStaff } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function Event(
   req: NextApiRequest,

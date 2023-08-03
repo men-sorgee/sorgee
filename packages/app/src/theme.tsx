@@ -1,9 +1,9 @@
-import { StepsTheme } from 'chakra-ui-steps'
-import { brand } from 'lib/config/brand'
+import { StepsTheme } from "chakra-ui-steps";
+import { brand } from "lib/config/brand";
 
-import { defineStyleConfig, StyleFunctionProps } from '@chakra-ui/react'
-import defaultTheme from '@chakra-ui/theme'
-import { mode } from '@chakra-ui/theme-tools'
+import { defineStyleConfig, StyleFunctionProps } from "@chakra-ui/react";
+import defaultTheme from "@chakra-ui/theme";
+import { mode } from "@chakra-ui/theme-tools";
 
 export default function getTheme(body: any, heading: any, mono: any) {
   return {

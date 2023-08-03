@@ -1,7 +1,7 @@
-import { CSSProperties, useEffect, useState } from 'react'
+import { brand } from "lib/config/brand";
+import NextLink from "next/link";
+import { CSSProperties, useEffect, useState } from "react";
 
-import { brand } from 'lib/config/brand'
-import NextLink from 'next/link'
 export type LogoProps = CSSProperties & {
   isAuthenticated: boolean
 }

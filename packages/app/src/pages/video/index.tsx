@@ -1,10 +1,10 @@
-import Page from 'components/Page'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
+import Page from "components/Page";
+import { useUser } from "hooks";
+import { MemberLevel } from "lib/models";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
-import { ListItem, UnorderedList } from '@chakra-ui/react'
-import { useUser } from 'hooks'
-import { MemberLevel } from 'lib/models'
+import { ListItem, UnorderedList } from "@chakra-ui/react";
 
 export const getServerSideProps = async () => {
   const key = process.env.WHEREBY_API_KEY
@@ -34,7 +34,7 @@ export default function VideoChats({ meetings = [] }: { meetings: any[] }) {
     return null
   }
   return (
-    <Page title="Video Chats" >
+    <Page title="Video Chats">
       <UnorderedList>
         {meetings?.map((meeting) => (
           <ListItem key={meeting.meetingId}>

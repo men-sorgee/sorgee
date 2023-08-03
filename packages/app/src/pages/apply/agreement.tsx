@@ -1,21 +1,21 @@
-import { useEffect, useState } from 'react'
-
-import { BusyButton, Markdown } from 'components/controls'
-import { Form, ConnectForm, FieldCheckbox } from 'components/forms'
-import Page from 'components/Page'
-import { useUser } from 'hooks/use-user'
-import { pages } from 'lib/config'
+import { BusyButton, Markdown } from "components/controls";
+import { ConnectForm, FieldCheckbox, Form } from "components/forms";
+import Page from "components/Page";
+import { useUser } from "hooks/use-user";
+import { pages } from "lib/config";
 import {
   AgreementData,
   ApplicationStatus,
   Member,
   MemberLevel
-} from 'lib/models'
-import { postJSON } from 'lib/utils'
-import { useRouter } from 'next/router'
-import { Box, Button, Heading, Text } from '@chakra-ui/react'
+} from "lib/models";
+import { postJSON } from "lib/utils";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
-import ApplicationSteps from './_steps'
+import { Box, Button, Heading, Text } from "@chakra-ui/react";
+
+import ApplicationSteps from "./_steps";
 
 interface Props {
   markdown: string

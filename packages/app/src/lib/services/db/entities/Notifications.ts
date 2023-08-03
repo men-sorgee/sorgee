@@ -1,8 +1,8 @@
-import * as typeorm from 'typeorm'
+import * as typeorm from "typeorm";
 
-import { Events } from './Events'
-import { NotificationsUsers } from './NotificationsUsers'
-import { Surveys } from './Surveys'
+import { Events } from "./Events";
+import { NotificationsUsers } from "./NotificationsUsers";
+import { Surveys } from "./Surveys";
 
 @typeorm.Index('notifications_pkey', ['id'], { unique: true })
 @typeorm.Entity('notifications', { schema: 'public' })

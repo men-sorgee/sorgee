@@ -1,5 +1,5 @@
-import { adminBaseUrl } from 'lib/config'
-import { DirectusTypes, Page } from 'lib/models'
+import { adminBaseUrl } from "lib/config";
+import { DirectusTypes, Page } from "lib/models";
 
 const get_page = `query getPage($id: ID!) {
   page: page_by_id(id: $id) {

@@ -1,14 +1,17 @@
-import { use, useEffect, useState } from 'react'
-import { sentenceCase } from 'change-case'
-import { ButtonLink } from 'components'
-import { useUser } from 'hooks'
+import { sentenceCase } from "change-case";
+import { ButtonLink } from "components";
+import { useProducts, useUser } from "hooks";
+import { baseUrl } from "lib/config";
 import {
   memberFeatures,
   MemberLevel,
   MembershipType,
   ProductView
-} from 'lib/models'
-import { event } from 'nextjs-google-analytics'
+} from "lib/models";
+import { getJSON } from "lib/utils";
+import { event } from "nextjs-google-analytics";
+import { use, useEffect, useState } from "react";
+
 import {
   Badge,
   Box,
@@ -21,11 +24,8 @@ import {
   Text,
   useColorModeValue,
   VStack
-} from '@chakra-ui/react'
-import { CheckCircleIcon } from '@heroicons/react/24/solid'
-import { useProducts } from 'hooks'
-import { getJSON } from 'lib/utils'
-import { baseUrl } from 'lib/config'
+} from "@chakra-ui/react";
+import { CheckCircleIcon } from "@heroicons/react/24/solid";
 
 type Params = {
   allowSubscribe?: boolean
@@ -80,12 +80,12 @@ const Plans = ({
     const subscription = products.find((p) => p.id == productId)
     event('add_to_cart', {
       category: 'monetization',
-      plan: MembershipType[subscription.type],
+      plan: MembershipType[subscription?.type || 'none'],
       productId,
       userId: member?.id,
-      value: data.amount,
+      value: data?.amount,
       currency: 'usd',
-      sessionId: data.id
+      sessionId: data?.id
     })
 
     event('begin_checkout', {

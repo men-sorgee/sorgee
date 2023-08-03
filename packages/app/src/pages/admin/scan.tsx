@@ -1,10 +1,9 @@
 'use client'
-import { useState } from 'react'
-
-import Page from 'components/Page'
-import { useUser } from 'hooks'
-import { MemberLevel } from 'lib/models'
-import dynamic from 'next/dynamic'
+import Page from "components/Page";
+import { useUser } from "hooks";
+import { MemberLevel } from "lib/models";
+import dynamic from "next/dynamic";
+import { useState } from "react";
 
 import {
   AspectRatio,
@@ -14,12 +13,12 @@ import {
   Flex,
   HStack,
   IconButton
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 import {
   ArrowPathRoundedSquareIcon,
   BoltIcon
-} from '@heroicons/react/24/outline'
-import { BoltIcon as LightningBoltIconSolid } from '@heroicons/react/24/solid'
+} from "@heroicons/react/24/outline";
+import { BoltIcon as LightningBoltIconSolid } from "@heroicons/react/24/solid";
 
 const BarcodeScannerComponent = dynamic(
   () => import('react-qr-barcode-scanner'),

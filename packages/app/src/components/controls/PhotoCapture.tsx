@@ -1,6 +1,5 @@
-import { useCallback, useRef, useState } from 'react'
-
-import { Camera } from 'react-camera-pro'
+import { useCallback, useRef, useState } from "react";
+import { Camera } from "react-camera-pro";
 
 import {
   AspectRatio,
@@ -12,8 +11,8 @@ import {
   IconButton,
   Image,
   StackProps
-} from '@chakra-ui/react'
-import { CameraIcon } from '@heroicons/react/24/solid'
+} from "@chakra-ui/react";
+import { CameraIcon } from "@heroicons/react/24/solid";
 
 type Props = StackProps & {
   onAccept: (base64Image: string) => void

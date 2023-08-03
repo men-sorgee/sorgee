@@ -1,25 +1,25 @@
 'use client'
 import {
+  ChatConversation,
+  ChatMessage,
+  Member,
+  MessageStatusType,
+  UserMessages
+} from "lib/models";
+import { JsonFetcher, putJSON } from "lib/utils";
+import { useRouter } from "next/router";
+import {
   createContext,
   ReactNode,
   useCallback,
   useContext,
   useEffect,
   useState
-} from 'react'
+} from "react";
+import useCookie from "react-use-cookie";
+import useSWR, { KeyedMutator } from "swr";
 
-import {
-  ChatConversation,
-  ChatMessage,
-  Member,
-  MessageStatusType,
-  UserMessages
-} from 'lib/models'
-import { JsonFetcher, putJSON } from 'lib/utils'
-import useCookie from 'react-use-cookie'
-import useSWR, { KeyedMutator } from 'swr'
-import { useRouter } from 'next/router'
-import { useAuthenticated } from './use-authenticated'
+import { useAuthenticated } from "./use-authenticated";
 
 export type MessagesContextData = {
   activeId?: string

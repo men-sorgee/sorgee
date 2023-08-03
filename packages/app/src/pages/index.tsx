@@ -1,12 +1,10 @@
-import { ButtonLink, Markdown, Section, Page as PageControl } from 'components'
-import { useUser } from 'hooks'
-import { pages } from 'lib/config'
-import { Page } from 'lib/models'
-import Link from 'next/link'
+import { ButtonLink, Markdown, Page as PageControl, Section } from "components";
+import { useSite, useUser } from "hooks";
+import { pages } from "lib/config";
+import { Page } from "lib/models";
+import Link from "next/link";
 
-import { Box, Flex, Heading, Text, useColorModeValue } from '@chakra-ui/react'
-
-import { useSite } from 'hooks'
+import { Box, Flex, Heading, Text, useColorModeValue } from "@chakra-ui/react";
 
 interface Props {
   page: Pick<

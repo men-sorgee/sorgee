@@ -1,7 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
-
-import { Step, Steps } from 'chakra-ui-steps'
-import { ButtonLink, Markdown } from 'components/controls'
+import { Step, Steps } from "chakra-ui-steps";
+import { ButtonLink, Markdown } from "components/controls";
 import {
   FieldCheckbox,
   FieldCheckboxes,
@@ -15,9 +13,9 @@ import {
   FieldSelect,
   FieldSwitch,
   FieldText
-} from 'components/forms'
-import Page from 'components/Page'
-import { useUser } from 'hooks'
+} from "components/forms";
+import Page from "components/Page";
+import { useUser } from "hooks";
 import {
   AnswerType,
   GroupEvent,
@@ -25,10 +23,11 @@ import {
   Question,
   Survey,
   SurveyAnswer
-} from 'lib/models'
-import { getJSON, postJSON, pruneUndefined } from 'lib/utils'
-import { useRouter } from 'next/router'
-import { FormProvider, useForm } from 'react-hook-form'
+} from "lib/models";
+import { getJSON, postJSON, pruneUndefined } from "lib/utils";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 
 import {
   Box,
@@ -41,7 +40,7 @@ import {
   Text,
   useBreakpointValue,
   useToast
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 
 type Props = {
   survey: Survey

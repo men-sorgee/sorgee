@@ -1,11 +1,10 @@
-import React, { InputHTMLAttributes } from 'react'
+import { Rating, RatingControlProps } from "components/controls/Rating";
+import React, { InputHTMLAttributes } from "react";
+import { RegisterOptions, useFormContext } from "react-hook-form";
 
-import { Rating, RatingControlProps } from 'components/controls/Rating'
-import { RegisterOptions, useFormContext } from 'react-hook-form'
+import { chakra } from "@chakra-ui/react";
 
-import { chakra } from '@chakra-ui/react'
-
-import FieldWrapper from './FieldWrapper'
+import FieldWrapper from "./FieldWrapper";
 
 type Props = RatingControlProps &
   InputHTMLAttributes<HTMLInputElement> & {

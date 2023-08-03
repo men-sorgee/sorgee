@@ -1,9 +1,7 @@
-import { Member } from 'lib/models'
-import { ApiResponse } from 'lib/utils'
-import { findUser, updateUser } from 'lib/services/directus/server/users'
-import { withMethods } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
-
+import { Member } from "lib/models";
+import { findUser, updateUser } from "lib/services/directus/server/users";
+import { ApiResponse, withMethods } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function listUserInvites(
   req: NextApiRequest,

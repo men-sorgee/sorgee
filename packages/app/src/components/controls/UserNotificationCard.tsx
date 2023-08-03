@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
-import { UserNotification, Member } from 'lib/models'
-import { toLocalDate } from 'lib/utils'
-import distance from 'date-fns/formatDistanceToNow'
+import distance from "date-fns/formatDistanceToNow";
+import { Member, UserNotification } from "lib/models";
+import { toLocalDate } from "lib/utils";
+import { useEffect, useState } from "react";
+
 import {
   Alert,
   AlertIcon,
@@ -14,12 +15,12 @@ import {
   Spinner,
   Text,
   VStack
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
+import { TrashIcon } from "@heroicons/react/24/outline";
+import { TrashIcon as TrashHover } from "@heroicons/react/24/solid";
 
-import { ButtonLink } from './ButtonLink'
-import { Markdown } from './Markdown'
-import { TrashIcon as TrashHover } from '@heroicons/react/24/solid'
-import { TrashIcon } from '@heroicons/react/24/outline'
+import { ButtonLink } from "./ButtonLink";
+import { Markdown } from "./Markdown";
 
 type Props = {
   notification: UserNotification

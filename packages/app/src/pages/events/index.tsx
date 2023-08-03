@@ -1,6 +1,4 @@
-import { useCallback, useState } from 'react'
-
-import { capitalCase } from 'change-case'
+import { capitalCase } from "change-case";
 import {
   ButtonLink,
   EventBadge,
@@ -8,22 +6,23 @@ import {
   EventRSVP,
   EventTicket,
   Lazy
-} from 'components/controls'
-import Page from 'components/Page'
-import { addDays, isAfter, isSameDay, isToday } from 'date-fns'
-import { useUser, useInvites } from 'hooks'
-import { brand } from 'lib/config/brand'
-import { EventInvite, GroupEvent, Member, MemberLevel } from 'lib/models'
-import Link from 'next/link'
-import Calendar from 'react-calendar'
+} from "components/controls";
+import Page from "components/Page";
+import { addDays, isAfter, isSameDay, isToday } from "date-fns";
+import { useInvites, useUser } from "hooks";
+import { brand } from "lib/config/brand";
+import { EventInvite, GroupEvent, Member, MemberLevel } from "lib/models";
+import Link from "next/link";
+import { useCallback, useState } from "react";
+import Calendar from "react-calendar";
 
 import {
   Alert,
   AlertIcon,
   Badge,
   Box,
-  Heading,
   Flex,
+  Heading,
   LinkBox,
   LinkOverlay,
   Show,
@@ -34,7 +33,7 @@ import {
   Tabs,
   Text,
   useColorModeValue
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 
 export type PageProps = {}
 

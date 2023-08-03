@@ -1,13 +1,24 @@
 import type { Readable } from 'node:stream'
 
-import { IncomingMessage } from 'http'
-import { User } from 'lib/models'
-import { findUser, getUser, updateInvite, updateUser } from 'lib/services/directus/server/users'
-import { findUserByCustomer, saveBillingEvent } from 'lib/services/directus/server/users/billing'
-import { getClient, subscriptionData, webhookSecret } from 'lib/services/stripe/server'
-import { NextApiRequest, NextApiResponse } from 'next'
-import Stripe from 'stripe'
-
+import { IncomingMessage } from "http";
+import { User } from "lib/models";
+import {
+  findUser,
+  getUser,
+  updateInvite,
+  updateUser
+} from "lib/services/directus/server/users";
+import {
+  findUserByCustomer,
+  saveBillingEvent
+} from "lib/services/directus/server/users/billing";
+import {
+  getClient,
+  subscriptionData,
+  webhookSecret
+} from "lib/services/stripe/server";
+import { NextApiRequest, NextApiResponse } from "next";
+import Stripe from "stripe";
 
 async function getRawBody(readable: Readable): Promise<Buffer> {
   const chunks = []

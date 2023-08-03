@@ -1,12 +1,10 @@
 
-import { baseUrl } from 'lib/config'
-import { Member, GroupEvent } from 'lib/models'
-import { ApiResponse } from 'lib/utils'
-import { getEvent, getInvite, updateUser } from 'lib/services/directus/server'
-import { getClient } from 'lib/services/stripe/server'
-import { withMember } from 'lib/utils/server'
-import Stripe from 'stripe'
-
+import { baseUrl } from "lib/config";
+import { GroupEvent, Member } from "lib/models";
+import { getEvent, getInvite, updateUser } from "lib/services/directus/server";
+import { getClient } from "lib/services/stripe/server";
+import { ApiResponse, withMember } from "lib/utils/server";
+import Stripe from "stripe";
 
 export default async function PurchaseProduct(req, res) {
   try {

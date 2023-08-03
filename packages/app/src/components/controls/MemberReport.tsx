@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-
-import { useUser } from 'hooks'
-import { Member, MemberLevel } from 'lib/models'
-import { postJSON } from 'lib/utils'
+import { useUser } from "hooks";
+import { Member, MemberLevel } from "lib/models";
+import { postJSON } from "lib/utils";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
   Button,
   chakra,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   IconButton,
   IconButtonProps,
@@ -19,15 +19,15 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Textarea,
   Spinner,
+  Textarea,
   useDisclosure,
-  useToast,
-  FormErrorMessage
-} from '@chakra-ui/react'
-import { FlagIcon as ReportIcon } from '@heroicons/react/24/outline'
-import { FlagIcon as ReportIconHover } from '@heroicons/react/24/solid'
-import { Loading } from './Loading'
+  useToast
+} from "@chakra-ui/react";
+import { FlagIcon as ReportIcon } from "@heroicons/react/24/outline";
+import { FlagIcon as ReportIconHover } from "@heroicons/react/24/solid";
+
+import { Loading } from "./Loading";
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
   member: Partial<Member>

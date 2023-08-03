@@ -1,13 +1,13 @@
-import { Markdown } from 'components/controls'
-import NotFound from 'components/NotFound'
-import Page from 'components/Page'
-import { pages as pageIds } from 'lib/config'
-import { Page as PageModel } from 'lib/models'
-import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next'
-import NextLink from 'next/link'
-import { ParsedUrlQuery } from 'querystring'
+import { Markdown } from "components/controls";
+import NotFound from "components/NotFound";
+import Page from "components/Page";
+import { pages as pageIds } from "lib/config";
+import { Page as PageModel } from "lib/models";
+import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from "next";
+import NextLink from "next/link";
+import { ParsedUrlQuery } from "querystring";
 
-import { ChevronRightIcon } from '@chakra-ui/icons'
+import { ChevronRightIcon } from "@chakra-ui/icons";
 import {
   Box,
   Breadcrumb,
@@ -16,7 +16,7 @@ import {
   Flex,
   Link,
   useBreakpointValue
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 
 interface Params extends ParsedUrlQuery {
   slug: string

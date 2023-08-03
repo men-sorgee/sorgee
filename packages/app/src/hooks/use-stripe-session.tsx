@@ -1,8 +1,8 @@
 'use client'
 
-import { JsonFetcher } from 'lib/utils'
-import useSWR from 'swr'
-import Stripe from 'stripe'
+import { JsonFetcher } from "lib/utils";
+import Stripe from "stripe";
+import useSWR from "swr";
 
 type ProductResults = {
   session: Stripe.Checkout.Session

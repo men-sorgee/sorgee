@@ -1,30 +1,30 @@
+import { capitalCase } from "change-case";
 import {
-  MemberProgress,
-  MemberCard,
-  Page,
   ButtonLink,
   EventCard,
   LocationCapture,
-  MemberStats
-} from 'components'
-import { ClipboardDocumentListIcon } from '@heroicons/react/24/outline'
+  MemberCard,
+  MemberProgress,
+  MemberStats,
+  Page
+} from "components";
+import { useEvents, useMemberSearch, useUser } from "hooks";
+import { MemberLevel, SearchableMember } from "lib/models";
+import NextLink from "next/link";
+import { useEffect, useState } from "react";
+
 import {
-  Text,
+  Alert,
+  AlertIcon,
+  Box,
+  GridItem,
   Heading,
   LinkBox,
   LinkOverlay,
-  Box,
-  Alert,
-  AlertIcon,
   SimpleGrid,
-  GridItem
-} from '@chakra-ui/react'
-import { useEvents, useMemberSearch, useUser } from 'hooks'
-import { MemberLevel, SearchableMember } from 'lib/models'
-import { useState, useEffect } from 'react'
-
-import NextLink from 'next/link'
-import { capitalCase } from 'change-case'
+  Text
+} from "@chakra-ui/react";
+import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline";
 
 export default function MemberHomePage() {
   const [newestPledges, setNewestPledges] = useState<SearchableMember[]>([])

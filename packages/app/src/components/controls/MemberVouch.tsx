@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useUser } from "hooks";
+import { Member, MemberLevel, VouchingUser } from "lib/models";
+import { JsonFetcher, postJSON } from "lib/utils";
+import { useCallback, useEffect, useState } from "react";
+import swr from "swr";
 
-import { useUser } from 'hooks'
-import { MemberLevel, Member, VouchingUser } from 'lib/models'
-import { JsonFetcher, postJSON } from 'lib/utils'
-import swr from 'swr'
-
+import { CheckIcon } from "@chakra-ui/icons";
 import {
   AvatarBadge,
   Button,
@@ -24,12 +24,11 @@ import {
   Tooltip,
   useDisclosure,
   useToast
-} from '@chakra-ui/react'
-import { HandRaisedIcon, HandThumbUpIcon } from '@heroicons/react/24/solid'
+} from "@chakra-ui/react";
+import { HandRaisedIcon, HandThumbUpIcon } from "@heroicons/react/24/solid";
 
-import { MemberAvatar } from './MemberAvatar'
-import { CheckIcon } from '@chakra-ui/icons'
-import { Loading } from './Loading'
+import { Loading } from "./Loading";
+import { MemberAvatar } from "./MemberAvatar";
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
   member: Partial<Member>

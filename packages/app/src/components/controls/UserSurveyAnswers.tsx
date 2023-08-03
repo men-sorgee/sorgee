@@ -1,15 +1,17 @@
-import { JsonFetcher } from 'lib/utils'
-import swr from 'swr'
-import { Box, Tag, Heading, HStack, Text, Avatar } from '@chakra-ui/react'
 import {
-  UserSurvey,
+  AnswerType,
+  Member,
   Question,
   SurveyAnswer,
-  AnswerType,
-  Member
-} from 'lib/models'
-import { ReactNode } from 'react'
-import { MemberAvatar } from './MemberAvatar'
+  UserSurvey
+} from "lib/models";
+import { JsonFetcher } from "lib/utils";
+import { ReactNode } from "react";
+import swr from "swr";
+
+import { Avatar, Box, Heading, HStack, Tag, Text } from "@chakra-ui/react";
+
+import { MemberAvatar } from "./MemberAvatar";
 
 export type UserSurveyAnswersProps = {
   surveyId: string

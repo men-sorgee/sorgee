@@ -1,8 +1,7 @@
-import { InviteLink } from 'lib/models'
-import { ApiResponse } from 'lib/utils'
-import { createUser, findUser, updateUser } from 'lib/services/directus/server'
-import { withMember, withMethods } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { InviteLink } from "lib/models";
+import { createUser, findUser, updateUser } from "lib/services/directus/server";
+import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {

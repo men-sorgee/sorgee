@@ -1,18 +1,18 @@
 'use client'
-import { createContext, ReactNode, useContext, useEffect } from 'react'
-
 import {
   ApplicationStatus,
   Member,
   MemberFeature,
   MemberLevel,
   MembershipType
-} from 'lib/models'
-import { ApiResult, getAssetUrl, JsonFetcher, postJSON } from 'lib/utils'
-import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/router'
-import useSWR from 'swr'
-import { useAuthenticated } from './use-authenticated'
+} from "lib/models";
+import { ApiResult, getAssetUrl, JsonFetcher, postJSON } from "lib/utils";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/router";
+import { createContext, ReactNode, useContext, useEffect } from "react";
+import useSWR from "swr";
+
+import { useAuthenticated } from "./use-authenticated";
 
 export type UserContextData = {
   member: Member | null

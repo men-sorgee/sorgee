@@ -1,9 +1,9 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState } from "react";
 
-import { Box, HStack } from '@chakra-ui/react'
-import { LockOpenIcon } from '@heroicons/react/24/outline'
+import { Box, HStack } from "@chakra-ui/react";
+import { LockOpenIcon } from "@heroicons/react/24/outline";
 
-import { PhotoModal } from './PhotoModal'
+import { PhotoModal } from "./PhotoModal";
 
 export const PhotoGallery = ({
   images

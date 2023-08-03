@@ -1,11 +1,12 @@
-import { Member, UserBuddy, UserLike, UserShare } from 'lib/models'
+import { Member, UserBuddy, UserLike, UserShare } from "lib/models";
+
 import {
+  Badge,
   chakra,
   Flex,
-  Badge,
-  ResponsiveValue,
-  FlexProps
-} from '@chakra-ui/react'
+  FlexProps,
+  ResponsiveValue
+} from "@chakra-ui/react";
 
 type Props = FlexProps & {
   viewer: Member

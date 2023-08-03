@@ -1,8 +1,10 @@
-import { useState } from 'react'
-import { SubscriptionData } from 'lib/models'
-import { postJSON } from 'lib/utils'
-import { Box, BoxProps, chakra, Flex, Heading, Text } from '@chakra-ui/react'
-import { FieldInput, Form, BusyButton } from '../.'
+import { SubscriptionData } from "lib/models";
+import { postJSON } from "lib/utils";
+import { useState } from "react";
+
+import { Box, BoxProps, chakra, Flex, Heading, Text } from "@chakra-ui/react";
+
+import { BusyButton, FieldInput, Form } from "../";
 
 export const SubscribeBox = chakra(({ ...props }: BoxProps) => {
   const [subscribed, setSubscribed] = useState(false)

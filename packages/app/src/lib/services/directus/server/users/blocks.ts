@@ -1,6 +1,6 @@
-import { UserBlock } from 'lib/models'
+import { UserBlock } from "lib/models";
 
-import { getAdminClient } from '../'
+import { getAdminClient } from "../";
 
 export async function getBlock(user_id: string, blocked_id: string): Promise<UserBlock> {
   const adminClient = await getAdminClient()

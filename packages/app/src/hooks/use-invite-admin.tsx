@@ -1,7 +1,7 @@
 'use client'
-import { EventInvite, EventUser } from 'lib/models'
-import { ApiResult, JsonFetcher, postJSON } from 'lib/utils'
-import useSWR from 'swr'
+import { EventInvite, EventUser } from "lib/models";
+import { ApiResult, JsonFetcher, postJSON } from "lib/utils";
+import useSWR from "swr";
 
 type InviteAdminProps = {
   invite: EventInvite

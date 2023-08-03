@@ -1,12 +1,7 @@
-import { EventInvite, GroupEvent, Member } from 'lib/models'
-import { ApiResponse } from 'lib/utils'
-import {
-  getEvent,
-  getInvite,
-  getUser,
-} from 'lib/services/directus/server'
-import { withMethods, withStaff } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { EventInvite, GroupEvent, Member } from "lib/models";
+import { getEvent, getInvite, getUser } from "lib/services/directus/server";
+import { ApiResponse, withMethods, withStaff } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function InviteAdmin(
   req: NextApiRequest,

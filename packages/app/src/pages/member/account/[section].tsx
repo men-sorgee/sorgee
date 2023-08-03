@@ -1,4 +1,4 @@
-import AccountPage, { getServerSideProps } from './index'
+import AccountPage, { getServerSideProps } from "./index";
 
 export { getServerSideProps }
 export default AccountPage

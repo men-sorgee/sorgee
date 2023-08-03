@@ -1,8 +1,12 @@
-import { EventInvite } from 'lib/models'
-import { ApiResponse } from 'lib/utils'
-import { findInvite, getEvent, registerForEvent, updateInvite } from 'lib/services/directus/server'
-import { withMember, withMethods } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { EventInvite } from "lib/models";
+import {
+  findInvite,
+  getEvent,
+  registerForEvent,
+  updateInvite
+} from "lib/services/directus/server";
+import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function EventRSVP(
   req: NextApiRequest,

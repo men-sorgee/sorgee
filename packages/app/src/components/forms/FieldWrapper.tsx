@@ -1,6 +1,5 @@
-import { ReactNode, useState } from 'react'
-
-import { useFormContext } from 'react-hook-form'
+import { ReactNode, useState } from "react";
+import { useFormContext } from "react-hook-form";
 
 import {
   chakra,
@@ -10,10 +9,10 @@ import {
   FormControlProps,
   FormErrorMessage,
   FormHelperText,
-  FormLabel,
-} from '@chakra-ui/react'
+  FormLabel
+} from "@chakra-ui/react";
 
-import { InfoIcon } from '../icons'
+import { InfoIcon } from "../icons";
 
 type Props = FormControlProps & {
   field?: string
@@ -25,7 +24,17 @@ type Props = FormControlProps & {
 
 const FieldWrapper = (props: Props) => {
   const [showHelp, setShowHelp] = useState(false)
-  const { field, label, help, className, children, size, align = 'left', w, ...opts } = props
+  const {
+    field,
+    label,
+    help,
+    className,
+    children,
+    size,
+    align = 'left',
+    w,
+    ...opts
+  } = props
   const { getFieldState } = useFormContext()
   const { error, isDirty } = getFieldState(field)
   return (

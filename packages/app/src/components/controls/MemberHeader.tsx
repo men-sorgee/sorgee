@@ -1,10 +1,10 @@
-import { ReactNode } from 'react'
-import { Member } from 'lib/models'
+import { Member } from "lib/models";
+import { ReactNode } from "react";
 
-import { Flex } from '@chakra-ui/react'
+import { Flex } from "@chakra-ui/react";
 
-import { MemberIcon, MemberIconProps } from './MemberIcon'
-import { Rating } from '.'
+import { Rating } from "./";
+import { MemberIcon, MemberIconProps } from "./MemberIcon";
 
 export type MemberHeaderProps = MemberIconProps & {
   member: Partial<Member>

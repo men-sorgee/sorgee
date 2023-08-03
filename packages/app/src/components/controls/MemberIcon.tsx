@@ -1,7 +1,6 @@
-import { ReactNode, useState } from 'react'
-
-import { Member } from 'lib/models'
-import { getAssetUrl } from 'lib/utils'
+import { Member } from "lib/models";
+import { getAssetUrl } from "lib/utils";
+import { ReactNode, useState } from "react";
 
 import {
   AvatarProps,
@@ -11,10 +10,10 @@ import {
   Heading,
   Spacer,
   Text
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 
-import { MemberAvatar, MemberBadge } from './'
-import { PhotoModal } from './PhotoModal'
+import { MemberAvatar, MemberBadge } from "./";
+import { PhotoModal } from "./PhotoModal";
 
 export type MemberIconProps = AvatarProps & {
   color?: string

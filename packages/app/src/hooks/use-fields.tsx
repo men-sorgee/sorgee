@@ -1,7 +1,7 @@
 'use client'
-import { FieldMap } from 'lib/models'
-import { JsonFetcher } from 'lib/utils'
-import useSWR from 'swr'
+import { FieldMap } from "lib/models";
+import { JsonFetcher } from "lib/utils";
+import useSWR from "swr";
 
 export type FieldsContext = {
   fields: FieldMap

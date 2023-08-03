@@ -3,22 +3,22 @@ import {
   applicantFields,
   Member,
   memberFields,
+  MemberStats,
   Profile,
   profileFields,
+  SearchableMember,
+  searchableMemberFields,
   User,
   UserEmailEvent,
   UserFields,
   UserType,
-  MemberStats,
-  searchableMemberFields,
-  SearchableMember,
   UserView
-} from 'lib/models'
+} from "lib/models";
 
-import { FieldFilter } from '@directus/sdk'
+import { FieldFilter } from "@directus/sdk";
 
 // Service Calls ------------------------------------
-import { getAdminClient } from '../'
+import { getAdminClient } from "../";
 
 export async function createUser(member: Partial<User>): Promise<User> {
   const adminClient = await getAdminClient()
@@ -220,3 +220,4 @@ export * from './shares'
 export * from './likes'
 export * from './blocks'
 export * from './ratings'
+export * from './views'

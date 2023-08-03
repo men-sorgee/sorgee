@@ -1,13 +1,12 @@
-import { use, useCallback, useEffect, useRef, useState, useMemo } from 'react'
-import { isPast, isFuture, isBefore } from 'date-fns'
 import {
   ButtonConfirm,
   ButtonLink,
   EventCard,
   MemberAvatar
-} from 'components/controls'
-import Page from 'components/Page'
-import { useEvent, useUser } from 'hooks'
+} from "components/controls";
+import Page from "components/Page";
+import { isBefore, isFuture, isPast } from "date-fns";
+import { useEvent, useUser } from "hooks";
 import {
   EventDetail,
   EventStats,
@@ -15,12 +14,13 @@ import {
   EventUser,
   Member,
   MemberLevel
-} from 'lib/models'
-import NextLink from 'next/link'
-import { useRouter } from 'next/router'
-import { getAssetUrl } from 'lib/utils'
-import { ArrowBackIcon, CheckCircleIcon, CheckIcon } from '@chakra-ui/icons'
+} from "lib/models";
+import { getAssetUrl } from "lib/utils";
+import NextLink from "next/link";
+import { useRouter } from "next/router";
+import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { ArrowBackIcon, CheckCircleIcon, CheckIcon } from "@chakra-ui/icons";
 import {
   Alert,
   AlertIcon,
@@ -33,8 +33,8 @@ import {
   Input,
   Link,
   List,
-  ListItem,
   ListIcon,
+  ListItem,
   SimpleGrid,
   Spacer,
   Stat,
@@ -43,7 +43,7 @@ import {
   Text,
   useToast,
   Wrap
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 
 export default function EventAdmin() {
   const router = useRouter()

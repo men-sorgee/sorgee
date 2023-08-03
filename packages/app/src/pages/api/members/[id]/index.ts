@@ -1,5 +1,4 @@
 import {
-  ApiResponse,
   Member,
   memberEventFields,
   memberFields,
@@ -13,11 +12,11 @@ import {
   memberProfilePhotoFields,
   memberProfilePrivateFields,
   User,
-  UserShare,
-} from 'lib/models'
-import { addUserView, getUser, updateUser } from 'lib/services/directus/server/users'
-import { withMethods, withUser } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+  UserShare
+} from "lib/models";
+import { addUserView, getUser, updateUser } from "lib/services/directus/server";
+import { ApiResponse, withMethods, withUser } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function Member(
   req: NextApiRequest,

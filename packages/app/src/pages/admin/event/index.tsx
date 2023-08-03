@@ -1,8 +1,11 @@
-import { EventCard } from 'components/controls'
-import Page from 'components/Page'
-import { useEventsAdmin, useUser } from 'hooks'
-import { EventUser, GroupEvent, MemberLevel } from 'lib/models'
-import Link from 'next/link'
+import { EventCard } from "components/controls";
+import Page from "components/Page";
+import { isAfter, isToday } from "date-fns";
+import { useEventsAdmin, useUser } from "hooks";
+import { EventUser, GroupEvent, MemberLevel } from "lib/models";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+
 import {
   Heading,
   LinkBox,
@@ -16,9 +19,7 @@ import {
   TabPanel,
   TabPanels,
   Tabs
-} from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
-import { isToday, isAfter } from 'date-fns'
+} from "@chakra-ui/react";
 
 export default function AdminEventList() {
   const [eventList, setEventsList] = useState<

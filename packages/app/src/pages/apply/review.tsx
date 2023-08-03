@@ -1,17 +1,16 @@
-import { useEffect, useState } from 'react'
-
-import { FieldRadioButtons, Form } from 'components/forms'
-import Page from 'components/Page'
+import { FieldRadioButtons, Form } from "components/forms";
+import Page from "components/Page";
+import { useUser } from "hooks/use-user";
 import {
   ApplicationStatus,
   ContactPreferenceType,
   MemberLevel
-} from 'lib/models'
-import { postJSON } from 'lib/utils'
-import { useRouter } from 'next/router'
-import { FormProvider, useForm } from 'react-hook-form'
+} from "lib/models";
+import { postJSON } from "lib/utils";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 
-import { useUser } from 'hooks/use-user'
 import {
   Alert,
   AlertIcon,
@@ -21,10 +20,10 @@ import {
   Text,
   useToast,
   VStack
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 
-import ApplicationSteps from './_steps'
-import { BusyButton } from '../../components'
+import { BusyButton } from "../../components";
+import ApplicationSteps from "./_steps";
 
 function Review() {
   const router = useRouter()

@@ -4,7 +4,7 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalOverlay
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 
 export const PhotoModal = ({ isOpen, onClose, imageSrc }) => {
   return (

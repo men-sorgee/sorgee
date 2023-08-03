@@ -1,6 +1,5 @@
-import { InputHTMLAttributes, ReactNode } from 'react'
-
-import { RegisterOptions, useFormContext } from 'react-hook-form'
+import { InputHTMLAttributes, ReactNode } from "react";
+import { RegisterOptions, useFormContext } from "react-hook-form";
 
 import {
   chakra,
@@ -12,10 +11,10 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputProps,
-  NumberInputStepper,
-} from '@chakra-ui/react'
+  NumberInputStepper
+} from "@chakra-ui/react";
 
-import FieldWrapper from './FieldWrapper'
+import FieldWrapper from "./FieldWrapper";
 
 export type Props = NumberInputProps &
   InputHTMLAttributes<HTMLInputElement> & {
@@ -49,7 +48,11 @@ const InputField = (props: Props) => {
       <InputGroup size={size}>
         {leftAddon && <InputLeftAddon>{leftAddon}</InputLeftAddon>}
         <NumberInput {...opts} size={size} w="full">
-          <NumberInputField size={size} id={field} {...register(field as any, registerOptions)} />
+          <NumberInputField
+            size={size}
+            id={field}
+            {...register(field as any, registerOptions)}
+          />
           {showStepper && (
             <NumberInputStepper>
               <NumberIncrementStepper />

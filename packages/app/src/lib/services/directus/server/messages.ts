@@ -1,7 +1,14 @@
-import { ChatMessage, ChatUser, DirectusFile, Message, MessageStatusType, User } from 'lib/models'
-import { getAssetUrl } from 'lib/utils'
+import {
+  ChatMessage,
+  ChatUser,
+  DirectusFile,
+  Message,
+  MessageStatusType,
+  User
+} from "lib/models";
+import { getAssetUrl } from "lib/utils";
 
-import { getAdminClient } from './'
+import { getAdminClient } from "./";
 
 export async function getMessages(user_id: string) {
   const adminClient = await getAdminClient()

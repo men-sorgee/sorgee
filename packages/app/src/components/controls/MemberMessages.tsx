@@ -1,18 +1,17 @@
-import { useEffect, useState } from 'react'
-
-import { UpgradeIcon } from 'components/controls'
-import { useMember, useMessages, useUser } from 'hooks'
+import { UpgradeIcon } from "components/controls";
+import { useMember, useMessages, useUser } from "hooks";
 import {
   Member,
   MemberLevel,
   MembershipType,
   SearchableMember,
   UserBuddy
-} from 'lib/models'
+} from "lib/models";
+import { useEffect, useState } from "react";
 
-import { Badge, chakra, IconButton, IconButtonProps } from '@chakra-ui/react'
-import { ChatBubbleBottomCenterIcon as ChatIconOff } from '@heroicons/react/24/outline'
-import { ChatBubbleBottomCenterIcon as ChatIconOn } from '@heroicons/react/24/solid'
+import { Badge, chakra, IconButton, IconButtonProps } from "@chakra-ui/react";
+import { ChatBubbleBottomCenterIcon as ChatIconOff } from "@heroicons/react/24/outline";
+import { ChatBubbleBottomCenterIcon as ChatIconOn } from "@heroicons/react/24/solid";
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
   member: SearchableMember | Partial<Member>

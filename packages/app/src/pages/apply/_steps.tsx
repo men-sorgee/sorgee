@@ -1,9 +1,8 @@
-import { useEffect } from 'react'
+import { Step, Steps, useSteps } from "chakra-ui-steps";
+import { ApplicationStatus } from "lib/models";
+import { useEffect } from "react";
 
-import { Step, Steps, useSteps } from 'chakra-ui-steps'
-import { ApplicationStatus } from 'lib/models'
-
-import { Hide, Show } from '@chakra-ui/react'
+import { Hide, Show } from "@chakra-ui/react";
 
 export default function ApplicationSteps({ status }: { status: string }) {
   const steps = ['Registration', 'Verification', 'Review', 'Agreement']

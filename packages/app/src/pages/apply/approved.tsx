@@ -1,11 +1,13 @@
-import Page from 'components/Page'
-import { useUser } from 'hooks/use-user'
-import { Heading, HStack, Text, VStack } from '@chakra-ui/react'
-import { ButtonLink } from 'components/controls'
-import { pledgeSurvey } from 'lib/config'
-import { ApplicationStatus, MemberLevel } from 'lib/models'
-import ApplicationSteps from './_steps'
-import { Plans } from 'components'
+import { Plans } from "components";
+import { ButtonLink } from "components/controls";
+import Page from "components/Page";
+import { useUser } from "hooks/use-user";
+import { pledgeSurvey } from "lib/config";
+import { ApplicationStatus, MemberLevel } from "lib/models";
+
+import { Heading, HStack, Text, VStack } from "@chakra-ui/react";
+
+import ApplicationSteps from "./_steps";
 
 function Approved() {
   const { loading, level, member } = useUser({

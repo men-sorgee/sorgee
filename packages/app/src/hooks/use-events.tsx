@@ -1,8 +1,9 @@
 'use client'
-import { GroupEvent } from 'lib/models'
-import { JsonFetcher } from 'lib/utils'
-import useSWR, { KeyedMutator } from 'swr'
-import { useAuthenticated } from './use-authenticated'
+import { GroupEvent } from "lib/models";
+import { JsonFetcher } from "lib/utils";
+import useSWR, { KeyedMutator } from "swr";
+
+import { useAuthenticated } from "./use-authenticated";
 
 type EventsResults = {
   events: GroupEvent[]

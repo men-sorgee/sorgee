@@ -1,11 +1,11 @@
-import * as typeorm from 'typeorm'
+import * as typeorm from "typeorm";
 
-import { DirectusUsers } from './DirectusUsers'
-import { Events } from './Events'
-import { Location } from './Location'
-import { Notifications } from './Notifications'
-import { SurveyAnswers } from './SurveyAnswers'
-import { SurveysSurveyQuestions } from './SurveysSurveyQuestions'
+import { DirectusUsers } from "./DirectusUsers";
+import { Events } from "./Events";
+import { Location } from "./Location";
+import { Notifications } from "./Notifications";
+import { SurveyAnswers } from "./SurveyAnswers";
+import { SurveysSurveyQuestions } from "./SurveysSurveyQuestions";
 
 @typeorm.Index('surveys_pkey', ['id'], { unique: true })
 @typeorm.Entity('surveys', { schema: 'public' })

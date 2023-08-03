@@ -1,19 +1,18 @@
+import { cpSync } from "fs";
 import {
-  ApiResponse,
   getAllowedUsers,
   MemberLevel,
   SearchableMember,
   searchableMemberFields,
   User,
   UserType
-} from 'lib/models'
-import { searchUsers } from 'lib/services/directus/server/users'
-import { normalize } from 'lib/utils'
-import { withMember } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+} from "lib/models";
+import { searchUsers } from "lib/services/directus/server/users";
+import { normalize } from "lib/utils";
+import { ApiResponse, withMember } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
-import { ManyItems } from '@directus/sdk'
-import { cpSync } from 'fs'
+import { ManyItems } from "@directus/sdk";
 
 export type MemberSearch = SearchableMember & {
   offset?: number

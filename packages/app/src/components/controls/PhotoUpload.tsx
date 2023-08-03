@@ -1,6 +1,5 @@
-import { ChangeEvent, useEffect, useRef, useState } from 'react'
-
-import { ApiResponse } from 'lib/utils'
+import { ApiResponse } from "lib/utils/server";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 
 import {
   Box,
@@ -13,8 +12,8 @@ import {
   ImageProps,
   Input,
   useToast
-} from '@chakra-ui/react'
-import { ArrowUpTrayIcon, XMarkIcon } from '@heroicons/react/24/outline'
+} from "@chakra-ui/react";
+import { ArrowUpTrayIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 export type PhotoUploadProps = ImageProps & {
   name: string

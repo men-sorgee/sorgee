@@ -1,6 +1,13 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany } from 'typeorm'
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany
+} from "typeorm";
 
-import { DirectusFile } from './DirectusFiles'
+import { DirectusFile } from "./DirectusFiles";
 
 @Index('directus_folders_pkey', ['id'], { unique: true })
 @Entity('directus_folders', { schema: 'public' })

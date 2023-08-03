@@ -1,4 +1,6 @@
-import { ReactNode, RefObject, useCallback, useRef } from 'react'
+import { ApiResult } from "lib/utils";
+import { ReactNode, RefObject, useCallback, useRef } from "react";
+
 import {
   AlertDialog,
   AlertDialogBody,
@@ -11,8 +13,7 @@ import {
   IconButtonProps,
   useDisclosure,
   useToast
-} from '@chakra-ui/react'
-import { ApiResult } from 'lib/utils'
+} from "@chakra-ui/react";
 
 export type ConfirmButtonProps<TResponse> = Omit<
   IconButtonProps,

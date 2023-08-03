@@ -1,6 +1,6 @@
-import NextLink from 'next/link'
+import NextLink from "next/link";
 
-import { Link, Button, ButtonProps, chakra } from '@chakra-ui/react'
+import { Button, ButtonProps, chakra, Link } from "@chakra-ui/react";
 
 type Props = ButtonProps & {
   href: string

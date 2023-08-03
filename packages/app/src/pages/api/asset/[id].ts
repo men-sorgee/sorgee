@@ -1,6 +1,6 @@
-import { adminBaseUrl, baseUrl } from 'lib/config'
-import app from 'lib/config/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { adminBaseUrl, baseUrl } from "lib/config";
+import app from "lib/config/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function Asset(req: NextApiRequest, res: NextApiResponse) {
   try {

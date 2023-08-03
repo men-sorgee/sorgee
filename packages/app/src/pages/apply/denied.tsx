@@ -1,10 +1,9 @@
-import Page from 'components/Page'
-import { useRouter } from 'next/router'
+import Page from "components/Page";
+import { useUser } from "hooks/use-user";
+import { MemberLevel } from "lib/models";
+import { useRouter } from "next/router";
 
-import { useUser } from 'hooks/use-user'
-import { Heading, Link, Text } from '@chakra-ui/react'
-
-import { MemberLevel } from 'lib/models'
+import { Heading, Link, Text } from "@chakra-ui/react";
 
 function Denied() {
   const router = useRouter()

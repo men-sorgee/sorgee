@@ -1,4 +1,18 @@
-import { FormProvider, useForm } from 'react-hook-form'
+import { ButtonLink, Loading } from "components/controls";
+import {
+  FieldCheckbox,
+  FieldCheckboxes,
+  FieldDate,
+  FieldInput,
+  FieldNumber,
+  FieldRadioButtons,
+  FieldSelect,
+  FieldSwitch,
+  FieldText
+} from "components/forms";
+import FieldRange from "components/forms/FieldRange";
+import Page from "components/Page";
+import { FormProvider, useForm } from "react-hook-form";
 
 import {
   Box,
@@ -16,22 +30,7 @@ import {
   SimpleGrid,
   Text,
   UnorderedList
-} from '@chakra-ui/react'
-
-import { ButtonLink, Loading } from 'components/controls'
-import {
-  FieldCheckbox,
-  FieldCheckboxes,
-  FieldDate,
-  FieldInput,
-  FieldNumber,
-  FieldRadioButtons,
-  FieldSelect,
-  FieldSwitch,
-  FieldText
-} from 'components/forms'
-import FieldRange from 'components/forms/FieldRange'
-import Page from 'components/Page'
+} from "@chakra-ui/react";
 
 const Form = () => {
   const methods = useForm()

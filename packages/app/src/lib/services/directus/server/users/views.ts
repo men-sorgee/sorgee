@@ -1,6 +1,6 @@
-import { getAdminClient } from ".."
-import { UserView } from "lib/models"
+import { UserView } from "lib/models";
 
+import { getAdminClient } from "../";
 
 export async function getUserViews(user_id: string): Promise<UserView[]> {
   const adminClient = await getAdminClient()

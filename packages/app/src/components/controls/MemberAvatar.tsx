@@ -1,14 +1,16 @@
-import { Member } from 'lib/models'
-import { getAssetUrl, toLocalDate } from 'lib/utils'
-import { useEffect, useState } from 'react'
+import { formatDistanceToNowStrict } from "date-fns";
+import { Member } from "lib/models";
+import { getAssetUrl, toLocalDate } from "lib/utils";
+import { useEffect, useState } from "react";
+
 import {
   Avatar,
   AvatarBadge,
   AvatarProps,
-  Tooltip,
-  chakra
-} from '@chakra-ui/react'
-import { formatDistanceToNowStrict } from 'date-fns'
+  chakra,
+  Tooltip
+} from "@chakra-ui/react";
+
 type Props = AvatarProps & {
   member: Partial<Member>
   children?: React.ReactNode | React.ReactNode[]

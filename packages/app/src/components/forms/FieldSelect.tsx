@@ -1,11 +1,10 @@
-import { SelectHTMLAttributes } from 'react'
+import { FieldOptions } from "lib/models";
+import { SelectHTMLAttributes } from "react";
+import { RegisterOptions, useFormContext } from "react-hook-form";
 
-import { FieldOptions } from 'lib/models'
-import { RegisterOptions, useFormContext } from 'react-hook-form'
+import { chakra, Select, SelectProps } from "@chakra-ui/react";
 
-import { chakra, Select, SelectProps } from '@chakra-ui/react'
-
-import FieldWrapper from './FieldWrapper'
+import FieldWrapper from "./FieldWrapper";
 
 type Props = SelectProps &
   SelectHTMLAttributes<HTMLInputElement> & {

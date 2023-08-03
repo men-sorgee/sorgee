@@ -1,6 +1,7 @@
 'use client'
-import { brand } from 'lib/config/brand'
-import { useColorModeValue } from '@chakra-ui/react'
+import { brand } from "lib/config/brand";
+
+import { useColorModeValue } from "@chakra-ui/react";
 
 export default function MessagesStyles() {
   const bg = useColorModeValue('white', brand.colors.gray[500])

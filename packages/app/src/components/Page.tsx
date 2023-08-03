@@ -1,13 +1,12 @@
-import { useEffect, useState } from 'react'
+import { Loading } from "components/controls";
+import { useMeta } from "hooks/use-meta";
+import { MemberLevel } from "lib/models";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
-import { Loading } from 'components/controls'
-import { useMeta } from 'hooks/use-meta'
-import { MemberLevel } from 'lib/models'
-import { useSession } from 'next-auth/react'
+import { Box, BoxProps, chakra, Heading } from "@chakra-ui/react";
 
-import { Box, BoxProps, chakra, Heading } from '@chakra-ui/react'
-
-import AccessDenied from './AccessDenied'
+import AccessDenied from "./AccessDenied";
 
 type Props = BoxProps & {
   id?: string

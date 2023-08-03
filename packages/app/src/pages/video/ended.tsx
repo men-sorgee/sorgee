@@ -1,7 +1,7 @@
-import { ButtonLink } from 'components/controls'
-import Page from 'components/Page'
+import { ButtonLink } from "components/controls";
+import Page from "components/Page";
 
-import { Box, Heading, Text } from '@chakra-ui/react'
+import { Box, Heading, Text } from "@chakra-ui/react";
 
 export default function VideoChatEnded() {
   return (

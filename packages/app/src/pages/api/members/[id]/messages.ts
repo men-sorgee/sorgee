@@ -1,12 +1,13 @@
-import { ConversationStats, MemberLevel, UserMessages, UserMessageStats } from 'lib/models'
-import { ApiResponse } from 'lib/utils'
-import { withMember, withMethods } from 'lib/utils/server'
-import type { NextApiRequest, NextApiResponse } from 'next'
-
 import {
-  getMessages,
-  getUser
-} from 'lib/services/directus/server'
+  ConversationStats,
+  MemberLevel,
+  UserMessages,
+  UserMessageStats
+} from "lib/models";
+import { getMessages, getUser } from "lib/services/directus/server";
+import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function UserMessages(
   req: NextApiRequest,

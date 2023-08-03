@@ -1,5 +1,5 @@
-import { MemberSpotlight, Page } from 'components'
-import { useMember } from 'hooks'
+import { MemberSpotlight, Page } from "components";
+import { useMember } from "hooks";
 
 export function getServerSideProps({ params }) {
   return {

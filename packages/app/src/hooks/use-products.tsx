@@ -1,7 +1,7 @@
 'use client'
-import { ProductView } from 'lib/models'
-import { JsonFetcher } from 'lib/utils'
-import useSWR from 'swr'
+import { ProductView } from "lib/models";
+import { JsonFetcher } from "lib/utils";
+import useSWR from "swr";
 
 type ProductResults = {
   products: ProductView[]

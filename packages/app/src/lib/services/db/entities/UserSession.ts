@@ -1,6 +1,6 @@
-import * as typeorm from 'typeorm'
+import * as typeorm from "typeorm";
 
-import { User } from './User'
+import { User } from "./User";
 
 @typeorm.Index('user_session_pkey', ['id'], { unique: true })
 @typeorm.Entity('user_session', { schema: 'public' })

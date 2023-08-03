@@ -1,7 +1,7 @@
-import { User } from 'lib/models'
-import { updateUser } from 'lib/services/directus/server/users'
-import { withMethods, withUser } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { User } from "lib/models";
+import { updateUser } from "lib/services/directus/server/users";
+import { withMethods, withUser } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function DeleteUser(
   req: NextApiRequest,

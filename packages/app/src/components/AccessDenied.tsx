@@ -1,10 +1,8 @@
-import { useEffect } from 'react'
+import { signIn, useSession } from "next-auth/react";
 
-import { signIn, useSession } from 'next-auth/react'
+import { Box, Heading, Text } from "@chakra-ui/react";
 
-import { Box, Heading, Text } from '@chakra-ui/react'
-
-import { ButtonLink } from './controls'
+import { ButtonLink } from "./controls";
 
 const AccessDenied = () => {
   const { status } = useSession()

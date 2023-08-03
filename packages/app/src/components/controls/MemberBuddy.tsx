@@ -1,25 +1,24 @@
-import { useCallback, useEffect, useState } from 'react'
-
-import { UpgradeIcon } from 'components/controls'
-import { useUser } from 'hooks'
+import { UpgradeIcon } from "components/controls";
+import { useUser } from "hooks";
 import {
   Member,
   MemberLevel,
   MembershipType,
   User,
   UserBuddy
-} from 'lib/models'
-import { deleteJSON, postJSON } from 'lib/utils'
+} from "lib/models";
+import { deleteJSON, postJSON } from "lib/utils";
+import { useCallback, useEffect, useState } from "react";
 
-import { chakra, IconButton, IconButtonProps } from '@chakra-ui/react'
+import { chakra, IconButton, IconButtonProps } from "@chakra-ui/react";
 import {
   UserIcon,
   UserMinusIcon as RemoveBuddyIcon
-} from '@heroicons/react/24/outline'
+} from "@heroicons/react/24/outline";
 import {
   UserIcon as BuddyIcon,
   UserPlusIcon as AddBuddyIcon
-} from '@heroicons/react/24/solid'
+} from "@heroicons/react/24/solid";
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
   member: Partial<Member>

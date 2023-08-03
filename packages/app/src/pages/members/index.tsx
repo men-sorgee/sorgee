@@ -1,14 +1,7 @@
-import Page from 'components/Page'
-import useSWR from 'swr'
-import { createRef, useCallback, useEffect, useState } from 'react'
-import { Lazy, MemberCard, MemberModal, Pager } from 'components/controls'
-import { FieldCheckbox, FieldCheckboxes, FieldInput } from 'components/forms'
-import { JsonFetcher, normalize, pruneUndefined, serialize } from 'lib/utils'
-import { useRouter } from 'next/router'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useFields, useUser } from 'hooks'
-import { ManyItems } from '@directus/sdk'
-import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/24/outline'
+import { Lazy, MemberCard, MemberModal, Pager } from "components/controls";
+import { FieldCheckbox, FieldCheckboxes, FieldInput } from "components/forms";
+import Page from "components/Page";
+import { useFields, useUser } from "hooks";
 import {
   FieldMap,
   getAllowedUsers,
@@ -16,7 +9,13 @@ import {
   MemberLevel,
   SearchableMember,
   UserType
-} from 'lib/models'
+} from "lib/models";
+import { JsonFetcher, normalize, pruneUndefined, serialize } from "lib/utils";
+import { useRouter } from "next/router";
+import { createRef, useCallback, useEffect, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import useSWR from "swr";
+
 import {
   Accordion,
   AccordionButton,
@@ -38,7 +37,9 @@ import {
   StatNumber,
   Text,
   useDisclosure
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
+import { ManyItems } from "@directus/sdk";
+import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/24/outline";
 
 export type QueryParams = Record<keyof SearchableMember, string[]> & {
   online: boolean

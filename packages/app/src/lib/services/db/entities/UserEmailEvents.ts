@@ -1,6 +1,6 @@
-import * as typeorm from 'typeorm'
+import * as typeorm from "typeorm";
 
-import { User } from './User'
+import { User } from "./User";
 
 @typeorm.Index('user_email_events_pkey', ['id'], { unique: true })
 @typeorm.Entity('user_email_events', { schema: 'public' })
@@ -9,7 +9,7 @@ export class UserEmailEvents {
   id: string
 
   @typeorm.Column('timestamp with time zone', { name: 'date_created', nullable: true })
-  dateCreated: Date | null
+  date_created: Date | null
 
   @typeorm.Column('json', { name: 'payload', nullable: true })
   payload: object | null
@@ -22,7 +22,7 @@ export class UserEmailEvents {
     nullable: true,
     length: 2550,
   })
-  marketingCampaignName: string | null
+  marketing_campaign_name: string | null
 
   @typeorm.Column('character varying', {
     name: 'marketing_campaign_id',
@@ -30,7 +30,7 @@ export class UserEmailEvents {
     length: 2550,
     default: () => 'NULL::character varying',
   })
-  marketingCampaignId: string | null
+  marketing_campaign_id: string | null
 
   @typeorm.Column('character varying', { name: 'email', nullable: true, length: 2550 })
   email: string | null
@@ -49,7 +49,7 @@ export class UserEmailEvents {
     length: 2550,
     default: () => 'NULL::character varying',
   })
-  sgEventId: string | null
+  sg_event_id: string | null
 
   @typeorm.Column('character varying', {
     name: 'sg_message_id',
@@ -57,7 +57,7 @@ export class UserEmailEvents {
     length: 2550,
     default: () => 'NULL::character varying',
   })
-  sgMessageId: string | null
+  sg_message_id: string | null
 
   @typeorm.Column('integer', { name: 'timestamp', nullable: true })
   timestamp: number | null
@@ -90,11 +90,19 @@ export class UserEmailEvents {
   status: string | null
 
   @typeorm.Column('integer', { name: 'notification_id', nullable: true })
-  notificationId: number | null
+  notification_id: number | null
 
-  @typeorm.ManyToOne(() => User, (users) => users.userEmailEvents, {
-    onDelete: 'SET NULL',
+  // @typeorm.ManyToOne(() => User, (users) => users.userEmailEvents, {
+  //   onDelete: 'SET NULL',
+  // })
+  // @typeorm.JoinColumn([{ name: 'user', referencedColumnName: 'id' }])
+  // user: typeorm.Relation<User>
+
+  @typeorm.Column('character varying', {
+    name: 'user',
+    nullable: true,
+    length: 2550,
+    default: () => 'NULL::character varying',
   })
-  @typeorm.JoinColumn([{ name: 'user', referencedColumnName: 'id' }])
-  user: typeorm.Relation<User>
+  user: string | null
 }

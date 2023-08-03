@@ -1,5 +1,3 @@
-import { useState, useCallback } from 'react'
-import { useRouter } from 'next/router'
 import {
   FieldCheckboxes,
   FieldInput,
@@ -8,10 +6,12 @@ import {
   FieldSwitch,
   FieldWrapper,
   Form
-} from 'components/forms'
-import Page from 'components/Page'
-import { useUser, useFields } from 'hooks'
-import { FieldMap, Member, MemberLevel } from 'lib/models'
+} from "components/forms";
+import Page from "components/Page";
+import { useFields, useUser } from "hooks";
+import { FieldMap, Member, MemberLevel } from "lib/models";
+import { useRouter } from "next/router";
+import { useCallback, useState } from "react";
 
 import {
   Alert,
@@ -30,8 +30,9 @@ import {
   TabPanels,
   Tabs,
   Text
-} from '@chakra-ui/react'
-import { LocationCapture } from '../../../components/controls/LocationCapture'
+} from "@chakra-ui/react";
+
+import { LocationCapture } from "../../../components/controls/LocationCapture";
 
 export type PageProps = {
   section?: string

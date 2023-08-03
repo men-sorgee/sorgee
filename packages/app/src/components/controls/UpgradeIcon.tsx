@@ -1,5 +1,6 @@
-import React, { useRef } from 'react'
-import { MembershipType } from 'lib/models'
+import { MembershipType } from "lib/models";
+import React, { useRef } from "react";
+
 import {
   AlertDialog,
   AlertDialogBody,
@@ -10,12 +11,13 @@ import {
   AlertDialogOverlay,
   Box,
   Button,
+  chakra,
   IconButton,
   IconButtonProps,
-  useDisclosure,
-  chakra
-} from '@chakra-ui/react'
-import { ButtonLink } from './ButtonLink'
+  useDisclosure
+} from "@chakra-ui/react";
+
+import { ButtonLink } from "./ButtonLink";
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
   title: string

@@ -1,7 +1,7 @@
-import * as typeorm from 'typeorm'
+import * as typeorm from "typeorm";
 
-import { DirectusUsers } from './DirectusUsers'
-import { User } from './User'
+import { DirectusUsers } from "./DirectusUsers";
+import { User } from "./User";
 
 @typeorm.Index('user_buddy_pkey', ['id'], { unique: true })
 @typeorm.Entity('user_buddy', { schema: 'public' })

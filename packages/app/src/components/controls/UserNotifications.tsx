@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from 'react'
-import { UserNotificationCard } from 'components/controls'
-import { Member, UserNotification } from 'lib/models'
+import { UserNotificationCard } from "components/controls";
+import { useAppNotifications, useUserNotifications } from "hooks";
+import { Member, UserNotification } from "lib/models";
+import { useCallback, useEffect, useState } from "react";
 
-import { useToast } from '@chakra-ui/react'
-import { useUserNotifications, useAppNotifications } from 'hooks'
+import { useToast } from "@chakra-ui/react";
 
 interface Props {
   member: Member

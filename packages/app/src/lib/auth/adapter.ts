@@ -1,13 +1,8 @@
-import { User, UserSession, UserVerificationToken } from 'lib/services/db/entities'
-import { getAssetUrl } from 'lib/utils'
 import {
-  Adapter,
-  AdapterAccount,
-  AdapterSession,
-  AdapterUser,
-  VerificationToken,
-} from 'next-auth/adapters'
-
+  User,
+  UserSession,
+  UserVerificationToken
+} from "lib/services/db/entities";
 import {
   addVerificationToken,
   createAccount,
@@ -21,10 +16,17 @@ import {
   findVerificationToken,
   getUser,
   updateSession,
-  updateUser,
-} from 'lib/services/db/server/users'
-
-import { importFile, UploadFolder } from 'lib/services/directus/server/files'
+  updateUser
+} from "lib/services/db/server/users";
+import { importFile, UploadFolder } from "lib/services/directus/server/files";
+import { getAssetUrl } from "lib/utils";
+import {
+  Adapter,
+  AdapterAccount,
+  AdapterSession,
+  AdapterUser,
+  VerificationToken
+} from "next-auth/adapters";
 
 function mapUser(user: User): AdapterUser {
   return {

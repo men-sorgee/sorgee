@@ -1,38 +1,37 @@
 'use client'
-import { useMessages, useUser } from 'hooks'
 import {
   MemberBlock,
   MemberModal,
   MemberReport,
   MemberShare,
   Page
-} from 'components'
-import { useDisclosure, Flex, HStack, IconButton } from '@chakra-ui/react'
+} from "components";
+import { formatDistanceToNow, set } from "date-fns";
+import { useMessages, useUser } from "hooks";
+import { userImageId } from "lib/config";
+import { ChatMessage, Member, MemberLevel, Message } from "lib/models";
+import { getAssetUrl, postJSON } from "lib/utils";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import io, { Socket } from "socket.io-client";
+
+import { Flex, HStack, IconButton, useDisclosure } from "@chakra-ui/react";
 import {
   Avatar,
-  Message as MessageCtrl,
   ChatContainer,
   Conversation as ConversationCtrl,
   ConversationHeader,
   ConversationList,
   MainContainer,
+  Message as MessageCtrl,
   MessageGroup,
   MessageInput,
   MessageList,
   Sidebar,
   TypingIndicator
-} from '@chatscope/chat-ui-kit-react'
-
-import { useRouter } from 'next/router'
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
-
-import io, { Socket } from 'socket.io-client'
-import { userImageId } from 'lib/config'
-import { getAssetUrl, postJSON } from 'lib/utils'
-import dynamic from 'next/dynamic'
-import { XMarkIcon, CheckIcon } from '@heroicons/react/24/solid'
-import { formatDistanceToNow, set } from 'date-fns'
-import { ChatMessage, Message, Member, MemberLevel } from 'lib/models'
+} from "@chatscope/chat-ui-kit-react";
+import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
 const MessagesStyles = dynamic(
   () => import('components/controls/MessagesStyles'),

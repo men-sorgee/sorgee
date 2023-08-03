@@ -1,3 +1,3 @@
-import Resume from './index'
+import Resume from "./index";
 
 export default Resume

@@ -1,7 +1,14 @@
-import { EventInvite, EventUser, GroupEvent, Invite, InviteRSVPType, Member } from 'lib/models'
-import { listUpcomingEvents } from 'lib/services/directus/server'
+import {
+  EventInvite,
+  EventUser,
+  GroupEvent,
+  Invite,
+  InviteRSVPType,
+  Member
+} from "lib/models";
+import { listUpcomingEvents } from "lib/services/directus/server";
 
-import { getAdminClient } from '../'
+import { getAdminClient } from "../";
 
 export async function getInvite(inviteId: number): Promise<EventUser | null> {
   const client = await getAdminClient()

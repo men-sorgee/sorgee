@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useState } from 'react'
-import { ButtonConfirm } from './ButtonConfirm'
-import { useUser } from 'hooks'
-import { Member } from 'lib/models'
-import { deleteJSON, postJSON } from 'lib/utils'
+import { useUser } from "hooks";
+import { Member, MemberLevel, UserBlock } from "lib/models";
+import { deleteJSON, postJSON } from "lib/utils";
+import { useCallback, useEffect, useState } from "react";
 
-import { chakra, Text, IconButtonProps, Icon } from '@chakra-ui/react'
-import { EyeIcon as ViewIcon } from '@heroicons/react/24/outline'
-import { EyeSlashIcon as BlockedIcon } from '@heroicons/react/24/solid'
-import { UserBlock, MemberLevel } from 'lib/models'
+import { chakra, Icon, IconButtonProps, Text } from "@chakra-ui/react";
+import { EyeIcon as ViewIcon } from "@heroicons/react/24/outline";
+import { EyeSlashIcon as BlockedIcon } from "@heroicons/react/24/solid";
+
+import { ButtonConfirm } from "./ButtonConfirm";
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
   member: Partial<Member>

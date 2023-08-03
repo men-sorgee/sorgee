@@ -1,17 +1,19 @@
-import { useEffect, useState } from 'react'
-import { useMessageStats } from 'hooks'
+import { useMessageStats } from "hooks";
+import { MemberLevel } from "lib/models";
+import { useEffect, useState } from "react";
+
 import {
   Box,
-  HStack,
   chakra,
+  Flex,
+  HStack,
   Icon,
   IconProps,
-  Flex,
   Text
-} from '@chakra-ui/react'
-import { ChatBubbleBottomCenterIcon as ChatIconOn } from '@heroicons/react/24/solid'
-import { MemberAvatar } from './MemberAvatar'
-import { MemberLevel } from 'lib/models'
+} from "@chakra-ui/react";
+import { ChatBubbleBottomCenterIcon as ChatIconOn } from "@heroicons/react/24/solid";
+
+import { MemberAvatar } from "./MemberAvatar";
 
 type Props = Omit<IconProps, 'aria-label'> & {
   memberId: string

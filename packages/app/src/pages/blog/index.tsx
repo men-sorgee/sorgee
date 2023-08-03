@@ -1,10 +1,11 @@
 'use client'
-import Page from 'components/Page'
-import { format } from 'date-fns'
-import { Page as PageModel } from 'lib/models'
-import { getAssetUrl } from 'lib/utils'
-import NextLink from 'next/link'
-import { NextRouter, useRouter } from 'next/router'
+import { Markdown } from "components/controls";
+import Page from "components/Page";
+import { format } from "date-fns";
+import { Page as PageModel } from "lib/models";
+import { getAssetUrl } from "lib/utils";
+import NextLink from "next/link";
+import { NextRouter, useRouter } from "next/router";
 
 import {
   Box,
@@ -16,9 +17,7 @@ import {
   SimpleGrid,
   Text,
   useColorModeValue
-} from '@chakra-ui/react'
-
-import { Markdown } from 'components/controls'
+} from "@chakra-ui/react";
 
 export async function getServerSideProps(_context) {
   const { getPageBySlug } = await import('lib/services/directus/static')

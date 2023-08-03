@@ -1,18 +1,17 @@
-import { useEffect, useState } from 'react'
 import {
   ButtonLink,
   EventCard,
   EventRSVP,
   EventTicket,
   Lazy,
-  MemberModal,
   MemberCard,
   MemberHeader,
+  MemberModal,
   RateItem
-} from 'components/controls'
-import Page from 'components/Page'
-import { isAfter, isToday, set } from 'date-fns'
-import { useEvent, useUser } from 'hooks'
+} from "components/controls";
+import Page from "components/Page";
+import { isAfter, isToday, set } from "date-fns";
+import { useEvent, useUser } from "hooks";
 import {
   EventDetail,
   EventStats,
@@ -20,33 +19,35 @@ import {
   GroupEvent,
   Member,
   MemberLevel
-} from 'lib/models'
-import NextLink from 'next/link'
-import { ArrowBackIcon } from '@chakra-ui/icons'
+} from "lib/models";
+import NextLink from "next/link";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+
+import { ArrowBackIcon } from "@chakra-ui/icons";
 import {
   Alert,
   AlertIcon,
   Avatar,
   Box,
+  Center,
   Divider,
   Flex,
   Heading,
   HStack,
   Link,
+  Show,
   SimpleGrid,
   Spacer,
-  Stat,
   Stack,
+  Stat,
   StatGroup,
   StatLabel,
   StatNumber,
   Text,
-  Center,
-  Wrap,
-  Show,
-  useToast
-} from '@chakra-ui/react'
-import { useRouter } from 'next/router'
+  useToast,
+  Wrap
+} from "@chakra-ui/react";
 
 export default function EventPage() {
   const router = useRouter()

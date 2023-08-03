@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 
 import {
   Button,
@@ -10,7 +10,7 @@ import {
   ModalFooter,
   ModalOverlay,
   Text
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 
 export default function Splash() {
   const [displayPopUp, setDisplayPopUp] = useState(true)

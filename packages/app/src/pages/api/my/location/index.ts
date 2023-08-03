@@ -1,7 +1,6 @@
-import { ApiResponse } from 'lib/models'
-import { updateUser } from 'lib/services/directus/server/users'
-import { withMember } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { updateUser } from "lib/services/directus/server/users";
+import { ApiResponse, withMember } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function Location(
   req: NextApiRequest,

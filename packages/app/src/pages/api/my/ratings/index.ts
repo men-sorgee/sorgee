@@ -1,8 +1,7 @@
-import { Rating } from 'lib/models'
-import { ApiResponse } from 'lib/utils'
-import { getRatings } from 'lib/services/directus/server/users'
-import { withMember, withMethods } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { Rating } from "lib/models";
+import { getRatings } from "lib/services/directus/server/users";
+import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function MemberRatings(
   req: NextApiRequest,

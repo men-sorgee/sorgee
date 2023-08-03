@@ -1,8 +1,7 @@
-import { GroupEvent } from 'lib/models'
-import { ApiResponse } from 'lib/utils'
-import { listUpcomingEvents } from 'lib/services/directus/server'
-import { withMember } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { GroupEvent } from "lib/models";
+import { listUpcomingEvents } from "lib/services/directus/server";
+import { ApiResponse, withMember } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function Events(
   req: NextApiRequest,

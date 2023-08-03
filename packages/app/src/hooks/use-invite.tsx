@@ -5,10 +5,10 @@ import {
   GroupEvent,
   InviteRSVPType,
   Member
-} from 'lib/models'
-import { ApiResult, JsonFetcher, postJSON } from 'lib/utils'
-import { useEffect, useState } from 'react'
-import useSWR from 'swr'
+} from "lib/models";
+import { ApiResult, JsonFetcher, postJSON } from "lib/utils";
+import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 type InvitesResults = {
   invite: EventInvite

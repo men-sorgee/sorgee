@@ -1,8 +1,8 @@
-import * as typeorm from 'typeorm'
+import * as typeorm from "typeorm";
 
-import { DirectusFile } from './DirectusFiles'
-import { DirectusUsers } from './DirectusUsers'
-import { User } from './User'
+import { DirectusFile } from "./DirectusFiles";
+import { DirectusUsers } from "./DirectusUsers";
+import { User } from "./User";
 
 @typeorm.Index('messages_pkey', ['id'], { unique: true })
 @typeorm.Entity('messages', { schema: 'public' })

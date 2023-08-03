@@ -1,7 +1,8 @@
-import { VStack, Heading, List, ListItem, Text } from '@chakra-ui/react'
+import { Member } from "lib/models";
 
-import { MemberProgressCheck } from './MemberProgressCheck'
-import { Member } from 'lib/models'
+import { Heading, List, ListItem, Text, VStack } from "@chakra-ui/react";
+
+import { MemberProgressCheck } from "./MemberProgressCheck";
 
 export type MemberProgressProps = {
   member: Member

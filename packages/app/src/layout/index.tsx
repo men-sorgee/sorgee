@@ -1,22 +1,24 @@
+import { ErrorBoundary } from "components/ErrorBoundary";
+import { useUser } from "hooks";
+import { url } from "inspector";
+import { brand } from "lib/config/brand";
+import { MemberLevel } from "lib/models";
+import { useRouter } from "next/router";
 import React, {
   ReactNode,
   useCallback,
   useEffect,
   useRef,
   useState
-} from 'react'
-import { ErrorBoundary } from 'components/ErrorBoundary'
-import { useUser } from 'hooks'
-import { useRouter } from 'next/router'
-import { Box, Flex, Slide, Spacer, useDisclosure } from '@chakra-ui/react'
-import { brand } from 'lib/config/brand'
-import { MemberLevel } from 'lib/models'
-import Actions from './actions'
-import Footer from './Footer'
-import Header from './Header'
-import Meta from './Meta'
-import Splash from './Splash'
-import { url } from 'inspector'
+} from "react";
+
+import { Box, Flex, Slide, Spacer, useDisclosure } from "@chakra-ui/react";
+
+import Actions from "./actions";
+import Footer from "./Footer";
+import Header from "./Header";
+import Meta from "./Meta";
+import Splash from "./Splash";
 
 export const constrained = {
   maxW: brand.breakPoints,

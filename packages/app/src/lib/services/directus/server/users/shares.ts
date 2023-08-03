@@ -1,4 +1,4 @@
-import { getAdminClient } from '../'
+import { getAdminClient } from "../";
 
 export async function createUserShare(user_id: string, viewer_id: string): Promise<void> {
   const adminClient = await getAdminClient()

@@ -1,14 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
+import Page from "components/Page";
+import { useUser } from "hooks";
+import { adminBaseUrl } from "lib/config";
+import { DirectusFile, MemberLevel } from "lib/models";
+import { useRouter } from "next/router";
+import Script from "next/script";
+import { useEffect, useRef, useState } from "react";
+import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
-import Page from 'components/Page'
-import { useUser } from 'hooks'
-import { adminBaseUrl } from 'lib/config'
-import { DirectusFile, MemberLevel } from 'lib/models'
-import { useRouter } from 'next/router'
-import Script from 'next/script'
-import { FullScreen, useFullScreenHandle } from 'react-full-screen'
-
-import { Box, Button } from '@chakra-ui/react'
+import { Box, Button } from "@chakra-ui/react";
 
 export const getServerSideProps = async (context) => {
   const key = process.env.WHEREBY_API_KEY

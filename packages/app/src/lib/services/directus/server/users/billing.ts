@@ -1,6 +1,6 @@
-import { BillingEvent } from 'lib/models'
+import { BillingEvent } from "lib/models";
 
-import { getAdminClient } from '../'
+import { getAdminClient } from "../";
 
 export async function saveBillingEvent(event: BillingEvent) {
   const admin = await getAdminClient()

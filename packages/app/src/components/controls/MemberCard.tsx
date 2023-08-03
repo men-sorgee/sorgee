@@ -1,4 +1,5 @@
-import { formatDistanceToNowStrict } from 'date-fns'
+import { formatDistanceToNowStrict } from "date-fns";
+import { useUser } from "hooks";
 import {
   Member,
   MemberLevel,
@@ -8,11 +9,13 @@ import {
   UserBuddy,
   UserLike,
   UserShare
-} from 'lib/models'
-import NextLink from 'next/link'
+} from "lib/models";
+import NextLink from "next/link";
+import { ReactNode } from "react";
 
-import { LockIcon } from '@chakra-ui/icons'
+import { LockIcon } from "@chakra-ui/icons";
 import {
+  Badge,
   ButtonGroup,
   Card,
   CardBody,
@@ -22,30 +25,27 @@ import {
   chakra,
   Flex,
   Heading,
-  Show,
   LinkBox,
   LinkOverlay,
+  Show,
   Spacer,
-  Text,
-  Badge
-} from '@chakra-ui/react'
-import { ReactNode } from 'react'
-import { useUser } from 'hooks'
+  Text
+} from "@chakra-ui/react";
 
 import {
-  MemberMessageStats,
-  MemberMessages,
+  MemberActions,
+  MemberAttributeBanner,
+  MemberBlock,
   MemberBuddy,
   MemberHeader,
   MemberLike,
-  MemberBlock,
-  MemberShare,
+  MemberMessages,
+  MemberMessageStats,
+  MemberRelationBanner,
   MemberReport,
-  Rating,
-  MemberActions,
-  MemberAttributeBanner,
-  MemberRelationBanner
-} from './'
+  MemberShare,
+  Rating
+} from "./";
 
 type Props = CardProps & {
   viewer: Member

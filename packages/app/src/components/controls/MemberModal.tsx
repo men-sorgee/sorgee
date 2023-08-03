@@ -1,8 +1,9 @@
-import { RefObject } from 'react'
-import { brand } from 'lib/config/brand'
-import { MemberSpotlight, MemberSpotlightProps } from './MemberSpotlight'
-import { ModalPopup } from './Modal'
-import { useFields } from 'hooks'
+import { useFields } from "hooks";
+import { brand } from "lib/config/brand";
+import { RefObject } from "react";
+
+import { MemberSpotlight, MemberSpotlightProps } from "./MemberSpotlight";
+import { ModalPopup } from "./Modal";
 
 export type MemberModalProps = MemberSpotlightProps & {
   memberId: string

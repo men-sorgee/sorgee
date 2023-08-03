@@ -1,6 +1,6 @@
-import { DirectusFile } from 'lib/models'
+import { DirectusFile } from "lib/models";
 
-import { chakra, Image, ImageProps } from '@chakra-ui/react'
+import { chakra, Image, ImageProps } from "@chakra-ui/react";
 
 type Props = ImageProps & {
   fileId: string | DirectusFile

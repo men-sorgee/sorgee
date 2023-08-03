@@ -1,5 +1,6 @@
-import { Button, ButtonProps, Spinner, chakra } from '@chakra-ui/react'
-import { useState, useCallback, useRef } from 'react'
+import { useCallback, useRef, useState } from "react";
+
+import { Button, ButtonProps, chakra, Spinner } from "@chakra-ui/react";
 
 export type BusyButtonProps = ButtonProps & {
   onClick?: () => Promise<any> | any

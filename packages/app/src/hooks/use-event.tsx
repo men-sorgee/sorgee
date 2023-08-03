@@ -1,10 +1,9 @@
 'use client'
 
-import { EventDetail, EventUser } from 'lib/models'
-import { getJSON, JsonFetcher, putJSON } from 'lib/utils'
-import { ApiResult } from 'lib/utils'
-import { useCallback } from 'react'
-import useSWR from 'swr'
+import { EventDetail, EventUser } from "lib/models";
+import { ApiResult, getJSON, JsonFetcher, putJSON } from "lib/utils";
+import { useCallback } from "react";
+import useSWR from "swr";
 
 export type EventResults = {
   event: EventDetail | null

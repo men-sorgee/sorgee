@@ -1,10 +1,11 @@
-import { use, useEffect, useState } from 'react'
-import { event } from 'nextjs-google-analytics'
-import { Page, Plan } from 'components'
-import { Heading, Text } from '@chakra-ui/react'
-import { useRouter } from 'next/router'
-import { useUser, useProducts, useStripeSession } from 'hooks'
-import { MembershipType, ProductView } from 'lib/models'
+import { Page, Plan } from "components";
+import { useProducts, useStripeSession, useUser } from "hooks";
+import { MembershipType, ProductView } from "lib/models";
+import { useRouter } from "next/router";
+import { event } from "nextjs-google-analytics";
+import { use, useEffect, useState } from "react";
+
+import { Heading, Text } from "@chakra-ui/react";
 
 export default function SubscriptionCancelledPage() {
   const [product, setProduct] = useState<ProductView>(null)

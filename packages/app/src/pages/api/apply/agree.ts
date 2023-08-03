@@ -1,13 +1,18 @@
-import { AgreementData, Applicant, MemberLevel, Profile, UserType } from 'lib/models'
-import { ApiResponse } from 'lib/utils'
-import { addUserToCongratsEmail, getUserEvents, updateUser } from 'lib/services/directus/server'
 import {
-  SendGridList,
-  updateSendGrid,
-} from 'lib/services/sendgrid/server'
-import { withApplicant, withMethods } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
-
+  AgreementData,
+  Applicant,
+  MemberLevel,
+  Profile,
+  UserType
+} from "lib/models";
+import {
+  addUserToCongratsEmail,
+  getUserEvents,
+  updateUser
+} from "lib/services/directus/server";
+import { SendGridList, updateSendGrid } from "lib/services/sendgrid/server";
+import { ApiResponse, withApplicant, withMethods } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {

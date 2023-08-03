@@ -1,21 +1,23 @@
-import { formatDistanceToNowStrict } from 'date-fns'
-import { Member } from 'lib/models'
+import { formatDistanceToNowStrict } from "date-fns";
+import { Member } from "lib/models";
+
 import {
   ButtonGroup,
   chakra,
   Flex,
+  ResponsiveValue,
   Spacer,
-  Text,
-  ResponsiveValue
-} from '@chakra-ui/react'
+  Text
+} from "@chakra-ui/react";
+
 import {
-  MemberMessages,
+  MemberBlock,
   MemberBuddy,
   MemberLike,
-  MemberBlock,
-  MemberShare,
-  MemberReport
-} from '.'
+  MemberMessages,
+  MemberReport,
+  MemberShare
+} from "./";
 
 type Props = {
   member: Partial<Member>

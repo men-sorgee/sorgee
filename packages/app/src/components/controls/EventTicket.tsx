@@ -1,8 +1,7 @@
-import { useState } from 'react'
+import { EventDetail, GroupEvent, Member } from "lib/models";
+import { useState } from "react";
 
-import { EventDetail, GroupEvent, Member } from 'lib/models'
-
-import { Box, Flex, Image, SlideFade, Text } from '@chakra-ui/react'
+import { Box, Flex, Image, SlideFade, Text } from "@chakra-ui/react";
 
 type EventTicketProps = {
   member: Member

@@ -1,8 +1,8 @@
-import { Block } from 'editorjs-blocks-react-renderer'
-import { UserType } from 'lib/models'
+import { Block } from "editorjs-blocks-react-renderer";
+import { UserType } from "lib/models";
 
-import { DirectusFile, DirectusUser } from './directus'
-import { User, VouchingUser } from './users'
+import { DirectusFile, DirectusUser } from "./directus";
+import { User, VouchingUser } from "./users";
 
 export type File = {
   filepath: string

@@ -1,16 +1,16 @@
-import { UpgradeIcon } from 'components/controls'
+import { UpgradeIcon } from "components/controls";
+import { useMemberSearch } from "hooks";
 import {
   Member,
   MemberLevel,
   MembershipType,
   User,
   UserBuddy
-} from 'lib/models'
-import NextLink from 'next/link'
+} from "lib/models";
+import NextLink from "next/link";
 
-import { Badge, Icon, IconButton, Link } from '@chakra-ui/react'
-import { UserCircleIcon } from '@heroicons/react/24/outline'
-import { useMemberSearch } from 'hooks'
+import { Badge, Icon, IconButton, Link } from "@chakra-ui/react";
+import { UserCircleIcon } from "@heroicons/react/24/outline";
 
 interface Props {
   member: Member

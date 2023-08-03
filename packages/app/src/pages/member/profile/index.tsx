@@ -1,4 +1,3 @@
-import { useState, useCallback, useEffect } from 'react'
 import {
   ButtonLink,
   FieldCheckboxes,
@@ -11,9 +10,11 @@ import {
   MemberCard,
   MemberModal,
   Page
-} from 'components'
-import { useUser, useFields } from 'hooks'
-import { FieldMap, Member, MemberLevel } from 'lib/models'
+} from "components";
+import { useFields, useUser } from "hooks";
+import { FieldMap, Member, MemberLevel } from "lib/models";
+import { ApiResult } from "lib/utils";
+import { useCallback, useEffect, useState } from "react";
 
 import {
   Alert,
@@ -31,8 +32,7 @@ import {
   Text,
   useColorModeValue,
   useDisclosure
-} from '@chakra-ui/react'
-import { ApiResult } from 'lib/utils'
+} from "@chakra-ui/react";
 
 type PageProps = {
   section?: string

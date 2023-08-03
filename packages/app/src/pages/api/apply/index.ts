@@ -1,8 +1,7 @@
-import { Applicant, User } from 'lib/models'
-import { ApiResponse } from 'lib/utils'
-import { getUser, updateUser } from 'lib/services/directus/server'
-import { withAuthUser, withMethods } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { Applicant, User } from "lib/models";
+import { getUser, updateUser } from "lib/services/directus/server";
+import { ApiResponse, withAuthUser, withMethods } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {

@@ -1,7 +1,7 @@
-import { User } from 'next-auth'
+import { User } from "next-auth";
 
-import { DirectusUser } from './directus'
-import { GroupEvent } from './events'
+import { DirectusUser } from "./directus";
+import { GroupEvent } from "./events";
 
 export type Rating = {
   id: string

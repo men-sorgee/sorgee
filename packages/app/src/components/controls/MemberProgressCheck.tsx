@@ -1,8 +1,10 @@
-import { Member, ProgressType } from 'lib/models'
-import { CheckIcon } from '@heroicons/react/24/solid'
-import { Icon, Box, Flex, Text, Link } from '@chakra-ui/react'
-import React from 'react'
-import NextLink from 'next/link'
+import { Member, ProgressType } from "lib/models";
+import NextLink from "next/link";
+import React from "react";
+
+import { Box, Flex, Icon, Link, Text } from "@chakra-ui/react";
+import { CheckIcon } from "@heroicons/react/24/solid";
+
 export type MemberProgressCheckProps = {
   member: Member
   step: ProgressType

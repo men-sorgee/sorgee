@@ -1,17 +1,16 @@
-import { useEffect, useState } from 'react'
-
+import { BusyButton, Markdown } from "components/controls";
 import {
-  Form,
   FieldCheckbox,
   FieldCheckboxes,
   FieldInput,
   FieldSelect,
   FieldText,
-  FieldWrapper
-} from 'components/forms'
-import Page from 'components/Page'
-import { useSite, useUser } from 'hooks'
-import { pages } from 'lib/config'
+  FieldWrapper,
+  Form
+} from "components/forms";
+import Page from "components/Page";
+import { useSite, useUser } from "hooks";
+import { pages } from "lib/config";
 import {
   Applicant,
   ApplicationStatus,
@@ -21,10 +20,11 @@ import {
   Profile,
   Promo,
   UserInvite
-} from 'lib/models'
-import { postJSON, pruneUndefined } from 'lib/utils'
-import { signIn, useSession } from 'next-auth/react'
-import { NextRouter, useRouter } from 'next/router'
+} from "lib/models";
+import { postJSON, pruneUndefined } from "lib/utils";
+import { signIn, useSession } from "next-auth/react";
+import { NextRouter, useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 import {
   Alert,
@@ -38,10 +38,9 @@ import {
   InputRightAddon,
   SimpleGrid,
   Text
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 
-import { BusyButton, Markdown } from 'components/controls'
-import ApplicationSteps from './_steps'
+import ApplicationSteps from "./_steps";
 
 export type PageProps = {
   invite?: UserInvite

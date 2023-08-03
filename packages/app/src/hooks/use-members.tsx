@@ -1,11 +1,9 @@
-import { useEffect, useState } from 'react'
+import { Profile, SearchableMember } from "lib/models";
+import { JsonFetcher } from "lib/utils";
+import { useEffect, useState } from "react";
+import useSWR from "swr";
 
-import useSWR from 'swr'
-
-import { ManyItems } from '@directus/sdk'
-
-import { Profile, SearchableMember } from 'lib/models'
-import { JsonFetcher } from 'lib/utils'
+import { ManyItems } from "@directus/sdk";
 
 export type MemberSearchContext = {
   members: SearchableMember[]

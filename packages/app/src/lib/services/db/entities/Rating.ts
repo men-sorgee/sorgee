@@ -1,7 +1,7 @@
-import * as typeorm from 'typeorm'
+import * as typeorm from "typeorm";
 
-import { Events } from './Events'
-import { User } from './User'
+import { Events } from "./Events";
+import { User } from "./User";
 
 @typeorm.Index('rating_pkey', ['id'], { unique: true })
 @typeorm.Entity('rating', { schema: 'public' })
