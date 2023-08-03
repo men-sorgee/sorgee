@@ -49,12 +49,12 @@ export const MemberBadge = chakra(
 
     useEffect(() => {
       if (member && levelValue == undefined) {
-        let value = MemberLevel[member.user_type]
+        let value = MemberLevel[member?.user_type || 'applicant']
         let name = MemberLevel[value].replace('_', ' ').toUpperCase()
         setLevelValue(value)
         setLevelColor(MemberLevelColorMap[value])
         setLevelName(name)
-        setSubscription(MembershipType[member.membership_type])
+        setSubscription(MembershipType[member?.membership_type || 'none'])
       }
     }, [isMember, levelValue, member, member?.id, member?.user_type])
 

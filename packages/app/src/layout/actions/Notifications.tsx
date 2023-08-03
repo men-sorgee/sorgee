@@ -1,6 +1,10 @@
 import { useEffect } from 'react'
 
-import { AppNotificationCard, UserNotificationCard } from 'components/controls'
+import {
+  AppNotificationCard,
+  UserNotificationCard,
+  UserNotifications
+} from 'components/controls'
 import { Member } from 'lib/models'
 
 import {
@@ -65,6 +69,7 @@ const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
 
   return (
     <>
+      <UserNotifications member={member} />
       <Box>
         <IconButton
           aria-label="Notifications"

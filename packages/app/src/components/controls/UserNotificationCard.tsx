@@ -25,18 +25,12 @@ type Props = {
   notification: UserNotification
   member: Member
   onRead: () => Promise<void>
-  onClick?: () => Promise<void>
+  onClose?: () => Promise<void>
   onDelete: () => Promise<void>
 }
 
 export const UserNotificationCard = chakra(
-  ({
-    member,
-    notification,
-    onClick = () => Promise.resolve(),
-    onDelete,
-    onRead
-  }: Props) => {
+  ({ member, notification, onClose, onDelete, onRead }: Props) => {
     const [working, setWorking] = useState<boolean>(false)
     const [message, setMessage] = useState<string>(undefined)
 
@@ -69,6 +63,9 @@ export const UserNotificationCard = chakra(
           cursor="pointer"
           p={2}
           gap={2}
+          onClick={() => {
+            return onRead()
+          }}
         >
           <AlertIcon color="text" w={[6]} h={[6]} />{' '}
           <VStack alignItems="start" justify="center" w="full">
@@ -93,36 +90,38 @@ export const UserNotificationCard = chakra(
                   href={notification?.button_url}
                   colorScheme="primary"
                   color="white"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation()
                     setWorking(true)
-                    onClick()
-                      .then(() => onRead())
-                      .then(() => setWorking(false))
+                    return onRead().then(() => setWorking(false))
                   }}
                   replace={false}
                 >
                   View
                 </ButtonLink>
               )}
-              <Button
-                bg="primary.500"
-                color="white"
-                onClick={() => {
-                  setWorking(true)
-                  onClick()
-                    .then(() => onRead())
-                    .then(() => setWorking(false))
-                }}
-              >
-                Close
-              </Button>
+              {onClose != undefined && (
+                <Button
+                  bg="primary.500"
+                  color="white"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setWorking(true)
+                    return onRead()
+                      .then(() => onClose())
+                      .then(() => setWorking(false))
+                  }}
+                >
+                  Close
+                </Button>
+              )}
               <Button
                 bg="red.400"
                 color="white"
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation()
                   setWorking(true)
-                  onClick()
-                    .then(() => onRead())
+                  return onRead()
                     .then(() => onDelete())
                     .then(() => setWorking(false))
                 }}

@@ -2,8 +2,7 @@ import {
   ButtonLink,
   LocationCapture,
   MemberAvatar,
-  MemberIcon,
-  UserNotifications
+  MemberIcon
 } from 'components/controls'
 import { useSite, useUser } from 'hooks'
 import { pledgeSurvey } from 'lib/config'
@@ -354,7 +353,7 @@ export default function UserMenu(_props: Props) {
               </>
             )}
             <MenuDivider />
-            <UserNotifications member={member} />
+
             <MenuItem
               icon={
                 <ArrowRightOnRectangleIcon color={'white'} width={'1.5rem'} />

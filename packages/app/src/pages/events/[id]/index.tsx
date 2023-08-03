@@ -6,11 +6,12 @@ import {
   EventTicket,
   Lazy,
   MemberModal,
-  MemberSpotlight,
+  MemberCard,
+  MemberHeader,
   RateItem
 } from 'components/controls'
 import Page from 'components/Page'
-import { isAfter, isToday } from 'date-fns'
+import { isAfter, isToday, set } from 'date-fns'
 import { useEvent, useUser } from 'hooks'
 import {
   EventDetail,
@@ -35,6 +36,7 @@ import {
   SimpleGrid,
   Spacer,
   Stat,
+  Stack,
   StatGroup,
   StatLabel,
   StatNumber,
@@ -227,6 +229,7 @@ export default function EventPage() {
                     member={member}
                     invite={invite}
                     reloadUser={reloadUser}
+                    setMemberId={setMemberId}
                   />
                 )}
                 {event.status != 'occurred' &&
@@ -246,6 +249,7 @@ export default function EventPage() {
                 isOpen={memberId != undefined}
                 memberId={memberId}
                 onClose={() => setMemberId(undefined)}
+                size="lg"
               />
               <HStack spacing={4} mt={4}>
                 <Link as={NextLink} href="/events">
@@ -270,12 +274,14 @@ const AttendedEvent = ({
   event,
   member,
   invite,
-  reloadUser
+  reloadUser,
+  setMemberId
 }: {
   event: EventDetail
   member: Member
   invite: EventUser
   reloadUser: () => void
+  setMemberId: (id: string) => void
 }) => {
   const attendees = event.attendance
     .filter((u) => u.attended)
@@ -331,27 +337,46 @@ const AttendedEvent = ({
               behavior and attitude at the event!
             </strong>
           </Alert>
-          {attendees.map((m: Member) => (
-            <Lazy key={event.id + '-' + m.id}>
-              <MemberSpotlight size="xl" mb={4} memberId={m.id} mt={4}>
-                <Center p={2}>
-                  <Show above="md">
-                    <Text>Your Rating:</Text>
-                  </Show>
-                  <RateItem
-                    onChange={() => {
-                      reloadUser()
-                    }}
-                    size="md"
-                    item_id={m.id}
-                    collection="users"
-                    aria-label={'Rate this member'}
-                    simple
-                  ></RateItem>
-                </Center>
-              </MemberSpotlight>
-            </Lazy>
-          ))}
+          <SimpleGrid
+            my={4}
+            columns={[1, 1, 1, 2]}
+            spacing={4}
+            w="full"
+            justifyItems="stretch"
+          >
+            {attendees.map((m: Member) => (
+              <Lazy key={event.id + '-' + m.id}>
+                <MemberCard
+                  viewer={member}
+                  mb={4}
+                  member={m}
+                  mt={4}
+                  size="lg"
+                  onClick={() => {
+                    setMemberId(m.id)
+                  }}
+                >
+                  <Box maxW="60%" mx="auto" textAlign="center">
+                    <RateItem
+                      onChange={() => {
+                        reloadUser()
+                      }}
+                      size="sm"
+                      item_id={m.id}
+                      collection="users"
+                      aria-label={'Rate this member'}
+                      direction="row"
+                      simple
+                    >
+                      <Heading as="h5" size="h4" m={0} p={0}>
+                        Rate Him:
+                      </Heading>
+                    </RateItem>
+                  </Box>
+                </MemberCard>
+              </Lazy>
+            ))}
+          </SimpleGrid>
         </>
       )}
     </>

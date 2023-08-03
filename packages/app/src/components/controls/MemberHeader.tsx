@@ -17,7 +17,8 @@ export const MemberHeader = ({
   member,
   iconChildren,
   children,
-  size,
+  minimal = false,
+  size = 'lg',
   ...props
 }: MemberHeaderProps) => {
   return (
@@ -26,25 +27,26 @@ export const MemberHeader = ({
         <MemberIcon member={member} size={size} {...props}>
           {iconChildren}
         </MemberIcon>
-
-        <Flex
-          direction="column"
-          justify="center"
-          align="center"
-          my={2}
-          gap={1}
-          w="full"
-        >
-          {children}
-          {member?.rating > 0 && (
-            <Rating
-              value={member.rating || 0}
-              mt={2}
-              aria-label="User Rating"
-              tooltip="Ratings are based on the number of stars a member has received from other members and event hosts. No-shows automatically receive -1 star ratings by the event."
-            />
-          )}
-        </Flex>
+        {(minimal && <>{children}</>) || (
+          <Flex
+            direction="column"
+            justify="center"
+            align="center"
+            my={2}
+            gap={1}
+            w="full"
+          >
+            {children}
+            {member?.rating > 0 && (
+              <Rating
+                value={member.rating || 0}
+                mt={2}
+                aria-label="User Rating"
+                tooltip="Ratings are based on the number of stars a member has received from other members and event hosts. No-shows automatically receive -1 star ratings by the event."
+              />
+            )}
+          </Flex>
+        )}
       </Flex>
     </>
   )

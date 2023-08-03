@@ -67,27 +67,6 @@ export const MemberCard = chakra(
     const levelValue = MemberLevel[member?.user_type || 'applicant']
     const levelColor = MemberLevelColorMap[levelValue]
     const { member: viewer, level } = useUser()
-    const sharedWithMe = member.photo_shares?.some(
-      (s: UserShare) => String(s.viewer_id) == viewer?.id
-    )
-    const likesYou = member.likes?.some(
-      (l: UserLike) => String(l.like_id) == viewer?.id
-    )
-    const isYou = String(member.id) == viewer?.id
-
-    const blocksYou = member?.blocked?.some(
-      (b) => String(b.blocked_id) == viewer?.id
-    )
-    const buddiesYou = member?.buddies?.some(
-      (b: UserBuddy) => b.user_id == viewer?.id
-    )
-    const badgeProps = {
-      px: 2,
-      py: 0.5,
-      fontSize: ['xs', 'sm'],
-      color: 'white',
-      rounded: 0
-    }
 
     return (
       <>
@@ -114,7 +93,7 @@ export const MemberCard = chakra(
                   if (member.show_profile) onClick()
                 }}
               >
-                <MemberHeader member={member} size={size}>
+                <MemberHeader member={member} size={size} minimal={!full}>
                   {!member.show_profile && (
                     <>
                       <Flex
@@ -176,7 +155,7 @@ export const MemberCard = chakra(
             bg="primary.800"
             p={4}
           >
-            <MemberActions member={member} size={size} />
+            <MemberActions member={member} size={['sm']} />
           </CardFooter>
         </Card>
       </>

@@ -195,7 +195,7 @@ export const MemberSpotlight = chakra(
           borderTopLeftRadius="lg"
           overflow="clip"
         >
-          <MemberHeader member={member} size={size}>
+          <MemberHeader member={member} size={size} minimal={!full}>
             {header}
           </MemberHeader>
           {level == MemberLevel.pledge && (

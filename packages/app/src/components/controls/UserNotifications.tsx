@@ -15,12 +15,8 @@ const UserNotifications = ({ member }: Props) => {
   const [activeNotification, setActiveNotification] =
     useState<UserNotification>(undefined)
 
-  const {
-    notifications,
-    hasNewNotifications,
-    deleteNotification: del,
-    markAsRead
-  } = useUserNotifications()
+  const { notifications, hasNewNotifications, deleteNotification, markAsRead } =
+    useUserNotifications()
 
   const popMessage = useCallback(async () => {
     if (activeNotification == undefined) {
@@ -55,17 +51,13 @@ const UserNotifications = ({ member }: Props) => {
             onRead={() => {
               return markAsRead(activeNotification.id)
             }}
-            onClick={() => {
-              return markAsRead(activeNotification.id).then(() => {
-                setActiveNotification(undefined)
-                toast.close(activeNotification.id)
-                setActiveNotification(undefined)
-                popMessage()
-              })
+            onClose={async () => {
+              toast.close(activeNotification.id)
+              setActiveNotification(undefined)
+              popMessage()
             }}
             onDelete={() => {
-              return del(activeNotification.id).then(() => {
-                setActiveNotification(undefined)
+              return deleteNotification(activeNotification.id).then(() => {
                 toast.close(activeNotification.id)
                 setActiveNotification(undefined)
                 popMessage()

@@ -6,6 +6,7 @@ import {
   InviteRSVPType,
   Location,
   SearchableMember,
+  searchableMemberFields,
   Survey,
   UserType,
 } from 'lib/models'
@@ -69,6 +70,7 @@ export async function registerForEvent(
   return invite as unknown as EventUser
 }
 
+
 export async function getEvent(id: string, filter?: any): Promise<GroupEvent> {
   const client = await getAdminClient()
   const event: GroupEvent = (await client.items('events').readOne(id, {
@@ -76,10 +78,7 @@ export async function getEvent(id: string, filter?: any): Promise<GroupEvent> {
       '*',
       'location.*',
       'users.*',
-      'users.users_id.id',
-      'users.users_id.picture',
-      'users.users_id.nickname',
-      'users.users_id.first_name',
+      ...searchableMemberFields.map((f) => `users.users_id.${f}`),
       'survey.*',
     ] as any,
     deep: {
@@ -112,12 +111,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
       '*',
       'location.*',
       'users.*',
-      'users.users_id.id',
-      'users.users_id.picture',
-      'users.users_id.nickname',
-      'users.users_id.first_name',
-      'users.users_id.last_name',
-      'users.users_id.email',
+      ...searchableMemberFields.map((f) => `users.users_id.${f}`),
       'survey.*',
     ] as any,
     deep: {

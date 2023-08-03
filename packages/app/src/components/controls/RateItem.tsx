@@ -14,6 +14,12 @@ export type RateItemProps = RatingControlProps & {
   collection: RatingCollection
   onChange?: (rate: number) => void
   children?: ReactNode
+  direction?:
+    | 'row'
+    | 'column'
+    | 'row-reverse'
+    | 'column-reverse'
+    | Array<'row' | 'column' | 'row-reverse' | 'column-reverse'>
 }
 
 const itemMap = {
@@ -25,6 +31,7 @@ export const RateItem = ({
   item_id,
   collection,
   onChange = () => {},
+  direction = ['column', 'row'],
   children,
   ...props
 }: RateItemProps) => {
@@ -75,7 +82,7 @@ export const RateItem = ({
   )
 
   return (
-    <Flex direction={['column', 'row']} gap={4}>
+    <Flex direction={direction} gap={2} align="center" justify="center">
       <Box>{children}</Box>
       <RatingControl
         value={value}

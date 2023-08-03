@@ -105,7 +105,8 @@ export default function ChatPage({ id }: { id?: string }) {
         display: 'flex'
       })
       setConversationAvatarStyle({
-        marginRight: '1em'
+        marginRight: '1em',
+        cursor: 'pointer'
       })
       setChatContainerStyle({
         display: 'none'
@@ -113,7 +114,7 @@ export default function ChatPage({ id }: { id?: string }) {
     } else {
       setSidebarStyle({})
       setConversationContentStyle({})
-      setConversationAvatarStyle({})
+      setConversationAvatarStyle({ cursor: 'pointer' })
       setChatContainerStyle({})
     }
   }, [
@@ -391,6 +392,10 @@ export default function ChatPage({ id }: { id?: string }) {
                     ? 'available'
                     : 'unavailable'
                 }
+                style={{
+                  ...conversationAvatarStyle,
+                  cursor: 'pointer'
+                }}
                 active={activeConversation.user.presence == 'online'}
                 onClick={() => onOpen()}
               />
@@ -400,11 +405,6 @@ export default function ChatPage({ id }: { id?: string }) {
                 info={activeConversation?.user?.presence}
               />
               <ConversationHeader.Actions>
-                <MemberModal
-                  memberId={activeId}
-                  isOpen={isOpen}
-                  onClose={onClose}
-                />
                 <MemberBlock size="md" member={activeConversation?.user} />
                 <MemberReport size="md" member={activeConversation?.user} />
                 <MemberShare size="md" member={activeConversation?.user} />
@@ -521,6 +521,12 @@ export default function ChatPage({ id }: { id?: string }) {
         ref={fileInputRef}
         onChange={handleFileChange}
         style={{ display: 'none' }}
+      />
+      <MemberModal
+        memberId={activeId}
+        isOpen={isOpen}
+        onClose={onClose}
+        size="lg"
       />
     </Page>
   )

@@ -86,7 +86,7 @@ export const Rating = ({
 
   if (simple)
     return (
-      <HStack mt={mt} spacing={1}>
+      <HStack mt={mt} spacing={1} align="center" justify="center">
         {buttons}
       </HStack>
     )
@@ -101,7 +101,7 @@ export const Rating = ({
       p={2}
       color="white"
     >
-      <HStack mt={mt} spacing={1}>
+      <HStack mt={mt} spacing={1} align="center" justify="center">
         {buttons}
       </HStack>
     </Tooltip>
