@@ -1,6 +1,13 @@
-import { ApiResponse, AppNotificationStatusType, UserEmailEvent } from 'lib/models'
-import { storeEmailEvent, updateAppNotificationUser } from 'lib/services/directus/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { UserEmailEvents } from "lib/services/db/entities";
+import {
+  findUserId,
+  storeEmailEvents,
+  updateAppNotificationUser,
+  updateEmailEvent
+} from "lib/services/db/server";
+import { ApiResponse } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
+import { v4 as uuidv4 } from "uuid";
 
 type SendGridEvent = {
   sg_event_id: string
@@ -18,53 +25,57 @@ type SendGridEvent = {
   notification_id?: number
 }
 
+
+
 export default async function HandleEvents(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
+  const emailMap = new Map<string, string>()
+  const statesWeCareAbout = ['delivered', 'open', 'click']
   try {
     const events: SendGridEvent[] = req.body
-    await Promise.all(
-      events.map(async (sgEvent) => {
-        const {
-          sg_event_id,
-          sg_message_id,
-          email,
-          event,
-          category,
-          marketing_campaign_id,
-          marketing_campaign_name,
-          url,
-          response,
-          status,
-          type,
-          timestamp,
-          notification_id,
-        } = sgEvent
-        const model: UserEmailEvent = {
-          sg_event_id,
-          sg_message_id,
-          email,
-          event,
-          category: Array.isArray(category) ? category.join(',') : category,
-          marketing_campaign_id,
-          marketing_campaign_name,
-          url,
-          response,
-          status,
-          type,
-          timestamp,
-          payload: sgEvent,
-          notification_id,
-        }
-        try {
-          await storeEmailEvent(model)
-        } catch (e) {
-          console.error(e)
-        }
-        const statesWeCareAbout = ['delivered', 'open', 'click']
+
+
+    try {
+      const transformed: Omit<UserEmailEvents, 'id' | 'date_created' | 'date_updated'>[] = await Promise.all(
+        events.map(async (sgEvent) => {
+          const {
+
+            category,
+            ...event
+          } = sgEvent
+
+          return {
+            id: uuidv4(),
+            ...event,
+            category: Array.isArray(category) ? category.join(',') : category,
+          } as Omit<UserEmailEvents, 'date_created' | 'date_updated'>
+        })
+      )
+      let saved = await storeEmailEvents(transformed)
+      for await (const { id, notification_id, event, email } of saved) {
         if (notification_id && statesWeCareAbout.includes(event)) {
-          await updateAppNotificationUser(notification_id, { status: event as AppNotificationStatusType })
+          try {
+            await updateAppNotificationUser(notification_id, {
+              status: event
+            })
+          } catch (e) {
+            console.error('unable to update notification status:', e)
+          }
         }
-      })
-    )
+        if (email) {
+          try {
+            if (!emailMap.has(email)) {
+              emailMap.set(email, (await findUserId(email)) || null)
+            }
+            let user = emailMap.get(email)
+            updateEmailEvent(id, { user })
+          } catch (e) {
+            console.error('unable to append user data:', e)
+          }
+        }
+      }
+    } catch (e) {
+      console.error(e)
+    }
 
     res.status(200).send(ApiResponse({ success: true }))
   } catch (e: any) {
