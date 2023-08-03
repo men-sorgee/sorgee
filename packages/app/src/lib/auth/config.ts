@@ -7,7 +7,7 @@ import {
   findUserByAccount,
   getUser,
   recordUserLogin,
-} from 'lib/services/db/server/auth'
+} from 'lib/services/db/server/users'
 import {
   SendGridCategory,
   SendGridTemplate,

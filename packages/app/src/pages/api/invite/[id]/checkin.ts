@@ -1,4 +1,5 @@
-import { ApiResponse, EventInvite, EventUser, GroupEvent, Member, MemberLevel, UserType } from 'lib/models'
+import { EventInvite, EventUser, GroupEvent, Member, MemberLevel, UserType } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import {
   addUserToCongratsEmail,
   getEvent,

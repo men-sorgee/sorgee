@@ -1,4 +1,5 @@
-import { ApiResponse, Member, memberFields, MemberLevel, SearchableMember, searchableMemberFields, UserNotification, UserShare } from 'lib/models'
+import { Member, memberFields, MemberLevel, SearchableMember, searchableMemberFields, UserNotification, UserShare } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import { withUser } from 'lib/utils/server'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getUser } from 'lib/services/directus/server'

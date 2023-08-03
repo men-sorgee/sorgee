@@ -1,4 +1,5 @@
-import { ApiResponse, MemberStats } from 'lib/models'
+import { MemberStats } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import { getUserStats } from 'lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 

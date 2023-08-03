@@ -1,4 +1,5 @@
-import { ApiResponse, Survey } from 'lib/models'
+import { Survey } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import { getSurvey } from 'lib/services/directus/server'
 import { withUser } from 'lib/utils/server'
 import { NextApiRequest, NextApiResponse } from 'next'

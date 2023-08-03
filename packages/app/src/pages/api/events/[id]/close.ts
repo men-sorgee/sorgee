@@ -1,4 +1,5 @@
-import { ApiResponse, EventDetail, EventUser, Member, MemberLevel } from 'lib/models'
+import { EventDetail, EventUser, Member, MemberLevel } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import { addAppNotificationUser, addUserNotification, createEventSurvey, createEventSurveyNotification, getEventDetail, setUserAverageRating, updateEvent, updateEventUsers, updateSurvey } from 'lib/services/directus/server'
 import { withStaff, withMethods } from 'lib/utils/server'
 import { NextApiRequest, NextApiResponse } from 'next'

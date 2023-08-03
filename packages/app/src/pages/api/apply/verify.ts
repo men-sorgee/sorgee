@@ -1,4 +1,5 @@
-import { ApiResponse, Applicant, ApplicationStatus, DirectusFile } from 'lib/models'
+import { Applicant, ApplicationStatus, DirectusFile } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import {
   deleteFile,
   getFileInfo,

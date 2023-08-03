@@ -1,4 +1,5 @@
-import { AgreementData, ApiResponse, Applicant, MemberLevel, Profile, UserType } from 'lib/models'
+import { AgreementData, Applicant, MemberLevel, Profile, UserType } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import { addUserToCongratsEmail, getUserEvents, updateUser } from 'lib/services/directus/server'
 import {
   SendGridList,

@@ -1,4 +1,5 @@
-import { ApiResponse, Member, UserLike } from 'lib/models'
+import { Member, UserLike } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import { getUser } from 'lib/services/directus/server/users'
 import {
   SendGridCategory,

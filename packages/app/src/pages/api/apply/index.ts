@@ -1,4 +1,5 @@
-import { ApiResponse, Applicant, User } from 'lib/models'
+import { Applicant, User } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import { getUser, updateUser } from 'lib/services/directus/server'
 import { withAuthUser, withMethods } from 'lib/utils/server'
 import { NextApiRequest, NextApiResponse } from 'next'

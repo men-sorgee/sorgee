@@ -1,5 +1,6 @@
 import { findUser } from "lib/services/directus/server";
-import { ApiResponse, Member } from "lib/models";
+import { Member } from "lib/models";
+import { ApiResponse } from 'lib/utils'
 
 export default async function LookupUser(req, res) {
   try {

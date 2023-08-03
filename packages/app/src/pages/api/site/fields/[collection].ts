@@ -1,4 +1,5 @@
-import { ApiResponse, FieldMap } from 'lib/models'
+import { FieldMap } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import { getFields } from 'lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 

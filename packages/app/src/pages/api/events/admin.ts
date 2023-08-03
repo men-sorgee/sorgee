@@ -1,4 +1,5 @@
-import { ApiResponse, GroupEvent } from 'lib/models'
+import { GroupEvent } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import { listAdminEvents } from 'lib/services/directus/server'
 import { withStaff } from 'lib/utils/server'
 import { NextApiRequest, NextApiResponse } from 'next'

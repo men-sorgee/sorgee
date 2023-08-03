@@ -1,5 +1,6 @@
 
-import { ApiResponse, MemberLevel, UserBuddy } from 'lib/models'
+import { MemberLevel, UserBuddy } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import {
   addUserNotification,
   getUser,

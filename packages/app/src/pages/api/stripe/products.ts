@@ -1,4 +1,5 @@
-import { ApiResponse, ProductView } from 'lib/models'
+import { ProductView } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import { getClient, subscriptionData } from 'lib/services/stripe/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 

@@ -1,4 +1,5 @@
-import { ApiResponse, Member, UserEmailChange } from 'lib/models'
+import { Member, UserEmailChange } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import { findUser, updateUser } from 'lib/services/directus/server/users'
 import { withMember, withMethods } from 'lib/utils/server'
 import { NextApiRequest, NextApiResponse } from 'next'

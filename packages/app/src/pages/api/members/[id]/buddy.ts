@@ -1,4 +1,5 @@
-import { ApiResponse, UserBuddy } from 'lib/models'
+import { UserBuddy } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import { addUserNotification } from 'lib/services/directus/server'
 import { addBuddy, getBuddy, getUser, removeBuddy } from 'lib/services/directus/server/users'
 import { withMember, withMethods } from 'lib/utils/server'

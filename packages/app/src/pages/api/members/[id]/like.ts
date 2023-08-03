@@ -1,4 +1,5 @@
-import { ApiResponse, Member, UserLike } from 'lib/models'
+import { Member, UserLike } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import { addUserNotification } from 'lib/services/directus/server'
 import { addLike, getLike, getUser, removeLike } from 'lib/services/directus/server/users'
 import {

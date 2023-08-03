@@ -22,7 +22,7 @@ import {
   getUser,
   updateSession,
   updateUser,
-} from 'lib/services/db/server/auth'
+} from 'lib/services/db/server/users'
 
 import { importFile, UploadFolder } from 'lib/services/directus/server/files'
 

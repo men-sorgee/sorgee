@@ -1,4 +1,5 @@
-import { ApiResponse, UserNotification } from 'lib/models'
+import { UserNotification } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import { withUser } from 'lib/utils/server'
 import type { NextApiRequest, NextApiResponse } from 'next'
 

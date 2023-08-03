@@ -1,4 +1,5 @@
-import { ApiResponse, Applicant, EventUser, GroupEvent, Member, MemberLevel } from 'lib/models'
+import { Applicant, EventUser, GroupEvent, Member, MemberLevel } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import { findInvite, findUser, getEvent, getUser, registerForEvent } from 'lib/services/directus/server'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { withMethods, withStaff } from 'lib/utils/server'

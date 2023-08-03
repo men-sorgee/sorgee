@@ -1,4 +1,5 @@
-import { ApiResponse, EventInvite, GroupEvent, Member } from 'lib/models'
+import { EventInvite, GroupEvent, Member } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import {
   getEvent,
   getInvite,

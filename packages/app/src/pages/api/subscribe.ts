@@ -1,4 +1,5 @@
-import { ApiResponse, Profile, SubscriptionData, User } from 'lib/models'
+import { Profile, SubscriptionData, User } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import { createUser, findUser, updateUser } from 'lib/services/directus/server'
 import { updateSendGrid } from 'lib/services/sendgrid/server'
 import { withMethods } from 'lib/utils/server'

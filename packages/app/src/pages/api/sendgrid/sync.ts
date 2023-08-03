@@ -1,5 +1,6 @@
 import config from 'lib/config/server'
-import { ApiResponse, Profile } from 'lib/models'
+import { Profile } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import { getUser, updateUser } from 'lib/services/directus/server'
 import { updateSendGrid } from 'lib/services/sendgrid/server'
 import { withMethods } from 'lib/utils/server'

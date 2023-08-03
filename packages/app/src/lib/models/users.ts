@@ -171,7 +171,7 @@ export type User = {
   state: string
   events: string[] | EventUser[]
   my_photos: string[] | UserPhoto[]
-  email_events: string[] | UserEmailEvent[]
+  // email_events: string[] | UserEmailEvent[]
   images: string[] | UserFile[]
   accounts: string[] | UserAccount[]
   show_profile: boolean

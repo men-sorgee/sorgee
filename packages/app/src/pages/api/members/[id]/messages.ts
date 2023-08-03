@@ -1,4 +1,5 @@
-import { ApiResponse, ConversationStats, MemberLevel, UserMessages, UserMessageStats } from 'lib/models'
+import { ConversationStats, MemberLevel, UserMessages, UserMessageStats } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import { withMember, withMethods } from 'lib/utils/server'
 import type { NextApiRequest, NextApiResponse } from 'next'
 

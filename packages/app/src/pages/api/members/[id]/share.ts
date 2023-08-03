@@ -1,5 +1,6 @@
 import { baseUrl } from 'lib/config'
-import { ApiResponse, UserShare } from 'lib/models'
+import { UserShare } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import {
   addUserNotification,
   createUserShare,

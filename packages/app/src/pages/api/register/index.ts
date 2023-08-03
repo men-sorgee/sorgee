@@ -1,4 +1,5 @@
-import { ApiResponse, Applicant, MemberLevel, SignUpForm, User, UserStatusType } from 'lib/models'
+import { Applicant, MemberLevel, SignUpForm, User, UserStatusType } from 'lib/models'
+import { ApiResponse } from 'lib/utils'
 import { findPromo } from 'lib/services/directus/server'
 import { createUser, findUser, updateUser } from 'lib/services/directus/server/users'
 import { withMethods } from 'lib/utils/server'
