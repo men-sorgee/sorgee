@@ -6,9 +6,13 @@ import {
 } from '@chakra-ui/icons'
 import { Flex, IconButton, Text } from '@chakra-ui/react'
 
-export type PagerProps = { page: number; pageCount: number; setPage: any }
+export type PagerProps = {
+  page: number
+  pageCount: number
+  setPage: (page: number) => void
+}
 
-export const Pager = ({ page, pageCount, setPage }: PagerProps) => {
+export const Pager = ({ page = 1, pageCount = 1, setPage }: PagerProps) => {
   if (pageCount == undefined || pageCount == 0) return null
   return (
     <>
@@ -16,14 +20,14 @@ export const Pager = ({ page, pageCount, setPage }: PagerProps) => {
         <Flex>
           <IconButton
             onClick={() => setPage(1)}
-            isDisabled={page == 1}
+            isDisabled={Number(page) == 1}
             icon={<ArrowLeftIcon h={3} w={3} />}
             mr={4}
             aria-label="First Page"
           />
           <IconButton
-            onClick={() => setPage(page - 1)}
-            isDisabled={page == 1}
+            onClick={() => setPage(Number(page) - 1)}
+            isDisabled={Number(page) == 1}
             icon={<ChevronLeftIcon h={6} w={6} />}
             aria-label="Previous Page"
           />
@@ -31,7 +35,7 @@ export const Pager = ({ page, pageCount, setPage }: PagerProps) => {
         <Flex alignItems="center">
           <Text flexShrink="0" mx={8}>
             <Text fontWeight="bold" as="span">
-              {page}
+              {Number(page)}
             </Text>
             {' / '}
             <Text fontWeight="bold" as="span">
@@ -41,14 +45,14 @@ export const Pager = ({ page, pageCount, setPage }: PagerProps) => {
         </Flex>
         <Flex>
           <IconButton
-            onClick={() => setPage(page + 1)}
-            isDisabled={page >= pageCount}
+            onClick={() => setPage(Number(page) + 1)}
+            isDisabled={Number(page) >= pageCount}
             icon={<ChevronRightIcon h={6} w={6} />}
             aria-label="Next Page"
           />
           <IconButton
             onClick={() => setPage(pageCount)}
-            isDisabled={page >= pageCount}
+            isDisabled={Number(page) >= pageCount}
             icon={<ArrowRightIcon h={3} w={3} />}
             ml={4}
             aria-label="Last Page"

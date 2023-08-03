@@ -19,15 +19,12 @@ export function ApiResponse<T = any | any>(
   }
 }
 
-export type MemberStats = {
-  subscribers: number
-  applicants: number
-  pledges: number
-  inductees: number
-  brothers: number
-  big_brothers: number
-  staff: number
+export type PageProps<T> = Record<keyof Omit<Partial<T>, 'id'>, string[]> & {
+  page: number
+  size: number
+  sort: string
 }
+
 
 export * from './billing'
 export * from './events'

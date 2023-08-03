@@ -1,11 +1,7 @@
-import { useEffect, useState } from 'react'
-
 import useSWR from 'swr'
-
 import { ManyItems } from '@directus/sdk'
-
-import { Profile, SearchableMember } from 'lib/models'
-import { JsonFetcher } from 'lib/utils'
+import { MemberSearchQueryParams, SearchableMember } from 'lib/models'
+import { useEffect, useState } from 'react'
 
 export type MemberSearchContext = {
   members: SearchableMember[]
@@ -13,30 +9,49 @@ export type MemberSearchContext = {
   pageCount: number
   pageIndex: number
   pageSize: number
-  sort: keyof SearchableMember
-  direction: 'asc' | 'desc'
+  sortTerm: string
+  sortDirection: 'asc' | 'desc'
   loading: boolean
   error: string
 }
 
-function useMemberSearch(
-  page: number,
-  size: number,
-  sort: string,
-  query: Record<string, any> = {}
-) {
-  const [key] = useState(
-    `/api/members?limit=${size}&page=${page}&sort=${sort}&${new URLSearchParams(
-      query
-    ).toString()}`
-  )
-  const { data: response, error } = useSWR<ManyItems<Partial<Profile>>>(key)
-  const [meta, setMeta] = useState<{ total: number; filtered: number }>({
+function useMemberSearch({
+  page,
+  size,
+  sort = '-last_login',
+  ...query
+}: MemberSearchQueryParams) {
+  const [members, setMembers] = useState<SearchableMember[]>([])
+  const [pageCount, setPageCount] = useState<number>(0)
+  const [meta, setMeta] = useState({
     total: 0,
     filtered: 0
   })
-  const [pageCount, setPageCount] = useState(1)
-  const [members, setMembers] = useState<SearchableMember[]>([])
+
+  const filters = Object.keys(query)
+    ? `&${new URLSearchParams(query as any).toString()}`
+    : ''
+
+  const key = `/api/members?limit=${size || 20}&page=${
+    page || 1
+  }&sort=${sort}${filters}`
+
+  const {
+    data: response,
+    error,
+    isLoading,
+    isValidating
+  } = useSWR<ManyItems<SearchableMember>>(key, {
+    keepPreviousData: false,
+    refreshInterval: 0,
+    fallbackData: {
+      data: [],
+      meta: {
+        total_count: 0,
+        filter_count: 0
+      }
+    }
+  })
 
   useEffect(() => {
     if (response?.meta) {
@@ -45,21 +60,27 @@ function useMemberSearch(
         total: total_count || 0,
         filtered: filter_count || 0
       })
-      setPageCount(Math.ceil(meta?.filtered ? meta.filtered / size : 1))
-      setMembers(response.data)
+      setPageCount(filter_count ? Math.ceil(filter_count / size) : 0)
+      setMembers(response.data as SearchableMember[])
     }
   }, [key, meta.filtered, response?.data, response?.meta, size])
 
-  return {
+  const result = {
     members,
     meta,
     pageCount,
-    pageIndex: page,
-    pageSize: size,
-    sort,
-    loading: !response,
+    page: page || 1,
+    pageIndex: page ? page - 1 : 0,
+    pageSize: size || 20,
+    sortTerm: sort?.replace('-', ''),
+    direction: sort?.startsWith('-') ? 'desc' : 'asc',
+    loading: isLoading || isValidating,
     error
   }
+
+  console.dir(result)
+
+  return result
 }
 
 export { useMemberSearch }

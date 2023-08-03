@@ -1,13 +1,18 @@
 import Page from 'components/Page'
-import useSWR from 'swr'
-import { createRef, useCallback, useEffect, useState } from 'react'
-import { Lazy, MemberCard, MemberModal, Pager } from 'components/controls'
+import { createRef, useEffect, useState } from 'react'
+import {
+  Lazy,
+  Loading,
+  MemberCard,
+  MemberModal,
+  Pager
+} from 'components/controls'
 import { FieldCheckbox, FieldCheckboxes, FieldInput } from 'components/forms'
-import { JsonFetcher, normalize, pruneUndefined, serialize } from 'lib/utils'
+import { pruneUndefined } from 'lib/utils'
 import { useRouter } from 'next/router'
 import { FormProvider, useForm } from 'react-hook-form'
-import { useFields, useUser } from 'hooks'
-import { ManyItems } from '@directus/sdk'
+import { useFields, useUser, useMemberSearch } from 'hooks'
+
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/24/outline'
 import {
   FieldMap,
@@ -15,7 +20,8 @@ import {
   Member,
   MemberLevel,
   SearchableMember,
-  UserType
+  UserType,
+  MemberSearchQueryParams
 } from 'lib/models'
 import {
   Accordion,
@@ -40,121 +46,67 @@ import {
   useDisclosure
 } from '@chakra-ui/react'
 
-export type QueryParams = Record<keyof SearchableMember, string[]> & {
-  online: boolean
-  photos: boolean
-  page: number
-  size: number
-  sort: string
-}
-
 type Meta = {
   total: number
   filtered: number
 }
 
 export default function Members() {
+  const router = useRouter()
+  let { size: s, page: p, ...q }: MemberSearchQueryParams = router.query as any
+  const [query] = useState<MemberSearchQueryParams>({
+    ...q,
+    size: Number(s),
+    page: Number(p)
+  })
+
+  const [id, setId] = useState(undefined)
+
   const { fields, loading: fieldsLoading } = useFields('users')
   const { member: currentMember, loading } = useUser({
     minLevel: MemberLevel.brother,
     requiredFeature: 'view_directory',
     redirectsEnabled: true
   })
-  const router = useRouter()
-  const { page: p, size: s, sort: o, ...q } = router.query
 
-  const [id, setId] = useState(undefined)
-  const [page, setPage] = useState<number>(undefined)
-  const [size, setSize] = useState<number>(undefined)
-  const [sort, setSort] = useState<string>(undefined)
-  const [key, setKey] = useState<string>(undefined)
-  const [pageCount, setPageCount] = useState<number>(undefined)
-  const [members, setMembers] = useState<SearchableMember[]>(undefined)
-  const [query, setQuery] = useState<QueryParams>(undefined)
-  const [meta, setMeta] = useState<Meta>({
-    total: 0,
-    filtered: 0
-  })
+  const setParams = ({
+    page = 1,
+    size = 20,
+    ...q
+  }: MemberSearchQueryParams) => {
+    router.push(
+      `/members?${new URLSearchParams({ page, size, ...q } as any).toString()}`
+    )
+  }
+
   const topRef = createRef<HTMLDivElement>()
-  useEffect(() => {
-    let sz = Number(s || '20')
-    let pg = Number(p || '1')
-    let so = String(o || '-last_login')
-
-    if (page == undefined) setPage(pg)
-    if (size == undefined) setSize(sz)
-    if (sort == undefined) setSort(so)
-
-    if (query == undefined && q != undefined) {
-      setQuery(normalize<SearchableMember>(q) as QueryParams)
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    if (!currentMember) {
-      return
-    }
-
-    if (loading || page == undefined || size == undefined || sort == undefined)
-      return
-    const filter = query ? serialize<SearchableMember>(query) : ''
-    setKey(`/api/members?limit=${size}&page=${page}&sort=${sort}${filter}`)
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, size, sort, query, loading, currentMember])
-
-  const methods = useForm<QueryParams>({
+  const methods = useForm<MemberSearchQueryParams>({
     mode: 'onBlur',
-    defaultValues: {
-      ...query,
-      ...normalize<SearchableMember>(q),
-      online: q.online ? true : undefined,
-      photos: q.photos ? true : undefined
-    }
+    defaultValues: query
   })
 
-  const { data: response } = useSWR<ManyItems<Partial<SearchableMember>>>(
-    key,
-    JsonFetcher
-  )
+  const { page, size } = query
+
+  const {
+    members,
+    pageCount,
+    meta,
+    loading: membersLoading,
+    sortTerm,
+    direction
+  } = useMemberSearch({ page, size, ...query })
 
   useEffect(() => {
-    setPage(1)
-  }, [size])
-
-  useEffect(() => {
-    if (response?.data && response?.meta) {
-      const { total_count, filter_count } = response.meta
-      setMeta({
-        total: total_count || 0,
-        filtered: filter_count || 0
-      })
-      setPageCount(filter_count > 0 ? Math.ceil(filter_count / size) : 0)
-      setMembers(response.data)
-
+    if (!membersLoading && !fieldsLoading) {
       document.querySelector('main')?.scroll({ top: 0, behavior: 'smooth' })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [response?.data, response?.meta, key, size])
+  }, [query, fieldsLoading, membersLoading])
 
-  const sortDir = sort?.startsWith('-') ? '-' : ''
-  const sortTerm = sort?.startsWith('-') ? sort.slice(1) : sort || 'last_login'
-
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  useEffect(() => {
-    if (id) {
-      onOpen()
-    } else {
-      onClose()
-    }
-  }, [id, setId, onOpen, onClose])
-
-  const close = useCallback(() => {
-    onClose()
-    setId(undefined)
-  }, [onClose])
+  const { isOpen, onClose } = useDisclosure({
+    onClose: () => setId(undefined),
+    isOpen: id != undefined
+  })
 
   return (
     <Page
@@ -166,11 +118,12 @@ export default function Members() {
       <FormProvider {...methods}>
         <form
           id="filter-form"
-          onSubmit={methods.handleSubmit((d) => {
-            let newQuery = pruneUndefined(d, (v) => v !== false) as QueryParams
-
-            setQuery(newQuery)
-            setPage(1)
+          onSubmit={methods.handleSubmit((d: MemberSearchQueryParams) => {
+            let newQuery = pruneUndefined(
+              d,
+              (v) => v == false
+            ) as MemberSearchQueryParams
+            setParams({ ...query, ...newQuery, page: 1 })
           })}
           style={{ width: '100%', display: 'block' }}
         >
@@ -180,82 +133,105 @@ export default function Members() {
             currentMember={currentMember}
             meta={meta}
           />
-
-          <Flex gap={4} mt={4} align="center">
-            <Select
-              value={size || 20}
-              onChange={(e) => {
-                setSize(Number(e.target.value))
-              }}
-            >
-              {[20, 30, 40, 50].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
-              ))}
-            </Select>
-            {sortDir == '' && (
-              <IconButton
-                aria-label="Ascending"
-                title="Sorted by ascending. Click to sort by descending"
-                icon={<ArrowDownIcon height={20} />}
-                onClick={() => setSort(`-${sortTerm}`)}
-              />
-            )}
-            {sortDir == '-' && (
-              <IconButton
-                aria-label="Ascending"
-                title="Sorted by descending. Click to sort by ascending"
-                icon={<ArrowUpIcon height={20} />}
-                onClick={() => setSort(sortTerm)}
-              />
-            )}
-            <Select
-              value={sortTerm}
-              onChange={(e) => {
-                setSort(`${sortDir}${e.target.value}`)
-              }}
-            >
-              <option value="last_login">Recently Online</option>
-              <option value="date_created">Registration Date</option>
-              <option value="nickname">By Username</option>
-              <option value="rating">Rating</option>
-            </Select>
-          </Flex>
-          <Pager page={page} pageCount={pageCount} setPage={setPage} />
-          <SimpleGrid
-            my={4}
-            columns={[1, 1, 1, 2]}
-            spacing={4}
-            w="full"
-            justifyItems="stretch"
-          >
-            {members?.map((member: SearchableMember) => (
-              <Lazy key={member.id}>
-                <MemberCard
-                  full
-                  size="xl"
-                  key={member.id}
-                  viewer={currentMember}
-                  member={member}
-                  onClick={() => setId(member.id)}
-                />
-              </Lazy>
-            ))}
-          </SimpleGrid>
-          {meta.filtered == 0 && (
-            <Container w="4xl" textAlign="center">
-              <Text>No results found</Text>
-            </Container>
-          )}
-          <Pager page={page} pageCount={pageCount} setPage={setPage} />
         </form>
+
+        <Flex gap={4} mt={4} align="center">
+          <Select
+            value={size || 20}
+            onChange={(e) => {
+              setParams({ ...query, size: Number(e.target.value), page: 1 })
+            }}
+          >
+            {[20, 30, 40, 50].map((pageSize) => (
+              <option key={pageSize} value={pageSize}>
+                Show {pageSize}
+              </option>
+            ))}
+          </Select>
+          {(direction == 'asc' && (
+            <IconButton
+              aria-label="Ascending"
+              title="Sorted by ascending. Click to sort by descending"
+              icon={<ArrowDownIcon height={20} />}
+              onClick={() =>
+                setParams({ ...query, sort: `-${sortTerm}`, page: 1 })
+              }
+            />
+          )) || (
+            <IconButton
+              aria-label="Ascending"
+              title="Sorted by descending. Click to sort by ascending"
+              icon={<ArrowUpIcon height={20} />}
+              onClick={() => setParams({ ...query, sort: sortTerm, page: 1 })}
+            />
+          )}
+          <Select
+            value={sortTerm}
+            onChange={(e) => {
+              setParams({
+                ...query,
+                sort: `${direction == 'desc' && '-'}${e.target.value}`,
+                page: 1
+              })
+            }}
+          >
+            <option value="last_login">Recently Online</option>
+            <option value="date_created">Registration Date</option>
+            <option value="nickname">By Username</option>
+            <option value="rating">Rating</option>
+          </Select>
+        </Flex>
+
+        <Pager
+          page={page}
+          pageCount={pageCount}
+          setPage={(page: number) => {
+            setParams({ ...query, page })
+          }}
+        />
+
+        {(membersLoading && <Loading />) || (
+          <>
+            <SimpleGrid
+              my={4}
+              columns={[1, 1, 1, 2]}
+              spacing={4}
+              w="full"
+              justifyItems="stretch"
+            >
+              {members?.map((member: SearchableMember) => (
+                <Lazy key={member.id}>
+                  <MemberCard
+                    full
+                    size="xl"
+                    key={member.id}
+                    viewer={currentMember}
+                    member={member}
+                    onClick={() => setId(member.id)}
+                  />
+                </Lazy>
+              ))}
+            </SimpleGrid>
+            {meta.filtered == 0 && (
+              <Container w="4xl" textAlign="center">
+                <Text>No results found</Text>
+              </Container>
+            )}
+          </>
+        )}
+        <Pager
+          page={page}
+          pageCount={pageCount}
+          setPage={(page: number) => {
+            setParams({ ...query, page })
+          }}
+        />
       </FormProvider>
 
       <MemberModal
         isOpen={isOpen}
+        onClose={onClose}
         memberId={id as string}
-        onClose={close}
         size={['lg', 'xl', '2xl']}
       />
     </Page>
@@ -363,7 +339,7 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
                   size="lg"
                   colorScheme="blue"
                   onClick={(e) => {
-                    router.replace('/members')
+                    router.push('/members')
                   }}
                 >
                   Clear

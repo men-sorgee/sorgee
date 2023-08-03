@@ -9,8 +9,27 @@ import {
   Rating,
   UserEmailEvent,
   UserInvite,
+  PageProps
 } from 'lib/models'
+
 import { ProviderType } from 'next-auth/providers'
+import { ParsedUrlQuery } from 'querystring'
+
+export type MemberSearchQueryParams = PageProps<SearchableMember> & {
+  online?: boolean
+  photos?: boolean
+}
+
+export type MemberStats = {
+  subscribers: number
+  applicants: number
+  pledges: number
+  inductees: number
+  brothers: number
+  big_brothers: number
+  staff: number
+}
+
 
 export type UserEmailChange = { email: string; email_new: string }
 
