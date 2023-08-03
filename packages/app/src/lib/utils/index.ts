@@ -104,5 +104,27 @@ export function debouncedPromise<T>(
   }
 }
 
+export function haversineDistanceInMilesAndFeet(coordinateA, coordinateB) {
+  function toRad(x) {
+    return (x * Math.PI) / 180;
+  }
+
+  var R = 3958.8; // Radius of the earth in miles
+  var x1 = coordinateB.lat - coordinateA.lat;
+  var dLat = toRad(x1);
+  var x2 = coordinateB.lon - coordinateA.lon;
+  var dLon = toRad(x2);
+  var a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(coordinateA.lat)) * Math.cos(toRad(coordinateB.lat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var d = R * c;
+
+  var miles = d;
+  var feet = miles * 5280;
+
+  return { miles: miles, feet: feet };
+}
+
 export * from './fetchers'
 export * from './apis'

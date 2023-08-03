@@ -41,6 +41,7 @@ export async function getAppNotifications(user_id: string): Promise<AppNotificat
     },
     sort: ['-id'],
     fields: '*, notification_id.*' as any,
+    limit: 20
   })
 
   const notifications = notificationsRaw.map((userNotification: NotificationUser) => {
@@ -143,6 +144,7 @@ export async function getUserNotifications(user_id: string): Promise<UserNotific
     },
     sort: ['-date_created'],
     fields: '*' as any,
+    limit: 20
   })
 
   return notifications as UserNotification[]
