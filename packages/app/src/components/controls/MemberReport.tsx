@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useUser } from 'hooks'
 import { Member, MemberLevel } from 'lib/models'
@@ -22,10 +22,12 @@ import {
   Textarea,
   Spinner,
   useDisclosure,
-  useToast
+  useToast,
+  FormErrorMessage
 } from '@chakra-ui/react'
 import { FlagIcon as ReportIcon } from '@heroicons/react/24/outline'
 import { FlagIcon as ReportIconHover } from '@heroicons/react/24/solid'
+import { Loading } from './Loading'
 
 type Props = Omit<IconButtonProps, 'aria-label'> & {
   member: Partial<Member>
@@ -38,22 +40,35 @@ export const MemberReport = chakra(
     const [message, setMessage] = useState<string>('')
     const { isOpen, onClose, onOpen } = useDisclosure()
     const toast = useToast()
+    const formRef = useRef<HTMLFormElement>()
+    const [working, setWorking] = useState(false)
     const reportUser = useCallback(() => {
       // add buddy
-      postJSON(`/api/members/${member.id}/report`, {
+      return postJSON(`/api/members/${member.id}/report`, {
         message
-      }).then(() => {
-        onClose()
-        setMessage('')
-        toast({
-          title: 'Report Received',
-          description: `Thank you for reporting ${member?.nickname}. We will review your report and take appropriate action.`,
-          status: 'success',
-          duration: 9000,
-          isClosable: true,
-          position: 'top'
-        })
       })
+        .then(() => {
+          onClose()
+          setMessage('')
+          toast({
+            title: 'Report Received',
+            description: `Thank you for reporting ${member?.nickname}. We will review your report and take appropriate action.`,
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+            position: 'top'
+          })
+        })
+        .catch((error) => {
+          toast({
+            title: 'Error',
+            description: error.message,
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+            position: 'top'
+          })
+        })
     }, [member?.id, member?.nickname, message, onClose, toast])
 
     if (loading || !me || me?.id == member?.id)
@@ -90,26 +105,41 @@ export const MemberReport = chakra(
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>Report {member?.nickname}</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <FormControl id="message">
-                <FormLabel>Message</FormLabel>
-                <Textarea
-                  placeholder="What is the issue?"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                />
-              </FormControl>
-            </ModalBody>
-            <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={reportUser}>
-                Report
-              </Button>
-              <Button variant="ghost" onClick={onClose}>
-                Cancel
-              </Button>
-            </ModalFooter>
+            <form
+              ref={formRef}
+              onSubmit={(e) => {
+                e.preventDefault()
+                setWorking(true)
+                if (formRef.current.checkValidity()) {
+                  reportUser().then(() => setWorking(false))
+                }
+              }}
+            >
+              <ModalHeader>Report {member?.nickname}</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                {(working && <Loading />) || (
+                  <FormControl id="message" isRequired>
+                    <FormLabel>Message</FormLabel>
+                    <Textarea
+                      placeholder="What is the issue?"
+                      value={message}
+                      required
+                      onChange={(e) => setMessage(e.target.value)}
+                    />
+                    <FormErrorMessage>Please enter a message.</FormErrorMessage>
+                  </FormControl>
+                )}
+              </ModalBody>
+              <ModalFooter>
+                <Button type="submit" colorScheme="blue" mr={3}>
+                  Report
+                </Button>
+                <Button variant="ghost" onClick={onClose}>
+                  Cancel
+                </Button>
+              </ModalFooter>
+            </form>
           </ModalContent>
         </Modal>
       </>
