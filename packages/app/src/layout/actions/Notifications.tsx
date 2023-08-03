@@ -37,14 +37,11 @@ const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
     notifications,
     notificationCount,
     newNotificationCount,
-    deleteNotification
+    deleteNotification,
+    markAsRead
   } = useUserNotifications()
-  const {
-    appNotifications,
-    newAppNotificationCount,
-    appNotificationCount,
-    deleteAppNotification
-  } = useAppNotifications()
+  const { appNotifications, newAppNotificationCount, appNotificationCount } =
+    useAppNotifications()
 
   useEffect(() => {
     if (isOpen && appNotificationCount == 0 && notificationCount == 0) {
@@ -140,10 +137,8 @@ const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
                       key={notification.id}
                       member={member}
                       notification={notification}
-                      onClick={() => {}}
-                      onDelete={() => {
-                        deleteNotification(notification.id).then(() => {})
-                      }}
+                      onRead={() => markAsRead(notification.id)}
+                      onDelete={() => deleteNotification(notification.id)}
                     />
                   ))}
                 </TabPanel>

@@ -52,8 +52,11 @@ const UserNotifications = ({ member }: Props) => {
           <UserNotificationCard
             member={member}
             notification={activeNotification}
+            onRead={() => {
+              return markAsRead(activeNotification.id)
+            }}
             onClick={() => {
-              markAsRead(activeNotification.id).then(() => {
+              return markAsRead(activeNotification.id).then(() => {
                 setActiveNotification(undefined)
                 toast.close(activeNotification.id)
                 setActiveNotification(undefined)
@@ -61,7 +64,7 @@ const UserNotifications = ({ member }: Props) => {
               })
             }}
             onDelete={() => {
-              del(activeNotification.id).then(() => {
+              return del(activeNotification.id).then(() => {
                 setActiveNotification(undefined)
                 toast.close(activeNotification.id)
                 setActiveNotification(undefined)

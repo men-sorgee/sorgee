@@ -5,9 +5,12 @@ import distance from 'date-fns/formatDistanceToNow'
 import {
   Alert,
   AlertIcon,
+  Button,
+  ButtonGroup,
   chakra,
   HStack,
   Icon,
+  IconButton,
   Spinner,
   Text,
   VStack
@@ -21,15 +24,22 @@ import { TrashIcon } from '@heroicons/react/24/outline'
 type Props = {
   notification: UserNotification
   member: Member
-  onClick?: () => Promise<void> | void
-  onDelete?: () => Promise<void> | void
+  onRead: () => Promise<void>
+  onClick?: () => Promise<void>
+  onDelete: () => Promise<void>
 }
 
 export const UserNotificationCard = chakra(
-  ({ member, notification, onClick, onDelete }: Props) => {
+  ({
+    member,
+    notification,
+    onClick = () => Promise.resolve(),
+    onDelete,
+    onRead
+  }: Props) => {
     const [working, setWorking] = useState<boolean>(false)
     const [message, setMessage] = useState<string>(undefined)
-    const [trashHover, setTrashHover] = useState<boolean>(false)
+
     useEffect(() => {
       let name = member?.nickname || member?.first_name || 'Friend'
       if (member && message == undefined && notification?.message) {
@@ -59,12 +69,8 @@ export const UserNotificationCard = chakra(
           cursor="pointer"
           p={2}
           gap={2}
-          onClick={() => {
-            setWorking(true)
-            onClick()
-          }}
         >
-          <AlertIcon color="text" />{' '}
+          <AlertIcon color="text" w={[6]} h={[6]} />{' '}
           <VStack alignItems="start" justify="center" w="full">
             {message && (
               <Text
@@ -81,38 +87,50 @@ export const UserNotificationCard = chakra(
                 Received {distance(new Date(notification?.date_created))} ago
               </Text>
             </HStack>
-            {notification?.button_url && (
-              <ButtonLink
-                size="xs"
-                href={notification?.button_url}
-                colorScheme="accent"
+            <ButtonGroup size="sm">
+              {notification?.button_url && (
+                <ButtonLink
+                  href={notification?.button_url}
+                  colorScheme="primary"
+                  color="white"
+                  onClick={() => {
+                    setWorking(true)
+                    onClick()
+                      .then(() => onRead())
+                      .then(() => setWorking(false))
+                  }}
+                  replace={false}
+                >
+                  View
+                </ButtonLink>
+              )}
+              <Button
+                bg="primary.500"
                 color="white"
-                onClick={async () => {
+                onClick={() => {
                   setWorking(true)
-                  await onClick()
-                  return true
+                  onClick()
+                    .then(() => onRead())
+                    .then(() => setWorking(false))
                 }}
-                replace={false}
               >
-                {notification?.button_text || 'Check it Out!'}
-              </ButtonLink>
-            )}
+                Close
+              </Button>
+              <Button
+                bg="red.400"
+                color="white"
+                onClick={() => {
+                  setWorking(true)
+                  onClick()
+                    .then(() => onRead())
+                    .then(() => onDelete())
+                    .then(() => setWorking(false))
+                }}
+              >
+                Delete
+              </Button>
+            </ButtonGroup>
           </VStack>
-          <Icon
-            as={trashHover ? TrashHover : TrashIcon}
-            w={4}
-            h={4}
-            cursor="pointer"
-            title="Delete Notification"
-            onMouseOver={() => setTrashHover(true)}
-            onMouseOut={() => setTrashHover(false)}
-            onClick={async () => {
-              setWorking(true)
-              onDelete()
-              setMessage(undefined)
-              await onClick()
-            }}
-          />
         </Alert>
       </>
     )
