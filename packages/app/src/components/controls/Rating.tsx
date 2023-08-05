@@ -10,8 +10,11 @@ import {
 } from "@chakra-ui/react";
 import { StarIcon } from "@heroicons/react/24/solid";
 
-export type RatingControlProps = IconButtonProps & {
+import { ButtonConfirm } from "./ButtonConfirm";
+
+export type RatingControlProps = Omit<IconButtonProps, 'aria-label'> & {
   onRateChange?: (rate: number) => void
+  itemName: string
   value?: number
   readonly?: boolean
   scale?: number
@@ -31,8 +34,7 @@ export const Rating = ({
   simple = false,
   mt,
   onRateChange,
-  'aria-label': ariaLabel,
-  tooltip = 'Rate this item',
+  tooltip,
   ...props
 }: RatingControlProps) => {
   const [rating, setRating] = useState<number>(undefined)
@@ -60,23 +62,31 @@ export const Rating = ({
 
   const RatingButton = ({ index, fill }: { index: number; fill: any }) => {
     return (
-      <IconButton
+      <ButtonConfirm<number>
         as={Icon}
         boxSize={[5, 6, 7, 8, 9]}
         _hover={{ bg: 'transparent', stroke: 'white' }}
         aria-label={`Rate ${index}`}
         variant="ghost"
-        onClick={() => onClick(index)}
+        alertTitle="Rate this item"
+        buttonText=""
+        successMessage="Rating sent!"
+        confirmedAction={async () => {
+          onClick(index)
+          return index
+        }}
         _focus={{ outline: 0 }}
         icon={icon}
         size="xx-small"
         color={fillColor}
         stroke={strokeColor}
         fill={fill}
-        fillOpacity={fill ? '100%' : '0'}
         cursor={readonly ? 'default' : 'pointer'}
         {...props}
-      />
+      >
+        Are you sure you want to rate this item? Members will be sent a
+        notification of your rating.
+      </ButtonConfirm>
     )
   }
 
@@ -94,7 +104,7 @@ export const Rating = ({
   return (
     <Tooltip
       label={tooltip}
-      aria-label={ariaLabel}
+      aria-label={`Rate this ${itemName}`}
       bg="black"
       rounded="lg"
       shadow="xl"

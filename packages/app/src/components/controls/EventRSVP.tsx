@@ -81,10 +81,10 @@ export const EventRSVP = ({
       flex={1}
       alertTitle="Confirm your RSVP"
       buttonText={children}
-      promise={() =>
+      confirmedAction={() =>
         getJSON<PurchaseResponse>(`/api/stripe/event/${invite.id}`)
       }
-      complete={completePurchase}
+      onSuccess={completePurchase}
       bgGradient={bgGradient('accent')}
       _hover={{
         bgGradient: bgGradientHover('accent')
@@ -105,14 +105,14 @@ export const EventRSVP = ({
       buttonText={children}
       failureMessage="Unable to confirm."
       successMessage="Your RSVP has been registered."
-      promise={() =>
+      confirmedAction={() =>
         mutate('confirmed')
           .then(({ data }) => data)
           .then((i: EventInvite) =>
             getJSON<PurchaseResponse>(`/api/stripe/event/${i.id}`)
           )
       }
-      complete={completePurchase}
+      onSuccess={completePurchase}
       bgGradient={bgGradient('accent')}
       _hover={{
         bgGradient: bgGradientHover('accent')
@@ -144,8 +144,8 @@ export const EventRSVP = ({
       buttonText={children}
       failureMessage="Unable to confirm."
       successMessage="Your RSVP has been registered."
-      promise={() => mutate('confirmed')}
-      complete={() => {
+      confirmedAction={() => mutate('confirmed')}
+      onSuccess={() => {
         if (onChange) onChange()
         setWorking(false)
       }}
@@ -174,8 +174,8 @@ export const EventRSVP = ({
       buttonText={children}
       failureMessage="Unable to RSVP."
       successMessage="Your RSVP has been registered."
-      promise={() => mutate('maybe')}
-      complete={() => {
+      confirmedAction={() => mutate('maybe')}
+      onSuccess={() => {
         if (onChange) onChange()
         setWorking(false)
       }}
@@ -204,8 +204,8 @@ export const EventRSVP = ({
       buttonText={children}
       failureMessage="Unable to RSVP."
       successMessage="This invitation has been declined. It will not show anymore."
-      promise={() => mutate('declined')}
-      complete={() => {
+      confirmedAction={() => mutate('declined')}
+      onSuccess={() => {
         if (onChange) onChange()
         setWorking(false)
       }}
@@ -233,8 +233,8 @@ export const EventRSVP = ({
       buttonText={children}
       failureMessage="Unable to cancel."
       successMessage="Your RSVP has been cancelled."
-      promise={() => mutate('cancelled', reasonRef.current.value)}
-      complete={() => {
+      confirmedAction={() => mutate('cancelled', reasonRef.current.value)}
+      onSuccess={() => {
         if (onChange) onChange()
         setWorking(false)
       }}

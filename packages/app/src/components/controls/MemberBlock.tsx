@@ -52,8 +52,10 @@ export const MemberBlock = chakra(
             title={`Unblock ${member?.nickname || 'this member'}`}
             variant="secondary"
             _hover={{ bg: 'primary.500' }}
-            promise={() => deleteJSON(`/api/members/${member.id}/block`)}
-            complete={() => {
+            confirmedAction={() =>
+              deleteJSON(`/api/members/${member.id}/block`)
+            }
+            onSuccess={() => {
               setIsBlocked(false)
             }}
             onMouseEnter={() => setHover(true)}
@@ -81,8 +83,10 @@ export const MemberBlock = chakra(
             title={`Block ${member?.nickname || 'this member'}`}
             variant="secondary"
             _hover={{ bg: 'primary.500' }}
-            promise={() => postJSON(`/api/members/${member.id}/block`, {})}
-            complete={() => {
+            confirmedAction={() =>
+              postJSON(`/api/members/${member.id}/block`, {})
+            }
+            onSuccess={() => {
               setIsBlocked(true)
             }}
             onMouseEnter={() => setHover(true)}

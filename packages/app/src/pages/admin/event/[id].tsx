@@ -159,9 +159,9 @@ export default function EventAdmin() {
                   <ButtonConfirm
                     bg="red.500"
                     color="white"
-                    promise={closeEvent}
+                    confirmedAction={closeEvent}
                     alertTitle="Close"
-                    complete={(success) => {
+                    onSuccess={(success) => {
                       if (success) {
                         toast({
                           title: 'Event Closed',

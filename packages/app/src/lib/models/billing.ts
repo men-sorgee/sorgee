@@ -33,3 +33,26 @@ export type ProductView = {
   type: MembershipNames
   label?: string
 }
+
+export type UserPayment = {
+  id?: string
+  user: string | User
+  type: 'stripe' | 'cash'
+  amount: number
+  currency: 'usd'
+  product_id: string | UserPaymentProductId[];
+  product_type: 'event' | 'subscription' | 'donation' | 'payment'
+  description: string
+  redeemed: boolean
+  redeemed_id?: string
+  date_redeemed?: string
+  date_created: string
+
+};
+
+export type UserPaymentProductId = {
+  id?: number;
+  user_payment_id?: string | UserPayment;
+  item?: string | any;
+  collection?: 'events' | 'users'
+};

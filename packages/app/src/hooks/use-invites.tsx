@@ -6,7 +6,7 @@ import useSWR from "swr";
 
 import { useAuthenticated } from "./use-authenticated";
 
-type InvitesResults = {
+export type InvitesResults = {
   invitations: EventInvite[]
   newInvitationCount: number
   upcoming: EventInvite[]

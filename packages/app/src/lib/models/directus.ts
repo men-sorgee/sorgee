@@ -24,6 +24,7 @@ import {
   UserFile,
   UserLike,
   UserNotification,
+  UserPayment,
   UserPhoto,
   UserSession,
   UserShare,
@@ -167,6 +168,7 @@ export type DirectusTypes = {
   user_account: UserAccount
   user_session: UserSession
   billing_event: BillingEvent
+  user_payment: UserPayment
   user_verification_token: UserVerificationToken
   user_email_events: UserEmailEvent
   user_buddy: UserBuddy

@@ -15,16 +15,13 @@ import {
   useToast
 } from "@chakra-ui/react";
 
-export type ConfirmButtonProps<TResponse> = Omit<
+export type ConfirmButtonProps<TResponse = void> = Omit<
   IconButtonProps,
-  'aria-label'
+  'aria-label' | 'onError'
 > & {
-  promise?: () => Promise<ApiResult<TResponse>>
-  complete: (
-    bool: boolean,
-    data: TResponse,
-    error?: string
-  ) => void | Promise<void>
+  confirmedAction: () => Promise<TResponse>
+  onSuccess?: (response: TResponse) => Promise<void>
+  onError?: (error: any) => Promise<void>
   alertTitle: string
   buttonText: string
   confirmColorScheme?: string
@@ -37,9 +34,9 @@ export type ConfirmButtonProps<TResponse> = Omit<
 }
 
 export function ButtonConfirm<TResponse>({
-  promise = () =>
-    Promise.resolve<ApiResult<TResponse>>(null as ApiResult<TResponse>),
-  complete = () => null,
+  confirmedAction = () => Promise.resolve<TResponse>(null),
+  onSuccess,
+  onError,
   alertTitle,
   buttonText,
   confirmColorScheme = 'red',
@@ -60,8 +57,8 @@ export function ButtonConfirm<TResponse>({
   const action = useCallback(async () => {
     if (disabled) return
     try {
-      const { data } = await promise()
-      complete(true, data, null)
+      const response = await confirmedAction()
+      if (onSuccess) await onSuccess(response)
       if (successMessage)
         toast({
           title: alertTitle,
@@ -70,23 +67,24 @@ export function ButtonConfirm<TResponse>({
           duration: 3000
         })
     } catch (err) {
-      complete(false, null, err)
+      if (onError) await onError(err)
       if (failureMessage)
         toast({
           title: alertTitle,
-          description: failureMessage + ' ' + err?.message || err,
+          description: failureMessage,
           status: 'error',
           duration: 5000
         })
     }
   }, [
     disabled,
-    promise,
-    complete,
+    confirmedAction,
+    onSuccess,
     successMessage,
     toast,
     alertTitle,
-    failureMessage
+    failureMessage,
+    onError
   ])
   return (
     <>
@@ -133,7 +131,7 @@ export function ButtonConfirm<TResponse>({
                 colorScheme={confirmColorScheme}
                 onClick={() => {
                   onClose()
-                  return action()
+                  action()
                 }}
                 ml={3}
                 title={title}

@@ -18,6 +18,7 @@ export enum SendGridCategory {
   Invitation = 'invitation',
   Confirmation = 'confirmation',
   Survey = 'survey',
+  Updates = 'updates',
 }
 
 export enum SendGridList {

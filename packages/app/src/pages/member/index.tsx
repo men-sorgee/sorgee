@@ -2,14 +2,15 @@ import { capitalCase } from "change-case";
 import {
   ButtonLink,
   EventCard,
+  EventRSVP,
   LocationCapture,
   MemberCard,
   MemberProgress,
   MemberStats,
   Page
 } from "components";
-import { useEvents, useMemberSearch, useUser } from "hooks";
-import { MemberLevel, SearchableMember } from "lib/models";
+import { useInvites, useMemberSearch, useUser } from "hooks";
+import { EventInvite, MemberLevel, SearchableMember } from "lib/models";
 import NextLink from "next/link";
 import { useEffect, useState } from "react";
 
@@ -22,6 +23,7 @@ import {
   LinkBox,
   LinkOverlay,
   SimpleGrid,
+  Skeleton,
   Text
 } from "@chakra-ui/react";
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline";
@@ -57,7 +59,28 @@ export default function MemberHomePage() {
     }
   }, [newestPledges.length, oldestPledges.length, pledges])
 
-  const { events } = useEvents()
+  const {
+    invitations,
+    upcoming,
+    activeInvite,
+    loading: eventsLoading
+  } = useInvites()
+
+  const [invite, setInvite] = useState<EventInvite>(undefined)
+  useEffect(() => {
+    if (!eventsLoading && invite == undefined) {
+      if (activeInvite) {
+        setInvite(activeInvite)
+      }
+      if (upcoming.length > 0) {
+        setInvite(upcoming[0])
+      } else if (invitations.length > 0) {
+        setInvite(invitations[0])
+      } else {
+        setInvite(null)
+      }
+    }
+  }, [invite, eventsLoading, invitations, upcoming, activeInvite])
 
   return (
     <Page title="Member Home" description="" hideHeader loading={loading}>
@@ -101,24 +124,31 @@ export default function MemberHomePage() {
           )}
 
           <Box borderBottom="6px dotted black" pb={4}>
-            <Heading as="h2" size="xl" textAlign="center">
-              Latest Stats
-            </Heading>
             <MemberStats />
           </Box>
 
-          {events && events.length > 0 && (
+          <Skeleton isLoaded={eventsLoading}>
             <Box borderBottom="6px dotted black" pb={8}>
               <Heading as="h2" size="xl" mb={2} textAlign="center">
-                Upcoming Event:
+                {activeInvite ? `TODAY's` : `Next`} Event:
               </Heading>
               <LinkBox>
-                <EventCard event={events[0]}>
-                  <LinkOverlay as={NextLink} href={`/events/${events[0].id}`} />
-                </EventCard>
+                {event && (
+                  <EventCard event={invite.event}>
+                    <EventRSVP
+                      eventId={invite.event.id}
+                      invite={invite}
+                      canConfirm={member.rating > 3}
+                    />
+                    <LinkOverlay
+                      as={NextLink}
+                      href={`/events/${invite.event.id}`}
+                    />
+                  </EventCard>
+                )}
               </LinkBox>
             </Box>
-          )}
+          </Skeleton>
           {pledges && (
             <>
               <Box borderBottom="6px dotted black" pb={8}>

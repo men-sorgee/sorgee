@@ -42,9 +42,15 @@ export default async function PurchaseProduct(req, res) {
           unit_amount: cost * 100,
           product_data: {
             name: `Brotherhood Event: ${new Date(event.datetime).toLocaleDateString()}`,
-            description: event.name
+            description: event.name,
+            metadata: {
+              eventId: String(eventId),
+              inviteId: String(id),
+              type: 'event',
+            }
           },
-          tax_behavior: 'inclusive'
+          tax_behavior: 'inclusive',
+
         }
       },
     ]

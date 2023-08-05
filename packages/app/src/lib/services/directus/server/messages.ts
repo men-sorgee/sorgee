@@ -30,8 +30,8 @@ export async function getMessages(user_id: string) {
         },
       ],
     },
-    sort: ['date_created'],
-    limit: 100,
+    sort: ['-date_created'],
+    limit: 50,
     fields: [
       '*',
       'from.id',
@@ -72,6 +72,8 @@ export async function getMessages(user_id: string) {
       type,
     } as ChatMessage)
   })
+
+
 
   return userMessages
 }

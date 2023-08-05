@@ -1,4 +1,4 @@
-import { BillingEvent } from "lib/models";
+import { BillingEvent, UserPayment } from "lib/models";
 
 import { getAdminClient } from "../";
 
@@ -24,5 +24,10 @@ export async function findUserByCustomer(customer: string) {
       customer_id: { _eq: customer },
     },
   })
-  return data?.length ? data[0] : null
+  return data?.length ? data[0] as unknown as User : null
+}
+
+export async function saveUserPayment(payment: UserPayment) {
+  const admin = await getAdminClient()
+  return await admin.items('user_payment').createOne(payment)
 }

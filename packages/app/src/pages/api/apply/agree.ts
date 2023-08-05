@@ -7,6 +7,7 @@ import {
 } from "lib/models";
 import {
   addUserToCongratsEmail,
+  addUserToPledgeSurveyEmail,
   getUserEvents,
   updateUser
 } from "lib/services/directus/server";
@@ -42,6 +43,9 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
         ])
 
       await addUserToCongratsEmail(applicant.id, user_type)
+
+      if (user_type == 'pledge')
+        await addUserToPledgeSurveyEmail(applicant.id)
 
       return res.status(200).json(ApiResponse(updatedUser))
     }

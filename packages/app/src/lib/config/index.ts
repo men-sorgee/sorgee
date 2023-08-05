@@ -21,6 +21,7 @@ const config = {
       inductee: '581ffb86-a3cc-4951-a31a-296988c12703',
       pledge: '52ff07f3-32d1-4d9e-ad39-e925a0a9e3cf'
     },
+    pledgeSurvey: '118dc4ac-356e-4349-a35c-3013679e655b',
     eventSurvey: 'c3334a23-9e9c-418f-97ba-5b269991b822',
     eventNoShow: '81497c8d-ac48-402e-932b-9ded23e23c56'
   },

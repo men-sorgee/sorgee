@@ -455,7 +455,7 @@ const AccountForm = ({
               color="white"
               _hover={{ bg: 'red.500' }}
               w={['full', 'full', 'auto']}
-              complete={(success) => {
+              onSuccess={(success) => {
                 if (success) {
                   location.href = '/api/me/delete'
                 }
@@ -472,7 +472,7 @@ const AccountForm = ({
               color="white"
               _hover={{ bg: 'red.500' }}
               w={['full', 'full', 'auto']}
-              complete={(success) => {
+              onSuccess={(success) => {
                 if (success) {
                   location.href = '/api/me/delete'
                 }

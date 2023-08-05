@@ -94,13 +94,19 @@ export async function addAppNotificationUser(notificationId: string, userId: str
   })
 }
 
-export async function addUserToCongratsEmail(user_id: string, user_type: UserType) {
-  // add to congrats email
-  const notificationId = notifications.congratsEmail[user_type]
-  await addAppNotificationUser(notificationId, user_id)
-
+export async function addUserToPledgeSurveyEmail(user_id: string) {
+  await addAppNotificationUser(notifications.pledgeSurvey, user_id)
   try {
-    await sendAdminNotification(notificationId)
+    await sendAdminNotification(notifications.pledgeSurvey)
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+export async function addUserToCongratsEmail(user_id: string, user_type: UserType) {
+  await addAppNotificationUser(notifications.congratsEmail[user_type], user_id)
+  try {
+    await sendAdminNotification(notifications.congratsEmail[user_type])
   } catch (e) {
     console.error(e)
   }

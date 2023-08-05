@@ -83,14 +83,14 @@ export default function PhotoAlbums({}: Props) {
                 <ButtonConfirm
                   alertTitle="Delete Avatar"
                   buttonText="Delete"
-                  promise={async () => {
+                  confirmedAction={async () => {
                     const { success, data, error } = await deleteJSON(
                       `/api/members/${member?.id}/photos/picture`
                     )
                     if (!success) throw new Error(error.message)
                     return data
                   }}
-                  complete={() => {
+                  onSuccess={() => {
                     setPictureSrc(null)
                     reload()
                   }}
@@ -177,14 +177,14 @@ function PhotoList({ title, field, images, memberId, reload }: PhotoListProps) {
           <ButtonConfirm
             alertTitle="Delete Photo"
             buttonText="Delete"
-            promise={async () => {
+            confirmedAction={async () => {
               const { success, data, error } = await deleteJSON(
                 `/api/my/photo/${image.photoId}`
               )
               if (!success) throw new Error(error.message)
               return data
             }}
-            complete={(success) => {
+            onSuccess={(success) => {
               if (success) {
                 reload()
               }
