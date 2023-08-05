@@ -1,3 +1,4 @@
+import { ApiResult } from "lib/utils";
 import { ReactNode, RefObject, useCallback, useRef } from "react";
 
 import {
@@ -14,11 +15,11 @@ import {
   useToast
 } from "@chakra-ui/react";
 
-export type ConfirmButtonProps<TResponse = void> = Omit<
+export type ButtonConfirmProps<TResponse = void> = Omit<
   IconButtonProps,
   'aria-label' | 'onError'
 > & {
-  confirmedAction?: () => Promise<TResponse> | TResponse | void
+  confirmedAction?: () => Promise<TResponse> | Promise<ApiResult<TResponse>> | TResponse | void
   onSuccess?: (response: TResponse) => Promise<void> | TResponse | void
   onError?: (error: Error) => Promise<void> | void
   alertTitle: string
@@ -30,7 +31,7 @@ export type ConfirmButtonProps<TResponse = void> = Omit<
   children: ReactNode | ReactNode[]
 }
 
-export function ButtonConfirm<TResponse>({
+export function ButtonConfirm<TResponse = void>({
   confirmedAction = () => Promise.resolve<TResponse>(null),
   onSuccess,
   onError,
@@ -45,9 +46,11 @@ export function ButtonConfirm<TResponse>({
   title,
   disabled,
   py = 2,
-  colorScheme = 'ghost',
+  color = 'white',
+  colorScheme,
+  bg,
   ...props
-}: ConfirmButtonProps<TResponse>) {
+}: ButtonConfirmProps<TResponse>) {
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const cancelRef = useRef<HTMLButtonElement>()
@@ -84,8 +87,12 @@ export function ButtonConfirm<TResponse>({
     failureMessage,
     onError,
   ])
-  const bgGradient = `linear(to-b, ${colorScheme}.400, ${colorScheme}.500, ${colorScheme}.600)`
-  const bgGradientHover = `linear(to-b, ${colorScheme}.300, ${colorScheme}.400, ${colorScheme}.500)`
+  const bgGradient = colorScheme
+    ? `linear(to-b, ${colorScheme}.400, ${colorScheme}.500, ${colorScheme}.600)`
+    : null
+  const bgGradientHover = colorScheme
+    ? `linear(to-b, ${colorScheme}.300, ${colorScheme}.400, ${colorScheme}.500)`
+    : null
   return (
     <>
       {(icon && (
@@ -95,7 +102,8 @@ export function ButtonConfirm<TResponse>({
           title={title}
           icon={icon}
           bgGradient={bgGradient}
-          color="white"
+          bg={bg}
+          color={color}
           _hover={{
             bgGradient: bgGradientHover,
           }}
@@ -108,7 +116,8 @@ export function ButtonConfirm<TResponse>({
           title={title}
           py={py}
           bgGradient={bgGradient}
-          color="white"
+          bg={bg}
+          color={color}
           _hover={{
             bgGradient: bgGradientHover,
           }}

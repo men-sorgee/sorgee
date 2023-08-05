@@ -48,6 +48,8 @@ export const MemberBlock = chakra(
             color={mutual ? 'yellow' : 'white'}
             alertTitle={`Unblock ${member?.nickname || 'this member'}`}
             title={`Unblock ${member?.nickname || 'this member'}`}
+            variant="ghost"
+            _hover={{ bg: 'primary.500' }}
             confirmedAction={() => deleteJSON(`/api/members/${member.id}/block`)}
             onSuccess={() => {
               setIsBlocked(false)
@@ -75,6 +77,8 @@ export const MemberBlock = chakra(
             color={mutual ? 'yellow' : 'white'}
             alertTitle={`Block ${member?.nickname || 'this member'}`}
             title={`Block ${member?.nickname || 'this member'}`}
+            variant="ghost"
+            _hover={{ bg: 'primary.500' }}
             confirmedAction={() => postJSON(`/api/members/${member.id}/block`, {})}
             onSuccess={() => {
               setIsBlocked(true)
