@@ -1,7 +1,10 @@
-
+## Rename to .env
 HOST='0.0.0.0'
 PORT=8055
 PUBLIC_URL='http://localhost:8055'
+
+ADMIN_EMAIL: '' # fill in
+ADMIN_PASSWORD: ''
 
 KEY=a3386693-2427-45a7-acf0-e3c36a38d24b
 SECRET=nBt844sSNbeXXyuhVfQh1d2U4ux4H9QI
@@ -11,8 +14,8 @@ DB_CLIENT=pg
 DB_PORT=5432
 DB_DATABASE=guysnheat
 DB_USER=guysnheat
-DB_PASSWORD=''
-DB_HOST=''
+DB_PASSWORD='' #FILL IN
+DB_HOST='localhost' #FILL IN
 
 REDIS_HOST=${REDISHOST}
 REDIS_PORT=${REDISPORT}
