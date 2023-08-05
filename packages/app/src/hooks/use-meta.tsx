@@ -1,4 +1,3 @@
-'use client'
 import { MetaProps } from "lib/models";
 import { useRouter } from "next/router";
 import {

@@ -77,7 +77,7 @@ const authAdapter: Adapter = {
       })
       return mapUser(newUser)
     } catch (e) {
-      console.error(e.response?.body?.errors[0].message || e)
+      console.error(e)
     }
   },
   async getUser(id: string) {
@@ -86,7 +86,7 @@ const authAdapter: Adapter = {
       const user = await getUser(id)
       return mapUser(user)
     } catch (e) {
-      console.error(e.response?.body?.errors[0].message || e)
+      console.error(e)
     }
   },
   async getUserByEmail(email: string) {
@@ -97,7 +97,7 @@ const authAdapter: Adapter = {
       if (!user) return null
       return mapUser(user)
     } catch (e) {
-      console.error(e.response?.body?.errors[0].message || e)
+      console.error(e)
     }
   },
   async getUserByAccount({ providerAccountId, provider }: AdapterAccount) {
@@ -107,7 +107,7 @@ const authAdapter: Adapter = {
       if (!user) return null
       return mapUser(user)
     } catch (e) {
-      console.error(e.response?.body?.errors[0].message || e)
+      console.error(e)
     }
   },
   async updateUser(user: AdapterUser) {
@@ -119,7 +119,7 @@ const authAdapter: Adapter = {
       })
       return mapUser(updatedUser)
     } catch (e) {
-      console.error(e.response?.body?.errors[0].message || e)
+      console.error(e)
     }
   },
   async linkAccount(account: AdapterAccount) {
@@ -149,7 +149,7 @@ const authAdapter: Adapter = {
         refreshToken,
       })
     } catch (e) {
-      console.error(e.response?.body?.errors[0].message || e)
+      console.error(e)
     }
   },
   async unlinkAccount({ providerAccountId, provider }: AdapterAccount) {
@@ -157,7 +157,7 @@ const authAdapter: Adapter = {
       log('unlinkAccount', providerAccountId, provider)
       await deleteAccount(provider, providerAccountId)
     } catch (e) {
-      console.error(e.response?.body?.errors[0].message || e)
+      console.error(e)
     }
   },
   async createSession(sessionData: Partial<AdapterSession>) {
@@ -170,7 +170,7 @@ const authAdapter: Adapter = {
       } as any)
       return mapSession(session as UserSession)
     } catch (e) {
-      console.error(e.response?.body?.errors[0].message || e)
+      console.error(e)
     }
   },
   async getSessionAndUser(sessionToken: string) {
@@ -185,7 +185,7 @@ const authAdapter: Adapter = {
         session: mapSession(session),
       }
     } catch (e) {
-      console.error(e.response?.body?.errors[0].message || e)
+      console.error(e)
     }
   },
   async updateSession(session: AdapterSession) {
@@ -194,7 +194,7 @@ const authAdapter: Adapter = {
       const updatedSession = await updateSession(session.sessionToken, session.expires)
       return mapSession(updatedSession as UserSession)
     } catch (e) {
-      console.error(e.response?.body?.errors[0].message || e)
+      console.error(e)
     }
   },
   async deleteSession(sessionToken: string) {
@@ -202,7 +202,7 @@ const authAdapter: Adapter = {
       log('delete-session', sessionToken)
       await deleteSession(sessionToken)
     } catch (e) {
-      console.error(e?.config?.res?.body?.errors[0].message || e)
+      console.error(e)
     }
   },
   async createVerificationToken(token: VerificationToken) {
@@ -214,7 +214,7 @@ const authAdapter: Adapter = {
       )
       return mapToken(verificationToken)
     } catch (e) {
-      console.error(e.response?.body?.errors[0].message)
+      console.error(e)
     }
   },
   async useVerificationToken({ identifier, token }: VerificationToken) {
@@ -225,7 +225,7 @@ const authAdapter: Adapter = {
 
       return mapToken(verificationToken)
     } catch (e) {
-      console.error(e.response?.body?.errors[0].message || e)
+      console.error(e)
     }
   },
 }

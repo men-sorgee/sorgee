@@ -13,15 +13,16 @@ import {
   ListItem,
   OrderedList,
   Text,
+  TextProps,
   UnorderedList
 } from "@chakra-ui/react";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 
-type Props = {
+type Props = TextProps & {
   content: string
   size?: string
 }
-export const Markdown = ({ content, size }: Props) => {
+export const Markdown = ({ content, size, noOfLines, ...props }: Props) => {
   const [reactContent, setMarkdownSource] = useRemark({
     rehypeReactOptions: {
       components: {
@@ -37,7 +38,8 @@ export const Markdown = ({ content, size }: Props) => {
               as={NextLink}
               href={href}
               target={href.startsWith('http') ? '_blank' : '_self'}
-              color="accent"
+              color="text"
+              textDecoration={'underline'}
             >
               {children}&nbsp;
               {href.startsWith('http') && (
@@ -46,13 +48,13 @@ export const Markdown = ({ content, size }: Props) => {
             </Link>
           )
         },
-        img: ({ height, src, width, alt, ...props }) => {
+        img: ({ src, alt, ...props }) => {
           return (
             // eslint-disable-next-line @next/next/no-img-element
             <Image
+              loading="lazy"
               src={src}
-              h={height}
-              w={width}
+              w={'full'}
               rounded="lg"
               boxShadow="lg"
               alt={alt || 'guysnheat image'}
@@ -61,7 +63,9 @@ export const Markdown = ({ content, size }: Props) => {
           )
         },
         p: ({ children }: { children: React.ReactNode }) => (
-          <Text fontSize={size}>{children}</Text>
+          <Text noOfLines={noOfLines} fontSize={size}>
+            {children}
+          </Text>
         ),
         h1: ({ children }: { children: React.ReactNode }) => (
           <Heading as="h1" size={size || 'h1'}>
@@ -109,17 +113,42 @@ export const Markdown = ({ content, size }: Props) => {
           </ListItem>
         ),
         blockquote: ({ children }: { children: React.ReactNode }) => (
-          <Alert rounded="lg" shadow="lg" my={4}>
-            <Heading
-              w="full"
-              as="h5"
+          <Alert
+            rounded="lg"
+            shadow="md"
+            my={4}
+            p={4}
+            textAlign="center"
+            as="blockquote"
+          >
+            <Text
+              as="blockquote"
               size={size || 'h5'}
               m={0}
+              p={0}
               textAlign="center"
+              color="text"
+              w="full"
             >
               {children}
-            </Heading>
+            </Text>
           </Alert>
+        ),
+        hr: () => <hr style={{ margin: '2rem 0' }} />,
+        code: ({ children }: { children: React.ReactNode }) => (
+          <Text
+            as="code"
+            fontSize={size}
+            color="white"
+            bg="gray.700"
+            rounded="md"
+            px={2}
+            py={1}
+            w="full"
+            fontWeight="bold"
+          >
+            {children}
+          </Text>
         )
       }
     }

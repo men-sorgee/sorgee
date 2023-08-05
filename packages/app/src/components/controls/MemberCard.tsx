@@ -1,22 +1,10 @@
-import { formatDistanceToNowStrict } from "date-fns";
 import { useUser } from "hooks";
-import {
-  Member,
-  MemberLevel,
-  MemberLevelColorMap,
-  SearchableMember,
-  User,
-  UserBuddy,
-  UserLike,
-  UserShare
-} from "lib/models";
+import { Member, MemberLevel, MemberLevelColorMap } from "lib/models";
 import NextLink from "next/link";
 import { ReactNode } from "react";
 
 import { LockIcon } from "@chakra-ui/icons";
 import {
-  Badge,
-  ButtonGroup,
   Card,
   CardBody,
   CardFooter,
@@ -27,24 +15,16 @@ import {
   Heading,
   LinkBox,
   LinkOverlay,
-  Show,
-  Spacer,
-  Text
+  Spacer
 } from "@chakra-ui/react";
 
 import {
+  Markdown,
   MemberActions,
   MemberAttributeBanner,
-  MemberBlock,
-  MemberBuddy,
   MemberHeader,
-  MemberLike,
-  MemberMessages,
   MemberMessageStats,
-  MemberRelationBanner,
-  MemberReport,
-  MemberShare,
-  Rating
+  MemberRelationBanner
 } from "./";
 
 type Props = CardProps & {
@@ -135,9 +115,12 @@ export const MemberCard = chakra(
               {children}
               {full && member?.show_profile && (
                 <>
-                  <Text noOfLines={2} py={0} my={0}>
-                    {member.biography}
-                  </Text>
+                  <Markdown
+                    content={member?.biography}
+                    noOfLines={2}
+                    py={0}
+                    my={0}
+                  />
                 </>
               )}
             </CardBody>
