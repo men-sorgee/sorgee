@@ -5,11 +5,7 @@ import { CSSProperties, useEffect, useState } from "react";
 export type LogoProps = CSSProperties & {
   isAuthenticated: boolean
 }
-export const Logo = ({
-  isAuthenticated = false,
-  width = '50px',
-  ...props
-}: LogoProps) => {
+export const Logo = ({ isAuthenticated = false, width = '50px', ...props }: LogoProps) => {
   const [url, setUrl] = useState<string>('/')
   useEffect(() => {
     if (isAuthenticated) {
@@ -17,7 +13,7 @@ export const Logo = ({
     }
   }, [isAuthenticated])
   return (
-    <NextLink href={url}>
+    <NextLink href={url} replace={false}>
       <svg
         color={brand.colors.accent.DEFAULT}
         viewBox="0 0 100 100"
@@ -27,11 +23,7 @@ export const Logo = ({
         style={{ margin: '0 0 0 1.5rem', ...props }}
       >
         <defs>
-          <path
-            fill={brand.colors.secondary.DEFAULT}
-            id="a"
-            d="M0 0h59.314v59.414H0z"
-          ></path>
+          <path fill={brand.colors.secondary.DEFAULT} id="a" d="M0 0h59.314v59.414H0z"></path>
         </defs>
         <g fill="none">
           <path
