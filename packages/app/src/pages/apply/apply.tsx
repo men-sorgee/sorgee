@@ -117,7 +117,7 @@ function Apply({ promo, invite, markdown, ...props }: PageProps) {
   }
   return (
     <Page
-      title="Registration"
+      title="Application"
       loading={loading}
       header={<ApplicationSteps status={'apply'} />}
     >

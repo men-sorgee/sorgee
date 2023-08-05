@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { Hide, Show } from "@chakra-ui/react";
 
 export default function ApplicationSteps({ status }: { status: string }) {
-  const steps = ['Registration', 'Verification', 'Review', 'Agreement']
+  const steps = ['Application', 'Verification', 'Review', 'Agreement']
   const { activeStep, setStep } = useSteps({
     initialStep: 0
   })
