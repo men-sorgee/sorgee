@@ -19,16 +19,14 @@ export type ConfirmButtonProps<TResponse = void> = Omit<
   'aria-label' | 'onError'
 > & {
   confirmedAction?: () => Promise<TResponse> | TResponse | void
-  onSuccess?: (response: TResponse) => Promise<void> | TResponse| void
+  onSuccess?: (response: TResponse) => Promise<void> | TResponse | void
   onError?: (error: Error) => Promise<void> | void
   alertTitle: string
   buttonText: string
   confirmColorScheme?: string
   successMessage?: string
   failureMessage?: string
-  focusRef?: RefObject<
-    HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement
-  >
+  focusRef?: RefObject<HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement>
   children: ReactNode | ReactNode[]
 }
 
@@ -47,7 +45,7 @@ export function ButtonConfirm<TResponse>({
   title,
   disabled,
   py = 2,
-  colorScheme = 'secondary',
+  colorScheme = 'ghost',
   ...props
 }: ConfirmButtonProps<TResponse>) {
   const toast = useToast()
@@ -64,7 +62,7 @@ export function ButtonConfirm<TResponse>({
           title: alertTitle,
           description: successMessage,
           status: 'success',
-          duration: 3000
+          duration: 3000,
         })
     } catch (err) {
       if (onError) await onError(err)
@@ -73,7 +71,7 @@ export function ButtonConfirm<TResponse>({
           title: alertTitle,
           description: failureMessage,
           status: 'error',
-          duration: 5000
+          duration: 5000,
         })
     }
   }, [
@@ -84,7 +82,7 @@ export function ButtonConfirm<TResponse>({
     toast,
     alertTitle,
     failureMessage,
-    onError
+    onError,
   ])
   const bgGradient = `linear(to-b, ${colorScheme}.400, ${colorScheme}.500, ${colorScheme}.600)`
   const bgGradientHover = `linear(to-b, ${colorScheme}.300, ${colorScheme}.400, ${colorScheme}.500)`
@@ -99,7 +97,7 @@ export function ButtonConfirm<TResponse>({
           bgGradient={bgGradient}
           color="white"
           _hover={{
-            bgGradient:bgGradientHover,
+            bgGradient: bgGradientHover,
           }}
           {...props}
         />
@@ -112,7 +110,7 @@ export function ButtonConfirm<TResponse>({
           bgGradient={bgGradient}
           color="white"
           _hover={{
-            bgGradient:bgGradientHover,
+            bgGradient: bgGradientHover,
           }}
           {...props}
         >
