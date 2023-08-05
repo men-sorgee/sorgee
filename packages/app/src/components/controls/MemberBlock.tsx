@@ -1,9 +1,9 @@
 import { useUser } from "hooks";
 import { Member, MemberLevel, UserBlock } from "lib/models";
 import { deleteJSON, postJSON } from "lib/utils";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-import { chakra, Icon, IconButtonProps, Text } from "@chakra-ui/react";
+import { chakra, IconButtonProps, Text } from "@chakra-ui/react";
 import { EyeIcon as ViewIcon } from "@heroicons/react/24/outline";
 import { EyeSlashIcon as BlockedIcon } from "@heroicons/react/24/solid";
 
@@ -14,7 +14,7 @@ type Props = Omit<IconButtonProps, 'aria-label'> & {
 }
 
 export const MemberBlock = chakra(
-  ({ member, size = ['sm', 'md', 'lg'], ...props }: Props) => {
+  ({ member, size = ['sm', 'md', 'lg'], onError: _, ...props }: Props) => {
     const { loading, member: me, reload } = useUser()
     const [hover, setHover] = useState(false)
     const [isBlocked, setIsBlocked] = useState<boolean>(false)
@@ -58,11 +58,13 @@ export const MemberBlock = chakra(
             onSuccess={() => {
               setIsBlocked(false)
             }}
+           
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
             successMessage="The user was blocked"
             failureMessage="The user could not be blocked"
             buttonText={isBlocked ? 'Unblock' : 'Block'}
+            
             icon={
               !hover ? (
                 <BlockedIcon width="30px" fill="red" />
@@ -88,7 +90,9 @@ export const MemberBlock = chakra(
             }
             onSuccess={() => {
               setIsBlocked(true)
+              return Promise.resolve()
             }}
+            
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
             successMessage="The user was blocked"

@@ -1,12 +1,6 @@
 import { useInvite } from "hooks";
-import {
-  EventInvite,
-  EventUser,
-  GroupEvent,
-  InviteRSVPType,
-  RSVPInfo
-} from "lib/models";
-import { getJSON, postJSON } from "lib/utils";
+import { EventInvite } from "lib/models";
+import { ApiResult, getJSON } from "lib/utils";
 import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
 import {
@@ -60,11 +54,7 @@ export const EventRSVP = ({
   const bgGradientHover = (color) =>
     `linear(to-b, ${color}.300, ${color}.400, ${color}.500)`
 
-  const completePurchase = useCallback(async (success, data, error) => {
-    if (!success) {
-      console.error(error)
-      return
-    }
+  const completePurchase = useCallback(async ( data : PurchaseResponse) => {
     setWorking(false)
     const { loadStripe } = await import('@stripe/stripe-js')
     const stripe = await loadStripe(
@@ -77,14 +67,14 @@ export const EventRSVP = ({
   }, [])
 
   const PrePayButton = ({ children = 'Pre-Pay' }) => (
-    <ButtonConfirm
+    <ButtonConfirm<ApiResult<PurchaseResponse>>
       flex={1}
       alertTitle="Confirm your RSVP"
       buttonText={children}
       confirmedAction={() =>
         getJSON<PurchaseResponse>(`/api/stripe/event/${invite.id}`)
       }
-      onSuccess={completePurchase}
+      onSuccess={({data}) => completePurchase(data)}
       bgGradient={bgGradient('accent')}
       _hover={{
         bgGradient: bgGradientHover('accent')
@@ -99,7 +89,7 @@ export const EventRSVP = ({
   )
 
   const ConfirmPayRSVPButton = ({ children = 'Confirm' }) => (
-    <ButtonConfirm
+    <ButtonConfirm<ApiResult<PurchaseResponse>>
       flex={1}
       alertTitle="Event RSVP"
       buttonText={children}
@@ -112,7 +102,7 @@ export const EventRSVP = ({
             getJSON<PurchaseResponse>(`/api/stripe/event/${i.id}`)
           )
       }
-      onSuccess={completePurchase}
+      onSuccess={({data}) => completePurchase(data)}
       bgGradient={bgGradient('accent')}
       _hover={{
         bgGradient: bgGradientHover('accent')
@@ -145,7 +135,7 @@ export const EventRSVP = ({
       failureMessage="Unable to confirm."
       successMessage="Your RSVP has been registered."
       confirmedAction={() => mutate('confirmed')}
-      onSuccess={() => {
+      onSuccess={async () => {
         if (onChange) onChange()
         setWorking(false)
       }}
@@ -175,7 +165,7 @@ export const EventRSVP = ({
       failureMessage="Unable to RSVP."
       successMessage="Your RSVP has been registered."
       confirmedAction={() => mutate('maybe')}
-      onSuccess={() => {
+      onSuccess={async () => {
         if (onChange) onChange()
         setWorking(false)
       }}
@@ -205,7 +195,7 @@ export const EventRSVP = ({
       failureMessage="Unable to RSVP."
       successMessage="This invitation has been declined. It will not show anymore."
       confirmedAction={() => mutate('declined')}
-      onSuccess={() => {
+      onSuccess={async () => {
         if (onChange) onChange()
         setWorking(false)
       }}
@@ -234,7 +224,7 @@ export const EventRSVP = ({
       failureMessage="Unable to cancel."
       successMessage="Your RSVP has been cancelled."
       confirmedAction={() => mutate('cancelled', reasonRef.current.value)}
-      onSuccess={() => {
+      onSuccess={async () => {
         if (onChange) onChange()
         setWorking(false)
       }}

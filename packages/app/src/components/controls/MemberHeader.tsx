@@ -41,7 +41,7 @@ export const MemberHeader = ({
               <Rating
                 value={member.rating || 0}
                 mt={2}
-                aria-label="User Rating"
+                itemName="User"
                 tooltip="Ratings are based on the number of stars a member has received from other members and event hosts. No-shows automatically receive -1 star ratings by the event."
               />
             )}

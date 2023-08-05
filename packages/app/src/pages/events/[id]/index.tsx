@@ -5,12 +5,11 @@ import {
   EventTicket,
   Lazy,
   MemberCard,
-  MemberHeader,
   MemberModal,
   RateItem
 } from "components/controls";
 import Page from "components/Page";
-import { isAfter, isToday, set } from "date-fns";
+import { isAfter, isToday } from "date-fns";
 import { useEvent, useUser } from "hooks";
 import {
   EventDetail,
@@ -30,16 +29,13 @@ import {
   AlertIcon,
   Avatar,
   Box,
-  Center,
   Divider,
   Flex,
   Heading,
   HStack,
   Link,
-  Show,
   SimpleGrid,
   Spacer,
-  Stack,
   Stat,
   StatGroup,
   StatLabel,
@@ -303,6 +299,7 @@ const AttendedEvent = ({
         justify="space-between"
       >
         <RateItem
+          itemName="Event"
           item_id={event.id}
           collection="events"
           size="lg"
@@ -359,6 +356,7 @@ const AttendedEvent = ({
                 >
                   <Box maxW="60%" mx="auto" textAlign="center">
                     <RateItem
+                      itemName="User"
                       onChange={() => {
                         reloadUser()
                       }}

@@ -112,8 +112,6 @@ export type EventDetail = EventInfo & {
   stats: EventStats
   members: SearchableMember[]
   surveys: Survey[]
-  attended: number
-  capacity: number
 }
 
 export type Location = {
