@@ -1,4 +1,3 @@
-import { ApiResult } from "lib/utils";
 import { ReactNode, RefObject, useCallback, useRef } from "react";
 
 import {
@@ -19,7 +18,7 @@ export type ConfirmButtonProps<TResponse = void> = Omit<
   IconButtonProps,
   'aria-label' | 'onError'
 > & {
-  confirmedAction: () => Promise<TResponse>
+  confirmedAction?: () => Promise<TResponse>
   onSuccess?: (response: TResponse) => Promise<void>
   onError?: (error: any) => Promise<void>
   alertTitle: string
@@ -48,6 +47,7 @@ export function ButtonConfirm<TResponse>({
   title,
   disabled,
   py = 2,
+  colorScheme = 'secondary',
   ...props
 }: ConfirmButtonProps<TResponse>) {
   const toast = useToast()
@@ -86,6 +86,8 @@ export function ButtonConfirm<TResponse>({
     failureMessage,
     onError
   ])
+  const bgGradient = `linear(to-b, ${colorScheme}.400, ${colorScheme}.500, ${colorScheme}.600)`
+  const bgGradientHover = `linear(to-b, ${colorScheme}.300, ${colorScheme}.400, ${colorScheme}.500)`
   return (
     <>
       {(icon && (
@@ -94,6 +96,11 @@ export function ButtonConfirm<TResponse>({
           aria-label={title}
           title={title}
           icon={icon}
+          bgGradient={bgGradient}
+          color="white"
+          _hover={{
+            bgGradient:bgGradientHover,
+          }}
           {...props}
         />
       )) || (
@@ -102,6 +109,11 @@ export function ButtonConfirm<TResponse>({
           aria-label={title}
           title={title}
           py={py}
+          bgGradient={bgGradient}
+          color="white"
+          _hover={{
+            bgGradient:bgGradientHover,
+          }}
           {...props}
         >
           {buttonText}
