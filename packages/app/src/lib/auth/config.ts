@@ -2,13 +2,11 @@ import { brand } from "lib/config/brand";
 import config from "lib/config/server";
 import { MemberLevel, Profile, User, UserStatusType } from "lib/models";
 import {
-  extendUserPresence,
   findUser,
   findUserByAccount,
   getUser,
   recordUserLogin
 } from "lib/services/db/server/users";
-import { setUserAverageRating } from "lib/services/directus/server";
 import {
   SendGridCategory,
   SendGridTemplate,
@@ -87,8 +85,6 @@ export const authOptions: AuthOptions = {
       console.debug('callback:session')
       const fullUser = await findUser(user.email)
       session.user = fullUser
-
-
       return session
     },
   },
@@ -115,7 +111,6 @@ export const authOptions: AuthOptions = {
     async signIn({ user }) {
       console.log('event:signIn')
       await recordUserLogin(user.id)
-      await setUserAverageRating(user.id)
     },
     async signOut(props) {
       console.log('event:signOut', props)

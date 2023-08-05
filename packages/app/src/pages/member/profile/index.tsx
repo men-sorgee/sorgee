@@ -243,8 +243,19 @@ const ProfileForm = ({
       </Text>
 
       <Collapse animateOpacity in={show_profile}>
-        <MemberCard member={member} viewer={member} full onClick={onOpen} />
-        <MemberModal isOpen={isOpen} memberId={member?.id} onClose={onClose} />
+        <MemberCard
+          member={member}
+          viewer={member}
+          full
+          onClick={onOpen}
+          size="xl"
+        />
+        <MemberModal
+          isOpen={isOpen}
+          memberId={member?.id}
+          onClose={onClose}
+          size="xl"
+        />
       </Collapse>
       {!show_profile && (
         <Alert

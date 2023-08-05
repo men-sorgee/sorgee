@@ -1,6 +1,5 @@
 'use client'
 import { ProductView } from "lib/models";
-import { JsonFetcher } from "lib/utils";
 import useSWR from "swr";
 
 type ProductResults = {
@@ -14,7 +13,7 @@ export const useProducts = (): ProductResults => {
     data: products,
     error,
     isLoading
-  } = useSWR<ProductView[], Error>(`/api/stripe/products`, JsonFetcher, {
+  } = useSWR<ProductView[], Error>(`/api/stripe/products`, {
     refreshWhenHidden: false,
     refreshWhenOffline: false,
     revalidateOnFocus: false,

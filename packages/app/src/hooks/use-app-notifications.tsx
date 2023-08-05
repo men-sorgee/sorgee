@@ -52,7 +52,7 @@ export function AppNotificationsProvider({
     error,
     isLoading
   } = useSWR<AppNotification[], Error>(authenticated ? key : null, {
-    refreshInterval: 1000 * 60 * 10, // 3 minutes
+    refreshInterval: 1000 * 60 * 10, // 10 minutes
     fallbackData: []
   })
   const [hasNewNotifications, setHasNewNotifications] = useState(false)

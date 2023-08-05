@@ -1,9 +1,10 @@
 import { Profile, SearchableMember } from "lib/models";
-import { JsonFetcher } from "lib/utils";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
 import { ManyItems } from "@directus/sdk";
+
+import { useAuthenticated } from "./use-authenticated";
 
 export type MemberSearchContext = {
   members: SearchableMember[]
@@ -23,12 +24,14 @@ function useMemberSearch(
   sort: string,
   query: Record<string, any> = {}
 ) {
-  const [key] = useState(
-    `/api/members?limit=${size}&page=${page}&sort=${sort}&${new URLSearchParams(
-      query
-    ).toString()}`
+  const { authenticated } = useAuthenticated()
+
+  const key = `/api/members?limit=${size}&page=${page}&sort=${sort}&${new URLSearchParams(
+    query
+  )}`
+  const { data: response, error } = useSWR<ManyItems<Partial<Profile>>>(
+    authenticated ? key : null
   )
-  const { data: response, error } = useSWR<ManyItems<Partial<Profile>>>(key)
   const [meta, setMeta] = useState<{ total: number; filtered: number }>({
     total: 0,
     filtered: 0

@@ -52,12 +52,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     <>
       <GoogleAnalytics trackPageViews />
       <SWRProvider>
-        <SessionProvider session={pageProps.session}>
-          <MetaContextProvider>
-            <ChakraProvider
-              theme={theme}
-              colorModeManager={cookieStorageManager}
-            >
+        <MetaContextProvider>
+          <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
+            <SessionProvider session={pageProps.session}>
               <UserProvider>
                 <AppNotificationsProvider>
                   <UserNotificationsProvider>
@@ -77,9 +74,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                   </UserNotificationsProvider>
                 </AppNotificationsProvider>
               </UserProvider>
-            </ChakraProvider>
-          </MetaContextProvider>
-        </SessionProvider>
+            </SessionProvider>
+          </ChakraProvider>
+        </MetaContextProvider>
       </SWRProvider>
     </>
   )

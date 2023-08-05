@@ -4,11 +4,10 @@ import {
   EventBadge,
   EventCard,
   EventRSVP,
-  EventTicket,
   Lazy
 } from "components/controls";
 import Page from "components/Page";
-import { addDays, isAfter, isSameDay, isToday } from "date-fns";
+import { addDays, isSameDay } from "date-fns";
 import { useInvites, useUser } from "hooks";
 import { brand } from "lib/config/brand";
 import { EventInvite, GroupEvent, Member, MemberLevel } from "lib/models";
@@ -21,7 +20,6 @@ import {
   AlertIcon,
   Badge,
   Box,
-  Flex,
   Heading,
   LinkBox,
   LinkOverlay,
@@ -259,7 +257,7 @@ function Invitations({
     <>
       {list.map((invite, index) => {
         return (
-          <Lazy key={invite.id}>
+          <Lazy key={index + '-invitation'}>
             <EventCard
               mb={8}
               event={invite.event}

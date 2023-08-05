@@ -22,7 +22,6 @@ import {
   UserInvite
 } from "lib/models";
 import { postJSON, pruneUndefined } from "lib/utils";
-import { signIn, useSession } from "next-auth/react";
 import { NextRouter, useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -30,7 +29,6 @@ import {
   Alert,
   AlertIcon,
   Box,
-  Button,
   GridItem,
   Heading,
   Input,
@@ -77,12 +75,6 @@ export const getServerSideProps = async (_context) => {
 }
 
 function Apply({ promo, invite, markdown, ...props }: PageProps) {
-  const { status } = useSession({
-    required: true,
-    onUnauthenticated: () => {
-      signIn()
-    }
-  })
   const {
     member: user,
     loading,
@@ -111,7 +103,7 @@ function Apply({ promo, invite, markdown, ...props }: PageProps) {
         )
       }
     }
-  }, [invite, loading, promo, user, router, site, status])
+  }, [invite, loading, promo, user, router, site])
 
   const intro = invite
     ? `You've been invited to join our community! You have been vouched for, but we still need to perform a few verification steps.`

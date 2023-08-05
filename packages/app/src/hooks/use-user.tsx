@@ -6,10 +6,16 @@ import {
   MemberLevel,
   MembershipType
 } from "lib/models";
-import { ApiResult, getAssetUrl, JsonFetcher, postJSON } from "lib/utils";
+import { ApiResult, getAssetUrl, postJSON } from "lib/utils";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
-import { createContext, ReactNode, useContext, useEffect } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState
+} from "react";
 import useSWR from "swr";
 
 import { useAuthenticated } from "./use-authenticated";
@@ -47,23 +53,21 @@ export const UserContext = createContext<UserContextData>({
   isBrother: false,
   isStaff: false,
   isApplicant: false,
-  hasFeature: (feature: MemberFeature) => false
+  hasFeature: (_feature: MemberFeature) => false
 })
 
 export function UserProvider({ children }: { children: ReactNode }) {
+  const [loading, setLoading] = useState<boolean>(true)
   const key = `/api/me`
-  const { authenticated } = useAuthenticated()
-
+  const { authenticated, loading: authLoading } = useAuthenticated()
   const {
     data: member,
     mutate: _mutate,
     error,
-    isLoading: loading
-  } = useSWR<Member, Error>(authenticated ? key : null, JsonFetcher, {
-    revalidateIfStale: true,
-    revalidateOnFocus: true,
-    revalidateOnReconnect: true,
-    refreshInterval: 1000 * 60 * 5
+    isLoading
+  } = useSWR<Member, Error>(() => (authenticated ? key : null), {
+    refreshInterval: 1000 * 60 * 1,
+    keepPreviousData: false
   })
 
   const { application_status, user_type, membership_type } = member || {}
@@ -91,6 +95,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
     if (level == MemberLevel.big_brother) return true
     return member.has_features?.includes(feature)
   }
+
+  useEffect(() => {
+    if (isLoading || authLoading) return
+    setLoading(false)
+  }, [isLoading, authLoading])
 
   const context: UserContextData = {
     member,
@@ -134,6 +143,7 @@ export const useUser = ({
   authorized: boolean
 } => {
   const router = useRouter()
+
   const { level, loading, member, authenticated, hasFeature, ...data } =
     useContext(UserContext)
   let authorized = level >= minLevel
@@ -162,7 +172,7 @@ export const useUser = ({
           return
         }
       } else {
-        signIn().catch(console.error)
+        signIn()
       }
     }
   }, [

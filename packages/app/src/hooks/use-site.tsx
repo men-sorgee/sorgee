@@ -1,6 +1,4 @@
-'use client'
 import { Site } from "lib/models";
-import { JsonFetcher } from "lib/utils";
 import useSWR, { KeyedMutator } from "swr";
 
 type SiteResults = {
@@ -18,15 +16,11 @@ export const useSite = (): SiteResults => {
     error,
     isLoading
   } = useSWR<Site, Error>(`/api/site`, {
-    refreshWhenHidden: false,
-    refreshWhenOffline: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
     fallbackData: {
       site_title: 'GuysNHeat',
       description:
         'A fraternity of bisexual men that provides safe environments for discrete encounters for men to explore and express in a safe manor. We host curated sex parties with vetted men in the Denver area.',
-      invite_only: true
+      invite_only: false
     }
   })
 
