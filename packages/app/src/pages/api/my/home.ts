@@ -1,6 +1,6 @@
 import { withUser } from "lib/utils/server";
 
-export default async function Redirect(req, res) {
+export default async function Home(req, res) {
   try {
     const user = await withUser(req, res)
 
@@ -11,7 +11,7 @@ export default async function Redirect(req, res) {
       return res.redirect('/apply/' + application_status, 301)
     }
   } catch (_) {
-    return res.redirect('/api/auth/signin?callbackUrl=/api/my/redirect', 301)
+    return res.redirect('/api/auth/signin?callbackUrl=/api/my/home', 301)
   }
 
 }

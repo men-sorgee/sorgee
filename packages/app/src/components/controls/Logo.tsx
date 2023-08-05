@@ -13,7 +13,7 @@ export const Logo = ({
   const [url, setUrl] = useState<string>('/')
   useEffect(() => {
     if (isAuthenticated) {
-      setUrl('/member')
+      setUrl('/api/my/home')
     }
   }, [isAuthenticated])
   return (

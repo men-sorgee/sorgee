@@ -377,7 +377,7 @@ export default function UserMenu(_props: Props) {
             onClick={(e) => {
               e.preventDefault()
               signIn(null, {
-                callbackUrl: '/api/my/redirect'
+                callbackUrl: '/api/my/home'
               })
             }}
           >
