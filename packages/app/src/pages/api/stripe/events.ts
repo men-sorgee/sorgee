@@ -1,4 +1,4 @@
-import type { Readable } from 'node:stream'
+import type { Readable } from 'node:stream';
 
 import { IncomingMessage } from "http";
 import { Member, User, UserPayment } from "lib/models";
@@ -236,17 +236,17 @@ function extractFromSubscription(subscription: Stripe.Subscription, user: User):
 
 function extractFromCheckout(checkout: Stripe.Checkout.Session): UserPayment {
   const { amount_total: amount, created, currency, metadata, mode } = checkout
-  const { eventId, inviteId, userId: user, } = metadata
+  const { eventId, userId } = metadata
 
   const type = mode == 'payment' ? 'event' : mode
   let payment: UserPayment = {
-    user,
+    user: userId,
     type: 'stripe',
     amount: amount / 100,
     currency: currency as any,
-    product_id: [{ item: eventId || user, collection: eventId ? 'events' : 'users' }],
+    product_id: [{ item: eventId || userId, collection: eventId ? 'events' : 'users' }],
     product_type: type as any,
-    description: `Brotherhood payment for ${type}  ${eventId || user}`,
+    description: `Brotherhood payment for ${type} ${eventId || userId}`,
     date_created: new Date(created).toISOString(),
     redeemed: false,
   }

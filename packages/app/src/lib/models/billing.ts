@@ -40,7 +40,7 @@ export type UserPayment = {
   type: 'stripe' | 'cash'
   amount: number
   currency: 'usd'
-  product_id: string | UserPaymentProductId[];
+  product_id: UserPaymentProductId[];
   product_type: 'event' | 'subscription' | 'donation' | 'payment'
   description: string
   redeemed: boolean
@@ -51,8 +51,8 @@ export type UserPayment = {
 };
 
 export type UserPaymentProductId = {
-  id?: number;
-  user_payment_id?: string | UserPayment;
-  item?: string | any;
-  collection?: 'events' | 'users'
+  id?: number
+  user_payment_id?: string | UserPayment
+  item: string
+  collection: 'events' | 'users'
 };
