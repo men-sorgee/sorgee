@@ -1,4 +1,3 @@
-import { ApiResult } from "lib/utils";
 import { ReactNode, RefObject, useCallback, useRef } from "react";
 
 import {
@@ -19,7 +18,7 @@ export type ButtonConfirmProps<TResponse = void> = Omit<
   IconButtonProps,
   'aria-label' | 'onError'
 > & {
-  confirmedAction?: () => Promise<TResponse> | Promise<ApiResult<TResponse>> | TResponse | void
+  confirmedAction?: () => Promise<TResponse> | TResponse | void
   onSuccess?: (response: TResponse) => Promise<void> | TResponse | void
   onError?: (error: Error) => Promise<void> | void
   alertTitle: string

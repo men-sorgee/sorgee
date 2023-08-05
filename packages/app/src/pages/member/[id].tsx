@@ -1,5 +1,5 @@
 import { MemberSpotlight, Page } from "components";
-import { useMember } from "hooks";
+import { useFields, useMember } from "hooks";
 
 export function getServerSideProps({ params }) {
   return {
@@ -11,10 +11,11 @@ export function getServerSideProps({ params }) {
 
 export default function MemberPage({ id }: { id: string }) {
   const { name, loading } = useMember(id)
+  const { fields, loading: fieldsLoading } = useFields('users')
 
   return (
-    <Page hideHeader title={name} pt={10} loading={loading}>
-      <MemberSpotlight memberId={id} full size="2xl" />
+    <Page hideHeader title={name} pt={10} loading={loading || fieldsLoading}>
+      <MemberSpotlight memberId={id} fields={fields} full size="2xl" />
     </Page>
   )
 }
