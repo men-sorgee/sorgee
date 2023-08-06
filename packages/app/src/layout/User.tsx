@@ -62,16 +62,15 @@ export default function UserMenu(_props: Props) {
     isStaff,
     level,
     hasFeature,
-    loading
+    loading,
   } = useUser({
-    redirectsEnabled: false
+    redirectsEnabled: false,
   })
   const showApply = !site?.invite_only
   const router = useRouter()
   const hideSubscribe = router.pathname.startsWith('/member/subscription')
 
-  const hasDirectory =
-    level >= MemberLevel.brother && hasFeature('view_directory')
+  const hasDirectory = level >= MemberLevel.brother && hasFeature('view_directory')
   const hasBuddyList = level >= MemberLevel.brother && hasFeature('buddy_list')
   const hasChat = level >= MemberLevel.brother && hasFeature('chat')
   const { show_location } = member || {}
@@ -85,27 +84,17 @@ export default function UserMenu(_props: Props) {
             {level == MemberLevel.brother &&
               subscription == MembershipType.none &&
               !hideSubscribe && (
-                <ButtonLink
-                  size="sm"
-                  href="/member/subscription"
-                  bg="primary.500"
-                  color="white"
-                >
+                <ButtonLink size="sm" href="/member/subscription" bg="primary.500" color="white">
                   <Hide below="md">Want More Features?</Hide>
                   <Show below="md">Upgrade</Show>
                 </ButtonLink>
               )}
             <MenuButton cursor={'pointer'}>
-              {member && <MemberAvatar member={member} size={['sm', 'md']} />}
+              {member && <MemberAvatar member={member} size={['sm', 'md', 'lg']} />}
             </MenuButton>
           </Flex>
           <MenuList bg="black" maxH="80vh" overflowY="auto" zIndex="10">
-            <Box
-              p={4}
-              m={2}
-              mt={0}
-              bgGradient="linear(to-bl, primary.300, accent.300)"
-            >
+            <Box p={4} m={2} mt={0} bgGradient="linear(to-bl, primary.300, accent.300)">
               <MemberIcon member={member} size={['sm', 'md']} />
               <span id="account-email" hidden>
                 {member?.email}
@@ -184,12 +173,7 @@ export default function UserMenu(_props: Props) {
                 </MenuItem>
                 {level === MemberLevel.pledge && (
                   <MenuItem
-                    icon={
-                      <ArrowRightOnRectangleIcon
-                        color={'white'}
-                        width={'1.5rem'}
-                      />
-                    }
+                    icon={<ArrowRightOnRectangleIcon color={'white'} width={'1.5rem'} />}
                     bg="black"
                     _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                     as={Link}
@@ -225,9 +209,7 @@ export default function UserMenu(_props: Props) {
                     )}
                     {hasDirectory && (
                       <MenuItem
-                        icon={
-                          <UserGroupIcon color={'white'} width={'1.5rem'} />
-                        }
+                        icon={<UserGroupIcon color={'white'} width={'1.5rem'} />}
                         bg="black"
                         _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                         as={Link}
@@ -238,9 +220,7 @@ export default function UserMenu(_props: Props) {
                     )}
                     {level >= MemberLevel.brother && (
                       <MenuItem
-                        icon={
-                          <UserCircleIcon color={'white'} width={'1.5rem'} />
-                        }
+                        icon={<UserCircleIcon color={'white'} width={'1.5rem'} />}
                         bg="black"
                         _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                         as={Link}
@@ -263,12 +243,7 @@ export default function UserMenu(_props: Props) {
                     {level >= MemberLevel.brother && (
                       <>
                         <MenuItem
-                          icon={
-                            <PaperAirplaneIcon
-                              color={'white'}
-                              width={'1.5rem'}
-                            />
-                          }
+                          icon={<PaperAirplaneIcon color={'white'} width={'1.5rem'} />}
                           bg="black"
                           _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                           as={Link}
@@ -284,9 +259,7 @@ export default function UserMenu(_props: Props) {
                   <>
                     <MenuDivider />
                     <MenuItem
-                      icon={
-                        <ServerStackIcon color={'white'} width={'1.5rem'} />
-                      }
+                      icon={<ServerStackIcon color={'white'} width={'1.5rem'} />}
                       bg="black"
                       _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                       as={Link}
@@ -305,12 +278,7 @@ export default function UserMenu(_props: Props) {
                       Event Admin
                     </MenuItem>
                     <MenuItem
-                      icon={
-                        <ViewfinderCircleIcon
-                          color={'white'}
-                          width={'1.5rem'}
-                        />
-                      }
+                      icon={<ViewfinderCircleIcon color={'white'} width={'1.5rem'} />}
                       bg="black"
                       _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                       as={Link}
@@ -337,12 +305,7 @@ export default function UserMenu(_props: Props) {
                 <MenuDivider />
 
                 <MenuItem
-                  icon={
-                    <ArrowTopRightOnSquareIcon
-                      color={'white'}
-                      width={'1.5rem'}
-                    />
-                  }
+                  icon={<ArrowTopRightOnSquareIcon color={'white'} width={'1.5rem'} />}
                   bg="black"
                   _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                   as={Link}
@@ -355,9 +318,7 @@ export default function UserMenu(_props: Props) {
             <MenuDivider />
 
             <MenuItem
-              icon={
-                <ArrowRightOnRectangleIcon color={'white'} width={'1.5rem'} />
-              }
+              icon={<ArrowRightOnRectangleIcon color={'white'} width={'1.5rem'} />}
               bg="black"
               _hover={{ bg: 'gray.400', textDecoration: 'none' }}
               as={Link}

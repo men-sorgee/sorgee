@@ -36,14 +36,7 @@ type Props = CardProps & {
 }
 
 export const MemberCard = chakra(
-  ({
-    member,
-    onClick,
-    full = false,
-    size = 'lg',
-    children,
-    ...props
-  }: Props) => {
+  ({ member, onClick, full = false, size = ['lg', 'xl'], children, ...props }: Props) => {
     const levelValue = MemberLevel[member?.user_type || 'applicant']
     const levelColor = MemberLevelColorMap[levelValue]
     const { member: viewer, level } = useUser()
@@ -74,7 +67,7 @@ export const MemberCard = chakra(
                 }}
               >
                 <MemberHeader member={member} size={size} minimal={!full}>
-                  {!member.show_profile && (
+                  {(!member.show_profile && (
                     <>
                       <Flex
                         px={4}
@@ -84,26 +77,13 @@ export const MemberCard = chakra(
                         align="start"
                         justify="center"
                       >
-                        <LockIcon
-                          color="primary.500"
-                          h={20}
-                          w={20}
-                          mx={'auto'}
-                        />
-                        <Heading
-                          as="h3"
-                          mt={-10}
-                          size="sm"
-                          p={0}
-                          textAlign="center"
-                          color="white"
-                        >
+                        <LockIcon color="primary.500" h={20} w={20} mx={'auto'} />
+                        <Heading as="h3" mt={-10} size="sm" p={0} textAlign="center" color="white">
                           PRIVATE PROFILE
                         </Heading>
                       </Flex>
                     </>
-                  )}
-                  <MemberAttributeBanner member={member} />
+                  )) || <MemberAttributeBanner member={member} />}
                 </MemberHeader>
               </LinkOverlay>
             </CardHeader>
@@ -115,22 +95,13 @@ export const MemberCard = chakra(
               {children}
               {full && member?.show_profile && (
                 <>
-                  <Markdown
-                    content={member?.biography}
-                    noOfLines={2}
-                    py={0}
-                    my={0}
-                  />
+                  <Markdown content={member?.biography} noOfLines={2} py={0} my={0} />
                 </>
               )}
             </CardBody>
           </LinkBox>
           <Spacer />
-          <MemberRelationBanner
-            member={member}
-            viewer={viewer}
-            bg={'primary.900'}
-          />
+          <MemberRelationBanner member={member} viewer={viewer} bg={'primary.900'} />
           <CardFooter
             flexDir="column"
             justify="space-between"
@@ -138,7 +109,7 @@ export const MemberCard = chakra(
             bg="primary.800"
             p={4}
           >
-            <MemberActions member={member} size={['sm']} />
+            <MemberActions member={member} size={['sm', 'md']} />
           </CardFooter>
         </Card>
       </>
