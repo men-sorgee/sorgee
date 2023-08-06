@@ -96,7 +96,7 @@ export const MemberSpotlight = chakra(
     fields,
     full = false,
     color,
-    size = ['sm', 'md'],
+    size = ['md', 'lg'],
     updateMeta = false,
     header,
     footer,
@@ -110,16 +110,12 @@ export const MemberSpotlight = chakra(
     const { setMeta } = useMeta()
 
     useEffect(() => {
-      if (full && updateMeta)
-        setMeta(name || 'Brother', member?.biography, picture)
+      if (full && updateMeta) setMeta(name || 'Brother', member?.biography, picture)
     }, [member, name, picture, full, updateMeta, setMeta])
 
     useEffect(() => {
       if (!loading && member && me) {
-        if (
-          member.blocked.map((b) => b.blocked_id).includes(me.id) &&
-          me.user_type != 'staff'
-        ) {
+        if (member.blocked.map((b) => b.blocked_id).includes(me.id) && me.user_type != 'staff') {
           setBlocked(true)
         }
       }
@@ -135,23 +131,17 @@ export const MemberSpotlight = chakra(
     })
 
     const levelColor = MemberLevelColorMap[level]
-    const eventsAttended =
-      member?.events?.filter((e) => e.attended)?.length || 0
+    const eventsAttended = member?.events?.filter((e) => e.attended)?.length || 0
     const eventsFlaked =
-      member?.events?.filter(
-        (e: EventUser) => e.rsvp == 'confirmed' && e.attended == false
-      )?.length || 0
+      member?.events?.filter((e: EventUser) => e.rsvp == 'confirmed' && e.attended == false)
+        ?.length || 0
     const eventsConfirmed =
-      member?.events?.filter((e: EventUser) => e.rsvp == 'confirmed')?.length ||
-      0
-    const eventsMaybe =
-      member?.events?.filter((e: EventUser) => e.rsvp == 'maybe')?.length || 0
+      member?.events?.filter((e: EventUser) => e.rsvp == 'confirmed')?.length || 0
+    const eventsMaybe = member?.events?.filter((e: EventUser) => e.rsvp == 'maybe')?.length || 0
     const eventsCancelled =
-      member?.events?.filter((e: EventUser) => e.rsvp == 'cancelled')?.length ||
-      0
+      member?.events?.filter((e: EventUser) => e.rsvp == 'cancelled')?.length || 0
     const eventsDeclined =
-      member?.events?.filter((e: EventUser) => e.rsvp == 'declined')?.length ||
-      0
+      member?.events?.filter((e: EventUser) => e.rsvp == 'declined')?.length || 0
 
     if (blocked) {
       return (
@@ -184,6 +174,7 @@ export const MemberSpotlight = chakra(
         border="1px solid"
         borderColor={'primary.500'}
         rounded="lg"
+        bg={'black'}
         {...props}
       >
         <Box
@@ -199,10 +190,7 @@ export const MemberSpotlight = chakra(
             {header}
           </MemberHeader>
           {level == MemberLevel.pledge && (
-            <MemberMessageStats
-              memberId={member?.id}
-              viewerLevel={viewerLevel}
-            />
+            <MemberMessageStats memberId={member?.id} viewerLevel={viewerLevel} />
           )}
           {children}
           {full && <Markdown content={member?.biography} />}
@@ -225,19 +213,13 @@ export const MemberSpotlight = chakra(
             <Flex w="full">
               <Text fontSize="xs">
                 {member?.show_profile && member.last_login && (
-                  <>
-                    Last Login:{' '}
-                    {formatDistanceToNowStrict(toLocalDate(member.last_login))}{' '}
-                    ago
-                  </>
+                  <>Last Login: {formatDistanceToNowStrict(toLocalDate(member.last_login))} ago</>
                 )}
               </Text>
               <Spacer />
               <Text fontSize="xs">
                 Member Since:{' '}
-                {toLocalDate(
-                  member.approved_date || member.date_created
-                ).toLocaleDateString()}
+                {toLocalDate(member.approved_date || member.date_created).toLocaleDateString()}
               </Text>
             </Flex>
           </Box>
@@ -273,7 +255,7 @@ export const MemberSpotlight = chakra(
                     images={photos.map((p: UserPhoto) => {
                       return {
                         src: `/api/asset/${p.directus_files_id}`,
-                        private: p.is_public == false
+                        private: p.is_public == false,
                       }
                     })}
                   />
@@ -478,13 +460,7 @@ export const MemberSpotlight = chakra(
                 >
                   Event Stats
                 </Heading>
-                <Flex
-                  as={StatGroup}
-                  justify="space-between"
-                  gap={4}
-                  p={4}
-                  align="flex-end"
-                >
+                <Flex as={StatGroup} justify="space-between" gap={4} p={4} align="flex-end">
                   {eventsDeclined > 0 && (
                     <Stat>
                       <StatLabel>
@@ -565,30 +541,20 @@ export const MemberSpotlight = chakra(
                           return {
                             id: e.id,
                             event: e.events_id as GroupEvent,
-                            rsvp: e.rsvp
+                            rsvp: e.rsvp,
                           }
                         })
                         .filter((e) => e.event.status == 'scheduled')
                         .map((e) => (
                           <ListItem key={e.id} title={e.event.description}>
                             <ListIcon
-                              as={
-                                e.rsvp == 'confirmed'
-                                  ? CheckCircleIcon
-                                  : QuestionMarkCircleIcon
-                              }
-                              color={
-                                e.rsvp == 'confirmed'
-                                  ? 'green.500'
-                                  : 'yellow.500'
-                              }
+                              as={e.rsvp == 'confirmed' ? CheckCircleIcon : QuestionMarkCircleIcon}
+                              color={e.rsvp == 'confirmed' ? 'green.500' : 'yellow.500'}
                               boxSize={6}
                             />
                             <Link as={NextLink} href={`/events/${e.id}`}>
                               {capitalCase(e.rsvp)} going to {e.event.name} on{' '}
-                              {toLocalDate(
-                                e.event.datetime
-                              ).toLocaleDateString()}
+                              {toLocalDate(e.event.datetime).toLocaleDateString()}
                             </Link>
                           </ListItem>
                         ))}

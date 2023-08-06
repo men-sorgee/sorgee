@@ -56,7 +56,7 @@ function VerificationPage() {
 
   return (
     <Page
-      title="Identification"
+      title="Verification"
       loading={loading || complete}
       header={<ApplicationSteps status={'verify'} />}
     >

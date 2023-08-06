@@ -14,25 +14,23 @@ import {
   useToast
 } from "@chakra-ui/react";
 
-export type ConfirmButtonProps<TResponse = void> = Omit<
+export type ButtonConfirmProps<TResponse = void> = Omit<
   IconButtonProps,
   'aria-label' | 'onError'
 > & {
-  confirmedAction?: () => Promise<TResponse>
-  onSuccess?: (response: TResponse) => Promise<void>
-  onError?: (error: any) => Promise<void>
+  confirmedAction?: () => Promise<TResponse> | TResponse | void
+  onSuccess?: (response: TResponse) => Promise<void> | TResponse | void
+  onError?: (error: Error) => Promise<void> | void
   alertTitle: string
   buttonText: string
   confirmColorScheme?: string
   successMessage?: string
   failureMessage?: string
-  focusRef?: RefObject<
-    HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement
-  >
+  focusRef?: RefObject<HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement>
   children: ReactNode | ReactNode[]
 }
 
-export function ButtonConfirm<TResponse>({
+export function ButtonConfirm<TResponse = void>({
   confirmedAction = () => Promise.resolve<TResponse>(null),
   onSuccess,
   onError,
@@ -47,9 +45,11 @@ export function ButtonConfirm<TResponse>({
   title,
   disabled,
   py = 2,
-  colorScheme = 'secondary',
+  color = 'white',
+  colorScheme,
+  bg,
   ...props
-}: ConfirmButtonProps<TResponse>) {
+}: ButtonConfirmProps<TResponse>) {
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const cancelRef = useRef<HTMLButtonElement>()
@@ -58,13 +58,13 @@ export function ButtonConfirm<TResponse>({
     if (disabled) return
     try {
       const response = await confirmedAction()
-      if (onSuccess) await onSuccess(response)
+      if (onSuccess) await onSuccess(response as any)
       if (successMessage)
         toast({
           title: alertTitle,
           description: successMessage,
           status: 'success',
-          duration: 3000
+          duration: 3000,
         })
     } catch (err) {
       if (onError) await onError(err)
@@ -73,7 +73,7 @@ export function ButtonConfirm<TResponse>({
           title: alertTitle,
           description: failureMessage,
           status: 'error',
-          duration: 5000
+          duration: 5000,
         })
     }
   }, [
@@ -84,10 +84,14 @@ export function ButtonConfirm<TResponse>({
     toast,
     alertTitle,
     failureMessage,
-    onError
+    onError,
   ])
-  const bgGradient = `linear(to-b, ${colorScheme}.400, ${colorScheme}.500, ${colorScheme}.600)`
-  const bgGradientHover = `linear(to-b, ${colorScheme}.300, ${colorScheme}.400, ${colorScheme}.500)`
+  const bgGradient = colorScheme
+    ? `linear(to-b, ${colorScheme}.400, ${colorScheme}.500, ${colorScheme}.600)`
+    : null
+  const bgGradientHover = colorScheme
+    ? `linear(to-b, ${colorScheme}.300, ${colorScheme}.400, ${colorScheme}.500)`
+    : null
   return (
     <>
       {(icon && (
@@ -97,9 +101,10 @@ export function ButtonConfirm<TResponse>({
           title={title}
           icon={icon}
           bgGradient={bgGradient}
-          color="white"
+          bg={bg}
+          color={color}
           _hover={{
-            bgGradient:bgGradientHover,
+            bgGradient: bgGradientHover,
           }}
           {...props}
         />
@@ -110,9 +115,10 @@ export function ButtonConfirm<TResponse>({
           title={title}
           py={py}
           bgGradient={bgGradient}
-          color="white"
+          bg={bg}
+          color={color}
           _hover={{
-            bgGradient:bgGradientHover,
+            bgGradient: bgGradientHover,
           }}
           {...props}
         >

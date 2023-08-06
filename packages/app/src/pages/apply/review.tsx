@@ -6,21 +6,10 @@ import {
   ContactPreferenceType,
   MemberLevel
 } from "lib/models";
-import { postJSON } from "lib/utils";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
 
-import {
-  Alert,
-  AlertIcon,
-  Box,
-  Button,
-  Heading,
-  Text,
-  useToast,
-  VStack
-} from "@chakra-ui/react";
+import { Alert, AlertIcon, Heading, Text, VStack } from "@chakra-ui/react";
 
 import { BusyButton } from "../../components";
 import ApplicationSteps from "./_steps";
@@ -49,7 +38,7 @@ function Review() {
 
   return (
     <Page
-      title="Verification Review"
+      title="Application Review"
       loading={loading}
       header={<ApplicationSteps status={'review'} />}
     >

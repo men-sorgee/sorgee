@@ -131,10 +131,11 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
     cost,
     users: eventUsers,
     invite_only,
-    location,
+    location: l,
     survey,
   } = event
 
+  const location = l as Location
   const attendance = (eventUsers as EventUser[]) || []
 
   const detail: EventDetail = {
@@ -149,7 +150,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
     cost,
     attendance,
     invite_only,
-    location: location as Location,
+    location,
     stats: {
       invited_count: attendance.length,
       confirmed_count: attendance.filter((u) => u.rsvp === 'confirmed').length,
@@ -158,7 +159,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
       paid_count: attendance.filter((u) => u.paid).length,
     },
     members: attendance.map((u) => u.users_id as any as SearchableMember),
-    surveys: survey as Survey[],
+    surveys: survey as Survey[]
   }
   return detail
 }

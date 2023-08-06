@@ -19,6 +19,8 @@ export const getUTCNow = () => {
   )
 }
 
+export const gradient = (color: string, value: number = 400) => `linear(to-b, ${color}.${value}, ${color}.${value + 100}, ${color}.${value + 200})`
+
 export const uuidv4 = () => {
   return 'xxxxxxxx-xxxx-4xxx'.replace(/[xy]/g, function (c) {
     var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8)
@@ -60,7 +62,7 @@ export function getAssetUrl(asset: string | { id: string }) {
     return asset.startsWith('/api') ? asset : `/api/asset/${asset}`
   else {
     let { id } = asset
-    return `/api/asset/${id}`
+    return `/api/asset/${id} `
   }
 }
 
@@ -80,7 +82,7 @@ export function serialize<T>(params: Record<keyof T, string[]>) {
     Array.isArray(value) ? value.join(',') : value,
   ]) as [string, string][]
   return pairs.reduce((acc, [key, value]) => {
-    return acc + `&${key}=${value}`
+    return acc + `& ${key}=${value} `
   }, '')
 }
 
@@ -126,5 +128,6 @@ export function haversineDistanceInMilesAndFeet(coordinateA, coordinateB) {
   return { miles: miles, feet: feet };
 }
 
-export * from './fetchers'
-export * from './apis'
+export * from './apis';
+export * from './fetchers';
+

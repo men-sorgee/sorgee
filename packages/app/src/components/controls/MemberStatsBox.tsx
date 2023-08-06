@@ -1,10 +1,13 @@
 import { addDays } from "date-fns";
-import { MemberStats } from "lib/models";
+import { Member, MemberStats } from "lib/models";
+import { ReactNode } from "react";
 import useSWR from "swr";
 
 import {
+  Box,
+  BoxProps,
+  chakra,
   Flex,
-  Heading,
   Skeleton,
   Stat,
   StatArrow,
@@ -14,9 +17,16 @@ import {
   StatNumber
 } from "@chakra-ui/react";
 
-export function MemberStats() {
+import { ButtonLink } from "./ButtonLink";
+
+export type MemberStatsBoxProps = BoxProps & {
+  member: Member
+  children?: ReactNode
+}
+
+export const MemberStatsBox = chakra(({ member, children, ...props }) => {
   const daysAgo = addDays(new Date(new Date().toDateString()), -14)
-  const { data: stats, isLoading } = useSWR<MemberStats>('/api/stats', {
+  const { data: stats, isLoading } = useSWR<MemberStats>(member ? '/api/stats' : null, {
     fallbackData: {
       subscribers: 0,
       applicants: 0,
@@ -24,8 +34,8 @@ export function MemberStats() {
       inductees: 0,
       brothers: 0,
       big_brothers: 0,
-      staff: 0
-    }
+      staff: 0,
+    },
   })
   const { data: statsR, isLoading: isLoadingR } = useSWR<MemberStats>(
     `/api/stats?start=${daysAgo.toISOString()}`,
@@ -37,16 +47,14 @@ export function MemberStats() {
         inductees: 0,
         brothers: 0,
         big_brothers: 0,
-        staff: 0
-      }
+        staff: 0,
+      },
     }
   )
 
   return (
-    <>
-      <Heading as="h2" size="xl" textAlign="center">
-        Latest Stats
-      </Heading>
+    <Box {...props}>
+      {children}
 
       <StatGroup
         alignContent="center"
@@ -125,6 +133,6 @@ export function MemberStats() {
           )}
         </Stat>
       </StatGroup>
-    </>
+    </Box>
   )
-}
+})

@@ -1,20 +1,13 @@
 import { useEffect, useState } from "react";
 
-import {
-  Box,
-  HStack,
-  Icon,
-  IconButton,
-  IconButtonProps,
-  Tooltip
-} from "@chakra-ui/react";
+import { HStack, Icon, IconButtonProps, Tooltip } from "@chakra-ui/react";
 import { StarIcon } from "@heroicons/react/24/solid";
 
 import { ButtonConfirm } from "./ButtonConfirm";
 
 export type RatingControlProps = Omit<IconButtonProps, 'aria-label'> & {
   onRateChange?: (rate: number) => void
-  itemName: string
+  itemName?: string
   value?: number
   readonly?: boolean
   scale?: number
@@ -35,6 +28,8 @@ export const Rating = ({
   mt,
   onRateChange,
   tooltip,
+  itemName = 'Item',
+  onError: _error,
   ...props
 }: RatingControlProps) => {
   const [rating, setRating] = useState<number>(undefined)
@@ -71,7 +66,7 @@ export const Rating = ({
         alertTitle="Rate this item"
         buttonText=""
         successMessage="Rating sent!"
-        confirmedAction={async () => {
+        confirmedAction={() => {
           onClick(index)
           return index
         }}

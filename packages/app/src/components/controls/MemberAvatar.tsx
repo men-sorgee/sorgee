@@ -19,30 +19,24 @@ type Props = AvatarProps & {
 export const MemberAvatar = chakra(
   ({ member, color = 'white', children, size = 'md', ...props }: Props) => {
     const [lastLogin, setLastLogin] = useState<string | null>(null)
-
+    const { nickname, first_name, picture } = member
     useEffect(() => {
       if (member && !lastLogin) {
         setLastLogin(
           member?.last_login
-            ? `Last login ${formatDistanceToNowStrict(
-                toLocalDate(member.last_login)
-              )} ago`
+            ? `Last login ${formatDistanceToNowStrict(toLocalDate(member.last_login))} ago`
             : undefined
         )
       }
     }, [member, lastLogin])
 
     if (!member) return null
-    const { nickname, first_name, picture, last_login } = member
+
     return (
       <Avatar
         bg="accent.500"
         name={nickname || first_name || 'Brother'}
-        src={
-          picture
-            ? getAssetUrl(picture) + '?width=100&height=100&quality=60'
-            : null
-        }
+        src={picture ? getAssetUrl(picture) + '?width=100&height=100&quality=60' : null}
         id={member?.id}
         showBorder
         borderWidth={2}

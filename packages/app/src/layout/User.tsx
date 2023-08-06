@@ -1,9 +1,4 @@
-import {
-  ButtonLink,
-  LocationCapture,
-  MemberAvatar,
-  MemberIcon
-} from "components/controls";
+import { ButtonLink, MemberAvatar, MemberIcon } from "components/controls";
 import { useSite, useUser } from "hooks";
 import { pledgeSurvey } from "lib/config";
 import { MemberLevel, MembershipType } from "lib/models";
@@ -13,7 +8,6 @@ import { useRouter } from "next/router";
 
 import {
   Box,
-  Button,
   Flex,
   Hide,
   Link,
@@ -344,7 +338,7 @@ export default function UserMenu(_props: Props) {
             onClick={(e) => {
               e.preventDefault()
               signIn(null, {
-                callbackUrl: '/member'
+                callbackUrl: '/api/my/home'
               })
             }}
           >

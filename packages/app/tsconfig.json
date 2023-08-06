@@ -36,7 +36,6 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "next.config.ts",
     ".next/types/**/*.ts"
   ],
   "exclude": [".idea/*", ".next/*", "vitest*"]

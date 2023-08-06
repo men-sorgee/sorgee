@@ -1,4 +1,4 @@
-import { BillingEvent, UserPayment } from "lib/models";
+import { BillingEvent, User, UserPayment } from "lib/models";
 
 import { getAdminClient } from "../";
 

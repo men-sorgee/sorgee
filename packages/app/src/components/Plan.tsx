@@ -90,8 +90,8 @@ export default function Plan({ plan, interval }: Params) {
           <ButtonConfirm
             w="full"
             position="inherit"
-            onSuccess={(success) => {
-              if (success) window.location.href = '/api/stripe/cancel'
+            onSuccess={async () => {
+              window.location.href = '/api/stripe/cancel'
             }}
             size="lg"
             bg="red.500"
