@@ -35,6 +35,7 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
         application_status: 'approved',
         user_type,
         approved_date: new Date().toISOString(),
+        rating: 5
       })) as Applicant
 
       await updateSendGrid(updatedUser as Profile,
