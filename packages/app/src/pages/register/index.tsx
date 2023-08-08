@@ -1,7 +1,6 @@
-import { BusyButton, Markdown } from "components/controls";
+import { ButtonBusy, Markdown } from "components/controls";
 import { FieldInput, FieldSelect, Form } from "components/forms";
 import Page from "components/Page";
-import { set } from "date-fns";
 import { useSite } from "hooks/use-site";
 import { pages } from "lib/config";
 import { FieldOptions, Promo, SignUpForm, User } from "lib/models";
@@ -36,11 +35,7 @@ export async function getServerSideProps() {
   return { props: { birthMonthOptions, markdown } }
 }
 
-export default function Register({
-  promo,
-  birthMonthOptions,
-  markdown
-}: Props) {
+export default function Register({ promo, birthMonthOptions, markdown }: Props) {
   const { site, loading } = useSite()
   const toast = useToast()
   const router = useRouter()
@@ -55,13 +50,13 @@ export default function Register({
         isClosable: true,
         onCloseComplete: () => {
           router.push('/')
-        }
+        },
       })
     }
   }, [loading, promo, router, site, toast])
 
   const required = {
-    required: 'This field is required'
+    required: 'This field is required',
   }
 
   const minYear = new Date().getFullYear() - 100
@@ -78,7 +73,7 @@ export default function Register({
       {(!submitted && (
         <Form<SignUpForm>
           defaultValues={{
-            promo: promo?.code
+            promo: promo?.code,
           }}
           onSubmit={(data) => {
             setSubmitted(true)
@@ -87,7 +82,7 @@ export default function Register({
           onSuccess={({ email }) => {
             signIn('email', {
               callbackUrl: '/apply',
-              email
+              email,
             })
           }}
           onError={(error) => {
@@ -99,11 +94,7 @@ export default function Register({
           {({ register }) => (
             <>
               <SimpleGrid columns={[1, 2]} spacing={4}>
-                <FieldInput
-                  field="first_name"
-                  label="First Name"
-                  registerOptions={required}
-                />
+                <FieldInput field="first_name" label="First Name" registerOptions={required} />
                 <FieldInput field="last_name" label="Last Name" />
                 <GridItem colSpan={[1, 2]}>
                   <FieldInput
@@ -138,9 +129,9 @@ export default function Register({
                   <Markdown content={promo?.description} />
                 </>
               )}
-              <BusyButton type="submit" bg="accent.500" size="lg" mt={4}>
+              <ButtonBusy type="submit" bg="accent.500" size="lg" mt={4}>
                 Start Application
-              </BusyButton>
+              </ButtonBusy>
             </>
           )}
         </Form>

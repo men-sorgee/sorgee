@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 
 import { Alert, AlertIcon, Heading, Text, VStack } from "@chakra-ui/react";
 
-import { BusyButton } from "../../components";
+import { ButtonBusy } from "../../components";
 import ApplicationSteps from "./_steps";
 
 function Review() {
@@ -21,7 +21,7 @@ function Review() {
   const { loading, member, mutate } = useUser({
     minLevel: MemberLevel.applicant,
     minAppStatus: ApplicationStatus.review,
-    redirectsEnabled: true
+    redirectsEnabled: true,
   })
 
   useEffect(() => {
@@ -55,7 +55,7 @@ function Review() {
 
             <Form<{ contact_preference: ContactPreferenceType }>
               defaultValues={{
-                contact_preference: member?.contact_preference || 'email'
+                contact_preference: member?.contact_preference || 'email',
               }}
               onSubmit={mutate}
               onSuccess={() => setComplete(true)}
@@ -72,22 +72,17 @@ function Review() {
                     w="fit-content"
                     field="contact_preference"
                     registerOptions={{
-                      required: 'Certification is Required'
+                      required: 'Certification is Required',
                     }}
                     options={[
                       { text: 'Email', value: 'email' },
                       { text: 'Phone', value: 'phone_call' },
-                      { text: 'Text', value: 'phone_text' }
+                      { text: 'Text', value: 'phone_text' },
                     ]}
                   />
-                  <BusyButton
-                    type="submit"
-                    mt={8}
-                    size="lg"
-                    bgColor="accent.500"
-                  >
+                  <ButtonBusy type="submit" mt={8} size="lg" bgColor="accent.500">
                     Set Contact Preference
-                  </BusyButton>
+                  </ButtonBusy>
                 </VStack>
               )}
             </Form>
@@ -106,8 +101,8 @@ function Review() {
           >
             <AlertIcon />
             <Text m={0}>
-              Your application is currently being reviewed by our team. You will
-              receive an email with our decision within 7 days. <br />
+              Your application is currently being reviewed by our team. You will receive an email
+              with our decision within 7 days. <br />
               Thank you for your interest in our fraternity.
             </Text>
           </Alert>

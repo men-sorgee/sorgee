@@ -1,4 +1,4 @@
-import { BusyButton, Markdown } from "components/controls";
+import { ButtonBusy, Markdown } from "components/controls";
 import {
   FieldCheckbox,
   FieldCheckboxes,
@@ -69,7 +69,7 @@ export const getServerSideProps = async (_context) => {
     positionsOptions: await getFieldOptions('my_positions'),
     skinToneOptions: await getFieldOptions('skin_tone'),
     birthMonthOptions: await getFieldOptions('birth_month'),
-    markdown
+    markdown,
   }
   return { props }
 }
@@ -78,11 +78,11 @@ function Apply({ promo, invite, markdown, ...props }: PageProps) {
   const {
     member: user,
     loading,
-    reload
+    reload,
   } = useUser({
     minLevel: MemberLevel.applicant,
     minAppStatus: ApplicationStatus.apply,
-    redirectsEnabled: true
+    redirectsEnabled: true,
   })
 
   const [formError, setFormError] = useState<string>()
@@ -93,11 +93,7 @@ function Apply({ promo, invite, markdown, ...props }: PageProps) {
   useEffect(() => {
     if (!loading && user) {
       const { email } = user
-      if (
-        invite &&
-        invite.e &&
-        invite.e.toLowerCase() != email?.toLowerCase()
-      ) {
+      if (invite && invite.e && invite.e.toLowerCase() != email?.toLowerCase()) {
         setFormError(
           `You must login using the email address ${invite.e} to use this invite, not ${email}. Please logout and try again.`
         )
@@ -113,14 +109,10 @@ function Apply({ promo, invite, markdown, ...props }: PageProps) {
     invite,
     promo,
     ...props,
-    setFormError
+    setFormError,
   }
   return (
-    <Page
-      title="Application"
-      loading={loading}
-      header={<ApplicationSteps status={'apply'} />}
-    >
+    <Page title="Application" loading={loading} header={<ApplicationSteps status={'apply'} />}>
       <>
         <Text fontSize={'xl'}>{intro}</Text>
         <Box pb={4}>
@@ -171,7 +163,7 @@ function ApplyForm({
   positionsOptions,
   relationshipOptions,
   birthMonthOptions,
-  setFormError
+  setFormError,
 }: Omit<PageProps, 'markdown'> & {
   user: Applicant
   reload: () => Promise<Member>
@@ -187,8 +179,8 @@ function ApplyForm({
         Private Information
       </Heading>
       <Text>
-        We collect this information for verification purposes only. We will not
-        share, show or sell this information to anyone.
+        We collect this information for verification purposes only. We will not share, show or sell
+        this information to anyone.
       </Text>
       <Form<ApplyFormProps>
         defaultValues={{
@@ -210,7 +202,7 @@ function ApplyForm({
           weight: user?.weight || null,
           skin_tone: user?.skin_tone || null,
           my_positions: user?.my_positions || [],
-          invite
+          invite,
         }}
         onSubmit={(data: ApplyFormProps) => {
           if (data.height_feet || data.height_inches) {
@@ -227,11 +219,7 @@ function ApplyForm({
         {({ register }) => (
           <>
             <SimpleGrid gap={4} py={4} columns={{ base: 1, md: 2 }}>
-              <FieldInput
-                field="first_name"
-                label="First Name"
-                registerOptions={{ required }}
-              />
+              <FieldInput field="first_name" label="First Name" registerOptions={{ required }} />
               <FieldInput field="last_name" label="Last Name" />
               <FieldInput
                 field="email"
@@ -246,10 +234,9 @@ function ApplyForm({
                 help="Must be SMS-enabled. Used for optional verification or optional event reminders. Format: 123 456 7890"
                 registerOptions={{
                   pattern: {
-                    value:
-                      /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
-                    message: 'US numbers only. Format: 123 456 7890'
-                  }
+                    value: /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
+                    message: 'US numbers only. Format: 123 456 7890',
+                  },
                 }}
                 placeholder="000 456 7890"
               />
@@ -258,19 +245,14 @@ function ApplyForm({
               About You
             </Heading>
             <Text>
-              <strong>Be as honest as possible.</strong> Honest answers will
-              help your chances of approval and help our AI create the perfect
-              group events!
+              <strong>Be as honest as possible.</strong> Honest answers will help your chances of
+              approval and help our AI create the perfect group events!
             </Text>
             <SimpleGrid spacing={4} mt={4} columns={[1, 2]}>
               <GridItem colSpan={{ base: 1, sm: 2 }}>
                 <FieldInput field="nickname" label="Nickname" />
               </GridItem>
-              <FieldSelect
-                field="spectrum"
-                label="Orientation"
-                options={spectrumOptions}
-              />
+              <FieldSelect field="spectrum" label="Orientation" options={spectrumOptions} />
               <FieldSelect
                 field="relationship_status"
                 label="Relationship Status"
@@ -283,7 +265,7 @@ function ApplyForm({
                 label="Birth Month"
                 options={birthMonthOptions}
                 registerOptions={{
-                  required: 'You must provide your month of birth'
+                  required: 'You must provide your month of birth',
                 }}
               />
               <FieldInput
@@ -294,7 +276,7 @@ function ApplyForm({
                 max={maxYear}
                 defaultValue={maxYear - 10}
                 registerOptions={{
-                  required: 'You must provide your year of birth'
+                  required: 'You must provide your year of birth',
                 }}
               />
               <FieldWrapper field="weight" label="Weight">
@@ -306,17 +288,9 @@ function ApplyForm({
 
               <FieldWrapper field="height" label="Height">
                 <InputGroup>
-                  <Input
-                    type="number"
-                    id="height_feet"
-                    {...register('height_feet')}
-                  />
+                  <Input type="number" id="height_feet" {...register('height_feet')} />
                   <InputRightAddon mr={2}>&apos;</InputRightAddon>
-                  <Input
-                    type="number"
-                    id="height_inches"
-                    {...register('height_inches')}
-                  />
+                  <Input type="number" id="height_inches" {...register('height_inches')} />
                   <InputRightAddon>&quot;</InputRightAddon>
                 </InputGroup>
               </FieldWrapper>
@@ -346,19 +320,16 @@ function ApplyForm({
                 Assistance
               </Heading>
               <Text>
-                We want you to be comfortable. Check this and we will help guide
-                you along the way. Unsure how to answer the above questions, or
-                just new to this? Just check this box and we will help you out.
+                We want you to be comfortable. Check this and we will help guide you along the way.
+                Unsure how to answer the above questions, or just new to this? Just check this box
+                and we will help you out.
               </Text>
-              <FieldCheckbox
-                field="needs_guidance"
-                label="I'd like some guidance"
-              />
+              <FieldCheckbox field="needs_guidance" label="I'd like some guidance" />
               <input type="hidden" {...register('invite')} />
             </SimpleGrid>
-            <BusyButton type="submit" mt={4} bg="accent.500">
+            <ButtonBusy type="submit" mt={4} bg="accent.500">
               Save & Continue
-            </BusyButton>
+            </ButtonBusy>
           </>
         )}
       </Form>

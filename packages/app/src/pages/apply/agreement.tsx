@@ -1,19 +1,14 @@
-import { BusyButton, Markdown } from "components/controls";
-import { ConnectForm, FieldCheckbox, Form } from "components/forms";
+import { ButtonBusy, Markdown } from "components/controls";
+import { FieldCheckbox, Form } from "components/forms";
 import Page from "components/Page";
 import { useUser } from "hooks/use-user";
 import { pages } from "lib/config";
-import {
-  AgreementData,
-  ApplicationStatus,
-  Member,
-  MemberLevel
-} from "lib/models";
+import { AgreementData, ApplicationStatus, MemberLevel } from "lib/models";
 import { postJSON } from "lib/utils";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-import { Box, Button, Heading, Text } from "@chakra-ui/react";
+import { Box, Heading, Text } from "@chakra-ui/react";
 
 import ApplicationSteps from "./_steps";
 
@@ -27,8 +22,8 @@ export const getStaticProps = async () => {
   const { markdown } = page
   return {
     props: {
-      markdown
-    }
+      markdown,
+    },
   }
 }
 
@@ -36,7 +31,7 @@ export default function Agreement({ markdown }: Props) {
   const { loading, reload } = useUser({
     minLevel: MemberLevel.applicant,
     minAppStatus: ApplicationStatus.agreement,
-    redirectsEnabled: true
+    redirectsEnabled: true,
   })
   const [complete, setComplete] = useState<boolean>(false)
   const router = useRouter()
@@ -46,11 +41,7 @@ export default function Agreement({ markdown }: Props) {
     }
   }, [complete, router])
   return (
-    <Page
-      title="Agreement"
-      loading={loading}
-      header={<ApplicationSteps status={'agreement'} />}
-    >
+    <Page title="Agreement" loading={loading} header={<ApplicationSteps status={'agreement'} />}>
       {!complete && (
         <Form<AgreementData>
           onSubmit={(data: AgreementData) => {
@@ -67,7 +58,7 @@ export default function Agreement({ markdown }: Props) {
             <>
               <Box
                 css={{
-                  img: { display: 'none' }
+                  img: { display: 'none' },
                 }}
                 mt={4}
               >
@@ -97,9 +88,9 @@ export default function Agreement({ markdown }: Props) {
                   >
                     privacy policy.
                   </a>
-                  By entering this site, you commit to keep all user information
-                  confidential and not to share it with any third parties. You
-                  also agree to not use this site for any illegal purposes.
+                  By entering this site, you commit to keep all user information confidential and
+                  not to share it with any third parties. You also agree to not use this site for
+                  any illegal purposes.
                 </Text>
               </Box>
               <Box mt={4}>
@@ -109,22 +100,17 @@ export default function Agreement({ markdown }: Props) {
                   registerOptions={{
                     required: {
                       value: true,
-                      message: 'You must agree to the terms and conditions'
-                    }
+                      message: 'You must agree to the terms and conditions',
+                    },
                   }}
                 >
                   I agree
                 </FieldCheckbox>
               </Box>
 
-              <BusyButton
-                colorScheme="primary"
-                type="submit"
-                mt={8}
-                disabled={!watch('agree')}
-              >
+              <ButtonBusy colorScheme="primary" type="submit" mt={8} disabled={!watch('agree')}>
                 Agree & Continue
-              </BusyButton>
+              </ButtonBusy>
             </>
           )}
         </Form>
