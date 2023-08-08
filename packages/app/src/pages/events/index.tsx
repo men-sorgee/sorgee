@@ -80,7 +80,7 @@ export default function EventsPage({}: PageProps) {
                 hideBody={false}
               >
                 <ButtonLink
-                  gradient={true}
+                 
                   rounded="lg"
                   w="full"
                   colorScheme="primary"
@@ -97,7 +97,6 @@ export default function EventsPage({}: PageProps) {
                   onChange={onEventsChange}
                 />
                 <ButtonLink
-                  gradient={true}
                   rounded="lg"
                   w="full"
                   colorScheme="secondary"
@@ -271,7 +270,6 @@ function Invitations({
             >
               {showLink && (
                 <ButtonLink
-                  gradient={true}
                   rounded="lg"
                   w="full"
                   colorScheme="primary"
@@ -317,7 +315,6 @@ function PastEvents({ member, list }: { list: EventInvite[]; member: Member }) {
     return (
       <Box key={invite.id} pt={4}>
         <ButtonLink
-          gradient={true}
           rounded="lg"
           w="full"
           colorScheme="primary"

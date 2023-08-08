@@ -373,10 +373,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps & { fieldMap: 
               size="lg"
               mt={4}
               type="submit"
-              gradient={true}
               colorScheme="secondary"
-              color="white"
-              _hover={{ bg: 'accent.500' }}
               w={['full', 'auto']}
             >
               Choose a Plan
@@ -384,30 +381,30 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps & { fieldMap: 
           )}
         </TabPanel>
         <TabPanel px={0}>
-        <Alert px={[4, 4, 6]} gap={2} justifyItems="start" rounded="lg" mb={10} flexDir="column">
+          <Alert px={[4, 4, 6]} gap={2} justifyItems="start" rounded="lg" mb={10} flexDir="column">
             <Box>
               <Heading as="h3" fontSize="xl" mt={0}>
                 Deactivate Account
               </Heading>
               <Text>
                 Deactivating your account will remove your profile from the site. You will no longer
-                be able to sign in. Your data will be retained for siz months in case you
-                change your mind.
+                be able to sign in. Your data will be retained for siz months in case you change
+                your mind.
               </Text>
-            <ButtonConfirm
-              size="lg"
-             mt={4}
-              colorScheme='secondary'
-              w={['full', 'full', 'auto']}
-              onSuccess={async () => {
-                location.href = '/api/me/close'
-              }}
-              buttonText="Deactivate Account"
-              alertTitle="Deactivate Account"
-            >
-              <Text>Are you sure you want to deactivate your account?</Text>
-            </ButtonConfirm>
-          </Box>
+              <ButtonConfirm
+                size="lg"
+                mt={4}
+                colorScheme="secondary"
+                w={['full', 'full', 'auto']}
+                onSuccess={async () => {
+                  location.href = '/api/me/close'
+                }}
+                buttonText="Deactivate Account"
+                alertTitle="Deactivate Account"
+              >
+                <Text>Are you sure you want to deactivate your account?</Text>
+              </ButtonConfirm>
+            </Box>
           </Alert>
           <Alert px={[4, 4, 6]} gap={2} justifyItems="start" rounded="lg" mb={10} flexDir="column">
             <Box>
@@ -421,7 +418,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps & { fieldMap: 
               <ButtonConfirm
                 size="lg"
                 type="submit"
-                colorScheme='red'
+                colorScheme="red"
                 mt={4}
                 w={['full', 'full', 'auto']}
                 confirmedAction={async () => true}
@@ -440,8 +437,6 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps & { fieldMap: 
               </ButtonConfirm>
             </Box>
           </Alert>
-
-
         </TabPanel>
       </TabPanels>
     </Tabs>

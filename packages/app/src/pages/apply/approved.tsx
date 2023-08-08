@@ -50,7 +50,6 @@ function Approved() {
                 <ButtonLink
                   href={`/survey/${pledgeSurvey}`}
                   colorScheme="accent"
-                  gradient
                 >
                   Take the Pledge Questionnaire
                 </ButtonLink>

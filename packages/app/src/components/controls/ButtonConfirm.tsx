@@ -14,6 +14,8 @@ import {
   useToast
 } from "@chakra-ui/react";
 
+import { gradient } from "../../lib/utils";
+
 export type ButtonConfirmProps<TResponse = void> = Omit<
   IconButtonProps,
   'aria-label' | 'onError'
@@ -86,12 +88,8 @@ export function ButtonConfirm<TResponse = void>({
     failureMessage,
     onError,
   ])
-  const bgGradient = colorScheme
-    ? `linear(to-b, ${colorScheme}.400, ${colorScheme}.500, ${colorScheme}.600)`
-    : null
-  const bgGradientHover = colorScheme
-    ? `linear(to-b, ${colorScheme}.300, ${colorScheme}.400, ${colorScheme}.500)`
-    : null
+  const bgGradient = gradient(colorScheme)
+  const bgGradientHover = gradient(colorScheme, 100)
   return (
     <>
       {(icon && (

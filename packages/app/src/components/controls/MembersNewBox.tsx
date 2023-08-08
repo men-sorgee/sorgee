@@ -49,7 +49,6 @@ export const MembersNewBox = chakra(({ member, children, ...props }: MembersNewP
         <ButtonLink
           href="/members/pledges"
           colorScheme="accent"
-          gradient
           mx="auto"
           mt={4}
           size="lg"

@@ -216,8 +216,7 @@ export default function EventAdmin() {
                 w={'full'}
                 href={getCheckinLink(emailRef?.current?.value)}
                 size={['sm', 'md', 'lg']}
-                variant="solid"
-                gradient
+                
                 flexGrow={1}
               >
                 Checkin

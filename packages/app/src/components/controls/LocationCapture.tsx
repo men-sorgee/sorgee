@@ -1,10 +1,9 @@
 'use client'
-import { set } from "date-fns";
 import { Coordinates } from "lib/models";
-import { postJSON } from "lib/utils";
+import { gradient, postJSON } from "lib/utils";
 import { useCallback, useEffect, useState } from "react";
 
-import { Alert, Button } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 
 export type LocationCaptureProps = {}
 
@@ -14,13 +13,11 @@ export const LocationCapture = () => {
   useEffect(() => {
     // detect if we have permission to access location information
     if (navigator.permissions) {
-      navigator.permissions
-        .query({ name: 'geolocation' })
-        .then((permissionStatus) => {
-          if (permissionStatus.state == 'granted') {
-            setSharedLocation(true)
-          }
-        })
+      navigator.permissions.query({ name: 'geolocation' }).then((permissionStatus) => {
+        if (permissionStatus.state == 'granted') {
+          setSharedLocation(true)
+        }
+      })
     }
   }, [])
 
@@ -30,7 +27,7 @@ export const LocationCapture = () => {
         setSharedLocation(true)
         const { latitude, longitude } = position.coords
         postJSON<Partial<Coordinates>>('/api/my/location', {
-          coordinates: [longitude, latitude]
+          coordinates: [longitude, latitude],
         }).catch(console.error)
       },
       (error) => {
@@ -52,7 +49,9 @@ export const LocationCapture = () => {
   if (sharedLocation) return null
   return (
     <>
-      <Button onClick={getLocation}>Share Location</Button>
+      <Button onClick={getLocation} bgGradient={gradient('gray')}>
+        Share Location
+      </Button>
     </>
   )
 }

@@ -44,7 +44,6 @@ export const EventNextBox = chakra(({ member, children, ...props }: EventNextPro
         <ButtonLink
           href="/events"
           colorScheme="accent"
-          gradient
           mx="auto"
           mt={4}
           size="lg"

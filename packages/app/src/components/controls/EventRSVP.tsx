@@ -66,11 +66,7 @@ export const EventRSVP = ({ eventId, invite: eventUser, onChange, canConfirm }: 
       buttonText={children}
       confirmedAction={() => getJSON<PurchaseResponse>(`/api/stripe/event/${invite.id}`)}
       onSuccess={({ data }) => completePurchase(data)}
-      bgGradient={bgGradient('accent')}
-      _hover={{
-        bgGradient: bgGradientHover('accent'),
-      }}
-      color="white"
+      colorScheme="accent"
       w={['full', 'full', 'auto']}
       title="Guarantee your spot at this event and leave your cash at home. Pay now for less hassle later."
     >
@@ -91,11 +87,7 @@ export const EventRSVP = ({ eventId, invite: eventUser, onChange, canConfirm }: 
           .then((i: EventInvite) => getJSON<PurchaseResponse>(`/api/stripe/event/${i.id}`))
       }
       onSuccess={({ data }) => completePurchase(data)}
-      bgGradient={bgGradient('accent')}
-      _hover={{
-        bgGradient: bgGradientHover('accent'),
-      }}
-      color="white"
+      colorScheme="accent"
       w={['full', 'full', 'auto']}
       title="Guarantee your spot at this event by paying for your spot now."
     >
@@ -124,11 +116,7 @@ export const EventRSVP = ({ eventId, invite: eventUser, onChange, canConfirm }: 
         if (onChange) onChange()
         setWorking(false)
       }}
-      bgGradient={bgGradient('accent')}
-      _hover={{
-        bgGradient: bgGradientHover('accent'),
-      }}
-      color="white"
+      colorScheme="accent"
       w={['full', 'full', 'auto']}
     >
       <Text>
@@ -151,11 +139,7 @@ export const EventRSVP = ({ eventId, invite: eventUser, onChange, canConfirm }: 
         if (onChange) onChange()
         setWorking(false)
       }}
-      bgGradient={bgGradient('secondary')}
-      _hover={{
-        bgGradient: bgGradientHover('secondary'),
-      }}
-      color="white"
+      colorScheme="secondary"
       w={['full', 'full', 'auto']}
     >
       <Text>
@@ -179,11 +163,7 @@ export const EventRSVP = ({ eventId, invite: eventUser, onChange, canConfirm }: 
         if (onChange) onChange()
         setWorking(false)
       }}
-      bgGradient={bgGradient('black')}
-      _hover={{
-        bgGradient: bgGradientHover('black'),
-      }}
-      color="white"
+      colorScheme="black"
       w={['full', 'full', 'auto']}
     >
       <Text>
@@ -208,11 +188,7 @@ export const EventRSVP = ({ eventId, invite: eventUser, onChange, canConfirm }: 
         setWorking(false)
       }}
       focusRef={reasonRef}
-      bgGradient={bgGradient(important ? 'red' : 'gray')}
-      _hover={{
-        bgGradient: bgGradientHover(important ? 'red' : 'gray'),
-      }}
-      color="white"
+      bgGradient={bgGradient('gray')}
       w={['full', 'full', 'auto']}
     >
       <>
@@ -260,7 +236,7 @@ export const EventRSVP = ({ eventId, invite: eventUser, onChange, canConfirm }: 
     </Box>
   )
 
-  if (invite?.paid) {
+  if ((invite?.paid || invite?.guest) && invite?.rsvp == 'confirmed') {
     return (
       <RSVPView heading="You are guaranteed a spot at this event.">
         <CancelRSVPButton important>Cancel Reservation</CancelRSVPButton>

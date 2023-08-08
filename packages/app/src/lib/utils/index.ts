@@ -19,7 +19,7 @@ export const getUTCNow = () => {
   )
 }
 
-export const gradient = (color: string, value: number = 400) => `linear(to-b, ${color}.${value}, ${color}.${value + 100}, ${color}.${value + 200})`
+export const gradient = (color: string, value: number = 400, step: number = 100) => `linear(to-b, ${color}.${value}, ${color}.${value + step}, ${color}.${value + step})`
 
 export const uuidv4 = () => {
   return 'xxxxxxxx-xxxx-4xxx'.replace(/[xy]/g, function (c) {

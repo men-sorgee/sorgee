@@ -133,6 +133,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
     users: eventUsers,
     invite_only,
     location: l,
+    online_payments,
     survey,
   } = event
 
@@ -151,6 +152,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
     cost,
     attendance,
     invite_only,
+    online_payments,
     location,
     stats: {
       invited_count: attendance.length,

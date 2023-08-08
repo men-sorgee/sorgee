@@ -54,7 +54,7 @@ export default function EventPage() {
     member,
     isStaff,
     reload: reloadUser,
-    hasFeature
+    hasFeature,
   } = useUser({ minLevel: MemberLevel.inductee, redirectsEnabled: true })
 
   const [showTicket, setShowTicket] = useState<boolean>(false)
@@ -69,8 +69,7 @@ export default function EventPage() {
     if (!eventLoading && event?.stats && stats == undefined) {
       setStats(event.stats)
       setShowTicket(
-        isToday(new Date(event.datetime)) &&
-          !isAfter(new Date(), new Date(event.datetime_end))
+        isToday(new Date(event.datetime)) && !isAfter(new Date(), new Date(event.datetime_end))
       )
     }
     if (member?.events && !invite) {
@@ -80,36 +79,63 @@ export default function EventPage() {
       })
       setInvite(i)
     }
-  }, [
-    member,
-    event,
-    eventId,
-    eventLoading,
-    invite,
-    member?.events,
-    member?.id,
-    stats
-  ])
+  }, [member, event, eventId, eventLoading, invite, member?.events, member?.id, stats])
 
-  const getAttendees = (rsvp: string) => {
+  const getAttendees = (rsvp: string, filter = (u) => u) => {
     return event?.attendance
+      ?.filter(filter)
       ?.filter((u) => u.rsvp == rsvp)
-      .map(({ users_id: u }: EventUser) => u as Member)
-      .map((u) => {
+      .map(({ users_id: u, ...invite }: EventUser) => {
+        return {
+          user: u as Member,
+          ...invite,
+        }
+      })
+      .map(({ user: u, paid, guest }) => {
         const picture = u.picture as string
         const name = u.nickname || u.first_name || 'Brother'
         const src = picture ? '/api/asset/' + picture : undefined
+
         return {
           id: u.id,
           name,
-          src
+          src,
+          paid,
+          guest,
         }
       })
   }
 
   const canViewAttendees = hasFeature('view_attendees')
 
+  const UserAvatar = ({ id, name, src, paid, guest }) => (
+    <>
+      <Avatar
+        key={id}
+        name={name}
+        src={src}
+        title={name}
+        cursor="pointer"
+        onClick={() => {
+          if (canViewAttendees) {
+            if (invite?.rsvp == 'confirmed') setMemberId(id)
+          } else
+            toast({
+              title: 'You cannot see attendee profiles',
+              description:
+                'Enable this feature with a subscription. Go to Account > Plan for more info.',
+              status: 'error',
+              duration: 5000,
+              isClosable: true,
+            })
+        }}
+      />
+    </>
+  )
+
   const canConfirm = member?.rating && member?.rating > 2
+  const paidAttendees = getAttendees('confirmed', (u) => u.paid || u.guest)
+  const confirmedAttendees = getAttendees('confirmed', (u) => !u.paid && !u.guest)
   return (
     <Page
       title={event?.name || 'Event Details'}
@@ -157,32 +183,25 @@ export default function EventPage() {
                   <Flex direction={'column'} gap={4} mb={2}>
                     <HStack align="start" justify="end">
                       <Stat>
-                        <StatLabel>Confirmed</StatLabel>
-                        <StatNumber>{stats.confirmed_count}</StatNumber>
+                        <StatLabel>Paid</StatLabel>
+                        <StatNumber>{paidAttendees.length}</StatNumber>
                       </Stat>
 
                       <Wrap spacing={1} justify="end">
-                        {getAttendees('confirmed').map(({ id, name, src }) => (
-                          <Avatar
-                            key={id}
-                            name={name}
-                            src={src}
-                            title={name}
-                            cursor="pointer"
-                            onClick={() => {
-                              if (canViewAttendees) {
-                                if (invite?.rsvp == 'confirmed') setMemberId(id)
-                              } else
-                                toast({
-                                  title: 'You cannot see attendee profiles',
-                                  description:
-                                    'Enable this feature with a subscription. Go to Account > Plan for more info.',
-                                  status: 'error',
-                                  duration: 5000,
-                                  isClosable: true
-                                })
-                            }}
-                          />
+                        {paidAttendees.map((props, index) => (
+                          <UserAvatar key={index} {...props} />
+                        ))}
+                      </Wrap>
+                    </HStack>
+                    <HStack align="start" justify="end">
+                      <Stat>
+                        <StatLabel>Confirmed</StatLabel>
+                        <StatNumber>{confirmedAttendees.length}</StatNumber>
+                      </Stat>
+
+                      <Wrap spacing={1} justify="end">
+                        {confirmedAttendees.map((props, index) => (
+                          <UserAvatar key={index} {...props} />
                         ))}
                       </Wrap>
                     </HStack>
@@ -194,27 +213,8 @@ export default function EventPage() {
                       </Stat>
 
                       <Wrap spacing={1} justify="end">
-                        {getAttendees('maybe').map(({ id, name, src }) => (
-                          <Avatar
-                            key={id}
-                            name={name}
-                            src={src}
-                            title={name}
-                            cursor="pointer"
-                            onClick={() => {
-                              if (canViewAttendees) {
-                                if (invite?.rsvp == 'confirmed') setMemberId(id)
-                              } else
-                                toast({
-                                  title: 'You cannot see attendee profiles',
-                                  description:
-                                    'Enable this feature with a subscription. Go to Account > Plan for more info.',
-                                  status: 'error',
-                                  duration: 5000,
-                                  isClosable: true
-                                })
-                            }}
-                          />
+                        {getAttendees('maybe').map((props, index) => (
+                          <UserAvatar key={index} {...props} />
                         ))}
                       </Wrap>
                     </HStack>
@@ -229,14 +229,9 @@ export default function EventPage() {
                     setMemberId={setMemberId}
                   />
                 )}
-                {event.status != 'occurred' &&
-                  (invite || !event?.invite_only) && (
-                    <EventRSVP
-                      canConfirm={canConfirm}
-                      eventId={eventId}
-                      onChange={reloadUser}
-                    />
-                  )}
+                {event.status != 'occurred' && (invite || !event?.invite_only) && (
+                  <EventRSVP canConfirm={canConfirm} eventId={eventId} onChange={reloadUser} />
+                )}
               </>
             )}
           </EventCard>
@@ -272,7 +267,7 @@ const AttendedEvent = ({
   member,
   invite,
   reloadUser,
-  setMemberId
+  setMemberId,
 }: {
   event: EventDetail
   member: Member
@@ -308,12 +303,7 @@ const AttendedEvent = ({
         <Spacer />
         {invite.attended &&
           event.surveys?.map((s) => (
-            <ButtonLink
-              key={s.id}
-              size="md"
-              href={`/survey/${s.id}/1`}
-              colorScheme="accent"
-            >
+            <ButtonLink key={s.id} size="md" href={`/survey/${s.id}/1`} colorScheme="accent">
               {s.title}
             </ButtonLink>
           ))}
@@ -331,17 +321,11 @@ const AttendedEvent = ({
           <Alert mb={4} rounded="lg" status="error">
             <AlertIcon />
             <strong>
-              This is not a personal attraction rating, but a rating of their
-              behavior and attitude at the event!
+              This is not a personal attraction rating, but a rating of their behavior and attitude
+              at the event!
             </strong>
           </Alert>
-          <SimpleGrid
-            my={4}
-            columns={[1, 1, 1, 2]}
-            spacing={4}
-            w="full"
-            justifyItems="stretch"
-          >
+          <SimpleGrid my={4} columns={[1, 1, 1, 2]} spacing={4} w="full" justifyItems="stretch">
             {attendees.map((m: Member) => (
               <Lazy key={event.id + '-' + m.id}>
                 <MemberCard

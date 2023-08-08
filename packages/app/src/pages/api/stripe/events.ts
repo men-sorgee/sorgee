@@ -127,12 +127,12 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
   switch (event.type) {
     case 'checkout.session.completed':
       const payment = extractFromCheckout(checkoutSession)
-
       await addUserPayment(payment)
       const { product_type, amount } = payment
-      let inviteId = payment.product_id[0].item
-      if (product_type == 'event' && inviteId)
+      let inviteId = payment.redeemed_id
+      if (product_type == 'event' && inviteId) {
         await updateInvite(Number(inviteId), { paid: true, rsvp: 'confirmed', amount })
+      }
       break
 
     case 'customer.created':
@@ -245,7 +245,7 @@ function extractFromCheckout(checkout: Stripe.Checkout.Session): UserPayment {
     type: 'stripe',
     amount: amount / 100,
     currency: currency as any,
-    product_id: [{ item: eventId || userId, collection: eventId ? 'events' : 'users' }],
+    redeemed_id: eventId || userId,
     product_type: type as any,
     description: `Brotherhood payment for ${type} ${eventId || userId}`,
     date_created: new Date(created).toISOString(),

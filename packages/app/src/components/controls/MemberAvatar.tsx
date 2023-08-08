@@ -1,6 +1,6 @@
 import { formatDistanceToNowStrict } from "date-fns";
 import { Member } from "lib/models";
-import { getAssetUrl, toLocalDate } from "lib/utils";
+import { getAssetUrl, gradient, toLocalDate } from "lib/utils";
 import { useEffect, useState } from "react";
 
 import {
@@ -19,7 +19,11 @@ type Props = AvatarProps & {
 export const MemberAvatar = chakra(
   ({ member, color = 'white', children, size = 'md', ...props }: Props) => {
     const [lastLogin, setLastLogin] = useState<string | null>(null)
-    const { nickname, first_name, picture } = member
+    const { nickname, first_name, picture } = member || {
+      nickname: 'Brother',
+      first_name: '',
+      picture: '',
+    }
     useEffect(() => {
       if (member && !lastLogin) {
         setLastLogin(
@@ -34,7 +38,7 @@ export const MemberAvatar = chakra(
 
     return (
       <Avatar
-        bg="accent.500"
+        bgGradient={gradient('primary', 300, 200)}
         name={nickname || first_name || 'Brother'}
         src={picture ? getAssetUrl(picture) + '?width=100&height=100&quality=60' : null}
         id={member?.id}
@@ -44,6 +48,7 @@ export const MemberAvatar = chakra(
         color={color}
         loading="lazy"
         size={size}
+        m={0}
         {...props}
       >
         {member?.presence == 'online' && (

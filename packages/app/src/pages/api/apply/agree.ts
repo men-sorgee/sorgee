@@ -31,7 +31,7 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
       const hasAttendedEvent = userEvents.some((e) => e.attended)
       const user_type: UserType = hasAttendedEvent ? 'brother' : (applicant.vouched_by ? 'inductee' : 'pledge')
 
-      const updatedUser = (await updateUser<Applicant>(applicant.id, {
+      const updatedUser = (await updateUser(applicant.id, {
         application_status: 'approved',
         user_type,
         approved_date: new Date().toISOString(),
