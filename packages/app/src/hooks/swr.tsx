@@ -13,10 +13,7 @@ export const SWRProvider = ({ children }) => {
         refreshWhenHidden: true,
         revalidateOnMount: true,
         revalidateIfStale: true,
-        dedupingInterval: 3000,
-        focusThrottleInterval: 3000,
-        keepPreviousData: false
-
+        keepPreviousData: false,
       }}
     >
       {children}
