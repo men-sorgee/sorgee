@@ -37,7 +37,7 @@ export const EventRSVP = ({ eventId, invite: eventUser, onChange, canConfirm }: 
 
   useEffect(() => {
     if (!loading && invite && showPayButton == undefined) {
-      setShowPayButton(!invite.paid && !invite.guest)
+      setShowPayButton(invite.event.online_payments && !invite.paid && !invite.guest)
     }
   }, [invite, showPayButton, loading])
 

@@ -53,6 +53,7 @@ export type EventInfo = {
   cost: number
   type: string
   invite_only: boolean
+  online_payments: boolean
   visibility: UserType[]
 }
 
@@ -67,6 +68,7 @@ export type GroupEvent = {
   cost: number
   type: string
   invite_only: boolean
+  online_payments: boolean
   visibility: UserType[]
   users: string | EventUser[]
   survey?: string[] | Survey[]
@@ -82,6 +84,7 @@ export type EventUser = {
   flags?: unknown
   rsvp?: InviteRSVPType
   paid?: boolean
+  amount?: number
   guest?: boolean
   reason?: string
   attendance?: string
@@ -94,6 +97,7 @@ export type EventInvite = {
   attended: boolean
   rsvp: InviteRSVPType
   paid: boolean
+  amount: number
   guest: boolean
   reason: string
   attendance?: string
