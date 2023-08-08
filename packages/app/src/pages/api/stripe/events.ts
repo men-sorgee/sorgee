@@ -9,9 +9,9 @@ import {
   updateUser
 } from "lib/services/directus/server/users";
 import {
+  addUserPayment,
   findUserByCustomer,
-  saveBillingEvent,
-  saveUserPayment
+  saveBillingEvent
 } from "lib/services/directus/server/users/billing";
 import {
   getClient,
@@ -128,10 +128,11 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
     case 'checkout.session.completed':
       const payment = extractFromCheckout(checkoutSession)
 
-      await saveUserPayment(payment)
-      const { redeemed_id: inviteId, product_type } = payment
+      await addUserPayment(payment)
+      const { product_type, amount } = payment
+      let inviteId = payment.product_id[0].item
       if (product_type == 'event' && inviteId)
-        await updateInvite(Number(inviteId), { paid: true, rsvp: 'confirmed' })
+        await updateInvite(Number(inviteId), { paid: true, rsvp: 'confirmed', amount })
       break
 
     case 'customer.created':
@@ -249,6 +250,7 @@ function extractFromCheckout(checkout: Stripe.Checkout.Session): UserPayment {
     description: `Brotherhood payment for ${type} ${eventId || userId}`,
     date_created: new Date(created).toISOString(),
     redeemed: false,
+    status: 'collected'
   }
   return payment
 }

@@ -111,6 +111,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
       '*',
       'location.*',
       'users.*',
+      'users.users_id.email',
       ...searchableMemberFields.map((f) => `users.users_id.${f}`),
       'survey.*',
     ] as any,
@@ -135,7 +136,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
     survey,
   } = event
 
-  const location = l as Location
+  const location = l as unknown as Location
   const attendance = (eventUsers as EventUser[]) || []
 
   const detail: EventDetail = {

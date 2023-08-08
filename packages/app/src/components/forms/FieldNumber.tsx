@@ -45,14 +45,10 @@ const InputField = (props: Props) => {
 
   return (
     <FieldWrapper field={field} label={label} help={help} className={className}>
-      <InputGroup size={size}>
+      <InputGroup size={size} id={field}>
         {leftAddon && <InputLeftAddon>{leftAddon}</InputLeftAddon>}
-        <NumberInput {...opts} size={size} w="full">
-          <NumberInputField
-            size={size}
-            id={field}
-            {...register(field as any, registerOptions)}
-          />
+        <NumberInput size={size} w="full" {...opts}>
+          <NumberInputField size={size} id={field} {...register(field as any, registerOptions)} />
           {showStepper && (
             <NumberInputStepper>
               <NumberIncrementStepper />

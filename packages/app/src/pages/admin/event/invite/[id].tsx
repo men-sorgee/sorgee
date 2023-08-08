@@ -1,5 +1,6 @@
 import {
   ButtonLink,
+  FieldNumber,
   FieldSwitch,
   Form,
   MemberAvatar,
@@ -12,19 +13,16 @@ import { EventInvite, GroupEvent, Member, MemberLevel } from "lib/models";
 import { getAssetUrl } from "lib/utils";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
 
 import {
   Alert,
   AlertIcon,
-  Avatar,
   Box,
   Button,
   Flex,
   Heading,
   HStack,
   Text,
-  useToast,
   VStack
 } from "@chakra-ui/react";
 
@@ -34,6 +32,7 @@ type FormProps = {
   paid: boolean
   signed_waiver: boolean
   picture?: string
+  amount?: number
 }
 
 export default function InviteAdmin() {
@@ -42,34 +41,23 @@ export default function InviteAdmin() {
   const inviteId = String(id)
   const { loading } = useUser({
     minLevel: MemberLevel.staff,
-    redirectsEnabled: true
+    redirectsEnabled: true,
   })
 
   const [user, setUser] = useState<Member>(undefined)
   const [event, setEvent] = useState<GroupEvent>(undefined)
   const [camera, setCamera] = useState(false)
   const [picture, setPicture] = useState<string>(undefined)
-  const [working, setWorking] = useState(false)
+  const [avatar, setAvatar] = useState<string>(undefined)
 
-  const {
-    invite,
-    loading: inviteLoading,
-    checkin,
-    reload
-  } = useInviteAdmin(inviteId)
+  const { invite, loading: inviteLoading, checkin } = useInviteAdmin(inviteId)
 
   useEffect(() => {
-    if (
-      !loading &&
-      !inviteLoading &&
-      invite &&
-      user == undefined &&
-      event == undefined
-    ) {
+    if (!loading && !inviteLoading && invite && user == undefined && event == undefined) {
       setUser(invite.member)
       setEvent(invite.event)
       let { picture, photo } = invite.member
-      setPicture(getAssetUrl(picture || photo))
+      setAvatar(getAssetUrl(photo || picture))
     }
   }, [inviteLoading, invite, setUser, setEvent, loading, user, event])
 
@@ -77,7 +65,8 @@ export default function InviteAdmin() {
     id: invite?.id,
     user_id: user?.id,
     signed_waiver: user?.signed_waiver,
-    paid: invite?.paid
+    paid: invite?.paid,
+    amount: invite?.amount || event?.cost,
   }
 
   const takePhoto = useCallback(
@@ -89,22 +78,18 @@ export default function InviteAdmin() {
   )
 
   const updateInvite = useCallback(
-    async ({ paid, signed_waiver }: FormProps) => {
-      setWorking(true)
+    async ({ paid, signed_waiver, amount }: FormProps) => {
       if (picture) {
         const media = await fetch(picture!).then((res) => res.blob())
         let formData = new FormData()
         formData.append('media', media)
-        await fetch(
-          `/api/members/${user.id}/photos/photo?name=${user.email}-face`,
-          {
-            method: 'POST',
-            body: formData
-          }
-        )
+        await fetch(`/api/members/${user.id}/photos/photo?name=${user.email}-face`, {
+          method: 'POST',
+          body: formData,
+        })
       }
 
-      return checkin(paid, signed_waiver)
+      return checkin(paid, amount, signed_waiver)
     },
     [checkin, picture, user?.email, user?.id]
   )
@@ -112,20 +97,14 @@ export default function InviteAdmin() {
   const visible = (show: boolean) => (show ? 'flex' : 'none')
 
   return (
-    <Page
-      title={`Check-in`}
-      description="Invite Admin"
-      loading={loading || inviteLoading}
-    >
+    <Page title={`Check-in`} description="Invite Admin" loading={loading || inviteLoading}>
       <Form<FormProps, EventInvite>
         onSubmit={updateInvite}
-        onSuccess={() =>
-          reload().then(() => router.push(`/admin/event/${event?.id}`))
-        }
+        onSuccess={() => router.push(`/admin/event/${event?.id}`)}
         defaultValues={defaultValues}
         successMessage="The invite was successfully updated."
       >
-        {({ formState: { isValid, isSubmitting }, register }) => (
+        {({ formState: { isValid, isSubmitting }, watch, register }) => (
           <>
             <Flex
               mt={2}
@@ -142,12 +121,7 @@ export default function InviteAdmin() {
               rounded="lg"
               my={4}
             >
-              <Flex
-                direction="row"
-                gap={2}
-                alignItems="center"
-                justifyItems="center"
-              >
+              <Flex direction="row" gap={2} alignItems="center" justifyItems="center">
                 <MemberAvatar
                   member={user}
                   id={user?.id}
@@ -157,12 +131,7 @@ export default function InviteAdmin() {
                   cursor="pointer"
                 />
                 <Box>
-                  <Heading
-                    size={['sm', 'sm', 'md']}
-                    textTransform="uppercase"
-                    mt={0}
-                    mb={2}
-                  >
+                  <Heading size={['sm', 'sm', 'md']} textTransform="uppercase" mt={0} mb={2}>
                     {user?.first_name} {user?.last_name}
                   </Heading>
                   <MemberBadge size="lg" member={user} />
@@ -181,14 +150,26 @@ export default function InviteAdmin() {
                 gap={2}
               >
                 {!invite?.attended && !invite?.guest && (
-                  <FieldSwitch
-                    field="paid"
-                    label="Paid"
-                    size="lg"
-                    registerOptions={{
-                      required: 'Member must pay'
-                    }}
-                  />
+                  <>
+                    <FieldSwitch
+                      field="paid"
+                      label="Paid"
+                      size="lg"
+                      registerOptions={{
+                        required: 'Member must pay',
+                      }}
+                    />
+                    {watch('paid') && (
+                      <FieldNumber
+                        field="amount"
+                        registerOptions={{
+                          required: 'Amount must be a number',
+                        }}
+                        placeholder={event?.cost.toString()}
+                        leftAddon="$"
+                      />
+                    )}
+                  </>
                 )}
                 {!invite?.attended && !user?.signed_waiver && (
                   <FieldSwitch
@@ -196,22 +177,13 @@ export default function InviteAdmin() {
                     label="Signed"
                     size="lg"
                     registerOptions={{
-                      required: 'Waiver must be signed'
+                      required: 'Waiver must be signed',
                     }}
                   />
                 )}
               </Flex>
               <VStack align="center">
-                <Heading
-                  as="h4"
-                  fontSize="h6"
-                  textTransform="capitalize"
-                  p={0}
-                  m={0}
-                >
-                  {invite?.rsvp}
-                </Heading>
-                {(picture && (
+                {((avatar || picture) && (
                   <Button
                     type="submit"
                     hidden={invite?.attended}
@@ -219,9 +191,11 @@ export default function InviteAdmin() {
                     p={8}
                     size="xl"
                     w="full"
+                    textTransform="capitalize"
                     disabled={!isValid || isSubmitting}
                   >
-                    Check In
+                    Check In <br />
+                    {invite?.rsvp}
                   </Button>
                 )) || (
                   <Button
@@ -238,13 +212,7 @@ export default function InviteAdmin() {
                   </Button>
                 )}
                 {invite?.attended && (
-                  <Alert
-                    size="xl"
-                    status="warning"
-                    rounded="lg"
-                    shadow="lg"
-                    mt={4}
-                  >
+                  <Alert size="xl" status="warning" rounded="lg" shadow="lg" mt={4}>
                     <AlertIcon />
                     <Text fontSize="lg" m={0}>
                       Already checked in
@@ -270,11 +238,7 @@ export default function InviteAdmin() {
         </Alert>
       )}
       <HStack spacing={4}>
-        <ButtonLink
-          colorScheme="gray"
-          href={'/admin/event/' + event?.id}
-          my={4}
-        >
+        <ButtonLink colorScheme="gray" href={'/admin/event/' + event?.id} my={4}>
           Return to Event
         </ButtonLink>
         <ButtonLink colorScheme="primary" href="/admin/scan" my={4}>
