@@ -34,25 +34,22 @@ export type ProductView = {
   label?: string
 }
 
+export type PaymentType = 'stripe' | 'cash'
+export type PaymentProductType = 'event' | 'subscription' | 'donation' | 'payment'
+export type PaymentStatusType = 'collected' | 'refunded'
+export type PaymentCurrencyType = 'usd'
 export type UserPayment = {
   id?: string
   user: string | User
-  type: 'stripe' | 'cash'
+  type: PaymentType
+  status: PaymentStatusType
   amount: number
-  currency: 'usd'
-  product_id: UserPaymentProductId[];
-  product_type: 'event' | 'subscription' | 'donation' | 'payment'
+  currency: PaymentCurrencyType
+  redeemed_id?: string
+  product_type: PaymentProductType
   description: string
   redeemed: boolean
-  redeemed_id?: string
   date_redeemed?: string
-  date_created: string
-
+  date_created?: string
 };
 
-export type UserPaymentProductId = {
-  id?: number
-  user_payment_id?: string | UserPayment
-  item: string
-  collection: 'events' | 'users'
-};

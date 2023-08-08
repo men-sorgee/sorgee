@@ -1,4 +1,11 @@
-import { BillingEvent, User, UserPayment } from "lib/models";
+import {
+  BillingEvent,
+  PaymentProductType,
+  PaymentStatusType,
+  PaymentType,
+  User,
+  UserPayment
+} from "lib/models";
 
 import { getAdminClient } from "../";
 
@@ -27,7 +34,49 @@ export async function findUserByCustomer(customer: string) {
   return data?.length ? data[0] as unknown as User : null
 }
 
-export async function saveUserPayment(payment: UserPayment) {
+export async function addUserPayment(payment: UserPayment) {
   const admin = await getAdminClient()
   return await admin.items('user_payment').createOne(payment)
+}
+
+
+
+export async function findUserPayments(user_id: string, by?: {
+  type?: PaymentType,
+  product_type?: PaymentProductType,
+  status?: PaymentStatusType
+}) {
+  const admin = await getAdminClient()
+  const filter = {
+    user: { _eq: user_id },
+  }
+  if (by?.type) filter['type'] = { _eq: by.type }
+  if (by?.product_type) filter['product_type'] = { _eq: by.product_type }
+  if (by?.status) filter['status'] = { _eq: by.status }
+
+  const { data } = await admin.items('user_payment').readByQuery({
+    filter,
+    sort: ['-date_created'],
+  })
+
+  return data?.length ? data[0] as unknown as UserPayment : null
+}
+
+export async function findUserPayment(user_id: string, redeemed_id: string) {
+  const admin = await getAdminClient()
+
+  const { data } = await admin.items('user_payment').readByQuery({
+    filter: {
+      user: { _eq: user_id },
+      redeemed_id: { _eq: redeemed_id },
+      status: { _eq: 'collected' },
+    }
+  })
+
+  return data?.length ? data[0] as unknown as UserPayment : null
+}
+
+export async function updateUserPayment(paymentId: string, payment: Partial<UserPayment>) {
+  const admin = await getAdminClient()
+  return await admin.items('user_payment').updateOne(paymentId, payment)
 }

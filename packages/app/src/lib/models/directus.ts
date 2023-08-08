@@ -25,7 +25,6 @@ import {
   UserLike,
   UserNotification,
   UserPayment,
-  UserPaymentProductId,
   UserPhoto,
   UserSession,
   UserShare,
@@ -170,7 +169,6 @@ export type DirectusTypes = {
   user_session: UserSession
   billing_event: BillingEvent
   user_payment: UserPayment
-  user_payment_product_id: UserPaymentProductId
   user_verification_token: UserVerificationToken
   user_email_events: UserEmailEvent
   user_buddy: UserBuddy

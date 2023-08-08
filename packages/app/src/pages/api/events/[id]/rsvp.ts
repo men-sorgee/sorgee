@@ -35,7 +35,7 @@ export default async function EventRSVP(
 
         eventUser = await registerForEvent(eventId, member.id, rsvp)
       }
-      const { attended, paid, guest } = eventUser
+      const { attended, paid, guest, amount } = eventUser
 
       let invite: EventInvite = {
         id: eventUser.id,
@@ -45,7 +45,8 @@ export default async function EventRSVP(
         paid,
         guest,
         rsvp: rsvp || eventUser.rsvp || 'not_invited',
-        reason: reason || eventUser.reason
+        reason: reason || eventUser.reason,
+        amount
       }
       return res.status(200).json(ApiResponse({
         ...invite,

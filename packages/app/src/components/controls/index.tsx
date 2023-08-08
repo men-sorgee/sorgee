@@ -1,5 +1,5 @@
 export { AppNotificationCard } from './AppNotificationCard'
-export { BusyButton } from './BusyButton'
+export { ButtonBusy } from './ButtonBusy'
 export { ButtonConfirm } from './ButtonConfirm'
 export { ButtonLink } from './ButtonLink'
 export { EventBadge } from './EventBadge'
@@ -51,14 +51,3 @@ export { UpgradeIcon } from './UpgradeIcon'
 export { UserNotificationCard } from './UserNotificationCard'
 export { UserNotifications } from './UserNotifications'
 export { UserSurveyAnswers } from './UserSurveyAnswers'
-
-
-
-
-
-
-
-
-
-
-

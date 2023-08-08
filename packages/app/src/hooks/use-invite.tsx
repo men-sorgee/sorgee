@@ -15,26 +15,20 @@ type InvitesResults = {
   event: GroupEvent
   user: Member
   loading: boolean
-  mutate: (
-    rsvp: InviteRSVPType,
-    reason?: string
-  ) => Promise<ApiResult<EventInvite>>
+  mutate: (rsvp: InviteRSVPType, reason?: string) => Promise<ApiResult<EventInvite>>
   reload: () => void
 }
 
-export const useInvite = (
-  eventId: string,
-  invitation?: EventInvite
-): InvitesResults => {
+export const useInvite = (eventId: string, invitation?: EventInvite): InvitesResults => {
   const [event, setEvent] = useState<GroupEvent>(undefined)
   const [user, setUser] = useState<Member>(undefined)
   const {
     data: invite,
     mutate,
-    isLoading
+    isLoading,
   } = useSWR<EventInvite>(eventId ? `/api/events/${eventId}/rsvp` : null, {
     fallbackData: invitation,
-    keepPreviousData: false
+    keepPreviousData: false,
   })
 
   useEffect(() => {
@@ -53,24 +47,21 @@ export const useInvite = (
       const {
         data: i,
         success,
-        error
-      } = await postJSON<Partial<EventInvite>, EventInvite>(
-        `/api/events/${eventId}/rsvp`,
-        {
-          rsvp,
-          reason
-        }
-      )
+        error,
+      } = await postJSON<Partial<EventInvite>, EventInvite>(`/api/events/${eventId}/rsvp`, {
+        rsvp,
+        reason,
+      })
       if (!success) {
         console.error(error)
       }
-      await mutate(i)
+      await mutate(i, true)
       return {
         data: i,
         success,
-        error
+        error,
       }
     },
-    reload: () => mutate()
+    reload: () => mutate(),
   }
 }
