@@ -1,32 +1,31 @@
-export { useSite } from './use-site'
-export { useAuthenticated } from './use-authenticated'
-export { useFields } from './use-fields'
-export { useIntersectionObserver } from './use-intersection-observer'
 export { SWRProvider } from './swr'
-export { useWarnIfUnsavedChanges } from './use-warn-if-unsaved'
-export { useEvents } from './use-events'
-export { useEventsAdmin } from './use-events-admin'
-export { useEvent } from './use-event'
-export { useInvites } from './use-invites'
-export { useInvite } from './use-invite'
-export { useInviteAdmin } from './use-invite-admin'
-export { useProducts } from './use-products'
-export { useStripeSession } from './use-stripe-session'
-
-export { useMember } from './use-member'
-export { useMemberSearch } from './use-members'
-
-export { useUser, UserContext, UserProvider } from './use-user'
-export { useMeta, MetaContext, MetaContextProvider } from './use-meta'
 export {
   AppNotificationsContext,
   AppNotificationsProvider,
-  useAppNotifications
+  useAppNotifications,
 } from './use-app-notifications'
+export { useAuthenticated } from './use-authenticated'
+export { useDeviceDetect } from './use-device-detect'
+export { useEvent } from './use-event'
+export { useEvents } from './use-events'
+export { useEventsAdmin } from './use-events-admin'
+export { useFields } from './use-fields'
+export { useIntersectionObserver } from './use-intersection-observer'
+export { useInvite } from './use-invite'
+export { useInviteAdmin } from './use-invite-admin'
+export { useInvites } from './use-invites'
+export { useMember } from './use-member'
+export { useMemberSearch } from './use-members'
+export { useMessageStats } from './use-message-stats'
+export { MessagesContext, MessagesProvider, useMessages } from './use-messages'
+export { MetaContext, MetaContextProvider, useMeta } from './use-meta'
+export { useProducts } from './use-products'
+export { useSite } from './use-site'
+export { useStripeSession } from './use-stripe-session'
+export { UserContext, UserProvider, useUser } from './use-user'
 export {
   UserNotificationsContext,
   UserNotificationsProvider,
-  useUserNotifications
+  useUserNotifications,
 } from './use-user-notifications'
-export { useMessages, MessagesContext, MessagesProvider } from './use-messages'
-export { useMessageStats } from './use-message-stats'
+export { useWarnIfUnsavedChanges } from './use-warn-if-unsaved'
