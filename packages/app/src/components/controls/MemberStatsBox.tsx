@@ -8,7 +8,6 @@ import {
   BoxProps,
   chakra,
   Flex,
-  Skeleton,
   Stat,
   StatArrow,
   StatGroup,
@@ -17,16 +16,14 @@ import {
   StatNumber
 } from "@chakra-ui/react";
 
-import { ButtonLink } from "./ButtonLink";
-
 export type MemberStatsBoxProps = BoxProps & {
   member: Member
   children?: ReactNode
 }
 
 export const MemberStatsBox = chakra(({ member, children, ...props }) => {
-  const daysAgo = addDays(new Date(new Date().toDateString()), -14)
-  const { data: stats, isLoading } = useSWR<MemberStats>(member ? '/api/stats' : null, {
+  const { data: stats, isLoading } = useSWR<MemberStats>('/api/stats', {
+    revalidateOnMount: true,
     fallbackData: {
       subscribers: 0,
       applicants: 0,
@@ -37,6 +34,7 @@ export const MemberStatsBox = chakra(({ member, children, ...props }) => {
       staff: 0,
     },
   })
+  const daysAgo = addDays(new Date(new Date().toDateString()), -14)
   const { data: statsR, isLoading: isLoadingR } = useSWR<MemberStats>(
     `/api/stats?start=${daysAgo.toISOString()}`,
     {
@@ -68,11 +66,7 @@ export const MemberStatsBox = chakra(({ member, children, ...props }) => {
       >
         <Stat textAlign="center">
           <StatLabel>Applicants</StatLabel>
-          <StatNumber>
-            <Skeleton isLoaded={!isLoading} fadeDuration={1}>
-              {stats.applicants}
-            </Skeleton>
-          </StatNumber>
+          <StatNumber>{stats.applicants}</StatNumber>
           {statsR.applicants > 0 && (
             <StatHelpText title="In the past 14 days">
               <StatArrow type="increase" />+ {statsR.applicants}
@@ -81,11 +75,7 @@ export const MemberStatsBox = chakra(({ member, children, ...props }) => {
         </Stat>
         <Stat textAlign="center">
           <StatLabel>Pledges</StatLabel>
-          <StatNumber>
-            <Skeleton isLoaded={!isLoading} fadeDuration={1}>
-              {stats.pledges}
-            </Skeleton>
-          </StatNumber>
+          <StatNumber>{stats.pledges}</StatNumber>
           {statsR.pledges > 0 && (
             <StatHelpText title="In the past 14 days">
               <StatArrow type="increase" />+ {statsR.pledges}
@@ -94,11 +84,7 @@ export const MemberStatsBox = chakra(({ member, children, ...props }) => {
         </Stat>
         <Stat textAlign="center">
           <StatLabel>Inductees</StatLabel>
-          <StatNumber>
-            <Skeleton isLoaded={!isLoading} fadeDuration={1}>
-              {stats.inductees}
-            </Skeleton>
-          </StatNumber>
+          <StatNumber>{stats.inductees}</StatNumber>
           {statsR.inductees > 0 && (
             <StatHelpText title="In the past 14 days">
               <StatArrow type="increase" />+ {statsR.inductees}
@@ -107,11 +93,7 @@ export const MemberStatsBox = chakra(({ member, children, ...props }) => {
         </Stat>
         <Stat textAlign="center">
           <StatLabel>Brothers</StatLabel>
-          <StatNumber>
-            <Skeleton isLoaded={!isLoading} fadeDuration={1}>
-              {stats.brothers}
-            </Skeleton>
-          </StatNumber>
+          <StatNumber>{stats.brothers}</StatNumber>
           {statsR.brothers > 0 && (
             <StatHelpText title="In the past 14 days">
               <StatArrow type="increase" />+ {statsR.brothers}
@@ -121,11 +103,7 @@ export const MemberStatsBox = chakra(({ member, children, ...props }) => {
 
         <Stat textAlign="center">
           <StatLabel whiteSpace="nowrap">Big-Brothers</StatLabel>
-          <StatNumber>
-            <Skeleton isLoaded={!isLoading} fadeDuration={1}>
-              {stats.big_brothers}
-            </Skeleton>
-          </StatNumber>
+          <StatNumber>{stats.big_brothers}</StatNumber>
           {statsR.big_brothers > 0 && (
             <StatHelpText title="In the past 14 days">
               <StatArrow type="increase" />+ {statsR.big_brothers}
