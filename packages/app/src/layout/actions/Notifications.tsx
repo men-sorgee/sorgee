@@ -1,8 +1,8 @@
 import {
-  AppNotificationCard,
-  UserNotificationCard,
+  MemberAlertCard,
+  MemberNotificationCard,
   UserNotifications
-} from "components/controls";
+} from "components";
 import { useAppNotifications, useUserNotifications } from "hooks";
 import { Member } from "lib/models";
 import { useEffect } from "react";
@@ -36,15 +36,9 @@ interface Props {
 const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const {
-    notifications,
-    notificationCount,
-    newNotificationCount,
-    deleteNotification,
-    markAsRead
-  } = useUserNotifications()
-  const { appNotifications, newAppNotificationCount, appNotificationCount } =
-    useAppNotifications()
+  const { notifications, notificationCount, newNotificationCount, deleteNotification, markAsRead } =
+    useUserNotifications()
+  const { appNotifications, newAppNotificationCount, appNotificationCount } = useAppNotifications()
 
   useEffect(() => {
     if (isOpen && appNotificationCount == 0 && notificationCount == 0) {
@@ -57,7 +51,7 @@ const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
     newAppNotificationCount,
     onClose,
     appNotificationCount,
-    notificationCount
+    notificationCount,
   ])
   const totalNew = newAppNotificationCount + newNotificationCount
   const total = appNotificationCount + notificationCount
@@ -127,7 +121,7 @@ const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
               <TabPanels>
                 <TabPanel>
                   {appNotifications?.map((notification) => (
-                    <AppNotificationCard
+                    <MemberNotificationCard
                       key={notification.id}
                       member={member}
                       notification={notification}
@@ -137,7 +131,7 @@ const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
                 </TabPanel>
                 <TabPanel>
                   {notifications?.map((notification) => (
-                    <UserNotificationCard
+                    <MemberAlertCard
                       key={notification.id}
                       member={member}
                       notification={notification}

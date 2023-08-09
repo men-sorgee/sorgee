@@ -1,6 +1,4 @@
-import { ButtonBusy, Markdown } from "components/controls";
-import { FieldCheckbox, Form } from "components/forms";
-import Page from "components/Page";
+import { ButtonBusy, FieldCheckbox, Form, Markdown, Page } from "components";
 import { useUser } from "hooks/use-user";
 import { pages } from "lib/config";
 import { AgreementData, ApplicationStatus, MemberLevel } from "lib/models";

@@ -1,7 +1,6 @@
 'use client'
 import { isAfter, isToday } from "date-fns";
 import { EventInvite } from "lib/models";
-import { JsonFetcher } from "lib/utils";
 import useSWR from "swr";
 
 import { useAuthenticated } from "./use-authenticated";
@@ -23,10 +22,10 @@ export const useInvites = (): InvitesResults => {
     data: invites = [],
     mutate,
     error,
-    isLoading
+    isLoading,
   } = useSWR<EventInvite[], Error>(authenticated ? `/api/my/invites` : null, {
     refreshInterval: 1000 * 60 * 10,
-    fallbackData: []
+    fallbackData: [],
   })
 
   if (invites == null || invites == undefined)
@@ -37,7 +36,7 @@ export const useInvites = (): InvitesResults => {
       past: [],
       loading: true,
       reload: () => {},
-      activeInvite: null
+      activeInvite: null,
     }
 
   const upComing = ['scheduled', 'planned']
@@ -49,12 +48,8 @@ export const useInvites = (): InvitesResults => {
   const upcoming = invites?.filter(
     (i) => attending.includes(i.rsvp) && upComing.includes(i.event.status)
   )
-  const past = invites?.filter(
-    (i) => i.event.status == 'occurred' && i.rsvp == 'confirmed'
-  )
-  const newInvitationCount = invitations?.filter(
-    (i) => i.rsvp == 'invited'
-  ).length
+  const past = invites?.filter((i) => i.event.status == 'occurred' && i.rsvp == 'confirmed')
+  const newInvitationCount = invitations?.filter((i) => i.rsvp == 'invited').length
 
   let activeInvite = upcoming.find(
     (invite: EventInvite) =>
@@ -73,6 +68,6 @@ export const useInvites = (): InvitesResults => {
     reload: () => {
       mutate()
     },
-    activeInvite
+    activeInvite,
   }
 }

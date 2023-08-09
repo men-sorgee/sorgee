@@ -1,3 +1,4 @@
+import { gradient } from "lib/utils";
 import { ReactNode, RefObject, useCallback, useRef } from "react";
 
 import {
@@ -13,8 +14,6 @@ import {
   useDisclosure,
   useToast
 } from "@chakra-ui/react";
-
-import { gradient } from "../../lib/utils";
 
 export type ButtonConfirmProps<TResponse = void> = Omit<
   IconButtonProps,

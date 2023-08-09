@@ -23,7 +23,7 @@ const getConfig = (phase) => {
       scrollRestoration: true,
       scriptLoader: true,
       serverActionsTs: true,
-      appDir: true,
+      appDir: false,
       optimizeCss: true
     },
     images: {

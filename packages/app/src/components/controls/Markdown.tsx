@@ -18,21 +18,15 @@ import {
 } from "@chakra-ui/react";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 
-type Props = TextProps & {
+export type MarkdownProps = TextProps & {
   content: string
   size?: string
 }
-export const Markdown = ({ content, size, noOfLines, ...props }: Props) => {
+export const Markdown = ({ content, size, noOfLines, ...props }: MarkdownProps) => {
   const [reactContent, setMarkdownSource] = useRemark({
     rehypeReactOptions: {
       components: {
-        a: ({
-          href,
-          children
-        }: {
-          href: string
-          children: React.ReactNode
-        }) => {
+        a: ({ href, children }: { href: string; children: React.ReactNode }) => {
           return (
             <Link
               as={NextLink}
@@ -42,9 +36,7 @@ export const Markdown = ({ content, size, noOfLines, ...props }: Props) => {
               textDecoration={'underline'}
             >
               {children}&nbsp;
-              {href.startsWith('http') && (
-                <Icon as={ArrowTopRightOnSquareIcon} width="1rem" />
-              )}
+              {href.startsWith('http') && <Icon as={ArrowTopRightOnSquareIcon} width="1rem" />}
             </Link>
           )
         },
@@ -93,12 +85,7 @@ export const Markdown = ({ content, size, noOfLines, ...props }: Props) => {
           </Heading>
         ),
         ul: ({ children }: { children: React.ReactNode }) => (
-          <UnorderedList
-            display="block"
-            ml="1rem"
-            mt={1}
-            listStylePosition="outside"
-          >
+          <UnorderedList display="block" ml="1rem" mt={1} listStylePosition="outside">
             {children}
           </UnorderedList>
         ),
@@ -113,14 +100,7 @@ export const Markdown = ({ content, size, noOfLines, ...props }: Props) => {
           </ListItem>
         ),
         blockquote: ({ children }: { children: React.ReactNode }) => (
-          <Alert
-            rounded="lg"
-            shadow="md"
-            my={4}
-            p={4}
-            textAlign="center"
-            as="blockquote"
-          >
+          <Alert rounded="lg" shadow="md" my={4} p={4} textAlign="center" as="blockquote">
             <Text
               as="blockquote"
               size={size || 'h5'}
@@ -149,9 +129,9 @@ export const Markdown = ({ content, size, noOfLines, ...props }: Props) => {
           >
             {children}
           </Text>
-        )
-      }
-    }
+        ),
+      },
+    },
   })
   useEffect(() => {
     setMarkdownSource(content || '')

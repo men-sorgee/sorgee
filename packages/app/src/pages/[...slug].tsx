@@ -1,7 +1,4 @@
-import { ButtonLink, Markdown } from "components/controls";
-import NotFound from "components/NotFound";
-import Page from "components/Page";
-import Section from "components/Section";
+import { ButtonLink, Markdown, NotFound, Page, Section } from "components";
 import { useSite } from "hooks/use-site";
 import { Page as PageModel } from "lib/models";
 import NextLink from "next/link";
@@ -29,11 +26,11 @@ export const getStaticPaths = async () => {
   const paths = pages
     ?.filter((p) => !p.static && !p.blog_article && !p.slug.startsWith('blog'))
     .map((page) => ({
-      params: { slug: page.slug.split('/') }
+      params: { slug: page.slug.split('/') },
     }))
   return {
     paths,
-    fallback: 'blocking'
+    fallback: 'blocking',
   }
 }
 
@@ -44,7 +41,7 @@ if (import.meta.vitest) {
     getStaticPaths().then(
       ({
         paths, // An array of all the paths that the plugin found
-        fallback // The fallback object that the plugin generated
+        fallback, // The fallback object that the plugin generated
       }) => {
         expect(paths.length).toBeGreaterThan(0)
         expect(fallback).toBe('blocking')
@@ -65,7 +62,7 @@ export const getStaticProps = async ({ params }: { params: Params }) => {
   const page = pages.find((p) => p.slug === path)
   if (!page) {
     return {
-      notFound: true
+      notFound: true,
     }
   }
   if (page.children?.length) {
@@ -78,8 +75,8 @@ export const getStaticProps = async ({ params }: { params: Params }) => {
   }
   return {
     props: {
-      page
-    }
+      page,
+    },
   }
 }
 
@@ -88,27 +85,15 @@ export default function DynamicPage({ page }: Props) {
   const [nextText, setNextText] = useState<string>(null)
   const [nextUrl, setNextUrl] = useState<string>('')
 
-  const {
-    title,
-    id,
-    description,
-    image,
-    markdown,
-    content,
-    next_page,
-    next_page_params,
-    parent
-  } = page
+  const { title, id, description, image, markdown, content, next_page, next_page_params, parent } =
+    page
 
   useEffect(() => {
     if (!loading && next_page) {
       const { title: t, slug: s } = next_page
       setNextText(t)
       if (s === 'index') setNextUrl('/')
-      else
-        setNextUrl(
-          next_page.slug[0] == '/' ? next_page.slug : `/${next_page.slug}`
-        )
+      else setNextUrl(next_page.slug[0] == '/' ? next_page.slug : `/${next_page.slug}`)
     }
     if (!loading && next_page) {
       const { title, slug } = next_page
@@ -158,22 +143,22 @@ export default function DynamicPage({ page }: Props) {
                 display: 'inline-block',
                 verticalAlign: 'middle',
                 paddingBottom: '0.25rem',
-                marginRight: '0.5rem'
-              }
+                marginRight: '0.5rem',
+              },
             },
             p: {
-              marginBottom: '1rem'
+              marginBottom: '1rem',
             },
 
             img: {
               maxWidth: imageWidth,
               display: 'inline-block',
               float: 'left',
-              margin: '.5rem 1rem 1rem 0'
+              margin: '.5rem 1rem 1rem 0',
             },
             h2: {
-              clear: 'both'
-            }
+              clear: 'both',
+            },
           }}
         >
           <Markdown content={markdown} />

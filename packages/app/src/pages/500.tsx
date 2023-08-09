@@ -1,5 +1,4 @@
-import { ButtonLink } from "components/controls";
-import Page from "components/Page";
+import { ButtonLink, Page } from "components";
 
 import { Heading, Text } from "@chakra-ui/react";
 

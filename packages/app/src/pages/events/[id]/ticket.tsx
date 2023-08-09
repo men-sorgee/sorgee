@@ -1,12 +1,7 @@
-import { Page } from "components";
-import { EventCard, EventTicket } from "components/controls";
+import { EventCard, EventTicket, Page } from "components";
 import { useInvite, useUser } from "hooks";
 import { MemberLevel } from "lib/models";
-import NextLink from "next/link";
 import { useRouter } from "next/router";
-
-import { ArrowBackIcon } from "@chakra-ui/icons";
-import { HStack, Link } from "@chakra-ui/react";
 
 export default function EventTicketPage() {
   const router = useRouter()
@@ -15,17 +10,12 @@ export default function EventTicketPage() {
 
   const { member, loading, authenticated } = useUser({
     minLevel: MemberLevel.inductee,
-    redirectsEnabled: true
+    redirectsEnabled: true,
   })
   const { invite, event, loading: eventLoading } = useInvite(eventId)
 
   return (
-    <Page
-      title="Event Ticket"
-      hideHeader
-      loading={loading || eventLoading}
-      pt={4}
-    >
+    <Page title="Event Ticket" hideHeader loading={loading || eventLoading} pt={4}>
       {authenticated && member && event && (
         <>
           <EventCard

@@ -1,8 +1,7 @@
+import { gradient } from "lib/utils";
 import { useCallback, useRef, useState } from "react";
 
 import { Button, ButtonProps, chakra, Spinner } from "@chakra-ui/react";
-
-import { gradient } from "../../lib/utils";
 
 export type BusyButtonProps = ButtonProps & {
   onClick?: () => Promise<any> | any

@@ -1,4 +1,4 @@
-import { Rating, RatingControlProps } from "components/controls/Rating";
+import { Rating, RatingControlProps } from "components";
 import React, { InputHTMLAttributes } from "react";
 import { RegisterOptions, useFormContext } from "react-hook-form";
 
@@ -17,15 +17,7 @@ type Props = RatingControlProps &
   }
 
 const RatingField = (props: Props) => {
-  const {
-    field,
-    label,
-    help,
-    registerOptions = {},
-    children,
-    className,
-    ...opts
-  } = props
+  const { field, label, help, registerOptions = {}, children, className, ...opts } = props
   const { watch, setValue } = useFormContext()
   const rating = Number(watch(field) || 0)
 

@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "emitDecoratorMetadata": true,
@@ -19,16 +23,24 @@
     "jsx": "preserve",
     //"jsxImportSource": "@emotion/react",
     "paths": {
-      "components/*": ["components/*"],
-      "lib/*": ["lib/*"],
-      "hooks/*": ["hooks/*"]
+      "components/*": [
+        "components/*"
+      ],
+      "lib/*": [
+        "lib/*"
+      ],
+      "hooks/*": [
+        "hooks/*"
+      ]
     },
     "plugins": [
       {
         "name": "next"
       }
     ],
-    "types": ["vitest/importMeta"],
+    "types": [
+      "vitest/importMeta"
+    ],
     "baseUrl": "./src",
     "strictNullChecks": false
   },
@@ -38,5 +50,9 @@
     "**/*.tsx",
     ".next/types/**/*.ts"
   ],
-  "exclude": [".idea/*", ".next/*", "vitest*"]
+  "exclude": [
+    ".idea/*",
+    ".next/*",
+    "vitest*"
+  ]
 }

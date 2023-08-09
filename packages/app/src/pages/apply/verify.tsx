@@ -1,5 +1,4 @@
-import { ButtonBusy, PhotoCapture } from "components/controls";
-import Page from "components/Page";
+import { ButtonBusy, Page, PhotoCapture } from "components";
 import { useUser } from "hooks/use-user";
 import { ApplicationStatus, Member, MemberLevel } from "lib/models";
 import { getAssetUrl, postForm, postJSON } from "lib/utils";

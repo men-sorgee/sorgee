@@ -1,28 +1,18 @@
-import { Lazy, MemberCard, MemberModal } from "components/controls";
-import Page from "components/Page";
+import { Lazy, MemberCard, MemberModal, Page } from "components";
 import { useUser } from "hooks";
-import {
-  Member,
-  MemberLevel,
-  SearchableMember,
-  User,
-  UserBuddy
-} from "lib/models";
+import { MemberLevel, SearchableMember } from "lib/models";
 import { JsonFetcher } from "lib/utils";
 import { useState } from "react";
 import swr from "swr";
 
 import {
-  Alert,
   Button,
   Flex,
-  FormControl,
   FormLabel,
   Input,
   InputGroup,
   InputRightElement,
   SimpleGrid,
-  Spacer,
   Switch,
   Text
 } from "@chakra-ui/react";
@@ -37,21 +27,17 @@ export default function BuddiesPage({}: PageProps) {
   const { member, loading } = useUser({
     minLevel: MemberLevel.brother,
     requiredFeature: 'buddy_list',
-    redirectsEnabled: true
+    redirectsEnabled: true,
   })
 
-  const { data: buddies, isLoading } = swr<SearchableMember[]>(
-    '/api/my/buddies',
-    JsonFetcher,
-    {
-      refreshInterval: 1000 * 60 * 5,
-      revalidateIfStale: true,
-      revalidateOnFocus: true,
-      refreshWhenOffline: true,
-      refreshWhenHidden: true,
-      fallbackData: []
-    }
-  )
+  const { data: buddies, isLoading } = swr<SearchableMember[]>('/api/my/buddies', JsonFetcher, {
+    refreshInterval: 1000 * 60 * 5,
+    revalidateIfStale: true,
+    revalidateOnFocus: true,
+    refreshWhenOffline: true,
+    refreshWhenHidden: true,
+    fallbackData: [],
+  })
 
   let members = buddies?.map((b) => b) || []
   const onlineMembers = buddies?.filter((m) => m.presence == 'online') || []
@@ -62,8 +48,8 @@ export default function BuddiesPage({}: PageProps) {
   return (
     <Page title="Buddies" loading={loading || isLoading}>
       <Text mt={0} fontSize={['md', 'lg', 'xl']}>
-        Buddies are guys you are want to keep in touch with. You can see their
-        online status easily from here.
+        Buddies are guys you are want to keep in touch with. You can see their online status easily
+        from here.
       </Text>
 
       <Flex
@@ -114,26 +100,15 @@ export default function BuddiesPage({}: PageProps) {
           )}
         </InputGroup>
         <Text align="center" w={['full', 'full', '40%']}>
-          You have {buddies?.length} buddies with {onlineMembers?.length}{' '}
-          online.
+          You have {buddies?.length} buddies with {onlineMembers?.length} online.
         </Text>
       </Flex>
 
-      <SimpleGrid
-        my={4}
-        columns={[1, 1, 1, 2]}
-        spacing={4}
-        w="full"
-        justifyItems="stretch"
-      >
+      <SimpleGrid my={4} columns={[1, 1, 1, 2]} spacing={4} w="full" justifyItems="stretch">
         {members &&
           members
             ?.filter((u) =>
-              search
-                ? u.nickname
-                    ?.toLocaleLowerCase()
-                    .includes(search.toLocaleLowerCase())
-                : true
+              search ? u.nickname?.toLocaleLowerCase().includes(search.toLocaleLowerCase()) : true
             )
             ?.map((u: SearchableMember) => (
               <Lazy key={u.id}>

@@ -1,0 +1,117 @@
+import { useUser } from "hooks";
+import { Member, MemberLevel, MemberLevelColorMap } from "lib/models";
+import NextLink from "next/link";
+import { ReactNode } from "react";
+
+import { LockIcon } from "@chakra-ui/icons";
+import {
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  CardProps,
+  chakra,
+  Flex,
+  Heading,
+  LinkBox,
+  LinkOverlay,
+  Spacer
+} from "@chakra-ui/react";
+
+import { Markdown, MemberActions } from "../";
+import {
+  MemberAttributeBanner,
+  MemberHeader,
+  MemberMessageStats,
+  MemberRelationBanner
+} from "./";
+
+export type MemberCardProps = CardProps & {
+  viewer: Member
+  member: Partial<Member>
+  full?: boolean
+  onClick?: () => void
+  children?: ReactNode | ReactNode[]
+}
+
+export const MemberCard = chakra(
+  ({ member, onClick, full = false, size = ['lg', 'xl'], children, ...props }: MemberCardProps) => {
+    const levelValue = MemberLevel[member?.user_type || 'applicant']
+    const levelColor = MemberLevelColorMap[levelValue]
+    const { member: viewer, level } = useUser()
+
+    return (
+      <>
+        <Card
+          w="full"
+          h="full"
+          bgGradient={`linear(to-bl, ${levelColor[0]}, ${levelColor[1]})`}
+          rounded="lg"
+          border="1px solid transparent"
+          borderColor="primary"
+          color="white"
+          minW="full"
+          overflow="hidden"
+          _hover={{ shadow: '2xl', borderColor: 'accent.500' }}
+          {...props}
+        >
+          <LinkBox key={member.id}>
+            <CardHeader>
+              <LinkOverlay
+                as={NextLink}
+                href={`/member/${member.id}`}
+                onClick={(e) => {
+                  e.preventDefault()
+                  if (member.show_profile) onClick()
+                }}
+              >
+                <MemberHeader member={member} size={size} minimal={!full}>
+                  {(!member.show_profile && (
+                    <>
+                      <Flex
+                        px={4}
+                        mt={-8}
+                        direction="column"
+                        w="25%"
+                        align="start"
+                        justify="center"
+                      >
+                        <LockIcon color="primary.500" h={20} w={20} mx={'auto'} />
+                        <Heading as="h3" mt={-10} size="sm" p={0} textAlign="center" color="white">
+                          PRIVATE PROFILE
+                        </Heading>
+                      </Flex>
+                    </>
+                  )) || <MemberAttributeBanner member={member} />}
+                </MemberHeader>
+              </LinkOverlay>
+            </CardHeader>
+
+            <CardBody pt={0}>
+              {levelValue == MemberLevel.pledge && (
+                <MemberMessageStats memberId={member?.id} viewerLevel={level} />
+              )}
+              {children}
+              {full && member?.show_profile && (
+                <>
+                  <Markdown content={member?.biography} noOfLines={2} py={0} my={0} />
+                </>
+              )}
+            </CardBody>
+          </LinkBox>
+          <Spacer />
+          <MemberRelationBanner member={member} viewer={viewer} bg={'primary.900'} />
+          <CardFooter
+            flexDir="column"
+            justify="space-between"
+            alignItems="end"
+            bg="primary.800"
+            p={4}
+          >
+            <MemberActions member={member} size={['sm', 'md']} />
+          </CardFooter>
+        </Card>
+      </>
+    )
+  }
+)

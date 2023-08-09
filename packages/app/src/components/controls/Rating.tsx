@@ -1,9 +1,8 @@
+import { ButtonConfirm } from "components";
 import { useEffect, useState } from "react";
 
 import { HStack, Icon, IconButtonProps, Tooltip } from "@chakra-ui/react";
 import { StarIcon } from "@heroicons/react/24/solid";
-
-import { ButtonConfirm } from "./ButtonConfirm";
 
 export type RatingControlProps = Omit<IconButtonProps, 'aria-label'> & {
   onRateChange?: (rate: number) => void
@@ -79,8 +78,7 @@ export const Rating = ({
         cursor={readonly ? 'default' : 'pointer'}
         {...props}
       >
-        Are you sure you want to rate this item? Members will be sent a
-        notification of your rating.
+        Are you sure you want to rate this item? Members will be sent a notification of your rating.
       </ButtonConfirm>
     )
   }

@@ -1,25 +1,20 @@
 'use client'
-import {
-  EventInvite,
-  EventUser,
-  GroupEvent,
-  InviteRSVPType,
-  Member
-} from "lib/models";
-import { ApiResult, JsonFetcher, postJSON } from "lib/utils";
+import { EventInvite, GroupEvent, InviteRSVPType, Member } from "lib/models";
+import { ApiResult, postJSON } from "lib/utils";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
-type InvitesResults = {
+export type InviteMutateProps = { rsvp: InviteRSVPType; paid?: boolean; reason?: string }
+
+export type InviteResults = {
   invite: EventInvite
   event: GroupEvent
   user: Member
   loading: boolean
-  mutate: (rsvp: InviteRSVPType, reason?: string) => Promise<ApiResult<EventInvite>>
-  reload: () => void
+  mutate: (opts: InviteMutateProps) => Promise<ApiResult<EventInvite>>
 }
 
-export const useInvite = (eventId: string, invitation?: EventInvite): InvitesResults => {
+export const useInvite = (eventId: string, invitation?: EventInvite): InviteResults => {
   const [event, setEvent] = useState<GroupEvent>(undefined)
   const [user, setUser] = useState<Member>(undefined)
   const {
@@ -43,7 +38,11 @@ export const useInvite = (eventId: string, invitation?: EventInvite): InvitesRes
     event,
     user,
     loading: isLoading,
-    mutate: async (rsvp: InviteRSVPType, reason?: string) => {
+    mutate: async ({ rsvp, reason, paid = false }: InviteMutateProps) => {
+      // Paid is passed to the mutation, but not the API.
+      // This is to assume they paid if they used the pay button,
+      // for the sake of the UI. However, the actual payment needs
+      // to be handled by the Stripe API, confirming they paid.
       const {
         data: i,
         success,
@@ -55,13 +54,12 @@ export const useInvite = (eventId: string, invitation?: EventInvite): InvitesRes
       if (!success) {
         console.error(error)
       }
-      await mutate(i, true)
+      await mutate({ ...i, paid })
       return {
         data: i,
         success,
         error,
       }
     },
-    reload: () => mutate(),
   }
 }

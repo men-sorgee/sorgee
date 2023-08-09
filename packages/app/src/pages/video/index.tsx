@@ -1,4 +1,4 @@
-import Page from "components/Page";
+import { Page } from "components";
 import { useUser } from "hooks";
 import { MemberLevel } from "lib/models";
 import Link from "next/link";
@@ -10,23 +10,23 @@ export const getServerSideProps = async () => {
   const key = process.env.WHEREBY_API_KEY
   const response = await fetch(`https://api.whereby.dev/v1/meetings`, {
     headers: {
-      Authorization: `Bearer ${key}`
-    }
+      Authorization: `Bearer ${key}`,
+    },
   })
 
   const { results: meetings } = await response.json()
 
   return {
     props: {
-      meetings
-    }
+      meetings,
+    },
   }
 }
 
 export default function VideoChats({ meetings = [] }: { meetings: any[] }) {
   const { member } = useUser({
     minLevel: MemberLevel.brother,
-    redirectsEnabled: true
+    redirectsEnabled: true,
   })
   const router = useRouter()
   if (meetings?.length == 1) {
@@ -38,9 +38,7 @@ export default function VideoChats({ meetings = [] }: { meetings: any[] }) {
       <UnorderedList>
         {meetings?.map((meeting) => (
           <ListItem key={meeting.meetingId}>
-            <Link href={`/video/${meeting.meetingId}`}>
-              {meeting.meetingId}
-            </Link>
+            <Link href={`/video/${meeting.meetingId}`}>{meeting.meetingId}</Link>
           </ListItem>
         ))}
       </UnorderedList>

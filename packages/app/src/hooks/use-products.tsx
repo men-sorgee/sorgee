@@ -2,7 +2,7 @@
 import { ProductView } from "lib/models";
 import useSWR from "swr";
 
-type ProductResults = {
+export type ProductResults = {
   products: ProductView[]
   error?: any
   loading: boolean
@@ -12,18 +12,18 @@ export const useProducts = (): ProductResults => {
   const {
     data: products,
     error,
-    isLoading
+    isLoading,
   } = useSWR<ProductView[], Error>(`/api/stripe/products`, {
     refreshWhenHidden: false,
     refreshWhenOffline: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
-    fallbackData: []
+    fallbackData: [],
   })
 
   return {
     products,
     error,
-    loading: isLoading
+    loading: isLoading,
   }
 }

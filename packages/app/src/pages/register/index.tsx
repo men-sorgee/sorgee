@@ -1,6 +1,11 @@
-import { ButtonBusy, Markdown } from "components/controls";
-import { FieldInput, FieldSelect, Form } from "components/forms";
-import Page from "components/Page";
+import {
+  ButtonBusy,
+  FieldInput,
+  FieldSelect,
+  Form,
+  Markdown,
+  Page
+} from "components";
 import { useSite } from "hooks/use-site";
 import { pages } from "lib/config";
 import { FieldOptions, Promo, SignUpForm, User } from "lib/models";

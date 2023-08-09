@@ -1,5 +1,4 @@
-import { EventCard } from "components/controls";
-import Page from "components/Page";
+import { EventCard, Page } from "components";
 import { isToday } from "date-fns";
 import { useEventsAdmin, useUser } from "hooks";
 import { EventUser, GroupEvent, MemberLevel } from "lib/models";
@@ -42,8 +41,6 @@ export default function AdminEventList() {
       )
     }
   }, [eventsLoading, events, eventList?.length])
-
-  const today = new Date(new Date().toDateString())
 
   let upcoming = eventList?.filter((event) => event.status == 'scheduled')
   upcoming = upcoming.sort((a, b) => {

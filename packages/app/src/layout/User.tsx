@@ -1,4 +1,4 @@
-import { ButtonLink, MemberAvatar, MemberIcon } from "components/controls";
+import { ButtonLink, MemberAvatar, MemberIcon } from "components";
 import { useSite, useUser } from "hooks";
 import { pledgeSurvey } from "lib/config";
 import { MemberLevel, MembershipType } from "lib/models";
@@ -338,7 +338,7 @@ export default function UserMenu(_props: Props) {
             onClick={(e) => {
               e.preventDefault()
               signIn(null, {
-                callbackUrl: '/api/my/home'
+                callbackUrl: '/api/my/home',
               })
             }}
           >

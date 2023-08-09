@@ -1,5 +1,4 @@
-import { FieldRadioButtons, Form } from "components/forms";
-import Page from "components/Page";
+import { FieldRadioButtons, Form, Page } from "components";
 import { useUser } from "hooks/use-user";
 import {
   ApplicationStatus,

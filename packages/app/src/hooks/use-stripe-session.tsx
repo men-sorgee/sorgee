@@ -1,33 +1,32 @@
 'use client'
 
-import { JsonFetcher } from "lib/utils";
 import Stripe from "stripe";
 import useSWR from "swr";
 
-type ProductResults = {
+export type StripResults = {
   session: Stripe.Checkout.Session
   error?: any
   loading: boolean
 }
 
-export const useStripeSession = (sessionId: string): ProductResults => {
+export const useStripeSession = (sessionId: string): StripResults => {
   const {
     data: session,
     error,
-    isLoading
+    isLoading,
   } = useSWR<Stripe.Checkout.Session, Error>(
     sessionId ? `/api/stripe/session/${sessionId}` : null,
     {
       refreshWhenHidden: false,
       refreshWhenOffline: false,
       revalidateOnFocus: false,
-      revalidateOnReconnect: false
+      revalidateOnReconnect: false,
     }
   )
 
   return {
     session,
     error,
-    loading: isLoading
+    loading: isLoading,
   }
 }

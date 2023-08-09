@@ -1,6 +1,4 @@
-import { ErrorBoundary } from "components/ErrorBoundary";
 import { useUser } from "hooks";
-import { url } from "inspector";
 import { brand } from "lib/config/brand";
 import { MemberLevel } from "lib/models";
 import { useRouter } from "next/router";
@@ -15,6 +13,7 @@ import React, {
 import { Box, Flex, Slide, Spacer, useDisclosure } from "@chakra-ui/react";
 
 import Actions from "./actions";
+import { ErrorBoundary } from "./components";
 import Footer from "./Footer";
 import Header from "./Header";
 import Meta from "./Meta";

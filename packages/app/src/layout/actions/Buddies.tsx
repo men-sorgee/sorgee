@@ -1,4 +1,4 @@
-import { UpgradeIcon } from "components/controls";
+import { UpgradeIcon } from "components";
 import {
   Member,
   MemberLevel,
@@ -19,13 +19,7 @@ interface Props {
   iconDimensions?: string[]
 }
 
-const BuddiesAction = ({
-  member,
-  active,
-  hasFeature,
-  iconSize,
-  iconDimensions
-}: Props) => {
+const BuddiesAction = ({ member, active, hasFeature, iconSize, iconDimensions }: Props) => {
   const level = MemberLevel[member?.user_type]
   if (level < MemberLevel.brother) {
     return null
@@ -41,9 +35,7 @@ const BuddiesAction = ({
         size={iconSize}
         title="Buddy List"
         membershipType={MembershipType.basic}
-        icon={
-          <Icon as={UsersIcon} width={iconDimensions} height={iconDimensions} />
-        }
+        icon={<Icon as={UsersIcon} width={iconDimensions} height={iconDimensions} />}
       />
     )
 

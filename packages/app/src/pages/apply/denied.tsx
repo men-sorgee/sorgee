@@ -1,4 +1,4 @@
-import Page from "components/Page";
+import { Page } from "components";
 import { useUser } from "hooks/use-user";
 import { MemberLevel } from "lib/models";
 import { useRouter } from "next/router";
@@ -8,7 +8,7 @@ import { Heading, Link, Text } from "@chakra-ui/react";
 function Denied() {
   const router = useRouter()
   const { loading, member } = useUser({
-    minLevel: MemberLevel.applicant
+    minLevel: MemberLevel.applicant,
   })
 
   return (
@@ -21,9 +21,8 @@ function Denied() {
           {member?.photo_denial_reason}
         </Text>
         <Text fontSize="2xl">
-          The more the merrier with us, but some aspect of your application did
-          not add up. Mistakes happen, and if you believe a mistake was made and
-          you want to try again, please contact
+          The more the merrier with us, but some aspect of your application did not add up. Mistakes
+          happen, and if you believe a mistake was made and you want to try again, please contact
           <Link className="link" href="mailto:support@guysnheat.com">
             support
           </Link>

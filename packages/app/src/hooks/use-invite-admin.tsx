@@ -3,7 +3,7 @@ import { EventInvite } from "lib/models";
 import { ApiResult, postJSON } from "lib/utils";
 import useSWR from "swr";
 
-type InviteAdminProps = {
+export type InviteAdminProps = {
   invite: EventInvite
   loading: boolean
   checkin: (

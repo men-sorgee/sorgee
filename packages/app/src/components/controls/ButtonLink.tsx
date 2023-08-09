@@ -3,7 +3,7 @@ import NextLink from "next/link";
 
 import { Button, ButtonProps, chakra, Link } from "@chakra-ui/react";
 
-type Props = ButtonProps & {
+export type ButtonLinkProps = ButtonProps & {
   href: string
   children: React.ReactNode | React.ReactNode[]
   onClick?: (e: any) => void
@@ -20,7 +20,7 @@ export const ButtonLink = chakra(
     w = ['full', 'auto'],
     flex = 'auto',
     ...props
-  }: Props) => {
+  }: ButtonLinkProps) => {
     const bgGradient = gradient(colorScheme)
     const bgGradientHover = gradient(colorScheme, 100)
     return (

@@ -1,14 +1,15 @@
-import { ButtonBusy, Markdown } from "components/controls";
 import {
+  ButtonBusy,
   FieldCheckbox,
   FieldCheckboxes,
   FieldInput,
   FieldSelect,
   FieldText,
   FieldWrapper,
-  Form
-} from "components/forms";
-import Page from "components/Page";
+  Form,
+  Markdown,
+  Page
+} from "components";
 import { useSite, useUser } from "hooks";
 import { pages } from "lib/config";
 import {

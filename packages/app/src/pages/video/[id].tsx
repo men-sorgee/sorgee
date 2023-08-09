@@ -1,4 +1,4 @@
-import Page from "components/Page";
+import { Page } from "components";
 import { useUser } from "hooks";
 import { adminBaseUrl } from "lib/config";
 import { DirectusFile, MemberLevel } from "lib/models";
@@ -13,45 +13,34 @@ export const getServerSideProps = async (context) => {
   const key = process.env.WHEREBY_API_KEY
   const { id } = context.query
   const meetingId = String(id)
-  const response = await fetch(
-    `https://api.whereby.dev/v1/meetings/${meetingId}`,
-    {
-      headers: {
-        Authorization: `Bearer ${key}`
-      }
-    }
-  )
+  const response = await fetch(`https://api.whereby.dev/v1/meetings/${meetingId}`, {
+    headers: {
+      Authorization: `Bearer ${key}`,
+    },
+  })
 
   const meeting = await response.json()
 
   return {
     props: {
       key,
-      meeting
-    }
+      meeting,
+    },
   }
 }
 
-export default function VideoChat({
-  key,
-  meeting
-}: {
-  key: string
-  meeting: any
-}) {
+export default function VideoChat({ key, meeting }: { key: string; meeting: any }) {
   const router = useRouter()
   const chatRoom = useRef<HTMLElement>(null)
   const { member, isStaff, loading, name, picture } = useUser({
     minLevel: MemberLevel.brother,
-    redirectsEnabled: true
+    redirectsEnabled: true,
   })
   const [chatUrl, setChatUrl] = useState<string>(null)
   useEffect(() => {
     if (!loading && member && chatUrl == null) {
       const picture = member.picture as DirectusFile
-      const avatarUrl = member.picture
-        ? `${adminBaseUrl}/assets/${picture?.id}`
-        : undefined
+      const avatarUrl = member.picture ? `${adminBaseUrl}/assets/${picture?.id}` : undefined
       setChatUrl(
         isStaff
           ? `${meeting.roomUrl}?roomKey=${key}&avatarUrl=${avatarUrl}}`
@@ -63,16 +52,7 @@ export default function VideoChat({
         router.push('/video/ended')
       })
     }
-  }, [
-    chatUrl,
-    isStaff,
-    key,
-    loading,
-    meeting?.roomUrl,
-    member,
-    picture,
-    router
-  ])
+  }, [chatUrl, isStaff, key, loading, meeting?.roomUrl, member, picture, router])
   const handle = useFullScreenHandle()
   handle
   return (
@@ -85,20 +65,14 @@ export default function VideoChat({
       />
       {chatUrl && (
         <Box minH="60vh">
-          <Button
-            onClick={handle.enter}
-            variant="outline"
-            color="white"
-            mb="-9rem"
-            ml="10rem"
-          >
+          <Button onClick={handle.enter} variant="outline" color="white" mb="-9rem" ml="10rem">
             Full Screen
           </Button>
           <FullScreen handle={handle}>
             <whereby-embed
               style={{
                 height: handle.active ? '100vh' : '60vh',
-                width: '100%'
+                width: '100%',
               }}
               ref={chatRoom}
               displayName={name}

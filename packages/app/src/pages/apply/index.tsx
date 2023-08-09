@@ -1,4 +1,4 @@
-import Page from "components/Page";
+import { Page } from "components";
 import { useUser } from "hooks";
 import { ApplicationStatus, MemberLevel } from "lib/models";
 import { signIn } from "next-auth/react";
@@ -9,7 +9,7 @@ export default function Index({}) {
   const { member, loading } = useUser({
     minLevel: MemberLevel.applicant,
     minAppStatus: ApplicationStatus.apply,
-    redirectsEnabled: true
+    redirectsEnabled: true,
   })
   const router = useRouter()
 
@@ -24,7 +24,7 @@ export default function Index({}) {
       }
     } else {
       signIn(null, {
-        callbackUrl: '/apply'
+        callbackUrl: '/apply',
       })
     }
   }, [loading, router, member])

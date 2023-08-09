@@ -1,13 +1,13 @@
 import {
   FieldCheckboxes,
   FieldInput,
-  FieldRadioButtons,
   FieldSelect,
   FieldSwitch,
   FieldWrapper,
-  Form
-} from "components/forms";
-import Page from "components/Page";
+  Form,
+  LocationCapture,
+  Page
+} from "components";
 import { useFields, useUser } from "hooks";
 import { FieldMap, Member, MemberLevel } from "lib/models";
 import { useRouter } from "next/router";
@@ -32,8 +32,6 @@ import {
   Text
 } from "@chakra-ui/react";
 
-import { LocationCapture } from "../../../components/controls/LocationCapture";
-
 export type PageProps = {
   section?: string
 }
@@ -43,8 +41,8 @@ export async function getServerSideProps(context) {
     return {
       redirect: {
         destination: `/member/settings/${PageSection[0]}`,
-        permanent: false
-      }
+        permanent: false,
+      },
     }
   const { section } = context.params
 
@@ -53,7 +51,7 @@ export async function getServerSideProps(context) {
     props.section = String(section)
   }
   return {
-    props
+    props,
   }
 }
 
@@ -61,7 +59,7 @@ export default function SettingsPage(props: PageProps) {
   const { fields: fieldMap, loading: fieldsLoading } = useFields('users')
   const { member, loading } = useUser({
     minLevel: MemberLevel.pledge,
-    redirectsEnabled: true
+    redirectsEnabled: true,
   })
   return (
     <Page title="Settings" loading={loading || fieldsLoading}>
@@ -105,13 +103,10 @@ enum PageSection {
   contact,
   events,
   interests,
-  location
+  location,
 }
 
-function SettingsForm({
-  fieldMap,
-  section: s = 'contact'
-}: PageProps & { fieldMap: FieldMap }) {
+function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps & { fieldMap: FieldMap }) {
   const router = useRouter()
   const section = PageSection[s]
   const [tabValue, setTabValue] = useState(section)
@@ -153,7 +148,7 @@ function SettingsForm({
     show_contact,
     show_events,
     auth_with_phone,
-    show_location
+    show_location,
   } = member
   const defaultValues = {
     show_location,
@@ -177,7 +172,7 @@ function SettingsForm({
     show_interests,
     show_contact,
     show_events,
-    auth_with_phone
+    auth_with_phone,
   }
 
   const required = { value: true, message: 'Required' }
@@ -240,8 +235,8 @@ function SettingsForm({
                       gap={4}
                     >
                       <Text w="full" mb={2}>
-                        You can display your email and phone number to other
-                        members if you want, by enabling this setting.
+                        You can display your email and phone number to other members if you want, by
+                        enabling this setting.
                       </Text>
                       <FieldSwitch
                         mt={4}
@@ -265,10 +260,9 @@ function SettingsForm({
                       label="Mobile Phone"
                       registerOptions={{
                         pattern: {
-                          value:
-                            /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
-                          message: 'US numbers only. Format: 123 456 7890'
-                        }
+                          value: /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
+                          message: 'US numbers only. Format: 123 456 7890',
+                        },
                       }}
                       placeholder="000 456 7890"
                     />
@@ -290,17 +284,11 @@ function SettingsForm({
                     />
                   </SimpleGrid>
                   {watch('allow_messages') == 'staff' && (
-                    <Alert
-                      status="warning"
-                      flexDirection="row"
-                      my={4}
-                      p={4}
-                      borderRadius="md"
-                    >
+                    <Alert status="warning" flexDirection="row" my={4} p={4} borderRadius="md">
                       <AlertIcon />
                       <Text>
-                        If you choose to only receive messages from staff, you
-                        will not be able to send messages to other members.
+                        If you choose to only receive messages from staff, you will not be able to
+                        send messages to other members.
                       </Text>
                     </Alert>
                   )}
@@ -317,16 +305,11 @@ function SettingsForm({
                     gap={4}
                   >
                     <Text w="full" textAlign="left">
-                      These settings let us know which events you are interested
-                      in attending. our system will auto-match you with events
-                      that meet your interests. You can also manually RSVP to
-                      events that interest you.
+                      These settings let us know which events you are interested in attending. our
+                      system will auto-match you with events that meet your interests. You can also
+                      manually RSVP to events that interest you.
                     </Text>
-                    <Stack
-                      mt={4}
-                      direction={{ base: 'column', md: 'row' }}
-                      spacing={2}
-                    >
+                    <Stack mt={4} direction={{ base: 'column', md: 'row' }} spacing={2}>
                       <FieldSwitch
                         field="event_invites"
                         label="Get Invites to Events"
@@ -357,25 +340,14 @@ function SettingsForm({
                       options={getOptions('social_scenes')}
                       includeOther
                     />
-                    <Alert
-                      bg="primary.300"
-                      color="white"
-                      my={4}
-                      borderRadius="md"
-                      shadow="md"
-                    >
+                    <Alert bg="primary.300" color="white" my={4} borderRadius="md" shadow="md">
                       <Stack direction={'column'} spacing={2}>
                         <Text w="full" textAlign="left">
-                          <strong>Are you an exhibitionist?</strong> If so, you
-                          can opt-in to be a part of our marketing efforts. We
-                          will never share your personal information with
-                          anyone.
+                          <strong>Are you an exhibitionist?</strong> If so, you can opt-in to be a
+                          part of our marketing efforts. We will never share your personal
+                          information with anyone.
                         </Text>
-                        <Stack
-                          mt={4}
-                          direction={{ base: 'column', md: 'row' }}
-                          spacing={2}
-                        >
+                        <Stack mt={4} direction={{ base: 'column', md: 'row' }} spacing={2}>
                           <FieldSwitch
                             field="photo_consent"
                             label="Photo Consent"
@@ -398,24 +370,14 @@ function SettingsForm({
                   </SimpleGrid>
 
                   {watch('event_invites') && (
-                    <Alert
-                      bg="primary.300"
-                      color="white"
-                      my={4}
-                      borderRadius="md"
-                      shadow="md"
-                    >
+                    <Alert bg="primary.300" color="white" my={4} borderRadius="md" shadow="md">
                       <Stack direction={'column'} spacing={2}>
                         <Text w="full" textAlign="left">
-                          <strong>Are you interested in hosting?</strong> If so,
-                          let us know by checking the box below. We are always
-                          looking for new hosts.
+                          <strong>Are you interested in hosting?</strong> If so, let us know by
+                          checking the box below. We are always looking for new hosts.
                         </Text>
                         <Stack direction="column" spacing={2} mt={4}>
-                          <FieldSwitch
-                            field="can_host"
-                            label="Can Host Events"
-                          />
+                          <FieldSwitch field="can_host" label="Can Host Events" />
                           {watch('can_host') && (
                             <FieldCheckboxes
                               field="can_host_events"
@@ -441,10 +403,9 @@ function SettingsForm({
                       gap={4}
                     >
                       <Text w="full" textAlign="left">
-                        What are you looking for and compatible with? We use
-                        this information to optimize compatibility for events.
-                        If you choose to display this info, other members can
-                        find you based on these attributes.
+                        What are you looking for and compatible with? We use this information to
+                        optimize compatibility for events. If you choose to display this info, other
+                        members can find you based on these attributes.
                       </Text>
                       <FieldSwitch
                         mt={4}
@@ -492,8 +453,8 @@ function SettingsForm({
                       gap={4}
                     >
                       <Text w="full" textAlign="left">
-                        Display your location information to make it easier for
-                        people to find other brothers near them.
+                        Display your location information to make it easier for people to find other
+                        brothers near them.
                       </Text>
                       <Flex gap={2} w="full">
                         <FieldSwitch
@@ -525,13 +486,7 @@ function SettingsForm({
               </TabPanels>
             </Tabs>
 
-            <Box
-              backdropFilter="blur(2px)"
-              position="sticky"
-              h="80px"
-              w="full"
-              bottom={0}
-            ></Box>
+            <Box backdropFilter="blur(2px)" position="sticky" h="80px" w="full" bottom={0}></Box>
             <Button
               mt={-10}
               size="lg"

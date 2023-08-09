@@ -1,6 +1,13 @@
-import { Lazy, MemberCard, MemberModal, Pager } from "components/controls";
-import { FieldCheckbox, FieldCheckboxes, FieldInput } from "components/forms";
-import Page from "components/Page";
+import {
+  FieldCheckbox,
+  FieldCheckboxes,
+  FieldInput,
+  Lazy,
+  MemberCard,
+  MemberModal,
+  Page,
+  Pager
+} from "components";
 import { useFields, useUser } from "hooks";
 import {
   FieldMap,
@@ -59,7 +66,7 @@ export default function Members() {
   const { member: currentMember, loading } = useUser({
     minLevel: MemberLevel.brother,
     requiredFeature: 'view_directory',
-    redirectsEnabled: true
+    redirectsEnabled: true,
   })
   const router = useRouter()
   const { page: p, size: s, sort: o, ...q } = router.query
@@ -74,7 +81,7 @@ export default function Members() {
   const [query, setQuery] = useState<QueryParams>(undefined)
   const [meta, setMeta] = useState<Meta>({
     total: 0,
-    filtered: 0
+    filtered: 0,
   })
   const topRef = createRef<HTMLDivElement>()
   useEffect(() => {
@@ -98,8 +105,7 @@ export default function Members() {
       return
     }
 
-    if (loading || page == undefined || size == undefined || sort == undefined)
-      return
+    if (loading || page == undefined || size == undefined || sort == undefined) return
     const filter = query ? serialize<SearchableMember>(query) : ''
     setKey(`/api/members?limit=${size}&page=${page}&sort=${sort}${filter}`)
 
@@ -112,14 +118,11 @@ export default function Members() {
       ...query,
       ...normalize<SearchableMember>(q),
       online: q.online ? true : undefined,
-      photos: q.photos ? true : undefined
-    }
+      photos: q.photos ? true : undefined,
+    },
   })
 
-  const { data: response } = useSWR<ManyItems<Partial<SearchableMember>>>(
-    key,
-    JsonFetcher
-  )
+  const { data: response } = useSWR<ManyItems<Partial<SearchableMember>>>(key, JsonFetcher)
 
   useEffect(() => {
     setPage(1)
@@ -130,7 +133,7 @@ export default function Members() {
       const { total_count, filter_count } = response.meta
       setMeta({
         total: total_count || 0,
-        filtered: filter_count || 0
+        filtered: filter_count || 0,
       })
       setPageCount(filter_count > 0 ? Math.ceil(filter_count / size) : 0)
       setMembers(response.data)
@@ -158,12 +161,7 @@ export default function Members() {
   }, [onClose])
 
   return (
-    <Page
-      title={'Men Nearby'}
-      description={''}
-      loading={loading || fieldsLoading}
-      w="full"
-    >
+    <Page title={'Men Nearby'} description={''} loading={loading || fieldsLoading} w="full">
       <FormProvider {...methods}>
         <form
           id="filter-form"
@@ -176,11 +174,7 @@ export default function Members() {
           style={{ width: '100%', display: 'block' }}
         >
           <div ref={topRef}></div>
-          <FilterFields
-            fields={fields}
-            currentMember={currentMember}
-            meta={meta}
-          />
+          <FilterFields fields={fields} currentMember={currentMember} meta={meta} />
 
           <Flex gap={4} mt={4} align="center">
             <Select
@@ -224,13 +218,7 @@ export default function Members() {
             </Select>
           </Flex>
           <Pager page={page} pageCount={pageCount} setPage={setPage} />
-          <SimpleGrid
-            my={4}
-            columns={[1, 1, 1, 2]}
-            spacing={4}
-            w="full"
-            justifyItems="stretch"
-          >
+          <SimpleGrid my={4} columns={[1, 1, 1, 2]} spacing={4} w="full" justifyItems="stretch">
             {members?.map((member: SearchableMember) => (
               <Lazy key={member.id}>
                 <MemberCard
@@ -287,18 +275,8 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
         }}
       >
         <AccordionItem w="full">
-          <AccordionButton
-            px={0}
-            py={1}
-            _expanded={{ bg: 'primary', color: 'white' }}
-          >
-            <Flex
-              direction="row"
-              pr={4}
-              gap={[2, 4]}
-              justify="space-between"
-              w="full"
-            >
+          <AccordionButton px={0} py={1} _expanded={{ bg: 'primary', color: 'white' }}>
+            <Flex direction="row" pr={4} gap={[2, 4]} justify="space-between" w="full">
               <Heading as="h3" size="h3" mt={1} ml={2}>
                 Filter
               </Heading>
@@ -324,8 +302,8 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
               <FieldCheckboxes
                 field="user_type"
                 label="User Level"
-                options={fields['user_type'].meta.options.choices.filter(
-                  (item) => allowedUserTypes.includes(item.value as UserType)
+                options={fields['user_type'].meta.options.choices.filter((item) =>
+                  allowedUserTypes.includes(item.value as UserType)
                 )}
               />
               {/**<FieldCheckboxes
@@ -350,11 +328,7 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
              />**/}
             </SimpleGrid>
 
-            <AccordionButton
-              as={'div'}
-              mt={6}
-              _hover={{ bg: 'transparent', cursor: 'default' }}
-            >
+            <AccordionButton as={'div'} mt={6} _hover={{ bg: 'transparent', cursor: 'default' }}>
               <HStack w="full" justify="center">
                 <Button size="lg" type="submit" colorScheme="primary">
                   Search

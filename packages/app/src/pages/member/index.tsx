@@ -12,7 +12,7 @@ import { MemberLevel } from "lib/models";
 import { Alert, AlertIcon, Box, Heading, Text } from "@chakra-ui/react";
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline";
 
-import { LocationBox } from "../../components/controls/LocationBox";
+import { LocationBox } from "../../components/location/LocationBox";
 
 export default function MemberHomePage() {
   const { member, level, loading } = useUser({

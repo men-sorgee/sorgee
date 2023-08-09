@@ -1,14 +1,13 @@
 import {
   Lazy,
   MemberCard,
-  MemberMessageStats,
   MemberModal,
-  UserSurveyAnswers
-} from "components/controls";
-import Page from "components/Page";
+  MemberSurveyAnswers,
+  Page
+} from "components";
 import { useMemberSearch, useUser } from "hooks";
 import { pledgeSurvey } from "lib/config";
-import { Member, MemberLevel, SearchableMember } from "lib/models";
+import { MemberLevel, SearchableMember } from "lib/models";
 import { useCallback, useEffect, useState } from "react";
 
 import { Container, SimpleGrid, Text, useDisclosure } from "@chakra-ui/react";
@@ -18,15 +17,15 @@ export default function PledgeListPage() {
   const {
     member: currentMember,
     level,
-    loading
+    loading,
   } = useUser({
     minLevel: MemberLevel.brother,
     requiredFeature: 'view_directory',
-    redirectsEnabled: true
+    redirectsEnabled: true,
   })
 
   const { members, meta } = useMemberSearch(1, 100, 'approved_date', {
-    user_type: MemberLevel[MemberLevel.pledge]
+    user_type: MemberLevel[MemberLevel.pledge],
   })
 
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -46,17 +45,10 @@ export default function PledgeListPage() {
   return (
     <Page title="Pledges" loading={loading}>
       <Text fontSize="xl" fontWeight="bold" mb={4}>
-        These men have pledged a bid to join the brotherhood, but no one has
-        vouched for them yet. To vouch for a Pledge, use the vouch button on
-        their profile.
+        These men have pledged a bid to join the brotherhood, but no one has vouched for them yet.
+        To vouch for a Pledge, use the vouch button on their profile.
       </Text>
-      <SimpleGrid
-        my={4}
-        columns={[1, 1, 1, 2]}
-        spacing={4}
-        w="full"
-        justifyItems="stretch"
-      >
+      <SimpleGrid my={4} columns={[1, 1, 1, 2]} spacing={4} w="full" justifyItems="stretch">
         {members?.map((m: SearchableMember) => (
           <Lazy key={m.id}>
             <MemberCard
@@ -79,13 +71,9 @@ export default function PledgeListPage() {
           {
             title: 'Pledge Survey Answers',
             content: (
-              <UserSurveyAnswers
-                member={pledge}
-                surveyId={pledgeSurvey}
-                headingSize="sm"
-              />
-            )
-          }
+              <MemberSurveyAnswers member={pledge} surveyId={pledgeSurvey} headingSize="sm" />
+            ),
+          },
         ]}
       ></MemberModal>
       {meta.filtered == 0 && (

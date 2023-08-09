@@ -1,4 +1,3 @@
-import { Logo } from "components/controls";
 import { Page, PageItem, UserType } from "lib/models";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
@@ -26,6 +25,7 @@ import {
 import { Bars4Icon, XMarkIcon } from "@heroicons/react/24/solid";
 
 import { constrained } from "./index";
+import { Logo } from "./Logo";
 import User from "./User";
 
 export type Props = BoxProps & {
@@ -44,7 +44,7 @@ function Header({ isAuthenticated, userType, children, ...props }: Props) {
     ref: ref,
     handler: () => {
       onClose()
-    }
+    },
   })
 
   const routeComplete = useCallback(() => {
@@ -71,11 +71,9 @@ function Header({ isAuthenticated, userType, children, ...props }: Props) {
         title: page.title,
         path: `/${page.slug}`,
         children:
-          page.children
-            ?.filter((p) => canSee(p.visibility))
-            .map((p) => mapPage(p, true)) || [],
+          page.children?.filter((p) => canSee(p.visibility)).map((p) => mapPage(p, true)) || [],
         isChild: isChild || page.parent?.id != undefined,
-        visibility: page.visibility || []
+        visibility: page.visibility || [],
       }
     },
     [canSee]
@@ -108,15 +106,15 @@ function Header({ isAuthenticated, userType, children, ...props }: Props) {
         {
           title: 'Health & Wellness',
           path: '/blog',
-          children: []
+          children: [],
         },
         {
           title: 'Pricing',
           path: '/pricing',
           children: [],
-          visibility: ['pledge', 'inductee', 'brother', 'staff']
-        }
-      ]
+          visibility: ['pledge', 'inductee', 'brother', 'staff'],
+        },
+      ],
     },
     ...menus.filter((p) => canSee(p.visibility)),
     {
@@ -126,22 +124,22 @@ function Header({ isAuthenticated, userType, children, ...props }: Props) {
           title: 'Privacy Policy',
           path: '/privacy',
           reload: true,
-          children: []
+          children: [],
         },
         {
           title: 'Cookie Policy',
           path: '/cookies',
           reload: true,
-          children: []
+          children: [],
         },
         {
           title: 'Terms of Service',
           path: '/terms',
           reload: true,
-          children: []
-        }
-      ]
-    }
+          children: [],
+        },
+      ],
+    },
   ]
   const bg = useColorModeValue('primary.800', 'black')
 
@@ -171,15 +169,7 @@ function Header({ isAuthenticated, userType, children, ...props }: Props) {
 
   return (
     <>
-      <Box
-        {...props}
-        as="header"
-        color="white"
-        shadow="xl"
-        bg={bg}
-        minH="60px"
-        px={0}
-      >
+      <Box {...props} as="header" color="white" shadow="xl" bg={bg} minH="60px" px={0}>
         <HStack
           alignItems="center"
           alignContent="center"
@@ -221,7 +211,7 @@ function Header({ isAuthenticated, userType, children, ...props }: Props) {
 
 const NavMenuItem = ({
   onClose,
-  item: { title: label, children, path }
+  item: { title: label, children, path },
 }: {
   onClose: () => void
   childrenOpen?: boolean
@@ -234,7 +224,7 @@ const NavMenuItem = ({
           <Link
             as={path ? NextLink : 'div'}
             _hover={{
-              textDecoration: 'none'
+              textDecoration: 'none',
             }}
             href={path}
             fontWeight={600}
@@ -258,13 +248,7 @@ const NavMenuItem = ({
             borderColor={'white'}
           >
             {children.map((child: NavItem, i: number) => (
-              <Box
-                key={i}
-                w="full"
-                _hover={{ bg: 'primary.400' }}
-                py={1}
-                px={2}
-              >
+              <Box key={i} w="full" _hover={{ bg: 'primary.400' }} py={1} px={2}>
                 {(child.reload && (
                   <a style={{ display: 'block' }} href={child.path}>
                     {child.title}

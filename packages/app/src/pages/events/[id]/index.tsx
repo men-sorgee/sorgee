@@ -6,9 +6,9 @@ import {
   Lazy,
   MemberCard,
   MemberModal,
+  Page,
   RateItem
-} from "components/controls";
-import Page from "components/Page";
+} from "components";
 import { isAfter, isToday } from "date-fns";
 import { useEvent, useUser } from "hooks";
 import {

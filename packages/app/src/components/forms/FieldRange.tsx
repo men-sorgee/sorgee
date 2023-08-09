@@ -20,21 +20,12 @@ export type Props = RangeSliderProps & {
   registerOptions?: RegisterOptions
 }
 
-const InputField = (props: Props) => {
-  const {
-    field,
-    label,
-    help,
-    registerOptions = {},
-    min = 0,
-    max = 10,
-    step = 1,
-    ...opts
-  } = props
+const InputField = chakra((props: Props) => {
+  const { field, label, help, registerOptions = {}, min = 0, max = 10, step = 1, ...opts } = props
 
   const {
     register,
-    formState: { defaultValues }
+    formState: { defaultValues },
   } = useFormContext()
   const { onChange } = register(field, registerOptions)
   const initialValues = [min, max]
@@ -54,8 +45,8 @@ const InputField = (props: Props) => {
         onChange={(val: number[]) => {
           onChange({
             target: {
-              value: val
-            }
+              value: val,
+            },
           })
           setValues(val)
         }}
@@ -76,5 +67,6 @@ const InputField = (props: Props) => {
       </RangeSlider>
     </FieldWrapper>
   )
-}
-export default chakra(InputField)
+})
+
+export default InputField

@@ -6,28 +6,17 @@ import {
   SquareProps
 } from "@chakra-ui/react";
 
-type Props = SpinnerProps &
+export type LoadingProps = SpinnerProps &
   SquareProps & {
     children?: React.ReactNode | React.ReactNode[]
   }
 
 export const Loading = chakra(
-  ({
-    size = 'lg',
-    thickness = '25px',
-    centerContent = true,
-    children,
-    ...props
-  }: Props) => {
+  ({ size = 'lg', thickness = '25px', centerContent = true, children, ...props }: LoadingProps) => {
     return (
       <>
         <Square centerContent={centerContent} p={10}>
-          <Spinner
-            color="accent.500"
-            emptyColor="gray.200"
-            thickness="6px"
-            size={size}
-          />
+          <Spinner color="accent.500" emptyColor="gray.200" thickness="6px" size={size} />
         </Square>
       </>
     )

@@ -53,7 +53,7 @@ export const UserContext = createContext<UserContextData>({
   isBrother: false,
   isStaff: false,
   isApplicant: false,
-  hasFeature: (_feature: MemberFeature) => false
+  hasFeature: (_feature: MemberFeature) => false,
 })
 
 export function UserProvider({ children }: { children: ReactNode }) {
@@ -64,17 +64,16 @@ export function UserProvider({ children }: { children: ReactNode }) {
     data: member,
     mutate: _mutate,
     error,
-    isLoading
+    isLoading,
   } = useSWR<Member, Error>(() => (authenticated ? key : null), {
     refreshInterval: 1000 * 60 * 1,
-    keepPreviousData: false
+    keepPreviousData: false,
   })
 
   const { application_status, user_type, membership_type } = member || {}
   const name = member?.nickname || member?.first_name || 'Brother'
   const picture = getAssetUrl(member?.picture)
-  const approved =
-    ApplicationStatus[application_status] >= ApplicationStatus.approved
+  const approved = ApplicationStatus[application_status] >= ApplicationStatus.approved
   const level = MemberLevel[user_type]
   const isMember = approved && level >= MemberLevel.pledge
   const isBrother = isMember && level >= MemberLevel.brother
@@ -111,7 +110,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       return _mutate(
         { ...member },
         {
-          revalidate: true
+          revalidate: true,
         }
       )
     },
@@ -123,12 +122,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
     isBrother,
     isStaff,
     isApplicant,
-    hasFeature
+    hasFeature,
   }
   return <UserContext.Provider value={context}>{children}</UserContext.Provider>
 }
 
-type UseUserProps = {
+export type UseUserProps = {
   minLevel?: MemberLevel
   minAppStatus?: ApplicationStatus
   requiredFeature?: MemberFeature
@@ -138,14 +137,13 @@ export const useUser = ({
   minLevel,
   minAppStatus,
   redirectsEnabled = false,
-  requiredFeature
+  requiredFeature,
 }: UseUserProps = {}): UserContextData & {
   authorized: boolean
 } => {
   const router = useRouter()
 
-  const { level, loading, member, authenticated, hasFeature, ...data } =
-    useContext(UserContext)
+  const { level, loading, member, authenticated, hasFeature, ...data } = useContext(UserContext)
   let authorized = level >= minLevel
 
   useEffect(() => {
@@ -186,7 +184,7 @@ export const useUser = ({
     level,
     minLevel,
     requiredFeature,
-    hasFeature
+    hasFeature,
   ])
 
   return {
@@ -196,6 +194,6 @@ export const useUser = ({
     loading,
     member,
     authorized,
-    hasFeature
+    hasFeature,
   }
 }
