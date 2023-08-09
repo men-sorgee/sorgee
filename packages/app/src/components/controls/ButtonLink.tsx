@@ -17,7 +17,7 @@ export const ButtonLink = chakra(
     colorScheme = 'primary',
     onClick = () => {},
     replace = false,
-    w = ['full', 'fit-content'],
+    w = ['full', 'auto'],
     flex = 'auto',
     ...props
   }: Props) => {

@@ -1,13 +1,13 @@
 import distance from "date-fns/formatDistanceToNow";
 import { useAppNotifications } from "hooks/use-app-notifications";
 import { AppNotification, Member } from "lib/models";
-import { toLocalDate } from "lib/utils";
+import { gradient } from "lib/utils";
 import { useCallback, useEffect, useState } from "react";
 
 import {
   Alert,
-  Box,
   Button,
+  ButtonGroup,
   chakra,
   Heading,
   HStack,
@@ -163,8 +163,14 @@ export const AppNotificationCard = chakra(({ member, notification, closeDrawer }
           <ModalCloseButton />
           <ModalBody>{body && <Markdown content={message} size="md" />}</ModalBody>
           <ModalFooter>
-            <HStack spacing={2} align="right">
-              <Button onClick={onClose}>Close</Button>
+            <ButtonGroup size="xs">
+              <Button
+                onClick={onClose}
+                bgGradient={gradient('primary')}
+                _hover={{ bgGradient: gradient('primary', 100) }}
+              >
+                Close
+              </Button>
               {notification?.link && (
                 <ButtonLink
                   onClick={() => {
@@ -178,10 +184,14 @@ export const AppNotificationCard = chakra(({ member, notification, closeDrawer }
                 </ButtonLink>
               )}
               <Spacer />
-              <Button onClick={markAsDeleted} colorScheme="red">
+              <Button
+                onClick={markAsDeleted}
+                bgGradient={gradient('red')}
+                _hover={{ bgGradient: gradient('red', 100) }}
+              >
                 Delete
               </Button>
-            </HStack>
+            </ButtonGroup>
           </ModalFooter>
         </ModalContent>
       </Modal>

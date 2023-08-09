@@ -49,7 +49,7 @@ export function ButtonConfirm<TResponse = void>({
   py = 2,
   color = 'white',
   colorScheme,
-  bg,
+  w = ['full', 'auto'],
   ...props
 }: ButtonConfirmProps<TResponse>) {
   const toast = useToast()
@@ -99,7 +99,6 @@ export function ButtonConfirm<TResponse = void>({
           title={title}
           icon={icon}
           bgGradient={bgGradient}
-          bg={bg}
           color={color}
           _hover={{
             bgGradient: bgGradientHover,
@@ -112,9 +111,9 @@ export function ButtonConfirm<TResponse = void>({
           aria-label={title}
           title={title}
           py={py}
-          bgGradient={bgGradient}
-          bg={bg}
           color={color}
+          w={w}
+          bgGradient={bgGradient}
           _hover={{
             bgGradient: bgGradientHover,
           }}
@@ -139,20 +138,30 @@ export function ButtonConfirm<TResponse = void>({
             <AlertDialogBody>{children}</AlertDialogBody>
 
             <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
-                Cancel
-              </Button>
               <Button
                 ref={goRef}
-                colorScheme={confirmColorScheme}
                 onClick={() => {
                   onClose()
                   action()
                 }}
                 ml={3}
                 title={title}
+                bgGradient={gradient(confirmColorScheme)}
+                _hover={{
+                  bgGradient: gradient(confirmColorScheme, 100),
+                }}
               >
                 {buttonText}
+              </Button>
+              <Button
+                ref={cancelRef}
+                bgGradient={gradient('gray')}
+                _hover={{
+                  bgGradient: gradient('gray', 100),
+                }}
+                onClick={onClose}
+              >
+                Cancel
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

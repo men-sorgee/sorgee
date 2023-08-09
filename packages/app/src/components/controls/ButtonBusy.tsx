@@ -11,7 +11,15 @@ export type BusyButtonProps = ButtonProps & {
 }
 
 export const ButtonBusy = chakra(
-  ({ onClick, timeout = 5000, disabled, children, colorScheme = 'primary', ...props }) => {
+  ({
+    onClick,
+    timeout = 5000,
+    disabled,
+    children,
+    colorScheme = 'primary',
+    w = ['full', 'auto'],
+    ...props
+  }) => {
     const [busy, setBusy] = useState(false)
     const buttonRef = useRef<HTMLButtonElement>(null)
     const handleClick = useCallback(() => {
@@ -46,6 +54,8 @@ export const ButtonBusy = chakra(
           isDisabled={busy || disabled}
           onClick={handleClick}
           bgGradient={bgGradient}
+          w={w}
+          color="white"
           _hover={{ bgGradient: bgGradientHover }}
           {...props}
         >

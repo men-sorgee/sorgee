@@ -188,7 +188,7 @@ export const EventRSVP = ({ eventId, invite: eventUser, onChange, canConfirm }: 
         setWorking(false)
       }}
       focusRef={reasonRef}
-      bgGradient={bgGradient('gray')}
+      colorScheme="blackAlpha"
       w={['full', 'full', 'auto']}
     >
       <>

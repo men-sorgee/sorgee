@@ -32,26 +32,26 @@ export const EventNextBox = chakra(({ member, children, ...props }: EventNextPro
   }, [invite, eventsLoading, invitations, upcoming, activeInvite])
 
   return (
-    <Box {...props}>
+    <Box {...props} w="full">
       {children}
-      <LinkBox mt={4}>
-        {invite && (
+      {invite && (
+        <LinkBox mt={4}>
           <EventCard event={invite?.event}>
             <EventRSVP eventId={invite.event.id} invite={invite} canConfirm={member.rating > 3} />
             <LinkOverlay as={NextLink} href={`/events/${invite.event.id}`} />
           </EventCard>
-        )}
-        <ButtonLink
-          href="/events"
-          colorScheme="accent"
-          mx="auto"
-          mt={4}
-          size="lg"
-          fontSize={['md', 'lg', 'xl']}
-        >
-          View All Events
-        </ButtonLink>
-      </LinkBox>
+        </LinkBox>
+      )}
+      <ButtonLink
+        href="/events"
+        colorScheme="accent"
+        mx="auto"
+        mt={4}
+        size="lg"
+        fontSize={['md', 'lg', 'xl']}
+      >
+        View All Events
+      </ButtonLink>
     </Box>
   )
 })
