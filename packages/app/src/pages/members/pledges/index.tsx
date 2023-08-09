@@ -8,25 +8,34 @@ import {
 import { useMemberSearch, useUser } from "hooks";
 import { pledgeSurvey } from "lib/config";
 import { MemberLevel, SearchableMember } from "lib/models";
+import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 import { Container, SimpleGrid, Text, useDisclosure } from "@chakra-ui/react";
 
 export default function PledgeListPage() {
   const [pledge, setPledge] = useState<SearchableMember>()
-  const {
-    member: currentMember,
-    level,
-    loading,
-  } = useUser({
+  const { member: currentMember, loading } = useUser({
     minLevel: MemberLevel.brother,
     requiredFeature: 'view_directory',
     redirectsEnabled: true,
   })
 
-  const { members, meta } = useMemberSearch(1, 100, 'approved_date', {
+  const {
+    members,
+    meta,
+    loading: pledgesLoading,
+  } = useMemberSearch(1, 100, 'approved_date', {
     user_type: MemberLevel[MemberLevel.pledge],
   })
+
+  const params = useSearchParams()
+  useEffect(() => {
+    if (!pledgesLoading && members && params.get('id')) {
+      let pledge = members.find((m) => m.id == params.get('id'))
+      setPledge(pledge)
+    }
+  }, [pledgesLoading, members, params, setPledge])
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   useEffect(() => {
@@ -43,7 +52,7 @@ export default function PledgeListPage() {
   }, [onClose])
 
   return (
-    <Page title="Pledges" loading={loading}>
+    <Page title="Pledges" loading={loading || pledgesLoading}>
       <Text fontSize="xl" fontWeight="bold" mb={4}>
         These men have pledged a bid to join the brotherhood, but no one has vouched for them yet.
         To vouch for a Pledge, use the vouch button on their profile.

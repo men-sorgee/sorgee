@@ -32,7 +32,13 @@ export const MembersNewBox = chakra(({ member, children, ...props }: MembersNewP
         {pledges && (
           <SimpleGrid columns={[1, 1, 2]} spacing={4}>
             {newestPledges?.map((p) => (
-              <MemberCard key={p.id} member={p} viewer={member} full={false} />
+              <MemberCard
+                key={p.id}
+                member={p}
+                viewer={member}
+                full={false}
+                href={`/members/pledges?id=${p.id}`}
+              />
             ))}
           </SimpleGrid>
         )}
@@ -43,7 +49,13 @@ export const MembersNewBox = chakra(({ member, children, ...props }: MembersNewP
 
         <SimpleGrid columns={[1, 1, 2]} spacing={4}>
           {oldestPledges?.map((p) => (
-            <MemberCard key={p.id} member={p} viewer={member} full={false} />
+            <MemberCard
+              key={p.id}
+              member={p}
+              viewer={member}
+              full={false}
+              href={`/members/pledges#${p.id}`}
+            />
           ))}
         </SimpleGrid>
         <ButtonLink

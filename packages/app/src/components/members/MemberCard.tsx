@@ -31,11 +31,20 @@ export type MemberCardProps = CardProps & {
   member: Partial<Member>
   full?: boolean
   onClick?: () => void
+  href?: string
   children?: ReactNode | ReactNode[]
 }
 
 export const MemberCard = chakra(
-  ({ member, onClick, full = false, size = ['lg', 'xl'], children, ...props }: MemberCardProps) => {
+  ({
+    member,
+    onClick,
+    full = false,
+    size = ['lg', 'xl'],
+    href = `/member/${member.id}`,
+    children,
+    ...props
+  }: MemberCardProps) => {
     const levelValue = MemberLevel[member?.user_type || 'applicant']
     const levelColor = MemberLevelColorMap[levelValue]
     const { member: viewer, level } = useUser()
@@ -59,10 +68,15 @@ export const MemberCard = chakra(
             <CardHeader>
               <LinkOverlay
                 as={NextLink}
-                href={`/member/${member.id}`}
+                href={href}
                 onClick={(e) => {
-                  e.preventDefault()
-                  if (member.show_profile) onClick()
+                  if (onClick) {
+                    e.stopPropagation()
+                    e.preventDefault()
+                    onClick()
+                  } else {
+                    return member.show_profile
+                  }
                 }}
               >
                 <MemberHeader member={member} size={size} minimal={!full}>

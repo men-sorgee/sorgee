@@ -7,7 +7,6 @@ import {
   NotificationUser,
   Promo,
   Rating,
-  UserEmailEvent,
   UserInvite
 } from "lib/models";
 import { ProviderType } from "next-auth/providers";
