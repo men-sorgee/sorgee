@@ -1,7 +1,8 @@
-import useSWR from 'swr'
-import { ManyItems } from '@directus/sdk'
-import { MemberSearchQueryParams, SearchableMember } from 'lib/models'
-import { useEffect, useState } from 'react'
+import { MemberSearchQueryParams, SearchableMember } from "lib/models";
+import { useEffect, useState } from "react";
+import useSWR from "swr";
+
+import { ManyItems } from "@directus/sdk";
 
 export type MemberSearchContext = {
   members: SearchableMember[]
@@ -15,32 +16,23 @@ export type MemberSearchContext = {
   error: string
 }
 
-function useMemberSearch({
-  page,
-  size,
-  sort = '-last_login',
-  ...query
-}: MemberSearchQueryParams) {
+function useMemberSearch({ page, size, sort = '-last_login', ...query }: MemberSearchQueryParams) {
   const [members, setMembers] = useState<SearchableMember[]>([])
   const [pageCount, setPageCount] = useState<number>(0)
   const [meta, setMeta] = useState({
     total: 0,
-    filtered: 0
+    filtered: 0,
   })
 
-  const filters = Object.keys(query)
-    ? `&${new URLSearchParams(query as any).toString()}`
-    : ''
+  const filters = Object.keys(query) ? `&${new URLSearchParams(query as any).toString()}` : ''
 
-  const key = `/api/members?limit=${size || 20}&page=${
-    page || 1
-  }&sort=${sort}${filters}`
+  const key = `/api/members?limit=${size || 20}&page=${page || 1}&sort=${sort}${filters}`
 
   const {
     data: response,
     error,
     isLoading,
-    isValidating
+    isValidating,
   } = useSWR<ManyItems<SearchableMember>>(key, {
     keepPreviousData: false,
     refreshInterval: 0,
@@ -48,9 +40,9 @@ function useMemberSearch({
       data: [],
       meta: {
         total_count: 0,
-        filter_count: 0
-      }
-    }
+        filter_count: 0,
+      },
+    },
   })
 
   useEffect(() => {
@@ -58,7 +50,7 @@ function useMemberSearch({
       const { total_count, filter_count } = response.meta
       setMeta({
         total: total_count || 0,
-        filtered: filter_count || 0
+        filtered: filter_count || 0,
       })
       setPageCount(filter_count ? Math.ceil(filter_count / size) : 0)
       setMembers(response.data as SearchableMember[])
@@ -75,7 +67,7 @@ function useMemberSearch({
     sortTerm: sort?.replace('-', ''),
     direction: sort?.startsWith('-') ? 'desc' : 'asc',
     loading: isLoading || isValidating,
-    error
+    error,
   }
 
   console.dir(result)

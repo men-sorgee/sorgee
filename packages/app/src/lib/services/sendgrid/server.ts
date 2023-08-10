@@ -1,6 +1,7 @@
-import { MemberLevel, Profile } from 'lib/models'
-import client from '@sendgrid/client'
-import mail, { MailDataRequired } from '@sendgrid/mail'
+import { MemberLevel, Profile } from "lib/models";
+
+import client from "@sendgrid/client";
+import mail, { MailDataRequired } from "@sendgrid/mail";
 
 function getClient() {
   client.setApiKey(process.env.SENDGRID_API_KEY)
@@ -17,6 +18,7 @@ export enum SendGridCategory {
   Invitation = 'invitation',
   Confirmation = 'confirmation',
   Survey = 'survey',
+  Updates = 'updates',
 }
 
 export enum SendGridList {

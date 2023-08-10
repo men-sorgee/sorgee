@@ -1,9 +1,9 @@
 'use client'
 
-import { EventDetail, EventUser } from 'lib/models'
-import { ApiResult, getJSON, JsonFetcher, putJSON } from 'lib/utils'
-import { useCallback } from 'react'
-import useSWR from 'swr'
+import { EventDetail, EventUser } from "lib/models";
+import { ApiResult, getJSON } from "lib/utils";
+import { useCallback } from "react";
+import useSWR from "swr";
 
 export type EventResults = {
   event: EventDetail | null
@@ -18,29 +18,24 @@ export type EventCloseResult = {
   noShows: number
 }
 
-export const useEvent = (
-  eventId: string,
-  admin: boolean = false
-): EventResults => {
+export const useEvent = (eventId: string, admin: boolean = false): EventResults => {
   const {
     data: event,
     error,
     isLoading,
-    mutate
+    mutate,
   } = useSWR<EventDetail, Error>(eventId ? `/api/events/${eventId}` : null, {
-    refreshInterval: 1000 * 60 * (admin ? 1 : 10)
+    refreshInterval: 1000 * 60 * (admin ? 1 : 10),
   })
 
   const closeEvent = useCallback(async () => {
-    const { success, data, error } = await getJSON<any, EventUser[]>(
-      `/api/events/${eventId}/close`
-    )
+    const { success, data, error } = await getJSON<any, EventUser[]>(`/api/events/${eventId}/close`)
 
     if (!success) {
       console.error(data)
       return {
         success: false,
-        noShows: 0
+        noShows: 0,
       }
     }
 
@@ -49,9 +44,9 @@ export const useEvent = (
       success,
       data: {
         success: true,
-        noShows: data.length
+        noShows: data.length,
       },
-      error
+      error,
     } as ApiResult<EventCloseResult>
   }, [eventId, mutate])
 
@@ -62,6 +57,6 @@ export const useEvent = (
     closeEvent,
     reload: () => {
       mutate(event, true)
-    }
+    },
   }
 }

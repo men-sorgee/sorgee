@@ -1,10 +1,9 @@
-import { useInvites } from 'hooks'
-import { Member, MemberLevel } from 'lib/models'
-import NextLink from 'next/link'
+import { useInvites } from "hooks";
+import { Member, MemberLevel } from "lib/models";
+import NextLink from "next/link";
 
-import { Badge, Box, Icon, IconButton, Link } from '@chakra-ui/react'
-import { CalendarIcon } from '@heroicons/react/24/outline'
-import { TicketIcon } from '@heroicons/react/24/outline'
+import { Badge, Box, Icon, IconButton, Link } from "@chakra-ui/react";
+import { CalendarIcon, TicketIcon } from "@heroicons/react/24/outline";
 
 interface Props {
   member: Member

@@ -1,7 +1,7 @@
-import { ApiResponse, EventDetail, EventUser, Member, MemberLevel } from 'lib/models'
-import { getEventDetail, setUserAverageRating, updateEvent, updateEventUsers } from 'lib/services/directus/server'
-import { withMember, withMethods } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { EventDetail, EventUser, Member, MemberLevel } from "lib/models";
+import { getEventDetail } from "lib/services/directus/server";
+import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function Event(
   req: NextApiRequest,
@@ -11,6 +11,8 @@ export default async function Event(
     withMethods(req, ['GET'])
     const user = await withMember(req, res)
     const { id: i } = req.query
+    if (!i || i == 'undefined') throw new Error('Missing event id')
+
     const id = String(i)
 
     const event = await getEventDetail(id)

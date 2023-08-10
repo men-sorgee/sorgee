@@ -1,16 +1,9 @@
-import { UpgradeIcon } from 'components/controls'
-import {
-  Member,
-  MemberLevel,
-  MembershipType,
-  User,
-  UserBuddy
-} from 'lib/models'
-import NextLink from 'next/link'
+import { useMemberSearch } from "hooks";
+import { Member, MemberLevel } from "lib/models";
+import NextLink from "next/link";
 
-import { Badge, Icon, IconButton, Link } from '@chakra-ui/react'
-import { UserCircleIcon } from '@heroicons/react/24/outline'
-import { useMemberSearch } from 'hooks'
+import { Badge, Icon, IconButton, Link } from "@chakra-ui/react";
+import { UserCircleIcon } from "@heroicons/react/24/outline";
 
 interface Props {
   member: Member
@@ -23,7 +16,7 @@ const PledgesAction = ({ member, active, iconSize, iconDimensions }: Props) => {
   const level = MemberLevel[member?.user_type]
 
   const { meta } = useMemberSearch(1, 20, 'last_login', {
-    user_type: MemberLevel[MemberLevel.pledge]
+    user_type: MemberLevel[MemberLevel.pledge],
   })
   const { filtered: count } = meta
 
@@ -39,9 +32,7 @@ const PledgesAction = ({ member, active, iconSize, iconDimensions }: Props) => {
           zIndex="fixed"
           size={iconSize}
           w={iconDimensions}
-          icon={
-            <Icon as={UserCircleIcon} w={iconDimensions} h={iconDimensions} />
-          }
+          icon={<Icon as={UserCircleIcon} w={iconDimensions} h={iconDimensions} />}
           color={active ? 'accent.500' : 'white'}
           aria-label="Review Pledges"
           title="Review Pledges"

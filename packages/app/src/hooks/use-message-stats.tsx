@@ -1,7 +1,7 @@
 'use client'
-import { UserMessageStats } from 'lib/models'
-import { JsonFetcher } from 'lib/utils'
-import useSWR from 'swr'
+import { UserMessageStats } from "lib/models";
+import { JsonFetcher } from "lib/utils";
+import useSWR from "swr";
 
 export type MessagesStatsContextData = {
   stats: UserMessageStats

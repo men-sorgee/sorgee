@@ -1,8 +1,10 @@
-import { useState } from 'react'
-import { SubscriptionData } from 'lib/models'
-import { postJSON } from 'lib/utils'
-import { Box, BoxProps, chakra, Flex, Heading, Text } from '@chakra-ui/react'
-import { FieldInput, Form, BusyButton } from '../.'
+import { SubscriptionData } from "lib/models";
+import { postJSON } from "lib/utils";
+import { useState } from "react";
+
+import { Box, BoxProps, chakra, Flex, Heading, Text } from "@chakra-ui/react";
+
+import { ButtonBusy, FieldInput, Form } from "../";
 
 export const SubscribeBox = chakra(({ ...props }: BoxProps) => {
   const [subscribed, setSubscribed] = useState(false)
@@ -23,8 +25,7 @@ export const SubscribeBox = chakra(({ ...props }: BoxProps) => {
         Wanna get it in?
       </Heading>
       <Text>
-        Drop your email and what to call ya. We&apos;ll reach out when
-        we&apos;re opened up.
+        Drop your email and what to call ya. We&apos;ll reach out when we&apos;re opened up.
       </Text>
 
       <Form<SubscriptionData>
@@ -34,19 +35,14 @@ export const SubscribeBox = chakra(({ ...props }: BoxProps) => {
       >
         {() => (
           <>
-            <Flex
-              direction={['column', 'column', 'row']}
-              justify="space-between"
-              gap={4}
-              mt={4}
-            >
+            <Flex direction={['column', 'column', 'row']} justify="space-between" gap={4} mt={4}>
               <FieldInput
                 field="name"
                 registerOptions={{
                   required: {
                     value: true,
-                    message: 'Please enter your name'
-                  }
+                    message: 'Please enter your name',
+                  },
                 }}
                 placeholder={' name'}
                 autoComplete="full-name"
@@ -57,21 +53,21 @@ export const SubscribeBox = chakra(({ ...props }: BoxProps) => {
                 registerOptions={{
                   required: {
                     value: true,
-                    message: 'Please enter your email address'
-                  }
+                    message: 'Please enter your email address',
+                  },
                 }}
                 type="email"
                 placeholder={'email'}
                 autoComplete="email"
               />
-              <BusyButton type="submit" size="lg" fontSize="sm" color={'white'}>
+              <ButtonBusy type="submit" size="lg" fontSize="sm" color={'white'}>
                 Email Me
-              </BusyButton>
+              </ButtonBusy>
             </Flex>
 
             <Text fontSize="xs" fontStyle={'italic'} color={'text'}>
-              Add your information here, only if you agree to our Terms of
-              Service and Privacy Policy.
+              Add your information here, only if you agree to our Terms of Service and Privacy
+              Policy.
             </Text>
           </>
         )}

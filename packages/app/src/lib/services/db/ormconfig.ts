@@ -1,6 +1,6 @@
-import { DataSourceOptions } from 'typeorm'
+import { DataSourceOptions } from "typeorm";
 
-import * as types from './entities'
+import * as types from "./entities";
 
 const config: DataSourceOptions = {
   name: 'gnh',

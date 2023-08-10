@@ -1,7 +1,15 @@
-import { EventDetail, GroupEvent, Question, Survey, SurveyAnswer, UserSurvey } from 'lib/models'
-import { surveys } from 'lib/config'
-import { getAdminClient } from './'
-import { create } from 'domain'
+import { create } from "domain";
+import { surveys } from "lib/config";
+import {
+  EventDetail,
+  GroupEvent,
+  Question,
+  Survey,
+  SurveyAnswer,
+  UserSurvey
+} from "lib/models";
+
+import { getAdminClient } from "./";
 
 export async function createSurvey(survey: Partial<Survey>): Promise<Survey> {
   const client = await getAdminClient()

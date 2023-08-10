@@ -1,10 +1,15 @@
-import { ApiResponse, Member, UserEmailChange } from 'lib/models'
-import { findUser, updateUser } from 'lib/services/directus/server/users'
-import { withMember, withMethods } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
-import { SendGridCategory, SendGridTemplate, sendNotificationEmail } from 'lib/services/sendgrid/server'
-import { baseUrl } from 'lib/config'
-import { uuidv4 } from 'lib/utils'
+import { baseUrl } from "lib/config";
+import { Member, UserEmailChange } from "lib/models";
+import { findUser, updateUser } from "lib/services/directus/server/users";
+import {
+  SendGridCategory,
+  SendGridTemplate,
+  sendNotificationEmail
+} from "lib/services/sendgrid/server";
+import { uuidv4 } from "lib/utils";
+import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
+
 export default async function listUserInvites(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<boolean>>

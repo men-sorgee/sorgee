@@ -1,14 +1,9 @@
 //@ts-ignore-file
 
-import {
-
-  Rating,
-  RatingCollection,
-} from 'lib/models'
-
+import { Rating, RatingCollection } from "lib/models";
 
 // Service Calls ------------------------------------
-import { getAdminClient } from '../'
+import { getAdminClient } from "../";
 
 export async function getRating(user_id: string, collection: RatingCollection, item_id: string) {
   const adminClient = await getAdminClient()
@@ -105,6 +100,8 @@ export async function setUserAverageRating(user_id: string) {
 
   const average = ratings.reduce((acc, rating) => acc + rating.rate, 0) / ratings.length
 
+  if (average == 0) return
+
   const attendedEvents = await adminClient.items('events_users').readByQuery({
     filter: {
       users_id: {
@@ -150,7 +147,7 @@ export async function setUserAverageRating(user_id: string) {
   if (rating > 5) rating = 5
 
   await adminClient.items('users').updateOne(user_id, {
-    rating,
+    rating: rating,
   })
   return rating
 }

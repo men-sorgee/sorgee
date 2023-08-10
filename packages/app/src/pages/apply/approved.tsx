@@ -1,17 +1,17 @@
-import Page from 'components/Page'
-import { useUser } from 'hooks/use-user'
-import { Heading, HStack, Text, VStack } from '@chakra-ui/react'
-import { ButtonLink } from 'components/controls'
-import { pledgeSurvey } from 'lib/config'
-import { ApplicationStatus, MemberLevel } from 'lib/models'
-import ApplicationSteps from './_steps'
-import { Plans } from 'components'
+import { ButtonLink, Page, Plans } from "components";
+import { useUser } from "hooks/use-user";
+import { pledgeSurvey } from "lib/config";
+import { ApplicationStatus, MemberLevel } from "lib/models";
+
+import { Heading, HStack, Text, VStack } from "@chakra-ui/react";
+
+import ApplicationSteps from "./_steps";
 
 function Approved() {
   const { loading, level, member } = useUser({
     minLevel: MemberLevel.applicant,
     minAppStatus: ApplicationStatus.approved,
-    redirectsEnabled: true
+    redirectsEnabled: true,
   })
 
   return (
@@ -31,39 +31,30 @@ function Approved() {
         <VStack alignItems="center" justifyItems="middle" pt={10}>
           {level == MemberLevel.inductee && (
             <Text textAlign="center">
-              You will now get periodic event invites as well as access to our
-              member-only content.
+              You will now get periodic event invites as well as access to our member-only content.
             </Text>
           )}
           {level == MemberLevel.pledge && (
             <>
               <Text textAlign="center">
-                You need a brother to sponsor you before you can be inducted.
-                Complete the pledge survey to get started. It will help brothers
-                get to know who you are before reaching out. You will also want
-                to complete your profile and make sure it is visible to
+                You need a brother to sponsor you before you can be inducted. Complete the pledge
+                survey to get started. It will help brothers get to know who you are before reaching
+                out. You will also want to complete your profile and make sure it is visible to
                 brothers.
               </Text>
               <HStack spacing={4} textAlign="center" mt={4}>
-                <ButtonLink
-                  href={`/survey/${pledgeSurvey}`}
-                  colorScheme="accent"
-                  gradient
-                >
+                <ButtonLink href={`/survey/${pledgeSurvey}`} colorScheme="accent">
                   Take the Pledge Questionnaire
                 </ButtonLink>
               </HStack>
             </>
           )}
-          {level == MemberLevel.brother &&
-            member?.membership_type == 'none' && (
-              <>
-                <Plans allowSubscribe={true} />
-                <Text>
-                  Or stick with the free plan and complete your profile.
-                </Text>
-              </>
-            )}
+          {level == MemberLevel.brother && member?.membership_type == 'none' && (
+            <>
+              <Plans allowSubscribe={true} />
+              <Text>Or stick with the free plan and complete your profile.</Text>
+            </>
+          )}
 
           <HStack spacing={4} textAlign="center" my={4}>
             {level >= MemberLevel.brother && (

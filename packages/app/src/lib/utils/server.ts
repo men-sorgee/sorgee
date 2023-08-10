@@ -1,18 +1,34 @@
+import { authOptions } from "lib/auth/config";
 import {
   Applicant,
   applicantFields,
   Member,
   memberFields,
   MemberLevel,
-  profileFields,
   User,
-  UserInvite,
-} from 'lib/models'
-import { findUser } from 'lib/services/directus/server'
-import { NextApiRequest, NextApiResponse } from 'next'
-import { getServerSession, User as AuthUser } from 'next-auth'
+  UserInvite
+} from "lib/models";
+import { findUser } from "lib/services/directus/server";
+import { NextApiRequest, NextApiResponse } from "next";
+import { getServerSession, User as AuthUser } from "next-auth";
 
-import { authOptions } from 'lib/auth/config'
+import { ApiError } from "./apis";
+
+export type ApiResponse<T = object | any | never> = {
+  error: ApiError
+  data: T
+}
+
+export function ApiResponse<T = any | any | never>(
+  data: T,
+  error?: string,
+  field?: string & keyof T
+): ApiResponse<T> {
+  return {
+    data: data || ({} as T),
+    error: { message: error, field },
+  }
+}
 
 export function withMethods(
   req: NextApiRequest,
@@ -83,3 +99,5 @@ export function parseInvite(invite: string): UserInvite {
   const inviteJson = Buffer.from(invite, 'base64').toString('utf-8')
   return JSON.parse(inviteJson)
 }
+
+export * from './apis'

@@ -1,7 +1,7 @@
-import { updateUser } from 'lib/services/directus/server'
-import { getClient } from 'lib/services/stripe/server'
-import { withMethods, withUser } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { updateUser } from "lib/services/directus/server";
+import { getClient } from "lib/services/stripe/server";
+import { withMethods, withUser } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { callbackUrl = '/member/account/plan' } = req.query

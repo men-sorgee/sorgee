@@ -1,16 +1,16 @@
 'use client'
+import { UserNotification } from "lib/models";
+import { deleteJSON, JsonFetcher, putJSON } from "lib/utils";
 import {
   createContext,
   ReactNode,
   useContext,
   useEffect,
   useState
-} from 'react'
+} from "react";
+import useSWR from "swr";
 
-import { UserNotification } from 'lib/models'
-import { deleteJSON, JsonFetcher, putJSON } from 'lib/utils'
-import useSWR from 'swr'
-import { useAuthenticated } from './use-authenticated'
+import { useAuthenticated } from "./use-authenticated";
 
 export type UserNotificationsContextData = {
   notifications: UserNotification[]
@@ -51,7 +51,7 @@ export function UserNotificationsProvider({
     error,
     isLoading
   } = useSWR<UserNotification[], Error>(authenticated ? key : null, {
-    refreshInterval: 1000 * 60, // 1 minutes
+    refreshInterval: 1000 * 60 * 5,
     fallbackData: []
   })
   const [hasNewNotifications, setHasNewNotifications] = useState(false)

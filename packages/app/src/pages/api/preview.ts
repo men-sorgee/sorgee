@@ -1,5 +1,5 @@
-import { getPageBySlug } from 'lib/services/directus/static'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { getPageBySlug } from "lib/services/directus/static";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function Preview(req: NextApiRequest, res: NextApiResponse) {
   // Fetch the headless CMS to check if the provided `slug` exists

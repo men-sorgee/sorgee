@@ -1,41 +1,41 @@
-import { ReactNode, useCallback, useEffect, useState } from 'react'
+import { Rating as RatingControl, RatingControlProps } from "components";
+import { Rating, RatingCollection } from "lib/models";
+import { JsonFetcher, postJSON } from "lib/utils";
+import { ReactNode, useCallback, useEffect, useState } from "react";
+import useSWR from "swr";
 
-import { Rating as RatingControl } from 'components/controls'
-import { Rating, RatingCollection } from 'lib/models'
-import { JsonFetcher, postJSON } from 'lib/utils'
-import useSWR from 'swr'
-
-import { Box, Flex } from '@chakra-ui/react'
-
-import { RatingControlProps } from './Rating'
+import { Box, Flex } from "@chakra-ui/react";
 
 export type RateItemProps = RatingControlProps & {
   item_id: string
   collection: RatingCollection
   onChange?: (rate: number) => void
   children?: ReactNode
+  direction?:
+    | 'row'
+    | 'column'
+    | 'row-reverse'
+    | 'column-reverse'
+    | Array<'row' | 'column' | 'row-reverse' | 'column-reverse'>
 }
 
 const itemMap = {
   users: 'member',
-  events: 'event'
+  events: 'event',
 }
 
 export const RateItem = ({
   item_id,
   collection,
   onChange = () => {},
+  direction = ['column', 'row'],
   children,
   ...props
 }: RateItemProps) => {
   const [value, setValue] = useState<number>(undefined)
-  const { data = [], mutate } = useSWR<Rating[], Error>(
-    `/api/my/ratings`,
-    JsonFetcher,
-    {
-      fallbackData: []
-    }
-  )
+  const { data = [], mutate } = useSWR<Rating[], Error>(`/api/my/ratings`, JsonFetcher, {
+    fallbackData: [],
+  })
   const ratings = data
     .filter((r) => r.collection == collection)
     .map((r) => {
@@ -75,7 +75,7 @@ export const RateItem = ({
   )
 
   return (
-    <Flex direction={['column', 'row']} gap={4}>
+    <Flex direction={direction} gap={2} align="center" justify="center">
       <Box>{children}</Box>
       <RatingControl
         value={value}

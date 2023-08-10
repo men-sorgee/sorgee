@@ -1,6 +1,5 @@
-import { useEffect } from 'react'
-
-import { useMeta } from 'hooks/use-meta'
+import { useMeta } from "hooks/use-meta";
+import { useEffect } from "react";
 
 export default function Custom500() {
   const { setMeta } = useMeta()

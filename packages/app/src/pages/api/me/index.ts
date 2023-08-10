@@ -1,12 +1,7 @@
-import {
-  ApiResponse,
-  Member,
-  memberFields,
-  User,
-} from 'lib/models'
-import { getUser, updateUser } from 'lib/services/directus/server/users'
-import { withMethods, withUser } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { Member, memberFields, User } from "lib/models";
+import { getUser, updateUser } from "lib/services/directus/server/users";
+import { ApiResponse, withMethods, withUser } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function CurrentMember(
   req: NextApiRequest,

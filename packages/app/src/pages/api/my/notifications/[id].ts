@@ -1,9 +1,12 @@
 
-import { ApiResponse } from 'lib/models'
-import { withMethods, withUser } from 'lib/utils/server'
-import type { NextApiRequest, NextApiResponse } from 'next'
-import { deleteUserNotification, getUserNotification, markUserNotificationRead } from 'lib/services/directus/server'
+import {
+  deleteUserNotification,
+  getUserNotification,
+  markUserNotificationRead
+} from "lib/services/directus/server";
+import { ApiResponse, withMethods, withUser } from "lib/utils/server";
 
+import type { NextApiRequest, NextApiResponse } from 'next'
 export default async function PutUserNotification(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse>

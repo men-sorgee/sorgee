@@ -1,9 +1,8 @@
-import { useEffect } from 'react'
+import { useMeta } from "hooks/use-meta";
+import Script from "next/script";
+import { useEffect } from "react";
 
-import { useMeta } from 'hooks/use-meta'
-import Script from 'next/script'
-
-import { Box } from '@chakra-ui/react'
+import { Box } from "@chakra-ui/react";
 
 export default function Terms() {
   const { setMeta } = useMeta()

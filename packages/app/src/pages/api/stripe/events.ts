@@ -1,13 +1,27 @@
-import type { Readable } from 'node:stream'
+import type { Readable } from 'node:stream';
 
-import { IncomingMessage } from 'http'
-import { User } from 'lib/models'
-import { findUser, getUser, updateInvite, updateUser } from 'lib/services/directus/server/users'
-import { findUserByCustomer, saveBillingEvent } from 'lib/services/directus/server/users/billing'
-import { getClient, subscriptionData, webhookSecret } from 'lib/services/stripe/server'
-import { NextApiRequest, NextApiResponse } from 'next'
-import Stripe from 'stripe'
+import { IncomingMessage } from "http";
+import { Member, User, UserPayment } from "lib/models";
+import {
+  findUser,
+  getUser,
+  updateInvite,
+  updateUser
+} from "lib/services/directus/server/users";
+import {
+  addUserPayment,
+  findUserByCustomer,
+  saveBillingEvent
+} from "lib/services/directus/server/users/billing";
+import {
+  getClient,
+  subscriptionData,
+  webhookSecret
+} from "lib/services/stripe/server";
+import { NextApiRequest, NextApiResponse } from "next";
+import Stripe from "stripe";
 
+import { baseUrl } from "../../../lib/config";
 
 async function getRawBody(readable: Readable): Promise<Buffer> {
   const chunks = []
@@ -17,34 +31,24 @@ async function getRawBody(readable: Readable): Promise<Buffer> {
   return Buffer.concat(chunks)
 }
 
-function extractFromSubscription(subscription: Stripe.Subscription & any) {
-  const { id, customer, status, plan, current_period_start: start, current_period_end: end, items } = subscription
-  const { product } = plan
-  const { type, features } = subscriptionData[product]
-  const interval = items.data[0]?.price?.recurring?.interval
-  return {
-    id,
-    type,
-    customer,
-    product,
-    status,
-    features,
-    start: new Date(start).toISOString(),
-    end: new Date(end).toISOString(),
-    interval,
-  }
-}
+
 
 export default async function handler(req: NextApiRequest & IncomingMessage, res: NextApiResponse) {
-  const sig = req.headers['stripe-signature']
-  const stripe = getClient()
-  let event: Stripe.Event
   console.log('Stripe event received')
 
   const rawBody = await getRawBody(req)
   const body = Buffer.from(rawBody).toString('utf8')
 
-  event = stripe.webhooks.constructEvent(body, sig, webhookSecret)
+  const verify = baseUrl.includes('localhost') ? false : true
+  let event: Stripe.Event = undefined
+
+  if (verify) {
+    const sig = req.headers['stripe-signature']
+    const stripe = getClient()
+    event = stripe.webhooks.constructEvent(body, sig, webhookSecret)
+  } else {
+    event = JSON.parse(body) as Stripe.Event
+  }
 
   const {
     id,
@@ -52,66 +56,90 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
     created,
     data: { object: data },
   } = event
-  const { object: dataType } = data as any
 
   let user: User | null = null
+  let objectType = data["object"] as string
 
   const customer = data as Stripe.Customer
   const subscription = data as Stripe.Subscription
   const checkoutSession = data as Stripe.Checkout.Session
+  const { metadata, email } = data as any
 
   try {
-    switch (dataType) {
-      case 'customer':
-        const { id } = customer || {}
-        if (!id) {
-          user = (await findUserByCustomer(id)) as unknown as User
-        } else {
-          user = await findUser(customer.email)
-        }
-        break
-      case 'subscription':
-        const { id: subscriptionId, customer: customerId } = extractFromSubscription(subscription)
-        user = (await findUserByCustomer(customerId)) as unknown as User
-        break
-      case 'checkout.session':
-        const { metadata: {
-          userId,
-        } } = checkoutSession
-        user = await getUser(userId)
-        break
+    console.dir({
+      data,
+      metadata,
+      email,
+      objectType,
+    })
+    let userId = metadata?.userId
+    if (userId) {
+      console.log('userId', userId)
+      user = await getUser(userId)
+    }
+
+    if (!user) {
+      console.log('no user')
+      let customerId: string = undefined
+      switch (objectType) {
+        case 'customer':
+          customerId = customer.id
+          break
+        case 'subscription':
+          customerId = subscription.customer as string
+          break
+        case 'checkout.session':
+          customerId = checkoutSession.customer as string
+          break
+      }
+      if (customerId) {
+        console.log('customerId', customerId)
+        user = await findUserByCustomer(customerId)
+      }
+      else if (email) {
+        console.log('email', email)
+        user = await findUser(customer.email)
+      }
     }
 
 
-    await saveBillingEvent({
+    const billingEvent = {
       id,
       type,
       data,
       user: user?.id || null,
       created,
+    }
+    console.dir({
+      billingEvent
     })
+
+    await saveBillingEvent(billingEvent)
   } catch (err) {
-    console.warn(err)
-    // process event anyway
+    console.error(err)
   }
 
   if (user == null) {
-    return res.status(200).json({ received: true })
+    return res.status(200).json({ received: true, user: false })
   }
 
-  // Handle the event
+  // Handle the event payloads accordingly
   switch (event.type) {
     case 'checkout.session.completed':
-      const { metadata: {
-        inviteId,
-      } } = checkoutSession
-      if (inviteId)
-        await updateInvite(Number(inviteId), { paid: true, rsvp: 'confirmed' })
+      const payment = extractFromCheckout(checkoutSession)
+      await addUserPayment(payment)
+      const { product_type, amount } = payment
+      let inviteId = payment.redeemed_id
+      if (product_type == 'event' && inviteId) {
+        await updateInvite(Number(inviteId), { paid: true, rsvp: 'confirmed', amount, confirmed_at: new Date().toISOString() })
+      }
       break
+
     case 'customer.created':
     case 'customer.updated':
       await updateUser(user.id, { customer_id: customer.id })
       break
+
     case 'customer.deleted':
       await updateUser(user.id, {
         customer_id: null,
@@ -120,48 +148,44 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
         renewal_type: null,
       })
       break
+
     case 'customer.subscription.created':
     case 'customer.subscription.resumed':
     case 'customer.subscription.updated':
-      let {
-        id: subscription_id,
-        customer: customer_id,
-        type: membership_type,
-        features,
-        start: membership_start,
-        end: membership_end,
-        status,
-        interval: renewal_type,
-      } = extractFromSubscription(subscription)
 
-      let active = status == 'active'
-      let has_features = active ? features : user.has_features
-      membership_type = active ? membership_type : user.membership_type || 'free'
+      const membershipData = extractFromSubscription(subscription, user)
+      await updateUser(user.id, membershipData)
+      break
 
+    case 'customer.subscription.expired':
+      const { membership_start, membership_end } = extractFromSubscription(subscription, user)
       await updateUser(user.id, {
-        subscription_id,
-        customer_id,
-        has_features,
-        membership_type,
+        has_features: [],
+        membership_type: 'none',
+        renewal_type: null,
         membership_start,
         membership_end,
-        renewal_type,
       })
       break
-    case 'customer.subscription.expired':
+
     case 'customer.subscription.deleted':
       await updateUser(user.id, {
         has_features: [],
         membership_type: 'none',
         renewal_type: null,
         subscription_id: null,
+        membership_start: null,
+        membership_end: null,
       })
       break
+
     case 'customer.subscription.paused':
       await updateUser(user.id, {
         has_features: [],
         membership_type: 'none',
         renewal_type: null,
+        membership_start,
+        membership_end,
       })
       break
 
@@ -169,7 +193,66 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
       console.log(`Unhandled event type ${event.type}`)
   }
   // Return a 200 response to acknowledge receipt of the event
-  res.status(200).json({ received: true })
+  res.status(200).json({ received: true, user: true })
+}
+
+function extractFromSubscription(subscription: Stripe.Subscription, user: User): Pick<Member,
+  'subscription_id' |
+  'customer_id' |
+  'has_features' |
+  'membership_type' |
+  'membership_start' |
+  'membership_end' |
+  'renewal_type'
+> {
+  const {
+    id: subscription_id,
+    customer,
+    status,
+    current_period_start,
+    current_period_end,
+    items: { data: items },
+  } = subscription
+  const item = items[0]
+  const { plan } = item
+  const product: string = plan.product as string
+  let { type: membership_type, features } = subscriptionData[product]
+  const renewal_type = item.price?.recurring?.interval as 'month' | 'year'
+
+
+  let active = status == 'active'
+  let has_features = active ? features : user.has_features
+  membership_type = active ? membership_type : user.membership_type || 'free'
+
+  return {
+    subscription_id,
+    customer_id: customer as string,
+    has_features,
+    membership_type,
+    membership_start: new Date(current_period_start).toISOString(),
+    membership_end: new Date(current_period_end).toISOString(),
+    renewal_type,
+  }
+}
+
+function extractFromCheckout(checkout: Stripe.Checkout.Session): UserPayment {
+  const { amount_total: amount, created, currency, metadata, mode } = checkout
+  const { eventId, userId } = metadata
+
+  const type = mode == 'payment' ? 'event' : mode
+  let payment: UserPayment = {
+    user: userId,
+    type: 'stripe',
+    amount: amount / 100,
+    currency: currency as any,
+    redeemed_id: eventId || userId,
+    product_type: type as any,
+    description: `Brotherhood payment for ${type} ${eventId || userId}`,
+    date_created: new Date(created).toISOString(),
+    redeemed: false,
+    status: 'collected'
+  }
+  return payment
 }
 
 export const config = {

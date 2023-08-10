@@ -1,18 +1,18 @@
-import { baseUrl } from 'lib/config'
-import { ApiResponse, UserShare } from 'lib/models'
+import { baseUrl } from "lib/config";
+import { UserShare } from "lib/models";
 import {
   addUserNotification,
   createUserShare,
   deleteUserShare,
-  getMember,
-} from 'lib/services/directus/server'
+  getMember
+} from "lib/services/directus/server";
 import {
   SendGridCategory,
   SendGridTemplate,
-  sendNotificationEmail,
-} from 'lib/services/sendgrid/server'
-import { withMember, withMethods } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+  sendNotificationEmail
+} from "lib/services/sendgrid/server";
+import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function ShareWithMember(
   req: NextApiRequest,

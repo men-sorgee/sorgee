@@ -1,6 +1,6 @@
-import { baseUrl } from 'lib/config'
-import { Page } from 'lib/models'
-import { listPages } from 'lib/services/directus/static'
+import { baseUrl } from "lib/config";
+import { Page } from "lib/models";
+import { listPages } from "lib/services/directus/static";
 
 function generateSiteMap(pages: Page[]) {
   return `<?xml version="1.0" encoding="UTF-8"?>

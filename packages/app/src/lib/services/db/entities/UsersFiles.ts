@@ -1,7 +1,7 @@
-import * as typeorm from 'typeorm'
+import * as typeorm from "typeorm";
 
-import { DirectusFile } from './DirectusFiles'
-import { User } from './User'
+import { DirectusFile } from "./DirectusFiles";
+import { User } from "./User";
 
 @typeorm.Index('users_files_pkey', ['id'], { unique: true })
 @typeorm.Entity('users_files', { schema: 'public' })

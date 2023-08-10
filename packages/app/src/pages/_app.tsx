@@ -1,26 +1,26 @@
-import React from 'react'
-import { GoogleAnalytics, event } from 'nextjs-google-analytics'
 import {
-  SWRProvider,
+  AppNotificationsProvider,
   MessagesProvider,
   MetaContextProvider,
-  AppNotificationsProvider,
+  SWRProvider,
   UserNotificationsProvider,
   UserProvider
-} from 'hooks'
-import Layout from 'layout'
-import { SessionProvider } from 'next-auth/react'
-import { AppProps, NextWebVitalsMetric } from 'next/app'
-import { Arvo, Manrope, Roboto_Mono } from 'next/font/google'
-import { useRouter } from 'next/router'
+} from "hooks";
+import Layout from "layout";
+import { SessionProvider } from "next-auth/react";
+import { AppProps, NextWebVitalsMetric } from "next/app";
+import { Arvo, Manrope, Roboto_Mono } from "next/font/google";
+import { useRouter } from "next/router";
+import { event, GoogleAnalytics } from "nextjs-google-analytics";
+import React from "react";
 
 import {
   ChakraProvider,
   cookieStorageManager,
   extendTheme
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 
-import getTheme from '../theme'
+import getTheme from "../theme";
 
 const heading = Arvo({
   variable: '--heading-font',
@@ -52,12 +52,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     <>
       <GoogleAnalytics trackPageViews />
       <SWRProvider>
-        <SessionProvider session={pageProps.session}>
-          <MetaContextProvider>
-            <ChakraProvider
-              theme={theme}
-              colorModeManager={cookieStorageManager}
-            >
+        <MetaContextProvider>
+          <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
+            <SessionProvider session={pageProps.session}>
               <UserProvider>
                 <AppNotificationsProvider>
                   <UserNotificationsProvider>
@@ -77,9 +74,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                   </UserNotificationsProvider>
                 </AppNotificationsProvider>
               </UserProvider>
-            </ChakraProvider>
-          </MetaContextProvider>
-        </SessionProvider>
+            </SessionProvider>
+          </ChakraProvider>
+        </MetaContextProvider>
       </SWRProvider>
     </>
   )

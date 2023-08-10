@@ -1,28 +1,27 @@
-import Page from 'components/Page'
-import { createRef, useEffect, useState } from 'react'
 import {
   Lazy,
   Loading,
   MemberCard,
   MemberModal,
+  Page,
   Pager
-} from 'components/controls'
-import { FieldCheckbox, FieldCheckboxes, FieldInput } from 'components/forms'
-import { pruneUndefined } from 'lib/utils'
-import { useRouter } from 'next/router'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useFields, useUser, useMemberSearch } from 'hooks'
-
-import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/24/outline'
+} from "components";
+import { FieldCheckbox, FieldCheckboxes, FieldInput } from "components/forms";
+import { useFields, useMemberSearch, useUser } from "hooks";
 import {
   FieldMap,
   getAllowedUsers,
   Member,
   MemberLevel,
+  MemberSearchQueryParams,
   SearchableMember,
-  UserType,
-  MemberSearchQueryParams
-} from 'lib/models'
+  UserType
+} from "lib/models";
+import { pruneUndefined } from "lib/utils";
+import { useRouter } from "next/router";
+import { createRef, useEffect, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+
 import {
   Accordion,
   AccordionButton,
@@ -44,7 +43,8 @@ import {
   StatNumber,
   Text,
   useDisclosure
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
+import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/24/outline";
 
 type Meta = {
   total: number
@@ -57,7 +57,7 @@ export default function Members() {
   const [query] = useState<MemberSearchQueryParams>({
     ...q,
     size: Number(s),
-    page: Number(p)
+    page: Number(p),
   })
 
   const [id, setId] = useState(undefined)
@@ -66,23 +66,17 @@ export default function Members() {
   const { member: currentMember, loading } = useUser({
     minLevel: MemberLevel.brother,
     requiredFeature: 'view_directory',
-    redirectsEnabled: true
+    redirectsEnabled: true,
   })
 
-  const setParams = ({
-    page = 1,
-    size = 20,
-    ...q
-  }: MemberSearchQueryParams) => {
-    router.push(
-      `/members?${new URLSearchParams({ page, size, ...q } as any).toString()}`
-    )
+  const setParams = ({ page = 1, size = 20, ...q }: MemberSearchQueryParams) => {
+    router.push(`/members?${new URLSearchParams({ page, size, ...q } as any).toString()}`)
   }
 
   const topRef = createRef<HTMLDivElement>()
   const methods = useForm<MemberSearchQueryParams>({
     mode: 'onBlur',
-    defaultValues: query
+    defaultValues: query,
   })
 
   const { page, size } = query
@@ -93,7 +87,7 @@ export default function Members() {
     meta,
     loading: membersLoading,
     sortTerm,
-    direction
+    direction,
   } = useMemberSearch({ page, size, ...query })
 
   useEffect(() => {
@@ -105,34 +99,22 @@ export default function Members() {
 
   const { isOpen, onClose } = useDisclosure({
     onClose: () => setId(undefined),
-    isOpen: id != undefined
+    isOpen: id != undefined,
   })
 
   return (
-    <Page
-      title={'Men Nearby'}
-      description={''}
-      loading={loading || fieldsLoading}
-      w="full"
-    >
+    <Page title={'Men Nearby'} description={''} loading={loading || fieldsLoading} w="full">
       <FormProvider {...methods}>
         <form
           id="filter-form"
           onSubmit={methods.handleSubmit((d: MemberSearchQueryParams) => {
-            let newQuery = pruneUndefined(
-              d,
-              (v) => v == false
-            ) as MemberSearchQueryParams
+            let newQuery = pruneUndefined(d, (v) => v == false) as MemberSearchQueryParams
             setParams({ ...query, ...newQuery, page: 1 })
           })}
           style={{ width: '100%', display: 'block' }}
         >
           <div ref={topRef}></div>
-          <FilterFields
-            fields={fields}
-            currentMember={currentMember}
-            meta={meta}
-          />
+          <FilterFields fields={fields} currentMember={currentMember} meta={meta} />
         </form>
 
         <Flex gap={4} mt={4} align="center">
@@ -153,9 +135,7 @@ export default function Members() {
               aria-label="Ascending"
               title="Sorted by ascending. Click to sort by descending"
               icon={<ArrowDownIcon height={20} />}
-              onClick={() =>
-                setParams({ ...query, sort: `-${sortTerm}`, page: 1 })
-              }
+              onClick={() => setParams({ ...query, sort: `-${sortTerm}`, page: 1 })}
             />
           )) || (
             <IconButton
@@ -171,7 +151,7 @@ export default function Members() {
               setParams({
                 ...query,
                 sort: `${direction == 'desc' && '-'}${e.target.value}`,
-                page: 1
+                page: 1,
               })
             }}
           >
@@ -192,13 +172,7 @@ export default function Members() {
 
         {(membersLoading && <Loading />) || (
           <>
-            <SimpleGrid
-              my={4}
-              columns={[1, 1, 1, 2]}
-              spacing={4}
-              w="full"
-              justifyItems="stretch"
-            >
+            <SimpleGrid my={4} columns={[1, 1, 1, 2]} spacing={4} w="full" justifyItems="stretch">
               {members?.map((member: SearchableMember) => (
                 <Lazy key={member.id}>
                   <MemberCard
@@ -262,18 +236,8 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
         }}
       >
         <AccordionItem w="full">
-          <AccordionButton
-            px={0}
-            py={1}
-            _expanded={{ bg: 'primary', color: 'white' }}
-          >
-            <Flex
-              direction="row"
-              pr={4}
-              gap={[2, 4]}
-              justify="space-between"
-              w="full"
-            >
+          <AccordionButton px={0} py={1} _expanded={{ bg: 'primary', color: 'white' }}>
+            <Flex direction="row" pr={4} gap={[2, 4]} justify="space-between" w="full">
               <Heading as="h3" size="h3" mt={1} ml={2}>
                 Filter
               </Heading>
@@ -299,8 +263,8 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
               <FieldCheckboxes
                 field="user_type"
                 label="User Level"
-                options={fields['user_type'].meta.options.choices.filter(
-                  (item) => allowedUserTypes.includes(item.value as UserType)
+                options={fields['user_type'].meta.options.choices.filter((item) =>
+                  allowedUserTypes.includes(item.value as UserType)
                 )}
               />
               {/**<FieldCheckboxes
@@ -325,11 +289,7 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
              />**/}
             </SimpleGrid>
 
-            <AccordionButton
-              as={'div'}
-              mt={6}
-              _hover={{ bg: 'transparent', cursor: 'default' }}
-            >
+            <AccordionButton as={'div'} mt={6} _hover={{ bg: 'transparent', cursor: 'default' }}>
               <HStack w="full" justify="center">
                 <Button size="lg" type="submit" colorScheme="primary">
                   Search

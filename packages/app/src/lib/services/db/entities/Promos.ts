@@ -1,7 +1,7 @@
-import * as typeorm from 'typeorm'
+import * as typeorm from "typeorm";
 
-import { DirectusUsers } from './DirectusUsers'
-import { User } from './User'
+import { DirectusUsers } from "./DirectusUsers";
+import { User } from "./User";
 
 @typeorm.Index('promos_code_unique', ['code'], { unique: true })
 @typeorm.Index('promos_pkey', ['id'], { unique: true })

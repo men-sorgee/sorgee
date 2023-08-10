@@ -1,17 +1,16 @@
-import { useEffect, useState } from 'react'
 import {
   ButtonLink,
   EventCard,
   EventRSVP,
   EventTicket,
   Lazy,
+  MemberCard,
   MemberModal,
-  MemberSpotlight,
+  Page,
   RateItem
-} from 'components/controls'
-import Page from 'components/Page'
-import { isAfter, isToday } from 'date-fns'
-import { useEvent, useUser } from 'hooks'
+} from "components";
+import { isAfter, isToday } from "date-fns";
+import { useEvent, useUser } from "hooks";
 import {
   EventDetail,
   EventStats,
@@ -19,9 +18,12 @@ import {
   GroupEvent,
   Member,
   MemberLevel
-} from 'lib/models'
-import NextLink from 'next/link'
-import { ArrowBackIcon } from '@chakra-ui/icons'
+} from "lib/models";
+import NextLink from "next/link";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+
+import { ArrowBackIcon } from "@chakra-ui/icons";
 import {
   Alert,
   AlertIcon,
@@ -39,23 +41,21 @@ import {
   StatLabel,
   StatNumber,
   Text,
-  Center,
-  Wrap,
-  Show,
-  useToast
-} from '@chakra-ui/react'
-import { useRouter } from 'next/router'
+  useToast,
+  Wrap
+} from "@chakra-ui/react";
 
 export default function EventPage() {
   const router = useRouter()
   const toast = useToast()
   const { id } = router.query
-  const eventId = String(id)
+  const eventId = id ? String(id) : undefined
   const {
     member,
     isStaff,
+    level,
     reload: reloadUser,
-    hasFeature
+    hasFeature,
   } = useUser({ minLevel: MemberLevel.inductee, redirectsEnabled: true })
 
   const [showTicket, setShowTicket] = useState<boolean>(false)
@@ -70,8 +70,7 @@ export default function EventPage() {
     if (!eventLoading && event?.stats && stats == undefined) {
       setStats(event.stats)
       setShowTicket(
-        isToday(new Date(event.datetime)) &&
-          !isAfter(new Date(), new Date(event.datetime_end))
+        isToday(new Date(event.datetime)) && !isAfter(new Date(), new Date(event.datetime_end))
       )
     }
     if (member?.events && !invite) {
@@ -81,36 +80,63 @@ export default function EventPage() {
       })
       setInvite(i)
     }
-  }, [
-    member,
-    event,
-    eventId,
-    eventLoading,
-    invite,
-    member?.events,
-    member?.id,
-    stats
-  ])
+  }, [member, event, eventId, eventLoading, invite, member?.events, member?.id, stats])
 
-  const getAttendees = (rsvp: string) => {
+  const getAttendees = (rsvp: string, filter = (u) => u) => {
     return event?.attendance
+      ?.filter(filter)
       ?.filter((u) => u.rsvp == rsvp)
-      .map(({ users_id: u }: EventUser) => u as Member)
-      .map((u) => {
+      .map(({ users_id: u, ...invite }: EventUser) => {
+        return {
+          user: u as Member,
+          ...invite,
+        }
+      })
+      .map(({ user: u, paid, guest }) => {
         const picture = u.picture as string
         const name = u.nickname || u.first_name || 'Brother'
         const src = picture ? '/api/asset/' + picture : undefined
+
         return {
           id: u.id,
           name,
-          src
+          src,
+          paid,
+          guest,
         }
       })
   }
 
   const canViewAttendees = hasFeature('view_attendees')
 
-  const canConfirm = member?.rating && member?.rating > 2
+  const UserAvatar = ({ id, name, src, paid, guest }) => (
+    <>
+      <Avatar
+        key={id}
+        name={name}
+        src={src}
+        title={name}
+        cursor="pointer"
+        onClick={() => {
+          if (canViewAttendees) {
+            if (invite?.rsvp == 'confirmed') setMemberId(id)
+          } else
+            toast({
+              title: 'You cannot see attendee profiles',
+              description:
+                'Enable this feature with a subscription. Go to Account > Plan for more info.',
+              status: 'error',
+              duration: 5000,
+              isClosable: true,
+            })
+        }}
+      />
+    </>
+  )
+
+  const canConfirm = member?.rating > 2 || level == MemberLevel.inductee
+  const paidAttendees = getAttendees('confirmed', (u) => u.paid || u.guest)
+  const confirmedAttendees = getAttendees('confirmed', (u) => !u.paid && !u.guest)
   return (
     <Page
       title={event?.name || 'Event Details'}
@@ -158,32 +184,25 @@ export default function EventPage() {
                   <Flex direction={'column'} gap={4} mb={2}>
                     <HStack align="start" justify="end">
                       <Stat>
-                        <StatLabel>Confirmed</StatLabel>
-                        <StatNumber>{stats.confirmed_count}</StatNumber>
+                        <StatLabel>Paid</StatLabel>
+                        <StatNumber>{paidAttendees.length}</StatNumber>
                       </Stat>
 
                       <Wrap spacing={1} justify="end">
-                        {getAttendees('confirmed').map(({ id, name, src }) => (
-                          <Avatar
-                            key={id}
-                            name={name}
-                            src={src}
-                            title={name}
-                            cursor="pointer"
-                            onClick={() => {
-                              if (canViewAttendees) {
-                                if (invite?.rsvp == 'confirmed') setMemberId(id)
-                              } else
-                                toast({
-                                  title: 'You cannot see attendee profiles',
-                                  description:
-                                    'Enable this feature with a subscription. Go to Account > Plan for more info.',
-                                  status: 'error',
-                                  duration: 5000,
-                                  isClosable: true
-                                })
-                            }}
-                          />
+                        {paidAttendees.map((props, index) => (
+                          <UserAvatar key={index} {...props} />
+                        ))}
+                      </Wrap>
+                    </HStack>
+                    <HStack align="start" justify="end">
+                      <Stat>
+                        <StatLabel>Confirmed</StatLabel>
+                        <StatNumber>{confirmedAttendees.length}</StatNumber>
+                      </Stat>
+
+                      <Wrap spacing={1} justify="end">
+                        {confirmedAttendees.map((props, index) => (
+                          <UserAvatar key={index} {...props} />
                         ))}
                       </Wrap>
                     </HStack>
@@ -195,27 +214,8 @@ export default function EventPage() {
                       </Stat>
 
                       <Wrap spacing={1} justify="end">
-                        {getAttendees('maybe').map(({ id, name, src }) => (
-                          <Avatar
-                            key={id}
-                            name={name}
-                            src={src}
-                            title={name}
-                            cursor="pointer"
-                            onClick={() => {
-                              if (canViewAttendees) {
-                                if (invite?.rsvp == 'confirmed') setMemberId(id)
-                              } else
-                                toast({
-                                  title: 'You cannot see attendee profiles',
-                                  description:
-                                    'Enable this feature with a subscription. Go to Account > Plan for more info.',
-                                  status: 'error',
-                                  duration: 5000,
-                                  isClosable: true
-                                })
-                            }}
-                          />
+                        {getAttendees('maybe').map((props, index) => (
+                          <UserAvatar key={index} {...props} />
                         ))}
                       </Wrap>
                     </HStack>
@@ -227,16 +227,12 @@ export default function EventPage() {
                     member={member}
                     invite={invite}
                     reloadUser={reloadUser}
+                    setMemberId={setMemberId}
                   />
                 )}
-                {event.status != 'occurred' &&
-                  (invite || !event?.invite_only) && (
-                    <EventRSVP
-                      canConfirm={canConfirm}
-                      eventId={eventId}
-                      onChange={reloadUser}
-                    />
-                  )}
+                {event.status != 'occurred' && (invite || !event?.invite_only) && (
+                  <EventRSVP canConfirm={canConfirm} eventId={eventId} />
+                )}
               </>
             )}
           </EventCard>
@@ -246,6 +242,7 @@ export default function EventPage() {
                 isOpen={memberId != undefined}
                 memberId={memberId}
                 onClose={() => setMemberId(undefined)}
+                size="lg"
               />
               <HStack spacing={4} mt={4}>
                 <Link as={NextLink} href="/events">
@@ -270,12 +267,14 @@ const AttendedEvent = ({
   event,
   member,
   invite,
-  reloadUser
+  reloadUser,
+  setMemberId,
 }: {
   event: EventDetail
   member: Member
   invite: EventUser
   reloadUser: () => void
+  setMemberId: (id: string) => void
 }) => {
   const attendees = event.attendance
     .filter((u) => u.attended)
@@ -296,6 +295,7 @@ const AttendedEvent = ({
         justify="space-between"
       >
         <RateItem
+          itemName="Event"
           item_id={event.id}
           collection="events"
           size="lg"
@@ -304,12 +304,7 @@ const AttendedEvent = ({
         <Spacer />
         {invite.attended &&
           event.surveys?.map((s) => (
-            <ButtonLink
-              key={s.id}
-              size="md"
-              href={`/survey/${s.id}/1`}
-              colorScheme="accent"
-            >
+            <ButtonLink key={s.id} size="md" href={`/survey/${s.id}/1`} colorScheme="accent">
               {s.title}
             </ButtonLink>
           ))}
@@ -327,31 +322,45 @@ const AttendedEvent = ({
           <Alert mb={4} rounded="lg" status="error">
             <AlertIcon />
             <strong>
-              This is not a personal attraction rating, but a rating of their
-              behavior and attitude at the event!
+              This is not a personal attraction rating, but a rating of their behavior and attitude
+              at the event!
             </strong>
           </Alert>
-          {attendees.map((m: Member) => (
-            <Lazy key={event.id + '-' + m.id}>
-              <MemberSpotlight size="xl" mb={4} memberId={m.id} mt={4}>
-                <Center p={2}>
-                  <Show above="md">
-                    <Text>Your Rating:</Text>
-                  </Show>
-                  <RateItem
-                    onChange={() => {
-                      reloadUser()
-                    }}
-                    size="md"
-                    item_id={m.id}
-                    collection="users"
-                    aria-label={'Rate this member'}
-                    simple
-                  ></RateItem>
-                </Center>
-              </MemberSpotlight>
-            </Lazy>
-          ))}
+          <SimpleGrid my={4} columns={[1, 1, 1, 2]} spacing={4} w="full" justifyItems="stretch">
+            {attendees.map((m: Member) => (
+              <Lazy key={event.id + '-' + m.id}>
+                <MemberCard
+                  viewer={member}
+                  mb={4}
+                  member={m}
+                  mt={4}
+                  size="lg"
+                  onClick={() => {
+                    setMemberId(m.id)
+                  }}
+                >
+                  <Box maxW="60%" mx="auto" textAlign="center">
+                    <RateItem
+                      itemName="User"
+                      onChange={() => {
+                        reloadUser()
+                      }}
+                      size="sm"
+                      item_id={m.id}
+                      collection="users"
+                      aria-label={'Rate this member'}
+                      direction="row"
+                      simple
+                    >
+                      <Heading as="h5" size="h4" m={0} p={0}>
+                        Rate Him:
+                      </Heading>
+                    </RateItem>
+                  </Box>
+                </MemberCard>
+              </Lazy>
+            ))}
+          </SimpleGrid>
         </>
       )}
     </>

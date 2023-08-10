@@ -1,4 +1,4 @@
-import { User } from './users'
+import { User } from "./users";
 
 export type BillingEvent = {
   id: string
@@ -33,3 +33,23 @@ export type ProductView = {
   type: MembershipNames
   label?: string
 }
+
+export type PaymentType = 'stripe' | 'cash'
+export type PaymentProductType = 'event' | 'subscription' | 'donation' | 'payment'
+export type PaymentStatusType = 'collected' | 'refunded'
+export type PaymentCurrencyType = 'usd'
+export type UserPayment = {
+  id?: string
+  user: string | User
+  type: PaymentType
+  status: PaymentStatusType
+  amount: number
+  currency: PaymentCurrencyType
+  redeemed_id?: string
+  product_type: PaymentProductType
+  description: string
+  redeemed: boolean
+  date_redeemed?: string
+  date_created?: string
+};
+

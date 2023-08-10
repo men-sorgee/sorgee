@@ -1,7 +1,6 @@
-import { InputHTMLAttributes } from 'react'
-
-import { FieldOptions } from 'lib/models'
-import { RegisterOptions, useFormContext } from 'react-hook-form'
+import { FieldOptions } from "lib/models";
+import { InputHTMLAttributes } from "react";
+import { RegisterOptions, useFormContext } from "react-hook-form";
 
 import {
   Box,
@@ -10,9 +9,9 @@ import {
   Radio,
   RadioGroup,
   RadioProps
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 
-import FieldWrapper from './FieldWrapper'
+import FieldWrapper from "./FieldWrapper";
 
 type Props = RadioProps &
   InputHTMLAttributes<HTMLInputElement> & {

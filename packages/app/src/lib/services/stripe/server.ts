@@ -1,5 +1,5 @@
-import { MemberFeature, MembershipType } from 'lib/models'
-import StripeClient from 'stripe'
+import { MemberFeature, MembershipType } from "lib/models";
+import StripeClient from "stripe";
 
 let stripeClient: StripeClient = null
 

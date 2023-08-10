@@ -1,14 +1,13 @@
-import { ApiResponse, Member, UserLike } from 'lib/models'
-import { getUser } from 'lib/services/directus/server/users'
+import { adminBaseUrl } from "lib/config";
+import { Member, UserLike } from "lib/models";
+import { getUser } from "lib/services/directus/server/users";
 import {
   SendGridCategory,
   SendGridTemplate,
-  sendNotificationEmail,
-} from 'lib/services/sendgrid/server'
-import { withMember, withMethods } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
-
-import { adminBaseUrl } from 'lib/config'
+  sendNotificationEmail
+} from "lib/services/sendgrid/server";
+import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function MemberReport(
   req: NextApiRequest,

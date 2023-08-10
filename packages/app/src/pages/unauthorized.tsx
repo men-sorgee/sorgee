@@ -1,8 +1,9 @@
-import Image from 'next/image'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { Alert, AlertIcon, Text } from '@chakra-ui/react'
-import { Page } from 'components'
+import { Page } from "components";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+
+import { Alert, AlertIcon, Text } from "@chakra-ui/react";
 
 export default function UnauthorizedPage() {
   const router = useRouter()

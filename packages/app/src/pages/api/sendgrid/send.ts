@@ -1,12 +1,11 @@
-import { ApiResponse } from 'lib/models'
-import { updateAppNotificationUser } from 'lib/services/directus/server'
+import { updateAppNotificationUser } from "lib/services/directus/server";
 import {
   SendGridCategory,
   SendGridTemplate,
-  sendNotificationEmail,
-} from 'lib/services/sendgrid/server'
-import { withMethods } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+  sendNotificationEmail
+} from "lib/services/sendgrid/server";
+import { ApiResponse, withMethods } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 async function SendNotification(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {

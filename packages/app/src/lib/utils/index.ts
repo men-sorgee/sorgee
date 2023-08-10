@@ -1,5 +1,4 @@
-import { addMinutes, format } from 'date-fns'
-import { ApiError, ApiResponse } from 'lib/models'
+import { addMinutes, format } from "date-fns";
 
 export function toLocalDate(value: string) {
   return addMinutes(new Date(value), new Date().getTimezoneOffset())
@@ -19,6 +18,8 @@ export const getUTCNow = () => {
     )
   )
 }
+
+export const gradient = (color: string, value: number = 400, step: number = 100) => `linear(to-b, ${color}.${value}, ${color}.${value + step}, ${color}.${value + step})`
 
 export const uuidv4 = () => {
   return 'xxxxxxxx-xxxx-4xxx'.replace(/[xy]/g, function (c) {
@@ -42,93 +43,6 @@ export function getEventDate(eventStart: string) {
   }
 }
 
-type DefaultTo<T, Fallback> = T extends null | undefined ? Fallback : T
-
-export type ApiResult<T = any> = {
-  success: boolean
-  data?: T
-  error?: ApiError
-}
-export type HttpMethod = (string & 'GET') | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
-
-export async function getJSON<T = never | any, R = DefaultTo<null, T>>(
-  url: string
-): Promise<ApiResult<R>> {
-  return await fetchJSON<T, R>(url)
-}
-
-export async function postJSON<T = never | any, R = DefaultTo<null, T>>(
-  url: string,
-  data: T
-): Promise<ApiResult<R>> {
-  return await fetchJSON<T, R>(url, data, 'POST')
-}
-
-
-export async function putJSON<T = never | any, R = DefaultTo<null, T>>(
-  url: string,
-  data: T
-): Promise<ApiResult<R>> {
-  return await fetchJSON<T, R>(url, data, 'PUT')
-}
-
-
-
-export async function deleteJSON<T = never | any, R = DefaultTo<null, T>>(
-  url: string,
-  data?: T
-): Promise<ApiResult<R>> {
-  return await fetchJSON<T, R>(url, data, 'DELETE')
-}
-
-export async function fetchJSON<T = object | any, R = DefaultTo<null, T>>(
-  url: string,
-  data?: T,
-  method: HttpMethod = 'GET',
-  headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-  }
-): Promise<ApiResult<R>> {
-  const response = await fetch(url, {
-    method,
-    headers,
-    body: data ? Buffer.from(JSON.stringify(pruneUndefined(data))) : undefined,
-  })
-  const { ok: success } = response
-  try {
-    const body = (await response.json()) as ApiResponse<R>
-    if (!body) {
-      return { success, error: { message: 'No response body' } }
-    }
-    const { data, error } = body
-    return { success, data, error } as ApiResult<R>
-  } catch (error) {
-    return { success, error: { message: error.message || error } }
-  }
-}
-
-export async function postForm<T = any>(
-  url: string,
-  withForm: (f: FormData) => void
-): Promise<ApiResult<T>> {
-  const data = new FormData()
-  withForm(data)
-  const response = await fetch(url, {
-    method: 'POST',
-    body: data,
-  })
-  const { ok: success } = response
-  try {
-    const body = (await response.json()) as ApiResponse<T>
-    if (!body) {
-      return { success, error: { message: 'No response body' } }
-    }
-    const { data, error } = body
-    return { success, data, error } as ApiResult<T>
-  } catch (error) {
-    return { success, error: { message: error.message || error } }
-  }
-}
 
 
 export function pruneUndefined<T = Record<string, any>>(
@@ -148,7 +62,7 @@ export function getAssetUrl(asset: string | { id: string }) {
     return asset.startsWith('/api') ? asset : `/api/asset/${asset}`
   else {
     let { id } = asset
-    return `/api/asset/${id}`
+    return `/api/asset/${id} `
   }
 }
 
@@ -168,11 +82,9 @@ export function serialize<T>(params: Record<keyof T, string[]>) {
     Array.isArray(value) ? value.join(',') : value,
   ]) as [string, string][]
   return pairs.reduce((acc, [key, value]) => {
-    return acc + `&${key}=${value}`
+    return acc + `& ${key}=${value} `
   }, '')
 }
-
-export * from './fetchers'
 
 export function debouncedPromise<T>(
   func: (...args: any[]) => Promise<T>,
@@ -193,3 +105,29 @@ export function debouncedPromise<T>(
     })
   }
 }
+
+export function haversineDistanceInMilesAndFeet(coordinateA, coordinateB) {
+  function toRad(x) {
+    return (x * Math.PI) / 180;
+  }
+
+  var R = 3958.8; // Radius of the earth in miles
+  var x1 = coordinateB.lat - coordinateA.lat;
+  var dLat = toRad(x1);
+  var x2 = coordinateB.lon - coordinateA.lon;
+  var dLon = toRad(x2);
+  var a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(coordinateA.lat)) * Math.cos(toRad(coordinateB.lat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var d = R * c;
+
+  var miles = d;
+  var feet = miles * 5280;
+
+  return { miles: miles, feet: feet };
+}
+
+export * from './apis';
+export * from './fetchers';
+

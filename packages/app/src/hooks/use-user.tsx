@@ -1,18 +1,24 @@
 'use client'
-import { createContext, ReactNode, useContext, useEffect } from 'react'
-
 import {
   ApplicationStatus,
   Member,
   MemberFeature,
   MemberLevel,
   MembershipType
-} from 'lib/models'
-import { ApiResult, getAssetUrl, JsonFetcher, postJSON } from 'lib/utils'
-import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/router'
-import useSWR from 'swr'
-import { useAuthenticated } from './use-authenticated'
+} from "lib/models";
+import { ApiResult, getAssetUrl, postJSON } from "lib/utils";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/router";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState
+} from "react";
+import useSWR from "swr";
+
+import { useAuthenticated } from "./use-authenticated";
 
 export type UserContextData = {
   member: Member | null
@@ -47,30 +53,27 @@ export const UserContext = createContext<UserContextData>({
   isBrother: false,
   isStaff: false,
   isApplicant: false,
-  hasFeature: (feature: MemberFeature) => false
+  hasFeature: (_feature: MemberFeature) => false,
 })
 
 export function UserProvider({ children }: { children: ReactNode }) {
+  const [loading, setLoading] = useState<boolean>(true)
   const key = `/api/me`
-  const { authenticated } = useAuthenticated()
-
+  const { authenticated, loading: authLoading } = useAuthenticated()
   const {
     data: member,
     mutate: _mutate,
     error,
-    isLoading: loading
-  } = useSWR<Member, Error>(authenticated ? key : null, JsonFetcher, {
-    revalidateIfStale: true,
-    revalidateOnFocus: true,
-    revalidateOnReconnect: true,
-    refreshInterval: 1000 * 60 * 5
+    isLoading,
+  } = useSWR<Member, Error>(() => (authenticated ? key : null), {
+    refreshInterval: 1000 * 60 * 1,
+    keepPreviousData: false,
   })
 
   const { application_status, user_type, membership_type } = member || {}
   const name = member?.nickname || member?.first_name || 'Brother'
   const picture = getAssetUrl(member?.picture)
-  const approved =
-    ApplicationStatus[application_status] >= ApplicationStatus.approved
+  const approved = ApplicationStatus[application_status] >= ApplicationStatus.approved
   const level = MemberLevel[user_type]
   const isMember = approved && level >= MemberLevel.pledge
   const isBrother = isMember && level >= MemberLevel.brother
@@ -92,6 +95,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
     return member.has_features?.includes(feature)
   }
 
+  useEffect(() => {
+    if (isLoading || authLoading) return
+    setLoading(false)
+  }, [isLoading, authLoading])
+
   const context: UserContextData = {
     member,
     error,
@@ -102,7 +110,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       return _mutate(
         { ...member },
         {
-          revalidate: true
+          revalidate: true,
         }
       )
     },
@@ -114,12 +122,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
     isBrother,
     isStaff,
     isApplicant,
-    hasFeature
+    hasFeature,
   }
   return <UserContext.Provider value={context}>{children}</UserContext.Provider>
 }
 
-type UseUserProps = {
+export type UseUserProps = {
   minLevel?: MemberLevel
   minAppStatus?: ApplicationStatus
   requiredFeature?: MemberFeature
@@ -129,13 +137,13 @@ export const useUser = ({
   minLevel,
   minAppStatus,
   redirectsEnabled = false,
-  requiredFeature
+  requiredFeature,
 }: UseUserProps = {}): UserContextData & {
   authorized: boolean
 } => {
   const router = useRouter()
-  const { level, loading, member, authenticated, hasFeature, ...data } =
-    useContext(UserContext)
+
+  const { level, loading, member, authenticated, hasFeature, ...data } = useContext(UserContext)
   let authorized = level >= minLevel
 
   useEffect(() => {
@@ -162,7 +170,7 @@ export const useUser = ({
           return
         }
       } else {
-        signIn().catch(console.error)
+        signIn()
       }
     }
   }, [
@@ -176,7 +184,7 @@ export const useUser = ({
     level,
     minLevel,
     requiredFeature,
-    hasFeature
+    hasFeature,
   ])
 
   return {
@@ -186,6 +194,6 @@ export const useUser = ({
     loading,
     member,
     authorized,
-    hasFeature
+    hasFeature,
   }
 }

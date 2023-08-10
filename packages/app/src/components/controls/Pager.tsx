@@ -1,10 +1,10 @@
 import {
   ArrowLeftIcon,
+  ArrowRightIcon,
   ChevronLeftIcon,
-  ChevronRightIcon,
-  ArrowRightIcon
-} from '@chakra-ui/icons'
-import { Flex, IconButton, Text } from '@chakra-ui/react'
+  ChevronRightIcon
+} from "@chakra-ui/icons";
+import { Flex, IconButton, Text } from "@chakra-ui/react";
 
 export type PagerProps = {
   page: number

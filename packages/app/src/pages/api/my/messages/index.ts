@@ -1,19 +1,22 @@
-import { ApiResponse, Message, MessageStatusType, UserMessages } from 'lib/models'
-import { withMethods, withUser } from 'lib/utils/server'
-import type { NextApiRequest, NextApiResponse } from 'next'
-
+import { baseUrl } from "lib/config";
+import { Message, MessageStatusType, UserMessages } from "lib/models";
+import { getMember } from "lib/services/directus/server";
 import {
   getMessage,
   getMessages,
   markAs,
   sendMessage,
-  updateMessage,
-} from 'lib/services/directus/server/messages'
+  updateMessage
+} from "lib/services/directus/server/messages";
+import {
+  SendGridCategory,
+  SendGridTemplate,
+  sendNotificationEmail
+} from "lib/services/sendgrid/server";
+import { pruneUndefined } from "lib/utils/index";
+import { ApiResponse, withMethods, withUser } from "lib/utils/server";
 
-import { pruneUndefined } from 'lib/utils/index'
-import { getMember } from 'lib/services/directus/server'
-import { SendGridTemplate, SendGridCategory, sendNotificationEmail } from 'lib/services/sendgrid/server'
-import { baseUrl } from 'lib/config'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function getUserMessages(
   req: NextApiRequest,

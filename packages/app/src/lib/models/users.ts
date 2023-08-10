@@ -5,15 +5,12 @@ import {
   MembershipNames,
   MembershipRenewalType,
   NotificationUser,
+  PageProps,
   Promo,
   Rating,
-  UserEmailEvent,
-  UserInvite,
-  PageProps
-} from 'lib/models'
-
-import { ProviderType } from 'next-auth/providers'
-import { ParsedUrlQuery } from 'querystring'
+  UserInvite
+} from "lib/models";
+import { ProviderType } from "next-auth/providers";
 
 export type MemberSearchQueryParams = PageProps<SearchableMember> & {
   online?: boolean
@@ -190,7 +187,7 @@ export type User = {
   state: string
   events: string[] | EventUser[]
   my_photos: string[] | UserPhoto[]
-  email_events: string[] | UserEmailEvent[]
+  // email_events: string[] | UserEmailEvent[]
   images: string[] | UserFile[]
   accounts: string[] | UserAccount[]
   show_profile: boolean

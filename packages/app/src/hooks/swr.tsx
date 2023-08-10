@@ -1,20 +1,21 @@
 'use client'
-import { SWRConfig } from 'swr'
-import { JsonFetcher } from 'lib/utils'
+import { JsonFetcher } from "lib/utils";
+import { SWRConfig } from "swr";
+
 export const SWRProvider = ({ children }) => {
   return (
     <SWRConfig
       value={{
         fetcher: JsonFetcher,
         refreshWhenOffline: true,
+        refreshWhenHidden: true,
         revalidateOnFocus: true,
         revalidateOnReconnect: true,
-        refreshWhenHidden: true,
         revalidateOnMount: true,
         revalidateIfStale: true,
-        dedupingInterval: 10000,
-        focusThrottleInterval: 3000,
-        keepPreviousData: true
+        keepPreviousData: true,
+        dedupingInterval: 1000 * 30,
+        focusThrottleInterval: 1000 * 10,
       }}
     >
       {children}

@@ -1,29 +1,28 @@
-import { brand } from 'lib/config/brand'
-import config from 'lib/config/server'
-import { MemberLevel, Profile, User, UserStatusType } from 'lib/models'
+import { brand } from "lib/config/brand";
+import config from "lib/config/server";
+import { MemberLevel, Profile, User, UserStatusType } from "lib/models";
 import {
-  extendUserPresence,
   findUser,
   findUserByAccount,
   getUser,
-  recordUserLogin,
-} from 'lib/services/db/server/auth'
+  recordUserLogin
+} from "lib/services/db/server/users";
 import {
   SendGridCategory,
   SendGridTemplate,
   sendNotificationEmail,
-  updateSendGrid,
-} from 'lib/services/sendgrid/server'
-import { sendNotification } from 'lib/services/twilio/server'
-import { AuthOptions } from 'next-auth'
-import MicrosoftProvider from 'next-auth/providers/azure-ad'
-import EmailProvider from 'next-auth/providers/email'
-import GoogleProvider from 'next-auth/providers/google'
-import DiscordProvider from 'next-auth/providers/discord'
-import { TwitterLegacy } from 'next-auth/providers/twitter'
-import { setUserAverageRating } from 'lib/services/directus/server'
-import { authAdapter } from './adapter'
-import YahooProvider from './yahoo'
+  updateSendGrid
+} from "lib/services/sendgrid/server";
+import { sendNotification } from "lib/services/twilio/server";
+import { AuthOptions } from "next-auth";
+import MicrosoftProvider from "next-auth/providers/azure-ad";
+import DiscordProvider from "next-auth/providers/discord";
+import EmailProvider from "next-auth/providers/email";
+import GoogleProvider from "next-auth/providers/google";
+import { TwitterLegacy } from "next-auth/providers/twitter";
+
+import { authAdapter } from "./adapter";
+import YahooProvider from "./yahoo";
 
 const { google, discord, twitter, yahoo, microsoft } = config
 
@@ -86,8 +85,6 @@ export const authOptions: AuthOptions = {
       console.debug('callback:session')
       const fullUser = await findUser(user.email)
       session.user = fullUser
-
-      await extendUserPresence(fullUser.id)
       return session
     },
   },
@@ -114,7 +111,6 @@ export const authOptions: AuthOptions = {
     async signIn({ user }) {
       console.log('event:signIn')
       await recordUserLogin(user.id)
-      await setUserAverageRating(user.id)
     },
     async signOut(props) {
       console.log('event:signOut', props)

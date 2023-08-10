@@ -1,4 +1,6 @@
 'use client'
+import { AppNotification, AppNotificationStatusType } from "lib/models";
+import { deleteJSON, getJSON, JsonFetcher, putJSON } from "lib/utils";
 import {
   createContext,
   ReactNode,
@@ -6,12 +8,10 @@ import {
   useContext,
   useEffect,
   useState
-} from 'react'
+} from "react";
+import useSWR from "swr";
 
-import { AppNotification, AppNotificationStatusType } from 'lib/models'
-import { deleteJSON, getJSON, JsonFetcher, putJSON } from 'lib/utils'
-import useSWR from 'swr'
-import { useAuthenticated } from './use-authenticated'
+import { useAuthenticated } from "./use-authenticated";
 
 export type AppNotificationsContextData = {
   appNotifications: AppNotification[]
@@ -52,7 +52,7 @@ export function AppNotificationsProvider({
     error,
     isLoading
   } = useSWR<AppNotification[], Error>(authenticated ? key : null, {
-    refreshInterval: 1000 * 60 * 10, // 3 minutes
+    refreshInterval: 1000 * 60 * 10, // 10 minutes
     fallbackData: []
   })
   const [hasNewNotifications, setHasNewNotifications] = useState(false)

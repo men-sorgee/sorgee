@@ -1,15 +1,15 @@
-import { UpgradeIcon } from 'components/controls'
+import { UpgradeIcon } from "components";
 import {
   Member,
   MemberLevel,
   MembershipType,
   User,
   UserBuddy
-} from 'lib/models'
-import NextLink from 'next/link'
+} from "lib/models";
+import NextLink from "next/link";
 
-import { Badge, Icon, IconButton, Link } from '@chakra-ui/react'
-import { UsersIcon } from '@heroicons/react/24/outline'
+import { Badge, Icon, IconButton, Link } from "@chakra-ui/react";
+import { UsersIcon } from "@heroicons/react/24/outline";
 
 interface Props {
   member: Member
@@ -19,13 +19,7 @@ interface Props {
   iconDimensions?: string[]
 }
 
-const BuddiesAction = ({
-  member,
-  active,
-  hasFeature,
-  iconSize,
-  iconDimensions
-}: Props) => {
+const BuddiesAction = ({ member, active, hasFeature, iconSize, iconDimensions }: Props) => {
   const level = MemberLevel[member?.user_type]
   if (level < MemberLevel.brother) {
     return null
@@ -41,9 +35,7 @@ const BuddiesAction = ({
         size={iconSize}
         title="Buddy List"
         membershipType={MembershipType.basic}
-        icon={
-          <Icon as={UsersIcon} width={iconDimensions} height={iconDimensions} />
-        }
+        icon={<Icon as={UsersIcon} width={iconDimensions} height={iconDimensions} />}
       />
     )
 

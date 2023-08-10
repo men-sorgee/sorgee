@@ -1,15 +1,14 @@
 
-import { ApiResponse, MemberLevel, UserBuddy } from 'lib/models'
+import { MemberLevel, UserBuddy } from "lib/models";
 import {
   addUserNotification,
-  getUser,
-  getMember,
-  updateUser,
   addUserToCongratsEmail,
-} from 'lib/services/directus/server'
-
-import { withMember, withMethods } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+  getMember,
+  getUser,
+  updateUser
+} from "lib/services/directus/server";
+import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function VouchForMember(
   req: NextApiRequest,

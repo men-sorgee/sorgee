@@ -1,8 +1,10 @@
-import { EventCard } from 'components/controls'
-import Page from 'components/Page'
-import { useEventsAdmin, useUser } from 'hooks'
-import { EventUser, GroupEvent, MemberLevel } from 'lib/models'
-import Link from 'next/link'
+import { EventCard, Page } from "components";
+import { isToday } from "date-fns";
+import { useEventsAdmin, useUser } from "hooks";
+import { EventUser, GroupEvent, MemberLevel } from "lib/models";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+
 import {
   Heading,
   LinkBox,
@@ -16,17 +18,13 @@ import {
   TabPanel,
   TabPanels,
   Tabs
-} from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
-import { isToday, isAfter } from 'date-fns'
+} from "@chakra-ui/react";
 
 export default function AdminEventList() {
-  const [eventList, setEventsList] = useState<
-    Array<GroupEvent & { date: Date }>
-  >([])
+  const [eventList, setEventsList] = useState<Array<GroupEvent & { date: Date }>>([])
   const { loading } = useUser({
     minLevel: MemberLevel.staff,
-    redirectsEnabled: true
+    redirectsEnabled: true,
   })
   const { events, loading: eventsLoading } = useEventsAdmin()
 
@@ -37,21 +35,19 @@ export default function AdminEventList() {
           const date = new Date(event.datetime)
           return {
             ...event,
-            date
+            date,
           }
         })
       )
     }
   }, [eventsLoading, events, eventList?.length])
 
-  const today = new Date(new Date().toDateString())
-
-  let upcoming = eventList?.filter((event) => isAfter(today, event.date))
+  let upcoming = eventList?.filter((event) => event.status == 'scheduled')
   upcoming = upcoming.sort((a, b) => {
     return a.date.getTime() - b.date.getTime()
   })
 
-  let past = eventList?.filter((event) => event.date < today)
+  let past = eventList?.filter((event) => event.status == 'occurred')
   past = past.sort((a, b) => {
     return b.date.getTime() - a.date.getTime()
   })
@@ -66,7 +62,7 @@ export default function AdminEventList() {
     return {
       attended,
       paid,
-      collected
+      collected,
     }
   }
 
@@ -83,10 +79,7 @@ export default function AdminEventList() {
             <TabPanel p={0}>
               <LinkBox cursor="pointer" my={4}>
                 <EventCard event={activeEvent} showDescription={false}>
-                  <LinkOverlay
-                    as={Link}
-                    href={`/admin/event/${activeEvent.id}`}
-                  >
+                  <LinkOverlay as={Link} href={`/admin/event/${activeEvent.id}`}>
                     View Event
                   </LinkOverlay>
                 </EventCard>
@@ -96,12 +89,7 @@ export default function AdminEventList() {
           <TabPanel p={0}>
             <Heading mb={4}>Upcoming Events</Heading>
             {upcoming.map((event) => (
-              <LinkBox
-                key={event.id}
-                cursor="pointer"
-                mb={4}
-                title="Click for event admin"
-              >
+              <LinkBox key={event.id} cursor="pointer" mb={4} title="Click for event admin">
                 <EventCard event={event} showDescription={false}>
                   <LinkOverlay as={Link} href={`/admin/event/${event.id}`}>
                     View Event
@@ -115,10 +103,7 @@ export default function AdminEventList() {
             {past.map((event) => (
               <LinkBox key={event.id} cursor="pointer" mb={4}>
                 <EventCard event={event} showDescription={false}>
-                  <LinkOverlay
-                    as={Link}
-                    href={`/admin/event/${event.id}`}
-                  ></LinkOverlay>
+                  <LinkOverlay as={Link} href={`/admin/event/${event.id}`}></LinkOverlay>
                   <StatGroup>
                     <Stat>
                       <StatLabel>Attended</StatLabel>

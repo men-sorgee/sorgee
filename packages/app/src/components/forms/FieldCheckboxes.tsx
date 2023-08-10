@@ -1,7 +1,6 @@
-import { InputHTMLAttributes, useEffect, useState } from 'react'
-
-import { FieldOptions } from 'lib/models'
-import { RegisterOptions, useFormContext } from 'react-hook-form'
+import { FieldOptions } from "lib/models";
+import { InputHTMLAttributes, useEffect, useState } from "react";
+import { RegisterOptions, useFormContext } from "react-hook-form";
 
 import {
   chakra,
@@ -11,9 +10,9 @@ import {
   FormControlProps,
   Input,
   SimpleGrid
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 
-import FieldWrapper from './FieldWrapper'
+import FieldWrapper from "./FieldWrapper";
 
 type Props = CheckboxGroupProps &
   InputHTMLAttributes<HTMLInputElement> &

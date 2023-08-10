@@ -1,7 +1,6 @@
-import { Page } from 'components'
-import { Plans } from 'components'
-import { useRouter } from 'next/router'
-import { MembershipType } from 'lib/models'
+import { Page, Plans } from "components";
+import { MembershipType } from "lib/models";
+import { useRouter } from "next/router";
 
 type Params = {}
 

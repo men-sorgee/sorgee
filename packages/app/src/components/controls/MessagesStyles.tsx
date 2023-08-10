@@ -1,28 +1,22 @@
 'use client'
-import { brand } from 'lib/config/brand'
-import { useColorModeValue } from '@chakra-ui/react'
+import { brand } from "lib/config/brand";
+
+import { useColorModeValue } from "@chakra-ui/react";
+
+import { useDeviceDetect } from "../../hooks";
 
 export default function MessagesStyles() {
+  const { isIos } = useDeviceDetect()
   const bg = useColorModeValue('white', brand.colors.gray[500])
   const color = useColorModeValue(brand.colors.gray[800], 'white')
   const colorInverse = useColorModeValue('white', brand.colors.gray[800])
-  const borderColor = useColorModeValue(
-    brand.colors.gray[200],
-    brand.colors.gray[300]
-  )
-  const primary = useColorModeValue(
-    brand.colors.primary[400],
-    brand.colors.primary[400]
-  )
-  const secondary = useColorModeValue(
-    brand.colors.secondary[400],
-    brand.colors.secondary[400]
-  )
-  const accent = useColorModeValue(
-    brand.colors.accent[400],
-    brand.colors.accent[400]
-  )
+  const borderColor = useColorModeValue(brand.colors.gray[200], brand.colors.gray[300])
+  const primary = useColorModeValue(brand.colors.primary[400], brand.colors.primary[400])
+  const secondary = useColorModeValue(brand.colors.secondary[400], brand.colors.secondary[400])
+  const accent = useColorModeValue(brand.colors.accent[400], brand.colors.accent[400])
   const gray = useColorModeValue(brand.colors.gray[400], brand.colors.gray[400])
+
+  const mobileHeight = isIos ? 'calc(95vh - 8rem)' : 'calc(95vh - 145px)'
 
   return (
     <style>
@@ -159,7 +153,7 @@ export default function MessagesStyles() {
       @media (max-width: 576px) {
         .cs-main-container--responsive {
           min-width: auto;
-          height: calc(100vh - 145px);
+          height: ${mobileHeight}; 
         }
         .cs-main-container--responsive > .cs-sidebar.cs-sidebar--left {
           display: none;

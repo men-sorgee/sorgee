@@ -1,4 +1,4 @@
-import twilio from 'twilio'
+import twilio from "twilio";
 
 const config = {
   twilioSid: process.env.TWILIO_SID || 'AC8581eae8d3c89559f3eaf62f6e206d2b',

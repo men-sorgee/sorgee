@@ -1,11 +1,10 @@
-import React, { InputHTMLAttributes } from 'react'
+import { Rating, RatingControlProps } from "components";
+import React, { InputHTMLAttributes } from "react";
+import { RegisterOptions, useFormContext } from "react-hook-form";
 
-import { Rating, RatingControlProps } from 'components/controls/Rating'
-import { RegisterOptions, useFormContext } from 'react-hook-form'
+import { chakra } from "@chakra-ui/react";
 
-import { chakra } from '@chakra-ui/react'
-
-import FieldWrapper from './FieldWrapper'
+import FieldWrapper from "./FieldWrapper";
 
 type Props = RatingControlProps &
   InputHTMLAttributes<HTMLInputElement> & {
@@ -18,15 +17,7 @@ type Props = RatingControlProps &
   }
 
 const RatingField = (props: Props) => {
-  const {
-    field,
-    label,
-    help,
-    registerOptions = {},
-    children,
-    className,
-    ...opts
-  } = props
+  const { field, label, help, registerOptions = {}, children, className, ...opts } = props
   const { watch, setValue } = useFormContext()
   const rating = Number(watch(field) || 0)
 

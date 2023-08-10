@@ -1,5 +1,6 @@
-import { useRouter } from 'next/router'
-import ChatPage from './index'
+import { useRouter } from "next/router";
+
+import ChatPage from "./index";
 
 export default function ChatConversationPage() {
   const router = useRouter()

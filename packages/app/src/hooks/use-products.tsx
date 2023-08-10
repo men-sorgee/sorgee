@@ -1,9 +1,8 @@
 'use client'
-import { ProductView } from 'lib/models'
-import { JsonFetcher } from 'lib/utils'
-import useSWR from 'swr'
+import { ProductView } from "lib/models";
+import useSWR from "swr";
 
-type ProductResults = {
+export type ProductResults = {
   products: ProductView[]
   error?: any
   loading: boolean
@@ -13,18 +12,18 @@ export const useProducts = (): ProductResults => {
   const {
     data: products,
     error,
-    isLoading
-  } = useSWR<ProductView[], Error>(`/api/stripe/products`, JsonFetcher, {
+    isLoading,
+  } = useSWR<ProductView[], Error>(`/api/stripe/products`, {
     refreshWhenHidden: false,
     refreshWhenOffline: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
-    fallbackData: []
+    fallbackData: [],
   })
 
   return {
     products,
     error,
-    loading: isLoading
+    loading: isLoading,
   }
 }

@@ -1,17 +1,16 @@
-import { useCallback, useEffect, useState } from 'react'
-
 import {
   ButtonConfirm,
-  PhotoAsset,
   MemberAvatar,
+  Page,
+  PhotoAsset,
   PhotoCapture,
   PhotoUpload
-} from 'components/controls'
-import Page from 'components/Page'
-import { UserPhoto } from 'lib/models'
-import { deleteJSON, getAssetUrl } from 'lib/utils'
+} from "components";
+import { useUser } from "hooks/use-user";
+import { UserPhoto } from "lib/models";
+import { deleteJSON, getAssetUrl } from "lib/utils";
+import { useCallback, useEffect, useState } from "react";
 
-import { useUser } from 'hooks/use-user'
 import {
   Alert,
   AlertIcon,
@@ -35,8 +34,8 @@ import {
   Tabs,
   useDisclosure,
   Wrap
-} from '@chakra-ui/react'
-import { ArrowUpTrayIcon, CameraIcon } from '@heroicons/react/24/outline'
+} from "@chakra-ui/react";
+import { ArrowUpTrayIcon, CameraIcon } from "@heroicons/react/24/outline";
 
 type Props = {}
 
@@ -62,7 +61,7 @@ export default function PhotoAlbums({}: Props) {
       return {
         fileId: image.directus_files_id as string,
         photoId: image.id as number,
-        is_public: image.is_public
+        is_public: image.is_public,
       }
     }) || []
   const publicImages = list.filter((image: PhotoItem) => image.is_public)
@@ -75,23 +74,18 @@ export default function PhotoAlbums({}: Props) {
           <Flex align="center" justify="center">
             {(pictureSrc && (
               <Flex direction="column" mb={4}>
-                <MemberAvatar
-                  member={member}
-                  width="150px"
-                  height="150px"
-                  rounded="full"
-                />
+                <MemberAvatar member={member} width="150px" height="150px" rounded="full" />
                 <ButtonConfirm
                   alertTitle="Delete Avatar"
                   buttonText="Delete"
-                  promise={async () => {
+                  confirmedAction={async () => {
                     const { success, data, error } = await deleteJSON(
                       `/api/members/${member?.id}/photos/picture`
                     )
                     if (!success) throw new Error(error.message)
                     return data
                   }}
-                  complete={() => {
+                  onSuccess={() => {
                     setPictureSrc(null)
                     reload()
                   }}
@@ -154,8 +148,7 @@ export default function PhotoAlbums({}: Props) {
             <Alert mt={4} status="warning" rounded="lg" shadow="lg">
               <AlertIcon />
               You have photo-sharing turned off. Update&nbsp;
-              <Link href="/member/profile">your profile</Link>&nbsp; to change
-              that.
+              <Link href="/member/profile">your profile</Link>&nbsp; to change that.
             </Alert>
           )}
         </>
@@ -178,14 +171,12 @@ function PhotoList({ title, field, images, memberId, reload }: PhotoListProps) {
           <ButtonConfirm
             alertTitle="Delete Photo"
             buttonText="Delete"
-            promise={async () => {
-              const { success, data, error } = await deleteJSON(
-                `/api/my/photo/${image.photoId}`
-              )
+            confirmedAction={async () => {
+              const { success, data, error } = await deleteJSON(`/api/my/photo/${image.photoId}`)
               if (!success) throw new Error(error.message)
               return data
             }}
-            complete={(success) => {
+            onSuccess={(success) => {
               if (success) {
                 reload()
               }
@@ -204,12 +195,7 @@ function PhotoList({ title, field, images, memberId, reload }: PhotoListProps) {
         </Box>
       ))}
 
-      <AddPhoto
-        title={title}
-        field={field}
-        memberId={memberId}
-        reload={reload}
-      />
+      <AddPhoto title={title} field={field} memberId={memberId} reload={reload} />
     </Wrap>
   )
 }
@@ -222,14 +208,7 @@ type PhotoProps = StackProps & {
 }
 
 const AddPhoto = chakra(
-  ({
-    title,
-    memberId,
-    field,
-    reload,
-    rounded = 'lg',
-    ...props
-  }: PhotoProps) => {
+  ({ title, memberId, field, reload, rounded = 'lg', ...props }: PhotoProps) => {
     const [image, setImage] = useState<string>()
     const [file, setFile] = useState<File>()
     const { isOpen, onOpen, onClose } = useDisclosure()

@@ -1,25 +1,25 @@
 'use client'
 import {
+  ChatConversation,
+  ChatMessage,
+  Member,
+  MessageStatusType,
+  UserMessages
+} from "lib/models";
+import { putJSON } from "lib/utils";
+import { useRouter } from "next/router";
+import {
   createContext,
   ReactNode,
   useCallback,
   useContext,
   useEffect,
   useState
-} from 'react'
+} from "react";
+import useCookie from "react-use-cookie";
+import useSWR, { KeyedMutator } from "swr";
 
-import {
-  ChatConversation,
-  ChatMessage,
-  Member,
-  MessageStatusType,
-  UserMessages
-} from 'lib/models'
-import { JsonFetcher, putJSON } from 'lib/utils'
-import useCookie from 'react-use-cookie'
-import useSWR, { KeyedMutator } from 'swr'
-import { useRouter } from 'next/router'
-import { useAuthenticated } from './use-authenticated'
+import { useAuthenticated } from "./use-authenticated";
 
 export type MessagesContextData = {
   activeId?: string
@@ -53,14 +53,10 @@ export const MessagesContext = createContext<MessagesContextData>({
   delete: async () => {},
   loading: true,
   reload: () => {},
-  mutate: async () => ({})
+  mutate: async () => ({}),
 })
 
-export function MessagesProvider({
-  children
-}: {
-  children: ReactNode | ReactNode[]
-}) {
+export function MessagesProvider({ children }: { children: ReactNode | ReactNode[] }) {
   const { authenticated } = useAuthenticated()
   const key = `/api/my/messages`
 
@@ -69,15 +65,24 @@ export function MessagesProvider({
     data: userMessages = {},
     mutate,
     error,
-    isLoading
-  } = useSWR<UserMessages, Error>(authenticated ? key : null, JsonFetcher, {
-    refreshInterval: 1000 * 60 // 1 minute
+    isLoading,
+  } = useSWR<UserMessages, Error>(authenticated ? key : null, {
+    refreshInterval: 1000 * 60 * 1, // 1 minute,
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+    shouldRetryOnError: true,
+    dedupingInterval: 0,
+    errorRetryInterval: 1000 * 60 * 1, // 1 minute,
+    errorRetryCount: 3,
+    refreshWhenHidden: true,
+    refreshWhenOffline: true,
+    revalidateOnMount: true,
+    keepPreviousData: false,
   })
 
   const [conversations, setConversations] = useState<ChatConversation[]>([])
   const [hasNewMessages, setHasNewMessages] = useState(undefined)
-  const [activeConversation, setActiveConversation] =
-    useState<ChatConversation>(undefined)
+  const [activeConversation, setActiveConversation] = useState<ChatConversation>(undefined)
   const [newMessages, setNewMessages] = useState<number>(undefined)
   const [activeId, setActiveId] = useState<string>(undefined)
   const [lastActiveId, setLastActiveId] = useCookie(
@@ -94,7 +99,7 @@ export function MessagesProvider({
         .map((m: ChatMessage) => {
           return {
             ...m,
-            timestamp: new Date(m.timestamp)
+            timestamp: new Date(m.timestamp),
           }
         })
 
@@ -112,16 +117,12 @@ export function MessagesProvider({
         lastMessage,
         hasNewMessages,
         user: {
-          ...user
-        }
+          ...user,
+        },
       })
       // @ts-ignore
       setConversations(
-        convos.sort(
-          (a, b) =>
-            b.lastMessage.timestamp.getTime() -
-            a.lastMessage.timestamp.getTime()
-        )
+        convos.sort((a, b) => b.lastMessage.timestamp.getTime() - a.lastMessage.timestamp.getTime())
       )
       totalNewMessages.push(...newMessages)
     })
@@ -148,12 +149,10 @@ export function MessagesProvider({
               nickname: user.nickname,
               presence: user.presence,
               last_login: user.last_login,
-              picture: user.picture
-                ? `/api/asset/${user.picture}?w=100&h=100&fit=crop`
-                : null
-            }
+              picture: user.picture ? `/api/asset/${user.picture}?w=100&h=100&fit=crop` : null,
+            },
           },
-          ...conversations
+          ...conversations,
         ])
 
       setActiveId(user.id)
@@ -167,7 +166,7 @@ export function MessagesProvider({
     async (ids: string[], status: MessageStatusType) => {
       const { success, data } = await putJSON<any, UserMessages>(key, {
         ids,
-        status
+        status,
       })
       if (success) {
         mutate(data)
@@ -204,16 +203,12 @@ export function MessagesProvider({
     loading: isLoading,
     reload: () => {
       mutate(userMessages, {
-        revalidate: true
+        revalidate: true,
       })
     },
-    mutate
+    mutate,
   }
-  return (
-    <MessagesContext.Provider value={context}>
-      {children}
-    </MessagesContext.Provider>
-  )
+  return <MessagesContext.Provider value={context}>{children}</MessagesContext.Provider>
 }
 
 export const useMessages = () => useContext(MessagesContext)

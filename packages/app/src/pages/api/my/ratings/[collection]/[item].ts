@@ -1,7 +1,12 @@
-import { ApiResponse, Rating, RatingCollection } from 'lib/models'
-import { getRating, setRating, addUserNotification, setUserAverageRating } from 'lib/services/directus/server'
-import { withMember, withMethods } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { Rating, RatingCollection } from "lib/models";
+import {
+  addUserNotification,
+  getRating,
+  setRating,
+  setUserAverageRating
+} from "lib/services/directus/server";
+import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function MemberItemRating(
   req: NextApiRequest,
@@ -30,12 +35,15 @@ export default async function MemberItemRating(
 
           await setUserAverageRating(item)
 
-          // send notification
-          await addUserNotification(item, {
-            message: `Someone rated your event behavior as ${rate} stars`,
-            button_text: `View Your Rating`,
-            button_url: `/member/${item}`,
-          })
+          if (rate >= 3) {
+
+            // send notification
+            await addUserNotification(item, {
+              message: `Someone rated your event behavior ${rate} stars`,
+              button_text: `View Your Rating`,
+              button_url: `/member/${item}`,
+            })
+          }
         }
         return res.status(200).json(ApiResponse(rating))
       }

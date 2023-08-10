@@ -1,15 +1,19 @@
-import { ApiResponse, EventInvite, EventUser, GroupEvent, Member, MemberLevel, UserType } from 'lib/models'
+import { EventInvite, GroupEvent, Member, MemberLevel } from "lib/models";
 import {
   addUserToCongratsEmail,
   getEvent,
   getInvite,
   getUser,
-  updateEventUsers,
   updateInvite,
-  updateUser,
-} from 'lib/services/directus/server'
-import { withMethods, withStaff } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+  updateUser
+} from "lib/services/directus/server";
+import {
+  addUserPayment,
+  findUserPayment,
+  updateUserPayment
+} from "lib/services/directus/server/users/billing";
+import { ApiResponse, withMethods, withStaff } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function InviteAdmin(
   req: NextApiRequest,
@@ -19,9 +23,10 @@ export default async function InviteAdmin(
     withMethods(req, ['GET', 'POST'])
     await withStaff(req, res)
     const { id: invite_id } = req.query
-    const { paid: p, signed_waiver: w } = req.body
+    const { paid: p, signed_waiver: w, amount: a } = req.body
 
     const paid = Boolean(p)
+    const amount = Number(a || "0")
     const signed_waiver = Boolean(w)
 
     const inviteId = Number(invite_id)
@@ -37,14 +42,49 @@ export default async function InviteAdmin(
     if (typeof member === 'string')
       member = await getUser<Member>(member)
 
-    await updateInvite(inviteId, { paid, attended: true })
+    await updateInvite(inviteId, { paid, attended: true, amount })
+    if (paid) {
+      if (amount < event.cost)
+        throw new Error('Amount paid is less than the cost of the event')
+
+      let donation = amount - event.cost
+      const payment = await findUserPayment(member.id, event.id)
+      if (payment) {
+        await updateUserPayment(payment.id, { redeemed: true, date_redeemed: new Date().toISOString() })
+      } else {
+        await addUserPayment({
+          amount: event.cost,
+          description: `Paid for ${event.name} (${event.id})`,
+          user: member.id,
+          currency: 'usd',
+          product_type: 'event',
+          type: 'cash',
+          redeemed: true,
+          status: 'collected',
+          redeemed_id: event.id,
+          date_redeemed: new Date().toISOString()
+        })
+      }
+      if (donation > 0) {
+        await addUserPayment({
+          amount: donation,
+          description: `Donated at ${event.name} (${event.id})`,
+          user: member.id,
+          currency: 'usd',
+          product_type: 'donation',
+          type: 'cash',
+          redeemed: true,
+          date_redeemed: new Date().toISOString(),
+          status: 'collected'
+        })
+      }
+    }
 
     let { user_type, rating } = member
     let sendCongratsEmail = false
     // if they are an inductee or pledge, make them a brother
     if (MemberLevel[user_type] == MemberLevel.pledge) {
       user_type = 'brother'
-      rating = 5
       sendCongratsEmail = true
     }
 
@@ -63,6 +103,7 @@ export default async function InviteAdmin(
       paid,
       member,
       event,
+      amount,
       guest: eventUser.guest,
       reason: eventUser.reason,
       rsvp: eventUser.rsvp

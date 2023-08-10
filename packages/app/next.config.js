@@ -17,7 +17,15 @@ const getConfig = (phase) => {
       stripePublicKey: process.env.STRIPE_PUBLIC_KEY
     },
     pageExtensions: ['tsx'],
-
+    experimental: {
+      //optimizeFonts: true,
+      //optimizeImages: true,
+      //scrollRestoration: true,
+      //scriptLoader: true,
+      //serverActionsTs: true,
+      //appDir: false,
+      //optimizeCss: true
+    },
     images: {
       domains: [
         'guysnheat.com',

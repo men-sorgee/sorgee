@@ -1,49 +1,43 @@
-import { useFields, useUser } from 'hooks'
-import { useCallback, useState } from 'react'
+import {
+  ButtonConfirm,
+  ButtonLink,
+  FieldInput,
+  FieldNumber,
+  FieldRadioButtons,
+  FieldSelect,
+  Form,
+  Page,
+  Plan
+} from "components";
+import { useFields, useUser } from "hooks";
+import { FieldMap, Member, MemberLevel, UserEmailChange } from "lib/models";
+import { ApiResult, postJSON } from "lib/utils";
+import { useRouter } from "next/router";
+import { useCallback, useState } from "react";
+
 import {
   Alert,
-  Text,
+  Box,
   Button,
-  Flex,
-  Input,
-  VStack,
+  Divider,
+  GridItem,
   Heading,
-  Tabs,
+  SimpleGrid,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
-  InputGroup,
-  Select,
-  SimpleGrid,
-  GridItem,
-  Box,
-  Divider
-} from '@chakra-ui/react'
-
-import {
-  Page,
-  Plan,
-  ButtonLink,
-  FieldInput,
-  ButtonConfirm,
-  FieldRadioButtons,
-  Form,
-  FieldSelect,
-  FieldNumber
-} from 'components'
-
-import { FieldMap, Member, MemberLevel, UserEmailChange } from 'lib/models'
-import { useRouter } from 'next/router'
-import { ApiResult, postJSON } from 'lib/utils'
+  Tabs,
+  Text
+} from "@chakra-ui/react";
 
 export async function getServerSideProps(context) {
   if (context?.params == undefined)
     return {
       redirect: {
         destination: `/member/account/${PageSection[0]}`,
-        permanent: false
-      }
+        permanent: false,
+      },
     }
   const { section } = context.params
 
@@ -52,7 +46,7 @@ export async function getServerSideProps(context) {
     props.section = String(section)
   }
   return {
-    props
+    props,
   }
 }
 
@@ -64,7 +58,7 @@ enum PageSection {
   info,
   email,
   plan,
-  close
+  cancel,
 }
 
 type SettingsProp = Pick<
@@ -89,7 +83,7 @@ export default function AccountPage({ section }: PageProps) {
   const { fields: fieldMap, loading: fieldsLoading } = useFields('users')
   const { member, loading, level, mutate } = useUser({
     minLevel: MemberLevel.pledge,
-    redirectsEnabled: true
+    redirectsEnabled: true,
   })
   return (
     <Page title="Account" loading={loading}>
@@ -106,10 +100,7 @@ export default function AccountPage({ section }: PageProps) {
   )
 }
 
-const AccountForm = ({
-  fieldMap,
-  section: s = 'info'
-}: FormProps & { fieldMap: FieldMap }) => {
+const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps & { fieldMap: FieldMap }) => {
   const router = useRouter()
   const section = PageSection[s]
   const [tabValue, setTabValue] = useState(section)
@@ -138,7 +129,7 @@ const AccountForm = ({
     state,
     birth_month,
     birth_year,
-    auth_with_phone
+    auth_with_phone,
   } = member
   const defaultValues = {
     first_name,
@@ -149,7 +140,7 @@ const AccountForm = ({
     state,
     birth_month,
     birth_year,
-    auth_with_phone
+    auth_with_phone,
   }
 
   const required = { value: true, message: 'Required' }
@@ -192,25 +183,19 @@ const AccountForm = ({
           fontWeight={tabValue == 3 ? 'bold' : null}
           px={[1, 2, 4]}
         >
-          Close
+          Cancel
         </Tab>
       </TabList>
       <TabPanels>
         <TabPanel px={0}>
-          <Alert
-            px={[4, 4, 6]}
-            gap={2}
-            justifyItems="space-between"
-            rounded="lg"
-            mb={4}
-          >
+          <Alert px={[4, 4, 6]} gap={2} justifyItems="space-between" rounded="lg" mb={4}>
             <Box>
               <Heading as="h3" fontSize="xl" mt={0}>
                 Private Information
               </Heading>
               <Text>
-                This information is never shared. It is used to verify your
-                identity and to help us provide a better experience for you.
+                This information is never shared. It is used to verify your identity and to help us
+                provide a better experience for you.
               </Text>
             </Box>
           </Alert>
@@ -227,11 +212,7 @@ const AccountForm = ({
                     label="First Name"
                     registerOptions={{ required }}
                   />
-                  <FieldInput
-                    field="last_name"
-                    label="Last Name"
-                    registerOptions={{ required }}
-                  />
+                  <FieldInput field="last_name" label="Last Name" registerOptions={{ required }} />
                   <FieldSelect
                     field="birth_month"
                     label="Birth Month"
@@ -246,8 +227,8 @@ const AccountForm = ({
                   <GridItem colSpan={[1, 2]}>
                     <Divider />
                     <Text>
-                      The following information may be shared if you choose to
-                      share contact data with your buddies.
+                      The following information may be shared if you choose to share contact data
+                      with your buddies.
                     </Text>
                   </GridItem>
                   <FieldInput
@@ -262,10 +243,9 @@ const AccountForm = ({
                     label="Mobile Phone"
                     registerOptions={{
                       pattern: {
-                        value:
-                          /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
-                        message: 'US numbers only. Format: 123 456 7890'
-                      }
+                        value: /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
+                        message: 'US numbers only. Format: 123 456 7890',
+                      },
                     }}
                     placeholder="000 456 7890"
                   />
@@ -280,7 +260,7 @@ const AccountForm = ({
                       help="If you are having issues receiving the sign-in link, you can switch it to use your cell number instead."
                       options={[
                         { value: 'false', text: 'Send via Email' },
-                        { value: 'true', text: 'Send via SMS' }
+                        { value: 'true', text: 'Send via SMS' },
                       ]}
                     />
                   </GridItem>
@@ -312,30 +292,22 @@ const AccountForm = ({
         </TabPanel>
 
         <TabPanel px={0}>
-          <Alert
-            px={[4, 4, 6]}
-            gap={2}
-            justifyItems="space-between"
-            rounded="lg"
-            mb={4}
-          >
+          <Alert px={[4, 4, 6]} gap={2} justifyItems="space-between" rounded="lg" mb={4}>
             <Box>
               <Heading as="h3" fontSize="xl" mt={0}>
                 Change Email Address
               </Heading>
               <Text>
-                Changing your email address will require you to verify your new
-                email address. Are you sure you want to change your email?
+                Changing your email address will require you to verify your new email address. Are
+                you sure you want to change your email?
               </Text>
             </Box>
           </Alert>
           <Form<UserEmailChange, boolean>
-            onSubmit={(data) =>
-              postJSON<UserEmailChange, boolean>('/api/my/email/change', data)
-            }
+            onSubmit={(data) => postJSON<UserEmailChange, boolean>('/api/my/email/change', data)}
             defaultValues={{
               email: member?.email,
-              email_new: member?.email_new
+              email_new: member?.email_new,
             }}
             successMessage="We sent your new email address a verification link. Once you click the link in the email, your email address will change."
           >
@@ -370,11 +342,8 @@ const AccountForm = ({
                   mt={-10}
                   size="lg"
                   type="submit"
-                  bg="primary.500"
+                  colorScheme="primary"
                   color="white"
-                  position="sticky"
-                  bottom={4}
-                  _hover={{ bg: 'accent.500' }}
                   w={['full', 'auto']}
                   disabled={isSubmitting}
                 >
@@ -385,36 +354,26 @@ const AccountForm = ({
           </Form>
         </TabPanel>
         <TabPanel px={0}>
-          <Alert
-            px={[4, 4, 6]}
-            gap={2}
-            justifyItems="space-between"
-            rounded="lg"
-          >
+          <Alert px={[4, 4, 6]} gap={2} justifyItems="space-between" rounded="lg">
             <Box>
               <Heading as="h3" fontSize="xl" mt={0}>
                 Plan Subscription
               </Heading>
               <Text>
-                Subscriptions enable additional features to enhance your
-                experience on the site. You can subscribe to a plan at any time.
+                Subscriptions enable additional features to enhance your experience on the site. You
+                can subscribe to a plan at any time.
               </Text>
             </Box>
           </Alert>{' '}
           {(member && member?.membership_type != 'none' && (
-            <Plan
-              plan={member.membership_type}
-              interval={member.renewal_type}
-            />
+            <Plan plan={member.membership_type} interval={member.renewal_type} />
           )) || (
             <ButtonLink
               href="/member/subscription"
               size="lg"
               mt={4}
               type="submit"
-              bg="secondary.500"
-              color="white"
-              _hover={{ bg: 'accent.500' }}
+              colorScheme="secondary"
               w={['full', 'auto']}
             >
               Choose a Plan
@@ -422,74 +381,62 @@ const AccountForm = ({
           )}
         </TabPanel>
         <TabPanel px={0}>
-          <Alert
-            px={[4, 4, 6]}
-            gap={2}
-            justifyItems="space-between"
-            rounded="lg"
-            mb={10}
-          >
+          <Alert px={[4, 4, 6]} gap={2} justifyItems="start" rounded="lg" mb={10} flexDir="column">
             <Box>
               <Heading as="h3" fontSize="xl" mt={0}>
-                Delete Data
+                Deactivate Account
               </Heading>
               <Text>
-                Deleting your account will remove all of your data from our
-                servers. This includes your profile, messages, and any other
-                information you have provided.
+                Deactivating your account will remove your profile from the site. You will no longer
+                be able to sign in. Your data will be retained for siz months in case you change
+                your mind.
               </Text>
+              <ButtonConfirm
+                size="lg"
+                mt={4}
+                colorScheme="secondary"
+                w={['full', 'full', 'auto']}
+                onSuccess={async () => {
+                  location.href = '/api/me/close'
+                }}
+                buttonText="Deactivate Account"
+                alertTitle="Deactivate Account"
+              >
+                <Text>Are you sure you want to deactivate your account?</Text>
+              </ButtonConfirm>
             </Box>
           </Alert>
-
-          <Flex
-            direction={['column', 'row']}
-            justify="space-between"
-            align="end"
-            mb={4}
-            h="full"
-            gap={2}
-          >
-            <ButtonConfirm
-              size="lg"
-              type="submit"
-              bg="primary.500"
-              color="white"
-              _hover={{ bg: 'red.500' }}
-              w={['full', 'full', 'auto']}
-              complete={(success) => {
-                if (success) {
-                  location.href = '/api/me/delete'
-                }
-              }}
-              buttonText="Deactivate Account"
-              alertTitle="Deactivate Account"
-            >
-              <Text>Are you sure you want to deactivate your account?</Text>
-            </ButtonConfirm>
-            <ButtonConfirm
-              size="lg"
-              type="submit"
-              bg="red.500"
-              color="white"
-              _hover={{ bg: 'red.500' }}
-              w={['full', 'full', 'auto']}
-              complete={(success) => {
-                if (success) {
-                  location.href = '/api/me/delete'
-                }
-              }}
-              buttonText="Delete Data"
-              alertTitle="Permanently Delete Account"
-              aria-label="Permanently Delete Account"
-            >
+          <Alert px={[4, 4, 6]} gap={2} justifyItems="start" rounded="lg" mb={10} flexDir="column">
+            <Box>
+              <Heading as="h3" fontSize="xl" mt={0}>
+                Deactivate Account & Delete Data
+              </Heading>
               <Text>
-                Are you sure you want to completely delete your account? There
-                is no undoing this. Your data may take up to two days to be
-                completely removed from our servers. You will be immediately
-                signed out and will not be able to sign in again.
+                Deleting your account will remove all of your data from our servers. This includes
+                your profile, messages, and any other information you have provided.
               </Text>
-            </ButtonConfirm>
-          </Flex>
+              <ButtonConfirm
+                size="lg"
+                type="submit"
+                colorScheme="red"
+                mt={4}
+                w={['full', 'full', 'auto']}
+                confirmedAction={async () => true}
+                onSuccess={async () => {
+                  location.href = '/api/me/delete'
+                }}
+                buttonText="Deactivate Account & Delete Data"
+                alertTitle="Permanently Delete Account"
+                aria-label="Permanently Delete Account"
+              >
+                <Text>
+                  Are you sure you want to completely delete your account? There is no undoing this.
+                  Your data may take up to two days to be completely removed from our servers. You
+                  will be immediately signed out and will not be able to sign in again.
+                </Text>
+              </ButtonConfirm>
+            </Box>
+          </Alert>
         </TabPanel>
       </TabPanels>
     </Tabs>

@@ -1,7 +1,11 @@
-import { useEffect } from 'react'
-
-import { AppNotificationCard, UserNotificationCard } from 'components/controls'
-import { Member } from 'lib/models'
+import {
+  MemberAlertCard,
+  MemberNotificationCard,
+  UserNotifications
+} from "components";
+import { useAppNotifications, useUserNotifications } from "hooks";
+import { Member } from "lib/models";
+import { useEffect } from "react";
 
 import {
   Badge,
@@ -20,9 +24,8 @@ import {
   TabPanels,
   Tabs,
   useDisclosure
-} from '@chakra-ui/react'
-import { BellIcon } from '@heroicons/react/24/outline'
-import { useAppNotifications, useUserNotifications } from 'hooks'
+} from "@chakra-ui/react";
+import { BellIcon } from "@heroicons/react/24/outline";
 
 interface Props {
   member: Member
@@ -33,18 +36,9 @@ interface Props {
 const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const {
-    notifications,
-    notificationCount,
-    newNotificationCount,
-    deleteNotification
-  } = useUserNotifications()
-  const {
-    appNotifications,
-    newAppNotificationCount,
-    appNotificationCount,
-    deleteAppNotification
-  } = useAppNotifications()
+  const { notifications, notificationCount, newNotificationCount, deleteNotification, markAsRead } =
+    useUserNotifications()
+  const { appNotifications, newAppNotificationCount, appNotificationCount } = useAppNotifications()
 
   useEffect(() => {
     if (isOpen && appNotificationCount == 0 && notificationCount == 0) {
@@ -57,7 +51,7 @@ const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
     newAppNotificationCount,
     onClose,
     appNotificationCount,
-    notificationCount
+    notificationCount,
   ])
   const totalNew = newAppNotificationCount + newNotificationCount
   const total = appNotificationCount + notificationCount
@@ -68,6 +62,7 @@ const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
 
   return (
     <>
+      <UserNotifications member={member} />
       <Box>
         <IconButton
           aria-label="Notifications"
@@ -126,7 +121,7 @@ const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
               <TabPanels>
                 <TabPanel>
                   {appNotifications?.map((notification) => (
-                    <AppNotificationCard
+                    <MemberNotificationCard
                       key={notification.id}
                       member={member}
                       notification={notification}
@@ -136,14 +131,12 @@ const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
                 </TabPanel>
                 <TabPanel>
                   {notifications?.map((notification) => (
-                    <UserNotificationCard
+                    <MemberAlertCard
                       key={notification.id}
                       member={member}
                       notification={notification}
-                      onClick={() => {}}
-                      onDelete={() => {
-                        deleteNotification(notification.id).then(() => {})
-                      }}
+                      onRead={() => markAsRead(notification.id)}
+                      onDelete={() => deleteNotification(notification.id)}
                     />
                   ))}
                 </TabPanel>

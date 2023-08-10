@@ -1,6 +1,6 @@
-import * as typeorm from 'typeorm'
+import * as typeorm from "typeorm";
 
-import { Room } from './Room'
+import { Room } from "./Room";
 
 @typeorm.Index('room_events_pkey', ['id'], { unique: true })
 @typeorm.Entity('room_events', { schema: 'public' })

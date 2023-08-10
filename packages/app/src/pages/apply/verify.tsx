@@ -1,3 +1,8 @@
+import { ButtonBusy, Page, PhotoCapture } from "components";
+import { useUser } from "hooks/use-user";
+import { ApplicationStatus, Member, MemberLevel } from "lib/models";
+import { getAssetUrl, postForm, postJSON } from "lib/utils";
+import { useRouter } from "next/router";
 import {
   ChangeEvent,
   Dispatch,
@@ -6,15 +11,7 @@ import {
   useEffect,
   useRef,
   useState
-} from 'react'
-
-import { BusyButton, PhotoCapture } from 'components/controls'
-
-import Page from 'components/Page'
-import { useUser } from 'hooks/use-user'
-import { ApplicationStatus, Member, MemberLevel } from 'lib/models'
-import { getAssetUrl, postForm, postJSON } from 'lib/utils'
-import { useRouter } from 'next/router'
+} from "react";
 
 import {
   Alert,
@@ -31,15 +28,16 @@ import {
   Input,
   Stack,
   Text
-} from '@chakra-ui/react'
-import { ArrowUpTrayIcon, CameraIcon } from '@heroicons/react/24/outline'
-import ApplicationSteps from './_steps'
+} from "@chakra-ui/react";
+import { ArrowUpTrayIcon, CameraIcon } from "@heroicons/react/24/outline";
+
+import ApplicationSteps from "./_steps";
 
 function VerificationPage() {
   const { member, loading, reload } = useUser({
     minLevel: MemberLevel.applicant,
     minAppStatus: ApplicationStatus.verify,
-    redirectsEnabled: true
+    redirectsEnabled: true,
   })
   const [complete, setComplete] = useState(false)
   const router = useRouter()
@@ -57,7 +55,7 @@ function VerificationPage() {
 
   return (
     <Page
-      title="Identification"
+      title="Verification"
       loading={loading || complete}
       header={<ApplicationSteps status={'verify'} />}
     >
@@ -79,7 +77,7 @@ function VerifyForm({
   setComplete,
   complete,
   member,
-  reload
+  reload,
 }: {
   code: string
   complete: boolean
@@ -98,11 +96,7 @@ function VerifyForm({
   const onFileUploadChange = (e: ChangeEvent<HTMLInputElement>) => {
     const fileInput = e.target
 
-    const file = fileInput.files
-      ? fileInput.files?.length
-        ? fileInput.files[0]
-        : null
-      : null
+    const file = fileInput.files ? (fileInput.files?.length ? fileInput.files[0] : null) : null
 
     if (!file || !file.type.startsWith('image')) {
       setError('Please select a valid image')
@@ -132,7 +126,7 @@ function VerifyForm({
         .then((res) => res.blob())
         .then((blob) => {
           let file = new File([blob], 'verification-photo.jpg', {
-            type: 'image/jpeg'
+            type: 'image/jpeg',
           })
           setFile(file)
           setPreviewUrl(data)
@@ -188,10 +182,9 @@ function VerifyForm({
       <Flex direction="column" alignItems="center"></Flex>
       <Stack alignItems="center" spacing={4}>
         <Text fontSize="xl">
-          To verify you are who you say you are, please take a selfie while
-          holding a piece of paper with the following verification-code written
-          on it. ( This photo will not be shared with anyone and will not be
-          used for your profile.)
+          To verify you are who you say you are, please take a selfie while holding a piece of paper
+          with the following verification-code written on it. ( This photo will not be shared with
+          anyone and will not be used for your profile.)
         </Text>
         <Heading size="3xl" mb={3}>
           {code}
@@ -227,12 +220,7 @@ function VerifyForm({
               w={['full', '75%']}
               minH={350}
             >
-              <Input
-                hidden
-                onChange={onFileUploadChange}
-                type="file"
-                ref={fileInput}
-              />
+              <Input hidden onChange={onFileUploadChange} type="file" ref={fileInput} />
               <IconButton
                 aria-label="Take Photo"
                 icon={<CameraIcon />}
@@ -265,13 +253,7 @@ function VerifyForm({
           )
         )}
         {member?.photo_denial_reason && (
-          <Alert
-            status="error"
-            alignItems="start"
-            size="lg"
-            w={['full', '75%']}
-            mx="auto"
-          >
+          <Alert status="error" alignItems="start" size="lg" w={['full', '75%']} mx="auto">
             <AlertIcon />
             <Text mt={0}>
               Your verification photo was denied: &nbsp; &apos;
@@ -283,22 +265,15 @@ function VerifyForm({
           <AlertIcon />
           <Text fontSize="xl" textAlign="left" mt={0}>
             <strong>
-              Be sure your face and code is clearly visible, with no sunglasses
-              or hats.
+              Be sure your face and code is clearly visible, with no sunglasses or hats.
             </strong>
             <br />
-            Your photo will not be accepted without the verification code
-            written on a piece of paper.
+            Your photo will not be accepted without the verification code written on a piece of
+            paper.
           </Text>
         </Alert>
         {((hasPhoto && member?.photo_denial_reason === null) || hasUpload) && (
-          <Flex
-            dir="column"
-            alignItems="center"
-            align="center"
-            justify="middle"
-            textAlign="center"
-          >
+          <Flex dir="column" alignItems="center" align="center" justify="middle" textAlign="center">
             <Checkbox
               ref={verifyCheckbox}
               name="verify"
@@ -320,24 +295,24 @@ function VerifyForm({
               </Button>
             )}
             {hasPhoto && member?.photo_denial_reason === null && (
-              <BusyButton
+              <ButtonBusy
                 size="lg"
                 disabled={!isVerified}
                 onClick={() => submitExisting()}
                 colorScheme="primary"
               >
                 Use Existing
-              </BusyButton>
+              </ButtonBusy>
             )}
             {hasUpload && (
-              <BusyButton
+              <ButtonBusy
                 size="lg"
                 disabled={!isVerified}
                 colorScheme="accent"
                 onClick={() => submitNew()}
               >
                 Upload & Continue
-              </BusyButton>
+              </ButtonBusy>
             )}
           </HStack>
         )}

@@ -1,4 +1,4 @@
-import { Circle, StyleProps } from '@chakra-ui/react'
+import { Circle, StyleProps } from "@chakra-ui/react";
 
 type Props = StyleProps & { className?: string; title?: string }
 const InfoIcon = ({ className, title, ...props }: Props) => {

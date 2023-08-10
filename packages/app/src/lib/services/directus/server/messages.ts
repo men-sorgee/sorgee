@@ -1,7 +1,12 @@
-import { ChatMessage, ChatUser, DirectusFile, Message, MessageStatusType, User } from 'lib/models'
-import { getAssetUrl } from 'lib/utils'
+import {
+  ChatMessage,
+  ChatUser,
+  Message,
+  MessageStatusType,
+  User
+} from "lib/models";
 
-import { getAdminClient } from './'
+import { getAdminClient } from "./";
 
 export async function getMessages(user_id: string) {
   const adminClient = await getAdminClient()
@@ -24,7 +29,7 @@ export async function getMessages(user_id: string) {
       ],
     },
     sort: ['date_created'],
-    limit: 100,
+    limit: 50,
     fields: [
       '*',
       'from.id',

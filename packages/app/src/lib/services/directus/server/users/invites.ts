@@ -1,7 +1,14 @@
-import { EventInvite, EventUser, GroupEvent, Invite, InviteRSVPType, Member } from 'lib/models'
-import { listUpcomingEvents } from 'lib/services/directus/server'
+import {
+  EventInvite,
+  EventUser,
+  GroupEvent,
+  Invite,
+  InviteRSVPType,
+  Member
+} from "lib/models";
+import { listUpcomingEvents } from "lib/services/directus/server";
 
-import { getAdminClient } from '../'
+import { getAdminClient } from "../";
 
 export async function getInvite(inviteId: number): Promise<EventUser | null> {
   const client = await getAdminClient()
@@ -19,6 +26,7 @@ export async function findInvite(eventId: string, userId: string): Promise<Event
       events_id: { _eq: eventId },
       users_id: { _eq: userId },
     },
+    fields: ['*'],
   })
 
   return query.data ? query.data[0] as EventUser : null
@@ -41,7 +49,7 @@ export async function listInvites(member: Member): Promise<EventUser[]> {
     const event = invite.events_id as GroupEvent
     const member = invite.users_id as unknown as Member
     const rsvp = invite.rsvp as InviteRSVPType
-    const { id, attended, paid, guest, reason } = invite
+    const { id, attended, paid, guest, reason, amount, paid_at, confirmed_at } = invite
     return {
       id,
       event,
@@ -49,8 +57,11 @@ export async function listInvites(member: Member): Promise<EventUser[]> {
       rsvp,
       attended,
       paid,
+      amount,
       guest,
       reason,
+      paid_at,
+      confirmed_at,
     }
   })
 
@@ -75,30 +86,14 @@ export async function listInvites(member: Member): Promise<EventUser[]> {
 
 export async function updateInvite(
   inviteId: number,
-  data: Partial<{
-    rsvp?: InviteRSVPType
-    reason?: string
-    attended?: boolean
-    paid?: boolean
-  }>
+  data: Partial<EventUser>
 ) {
   const client = await getAdminClient()
-  const invite = await getInvite(inviteId)
-
+  let invite = await getInvite(inviteId)
   if (!invite) {
     throw new Error('No invite found')
   }
-
-  const { rsvp, attended, reason, paid } = data
-
-  if (rsvp) invite.rsvp = rsvp
-  if (reason) invite.reason = reason
-  if (attended !== undefined) invite.attended = attended
-  if (paid !== undefined) invite.paid = paid
-  delete invite.users_id
-  delete invite.events_id
-
-  await client.items('events_users').updateOne(inviteId, invite as any)
+  invite = await client.items('events_users').updateOne(inviteId, data) as EventUser
 
   return invite
 }

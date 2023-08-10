@@ -1,7 +1,19 @@
-import { ApiResponse, Applicant, EventUser, GroupEvent, Member, MemberLevel } from 'lib/models'
-import { findInvite, findUser, getEvent, getUser, registerForEvent } from 'lib/services/directus/server'
-import { NextApiRequest, NextApiResponse } from 'next'
-import { withMethods, withStaff } from 'lib/utils/server'
+import {
+  Applicant,
+  EventUser,
+  GroupEvent,
+  Member,
+  MemberLevel
+} from "lib/models";
+import {
+  findInvite,
+  findUser,
+  getEvent,
+  getUser,
+  registerForEvent
+} from "lib/services/directus/server";
+import { ApiResponse, withMethods, withStaff } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function EventCheckIn(
   req: NextApiRequest,

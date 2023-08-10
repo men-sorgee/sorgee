@@ -1,6 +1,5 @@
-import { useState } from 'react'
-
-import { RegisterOptions, useFormContext } from 'react-hook-form'
+import { useState } from "react";
+import { RegisterOptions, useFormContext } from "react-hook-form";
 
 import {
   chakra,
@@ -9,10 +8,10 @@ import {
   RangeSliderFilledTrack,
   RangeSliderProps,
   RangeSliderThumb,
-  RangeSliderTrack,
-} from '@chakra-ui/react'
+  RangeSliderTrack
+} from "@chakra-ui/react";
 
-import FieldWrapper from './FieldWrapper'
+import FieldWrapper from "./FieldWrapper";
 
 export type Props = RangeSliderProps & {
   field: string
@@ -21,7 +20,7 @@ export type Props = RangeSliderProps & {
   registerOptions?: RegisterOptions
 }
 
-const InputField = (props: Props) => {
+const InputField = chakra((props: Props) => {
   const { field, label, help, registerOptions = {}, min = 0, max = 10, step = 1, ...opts } = props
 
   const {
@@ -68,5 +67,6 @@ const InputField = (props: Props) => {
       </RangeSlider>
     </FieldWrapper>
   )
-}
-export default chakra(InputField)
+})
+
+export default InputField

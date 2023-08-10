@@ -1,4 +1,5 @@
-import { NextApiResponse } from 'next'
+import { NextApiResponse } from "next";
+
 declare global {
   interface NextApiResponse extends NextApiResponse {
     socket: net.Socket & {

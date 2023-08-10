@@ -1,7 +1,13 @@
-import { adminUrl } from 'lib/config'
-import { DirectusField, DirectusTypes, FieldMap, Promo, User } from 'lib/models'
+import { adminUrl } from "lib/config";
+import {
+  DirectusField,
+  DirectusTypes,
+  FieldMap,
+  Promo,
+  User
+} from "lib/models";
 
-import { Directus } from '@directus/sdk'
+import { Directus } from "@directus/sdk";
 
 const _adminDb = new Directus<DirectusTypes>(adminUrl)
 const cache: { [key: string]: any } = {}

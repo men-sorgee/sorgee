@@ -1,11 +1,7 @@
-import { ApiResponse, EventInvite, GroupEvent, Member } from 'lib/models'
-import {
-  getEvent,
-  getInvite,
-  getUser,
-} from 'lib/services/directus/server'
-import { withMethods, withStaff } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { EventInvite, GroupEvent, Member } from "lib/models";
+import { getInvite } from "lib/services/directus/server";
+import { ApiResponse, withMethods, withStaff } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function InviteAdmin(
   req: NextApiRequest,
@@ -21,30 +17,17 @@ export default async function InviteAdmin(
     if (!eventUser)
       throw new Error('Invite not found')
 
-    let event = eventUser.events_id as GroupEvent
-    if (typeof event === 'string')
-      event = await getEvent(event)
-
-    if (!event)
-      throw new Error('Event not found')
-
-    let member = eventUser.users_id as Member
-    if (typeof member === 'string')
-      member = await getUser<Member>(member)
-
-    if (!member)
-      throw new Error('Member not found')
-
-    const { id, attended, paid, rsvp, guest, reason } = eventUser
+    const { id, attended, paid, rsvp, guest, reason, amount, users_id, events_id } = eventUser
     let invite: EventInvite = {
       id,
-      member,
-      event,
+      member: users_id as Member,
+      event: events_id as GroupEvent,
       attended,
       paid,
       rsvp,
       guest,
-      reason
+      reason,
+      amount
     }
 
     return res.status(200).json(ApiResponse(invite))

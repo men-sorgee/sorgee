@@ -1,30 +1,17 @@
-import { useEffect, useState } from 'react'
-
-import { FieldRadioButtons, Form } from 'components/forms'
-import Page from 'components/Page'
+import { FieldRadioButtons, Form, Page } from "components";
+import { useUser } from "hooks/use-user";
 import {
   ApplicationStatus,
   ContactPreferenceType,
   MemberLevel
-} from 'lib/models'
-import { postJSON } from 'lib/utils'
-import { useRouter } from 'next/router'
-import { FormProvider, useForm } from 'react-hook-form'
+} from "lib/models";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
-import { useUser } from 'hooks/use-user'
-import {
-  Alert,
-  AlertIcon,
-  Box,
-  Button,
-  Heading,
-  Text,
-  useToast,
-  VStack
-} from '@chakra-ui/react'
+import { Alert, AlertIcon, Heading, Text, VStack } from "@chakra-ui/react";
 
-import ApplicationSteps from './_steps'
-import { BusyButton } from '../../components'
+import { ButtonBusy } from "../../components";
+import ApplicationSteps from "./_steps";
 
 function Review() {
   const router = useRouter()
@@ -33,7 +20,7 @@ function Review() {
   const { loading, member, mutate } = useUser({
     minLevel: MemberLevel.applicant,
     minAppStatus: ApplicationStatus.review,
-    redirectsEnabled: true
+    redirectsEnabled: true,
   })
 
   useEffect(() => {
@@ -50,7 +37,7 @@ function Review() {
 
   return (
     <Page
-      title="Verification Review"
+      title="Application Review"
       loading={loading}
       header={<ApplicationSteps status={'review'} />}
     >
@@ -67,7 +54,7 @@ function Review() {
 
             <Form<{ contact_preference: ContactPreferenceType }>
               defaultValues={{
-                contact_preference: member?.contact_preference || 'email'
+                contact_preference: member?.contact_preference || 'email',
               }}
               onSubmit={mutate}
               onSuccess={() => setComplete(true)}
@@ -84,22 +71,17 @@ function Review() {
                     w="fit-content"
                     field="contact_preference"
                     registerOptions={{
-                      required: 'Certification is Required'
+                      required: 'Certification is Required',
                     }}
                     options={[
                       { text: 'Email', value: 'email' },
                       { text: 'Phone', value: 'phone_call' },
-                      { text: 'Text', value: 'phone_text' }
+                      { text: 'Text', value: 'phone_text' },
                     ]}
                   />
-                  <BusyButton
-                    type="submit"
-                    mt={8}
-                    size="lg"
-                    bgColor="accent.500"
-                  >
+                  <ButtonBusy type="submit" mt={8} size="lg" bgColor="accent.500">
                     Set Contact Preference
-                  </BusyButton>
+                  </ButtonBusy>
                 </VStack>
               )}
             </Form>
@@ -118,8 +100,8 @@ function Review() {
           >
             <AlertIcon />
             <Text m={0}>
-              Your application is currently being reviewed by our team. You will
-              receive an email with our decision within 7 days. <br />
+              Your application is currently being reviewed by our team. You will receive an email
+              with our decision within 7 days. <br />
               Thank you for your interest in our fraternity.
             </Text>
           </Alert>

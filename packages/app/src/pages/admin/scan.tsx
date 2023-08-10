@@ -1,10 +1,9 @@
 'use client'
-import { useState } from 'react'
-
-import Page from 'components/Page'
-import { useUser } from 'hooks'
-import { MemberLevel } from 'lib/models'
-import dynamic from 'next/dynamic'
+import { Page } from "components";
+import { useUser } from "hooks";
+import { MemberLevel } from "lib/models";
+import dynamic from "next/dynamic";
+import { useState } from "react";
 
 import {
   AspectRatio,
@@ -14,17 +13,14 @@ import {
   Flex,
   HStack,
   IconButton
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 import {
   ArrowPathRoundedSquareIcon,
   BoltIcon
-} from '@heroicons/react/24/outline'
-import { BoltIcon as LightningBoltIconSolid } from '@heroicons/react/24/solid'
+} from "@heroicons/react/24/outline";
+import { BoltIcon as LightningBoltIconSolid } from "@heroicons/react/24/solid";
 
-const BarcodeScannerComponent = dynamic(
-  () => import('react-qr-barcode-scanner'),
-  { ssr: false }
-)
+const BarcodeScannerComponent = dynamic(() => import('react-qr-barcode-scanner'), { ssr: false })
 
 export default function Scanner() {
   const [facing, setFacing] = useState<'user' | 'environment'>('environment')
@@ -34,7 +30,7 @@ export default function Scanner() {
   const [stopStream, setStopStream] = useState(false)
   const { member, loading } = useUser({
     minLevel: MemberLevel.staff,
-    redirectsEnabled: true
+    redirectsEnabled: true,
   })
 
   const onScan = (err: string, result: { getText: () => any }) => {
@@ -118,14 +114,7 @@ export default function Scanner() {
                 torch={light}
               />
             </AspectRatio>
-            <HStack
-              align="center"
-              position="absolute"
-              zIndex="1"
-              spacing={4}
-              mt={-12}
-              mx={'45%'}
-            >
+            <HStack align="center" position="absolute" zIndex="1" spacing={4} mt={-12} mx={'45%'}>
               <IconButton
                 bg="white"
                 icon={<ArrowPathRoundedSquareIcon />}

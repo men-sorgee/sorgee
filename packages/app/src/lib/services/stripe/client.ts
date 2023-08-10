@@ -1,4 +1,4 @@
-import { MembershipType } from 'lib/models'
+import { MembershipType } from "lib/models";
 
 const subscriptionData = {
   prod_O1Vn4HTEQ7zIi4: {

@@ -5,26 +5,26 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm'
+  PrimaryGeneratedColumn
+} from "typeorm";
 
-import { DirectusFile } from './DirectusFiles'
-import { DirectusUsers } from './DirectusUsers'
-import { EventsUser } from './EventsUsers'
-import { Location } from './Location'
-import { Messages } from './Messages'
-import { NotificationsUsers } from './NotificationsUsers'
-import { Promos } from './Promos'
-import { Rating } from './Rating'
-import { SurveyAnswers } from './SurveyAnswers'
-import { UserAccount } from './UserAccount'
-import { UserBuddy } from './UserBuddy'
-import { UserContactAttempt } from './UserContactAttempt'
-import { UserEmailEvents } from './UserEmailEvents'
-import { UserRelationships } from './UserRelationships'
-import { UserSession } from './UserSession'
-import { UsersFiles } from './UsersFiles'
-import { UsersPhotos } from './UsersPhotos'
+import { DirectusFile } from "./DirectusFiles";
+import { DirectusUsers } from "./DirectusUsers";
+import { EventsUser } from "./EventsUsers";
+import { Location } from "./Location";
+import { Messages } from "./Messages";
+import { NotificationsUsers } from "./NotificationsUsers";
+import { Promos } from "./Promos";
+import { Rating } from "./Rating";
+import { SurveyAnswers } from "./SurveyAnswers";
+import { UserAccount } from "./UserAccount";
+import { UserBuddy } from "./UserBuddy";
+import { UserContactAttempt } from "./UserContactAttempt";
+import { UserEmailEvents } from "./UserEmailEvents";
+import { UserRelationships } from "./UserRelationships";
+import { UserSession } from "./UserSession";
+import { UsersFiles } from "./UsersFiles";
+import { UsersPhotos } from "./UsersPhotos";
 
 @Index('users_email_unique', ['email'], { unique: true })
 @Index('users_pkey', ['id'], { unique: true })
@@ -502,8 +502,8 @@ export class User {
   @OneToMany(() => UserContactAttempt, (userContactAttempt) => userContactAttempt.user)
   userContactAttempts: UserContactAttempt[]
 
-  @OneToMany(() => UserEmailEvents, (userEmailEvents) => userEmailEvents.user)
-  userEmailEvents: UserEmailEvents[]
+  // @OneToMany(() => UserEmailEvents, (userEmailEvents) => userEmailEvents.user)
+  // userEmailEvents: UserEmailEvents[]
 
   @OneToMany(() => UserRelationships, (userRelationships) => userRelationships.relatedUsers)
   userRelationships: UserRelationships[]

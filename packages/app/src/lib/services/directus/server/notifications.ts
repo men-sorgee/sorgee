@@ -1,17 +1,17 @@
+import { notifications } from "lib/config";
 import {
   AppNotification,
   AppNotificationStatusType,
-  NotificationUser,
-  Notification,
-  UserNotification,
-  GroupEvent,
   EventDetail,
-  UserType,
-} from 'lib/models'
-import { notifications } from 'lib/config'
-import { getAdminClient } from './'
-import { sendAdminNotification } from '../../webhooks/directus'
+  GroupEvent,
+  Notification,
+  NotificationUser,
+  UserNotification,
+  UserType
+} from "lib/models";
 
+import { sendAdminNotification } from "../../webhooks/directus";
+import { getAdminClient } from "./";
 
 export async function getAppNotification(id: string): Promise<Notification> {
   const adminClient = await getAdminClient()
@@ -41,6 +41,7 @@ export async function getAppNotifications(user_id: string): Promise<AppNotificat
     },
     sort: ['-id'],
     fields: '*, notification_id.*' as any,
+    limit: 20
   })
 
   const notifications = notificationsRaw.map((userNotification: NotificationUser) => {
@@ -93,13 +94,19 @@ export async function addAppNotificationUser(notificationId: string, userId: str
   })
 }
 
-export async function addUserToCongratsEmail(user_id: string, user_type: UserType) {
-  // add to congrats email
-  const notificationId = notifications.congratsEmail[user_type]
-  await addAppNotificationUser(notificationId, user_id)
-
+export async function addUserToPledgeSurveyEmail(user_id: string) {
+  await addAppNotificationUser(notifications.pledgeSurvey, user_id)
   try {
-    await sendAdminNotification(notificationId)
+    await sendAdminNotification(notifications.pledgeSurvey)
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+export async function addUserToCongratsEmail(user_id: string, user_type: UserType) {
+  await addAppNotificationUser(notifications.congratsEmail[user_type], user_id)
+  try {
+    await sendAdminNotification(notifications.congratsEmail[user_type])
   } catch (e) {
     console.error(e)
   }
@@ -143,6 +150,7 @@ export async function getUserNotifications(user_id: string): Promise<UserNotific
     },
     sort: ['-date_created'],
     fields: '*' as any,
+    limit: 20
   })
 
   return notifications as UserNotification[]

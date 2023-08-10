@@ -1,32 +1,32 @@
 'use client'
-import { GroupEvent } from 'lib/models'
-import { JsonFetcher } from 'lib/utils'
-import useSWR from 'swr'
-import { useAuthenticated } from './use-authenticated'
+import { GroupEvent } from "lib/models";
+import useSWR from "swr";
 
-type EventsResults = {
+import { useAuthenticated } from "./use-authenticated";
+
+export type EventsAdminResults = {
   events: GroupEvent[]
   error?: Error
   loading: boolean
   reload: () => Promise<GroupEvent[]>
 }
 
-export const useEventsAdmin = (): EventsResults => {
+export const useEventsAdmin = (): EventsAdminResults => {
   const { authenticated } = useAuthenticated()
   const {
     data: events = [],
     mutate,
     error,
-    isLoading
+    isLoading,
   } = useSWR<GroupEvent[], Error>(authenticated ? `/api/events/admin` : null, {
     refreshInterval: 1000 * 60 * 10,
-    fallbackData: []
+    fallbackData: [],
   })
 
   return {
     events,
     error,
     loading: isLoading,
-    reload: () => mutate()
+    reload: () => mutate(),
   }
 }

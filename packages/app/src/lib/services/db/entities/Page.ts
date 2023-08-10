@@ -1,8 +1,8 @@
-import * as typeorm from 'typeorm'
+import * as typeorm from "typeorm";
 
-import { DirectusFile } from './DirectusFiles'
-import { DirectusUsers } from './DirectusUsers'
-import { PageContent } from './PageContent'
+import { DirectusFile } from "./DirectusFiles";
+import { DirectusUsers } from "./DirectusUsers";
+import { PageContent } from "./PageContent";
 
 @typeorm.Tree('nested-set')
 @typeorm.Index('page_pkey', ['id'], { unique: true })

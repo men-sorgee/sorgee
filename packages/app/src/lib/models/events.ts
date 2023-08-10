@@ -1,20 +1,13 @@
-import { DirectusFile } from 'lib/models'
+import { DirectusFile } from "lib/models";
 
-import { Rating, Survey } from './surveys'
-import { Member, SearchableMember, User, UserType } from './users'
+import { Rating, Survey } from "./surveys";
+import { Member, User, UserType } from "./users";
 
 export type UserInvite = {
   e: string
   v: string
 }
 
-export type RSVPInfo = {
-  user_id: string
-  event_id: string
-  invite_id?: number
-  reason?: string
-  rsvp?: InviteRSVPType
-}
 
 export type InviteRSVPType =
   | 'invited'
@@ -53,6 +46,7 @@ export type EventInfo = {
   cost: number
   type: string
   invite_only: boolean
+  online_payments: boolean
   visibility: UserType[]
 }
 
@@ -67,6 +61,7 @@ export type GroupEvent = {
   cost: number
   type: string
   invite_only: boolean
+  online_payments: boolean
   visibility: UserType[]
   users: string | EventUser[]
   survey?: string[] | Survey[]
@@ -82,6 +77,9 @@ export type EventUser = {
   flags?: unknown
   rsvp?: InviteRSVPType
   paid?: boolean
+  paid_at?: string
+  confirmed_at?: string
+  amount?: number
   guest?: boolean
   reason?: string
   attendance?: string
@@ -94,6 +92,9 @@ export type EventInvite = {
   attended: boolean
   rsvp: InviteRSVPType
   paid: boolean
+  paid_at?: string
+  confirmed_at?: string
+  amount: number
   guest: boolean
   reason: string
   attendance?: string
@@ -110,13 +111,14 @@ export type EventStats = {
 export type EventDetail = EventInfo & {
   attendance: EventUser[]
   stats: EventStats
-  members: SearchableMember[]
+  // members: SearchableMember[]
   surveys: Survey[]
 }
 
 export type Location = {
   id: string
   name?: string
+  capacity?: number
   street?: string
   unit?: string
   city?: string

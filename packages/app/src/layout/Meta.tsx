@@ -1,7 +1,7 @@
-import { useMeta } from 'hooks/use-meta'
-import { baseUrl } from 'lib/config'
-import { getAssetUrl } from 'lib/utils'
-import Head from 'next/head'
+import { useMeta } from "hooks/use-meta";
+import { baseUrl } from "lib/config";
+import { getAssetUrl } from "lib/utils";
+import Head from "next/head";
 
 interface Props {}
 const Meta = (_props: Props) => {

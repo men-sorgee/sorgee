@@ -1,4 +1,6 @@
-import { ReactNode, RefObject, useCallback, useRef } from 'react'
+import { gradient } from "lib/utils";
+import { ReactNode, RefObject, useCallback, useRef } from "react";
+
 import {
   AlertDialog,
   AlertDialogBody,
@@ -7,38 +9,33 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Button,
+  ButtonGroup,
   IconButton,
   IconButtonProps,
   useDisclosure,
   useToast
-} from '@chakra-ui/react'
-import { ApiResult } from 'lib/utils'
+} from "@chakra-ui/react";
 
-export type ConfirmButtonProps<TResponse> = Omit<
+export type ButtonConfirmProps<TResponse = void> = Omit<
   IconButtonProps,
-  'aria-label'
+  'aria-label' | 'onError'
 > & {
-  promise?: () => Promise<ApiResult<TResponse>>
-  complete: (
-    bool: boolean,
-    data: TResponse,
-    error?: string
-  ) => void | Promise<void>
+  confirmedAction?: () => Promise<TResponse> | TResponse | void
+  onSuccess?: (response: TResponse) => Promise<void> | TResponse | void
+  onError?: (error: Error) => Promise<void> | void
   alertTitle: string
   buttonText: string
   confirmColorScheme?: string
   successMessage?: string
   failureMessage?: string
-  focusRef?: RefObject<
-    HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement
-  >
+  focusRef?: RefObject<HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement>
   children: ReactNode | ReactNode[]
 }
 
-export function ButtonConfirm<TResponse>({
-  promise = () =>
-    Promise.resolve<ApiResult<TResponse>>(null as ApiResult<TResponse>),
-  complete = () => null,
+export function ButtonConfirm<TResponse = void>({
+  confirmedAction = () => Promise.resolve<TResponse>(null),
+  onSuccess,
+  onError,
   alertTitle,
   buttonText,
   confirmColorScheme = 'red',
@@ -50,8 +47,11 @@ export function ButtonConfirm<TResponse>({
   title,
   disabled,
   py = 2,
+  color = 'white',
+  colorScheme,
+  w = ['full', 'auto'],
   ...props
-}: ConfirmButtonProps<TResponse>) {
+}: ButtonConfirmProps<TResponse>) {
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const cancelRef = useRef<HTMLButtonElement>()
@@ -59,34 +59,37 @@ export function ButtonConfirm<TResponse>({
   const action = useCallback(async () => {
     if (disabled) return
     try {
-      const { data } = await promise()
-      complete(true, data, null)
+      const response = await confirmedAction()
+      if (onSuccess) await onSuccess(response as any)
       if (successMessage)
         toast({
           title: alertTitle,
           description: successMessage,
           status: 'success',
-          duration: 3000
+          duration: 3000,
         })
     } catch (err) {
-      complete(false, null, err)
+      if (onError) await onError(err)
       if (failureMessage)
         toast({
           title: alertTitle,
-          description: failureMessage + ' ' + err?.message || err,
+          description: failureMessage,
           status: 'error',
-          duration: 5000
+          duration: 5000,
         })
     }
   }, [
     disabled,
-    promise,
-    complete,
+    confirmedAction,
+    onSuccess,
     successMessage,
     toast,
     alertTitle,
-    failureMessage
+    failureMessage,
+    onError,
   ])
+  const bgGradient = gradient(colorScheme)
+  const bgGradientHover = gradient(colorScheme, 100)
   return (
     <>
       {(icon && (
@@ -95,6 +98,11 @@ export function ButtonConfirm<TResponse>({
           aria-label={title}
           title={title}
           icon={icon}
+          bgGradient={bgGradient}
+          color={color}
+          _hover={{
+            bgGradient: bgGradientHover,
+          }}
           {...props}
         />
       )) || (
@@ -103,6 +111,12 @@ export function ButtonConfirm<TResponse>({
           aria-label={title}
           title={title}
           py={py}
+          color={color}
+          w={w}
+          bgGradient={bgGradient}
+          _hover={{
+            bgGradient: bgGradientHover,
+          }}
           {...props}
         >
           {buttonText}
@@ -124,21 +138,33 @@ export function ButtonConfirm<TResponse>({
             <AlertDialogBody>{children}</AlertDialogBody>
 
             <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
-                Cancel
-              </Button>
-              <Button
-                ref={goRef}
-                colorScheme={confirmColorScheme}
-                onClick={() => {
-                  onClose()
-                  return action()
-                }}
-                ml={3}
-                title={title}
-              >
-                {buttonText}
-              </Button>
+              <ButtonGroup gap={2}>
+                <Button
+                  ref={goRef}
+                  onClick={() => {
+                    onClose()
+                    action()
+                  }}
+                  ml={3}
+                  title={title}
+                  bgGradient={gradient(confirmColorScheme)}
+                  _hover={{
+                    bgGradient: gradient(confirmColorScheme, 100),
+                  }}
+                >
+                  {buttonText}
+                </Button>
+                <Button
+                  ref={cancelRef}
+                  bgGradient={gradient('gray')}
+                  _hover={{
+                    bgGradient: gradient('gray', 100),
+                  }}
+                  onClick={onClose}
+                >
+                  Cancel
+                </Button>
+              </ButtonGroup>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialogOverlay>

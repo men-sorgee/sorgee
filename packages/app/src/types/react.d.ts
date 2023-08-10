@@ -1,4 +1,5 @@
-import * as React from 'react'
+import * as React from "react";
+
 declare module 'react' {
   interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
     // extends React's HTMLAttributes
@@ -10,6 +11,7 @@ declare module 'react' {
 declare namespace JSX { }
 
 declare global {
+  type DefaultTo<T, Fallback> = T extends null | undefined ? Fallback : T
   namespace JSX {
     interface IntrinsicElements {
       'whereby-embed': React.DetailedHTMLProps<

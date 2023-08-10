@@ -1,4 +1,4 @@
-import { OAuthConfig, OAuthUserConfig } from 'next-auth/providers'
+import { OAuthConfig, OAuthUserConfig } from "next-auth/providers";
 
 export interface YahooProfile {
   aud: string

@@ -1,5 +1,5 @@
-import { DirectusFile, DirectusUser } from './directus'
-import { PresenceType, User } from './users'
+import { DirectusFile, DirectusUser } from "./directus";
+import { PresenceType, User } from "./users";
 
 export type Room = {
   id: string

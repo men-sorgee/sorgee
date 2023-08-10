@@ -1,12 +1,19 @@
-import { AgreementData, ApiResponse, Applicant, MemberLevel, Profile, UserType } from 'lib/models'
-import { addUserToCongratsEmail, getUserEvents, updateUser } from 'lib/services/directus/server'
 import {
-  SendGridList,
-  updateSendGrid,
-} from 'lib/services/sendgrid/server'
-import { withApplicant, withMethods } from 'lib/utils/server'
-import { NextApiRequest, NextApiResponse } from 'next'
-
+  AgreementData,
+  Applicant,
+  MemberLevel,
+  Profile,
+  UserType
+} from "lib/models";
+import {
+  addUserToCongratsEmail,
+  addUserToPledgeSurveyEmail,
+  getUserEvents,
+  updateUser
+} from "lib/services/directus/server";
+import { SendGridList, updateSendGrid } from "lib/services/sendgrid/server";
+import { ApiResponse, withApplicant, withMethods } from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
@@ -24,10 +31,11 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
       const hasAttendedEvent = userEvents.some((e) => e.attended)
       const user_type: UserType = hasAttendedEvent ? 'brother' : (applicant.vouched_by ? 'inductee' : 'pledge')
 
-      const updatedUser = (await updateUser<Applicant>(applicant.id, {
+      const updatedUser = (await updateUser(applicant.id, {
         application_status: 'approved',
         user_type,
         approved_date: new Date().toISOString(),
+        rating: 5
       })) as Applicant
 
       await updateSendGrid(updatedUser as Profile,
@@ -36,6 +44,9 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
         ])
 
       await addUserToCongratsEmail(applicant.id, user_type)
+
+      if (user_type == 'pledge')
+        await addUserToPledgeSurveyEmail(applicant.id)
 
       return res.status(200).json(ApiResponse(updatedUser))
     }

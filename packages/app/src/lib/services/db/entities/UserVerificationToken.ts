@@ -1,4 +1,4 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
 
 @Index('user_verification_token_pkey', ['id'], { unique: true })
 @Index('user_verification_token_token_unique', ['token'], { unique: true })

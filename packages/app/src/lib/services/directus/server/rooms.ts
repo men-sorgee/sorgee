@@ -1,6 +1,6 @@
-import { Room, RoomEvent } from 'lib/models'
+import { Room, RoomEvent } from "lib/models";
 
-import { getAdminClient } from './'
+import { getAdminClient } from "./";
 
 const mainRoom = 'fad1af2e-67fc-49a7-afdd-f00f12c7968e'
 

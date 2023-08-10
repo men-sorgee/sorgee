@@ -1,11 +1,10 @@
 
-import { baseUrl } from 'lib/config'
-import { Member, ApiResponse, GroupEvent } from 'lib/models'
-import { getEvent, getInvite, updateUser } from 'lib/services/directus/server'
-import { getClient } from 'lib/services/stripe/server'
-import { withMember } from 'lib/utils/server'
-import Stripe from 'stripe'
-
+import { baseUrl } from "lib/config";
+import { GroupEvent, Member } from "lib/models";
+import { getEvent, getInvite, updateUser } from "lib/services/directus/server";
+import { getClient } from "lib/services/stripe/server";
+import { ApiResponse, withMember } from "lib/utils/server";
+import Stripe from "stripe";
 
 export default async function PurchaseProduct(req, res) {
   try {
@@ -43,9 +42,15 @@ export default async function PurchaseProduct(req, res) {
           unit_amount: cost * 100,
           product_data: {
             name: `Brotherhood Event: ${new Date(event.datetime).toLocaleDateString()}`,
-            description: event.name
+            description: event.name,
+            metadata: {
+              eventId: String(eventId),
+              inviteId: String(id),
+              type: 'event',
+            }
           },
-          tax_behavior: 'inclusive'
+          tax_behavior: 'inclusive',
+
         }
       },
     ]
