@@ -50,7 +50,6 @@ export const MemberBadge = chakra(({ member, size = 'md', ...props }: MemberBadg
         rounded={size}
         fontSize={size}
         textTransform="uppercase"
-        cursor="pointer"
         color="white"
         bg="accent.300"
         py={1}

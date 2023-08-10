@@ -38,7 +38,7 @@ type FormProps = {
 export default function InviteAdmin() {
   const router = useRouter()
   const { id } = router.query
-  const inviteId = String(id)
+  const inviteId = id ? String(id) : undefined
   const { loading } = useUser({
     minLevel: MemberLevel.staff,
     redirectsEnabled: true,

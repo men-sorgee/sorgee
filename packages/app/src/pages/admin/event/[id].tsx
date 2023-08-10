@@ -22,8 +22,6 @@ import { useEffect, useRef, useState } from "react";
 
 import { ArrowBackIcon, CheckCircleIcon, CheckIcon } from "@chakra-ui/icons";
 import {
-  Alert,
-  AlertIcon,
   Box,
   Flex,
   Heading,
@@ -47,7 +45,7 @@ import { getAssetUrl } from "../../../lib/utils";
 export default function EventAdmin() {
   const router = useRouter()
   const toast = useToast()
-  const { id, error } = router.query
+  const { id } = router.query
   const eventId = id ? String(id) : undefined
   const {
     member,
@@ -89,12 +87,6 @@ export default function EventAdmin() {
 
   return (
     <Page title={'Event Admin'} loading={userLoading || eventLoading}>
-      {error && (
-        <Alert status="error" size="lg">
-          <AlertIcon />
-          {error}
-        </Alert>
-      )}
       {member && event && (
         <EventCard
           event={event}
@@ -309,7 +301,7 @@ const UserList = ({
             maxWidth="full"
             overflow="hidden"
             position="relative"
-            align="start"
+            align="center"
           >
             <MemberAvatar member={user} opacity={attended ? 1 : 0.5} name={name} src={src} />
             <Box as="strong" fontSize="xs">

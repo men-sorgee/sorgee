@@ -203,7 +203,7 @@ export const EventCard = ({
         </Flex>
       </CardHeader>
 
-      <CardBody w="full" pb={0}>
+      <CardBody w="full" pb={0} display="block">
         {!hideBody && (
           <>
             <Flex my={2} gap={4} justify="space-between" wrap={['wrap', 'nowrap']}>

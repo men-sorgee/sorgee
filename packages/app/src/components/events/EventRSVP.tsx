@@ -21,6 +21,7 @@ export type RSVPProps = BoxProps & {
   eventId: string
   canConfirm: boolean
   invite?: EventInvite
+  onChange?: () => void
 }
 
 export type PurchaseResponse = {
@@ -28,7 +29,7 @@ export type PurchaseResponse = {
   amount: number
 }
 
-export const EventRSVP = ({ eventId, invite: eventUser, canConfirm }: RSVPProps) => {
+export const EventRSVP = ({ eventId, invite: eventUser, canConfirm, onChange }: RSVPProps) => {
   const params = useSearchParams()
   const [working, setWorking] = useState(false)
   const [showPayButton, setShowPayButton] = useState<boolean>(undefined)
@@ -125,6 +126,10 @@ export const EventRSVP = ({ eventId, invite: eventUser, canConfirm }: RSVPProps)
         failureMessage="Unable to confirm."
         successMessage="Your RSVP has been registered."
         confirmedAction={() => mutate({ rsvp: 'confirmed' })}
+        onSuccess={() => {
+          setWorking(false)
+          if (onChange) onChange()
+        }}
         colorScheme="accent"
         w={['full', 'full', 'auto']}
       >
@@ -146,6 +151,7 @@ export const EventRSVP = ({ eventId, invite: eventUser, canConfirm }: RSVPProps)
       confirmedAction={() => mutate({ rsvp: 'maybe' })}
       onSuccess={() => {
         setWorking(false)
+        if (onChange) onChange()
       }}
       colorScheme="secondary"
       w={['full', 'full', 'auto']}
@@ -169,6 +175,7 @@ export const EventRSVP = ({ eventId, invite: eventUser, canConfirm }: RSVPProps)
       confirmedAction={() => mutate({ rsvp: 'declined' })}
       onSuccess={() => {
         setWorking(false)
+        if (onChange) onChange()
       }}
       colorScheme="black"
       w={['full', 'full', 'auto']}
@@ -192,6 +199,7 @@ export const EventRSVP = ({ eventId, invite: eventUser, canConfirm }: RSVPProps)
       confirmedAction={() => mutate({ rsvp: 'cancelled', reason: reasonRef.current.value })}
       onSuccess={() => {
         setWorking(false)
+        if (onChange) onChange()
       }}
       focusRef={reasonRef}
       colorScheme="blackAlpha"
