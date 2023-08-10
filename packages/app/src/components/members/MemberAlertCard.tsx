@@ -96,7 +96,8 @@ export const MemberAlertCard = chakra(
                   onClick={(e) => {
                     e.stopPropagation()
                     setWorking(true)
-                    return onRead().then(() => setWorking(false))
+                    onRead().then(() => setWorking(false))
+                    return false
                   }}
                   replace={false}
                 >

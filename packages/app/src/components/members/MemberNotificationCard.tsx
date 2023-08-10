@@ -129,6 +129,7 @@ export const MemberNotificationCard = chakra(
                 onClick={(e) => {
                   e.stopPropagation()
                   closeDrawer?.()
+                  return false
                 }}
                 colorScheme="accent"
               >
@@ -175,6 +176,7 @@ export const MemberNotificationCard = chakra(
                     onClick={() => {
                       onClose()
                       closeDrawer?.()
+                      return false
                     }}
                     href={notification?.link}
                     colorScheme="accent"

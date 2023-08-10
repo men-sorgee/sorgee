@@ -6,7 +6,12 @@ import {
   Page,
   Pager
 } from "components";
-import { FieldCheckbox, FieldCheckboxes, FieldInput } from "components/forms";
+import {
+  FieldCheckbox,
+  FieldCheckboxes,
+  FieldInput,
+  Form
+} from "components/forms";
 import { useFields, useMemberSearch, useUser } from "hooks";
 import {
   FieldMap,
@@ -19,7 +24,7 @@ import {
 } from "lib/models";
 import { pruneUndefined } from "lib/utils";
 import { useRouter } from "next/router";
-import { createRef, useEffect, useState } from "react";
+import { createRef, useCallback, useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import {
@@ -53,14 +58,18 @@ type Meta = {
 
 export default function Members() {
   const router = useRouter()
-  let { size: s, page: p, ...q }: MemberSearchQueryParams = router.query as any
-  const [query] = useState<MemberSearchQueryParams>({
-    ...q,
-    size: Number(s),
-    page: Number(p),
-  })
+  let { page: p, size: s, sort: o, i, ...query } = router.query
+
+  const page = Number(p || '1')
+  const size = Number(s || '20')
+  const sort = String(o || '-last_login')
 
   const [id, setId] = useState(undefined)
+  useEffect(() => {
+    if (id == undefined && 1) {
+      setId(i)
+    }
+  }, [i, id, setId])
 
   const { fields, loading: fieldsLoading } = useFields('users')
   const { member: currentMember, loading } = useUser({
@@ -69,17 +78,22 @@ export default function Members() {
     redirectsEnabled: true,
   })
 
-  const setParams = ({ page = 1, size = 20, ...q }: MemberSearchQueryParams) => {
-    router.push(`/members?${new URLSearchParams({ page, size, ...q } as any).toString()}`)
-  }
+  const setParams = useCallback(
+    (q: Partial<MemberSearchQueryParams>) => {
+      //let url = `/members?${new URLSearchParams({ page, size, ...q } as any).toString()}`
+      router.push({
+        pathname: '/members',
+        query: { ...query, ...q },
+      })
+    },
+    [query, router]
+  )
 
   const topRef = createRef<HTMLDivElement>()
   const methods = useForm<MemberSearchQueryParams>({
     mode: 'onBlur',
     defaultValues: query,
   })
-
-  const { page, size } = query
 
   const {
     members,
@@ -88,14 +102,13 @@ export default function Members() {
     loading: membersLoading,
     sortTerm,
     direction,
-  } = useMemberSearch({ page, size, ...query })
+  } = useMemberSearch({ page, size, sort, ...query })
 
-  useEffect(() => {
-    if (!membersLoading && !fieldsLoading) {
-      document.querySelector('main')?.scroll({ top: 0, behavior: 'smooth' })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, fieldsLoading, membersLoading])
+  //useEffect(() => {
+  //  if (!membersLoading && !fieldsLoading) {
+  //    document.querySelector('main')?.scroll({ top: 0, behavior: 'smooth' })
+  //  }
+  //}, [query, fieldsLoading, membersLoading])
 
   const { isOpen, onClose } = useDisclosure({
     onClose: () => setId(undefined),
@@ -108,8 +121,8 @@ export default function Members() {
         <form
           id="filter-form"
           onSubmit={methods.handleSubmit((d: MemberSearchQueryParams) => {
-            let newQuery = pruneUndefined(d, (v) => v == false) as MemberSearchQueryParams
-            setParams({ ...query, ...newQuery, page: 1 })
+            let newQuery = pruneUndefined(d, (v) => v !== false) as MemberSearchQueryParams
+            setParams({ ...query, ...newQuery, page: 1, size })
           })}
           style={{ width: '100%', display: 'block' }}
         >
@@ -121,7 +134,7 @@ export default function Members() {
           <Select
             value={size || 20}
             onChange={(e) => {
-              setParams({ ...query, size: Number(e.target.value), page: 1 })
+              setParams({ size: Number(e.target.value || 20), page: 1, sort })
             }}
           >
             {[20, 30, 40, 50].map((pageSize) => (
@@ -135,22 +148,21 @@ export default function Members() {
               aria-label="Ascending"
               title="Sorted by ascending. Click to sort by descending"
               icon={<ArrowDownIcon height={20} />}
-              onClick={() => setParams({ ...query, sort: `-${sortTerm}`, page: 1 })}
+              onClick={() => setParams({ sort: `-${sortTerm}`, page: 1 })}
             />
           )) || (
             <IconButton
               aria-label="Ascending"
               title="Sorted by descending. Click to sort by ascending"
               icon={<ArrowUpIcon height={20} />}
-              onClick={() => setParams({ ...query, sort: sortTerm, page: 1 })}
+              onClick={() => setParams({ sort: sortTerm, page: 1 })}
             />
           )}
           <Select
             value={sortTerm}
             onChange={(e) => {
               setParams({
-                ...query,
-                sort: `${direction == 'desc' && '-'}${e.target.value}`,
+                sort: `${direction == 'desc' ? '-' : ''}${e.target.value}`,
                 page: 1,
               })
             }}
@@ -162,13 +174,7 @@ export default function Members() {
           </Select>
         </Flex>
 
-        <Pager
-          page={page}
-          pageCount={pageCount}
-          setPage={(page: number) => {
-            setParams({ ...query, page })
-          }}
-        />
+        <Pager {...{ page, size, pageCount, sort, ...query }} />
 
         {(membersLoading && <Loading />) || (
           <>
@@ -193,13 +199,7 @@ export default function Members() {
             )}
           </>
         )}
-        <Pager
-          page={page}
-          pageCount={pageCount}
-          setPage={(page: number) => {
-            setParams({ ...query, page })
-          }}
-        />
+        <Pager {...{ page, size, pageCount, sort, ...query }} />
       </FormProvider>
 
       <MemberModal
