@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES5",
     "lib": [
       "dom",
       "dom.iterable",
@@ -19,21 +19,17 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "baseUrl": ".",
     "incremental": true,
     "jsx": "preserve",
     //"jsxImportSource": "@emotion/react",
     "paths": {
-      "@/components/*": [
+      "components/*": [
         "components/*"
       ],
-      "@/lib/*": [
+      "lib/*": [
         "lib/*"
       ],
-      "@/styles": [
-        "styles/*"
-      ],
-      "@/hooks/*": [
+      "hooks/*": [
         "hooks/*"
       ]
     },
@@ -44,13 +40,14 @@
     ],
     "types": [
       "vitest/importMeta"
-    ]
+    ],
+    "baseUrl": "./src",
+    "strictNullChecks": false
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "next.config.ts",
     ".next/types/**/*.ts"
   ],
   "exclude": [

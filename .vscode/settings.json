@@ -1,8 +1,8 @@
 {
-  "editor.formatOnSave": true,
   "cSpell.words": [
     "authentification",
     "basemaps",
+    "BUILDKIT",
     "Chakra",
     "chatscope",
     "checkin",
@@ -13,6 +13,8 @@
     "convos",
     "daisyui",
     "datetime",
+    "devcontainer",
+    "directus",
     "editorjs",
     "ethnicities",
     "EXIF",
@@ -27,6 +29,7 @@
     "heroicons",
     "hookform",
     "hypertheme",
+    "icontains",
     "jssdk",
     "KHTML",
     "mapbox",
@@ -55,18 +58,21 @@
     "wellenplan"
   ],
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   },
   "typescript.tsdk": "./node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.preferences.importModuleSpecifier": "relative",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnPaste": true, // required
-  "editor.formatOnType": true, // required
+  "editor.formatOnPaste": false, // required
+  "editor.formatOnType": false, // required
+  "editor.formatOnSave": true, // optional
   "editor.formatOnSaveMode": "file", // required to format on save
-  "files.autoSave": "onFocusChange", // optional but recommended]
-  "editor.suggest.filterGraceful": true,
-  "editor.suggest.localityBonus": true,
+  "files.autoSave": "onFocusChange", // optional but recommended
+  "editor.codeActionsOnSave": {
+    "source.organizeImports.sortImports": true,
+    "source.fixAll.eslint": true
+  },
   "[dockerfile]": {
     "editor.defaultFormatter": "ms-azuretools.vscode-docker"
   },
@@ -83,8 +89,15 @@
   ],
   "cloudcode.active-kubeconfig": "/home/jason/.kube/config",
   "vitest.enable": true,
-  "vitest.include": [
-    "**/*.{test,spec}.{ts,tsx}"
-  ],
+  "vitest.include": ["**/*.{test,spec}.{ts,tsx}"],
   "testing.automaticallyOpenPeekView": "never",
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+  },
+  "eslint.codeActionsOnSave.mode": "problems",
+  "importSorter.generalConfiguration.sortOnBeforeSave": true,
+  "vs-code-prettier-eslint.prettierLast": true
 }

@@ -1,23 +1,31 @@
-const { PHASE_DEVELOPMENT_SERVER } = require( 'next/constants' );
+const { PHASE_DEVELOPMENT_SERVER } = require('next/constants')
 
-const withPWA = require( 'next-pwa' )( {
+const withPWA = require('next-pwa')({
   dest: 'public',
-  disable: process.env.PWA !== 'true',
-} );
+  disable: process.env.PWA !== 'true'
+})
 
-const getConfig = ( phase ) => {
-  const dev = PHASE_DEVELOPMENT_SERVER === phase;
+const getConfig = (phase) => {
+  const dev = PHASE_DEVELOPMENT_SERVER === phase
 
   /**
    * @type {import('next').NextConfig}
    */
   const nextConfig = {
-
     publicRuntimeConfig: {
-      dev
+      dev,
+      stripePublicKey: process.env.STRIPE_PUBLIC_KEY
     },
     pageExtensions: ['tsx'],
-
+    experimental: {
+      optimizeFonts: true,
+      optimizeImages: true,
+      scrollRestoration: true,
+      scriptLoader: true,
+      serverActionsTs: true,
+      appDir: false,
+      optimizeCss: true
+    },
     images: {
       domains: [
         'guysnheat.com',
@@ -28,17 +36,16 @@ const getConfig = ( phase ) => {
         's.gravatar.com',
         'static.guysnheat.com',
         'raw.githubusercontent.com',
-        'guysnheat.whereby.com',
-      ],
-
+        'guysnheat.whereby.com'
+      ]
     },
     rewrites: async () => {
       return [
         {
           source: '/api/unsplash/:path*',
-          destination: `https://api.unsplash.com/photos/:path*?client_id=${ process.env.API_KEY_UNSPLASH }`
+          destination: `https://api.unsplash.com/photos/:path*?client_id=${process.env.API_KEY_UNSPLASH}`
         }
-      ];
+      ]
     },
     redirects: async () => {
       return [
@@ -48,12 +55,12 @@ const getConfig = ( phase ) => {
           destination: 'https://guysnheat.com/:path*',
           permanent: true
         }
-      ];
+      ]
     },
     poweredByHeader: false,
     crossOrigin: false
-  };
-  return nextConfig;
-};
+  }
+  return nextConfig
+}
 
-module.exports = withPWA( getConfig );
+module.exports = withPWA(getConfig)

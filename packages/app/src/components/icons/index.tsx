@@ -1,0 +1,7 @@
+export { default as DiscordIcon, default as Fire } from './discord'
+export { default as GitHubIcon } from './github'
+export { default as InstagramIcon } from './instagram'
+export { default as TwitterIcon } from './twitter'
+export { default as InfoIcon } from './info'
+export { default as MicrosoftIcon } from './microsoft'
+export { default as GoogleIcon } from './google'
