@@ -30,8 +30,7 @@ function useMemberSearch({
   })
 
   const filters = Object.keys(query) ? `&${new URLSearchParams(query as any).toString()}` : ''
-
-  const key = `/api/members?limit=${size || 20}&page=${page || 1}&sort=${sort}${filters}`
+  const key = `/api/members?limit=${size}&page=${page}&sort=${sort}${filters}`
 
   const {
     data: response,
@@ -66,16 +65,18 @@ function useMemberSearch({
     members,
     meta,
     pageCount,
-    page: page || 1,
-    pageIndex: page ? page - 1 : 0,
-    pageSize: size || 20,
+    page,
+    pageIndex: page - 1,
+    pageSize: size,
     sortTerm: sort?.replace('-', ''),
     direction: sort?.startsWith('-') ? 'desc' : 'asc',
     loading: isLoading || isValidating,
     error,
   }
 
-  console.dir(result)
+  console.dir({
+    result,
+  })
 
   return result
 }

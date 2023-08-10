@@ -29,7 +29,7 @@ export async function getMessages(user_id: string) {
       ],
     },
     sort: ['date_created'],
-    limit: 50,
+    limit: -1,
     fields: [
       '*',
       'from.id',
