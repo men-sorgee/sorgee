@@ -26,6 +26,7 @@ export async function findInvite(eventId: string, userId: string): Promise<Event
       events_id: { _eq: eventId },
       users_id: { _eq: userId },
     },
+    fields: ['*'],
   })
 
   return query.data ? query.data[0] as EventUser : null
@@ -48,7 +49,7 @@ export async function listInvites(member: Member): Promise<EventUser[]> {
     const event = invite.events_id as GroupEvent
     const member = invite.users_id as unknown as Member
     const rsvp = invite.rsvp as InviteRSVPType
-    const { id, attended, paid, guest, reason, amount } = invite
+    const { id, attended, paid, guest, reason, amount, paid_at, confirmed_at } = invite
     return {
       id,
       event,
@@ -59,6 +60,8 @@ export async function listInvites(member: Member): Promise<EventUser[]> {
       amount,
       guest,
       reason,
+      paid_at,
+      confirmed_at,
     }
   })
 

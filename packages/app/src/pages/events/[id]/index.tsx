@@ -49,10 +49,11 @@ export default function EventPage() {
   const router = useRouter()
   const toast = useToast()
   const { id } = router.query
-  const eventId = String(id)
+  const eventId = id ? String(id) : undefined
   const {
     member,
     isStaff,
+    level,
     reload: reloadUser,
     hasFeature,
   } = useUser({ minLevel: MemberLevel.inductee, redirectsEnabled: true })
@@ -133,7 +134,7 @@ export default function EventPage() {
     </>
   )
 
-  const canConfirm = member?.rating && member?.rating > 2
+  const canConfirm = member?.rating > 2 || level == MemberLevel.inductee
   const paidAttendees = getAttendees('confirmed', (u) => u.paid || u.guest)
   const confirmedAttendees = getAttendees('confirmed', (u) => !u.paid && !u.guest)
   return (
@@ -230,7 +231,7 @@ export default function EventPage() {
                   />
                 )}
                 {event.status != 'occurred' && (invite || !event?.invite_only) && (
-                  <EventRSVP canConfirm={canConfirm} eventId={eventId} onChange={reloadUser} />
+                  <EventRSVP canConfirm={canConfirm} eventId={eventId} />
                 )}
               </>
             )}

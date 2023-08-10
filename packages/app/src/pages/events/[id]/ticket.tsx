@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 export default function EventTicketPage() {
   const router = useRouter()
   const { id } = router.query
-  const eventId = String(id)
+  const eventId = id ? String(id) : undefined
 
   const { member, loading, authenticated } = useUser({
     minLevel: MemberLevel.inductee,

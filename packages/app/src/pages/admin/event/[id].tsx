@@ -48,7 +48,7 @@ export default function EventAdmin() {
   const router = useRouter()
   const toast = useToast()
   const { id, error } = router.query
-  const eventId = String(id)
+  const eventId = id ? String(id) : undefined
   const {
     member,
     authorized,
@@ -216,7 +216,6 @@ export default function EventAdmin() {
                 w={'full'}
                 href={getCheckinLink(emailRef?.current?.value)}
                 size={['sm', 'md', 'lg']}
-                
                 flexGrow={1}
               >
                 Checkin

@@ -131,7 +131,7 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
       const { product_type, amount } = payment
       let inviteId = payment.redeemed_id
       if (product_type == 'event' && inviteId) {
-        await updateInvite(Number(inviteId), { paid: true, rsvp: 'confirmed', amount })
+        await updateInvite(Number(inviteId), { paid: true, rsvp: 'confirmed', amount, confirmed_at: new Date().toISOString() })
       }
       break
 

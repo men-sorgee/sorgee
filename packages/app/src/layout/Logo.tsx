@@ -1,5 +1,4 @@
 import { brand } from "lib/config/brand";
-import NextLink from "next/link";
 import { CSSProperties, useEffect, useState } from "react";
 
 export type LogoProps = CSSProperties & {
@@ -13,7 +12,7 @@ export const Logo = ({ isAuthenticated = false, width = '50px', ...props }: Logo
     }
   }, [isAuthenticated])
   return (
-    <NextLink href={url} replace={false}>
+    <a href={url}>
       <svg
         color={brand.colors.accent.DEFAULT}
         viewBox="0 0 100 100"
@@ -39,6 +38,6 @@ export const Logo = ({ isAuthenticated = false, width = '50px', ...props }: Logo
           </g>
         </g>
       </svg>
-    </NextLink>
+    </a>
   )
 }

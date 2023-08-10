@@ -59,13 +59,15 @@ export async function listAdminEvents(): Promise<GroupEvent[]> {
 export async function registerForEvent(
   event_id: string,
   user_id: string,
-  rsvp: InviteRSVPType
+  rsvp: InviteRSVPType,
+  paid_at: string = undefined
 ): Promise<EventUser> {
   const client = await getAdminClient()
   const invite = await client.items('events_users').createOne({
     events_id: event_id,
     users_id: user_id,
     rsvp,
+    paid_at
   })
   return invite as unknown as EventUser
 }
@@ -161,7 +163,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
       attended_count: attendance.filter((u) => u.attended).length,
       paid_count: attendance.filter((u) => u.paid).length,
     },
-    members: attendance.map((u) => u.users_id as any as SearchableMember),
+    //members: attendance.map((u) => u.users_id as any as SearchableMember),
     surveys: survey as Survey[]
   }
   return detail
