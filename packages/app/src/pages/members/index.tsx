@@ -6,12 +6,7 @@ import {
   Page,
   Pager
 } from "components";
-import {
-  FieldCheckbox,
-  FieldCheckboxes,
-  FieldInput,
-  Form
-} from "components/forms";
+import { FieldCheckbox, FieldCheckboxes, FieldInput } from "components/forms";
 import { useFields, useMemberSearch, useUser } from "hooks";
 import {
   FieldMap,
@@ -58,8 +53,14 @@ type Meta = {
 
 export default function Members() {
   const router = useRouter()
-  let { page: p, size: s, sort: o, i, ...query } = router.query
+  const { fields, loading: fieldsLoading } = useFields('users')
+  const { member: currentMember, loading } = useUser({
+    minLevel: MemberLevel.brother,
+    requiredFeature: 'view_directory',
+    redirectsEnabled: true,
+  })
 
+  let { page: p, size: s, sort: o, i, ...query } = router.query
   const page = Number(p || '1')
   const size = Number(s || '20')
   const sort = String(o || '-last_login')
@@ -71,22 +72,15 @@ export default function Members() {
     }
   }, [i, id, setId])
 
-  const { fields, loading: fieldsLoading } = useFields('users')
-  const { member: currentMember, loading } = useUser({
-    minLevel: MemberLevel.brother,
-    requiredFeature: 'view_directory',
-    redirectsEnabled: true,
-  })
-
   const setParams = useCallback(
     (q: Partial<MemberSearchQueryParams>) => {
       //let url = `/members?${new URLSearchParams({ page, size, ...q } as any).toString()}`
       router.push({
         pathname: '/members',
-        query: { ...query, ...q },
+        query: { page, size, sort, ...query, ...q },
       })
     },
-    [query, router]
+    [page, query, router, size, sort]
   )
 
   const topRef = createRef<HTMLDivElement>()
@@ -103,12 +97,6 @@ export default function Members() {
     sortTerm,
     direction,
   } = useMemberSearch({ page, size, sort, ...query })
-
-  //useEffect(() => {
-  //  if (!membersLoading && !fieldsLoading) {
-  //    document.querySelector('main')?.scroll({ top: 0, behavior: 'smooth' })
-  //  }
-  //}, [query, fieldsLoading, membersLoading])
 
   const { isOpen, onClose } = useDisclosure({
     onClose: () => setId(undefined),

@@ -1,6 +1,7 @@
 import { useMemberSearch } from "hooks";
 import { Member, MemberLevel } from "lib/models";
 import NextLink from "next/link";
+import { useEffect, useState } from "react";
 
 import { Badge, Icon, IconButton, Link } from "@chakra-ui/react";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
@@ -13,7 +14,13 @@ interface Props {
 }
 
 const PledgesAction = ({ member, active, iconSize, iconDimensions }: Props) => {
-  const level = MemberLevel[member?.user_type]
+  const [level, setLevel] = useState(undefined)
+
+  useEffect(() => {
+    if (member?.user_type) {
+      setLevel(MemberLevel[member?.user_type])
+    }
+  }, [member?.user_type, level])
 
   const { meta } = useMemberSearch({
     sort: 'last_login',
@@ -21,7 +28,7 @@ const PledgesAction = ({ member, active, iconSize, iconDimensions }: Props) => {
   })
   const { filtered: count } = meta
 
-  if (level < MemberLevel.brother) {
+  if (!level || level < MemberLevel.brother) {
     return null
   }
 

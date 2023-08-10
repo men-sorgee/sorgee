@@ -4,6 +4,8 @@ import useSWR from "swr";
 
 import { ManyItems } from "@directus/sdk";
 
+import { useAuthenticated } from "./use-authenticated";
+
 export type MemberSearchContext = {
   members: SearchableMember[]
   meta: { total: number; filtered: number }
@@ -22,12 +24,14 @@ function useMemberSearch({
   sort = '-last_login',
   ...query
 }: Partial<MemberSearchQueryParams>) {
+  const authenticated = useAuthenticated()
   const [members, setMembers] = useState<SearchableMember[]>([])
   const [pageCount, setPageCount] = useState<number>(0)
   const [meta, setMeta] = useState({
     total: 0,
     filtered: 0,
   })
+  const [key, setKey] = useState<string>(null)
   const [filters, setFilters] = useState<string>(undefined)
 
   useEffect(() => {
@@ -36,16 +40,17 @@ function useMemberSearch({
         Object.keys(query).length ? `&${new URLSearchParams(query as any).toString()}` : ''
       )
     }
-  }, [filters, query])
-
-  const key = `/api/members?limit=${size}&page=${page}&sort=${sort}${filters}`
+    if (filters != undefined) {
+      setKey(`/api/members?limit=${size}&page=${page}&sort=${sort}${filters}`)
+    }
+  }, [filters, query, page, size, sort, key])
 
   const {
     data: response,
     error,
     isLoading,
     isValidating,
-  } = useSWR<ManyItems<SearchableMember>>(key, {
+  } = useSWR<ManyItems<SearchableMember>>(authenticated ? key : null, {
     keepPreviousData: false,
     refreshInterval: 0,
     fallbackData: {
@@ -81,10 +86,6 @@ function useMemberSearch({
     loading: isLoading || isValidating,
     error,
   }
-
-  console.dir({
-    result,
-  })
 
   return result
 }

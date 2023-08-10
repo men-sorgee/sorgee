@@ -12,25 +12,25 @@ export type MembersNewProps = BoxProps & {
 }
 
 export const MembersNewBox = chakra(({ member, children, ...props }: MembersNewProps) => {
-  const [newestPledges, setNewestPledges] = useState<SearchableMember[]>([])
-  const [oldestPledges, setOldestPledges] = useState<SearchableMember[]>([])
-
+  const [newestPledges, setNewestPledges] = useState<SearchableMember[]>(undefined)
+  const [oldestPledges, setOldestPledges] = useState<SearchableMember[]>(undefined)
   const { members: pledges, meta: pledgeMeta } = useMemberSearch({
     sort: '-approved_date',
     user_type: MemberLevel[MemberLevel.pledge],
   })
+
   useEffect(() => {
-    if (pledges && pledges.length > 0 && newestPledges.length == 0 && oldestPledges.length == 0) {
+    if (pledges && pledges.length > 0 && newestPledges == undefined && oldestPledges == undefined) {
       setNewestPledges(pledges.slice(0, 4))
       setOldestPledges(pledges.slice(-4))
     }
-  }, [newestPledges.length, oldestPledges.length, pledges])
+  }, [newestPledges, oldestPledges, pledges])
 
   return (
     <>
       <Box {...props}>
         {children}
-        {pledges && (
+        {newestPledges && (
           <SimpleGrid columns={[1, 1, 2]} spacing={4}>
             {newestPledges?.map((p) => (
               <MemberCard
@@ -45,20 +45,22 @@ export const MembersNewBox = chakra(({ member, children, ...props }: MembersNewP
         )}
 
         <Text textAlign="center" my={2}>
-          The oldest {oldestPledges.length} of {pledgeMeta.filtered} Pledges still waiting...
+          The oldest {oldestPledges?.length} of {pledgeMeta?.filtered} Pledges still waiting...
         </Text>
 
-        <SimpleGrid columns={[1, 1, 2]} spacing={4}>
-          {oldestPledges?.map((p) => (
-            <MemberCard
-              key={p.id}
-              member={p}
-              viewer={member}
-              full={false}
-              href={`/members/pledges#${p.id}`}
-            />
-          ))}
-        </SimpleGrid>
+        {oldestPledges && (
+          <SimpleGrid columns={[1, 1, 2]} spacing={4}>
+            {oldestPledges?.map((p) => (
+              <MemberCard
+                key={p.id}
+                member={p}
+                viewer={member}
+                full={false}
+                href={`/members/pledges#${p.id}`}
+              />
+            ))}
+          </SimpleGrid>
+        )}
         <ButtonLink
           href="/members/pledges"
           colorScheme="accent"
