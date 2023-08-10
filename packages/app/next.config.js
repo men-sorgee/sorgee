@@ -18,13 +18,13 @@ const getConfig = (phase) => {
     },
     pageExtensions: ['tsx'],
     experimental: {
-      optimizeFonts: true,
-      optimizeImages: true,
-      scrollRestoration: true,
-      scriptLoader: true,
-      serverActionsTs: true,
-      appDir: false,
-      optimizeCss: true
+      //optimizeFonts: true,
+      //optimizeImages: true,
+      //scrollRestoration: true,
+      //scriptLoader: true,
+      //serverActionsTs: true,
+      //appDir: false,
+      //optimizeCss: true
     },
     images: {
       domains: [

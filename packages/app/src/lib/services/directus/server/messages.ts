@@ -1,12 +1,10 @@
 import {
   ChatMessage,
   ChatUser,
-  DirectusFile,
   Message,
   MessageStatusType,
   User
 } from "lib/models";
-import { getAssetUrl } from "lib/utils";
 
 import { getAdminClient } from "./";
 
@@ -30,7 +28,7 @@ export async function getMessages(user_id: string) {
         },
       ],
     },
-    sort: ['-date_created'],
+    sort: ['date_created'],
     limit: 50,
     fields: [
       '*',
@@ -72,8 +70,6 @@ export async function getMessages(user_id: string) {
       type,
     } as ChatMessage)
   })
-
-
 
   return userMessages
 }
