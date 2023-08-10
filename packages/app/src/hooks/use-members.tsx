@@ -16,7 +16,12 @@ export type MemberSearchContext = {
   error: string
 }
 
-function useMemberSearch({ page, size, sort = '-last_login', ...query }: MemberSearchQueryParams) {
+function useMemberSearch({
+  page = 1,
+  size = 20,
+  sort = '-last_login',
+  ...query
+}: Partial<MemberSearchQueryParams>) {
   const [members, setMembers] = useState<SearchableMember[]>([])
   const [pageCount, setPageCount] = useState<number>(0)
   const [meta, setMeta] = useState({

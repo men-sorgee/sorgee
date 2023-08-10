@@ -15,7 +15,8 @@ export const MembersNewBox = chakra(({ member, children, ...props }: MembersNewP
   const [newestPledges, setNewestPledges] = useState<SearchableMember[]>([])
   const [oldestPledges, setOldestPledges] = useState<SearchableMember[]>([])
 
-  const { members: pledges, meta: pledgeMeta } = useMemberSearch(1, 50, '-approved_date', {
+  const { members: pledges, meta: pledgeMeta } = useMemberSearch({
+    sort: '-approved_date',
     user_type: MemberLevel[MemberLevel.pledge],
   })
   useEffect(() => {

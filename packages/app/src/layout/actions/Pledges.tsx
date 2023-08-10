@@ -15,7 +15,8 @@ interface Props {
 const PledgesAction = ({ member, active, iconSize, iconDimensions }: Props) => {
   const level = MemberLevel[member?.user_type]
 
-  const { meta } = useMemberSearch(1, 20, 'last_login', {
+  const { meta } = useMemberSearch({
+    sort: 'last_login',
     user_type: MemberLevel[MemberLevel.pledge],
   })
   const { filtered: count } = meta

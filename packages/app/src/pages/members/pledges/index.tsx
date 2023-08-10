@@ -25,7 +25,9 @@ export default function PledgeListPage() {
     members,
     meta,
     loading: pledgesLoading,
-  } = useMemberSearch(1, 100, 'approved_date', {
+  } = useMemberSearch({
+    size: 100,
+    sort: 'approved_date',
     user_type: MemberLevel[MemberLevel.pledge],
   })
 

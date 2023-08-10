@@ -12,7 +12,7 @@ import {
 } from "lib/models";
 import { ProviderType } from "next-auth/providers";
 
-export type MemberSearchQueryParams = PageProps<SearchableMember> & {
+export type MemberSearchQueryParams = PageProps<Partial<Omit<SearchableMember, 'id'>>> & {
   online?: boolean
   photos?: boolean
 }
