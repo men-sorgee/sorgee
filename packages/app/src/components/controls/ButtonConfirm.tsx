@@ -9,6 +9,7 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Button,
+  ButtonGroup,
   IconButton,
   IconButtonProps,
   useDisclosure,
@@ -137,31 +138,33 @@ export function ButtonConfirm<TResponse = void>({
             <AlertDialogBody>{children}</AlertDialogBody>
 
             <AlertDialogFooter>
-              <Button
-                ref={goRef}
-                onClick={() => {
-                  onClose()
-                  action()
-                }}
-                ml={3}
-                title={title}
-                bgGradient={gradient(confirmColorScheme)}
-                _hover={{
-                  bgGradient: gradient(confirmColorScheme, 100),
-                }}
-              >
-                {buttonText}
-              </Button>
-              <Button
-                ref={cancelRef}
-                bgGradient={gradient('gray')}
-                _hover={{
-                  bgGradient: gradient('gray', 100),
-                }}
-                onClick={onClose}
-              >
-                Cancel
-              </Button>
+              <ButtonGroup gap={2}>
+                <Button
+                  ref={goRef}
+                  onClick={() => {
+                    onClose()
+                    action()
+                  }}
+                  ml={3}
+                  title={title}
+                  bgGradient={gradient(confirmColorScheme)}
+                  _hover={{
+                    bgGradient: gradient(confirmColorScheme, 100),
+                  }}
+                >
+                  {buttonText}
+                </Button>
+                <Button
+                  ref={cancelRef}
+                  bgGradient={gradient('gray')}
+                  _hover={{
+                    bgGradient: gradient('gray', 100),
+                  }}
+                  onClick={onClose}
+                >
+                  Cancel
+                </Button>
+              </ButtonGroup>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialogOverlay>

@@ -8,12 +8,14 @@ export const SWRProvider = ({ children }) => {
       value={{
         fetcher: JsonFetcher,
         refreshWhenOffline: true,
+        refreshWhenHidden: true,
         revalidateOnFocus: true,
         revalidateOnReconnect: true,
-        refreshWhenHidden: true,
         revalidateOnMount: true,
         revalidateIfStale: true,
-        keepPreviousData: false,
+        keepPreviousData: true,
+        dedupingInterval: 1000 * 30,
+        focusThrottleInterval: 1000 * 10,
       }}
     >
       {children}
