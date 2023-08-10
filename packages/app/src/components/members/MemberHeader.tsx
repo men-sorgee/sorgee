@@ -1,3 +1,4 @@
+import { Lazy } from "components/controls";
 import { Member } from "lib/models";
 import { ReactNode } from "react";
 
@@ -22,7 +23,7 @@ export const MemberHeader = ({
   ...props
 }: MemberHeaderProps) => {
   return (
-    <>
+    <Lazy>
       <Flex direction="column" align="center" justify="center" gap={2}>
         <MemberIcon member={member} size={size} {...props}>
           {iconChildren}
@@ -41,6 +42,6 @@ export const MemberHeader = ({
           </Flex>
         )}
       </Flex>
-    </>
+    </Lazy>
   )
 }

@@ -40,7 +40,7 @@ export const MemberAvatar = chakra(
       <Avatar
         bgGradient={gradient('primary', 300, 200)}
         name={nickname || first_name || 'Brother'}
-        src={picture ? getAssetUrl(picture) + '?width=100&height=100&quality=60' : null}
+        src={picture ? getAssetUrl(picture) + '?quality=60' : null}
         id={member?.id}
         showBorder
         borderWidth={2}
