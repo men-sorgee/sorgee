@@ -21,6 +21,7 @@ import {
 import { BoltIcon as LightningBoltIconSolid } from "@heroicons/react/24/solid";
 
 const BarcodeScannerComponent = dynamic(() => import('react-qr-barcode-scanner'), { ssr: false })
+const BarCodeScanner = BarcodeScannerComponent as any
 
 export default function Scanner() {
   const [facing, setFacing] = useState<'user' | 'environment'>('environment')
@@ -105,7 +106,7 @@ export default function Scanner() {
             position="relative"
           >
             <AspectRatio ratio={1}>
-              <BarcodeScannerComponent
+              <BarCodeScanner
                 width="100%"
                 height="90vh"
                 onUpdate={onScan}

@@ -79,6 +79,8 @@ export const EventCard = ({
   }>()
   const [date, setDate] = useState<Date>(undefined)
 
+  const TheCountdown = Countdown as any
+
   const renderer = ({ days, hours, minutes, seconds, completed }) => {
     if (completed) return isToday(date) ? <h4>Event has started!</h4> : null
     if (days < 99) {
@@ -335,7 +337,7 @@ export const EventCard = ({
             <Text as="em">* This is date is subject to change.</Text>
           )) ||
             (event.status == 'scheduled' && date && isFuture(date) && (
-              <Countdown date={date} renderer={renderer} />
+              <TheCountdown date={date} renderer={renderer} />
             ))}
         </CardFooter>
       )}

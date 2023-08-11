@@ -19,10 +19,6 @@ export class ErrorBoundary extends React.Component<{
   }
   componentDidCatch(error: any, errorInfo: any) {
     // You can use your own error logging service here
-    postJSON('/api/errors', { error, errorInfo })
-      .then((res) => {})
-      .catch((err) => {})
-    console.log({ error, errorInfo })
   }
   render() {
     // Check if the error is thrown
