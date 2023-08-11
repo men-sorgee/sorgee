@@ -34,8 +34,12 @@ import {
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
 export default function ChatPage({ id }: { id?: string }) {
-  const MessagesStyles = dynamic(() => import('components/controls/MessagesStyles'), { ssr: false })
-  const Styles = MessagesStyles as any
+  const Style = useMemo<any>(() => {
+    return dynamic(() => import('components/controls/MessagesStyles'), {
+      ssr: false,
+    }) as any
+  }, [])
+
   const { member, loading } = useUser({
     minLevel: MemberLevel.pledge,
     redirectsEnabled: true,
@@ -311,9 +315,29 @@ export default function ChatPage({ id }: { id?: string }) {
     }
   }, [activeConversation, conversations, setActiveId])
 
+  const UserAvatar = useMemo(
+    () =>
+      activeConversation && (
+        <Avatar
+          key={activeConversation.user.id}
+          id={id}
+          src={getAssetUrl(activeConversation.user.picture || userImageId)}
+          name={activeConversation.user.nickname}
+          status={activeConversation.user.presence == 'online' ? 'available' : 'unavailable'}
+          style={{
+            ...conversationAvatarStyle,
+            cursor: 'pointer',
+          }}
+          active={activeConversation.user.presence == 'online'}
+          onClick={() => onOpen()}
+        />
+      ),
+
+    [activeConversation, conversationAvatarStyle, id, onOpen]
+  )
   return (
-    <Page title="Brother Chat" loading={loading} hideHeader full position="relative">
-      <Styles />
+    <Page title="Brother Chat" loading={loading} hideHeader full position="relative" bg="gray.500">
+      <Style />
       <audio ref={audioRef} src="/sounds/click.mp3" preload="auto" />
 
       <MainContainer responsive className="bg">
@@ -365,19 +389,7 @@ export default function ChatPage({ id }: { id?: string }) {
           >
             <ConversationHeader>
               <ConversationHeader.Back onClick={handleBackClick} />
-              <Avatar
-                key={activeConversation.user.id}
-                id={id}
-                src={getAssetUrl(activeConversation.user.picture || userImageId)}
-                name={activeConversation.user.nickname}
-                status={activeConversation.user.presence == 'online' ? 'available' : 'unavailable'}
-                style={{
-                  ...conversationAvatarStyle,
-                  cursor: 'pointer',
-                }}
-                active={activeConversation.user.presence == 'online'}
-                onClick={() => onOpen()}
-              />
+              {UserAvatar}
               <ConversationHeader.Content
                 userName={activeConversation.user.nickname}
                 style={conversationContentStyle}

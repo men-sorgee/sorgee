@@ -21,6 +21,9 @@ export default function MessagesStyles() {
   return (
     <style>
       {`
+      body {
+        background-color: ${bg};
+      }
       .cs-main-container {
         position: relative;
         display: flex;
