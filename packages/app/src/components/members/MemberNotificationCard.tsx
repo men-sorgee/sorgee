@@ -13,6 +13,7 @@ import {
   Heading,
   HStack,
   Icon,
+  IconButton,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -27,10 +28,7 @@ import {
   VStack
 } from "@chakra-ui/react";
 import { EnvelopeOpenIcon, TrashIcon } from "@heroicons/react/24/outline";
-import {
-  EnvelopeIcon,
-  TrashIcon as TrashHover
-} from "@heroicons/react/24/solid";
+import { EnvelopeIcon } from "@heroicons/react/24/solid";
 
 export type MemberNotificationCardProps = {
   notification: AppNotification
@@ -118,39 +116,41 @@ export const MemberNotificationCard = chakra(
               {subject}
             </Text>
             <HStack w="full" gap={2} align="flex-start" justify="space-between">
-              <Text fontSize="xs" textAlign="right" w="full" m={0} p={0}>
+              <Text fontSize="xs" w="full" m={0} p={0}>
                 Received {distance(new Date(notification?.date_created))} ago
               </Text>
             </HStack>
-            {notification?.link && (
-              <ButtonLink
-                size="xs"
-                href={notification?.link}
+            <ButtonGroup size="xs" w="full" justifyItems={'space-between'}>
+              {notification?.link && (
+                <ButtonLink
+                  size="xs"
+                  href={notification?.link}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    closeDrawer?.()
+                    return false
+                  }}
+                  colorScheme="accent"
+                >
+                  {notification?.button_text || 'Check it Out!'}
+                </ButtonLink>
+              )}
+              <Spacer />
+              <IconButton
+                icon={<TrashIcon width={15} />}
+                title="Delete"
+                aria-label="Delete"
+                bgGradient={gradient('red')}
+                _hover={{ bgGradient: gradient('red', 100) }}
+                color="white"
                 onClick={(e) => {
                   e.stopPropagation()
-                  closeDrawer?.()
-                  return false
+                  e.preventDefault()
+                  markAsDeleted()
                 }}
-                colorScheme="accent"
-              >
-                {notification?.button_text || 'Check it Out!'}
-              </ButtonLink>
-            )}
+              />
+            </ButtonGroup>
           </VStack>
-          <Icon
-            as={trashHover ? TrashHover : TrashIcon}
-            w={4}
-            h={4}
-            cursor="pointer"
-            title="Delete Notification"
-            onMouseOver={() => setTrashHover(true)}
-            onMouseOut={() => setTrashHover(false)}
-            onClick={async (e) => {
-              e.stopPropagation()
-              e.preventDefault()
-              markAsDeleted()
-            }}
-          />
         </Alert>
         <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
           <ModalOverlay />
@@ -184,7 +184,19 @@ export const MemberNotificationCard = chakra(
                     {notification?.button_text || 'Check it Out!'}
                   </ButtonLink>
                 )}
-                <Spacer />
+
+                <IconButton
+                  icon={<TrashIcon width={15} />}
+                  title="Delete"
+                  aria-label="Delete"
+                  bgGradient={gradient('red')}
+                  _hover={{ bgGradient: gradient('red', 100) }}
+                  color="white"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    return markAsDeleted()
+                  }}
+                />
                 <Button
                   onClick={markAsDeleted}
                   bgGradient={gradient('red')}

@@ -1,12 +1,10 @@
 import { notifications } from "lib/config";
 import {
   AppNotification,
-  AppNotificationStatusType,
   EventDetail,
-  GroupEvent,
+  MemberAlert,
   Notification,
   NotificationUser,
-  UserNotification,
   UserType
 } from "lib/models";
 
@@ -135,12 +133,12 @@ export async function createEventSurveyNotification(surveyId: string, event: Eve
 
 // Individual Notifications
 
-export async function getUserNotification(id: string): Promise<UserNotification> {
+export async function getUserNotification(id: string): Promise<MemberAlert> {
   const adminClient = await getAdminClient()
-  return (await adminClient.items('user_notification').readOne(id)) as unknown as UserNotification
+  return (await adminClient.items('user_notification').readOne(id)) as unknown as MemberAlert
 }
 
-export async function getUserNotifications(user_id: string): Promise<UserNotification[]> {
+export async function getUserNotifications(user_id: string): Promise<MemberAlert[]> {
   const adminClient = await getAdminClient()
   const { data: notifications } = await adminClient.items('user_notification').readByQuery({
     filter: {
@@ -153,7 +151,7 @@ export async function getUserNotifications(user_id: string): Promise<UserNotific
     limit: 20
   })
 
-  return notifications as UserNotification[]
+  return notifications as MemberAlert[]
 }
 export async function deleteUserNotification(id: string) {
   const admin = await getAdminClient()
@@ -165,7 +163,7 @@ export async function markUserNotificationRead(id: string) {
   return admin.items('user_notification').updateOne(id, { read: true })
 }
 
-export async function addUserNotification(user_id: string, notification: Partial<UserNotification>) {
+export async function addUserNotification(user_id: string, notification: Partial<MemberAlert>) {
   const admin = await getAdminClient()
   return admin.items('user_notification').createOne({
     user_id,

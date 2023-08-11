@@ -48,7 +48,7 @@ export type NotificationUser = {
 }
 
 
-export type UserNotification = {
+export type MemberAlert = {
   id: string
   read: boolean
   date_created?: string

@@ -1,16 +1,8 @@
-import {
-  Member,
-  memberFields,
-  MemberLevel,
-  SearchableMember,
-  searchableMemberFields,
-  UserNotification,
-  UserShare
-} from "lib/models";
+import { Member, memberFields, searchableMemberFields } from "lib/models";
 import { getUser } from "lib/services/directus/server";
 import { ApiResponse, withUser } from "lib/utils/server";
 
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next';
 export default async function GetUserBuddies(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse>

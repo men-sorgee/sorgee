@@ -1,8 +1,8 @@
-import { UserNotification } from "lib/models";
+import { MemberAlert } from "lib/models";
 import { getUserNotifications } from "lib/services/directus/server/notifications";
 import { ApiResponse, withUser } from "lib/utils/server";
 
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function GetUserNotifications(
   req: NextApiRequest,
@@ -10,7 +10,7 @@ export default async function GetUserNotifications(
 ) {
   try {
     const user = await withUser(req, res)
-    let notifications: UserNotification[] = await getUserNotifications(user.id)
+    let notifications: MemberAlert[] = await getUserNotifications(user.id)
     return res.status(200).json(ApiResponse(notifications))
 
   } catch (e) {

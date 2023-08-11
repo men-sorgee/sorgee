@@ -1,4 +1,3 @@
-import { AppNotificationStatusType } from "lib/models";
 import {
   getAppNotificationUser,
   updateAppNotificationUser

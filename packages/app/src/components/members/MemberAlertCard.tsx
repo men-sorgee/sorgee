@@ -1,6 +1,6 @@
 import { ButtonLink } from "components";
 import distance from "date-fns/formatDistanceToNow";
-import { Member, UserNotification } from "lib/models";
+import { Member, MemberAlert } from "lib/models";
 import { useEffect, useState } from "react";
 
 import {
@@ -8,9 +8,9 @@ import {
   AlertIcon,
   ButtonGroup,
   chakra,
-  CloseButton,
   HStack,
   IconButton,
+  Spacer,
   Text,
   VStack
 } from "@chakra-ui/react";
@@ -19,7 +19,7 @@ import { TrashIcon } from "@heroicons/react/24/outline";
 import { gradient } from "../../lib/utils";
 
 export type MemberAlertCardProps = {
-  notification: UserNotification
+  notification: MemberAlert
   member: Member
   onRead: () => Promise<void>
   onClose?: () => Promise<void>
@@ -50,7 +50,6 @@ export const MemberAlertCard = chakra(
           justifyItems="space-between"
           color="text"
           status="success"
-          bg="bg"
           cursor="pointer"
           p={2}
           w="full"
@@ -61,33 +60,21 @@ export const MemberAlertCard = chakra(
         >
           <AlertIcon color="text" w={[6]} h={[6]} />{' '}
           <VStack alignItems="start" justify="center" w="full">
-            {message && (
-              <Text
-                p={0}
-                m={0}
-                fontWeight={notification?.read ? 'normal' : 'bold'}
-                flex={1}
-                w="full"
-              >
-                {onClose != undefined && (
-                  <CloseButton
-                    size="sm"
-                    float="right"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      return onRead().then(() => onClose())
-                    }}
-                  />
-                )}
-                {message}
-              </Text>
-            )}
+            <Text
+              p={0}
+              m={0}
+              noOfLines={1}
+              fontWeight={notification?.read ? 'normal' : 'bold'}
+              flex={1}
+            >
+              {message}
+            </Text>
             <HStack w="full" gap={2} align="flex-start" justify="space-between">
               <Text fontSize="xs" w="full" m={0} p={0}>
-                <em>Received {distance(new Date(notification?.date_created))} ago</em>
+                Received {distance(new Date(notification?.date_created))} ago
               </Text>
             </HStack>
-            <ButtonGroup size="xs" w="full" display="flex" justifyItems="space-between">
+            <ButtonGroup size="xs" w="full" justifyItems={'space-between'}>
               {notification?.button_url && (
                 <ButtonLink
                   href={notification?.button_url}
@@ -104,7 +91,7 @@ export const MemberAlertCard = chakra(
                   {notification?.button_text}
                 </ButtonLink>
               )}
-
+              <Spacer />
               <IconButton
                 icon={<TrashIcon width={15} />}
                 title="Delete"

@@ -1,6 +1,6 @@
 'use client'
-import { UserNotification } from "lib/models";
-import { deleteJSON, JsonFetcher, putJSON } from "lib/utils";
+import { MemberAlert } from "lib/models";
+import { deleteJSON, putJSON } from "lib/utils";
 import {
   createContext,
   ReactNode,
@@ -12,8 +12,8 @@ import useSWR from "swr";
 
 import { useAuthenticated } from "./use-authenticated";
 
-export type UserNotificationsContextData = {
-  notifications: UserNotification[]
+export type MemberAlertsContextData = {
+  notifications: MemberAlert[]
   hasNotifications: boolean
   notificationCount: number
   hasNewNotifications: boolean
@@ -25,34 +25,29 @@ export type UserNotificationsContextData = {
   reload: () => void
 }
 
-export const UserNotificationsContext =
-  createContext<UserNotificationsContextData>({
-    notifications: [],
-    hasNotifications: false,
-    notificationCount: 0,
-    hasNewNotifications: false,
-    newNotificationCount: 0,
-    markAsRead: async (_) => {},
-    deleteNotification: async () => {},
-    loading: true,
-    reload: () => {}
-  })
+export const UserNotificationsContext = createContext<MemberAlertsContextData>({
+  notifications: [],
+  hasNotifications: false,
+  notificationCount: 0,
+  hasNewNotifications: false,
+  newNotificationCount: 0,
+  markAsRead: async (_) => {},
+  deleteNotification: async () => {},
+  loading: true,
+  reload: () => {},
+})
 
-export function UserNotificationsProvider({
-  children
-}: {
-  children: ReactNode
-}) {
+export function UserNotificationsProvider({ children }: { children: ReactNode }) {
   const { authenticated } = useAuthenticated()
-  const key = `/api/my/notifications`
+  const key = `/api/my/alerts`
   const {
     data: notifications = [],
     mutate,
     error,
-    isLoading
-  } = useSWR<UserNotification[], Error>(authenticated ? key : null, {
+    isLoading,
+  } = useSWR<MemberAlert[], Error>(authenticated ? key : null, {
     refreshInterval: 1000 * 60 * 5,
-    fallbackData: []
+    fallbackData: [],
   })
   const [hasNewNotifications, setHasNewNotifications] = useState(false)
   const newNotifications = notifications?.filter((n) => n?.read != true) || []
@@ -64,7 +59,7 @@ export function UserNotificationsProvider({
 
   const markAsRead = async (id: string) => {
     const { success } = await putJSON(key + '/' + id, {
-      id
+      id,
     })
     if (success) {
       await mutate([
@@ -75,9 +70,9 @@ export function UserNotificationsProvider({
           return {
             id: i,
             read,
-            ...props
+            ...props,
           }
-        })
+        }),
       ])
 
       setHasNewNotifications(newNotifications?.length > 0)
@@ -86,14 +81,14 @@ export function UserNotificationsProvider({
 
   const del = async (id: string) => {
     const { success } = await deleteJSON(key + '/' + id, {
-      id
+      id,
     })
     if (success) {
       await mutate([...notifications.filter((n) => n.id !== id)])
     }
   }
 
-  const context: UserNotificationsContextData = {
+  const context: MemberAlertsContextData = {
     notifications,
     hasNotifications: notifications?.length > 0,
     notificationCount: notifications?.length || 0,
@@ -105,7 +100,7 @@ export function UserNotificationsProvider({
     loading: isLoading,
     reload: () => {
       mutate()
-    }
+    },
   }
   return (
     <UserNotificationsContext.Provider value={context}>

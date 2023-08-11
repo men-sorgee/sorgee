@@ -18,11 +18,6 @@ import {
   DrawerOverlay,
   Icon,
   IconButton,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
   useDisclosure
 } from "@chakra-ui/react";
 import { BellIcon } from "@heroicons/react/24/outline";
@@ -95,53 +90,32 @@ const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerHeader bg="primary.900" color="white" m={0} p={2}>
-            Inbox
+            Notifications
+            {(newAppNotificationCount > 0 && (
+              <Badge color="white" bg="accent.500" ml={1}>
+                {newAppNotificationCount + notificationCount}
+              </Badge>
+            )) || <Badge ml={1}>{appNotificationCount}</Badge>}
             <DrawerCloseButton />
           </DrawerHeader>
           <DrawerBody p={0}>
-            <Tabs>
-              <TabList>
-                <Tab>
-                  Notifications
-                  {(newAppNotificationCount > 0 && (
-                    <Badge color="white" bg="accent.500" ml={1}>
-                      {newAppNotificationCount}
-                    </Badge>
-                  )) || <Badge ml={1}>{appNotificationCount}</Badge>}
-                </Tab>
-                <Tab>
-                  Alerts
-                  {(newNotificationCount > 0 && (
-                    <Badge color="white" bg="accent.500" ml={1}>
-                      {newNotificationCount}
-                    </Badge>
-                  )) || <Badge ml={1}>{notificationCount}</Badge>}
-                </Tab>
-              </TabList>
-              <TabPanels>
-                <TabPanel>
-                  {appNotifications?.map((notification) => (
-                    <MemberNotificationCard
-                      key={notification.id}
-                      member={member}
-                      notification={notification}
-                      closeDrawer={onClose}
-                    />
-                  ))}
-                </TabPanel>
-                <TabPanel>
-                  {notifications?.map((notification) => (
-                    <MemberAlertCard
-                      key={notification.id}
-                      member={member}
-                      notification={notification}
-                      onRead={() => markAsRead(notification.id)}
-                      onDelete={() => deleteNotification(notification.id)}
-                    />
-                  ))}
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
+            {notifications?.map((notification) => (
+              <MemberAlertCard
+                key={notification.id}
+                member={member}
+                notification={notification}
+                onRead={() => markAsRead(notification.id)}
+                onDelete={() => deleteNotification(notification.id)}
+              />
+            ))}
+            {appNotifications?.map((notification) => (
+              <MemberNotificationCard
+                key={notification.id}
+                member={member}
+                notification={notification}
+                closeDrawer={onClose}
+              />
+            ))}
           </DrawerBody>
         </DrawerContent>
       </Drawer>
