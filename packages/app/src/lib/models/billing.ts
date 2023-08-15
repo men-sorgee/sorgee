@@ -48,7 +48,10 @@ export type UserPayment = {
   redeemed_id?: string
   product_type: PaymentProductType
   description: string
-  redeemed: boolean
+  notes?: string
+  payment_intent?: string
+  receipt?: string
+  redeemed?: boolean
   date_redeemed?: string
   date_created?: string
 };

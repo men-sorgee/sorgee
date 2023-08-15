@@ -3,10 +3,15 @@ import {
   getUserPhoto,
   updateUserPhoto
 } from "lib/services/directus/server/users/photos";
-import { ApiResponse, withMethods, withUser } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMethods,
+  withUser
+} from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function MemberImage(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
+export default async function MemberImage(req: NextApiRequest, res: NextApiResponse<ApiResponseType>) {
   try {
     withMethods(req, ['POST', 'DELETE'])
     const member = await withUser(req, res)

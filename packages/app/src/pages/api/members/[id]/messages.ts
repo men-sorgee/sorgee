@@ -1,17 +1,17 @@
-import {
-  ConversationStats,
-  MemberLevel,
-  UserMessages,
-  UserMessageStats
-} from "lib/models";
+import { ConversationStats, MemberLevel, UserMessageStats } from "lib/models";
 import { getMessages, getUser } from "lib/services/directus/server";
-import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMember,
+  withMethods
+} from "lib/utils/server";
 
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function UserMessages(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<UserMessageStats> | ApiResponse>
+  res: NextApiResponse<ApiResponseType<UserMessageStats> | ApiResponseType>
 ) {
 
   try {

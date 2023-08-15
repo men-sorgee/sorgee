@@ -12,10 +12,15 @@ import {
   updateUser
 } from "lib/services/directus/server";
 import { SendGridList, updateSendGrid } from "lib/services/sendgrid/server";
-import { ApiResponse, withApplicant, withMethods } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withApplicant,
+  withMethods
+} from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
-async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
+async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponseType>) {
   try {
     withMethods(req, ['POST'])
 

@@ -12,12 +12,17 @@ import {
   SendGridTemplate,
   sendNotificationEmail
 } from "lib/services/sendgrid/server";
-import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMember,
+  withMethods
+} from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function MemberBuddy(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<UserBuddy> | ApiResponse>
+  res: NextApiResponse<ApiResponseType<UserBuddy> | ApiResponseType>
 ) {
   try {
     const method = withMethods(req, ['POST', 'DELETE', 'GET'])

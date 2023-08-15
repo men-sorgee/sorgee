@@ -1,5 +1,5 @@
-import { ApiResponse } from "lib/utils/server";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ApiResponseType } from 'lib/utils/apis'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
 
 import {
   Box,
@@ -11,9 +11,9 @@ import {
   Image,
   ImageProps,
   Input,
-  useToast
-} from "@chakra-ui/react";
-import { ArrowUpTrayIcon, XMarkIcon } from "@heroicons/react/24/outline";
+  useToast,
+} from '@chakra-ui/react'
+import { ArrowUpTrayIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 export type PhotoUploadProps = ImageProps & {
   name: string
@@ -105,7 +105,7 @@ export const PhotoUpload = chakra(
           setCompleted(true)
           setFile(null)
         } else {
-          const body = (await res.json()) as ApiResponse
+          const body = (await res.json()) as ApiResponseType
           if (body.error?.field) {
             setError(body.error.message as any)
           } else {

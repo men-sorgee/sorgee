@@ -1,9 +1,9 @@
 'use client'
 
-import { EventDetail, EventUser } from "lib/models";
-import { ApiResult, getJSON } from "lib/utils";
-import { useCallback } from "react";
-import useSWR from "swr";
+import { EventDetail, EventStatusType, EventUser } from 'lib/models'
+import { ApiResult, getJSON } from 'lib/utils'
+import { useCallback } from 'react'
+import useSWR from 'swr'
 
 export type EventResults = {
   event: EventDetail | null
@@ -39,7 +39,13 @@ export const useEvent = (eventId: string, admin: boolean = false): EventResults 
       }
     }
 
-    mutate()
+    mutate(
+      {
+        ...event,
+        status: EventStatusType.Occurred,
+      },
+      false
+    )
     return {
       success,
       data: {
@@ -48,7 +54,7 @@ export const useEvent = (eventId: string, admin: boolean = false): EventResults 
       },
       error,
     } as ApiResult<EventCloseResult>
-  }, [eventId, mutate])
+  }, [eventId, mutate, event])
 
   return {
     event,

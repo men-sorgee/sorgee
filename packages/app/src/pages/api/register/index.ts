@@ -1,22 +1,16 @@
-import {
-  Applicant,
-  MemberLevel,
-  SignUpForm,
-  User,
-  UserStatusType
-} from "lib/models";
+import { Applicant, MemberLevel, SignUpForm, User } from "lib/models";
 import { findPromo } from "lib/services/directus/server";
 import {
   createUser,
   findUser,
   updateUser
 } from "lib/services/directus/server/users";
-import { ApiResponse, withMethods } from "lib/utils/server";
+import { ApiResponse, ApiResponseType, withMethods } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function Register(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<Applicant> | ApiResponse>
+  res: NextApiResponse<ApiResponseType<Applicant> | ApiResponseType>
 ) {
   try {
     withMethods(req, ['POST'])

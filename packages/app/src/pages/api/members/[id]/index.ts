@@ -15,12 +15,17 @@ import {
   UserShare
 } from "lib/models";
 import { addUserView, getUser, updateUser } from "lib/services/directus/server";
-import { ApiResponse, withMethods, withUser } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMethods,
+  withUser
+} from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function Member(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<Member> | ApiResponse>
+  res: NextApiResponse<ApiResponseType<Member> | ApiResponseType>
 ) {
   try {
     const method = withMethods(req, ['GET', 'POST'])

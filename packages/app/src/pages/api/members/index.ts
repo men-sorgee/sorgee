@@ -1,4 +1,3 @@
-import { cpSync } from "fs";
 import {
   getAllowedUsers,
   MemberLevel,
@@ -9,7 +8,7 @@ import {
 } from "lib/models";
 import { searchUsers } from "lib/services/directus/server/users";
 import { normalize } from "lib/utils";
-import { ApiResponse, withMember } from "lib/utils/server";
+import { ApiResponse, ApiResponseType, withMember } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { ManyItems } from "@directus/sdk";
@@ -24,7 +23,7 @@ export type MemberSearch = SearchableMember & {
 
 export default async function FindMembers(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<ManyItems<Partial<User>>> | ApiResponse>
+  res: NextApiResponse<ApiResponseType<ManyItems<Partial<User>>> | ApiResponseType>
 ) {
   try {
     const member = await withMember(req, res)

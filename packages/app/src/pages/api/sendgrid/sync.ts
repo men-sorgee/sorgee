@@ -2,10 +2,10 @@ import config from "lib/config/server";
 import { Profile } from "lib/models";
 import { getUser, updateUser } from "lib/services/directus/server";
 import { updateSendGrid } from "lib/services/sendgrid/server";
-import { ApiResponse, withMethods } from "lib/utils/server";
+import { ApiResponse, ApiResponseType, withMethods } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
-async function SyncContact(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
+async function SyncContact(req: NextApiRequest, res: NextApiResponse<ApiResponseType>) {
   try {
     if (!withMethods(req, ['POST'])) return
 

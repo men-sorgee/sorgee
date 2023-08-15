@@ -4,9 +4,9 @@ import {
   GroupEvent,
   Invite,
   InviteRSVPType,
-  Member
+  Member,
+  UserType
 } from "lib/models";
-import { listUpcomingEvents } from "lib/services/directus/server";
 
 import { getAdminClient } from "../";
 
@@ -82,6 +82,24 @@ export async function listInvites(member: Member): Promise<EventUser[]> {
     }
   })
   return (invites || []) as EventUser[]
+}
+
+export async function listUpcomingEvents(user_type: UserType): Promise<GroupEvent[]> {
+  const client = await getAdminClient()
+  const filter = {
+    status: { _in: ['scheduled', 'planned'] },
+    datetime: { _gte: '$NOW(-7 days)' },
+  }
+  if (user_type != 'staff')
+    filter['invite_only'] = { _eq: false }
+
+  const { data } = await client.items('events').readByQuery({
+    filter,
+    fields: ['*.*'],
+    sort: ['datetime'],
+  })
+  if (user_type == 'staff') return data as unknown as GroupEvent[]
+  return (data?.filter((e) => e.visibility?.includes(user_type)) || []) as unknown as GroupEvent[]
 }
 
 export async function updateInvite(

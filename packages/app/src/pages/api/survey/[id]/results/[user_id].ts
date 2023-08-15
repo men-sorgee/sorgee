@@ -1,11 +1,11 @@
 import { UserSurvey } from "lib/models";
 import { getUserSurveyAnswers } from "lib/services/directus/server";
-import { ApiResponse, withMember } from "lib/utils/server";
+import { ApiResponse, ApiResponseType, withMember } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function UserSurvey(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<UserSurvey>>
+  res: NextApiResponse<ApiResponseType<UserSurvey>>
 ) {
   try {
     await withMember(req, res)

@@ -7,12 +7,17 @@ import {
   sendNotificationEmail
 } from "lib/services/sendgrid/server";
 import { uuidv4 } from "lib/utils";
-import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMember,
+  withMethods
+} from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function listUserInvites(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<boolean>>
+  res: NextApiResponse<ApiResponseType<boolean>>
 ) {
   try {
     withMethods(req, ['POST'])

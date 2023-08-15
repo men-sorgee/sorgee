@@ -12,12 +12,17 @@ import {
   SendGridTemplate,
   sendNotificationEmail
 } from "lib/services/sendgrid/server";
-import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMember,
+  withMethods
+} from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function MemberLike(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<UserLike> | ApiResponse>
+  res: NextApiResponse<ApiResponseType<UserLike> | ApiResponseType>
 ) {
   try {
     const method = withMethods(req, ['POST', 'DELETE', 'GET'])

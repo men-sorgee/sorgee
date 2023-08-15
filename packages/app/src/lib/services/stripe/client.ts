@@ -28,4 +28,15 @@ const subscriptionData = {
   },
 }
 
-export { subscriptionData }
+export { subscriptionData };
+
+export type PurchaseResponse = {
+  id: string
+}
+
+export type RefundResponse = {
+  paid: boolean
+  refunded: boolean
+  reason: string
+  continue: boolean
+}

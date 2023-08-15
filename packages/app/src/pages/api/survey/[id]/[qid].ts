@@ -4,12 +4,17 @@ import {
   getSurveyAnswer,
   setSurveyAnswer
 } from "lib/services/directus/server";
-import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMember,
+  withMethods
+} from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function SurveyQuestion(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<SurveyAnswer>>
+  res: NextApiResponse<ApiResponseType<SurveyAnswer>>
 ) {
   try {
     const method = withMethods(req, ['GET', 'POST'])
@@ -23,17 +28,16 @@ export default async function SurveyQuestion(
         const question = await getQuestion(question_id)
         const answer = await getSurveyAnswer(survey_id, member.id, question_id)
         if (!answer) {
-          return res.status(200).json(
-            ApiResponse<SurveyAnswer>({
-              survey: survey_id,
-              user: member.id,
-              question: question_id,
-              answer_choose:
-                question.control == 'range'
-                  ? [question.number_minimum, question.number_maximum]
-                  : [],
-            })
-          )
+          return res.status(200).json(ApiResponse<SurveyAnswer>({
+            survey: survey_id,
+            user: member.id,
+            question: question_id,
+            answer_choose:
+              question.control == 'range'
+                ? [question.number_minimum, question.number_maximum]
+                : [],
+          }))
+
         } else {
           return res.status(200).json(ApiResponse(answer))
         }

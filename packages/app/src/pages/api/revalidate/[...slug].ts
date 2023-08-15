@@ -1,7 +1,7 @@
-import { ApiResponse, withMethods } from "lib/utils/server";
+import { ApiResponse, ApiResponseType, withMethods } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function Revalidate(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
+export default async function Revalidate(req: NextApiRequest, res: NextApiResponse<ApiResponseType>) {
   try {
     withMethods(req, ['POST', 'GET'])
 

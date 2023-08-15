@@ -17,15 +17,7 @@ const getConfig = (phase) => {
       stripePublicKey: process.env.STRIPE_PUBLIC_KEY
     },
     pageExtensions: ['tsx'],
-    experimental: {
-      //optimizeFonts: true,
-      //optimizeImages: true,
-      //scrollRestoration: true,
-      //scriptLoader: true,
-      //serverActionsTs: true,
-      //appDir: false,
-      //optimizeCss: true
-    },
+    experimental: { appDir: false },
     images: {
       domains: [
         'guysnheat.com',
@@ -37,14 +29,6 @@ const getConfig = (phase) => {
         'static.guysnheat.com',
         'raw.githubusercontent.com',
         'guysnheat.whereby.com'
-      ]
-    },
-    rewrites: async () => {
-      return [
-        {
-          source: '/api/unsplash/:path*',
-          destination: `https://api.unsplash.com/photos/:path*?client_id=${process.env.API_KEY_UNSPLASH}`
-        }
       ]
     },
     redirects: async () => {

@@ -14,13 +14,18 @@ import {
   sendNotificationEmail
 } from "lib/services/sendgrid/server";
 import { pruneUndefined } from "lib/utils/index";
-import { ApiResponse, withMethods, withUser } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMethods,
+  withUser
+} from "lib/utils/server";
 
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function getUserMessages(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<UserMessages | Message>>
+  res: NextApiResponse<ApiResponseType<UserMessages | Message>>
 ) {
   let messages: UserMessages = {}
   let message: Message = {} as any

@@ -1,5 +1,10 @@
 import { pruneUndefined } from "./";
 
+export type ApiResponseType<T = object | any | never> = {
+  error: ApiError
+  data: T
+}
+
 export type ApiResult<T = any> = {
   success: boolean
   data?: T

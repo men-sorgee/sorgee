@@ -1,10 +1,4 @@
-import {
-  Applicant,
-  EventUser,
-  GroupEvent,
-  Member,
-  MemberLevel
-} from "lib/models";
+import { Applicant, GroupEvent, Member, MemberLevel } from "lib/models";
 import {
   findInvite,
   findUser,
@@ -12,12 +6,12 @@ import {
   getUser,
   registerForEvent
 } from "lib/services/directus/server";
-import { ApiResponse, withMethods, withStaff } from "lib/utils/server";
+import { ApiResponseType, withMethods, withStaff } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function EventCheckIn(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<Applicant> | ApiResponse>
+  res: NextApiResponse<ApiResponseType<Applicant> | ApiResponseType>
 ) {
   const { id: e, user_id: u, email: m } = req.query
   const event_id = e as string
@@ -53,7 +47,7 @@ export default async function EventCheckIn(
     if (MemberLevel[user.user_type] <= MemberLevel.pledge)
       throw new Error('Only inductees or brothers can check in')
 
-    let invite = (await findInvite(event_id, user_id)) as EventUser
+    let invite = await findInvite(event_id, user_id)
 
     if (!invite) {
       if (event.invite_only)

@@ -1,9 +1,14 @@
-import { Applicant, User } from "lib/models";
+import { Applicant } from "lib/models";
 import { getUser, updateUser } from "lib/services/directus/server";
-import { ApiResponse, withAuthUser, withMethods } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withAuthUser,
+  withMethods
+} from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
-async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
+async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponseType>) {
   try {
     withMethods(req, ['POST'])
     const user = await withAuthUser(req, res)

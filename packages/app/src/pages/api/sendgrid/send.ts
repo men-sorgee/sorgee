@@ -4,10 +4,10 @@ import {
   SendGridTemplate,
   sendNotificationEmail
 } from "lib/services/sendgrid/server";
-import { ApiResponse, withMethods } from "lib/utils/server";
+import { ApiResponse, ApiResponseType, withMethods } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
-async function SendNotification(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
+async function SendNotification(req: NextApiRequest, res: NextApiResponse<ApiResponseType>) {
   try {
     withMethods(req, ['POST'])
 

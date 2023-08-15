@@ -1,25 +1,25 @@
-import { useUser } from "hooks";
-import { brand } from "lib/config/brand";
-import { MemberLevel } from "lib/models";
-import { useRouter } from "next/router";
-import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
-import { ErrorBoundary } from "react-error-boundary";
+import { useUser } from 'hooks'
+import { brand } from 'lib/config/brand'
+import { MemberLevel } from 'lib/models'
+import { useRouter } from 'next/router'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
 
-import { Box, Flex, Slide, Spacer, useDisclosure } from "@chakra-ui/react";
+import { Box, Flex, Slide, Spacer, Text, useDisclosure } from '@chakra-ui/react'
 
-import { postJSON } from "../lib/utils";
-import Actions from "./actions";
-import Footer from "./Footer";
-import Header from "./Header";
-import Meta from "./Meta";
-import Splash from "./Splash";
+import { postJSON } from '../lib/utils'
+import Actions from './actions'
+import Footer from './Footer'
+import Header from './Header'
+import Meta from './Meta'
+import Splash from './Splash'
 
 export const constrained = {
   maxW: brand.breakPoints,
   mx: [2, 'auto'],
 }
 
-function Layout({
+export default function Layout({
   children,
   fonts: [heading, body, mono],
 }: {
@@ -75,7 +75,7 @@ function Layout({
   const Error = ({ error }: { error: string }) => (
     <Box mx={[4, 4, 0]}>
       <h2>Something went wrong!</h2>
-      <p>{error}</p>
+      <Text>{error}</Text>
     </Box>
   )
 
@@ -87,9 +87,7 @@ function Layout({
         <ErrorBoundary
           fallbackRender={Error}
           onError={(error, errorInfo) => {
-            postJSON('/api/errors', { error, errorInfo })
-              .then((res) => {})
-              .catch((err) => {})
+            postJSON('/api/errors', { error, errorInfo }).catch(console.error)
           }}
         >
           <Flex
@@ -131,5 +129,3 @@ function Layout({
     </>
   )
 }
-
-export default Layout

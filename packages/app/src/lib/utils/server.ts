@@ -12,18 +12,13 @@ import { findUser } from "lib/services/directus/server";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession, User as AuthUser } from "next-auth";
 
-import { ApiError } from "./apis";
-
-export type ApiResponse<T = object | any | never> = {
-  error: ApiError
-  data: T
-}
+import { ApiResponseType } from "./apis";
 
 export function ApiResponse<T = any | any | never>(
   data: T,
   error?: string,
   field?: string & keyof T
-): ApiResponse<T> {
+): ApiResponseType<T> {
   return {
     data: data || ({} as T),
     error: { message: error, field },
@@ -100,4 +95,5 @@ export function parseInvite(invite: string): UserInvite {
   return JSON.parse(inviteJson)
 }
 
-export * from './apis'
+export type { ApiResponseType } from './apis';
+

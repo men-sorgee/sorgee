@@ -5,12 +5,17 @@ import {
   setRating,
   setUserAverageRating
 } from "lib/services/directus/server";
-import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMember,
+  withMethods
+} from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function MemberItemRating(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<Rating>>
+  res: NextApiResponse<ApiResponseType<Rating>>
 ) {
   try {
     const method = withMethods(req, ['GET', 'POST'])

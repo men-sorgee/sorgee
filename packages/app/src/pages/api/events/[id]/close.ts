@@ -1,4 +1,4 @@
-import { EventDetail, EventUser, Member, MemberLevel } from "lib/models";
+import { EventDetail, EventUser, Member } from "lib/models";
 import {
   addAppNotificationUser,
   addUserNotification,
@@ -10,12 +10,17 @@ import {
   updateEventUsers,
   updateSurvey
 } from "lib/services/directus/server";
-import { ApiResponse, withMethods, withStaff } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMethods,
+  withStaff
+} from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function Event(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<EventDetail | EventUser[]>>
+  res: NextApiResponse<ApiResponseType<EventDetail | EventUser[]>>
 ) {
   try {
     withMethods(req, ['GET'])
