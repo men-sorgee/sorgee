@@ -1,4 +1,6 @@
-import { useEffect } from "react";
+'use client'
+
+import { useEffect } from 'react'
 
 const getMobileDetect = (userAgent: NavigatorID['userAgent']) => {
   const isAndroid = () => Boolean(userAgent.match(/Android/i))

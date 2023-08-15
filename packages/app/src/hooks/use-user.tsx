@@ -1,24 +1,12 @@
 'use client'
-import {
-  ApplicationStatus,
-  Member,
-  MemberFeature,
-  MemberLevel,
-  MembershipType
-} from "lib/models";
-import { ApiResult, getAssetUrl, postJSON } from "lib/utils";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/router";
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState
-} from "react";
-import useSWR from "swr";
+import { ApplicationStatus, Member, MemberFeature, MemberLevel, MembershipType } from 'lib/models'
+import { ApiResult, getAssetUrl, postJSON } from 'lib/utils'
+import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/router'
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react'
+import useSWR from 'swr'
 
-import { useAuthenticated } from "./use-authenticated";
+import { useAuthenticated } from './use-authenticated'
 
 export type UserContextData = {
   member: Member | null
@@ -153,20 +141,17 @@ export const useUser = ({
         const status = ApplicationStatus[member.application_status]
         if (status < minAppStatus) {
           const destination = '/apply/' + member.application_status
-          if (router.asPath != destination)
-            router.push(destination, destination).catch(console.error)
+          if (router.asPath != destination) location.href = destination
           return
         }
         if (level < minLevel) {
           const destination = `/unauthorized?level=${MemberLevel[minLevel]}`
-          if (router.asPath != destination)
-            router.push(destination, destination).catch(console.error)
+          if (router.asPath != destination) location.href = destination
           return
         }
         if (requiredFeature && !hasFeature(requiredFeature)) {
           const destination = `/member/subscription?feature=${requiredFeature}`
-          if (router.asPath != destination)
-            router.push(destination, destination).catch(console.error)
+          if (router.asPath != destination) location.href = destination
           return
         }
       } else {

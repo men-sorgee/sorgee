@@ -1,18 +1,22 @@
 'use client'
-import { EventInvite, EventUser, GroupEvent, Member } from "lib/models";
-import { ApiResult, postJSON } from "lib/utils";
-import { useEffect, useState } from "react";
-import useSWR from "swr";
+import { EventInvite, EventUser, GroupEvent, Member } from 'lib/models'
+import { ApiResult, deleteJSON, getJSON, postJSON } from 'lib/utils'
+import { useEffect, useState } from 'react'
+import useSWR from 'swr'
+
+import { PurchaseResponse, RefundResponse } from '../components'
 
 export type InviteResults = {
   invite: EventInvite
   event: GroupEvent
   user: Member
   loading: boolean
+  refund: () => Promise<ApiResult<RefundResponse>>
+  pay: () => Promise<ApiResult<PurchaseResponse>>
   mutate: (opts: Partial<EventUser>) => Promise<ApiResult<EventInvite>>
 }
 
-export const useInvite = (eventId: string, eventUser?: EventInvite): InviteResults => {
+export const useInvite = (eventId: string): InviteResults => {
   const [event, setEvent] = useState<GroupEvent>(undefined)
   const [user, setUser] = useState<Member>(undefined)
 
@@ -21,9 +25,7 @@ export const useInvite = (eventId: string, eventUser?: EventInvite): InviteResul
     mutate,
     isLoading,
   } = useSWR<EventInvite>(eventId ? `/api/events/${eventId}/rsvp` : null, {
-    refreshInterval: 0,
-    keepPreviousData: false,
-    fallbackData: eventUser,
+    refreshInterval: 1000 * 60,
   })
 
   useEffect(() => {
@@ -38,12 +40,9 @@ export const useInvite = (eventId: string, eventUser?: EventInvite): InviteResul
     event,
     user,
     loading: isLoading,
-    mutate: async ({ rsvp, reason, paid = false }: Partial<EventUser>) => {
-      // Paid is passed to the mutation, but not the API.
-      // This is to assume they paid if they used the pay button,
-      // for the sake of the UI. However, the actual payment needs
-      // to be handled by the Stripe API, confirming they paid.
-      let paid_at = paid ? new Date().toISOString() : undefined
+    refund: () => deleteJSON<RefundResponse>(`/api/stripe/invite/${invite?.id}`),
+    pay: () => getJSON<PurchaseResponse>(`/api/stripe/invite/${invite?.id}`),
+    mutate: async ({ rsvp, reason, paid_at }: Partial<EventUser>) => {
       const {
         data: i,
         success,
@@ -56,7 +55,7 @@ export const useInvite = (eventId: string, eventUser?: EventInvite): InviteResul
       if (!success) {
         console.error(error)
       }
-      mutate({ ...i, paid, paid_at })
+      await mutate(i)
       return {
         data: i,
         success,

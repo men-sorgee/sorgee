@@ -1,10 +1,12 @@
-import { MemberSearchQueryParams, SearchableMember } from "lib/models";
-import { useEffect, useState } from "react";
-import useSWR from "swr";
+'use client'
 
-import { ManyItems } from "@directus/sdk";
+import { MemberSearchQueryParams, SearchableMember } from 'lib/models'
+import { useEffect, useState } from 'react'
+import useSWR from 'swr'
 
-import { useAuthenticated } from "./use-authenticated";
+import { ManyItems } from '@directus/sdk'
+
+import { useAuthenticated } from './use-authenticated'
 
 export type MemberSearchContext = {
   members: SearchableMember[]
@@ -18,12 +20,10 @@ export type MemberSearchContext = {
   error: string
 }
 
-function useMemberSearch({
-  page = 1,
-  size = 20,
-  sort = '-last_login',
-  ...query
-}: Partial<MemberSearchQueryParams>) {
+export const useMemberSearch = (
+  { page = 1, size = 20, sort = '-last_login', ...query }: Partial<MemberSearchQueryParams>,
+  skip: boolean = false
+) => {
   const authenticated = useAuthenticated()
   const [members, setMembers] = useState<SearchableMember[]>([])
   const [pageCount, setPageCount] = useState<number>(0)
@@ -43,14 +43,14 @@ function useMemberSearch({
     if (filters != undefined) {
       setKey(`/api/members?limit=${size}&page=${page}&sort=${sort}${filters}`)
     }
-  }, [filters, query, page, size, sort, key])
+  }, [filters, setFilters, query, page, size, sort, key])
 
   const {
     data: response,
     error,
     isLoading,
     isValidating,
-  } = useSWR<ManyItems<SearchableMember>>(authenticated ? key : null, {
+  } = useSWR<ManyItems<SearchableMember>>(authenticated && !skip ? key : null, {
     keepPreviousData: false,
     refreshInterval: 0,
     fallbackData: {
@@ -89,5 +89,3 @@ function useMemberSearch({
 
   return result
 }
-
-export { useMemberSearch }

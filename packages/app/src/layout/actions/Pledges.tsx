@@ -1,10 +1,8 @@
-import { useMemberSearch } from "hooks";
-import { Member, MemberLevel } from "lib/models";
-import NextLink from "next/link";
-import { useEffect, useState } from "react";
+import { Member, MemberLevel } from 'lib/models'
+import NextLink from 'next/link'
 
-import { Badge, Icon, IconButton, Link } from "@chakra-ui/react";
-import { UserCircleIcon } from "@heroicons/react/24/outline";
+import { Icon, IconButton, Link } from '@chakra-ui/react'
+import { UserCircleIcon } from '@heroicons/react/24/outline'
 
 interface Props {
   member: Member
@@ -14,22 +12,19 @@ interface Props {
 }
 
 const PledgesAction = ({ member, active, iconSize, iconDimensions }: Props) => {
-  const [level, setLevel] = useState(undefined)
+  const level = MemberLevel[member?.user_type]
 
-  useEffect(() => {
-    if (member?.user_type) {
-      setLevel(MemberLevel[member?.user_type])
-    }
-  }, [member?.user_type, level])
+  //const { meta } = useMemberSearch(
+  //  {
+  //    sort: 'last_login',
+  //    user_type: MemberLevel[MemberLevel.pledge],
+  //  },
+  //  level < MemberLevel.brother
+  //)
+  //const { filtered: count } = meta
 
-  const { meta } = useMemberSearch({
-    sort: 'last_login',
-    user_type: MemberLevel[MemberLevel.pledge],
-  })
-  const { filtered: count } = meta
-
-  if (!level || level < MemberLevel.brother) {
-    return null
+  if (level < MemberLevel.brother) {
+    return <></>
   }
 
   return (
@@ -45,7 +40,7 @@ const PledgesAction = ({ member, active, iconSize, iconDimensions }: Props) => {
           aria-label="Review Pledges"
           title="Review Pledges"
         />
-        {count > 0 && (
+        {/**count > 0 && (
           <Badge
             bg={active ? 'accent.500' : 'white'}
             color={active ? 'white' : 'accent.500'}
@@ -59,7 +54,7 @@ const PledgesAction = ({ member, active, iconSize, iconDimensions }: Props) => {
           >
             {count}
           </Badge>
-        )}
+        )**/}
       </Link>
     </>
   )

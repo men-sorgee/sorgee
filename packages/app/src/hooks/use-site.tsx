@@ -1,5 +1,8 @@
-import { Site } from "lib/models";
-import useSWR, { KeyedMutator } from "swr";
+'use client'
+import { Site } from 'lib/models'
+import useSWR, { KeyedMutator } from 'swr'
+
+import { JsonFetcher } from '../lib/utils'
 
 export type SiteResults = {
   site: Site | null
@@ -15,7 +18,7 @@ export const useSite = (): SiteResults => {
     mutate,
     error,
     isLoading,
-  } = useSWR<Site, Error>(`/api/site`, {
+  } = useSWR<Site, Error>(`/api/site`, JsonFetcher, {
     fallbackData: {
       site_title: 'GuysNHeat',
       description:

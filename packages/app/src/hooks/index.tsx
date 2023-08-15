@@ -1,4 +1,3 @@
-export * from './swr'
 export * from './use-app-notifications'
 export * from './use-authenticated'
 export * from './use-device-detect'

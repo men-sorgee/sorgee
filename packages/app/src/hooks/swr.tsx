@@ -1,4 +1,5 @@
 'use client'
+
 import { JsonFetcher } from "lib/utils";
 import { SWRConfig } from "swr";
 
