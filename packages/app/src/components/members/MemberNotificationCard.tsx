@@ -38,6 +38,7 @@ export type MemberNotificationCardProps = {
 
 export const MemberNotificationCard = chakra(
   ({ member, notification, closeDrawer }: MemberNotificationCardProps) => {
+    const [deleted, setDeleted] = useState<boolean>(false)
     const { isOpen, onOpen, onClose } = useDisclosure()
     const { readAppNotification, deleteAppNotification, reloadAppNotifications } =
       useAppNotifications()
@@ -81,15 +82,15 @@ export const MemberNotificationCard = chakra(
 
     const markAsDeleted = useCallback(() => {
       onClose()
-      return deleteAppNotification(notification.id).then(() => {
-        reloadAppNotifications()
-      })
+      deleteAppNotification(notification.id)
+      setDeleted(true)
     }, [deleteAppNotification, notification.id, onClose, reloadAppNotifications])
 
-    const [trashHover, setTrashHover] = useState<boolean>(false)
     const textNew = useColorModeValue('secondary.800', 'secondary.100')
     const textRead = useColorModeValue('text', 'secondary.300')
 
+    if (deleted)
+      return null
     return (
       <>
         <Alert

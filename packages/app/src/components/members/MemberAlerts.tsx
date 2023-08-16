@@ -9,7 +9,7 @@ interface Props {
   member: Member
 }
 
-const MemberNotifications = ({ member }: Props) => {
+const MemberAlerts = ({ member }: Props) => {
   const toast = useToast()
 
   const [activeNotification, setActiveNotification] = useState<MemberAlert>(undefined)
@@ -80,4 +80,5 @@ const MemberNotifications = ({ member }: Props) => {
   return <></>
 }
 
-export { MemberNotifications as UserNotifications }
+export { MemberAlerts as UserNotifications };
+
