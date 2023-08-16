@@ -347,7 +347,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
         <>
           <RSVPView
             heading="You are confirmed for this event."
-            body={!paid && <Text>You reservation is not guaranteed. First-come, first-serve.</Text>}
+            body={!paid && <Text>You reservation is not pre-paid. If we reach capacity, entrance will be first-come/first-serve.</Text>}
           >
             <PayButton>Pre-Pay</PayButton>
             <MaybeRSVPButton>May Not Attend</MaybeRSVPButton>
