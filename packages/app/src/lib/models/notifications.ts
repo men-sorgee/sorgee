@@ -56,7 +56,7 @@ export type MemberAlert = {
   message?: string
   button_text?: string
   button_url?: string
-  icon?: string
+  icon: 'success' | 'warning' | 'error' | 'info' | 'loading'
 }
 
 export type UserEmailEvent = {

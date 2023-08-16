@@ -59,6 +59,7 @@ export default async function VouchForMember(
           message: `You have been vouched for by ${me.nickname}!`,
           button_text: 'View Profile',
           button_url: `/member/${me.id}`,
+          icon: 'success'
         })
 
         return res.status(200).json(

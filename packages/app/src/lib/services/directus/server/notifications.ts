@@ -131,16 +131,19 @@ export async function createEventSurveyNotification(surveyId: string, event: Eve
 }
 
 
-// Individual Notifications
+// Alerts
 
 export async function getUserNotification(id: string): Promise<MemberAlert> {
   const adminClient = await getAdminClient()
-  return (await adminClient.items('user_notification').readOne(id)) as unknown as MemberAlert
+  let alert = await adminClient.items('user_notification').readOne(id) as MemberAlert
+  if (alert && alert.icon == null)
+    alert.icon = 'info'
+  return alert
 }
 
 export async function getUserNotifications(user_id: string): Promise<MemberAlert[]> {
   const adminClient = await getAdminClient()
-  const { data: notifications } = await adminClient.items('user_notification').readByQuery({
+  const { data } = await adminClient.items('user_notification').readByQuery({
     filter: {
       user_id: {
         _eq: user_id,
@@ -151,7 +154,12 @@ export async function getUserNotifications(user_id: string): Promise<MemberAlert
     limit: 20
   })
 
-  return notifications as MemberAlert[]
+  let notifications = data as MemberAlert[]
+  notifications.forEach((alert) => {
+    if (alert.icon == null)
+      alert.icon = 'info'
+  })
+  return notifications
 }
 export async function deleteUserNotification(id: string) {
   const admin = await getAdminClient()
@@ -167,6 +175,7 @@ export async function addUserNotification(user_id: string, notification: Partial
   const admin = await getAdminClient()
   return admin.items('user_notification').createOne({
     user_id,
+    icon: 'info',
     ...notification,
   })
 }

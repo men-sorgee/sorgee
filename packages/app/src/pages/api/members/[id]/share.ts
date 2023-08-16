@@ -51,6 +51,7 @@ export default async function ShareWithMember(
         message: `${myName} shared their private photos!`,
         button_text: 'View Photos',
         button_url: `/member/${me.id}`,
+        icon: 'success'
       })
 
       await sendNotificationEmail(

@@ -68,7 +68,8 @@ export default async function Event(
       addUserNotification(u, {
         message: `You were marked as a no-show for ${event.name}. ` + message,
         button_text: 'View Event',
-        button_url: `/events/${event.id}`
+        button_url: `/events/${event.id}`,
+        icon: 'warning'
       })
     }))
 

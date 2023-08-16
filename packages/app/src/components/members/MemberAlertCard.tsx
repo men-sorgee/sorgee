@@ -44,12 +44,14 @@ export const MemberAlertCard = chakra(
       <>
         <Alert
           mb={4}
+          opacity={1}
+          bg={'bg'}
           variant={notification?.read ? 'subtle' : 'left-accent'}
           borderRadius={'md'}
           alignItems="start"
           justifyItems="space-between"
           color="text"
-          status="success"
+          status={notification.icon}
           cursor="pointer"
           p={2}
           w="full"

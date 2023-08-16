@@ -61,6 +61,7 @@ export default async function MemberBuddy(
           message: title,
           button_text: action,
           button_url: `/member/${me.id}`,
+          icon: 'success'
         })
 
         // send email

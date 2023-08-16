@@ -62,6 +62,7 @@ export default async function MemberLike(
           message,
           button_text: action,
           button_url: `/member/${me.id}`,
+          icon: 'success'
         })
 
         await sendNotificationEmail(

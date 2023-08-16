@@ -47,6 +47,7 @@ export default async function MemberItemRating(
               message: `Someone rated your event behavior ${rate} stars`,
               button_text: `View Your Rating`,
               button_url: `/member/${item}`,
+              icon: rate >= 4 ? 'success' : 'warning',
             })
           }
         }
