@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rm -rf .next && rm -rf node_modules",
     "dev": "next dev ",
-    "build": "next build && cp yarn.lock ./packages/app/",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "fix": "next lint --fix",
