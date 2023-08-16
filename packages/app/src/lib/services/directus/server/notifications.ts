@@ -74,12 +74,12 @@ export async function getAppNotifications(user_id: string): Promise<AppNotificat
 
 export async function getAppNotificationUser(id: number) {
   const adminClient = await getAdminClient()
-  return adminClient.items('notifications_users').readOne(id)
+  return adminClient.items('notifications_users').readOne(id) as Promise<NotificationUser>
 }
 
 export async function updateAppNotificationUser(id: number, notification: Partial<NotificationUser>) {
   const admin = await getAdminClient()
-  return admin.items('notifications_users').updateOne(id, notification)
+  return admin.items('notifications_users').updateOne(id, notification) as Promise<NotificationUser>
 }
 
 export async function addAppNotificationUser(notificationId: string, userId: string) {
@@ -89,7 +89,7 @@ export async function addAppNotificationUser(notificationId: string, userId: str
     user_id: userId,
     status: 'new',
     read: false,
-  })
+  }) as Promise<NotificationUser>
 }
 
 export async function addUserToPledgeSurveyEmail(user_id: string) {

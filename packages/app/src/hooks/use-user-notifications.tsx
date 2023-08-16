@@ -31,10 +31,10 @@ export const UserNotificationsContext = createContext<MemberAlertsContextData>({
   notificationCount: 0,
   hasNewNotifications: false,
   newNotificationCount: 0,
-  markAsRead: async (_) => {},
-  deleteNotification: async () => {},
+  markAsRead: async (_) => { },
+  deleteNotification: async () => { },
   loading: true,
-  reload: () => {},
+  reload: () => { },
 })
 
 export function UserNotificationsProvider({ children }: { children: ReactNode }) {
@@ -80,9 +80,7 @@ export function UserNotificationsProvider({ children }: { children: ReactNode })
   }
 
   const del = async (id: string) => {
-    const { success } = await deleteJSON(key + '/' + id, {
-      id,
-    })
+    const { success } = await deleteJSON(`${key}/${id}`)
     if (success) {
       await mutate([...notifications.filter((n) => n.id !== id)])
     }
