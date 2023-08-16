@@ -42,21 +42,32 @@ export default async function EventRSVP(
         eventUser = await registerForEvent(eventId, member.id, rsvp, paid_at)
         if (!eventUser) throw new Error('Error registering for event')
       }
+      return res.status(200).json(ApiResponse<EventInvite>({
+        member,
+        event,
+        ...eventUser
+      }))
 
 
     } else if (method == 'GET') {
       if (!eventUser && event.invite_only && member.user_type != 'staff')
-        throw new Error('Invite not found')
+        return res.status(200).json(ApiResponse<EventInvite>({
+          member,
+          event,
+          amount: 0,
+          guest: false,
+          paid: false,
+          rsvp: 'not_invited'
+        }))
+      return res.status(200).json(ApiResponse<EventInvite>({
+        member,
+        event,
+        ...eventUser
+      }))
     }
 
-    let invite = {
-      member,
-      event,
-      rsvp: rsvp || eventUser?.rsvp || 'not_invited',
-      reason: reason || eventUser?.reason || '',
-      ...eventUser
-    }
-    return res.status(200).json(ApiResponse<EventInvite>(invite))
+
+
 
   } catch (e) {
     console.error(e)

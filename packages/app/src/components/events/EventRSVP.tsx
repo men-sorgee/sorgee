@@ -395,7 +395,11 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
     default:
       return (
         <>
-          <RSVPView heading="Something went wrong" change={false}></RSVPView>
+          <RSVPView heading="You are invited!" change={false}>
+            <ConfirmRSVPButton>Can Attend</ConfirmRSVPButton>
+            <MaybeRSVPButton></MaybeRSVPButton>
+            <CancelRSVPButton>Not Interested</CancelRSVPButton>
+          </RSVPView>
         </>
       )
   }
