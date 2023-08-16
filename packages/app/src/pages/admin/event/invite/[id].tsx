@@ -106,6 +106,9 @@ export default function InviteAdmin() {
       <Form<FormProps, EventInvite>
         onSubmit={updateInvite}
         onSuccess={() => router.push(`/admin/event/${event?.id}`)}
+        onError={(error) => {
+
+        }}
         defaultValues={defaultValues}
       >
         {({ formState: { isValid, isSubmitting }, watch, register }) => (
@@ -284,9 +287,9 @@ export default function InviteAdmin() {
         <ButtonLink colorScheme="gray" href={'/admin/event/' + event?.id} my={4}>
           Return to Event
         </ButtonLink>
-        <ButtonLink colorScheme="primary" href="/admin/scan" my={4}>
+        {/**<ButtonLink colorScheme="primary" href="/admin/scan" my={4}>
           Scan Another
-        </ButtonLink>
+        </ButtonLink>**/}
       </HStack>
     </Page>
   )

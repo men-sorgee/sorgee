@@ -41,7 +41,7 @@ export default function Agreement({ markdown }: Props) {
   return (
     <Page title="Agreement" loading={loading} header={<ApplicationSteps status={'agreement'} />}>
       {!complete && (
-        <Form<AgreementData>
+        <Form
           onSubmit={(data: AgreementData) => {
             return postJSON<AgreementData>('/api/apply/agree', data)
           }}

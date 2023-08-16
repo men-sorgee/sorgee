@@ -14,7 +14,7 @@ import {
 import { useFields, useUser } from "hooks";
 import { FieldMap, Member, MemberLevel } from "lib/models";
 import { ApiResult } from "lib/utils";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import {
   Alert,
@@ -30,7 +30,6 @@ import {
   TabPanels,
   Tabs,
   Text,
-  useColorModeValue,
   useDisclosure
 } from "@chakra-ui/react";
 
@@ -286,7 +285,7 @@ const ProfileForm = ({
           profiles are not likely to get you very far. Photos help!
         </Alert>
       )}
-      <Form<ProfileProps>
+      <Form
         onSubmit={mutate}
         defaultValues={defaultValues}
         successMessage="Your profile was updated."

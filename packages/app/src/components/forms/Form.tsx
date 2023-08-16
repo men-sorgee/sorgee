@@ -1,6 +1,6 @@
 import { Loading } from "components";
 import { useWarnIfUnsavedChanges } from "hooks/use-warn-if-unsaved";
-import { ApiError, ApiResult, debouncedPromise } from "lib/utils";
+import { ApiError, debouncedPromise } from "lib/utils";
 import { ReactElement, ReactNode, useCallback, useEffect } from "react";
 import {
   FormProvider,
@@ -18,7 +18,7 @@ export type FormProps<TData = any, TResponse = TData> = {
     context: UseFormReturn<TData>
   ) => ReactElement | ReactNode | ReactNode[]
   autoSave?: boolean
-  onSubmit: (data: TData) => Promise<ApiResult<TResponse>>
+  onSubmit: (data: TData) => Promise<TResponse>
   onSuccess?: (data: TResponse) => void
   onError?: (error: ApiError) => void
 }
@@ -58,39 +58,36 @@ export default function Form<TData = any, TResponse = TData>({
 
   const onSubmitWrapper = useCallback(
     async (data: TData) => {
-      const { data: response, success, error } = await debouncedSubmit(data)
-
-      if (success) {
-        if (successMessage) {
-          toast({
-            title: 'Success',
-            description: successMessage,
-            status: 'success',
-            duration: autoSave ? 1000 : 4000,
-            isClosable: true,
-            onCloseComplete: () => {
-              reset()
-              onSuccess(response)
-            }
-          })
-        } else {
-          reset()
-          onSuccess(response)
-        }
-      } else if (error?.field) {
-        // @ts-ignore
-        setError(error!.field, error.message)
-        onError(error)
-      } else {
-        toast({
-          title: 'Error',
-          description: `Something went wrong ${error.message || error}`,
-          status: 'error',
-          duration: 9000,
-          isClosable: true
+      debouncedSubmit(data)
+        .then((result) => {
+          if (successMessage) {
+            toast({
+              title: 'Success',
+              description: successMessage,
+              status: 'success',
+              duration: autoSave ? 1000 : 4000,
+              isClosable: true,
+              onCloseComplete: () => {
+                reset()
+                onSuccess(result)
+              }
+            })
+          }
+          else {
+            reset()
+            onSuccess(result)
+          }
         })
-        onError(error)
-      }
+        .catch((error) => {
+          toast({
+            title: 'Error',
+            description: `Something went wrong ${error.message || error}`,
+            status: 'error',
+            duration: 9000,
+            isClosable: true
+          })
+          onError(error)
+        })
     },
     [
       autoSave,

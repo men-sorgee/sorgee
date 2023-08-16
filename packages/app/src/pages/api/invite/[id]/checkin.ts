@@ -48,7 +48,7 @@ export default async function InviteAdmin(
       member = await getUser<Member>(member)
 
     await updateInvite(inviteId, { paid, attended: true, amount })
-    if (paid) {
+    if (paid && amount > 0 && !eventUser.guest) {
       if (amount < event.cost)
         throw new Error('Amount paid is less than the cost of the event')
 

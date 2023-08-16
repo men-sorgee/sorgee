@@ -84,7 +84,7 @@ export const MemberNotificationCard = chakra(
       onClose()
       deleteAppNotification(notification.id)
       setDeleted(true)
-    }, [deleteAppNotification, notification.id, onClose, reloadAppNotifications])
+    }, [deleteAppNotification, notification.id, onClose])
 
     const textNew = useColorModeValue('secondary.800', 'secondary.100')
     const textRead = useColorModeValue('text', 'secondary.300')

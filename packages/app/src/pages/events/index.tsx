@@ -35,7 +35,7 @@ import {
 
 export type PageProps = {}
 
-export default function EventsPage({}: PageProps) {
+export default function EventsPage({ }: PageProps) {
   const [tabValue, setTabValue] = useState(0)
   const { member, loading, authorized } = useUser({
     minLevel: MemberLevel.inductee,
@@ -54,6 +54,7 @@ export default function EventsPage({}: PageProps) {
   const onEventsChange = useCallback(() => {
     reload()
   }, [reload])
+
   const canConfirm = member?.rating && member?.rating > 2
 
   return (
@@ -95,17 +96,18 @@ export default function EventsPage({}: PageProps) {
                   eventId={activeInvite.event.id}
                   onChange={onEventsChange}
                 />
-                <ButtonLink
-                  rounded="lg"
-                  w="full"
-                  colorScheme="secondary"
-                  href={`/events/${activeInvite.event.id}/ticket`}
-                  p={6}
-                  flex={1}
-                  mt={4}
-                >
-                  View Ticket
-                </ButtonLink>
+                {activeInvite.rsvp == 'confirmed' && (
+                  <ButtonLink
+                    rounded="lg"
+                    w="full"
+                    colorScheme="secondary"
+                    href={`/events/${activeInvite.event.id}/ticket`}
+                    p={6}
+                    flex={1}
+                    mt={4}
+                  >
+                    View Ticket
+                  </ButtonLink>)}
               </EventCard>
             </Box>
           )}

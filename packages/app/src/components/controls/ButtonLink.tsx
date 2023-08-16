@@ -35,14 +35,16 @@ export const ButtonLink = chakra(
     const bgGradientHover = gradient(colorScheme, 100)
     return (
       <Link
-        as={as ||  NextLink}
+        as={as || NextLink}
         href={href}
         w={w}
         display="block"
+        flex={flex}
         onClick={(e) => {
           if (onClick) return onClick(e)
           return true
         }}
+        replace={replace}
       >
         {(icon && (
           <IconButton
@@ -55,23 +57,26 @@ export const ButtonLink = chakra(
             _hover={{
               bgGradient: bgGradientHover,
             }}
+            w={w}
             {...props}
           />
         )) || (
-          <Button
-            variant="solid"
-            colorScheme={colorScheme}
-            bgGradient={bgGradient}
-            color="white"
-            _hover={{
-              bgGradient: bgGradientHover,
-            }}
-            w={w}
-            {...props}
-          >
-            {children}
-          </Button>
-        )}
+            <Button
+              variant="solid"
+              colorScheme={colorScheme}
+              bgGradient={bgGradient}
+              color={color}
+              title={title}
+
+              _hover={{
+                bgGradient: bgGradientHover,
+              }}
+              w={w}
+              {...props}
+            >
+              {children}
+            </Button>
+          )}
       </Link>
     )
   }

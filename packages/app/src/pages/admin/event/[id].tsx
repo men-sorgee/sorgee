@@ -184,10 +184,10 @@ export default function EventAdmin() {
             )}
           </SimpleGrid>
           <Flex direction={['column', 'row']} gap={2} justify="space-between" w="full">
-            <ButtonLink size={['sm', 'md', 'lg']} href="/admin/scan" w="full">
+            {/**<ButtonLink size={['sm', 'md', 'lg']} href="/admin/scan" w="full">
               Scan
-            </ButtonLink>
-            <Spacer w={[0, 40, 800]} />
+                </ButtonLink>
+            <Spacer w={[0, 40, 800]} />**/}
             <Flex gap={1} w={'full'} justify="stretch">
               <Input
                 type="email"
@@ -322,7 +322,15 @@ const UserList = ({
                 >
                   CHECK-IN
                 </ButtonLink>
-              )}
+              ) || <ButtonLink
+                as='a'
+                variant="solid"
+                title={attended ? name : `Click to view ${name} check-in`}
+                href={`/admin/event/invite/${id}`}
+                size="xs"
+              >
+                  REVIEW
+                </ButtonLink>}
             </Box>
 
             {attended && (

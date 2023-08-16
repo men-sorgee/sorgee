@@ -22,7 +22,7 @@ export type RSVPProps = BoxProps & {
   eventId: string
   canConfirm: boolean
   invite?: EventInvite
-  onChange?: () => void
+  onChange?: (invite: EventInvite) => void
 }
 
 export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
@@ -47,7 +47,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
       if (router.query.result) setResults(router.query.result as string)
       setPaid(invite.paid || invite.paid_at != null)
     }
-  }, [invite, loading, paid, router.query.result])
+  }, [invite, loading, paid, router.query.result, mutate])
 
   const reasonRef = useRef<HTMLTextAreaElement>(null)
 
@@ -64,7 +64,6 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
 
   const cancelRSVP = useCallback(async () => {
     const reason = reasonRef.current.value
-
     if (paid) {
       let {
         data: { paid: didPay, refunded, reason: noRefundReason, continue: shouldContinue },
@@ -76,12 +75,12 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
       if (!shouldContinue) {
         setWorking(false)
         setNonRefundableReason(noRefundReason)
-        return
+        return await invite
       }
     }
-    await mutate({ rsvp: 'cancelled', reason })
     setWorking(false)
-  }, [paid, mutate, refund])
+    return await mutate({ rsvp: 'cancelled', reason })
+  }, [paid, mutate, refund, invite])
 
   const PrePayButton = ({ children = 'Pre-Pay' }) => (
     <>
@@ -155,9 +154,9 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
           setWorking(true)
           return mutate({ rsvp: 'confirmed' })
         }}
-        onSuccess={() => {
+        onSuccess={({ data: i }) => {
           setWorking(false)
-          if (onChange) onChange()
+          if (onChange) onChange(i)
         }}
         onError={() => {
           setWorking(false)
@@ -185,9 +184,9 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
           setWorking(true)
           return mutate({ rsvp: 'maybe' })
         }}
-        onSuccess={() => {
+        onSuccess={({ data: i }) => {
           setWorking(false)
-          if (onChange) onChange()
+          if (onChange) onChange(i)
         }}
         onError={() => {
           setWorking(false)
@@ -216,9 +215,9 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
           setWorking(true)
           return mutate({ rsvp: 'declined' })
         }}
-        onSuccess={() => {
+        onSuccess={({ data: i }) => {
           setWorking(false)
-          if (onChange) onChange()
+          if (onChange) onChange(i)
         }}
         onError={(err) => {
           setWorking(false)
@@ -246,8 +245,9 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
         setWorking(true)
         return cancelRSVP()
       }}
-      onSuccess={() => {
+      onSuccess={(i: EventInvite) => {
         setWorking(false)
+        if (onChange) onChange(i)
       }}
       onError={() => {
         setWorking(false)
@@ -282,12 +282,13 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
     children?: ReactNode | ReactNode[]
     change?: boolean
   }) => (
-    <Box rounded="lg" shadow="inset" bg="bg" color="text" mt={2} p={2}>
-      <Heading as="h4" size="h4" my={1} color="text">
+    <Box mt={4} rounded="lg" shadow="inset" bg="bg" color="text" p={2}
+      borderColor="success.500" border={paid ? '2px solid' : null}>
+      <Heading as="h4" size="h4" my={1} color="text" >
         {heading}
       </Heading>
       {paid && change && (
-        <Text>You pre-paid ${invite?.amount || invite?.event.cost} for this event.</Text>
+        <Text>You pre-paid ${invite?.amount || invite?.event.cost} to guarantee your spot!</Text>
       )}
       {body}
       {nonRefundable && (
@@ -301,7 +302,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
           </Text>
         </Alert>
       )}
-      <Box mt={2}>
+      <Box mt={4} pt={2} borderTop={'3px dotted'}>
         {change && <Text mt={0}>Change of plans?</Text>}
         <Flex
           direction={['column', 'row']}
