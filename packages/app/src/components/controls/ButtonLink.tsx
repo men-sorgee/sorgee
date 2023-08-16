@@ -6,7 +6,8 @@ import {
   chakra,
   IconButton,
   IconButtonProps,
-  Link
+  LinkBox,
+  LinkOverlay
 } from "@chakra-ui/react";
 
 export type ButtonLinkProps = Omit<IconButtonProps, 'aria-label'> & {
@@ -34,18 +35,16 @@ export const ButtonLink = chakra(
     const bgGradient = gradient(colorScheme)
     const bgGradientHover = gradient(colorScheme, 100)
     return (
-      <Link
-        as={as || NextLink}
-        href={href}
+      <LinkBox
         w={w}
-        display="block"
         flex={flex}
         onClick={(e) => {
           if (onClick) return onClick(e)
           return true
         }}
-        replace={replace}
+
       >
+        <LinkOverlay as={as || NextLink} href={href} />
         {(icon && (
           <IconButton
             aria-label={title}
@@ -71,13 +70,13 @@ export const ButtonLink = chakra(
               _hover={{
                 bgGradient: bgGradientHover,
               }}
-              w={w}
+              w='full'
               {...props}
             >
               {children}
             </Button>
           )}
-      </Link>
+      </LinkBox>
     )
   }
 )
