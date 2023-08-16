@@ -2,7 +2,7 @@
 import { Page } from "components";
 import { useUser } from "hooks";
 import { MemberLevel } from "lib/models";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BarcodeScannerComponent from "react-qr-barcode-scanner";
 
 import {
@@ -33,6 +33,10 @@ export default function Scanner() {
     redirectsEnabled: true,
   })
 
+  useEffect(() => {
+    // do not render on the server
+  }, [member])
+
   const onScan = (err: string, result: { getText: () => any }) => {
     if (!err && result) {
       let data = result.getText()
@@ -52,7 +56,7 @@ export default function Scanner() {
     setTimeout(() => setShow(false), 0)
   }
 
-  if (loading || typeof window == 'undefined' || !member) return null
+  if (loading || typeof window == 'undefined' || !member || !window) return null
   return (
     <Page title="Scan">
       <Flex direction="column">
