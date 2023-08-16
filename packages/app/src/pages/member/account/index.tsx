@@ -199,7 +199,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps & { fieldMap: 
               </Text>
             </Box>
           </Alert>
-          <Form<SettingsProp>
+          <Form
             onSubmit={mutate}
             defaultValues={defaultValues}
             successMessage="Your settings were updated."
@@ -303,7 +303,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps & { fieldMap: 
               </Text>
             </Box>
           </Alert>
-          <Form<UserEmailChange, boolean>
+          <Form
             onSubmit={(data) => postJSON<UserEmailChange, boolean>('/api/my/email/change', data)}
             defaultValues={{
               email: member?.email,
@@ -368,17 +368,17 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps & { fieldMap: 
           {(member && member?.membership_type != 'none' && (
             <Plan plan={member.membership_type} interval={member.renewal_type} />
           )) || (
-            <ButtonLink
-              href="/member/subscription"
-              size="lg"
-              mt={4}
-              type="submit"
-              colorScheme="secondary"
-              w={['full', 'auto']}
-            >
-              Choose a Plan
-            </ButtonLink>
-          )}
+              <ButtonLink
+                href="/member/subscription"
+                size="lg"
+                mt={4}
+                type="submit"
+                colorScheme="secondary"
+                w={['full', 'auto']}
+              >
+                Choose a Plan
+              </ButtonLink>
+            )}
         </TabPanel>
         <TabPanel px={0}>
           <Alert px={[4, 4, 6]} gap={2} justifyItems="start" rounded="lg" mb={10} flexDir="column">

@@ -1,10 +1,6 @@
 import { FieldRadioButtons, Form, Page } from "components";
 import { useUser } from "hooks/use-user";
-import {
-  ApplicationStatus,
-  ContactPreferenceType,
-  MemberLevel
-} from "lib/models";
+import { ApplicationStatus, MemberLevel } from "lib/models";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -52,7 +48,7 @@ function Review() {
               How would you like to be contacted?
             </Text>
 
-            <Form<{ contact_preference: ContactPreferenceType }>
+            <Form
               defaultValues={{
                 contact_preference: member?.contact_preference || 'email',
               }}
