@@ -141,6 +141,7 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
             paid: true,
             rsvp: 'confirmed',
             amount,
+            paid_at: paymentData.date_created,
             confirmed_at: new Date().toISOString(),
             payment: payment.id,
           })
@@ -158,7 +159,7 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
         if (payment) {
           await updateUserPayment(payment.id, {
             status: 'refunded',
-            description: `Refunded ${amount} for ${payment.description}`
+            description: `Refunded $${amount} for ${payment.description}`
           })
           if (payment.product_type == 'event' && payment.redeemed_id) {
             await updateInvite(Number(payment.redeemed_id), {
@@ -283,7 +284,7 @@ function extractFromSubscription(subscription: Stripe.Subscription, user: User):
 
 function extractFromCheckout(checkout: Stripe.Checkout.Session): UserPayment {
   const { amount_total: amount, created, currency, metadata, mode, payment_intent } = checkout
-  const { inviteId, eventId, userId } = metadata
+  const { name, inviteId, eventId, userId } = metadata
 
   const type = mode == 'payment' ? 'event' : mode
   let payment: UserPayment = {
@@ -294,7 +295,7 @@ function extractFromCheckout(checkout: Stripe.Checkout.Session): UserPayment {
     redeemed_id: inviteId || userId,
     payment_intent: String(payment_intent),
     product_type: type as any,
-    description: `Brotherhood payment for ${type} ${eventId || userId}`,
+    description: `${name}\nRedeem Type: ${type}`,
     date_created: new Date(created * 1000).toISOString(),
     redeemed: false,
     status: 'collected'

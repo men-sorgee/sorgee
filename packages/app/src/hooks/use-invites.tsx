@@ -67,7 +67,7 @@ export const useInvites = (): InvitesResults => {
       mutate([...invites.filter(i => i.event?.id != eventId), data], false)
       return data
     })
-  }, [invites])
+  }, [invites, mutate])
 
 
   if (invites == null || invites == undefined)

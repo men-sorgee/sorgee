@@ -54,6 +54,8 @@ export default async function InvitePayment(
         })
       }
 
+      const name = `Brotherhood Event: ${new Date(event.datetime).toLocaleDateString()}`
+
       const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [
         {
           quantity: 1,
@@ -61,9 +63,10 @@ export default async function InvitePayment(
             currency: 'usd',
             unit_amount: cost * 100,
             product_data: {
-              name: `Brotherhood Event: ${new Date(event.datetime).toLocaleDateString()}`,
+              name,
               description: event.name,
               metadata: {
+                name,
                 eventId: String(eventId),
                 inviteId: String(id),
                 type: 'event',
@@ -72,6 +75,7 @@ export default async function InvitePayment(
             tax_behavior: 'inclusive',
           },
         },
+
       ]
 
       const session = await stripe.checkout.sessions.create({
@@ -79,9 +83,23 @@ export default async function InvitePayment(
         mode: 'payment',
         line_items,
         metadata: {
+          name,
           userId: member.id,
           inviteId: String(id),
           eventId,
+          type: 'event'
+        },
+        payment_intent_data: {
+          description: name,
+          metadata: {
+            name,
+            userId: member.id,
+            inviteId: String(id),
+            eventId,
+            type: 'event'
+          },
+          receipt_email: member.email,
+          statement_descriptor: 'Brotherhood Event',
         },
         allow_promotion_codes: true,
         cancel_url: `${baseUrl}/events/${String(eventId)}?result=cancelled`,
