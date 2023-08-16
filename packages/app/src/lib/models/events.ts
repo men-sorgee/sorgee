@@ -79,7 +79,7 @@ export type EventUser = {
   paid?: boolean
   paid_at?: string
   confirmed_at?: string
-  receipt: string
+  receipt?: string
   amount?: number
   guest?: boolean
   reason?: string
@@ -87,7 +87,7 @@ export type EventUser = {
   payment?: string | UserPayment
 }
 
-export type EventInvite = EventUser & {
+export type EventInvite = Omit<EventUser, 'users_id' | 'events_id'> & {
   event: GroupEvent
   member: Member
 }

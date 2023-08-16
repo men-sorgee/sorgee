@@ -1,9 +1,9 @@
 'use client'
-import { isAfter, isToday } from 'date-fns'
-import { EventInvite } from 'lib/models'
-import useSWR from 'swr'
+import { isAfter, isToday } from "date-fns";
+import { EventInvite } from "lib/models";
+import useSWR from "swr";
 
-import { useAuthenticated } from './use-authenticated'
+import { useAuthenticated } from "./use-authenticated";
 
 export type InvitesResults = {
   invitations: EventInvite[]
@@ -35,7 +35,7 @@ export const useInvites = (): InvitesResults => {
       upcoming: [],
       past: [],
       loading: true,
-      reload: () => {},
+      reload: () => { },
       activeInvite: null,
     }
 

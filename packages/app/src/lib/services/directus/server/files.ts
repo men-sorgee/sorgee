@@ -138,18 +138,19 @@ export async function uploadFile(
   const formData = new FormData()
   formData.append('folder', folder)
   formData.append('title', title)
-  formData.append('filename', name)
+  formData.append('filename', name || 'photo')
   formData.append('description', description)
   formData.append('mimetype', type)
   formData.append('file', data, {
     ...fileInfo,
-    filename: name,
+    filename: name || 'photo',
     filepath: path,
     contentType: type,
   })
   const file = await adminClient.files.createOne(
     formData,
-    {},
+    {
+    },
     {
       requestOptions: {
         headers: {

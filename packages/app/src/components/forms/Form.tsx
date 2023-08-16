@@ -11,7 +11,7 @@ import {
 
 import { useToast } from "@chakra-ui/react";
 
-type FormProps<TData = any, TResponse = TData> = {
+export type FormProps<TData = any, TResponse = TData> = {
   successMessage?: string
   defaultValues?: Partial<TData> | Promise<Partial<TResponse>>
   children: (
@@ -28,8 +28,8 @@ export default function Form<TData = any, TResponse = TData>({
   defaultValues,
   children,
   onSubmit,
-  onSuccess = () => {},
-  onError = () => {},
+  onSuccess = () => { },
+  onError = () => { },
   autoSave = false
 }: FormProps<TData, TResponse>) {
   const methods = useForm<TData>({
@@ -61,17 +61,22 @@ export default function Form<TData = any, TResponse = TData>({
       const { data: response, success, error } = await debouncedSubmit(data)
 
       if (success) {
-        toast({
-          title: 'Success',
-          description: successMessage,
-          status: 'success',
-          duration: autoSave ? 1000 : 4000,
-          isClosable: true,
-          onCloseComplete: () => {
-            reset()
-            onSuccess(response)
-          }
-        })
+        if (successMessage) {
+          toast({
+            title: 'Success',
+            description: successMessage,
+            status: 'success',
+            duration: autoSave ? 1000 : 4000,
+            isClosable: true,
+            onCloseComplete: () => {
+              reset()
+              onSuccess(response)
+            }
+          })
+        } else {
+          reset()
+          onSuccess(response)
+        }
       } else if (error?.field) {
         // @ts-ignore
         setError(error!.field, error.message)

@@ -53,7 +53,7 @@ export const MessagesContext = createContext<MessagesContextData>({
   delete: async () => {},
   loading: true,
   reload: () => {},
-  mutate: async () => ({}),
+  mutate: () => Promise.resolve<any>(null),
 })
 
 export function MessagesProvider({ children }: { children: ReactNode | ReactNode[] }) {

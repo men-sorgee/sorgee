@@ -14,7 +14,7 @@ export const SWRProvider = ({ children }) => {
         revalidateOnReconnect: true,
         revalidateOnMount: true,
         revalidateIfStale: true,
-        keepPreviousData: true,
+        keepPreviousData: false,
         dedupingInterval: 1000 * 30,
         focusThrottleInterval: 1000 * 10,
       }}

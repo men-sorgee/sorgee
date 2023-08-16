@@ -36,6 +36,15 @@ export async function findUserByCustomer(customer: string) {
 
 export async function addUserPayment(payment: UserPayment) {
   const admin = await getAdminClient()
+  let { data: items } = await admin.items('user_payment').readByQuery({
+    filter: {
+      id: {
+        _eq: payment.payment_intent
+      }
+    }
+  })
+  if (items.length > 0)
+    return await admin.items('user_payment').updateOne(payment.id, payment)
   return await admin.items('user_payment').createOne(payment)
 }
 

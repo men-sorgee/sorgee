@@ -20,6 +20,7 @@ export const ButtonLink = chakra(
   ({
     href,
     children,
+    as,
     colorScheme = 'primary',
     onClick,
     replace = false,
@@ -34,7 +35,7 @@ export const ButtonLink = chakra(
     const bgGradientHover = gradient(colorScheme, 100)
     return (
       <Link
-        as={NextLink}
+        as={as ||  NextLink}
         href={href}
         w={w}
         display="block"

@@ -34,13 +34,13 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
   const [nonRefundable, setNonRefundable] = useState<boolean>(undefined)
   const [nonRefundableReason, setNonRefundableReason] = useState<string>(undefined)
 
-  const { invite, mutate, pay, refund, loading } = useInvite(eventId)
+  const { invite, event, mutate, pay, refund, loading } = useInvite(eventId)
 
   useEffect(() => {
-    if (!loading && invite && showPayButton == undefined) {
-      setShowPayButton(invite.event.online_payments && !invite.paid && invite.paid_at == null)
+    if (!loading && invite && event && showPayButton == undefined) {
+      setShowPayButton(event.online_payments && !invite.paid && invite.paid_at == null)
     }
-  }, [invite, showPayButton, loading, paid])
+  }, [invite, showPayButton, loading, paid, event])
 
   useEffect(() => {
     if (!loading && invite) {
@@ -55,7 +55,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
     const { loadStripe } = await import('@stripe/stripe-js')
     const stripe = await loadStripe(
       process.env.STRIPE_PUBLIC_KEY ||
-        'pk_live_51LoPw1EoEUGL2Bgubxo5vTjGRx0ONP4JHo6A0zVJivv7ToiCBoRnKdmRoCIWFbikTTenBSQZ7xy8wmF0woyx4NBH00MykU8UsN'
+      'pk_live_51LoPw1EoEUGL2Bgubxo5vTjGRx0ONP4JHo6A0zVJivv7ToiCBoRnKdmRoCIWFbikTTenBSQZ7xy8wmF0woyx4NBH00MykU8UsN'
     )
     stripe.redirectToCheckout({
       sessionId: data.id,
@@ -385,12 +385,11 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
           <MaybeRSVPButton />
         </RSVPView>
       )
-    case 'invited':
+
+    case 'not_invited':
       return (
-        <RSVPView heading="You are invited!" change={false}>
-          <ConfirmRSVPButton>Yes, Please!</ConfirmRSVPButton>
-          <MaybeRSVPButton />
-          <DeclineRSVPButton>No Thanks</DeclineRSVPButton>
+        <RSVPView heading="Event Full" change={false}>
+
         </RSVPView>
       )
     default:

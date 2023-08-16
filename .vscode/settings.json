@@ -95,7 +95,7 @@
     "editor.defaultFormatter": "vscode.json-language-features"
   },
   "[typescriptreact]": {
-    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   },
   "eslint.codeActionsOnSave.mode": "problems",
   "importSorter.generalConfiguration.sortOnBeforeSave": true,

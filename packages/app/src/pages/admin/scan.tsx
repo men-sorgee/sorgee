@@ -2,8 +2,8 @@
 import { Page } from "components";
 import { useUser } from "hooks";
 import { MemberLevel } from "lib/models";
-import dynamic from "next/dynamic";
 import { useState } from "react";
+import BarcodeScannerComponent from "react-qr-barcode-scanner";
 
 import {
   AspectRatio,
@@ -20,7 +20,6 @@ import {
 } from "@heroicons/react/24/outline";
 import { BoltIcon as LightningBoltIconSolid } from "@heroicons/react/24/solid";
 
-const BarcodeScannerComponent = dynamic(() => import('react-qr-barcode-scanner'), { ssr: false })
 const BarCodeScanner = BarcodeScannerComponent as any
 
 export default function Scanner() {

@@ -123,102 +123,123 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
     return res.status(200).json({ received: true, user: false })
   }
 
-  // Handle the event payloads accordingly
-  switch (event.type) {
-    case 'checkout.session.completed': {
-      const payment = extractFromCheckout(checkoutSession)
-      await addUserPayment(payment)
-      const { product_type, amount } = payment
-      let inviteId = payment.redeemed_id
-      if (product_type == 'event' && inviteId) {
-        await updateInvite(Number(inviteId), {
-          paid: true,
-          rsvp: 'confirmed',
-          amount,
-          confirmed_at: new Date().toISOString(),
-          payment: payment.id
+  try {
+
+    // Handle the event payloads accordingly
+    switch (event.type) {
+      case 'checkout.session.completed': {
+        const paymentData = extractFromCheckout(checkoutSession)
+
+        const payment = await addUserPayment({
+          ...paymentData,
+          user: user.id,
         })
-      }
-      break
-    }
-    case 'charge.succeeded': {
-      break;
-    }
-    case 'charge.refunded': {
-      const { redeemed_id, payment_intent, amount_refunded } = extractFromCharge(charge)
-      const payment = await findUserPayments(user.id, {
-        payment_intent: String(payment_intent)
-      })
-      if (payment) {
-        await updateUserPayment(payment.id, {
-          status: 'refunded',
-          description: `Refunded ${amount_refunded} for ${payment.description}`
-        })
-        if (payment.product_type == 'event' && redeemed_id) {
-          await updateInvite(Number(redeemed_id), { paid: false, paid_at: null, confirmed_at: null })
+        const { product_type, amount } = payment
+        let inviteId = payment.redeemed_id
+        if (product_type == 'event' && inviteId) {
+          await updateInvite(Number(inviteId), {
+            paid: true,
+            rsvp: 'confirmed',
+            amount,
+            confirmed_at: new Date().toISOString(),
+            payment: payment.id,
+          })
         }
+        break
       }
-      break;
+      case 'charge.succeeded': {
+        break;
+      }
+      case 'charge.refunded': {
+        const { payment_intent, amount } = extractFromCharge(charge)
+        const payment = await findUserPayments(user.id, {
+          payment_intent: String(payment_intent)
+        })
+        if (payment) {
+          await updateUserPayment(payment.id, {
+            status: 'refunded',
+            description: `Refunded ${amount} for ${payment.description}`
+          })
+          if (payment.product_type == 'event' && payment.redeemed_id) {
+            await updateInvite(Number(payment.redeemed_id), {
+              rsvp: 'cancelled',
+              paid: false,
+              paid_at: null,
+              confirmed_at: null,
+              amount: 0
+            })
+          }
+        }
+        break;
+      }
+      case 'customer.created':
+      case 'customer.updated': {
+        if (customer.id && customer.id != user.customer_id)
+          await updateUser(user.id, { customer_id: customer.id })
+        break
+      }
+      case 'customer.deleted': {
+        await updateUser(user.id, {
+          customer_id: null,
+          membership_type: 'none',
+          has_features: [],
+          renewal_type: null,
+        })
+        break
+      }
+
+      case 'customer.subscription.created':
+      case 'customer.subscription.resumed':
+      case 'customer.subscription.updated':
+        {
+          const membershipData = extractFromSubscription(subscription, user)
+          await updateUser(user.id, membershipData)
+          break
+        }
+      case 'customer.subscription.expired':
+        {
+          const { membership_end } = extractFromSubscription(subscription, user)
+          await updateUser(user.id, {
+            has_features: [],
+            membership_type: 'none',
+            renewal_type: null,
+            membership_end
+          })
+          break
+        }
+
+      case 'customer.subscription.deleted':
+        {
+          const { membership_end } = extractFromSubscription(subscription, user)
+          await updateUser(user.id, {
+            has_features: [],
+            membership_type: 'none',
+            renewal_type: null,
+            membership_end
+          })
+          break
+        }
+      case 'customer.subscription.paused':
+        {
+          const { membership_end } = extractFromSubscription(subscription, user)
+          await updateUser(user.id, {
+            has_features: [],
+            membership_type: 'none',
+            renewal_type: null,
+            membership_end
+          })
+          break
+        }
+      default:
+        console.log(`Unhandled event type ${event.type}`)
     }
-    case 'customer.created':
-    case 'customer.updated':
-      await updateUser(user.id, { customer_id: customer.id })
-      break
-
-    case 'customer.deleted':
-      await updateUser(user.id, {
-        customer_id: null,
-        membership_type: 'none',
-        has_features: [],
-        renewal_type: null,
-      })
-      break
-
-    case 'customer.subscription.created':
-    case 'customer.subscription.resumed':
-    case 'customer.subscription.updated':
-
-      const membershipData = extractFromSubscription(subscription, user)
-      await updateUser(user.id, membershipData)
-      break
-
-    case 'customer.subscription.expired':
-      const { membership_start, membership_end } = extractFromSubscription(subscription, user)
-      await updateUser(user.id, {
-        has_features: [],
-        membership_type: 'none',
-        renewal_type: null,
-        membership_start,
-        membership_end,
-      })
-      break
-
-    case 'customer.subscription.deleted':
-      await updateUser(user.id, {
-        has_features: [],
-        membership_type: 'none',
-        renewal_type: null,
-        subscription_id: null,
-        membership_start: null,
-        membership_end: null,
-      })
-      break
-
-    case 'customer.subscription.paused':
-      await updateUser(user.id, {
-        has_features: [],
-        membership_type: 'none',
-        renewal_type: null,
-        membership_start,
-        membership_end,
-      })
-      break
-
-    default:
-      console.log(`Unhandled event type ${event.type}`)
+    // Return a 200 response to acknowledge receipt of the event
+    res.status(200).json({ received: true, user: true })
+  } catch (err) {
+    console.error(err)
+    console.error(err.errors[0].message)
+    res.status(200).json({ received: true, user: true, error: err.message })
   }
-  // Return a 200 response to acknowledge receipt of the event
-  res.status(200).json({ received: true, user: true })
 }
 
 function extractFromSubscription(subscription: Stripe.Subscription, user: User): Pick<Member,
@@ -234,8 +255,8 @@ function extractFromSubscription(subscription: Stripe.Subscription, user: User):
     id: subscription_id,
     customer,
     status,
-    current_period_start,
-    current_period_end,
+    start_date,
+    ended_at,
     items: { data: items },
   } = subscription
   const item = items[0]
@@ -254,48 +275,45 @@ function extractFromSubscription(subscription: Stripe.Subscription, user: User):
     customer_id: customer as string,
     has_features,
     membership_type,
-    membership_start: new Date(current_period_start).toISOString(),
-    membership_end: new Date(current_period_end).toISOString(),
-    renewal_type,
+    membership_start: start_date ? new Date(start_date * 1000).toISOString() : new Date().toISOString(),
+    membership_end: ended_at ? new Date(ended_at * 1000).toISOString() : null,
+    renewal_type
   }
 }
 
 function extractFromCheckout(checkout: Stripe.Checkout.Session): UserPayment {
   const { amount_total: amount, created, currency, metadata, mode, payment_intent } = checkout
-  const { eventId, userId } = metadata
+  const { inviteId, eventId, userId } = metadata
 
   const type = mode == 'payment' ? 'event' : mode
   let payment: UserPayment = {
-    id: String(payment_intent),
     user: userId,
     type: 'stripe',
     amount: amount / 100,
     currency: currency as any,
-    redeemed_id: eventId || userId,
+    redeemed_id: inviteId || userId,
     payment_intent: String(payment_intent),
     product_type: type as any,
     description: `Brotherhood payment for ${type} ${eventId || userId}`,
-    date_created: new Date(created).toISOString(),
+    date_created: new Date(created * 1000).toISOString(),
     redeemed: false,
     status: 'collected'
   }
   return payment
 }
 
-function extractFromCharge(charge: Stripe.Charge) {
-  const { amount, amount_refunded, created, currency, metadata, payment_intent, receipt_url } = charge
+function extractFromCharge(charge: Stripe.Charge): Partial<UserPayment> {
+  const { amount, amount_refunded, created, currency, metadata, payment_intent, receipt_url: receipt } = charge
   const { eventId, userId } = metadata
 
   return {
-    id: String(payment_intent),
     user: userId,
-    amount: amount / 100,
-    amount_refunded: amount_refunded / 100,
+    amount: amount_refunded ? amount_refunded / 100 : amount / 100,
     currency: currency as any,
     redeemed_id: eventId || userId,
     payment_intent: String(payment_intent),
-    date_created: new Date(created).toISOString(),
-    receipt_url
+    date_created: new Date(created * 1000).toISOString(),
+    receipt
   }
 }
 

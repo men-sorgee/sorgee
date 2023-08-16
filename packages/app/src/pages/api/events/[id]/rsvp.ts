@@ -52,8 +52,8 @@ export default async function EventRSVP(
     let invite = {
       member,
       event,
-      rsvp: rsvp || eventUser.rsvp || 'not_invited',
-      reason: reason || eventUser.reason,
+      rsvp: rsvp || eventUser?.rsvp || 'not_invited',
+      reason: reason || eventUser?.reason || '',
       ...eventUser
     }
     return res.status(200).json(ApiResponse<EventInvite>(invite))

@@ -36,7 +36,7 @@ export type ProductView = {
 
 export type PaymentType = 'stripe' | 'cash'
 export type PaymentProductType = 'event' | 'subscription' | 'donation' | 'payment'
-export type PaymentStatusType = 'collected' | 'refunded'
+export type PaymentStatusType = 'collected' | 'refunded' | 'uncaptured'
 export type PaymentCurrencyType = 'usd'
 export type UserPayment = {
   id?: string
@@ -56,3 +56,11 @@ export type UserPayment = {
   date_created?: string
 };
 
+export type PurchasePlanDetails = {
+  user_id: string
+  product_id?: string
+  membership_type?: MembershipNames
+  membership_start?: string
+  membership_end?: string
+  amount: number
+}

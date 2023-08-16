@@ -286,7 +286,7 @@ const UserList = ({
   if (attendees.length == 0) return null
   return (
     <>
-      <Heading as="h3" size="h3" mt={0} title="Reload" onClick={() => reload} cursor="pointer">
+      <Heading as="h3" size="h3" title="Reload" onClick={() => reload} cursor="pointer">
         {title}
       </Heading>
       <SimpleGrid columns={[1, 2, 3]} spacing={4}>
@@ -308,12 +308,13 @@ const UserList = ({
               <Text title={name} mt={0}>
                 {name}
               </Text>
-              <Link title={email} href={`mailto:${email}`} color="text">
+              <Link title={email} href={`mailto:${email}`} color="text" mb={1}>
                 {email}
               </Link>
               <Spacer />
               {!attended && (
                 <ButtonLink
+                  as='a'
                   variant="solid"
                   title={attended ? name : `Click to check ${name} in`}
                   href={`/api/events/${event.id}/checkin?user_id=${user.id}`}
