@@ -186,20 +186,11 @@ export const MemberNotificationCard = chakra(
                   </ButtonLink>
                 )}
 
-                <IconButton
-                  icon={<TrashIcon width={15} />}
-                  title="Delete"
-                  aria-label="Delete"
-                  bgGradient={gradient('red')}
-                  _hover={{ bgGradient: gradient('red', 100) }}
-                  color="white"
+                <Button
                   onClick={(e) => {
                     e.stopPropagation()
-                    return markAsDeleted()
+                    markAsDeleted()
                   }}
-                />
-                <Button
-                  onClick={markAsDeleted}
                   bgGradient={gradient('red')}
                   _hover={{ bgGradient: gradient('red', 100) }}
                 >
