@@ -150,19 +150,19 @@ export const useUser = ({
     if (!redirectsEnabled) return
     if (!loading) {
       let destination = null
-      if (authenticated) {
+      if (authenticated && member) {
         const status = ApplicationStatus[member.application_status]
-        if (status < minAppStatus) 
+        if (status < minAppStatus)
           destination = '/apply/' + member.application_status
-        if (level < minLevel) 
+        if (level < minLevel)
           destination = `/unauthorized?level=${MemberLevel[minLevel]}`
-        if (requiredFeature && !hasFeature(requiredFeature)) 
+        if (requiredFeature && !hasFeature(requiredFeature))
           destination = `/member/subscription?feature=${requiredFeature}`
-          
-        if (destination && router.asPath != destination) 
+
+        if (destination && router.asPath != destination)
           setTimeout(() => {
             window.location.href = destination
-          },100)
+          }, 100)
       } else {
         signIn()
       }

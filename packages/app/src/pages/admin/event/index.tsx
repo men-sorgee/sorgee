@@ -26,7 +26,7 @@ export default function AdminEventList() {
     const users = event.users as EventUser[]
     const attended = users?.filter((m) => m.attended == true).length
     const paid = users?.filter((m) => m.paid == true).length
-    const collected = paid * event.cost
+    const collected = paid * event.cost - (event.expenses || 0)
     return {
       attended,
       paid,
@@ -66,7 +66,7 @@ export default function AdminEventList() {
           <TabPanel p={0}>
             <Heading mb={4}>Past Events</Heading>
             {past.map((event) => (
-              <EventCard key={event.id} event={event} showDescription={false}>
+              <EventCard key={event.id} size="md" event={event} showDescription={false} mb={4}>
                 <ButtonLink my={2} href={`/admin/event/${event.id}`}>
                   View Event
                 </ButtonLink>

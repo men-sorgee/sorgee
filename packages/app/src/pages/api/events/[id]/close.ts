@@ -25,14 +25,16 @@ export default async function Event(
   try {
     withMethods(req, ['GET'])
     await withStaff(req, res)
-    const { id: i } = req.query
+    const { id: i, expenses: e } = req.query
     const id = String(i)
+    const expenses = e ? Number(e) : 0
 
     const event = await getEventDetail(id)
     if (!event) throw new Error('Event not found')
 
     await updateEvent(id, {
       status: 'occurred',
+      expenses
     })
 
     // create event survey

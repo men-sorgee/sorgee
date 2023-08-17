@@ -1,15 +1,15 @@
 'use client'
 
-import { EventDetail, EventStatusType, EventUser } from 'lib/models'
-import { ApiResult, getJSON } from 'lib/utils'
-import { useCallback } from 'react'
-import useSWR from 'swr'
+import { EventDetail, EventStatusType, EventUser } from "lib/models";
+import { ApiResult, getJSON } from "lib/utils";
+import { useCallback } from "react";
+import useSWR from "swr";
 
 export type EventResults = {
   event: EventDetail | null
   error?: any
   loading: boolean
-  closeEvent: () => Promise<ApiResult<EventCloseResult>>
+  closeEvent: (expenses: number) => Promise<ApiResult<EventCloseResult>>
   reload: () => void
 }
 

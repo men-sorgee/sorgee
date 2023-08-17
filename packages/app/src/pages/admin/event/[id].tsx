@@ -24,6 +24,7 @@ import { ArrowBackIcon, CheckCircleIcon, CheckIcon } from "@chakra-ui/icons";
 import {
   Box,
   Flex,
+  FormLabel,
   Heading,
   HStack,
   Input,
@@ -31,6 +32,11 @@ import {
   List,
   ListIcon,
   ListItem,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
   SimpleGrid,
   Spacer,
   Stat,
@@ -92,6 +98,7 @@ export default function EventAdmin() {
   const attendees = event?.attendance?.filter((a) => a.attended).map(mapUser) || []
   const noShows = event?.attendance?.filter((a) => !a.attended && a.rsvp == 'confirmed').map(mapUser) || []
 
+  const expensesRef = useRef<HTMLInputElement>(null)
   return (
     <Page title={'Event Admin'} loading={userLoading || eventLoading}>
       {member && event && (
@@ -100,27 +107,17 @@ export default function EventAdmin() {
           showDescription={false}
           footer={
             <Flex direction={['column', 'column', 'row']} w="full" gap={2} justify="stretch">
-              {event.status == EventStatusType.Scheduled && isPast(new Date(event.datetime)) && (
+              {event.status == EventStatusType.Scheduled && isPast(new Date(event.datetime_end)) && (
                 <ButtonConfirm
                   bg="red.500"
                   color="white"
-                  confirmedAction={closeEvent}
-                  alertTitle="Close"
-                  onSuccess={(success) => {
-                    if (success) {
-                      toast({
-                        title: 'Event Closed',
-                        description:
-                          'The event has been closed. No shows were rated and notified. A survey was created for the event, along with a notification for each of the attendees.',
-                        status: 'success',
-                        duration: 5000,
-                        isClosable: true,
-                      })
-                    }
+                  confirmedAction={() => {
+                    return closeEvent(Number(expensesRef?.current?.value) || 0)
                   }}
-                  successMessage="Event Closed"
+                  alertTitle="Close Event"
+                  successMessage='The event has been closed. No shows were rated and notified. A survey was created for the event, along with a notification for each of the attendees.'
                   failureMessage="Event could not be closed."
-                  buttonText="Close"
+                  buttonText="Close Out Event"
                 >
                   <>
                     <Heading as="h4" size="md" mt={0}>
@@ -145,6 +142,20 @@ export default function EventAdmin() {
                         Create a notification for each no-show.
                       </ListItem>
                     </List>
+                    <Box borderColor="text" my={2}>
+                      <FormLabel>
+                        Expenses:
+                      </FormLabel>
+                      <NumberInput />
+                      <NumberInput name='expenses' placeholder="00.00" ref={expensesRef} defaultValue={60} max={300} clampValueOnBlur={false} step={20}>
+                        <NumberInputField />
+                        <NumberInputStepper>
+                          <NumberIncrementStepper />
+                          <NumberDecrementStepper />
+                        </NumberInputStepper>
+                      </NumberInput>
+                    </Box>
+
                   </>
                 </ButtonConfirm>
               )}
@@ -153,7 +164,7 @@ export default function EventAdmin() {
         >
           {stats && (
             <>
-              <StatGroup gap={4} mb={4}>
+              <StatGroup gap={4} justifyItems='space-between' alignItems="center">
 
                 {stats.invited_count && (
                   <Stat>
@@ -199,45 +210,6 @@ export default function EventAdmin() {
                   </Stat>
                 )}
               </StatGroup>
-
-              {event?.status == EventStatusType.Occurred && (
-                <StatGroup>
-                  {stats.prepaid_count != undefined && (<>
-                    <Stat>
-                      <StatLabel>Collected Online</StatLabel>
-                      <StatNumber>${prePaid}</StatNumber>
-                      <StatHelpText>
-                        ${event?.cost} x {stats.prepaid_count} Online
-                      </StatHelpText>
-                    </Stat>
-                    <Stat>
-                      <StatLabel>&nbsp;</StatLabel>
-                      <StatNumber fontSize="xxx-large">+</StatNumber>
-                    </Stat>
-                  </>)}
-                  <Stat>
-                    <StatLabel>Collected Cash</StatLabel>
-                    <StatNumber>${collected}</StatNumber>
-                    <StatHelpText>
-                      ${event?.cost} x {stats.cash_count} Cash
-                    </StatHelpText>
-                  </Stat>
-                  {stats.prepaid_count != undefined && (<>
-                    <Stat>
-                      <StatLabel>&nbsp;</StatLabel>
-                      <StatNumber fontSize="xxx-large">=</StatNumber>
-
-                    </Stat>
-                  </>)}
-                  <Stat>
-                    <StatLabel>Total</StatLabel>
-                    <StatNumber>${fees}</StatNumber>
-                    <StatHelpText>
-                      ${event?.cost} x {stats.paid_count}
-                    </StatHelpText>
-                  </Stat>
-                </StatGroup>
-              )}
             </>
           )}
           <Flex direction={['column', 'row']} gap={2} justify="space-between" w="full">
@@ -272,25 +244,77 @@ export default function EventAdmin() {
             </Flex>
             }
           </Flex>
-          {event?.status == 'scheduled' && <UserList
-            title="Confirmed"
-            attendees={confirmedAttendees}
-            event={event}
-            reload={reload}
-          />}
-          {event?.status == 'scheduled' && <UserList title="Maybe" attendees={maybeAttendees} event={event} reload={reload} />}
-          {event?.status == 'occurred' && <UserList
-            title="Attended"
-            attendees={attendees}
-            event={event}
-            reload={reload}
-          />}
-          {event?.status == 'occurred' && <UserList
-            title="No Shows"
-            attendees={noShows}
-            event={event}
-            reload={reload}
-          />}
+          <Box my={4} borderY="2px dotted" borderColor="text" pb={8}>
+            {event?.status == 'scheduled' && <UserList
+              title="Confirmed"
+              attendees={confirmedAttendees}
+              event={event}
+              reload={reload}
+            />}
+            {event?.status == 'scheduled' && <UserList title="Maybe" attendees={maybeAttendees} event={event} reload={reload} />}
+            {event?.status == 'occurred' && <UserList
+              title="Attended"
+              attendees={attendees}
+              event={event}
+              reload={reload}
+            />}
+            {event?.status == 'occurred' && <UserList
+              title="No Shows"
+              attendees={noShows}
+              event={event}
+              reload={reload}
+            />}
+          </Box>
+          {event?.status == EventStatusType.Occurred && (
+            <StatGroup justifyItems='space-between' alignItems="center">
+              {stats?.prepaid_count != undefined && (<>
+                <Stat>
+                  <StatLabel>Collected Online</StatLabel>
+                  <StatNumber fontSize="xxx-large">${prePaid}</StatNumber>
+                  <StatHelpText>
+                    ${event?.cost} x {stats?.prepaid_count} Online
+                  </StatHelpText>
+                </Stat>
+                <Stat>
+
+                  <StatNumber fontSize="xxx-large">+</StatNumber>
+                </Stat>
+              </>)}
+              <Stat>
+                <StatLabel>Collected Cash</StatLabel>
+                <StatNumber fontSize="xxx-large">${collected}</StatNumber>
+                <StatHelpText>
+                  ${event?.cost} x {stats?.cash_count} Cash
+                </StatHelpText>
+              </Stat>
+              {event?.expenses && (<>
+                <Stat>
+
+                  <StatNumber fontSize="xxx-large">-</StatNumber>
+
+                </Stat>
+                <Stat>
+                  <StatLabel>Expenses</StatLabel>
+                  <StatNumber fontSize="xxx-large">${event?.expenses || 0}</StatNumber>
+                  <StatHelpText>
+                    Supplies
+                  </StatHelpText>
+                </Stat>
+              </>)}
+              {stats?.prepaid_count != undefined && (<>
+                <Stat>
+                  <StatNumber fontSize="xxx-large">=</StatNumber>
+                </Stat>
+              </>)}
+              <Stat>
+                <StatLabel>Total</StatLabel>
+                <StatNumber fontSize="xxx-large">${fees - (event?.expenses || 0)}</StatNumber>
+                <StatHelpText>
+                  ${event?.cost} x {stats?.paid_count} {event?.expenses && <> - ${event?.expenses} </>}
+                </StatHelpText>
+              </Stat>
+            </StatGroup>
+          )}
         </EventCard>
       )
       }
@@ -360,7 +384,7 @@ const UserList = ({
   if (attendees.length == 0) return null
   return (
     <>
-      <Heading as="h3" size="h3" title="Reload" onClick={() => reload} cursor="pointer">
+      <Heading as="h3" size="h3" title="Reload" mt={4} onClick={() => reload} cursor="pointer">
         {title}
       </Heading>
       <SimpleGrid columns={[1, 2, 3]} spacing={4}>

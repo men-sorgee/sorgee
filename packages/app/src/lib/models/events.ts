@@ -59,6 +59,7 @@ export type GroupEvent = {
   location?: string | Location
   description?: string
   cost: number
+  expenses?: number
   type: string
   invite_only: boolean
   online_payments: boolean
@@ -104,6 +105,7 @@ export type EventStats = {
 
 export type EventDetail = EventInfo & {
   attendance: EventUser[]
+  expenses?: number
   stats: EventStats
   // members: SearchableMember[]
   surveys: Survey[]

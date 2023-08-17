@@ -140,6 +140,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
     invite_only,
     online_payments,
     location,
+    expenses: event.expenses,
     stats: {
       invited_count: attendance.length,
       confirmed_count: attendance.filter((u) => u.rsvp === 'confirmed').length,
