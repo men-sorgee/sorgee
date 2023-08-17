@@ -53,7 +53,7 @@ type Meta = {
 
 export default function Members() {
   const router = useRouter()
-  let { page: p, size: s, sort: o, i, ...query } = router.query
+  let { page: p, size: s, sort: o, id: i, ...query } = router.query
 
   const page = Number(p || '1')
   const size = Number(s || '20')
@@ -61,7 +61,7 @@ export default function Members() {
 
   const [id, setId] = useState(undefined)
   useEffect(() => {
-    if (id == undefined && 1) {
+    if (id == undefined && i) {
       setId(i)
     }
   }, [i, id, setId])
@@ -73,15 +73,22 @@ export default function Members() {
     redirectsEnabled: true,
   })
 
+  const { isOpen, onClose } = useDisclosure({
+    onClose: () => setId(undefined),
+    isOpen: id != undefined,
+  })
+
+
   const setParams = useCallback(
     (q: Partial<MemberSearchQueryParams>) => {
       //let url = `/members?${new URLSearchParams({ page, size, ...q } as any).toString()}`
+      const query = { sort, size, page, ...q }
+      console.dir(query)
       router.push({
-        pathname: '/members',
-        query: { ...query, ...q },
+        query,
       })
     },
-    [query, router]
+    [router, size, page, sort]
   )
 
   const topRef = createRef<HTMLDivElement>()
@@ -99,16 +106,6 @@ export default function Members() {
     direction,
   } = useMemberSearch({ page, size, sort, ...query })
 
-  //useEffect(() => {
-  //  if (!membersLoading && !fieldsLoading) {
-  //    document.querySelector('main')?.scroll({ top: 0, behavior: 'smooth' })
-  //  }
-  //}, [query, fieldsLoading, membersLoading])
-
-  const { isOpen, onClose } = useDisclosure({
-    onClose: () => setId(undefined),
-    isOpen: id != undefined,
-  })
 
   return (
     <Page title={'Men Nearby'} description={''} loading={loading || fieldsLoading} w="full">

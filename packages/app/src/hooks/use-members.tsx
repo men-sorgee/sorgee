@@ -31,26 +31,22 @@ export const useMemberSearch = (
     total: 0,
     filtered: 0,
   })
-  const [key, setKey] = useState<string>(null)
   const [filters, setFilters] = useState<string>(undefined)
 
   useEffect(() => {
-    if (query && filters == undefined) {
-      setFilters(
-        Object.keys(query).length ? `&${new URLSearchParams(query as any).toString()}` : ''
-      )
-    }
-    if (filters != undefined) {
-      setKey(`/api/members?limit=${size}&page=${page}&sort=${sort}${filters}`)
-    }
-  }, [filters, setFilters, query, page, size, sort, key])
+    setFilters(
+      Object.keys(query).length ? `&${new URLSearchParams(query as any).toString()}` : ''
+    )
+  }, [filters, setFilters, query, page, size, sort])
 
   const {
     data: response,
     error,
     isLoading,
     isValidating,
-  } = useSWR<ManyItems<SearchableMember>>(authenticated && !skip ? key : null, {
+  } = useSWR<ManyItems<SearchableMember>>(authenticated && !skip
+    ? `/api/members?limit=${size}&page=${page}&sort=${sort}${filters || ''}`
+    : null, {
     keepPreviousData: false,
     refreshInterval: 0,
     fallbackData: {
@@ -72,7 +68,7 @@ export const useMemberSearch = (
       setPageCount(filter_count ? Math.ceil(filter_count / size) : 0)
       setMembers(response.data as SearchableMember[])
     }
-  }, [key, meta.filtered, response?.data, response?.meta, size])
+  }, [meta.filtered, response?.data, response?.meta, size])
 
   const result = {
     members,
