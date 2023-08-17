@@ -7,23 +7,16 @@ import {
   MemberCard,
   MemberModal,
   Page,
-  RateItem
-} from "components";
-import { isAfter, isToday } from "date-fns";
-import { useEvent, useUser } from "hooks";
-import {
-  EventDetail,
-  EventStats,
-  EventUser,
-  GroupEvent,
-  Member,
-  MemberLevel
-} from "lib/models";
-import NextLink from "next/link";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+  RateItem,
+} from 'components'
+import { isAfter, isToday } from 'date-fns'
+import { useEvent, useUser } from 'hooks'
+import { EventDetail, EventStats, EventUser, GroupEvent, Member, MemberLevel } from 'lib/models'
+import NextLink from 'next/link'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 
-import { ArrowBackIcon } from "@chakra-ui/icons";
+import { ArrowBackIcon } from '@chakra-ui/icons'
 import {
   Alert,
   AlertIcon,
@@ -42,8 +35,8 @@ import {
   StatNumber,
   Text,
   useToast,
-  Wrap
-} from "@chakra-ui/react";
+  Wrap,
+} from '@chakra-ui/react'
 
 export default function EventPage() {
   const router = useRouter()
@@ -64,7 +57,7 @@ export default function EventPage() {
   const [invite, setInvite] = useState<EventUser>(undefined)
   const [memberId, setMemberId] = useState<string>(undefined)
 
-  const { event, loading: eventLoading } = useEvent(eventId)
+  const { event, loading: eventLoading, reload: reloadEvent } = useEvent(eventId)
 
   useEffect(() => {
     if (!eventLoading && event?.stats && stats == undefined) {
@@ -80,7 +73,7 @@ export default function EventPage() {
       })
       setInvite(i)
     }
-  }, [member, event, eventId, eventLoading, invite, member?.events, member?.id, stats])
+  }, [member, event, eventId, eventLoading, invite, member?.events, member?.id, stats, reloadEvent])
 
   const getAttendees = (rsvp: string, filter = (u) => u) => {
     return event?.attendance
@@ -109,7 +102,7 @@ export default function EventPage() {
 
   const canViewAttendees = hasFeature('view_attendees')
 
-  const UserAvatar = ({ id, name, src, paid, guest }) => (
+  const UserAvatar = ({ id, name, src }) => (
     <>
       <Avatar
         key={id}
@@ -231,7 +224,7 @@ export default function EventPage() {
                   />
                 )}
                 {event.status != 'occurred' && (invite || !event?.invite_only) && (
-                  <EventRSVP canConfirm={canConfirm} eventId={eventId} />
+                  <EventRSVP canConfirm={canConfirm} eventId={eventId} onChange={reloadEvent} />
                 )}
               </>
             )}

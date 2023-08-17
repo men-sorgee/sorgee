@@ -2,7 +2,8 @@ import { ButtonConfirm } from "components";
 import { useEffect, useState } from "react";
 
 import { HStack, Icon, IconButtonProps, Tooltip } from "@chakra-ui/react";
-import { StarIcon } from "@heroicons/react/24/solid";
+import { StarIcon as StarOffIcon } from "@heroicons/react/24/outline";
+import { StarIcon as StarOnIcon } from "@heroicons/react/24/solid";
 
 export type RatingControlProps = Omit<IconButtonProps, 'aria-label'> & {
   onRateChange?: (rate: number) => void
@@ -19,7 +20,6 @@ export type RatingControlProps = Omit<IconButtonProps, 'aria-label'> & {
 export const Rating = ({
   value,
   readonly = true,
-  icon = <StarIcon />,
   scale = 5,
   fillColor = 'yellow.300',
   strokeColor = 'yellow.200',
@@ -43,42 +43,39 @@ export const Rating = ({
   const onClick = (index: number) => {
     if (readonly) return
     if (!isNaN(index)) {
-      // allow user to click first icon and set rating to zero if rating is already 1
-      if (rating === 1 && index === 1) {
-        setRating(0)
-        if (onRateChange) onRateChange(0)
-      } else {
-        setRating(index)
-        if (onRateChange) onRateChange(index)
-      }
+      setRating(index)
+      if (onRateChange) onRateChange(index)
     }
   }
 
-  const RatingButton = ({ index, fill }: { index: number; fill: any }) => {
+  const RatingButton = ({ index, fill }: { index: number; fill: boolean }) => {
+    const [on, setOn] = useState(fill)
     return (
       <ButtonConfirm<number>
+        onMouseOver={() => setOn(true)}
+        onMouseOut={() => setOn(fill)}
         as={Icon}
         boxSize={[5, 6, 7, 8, 9]}
-        _hover={{ bg: 'transparent', stroke: 'white' }}
+        _hover={{ stroke: 'white' }}
         aria-label={`Rate ${index}`}
         variant="ghost"
         alertTitle="Rate this item"
-        buttonText=""
+        buttonText="Rate"
         successMessage="Rating sent!"
         confirmedAction={() => {
           onClick(index)
           return index
         }}
         _focus={{ outline: 0 }}
-        icon={icon}
+        icon={on ? <StarOnIcon /> : <StarOffIcon />}
         size="xx-small"
         color={fillColor}
         stroke={strokeColor}
-        fill={fill}
+        fill={fill ? fillColor : null}
         cursor={readonly ? 'default' : 'pointer'}
         {...props}
       >
-        Are you sure you want to rate this item? Members will be sent a notification of your rating.
+        Are you sure you want to go with {index}?
       </ButtonConfirm>
     )
   }

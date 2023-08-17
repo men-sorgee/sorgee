@@ -1,10 +1,10 @@
 import { updateUser } from "lib/services/directus/server/users";
-import { ApiResponse, withMember } from "lib/utils/server";
+import { ApiResponse, ApiResponseType, withMember } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function Location(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse>
+  res: NextApiResponse<ApiResponseType>
 ) {
   try {
     const member = await withMember(req, res)

@@ -11,12 +11,17 @@ import {
   SendGridTemplate,
   sendNotificationEmail
 } from "lib/services/sendgrid/server";
-import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMember,
+  withMethods
+} from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function ShareWithMember(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<UserShare> | ApiResponse>
+  res: NextApiResponse<ApiResponseType<UserShare> | ApiResponseType>
 ) {
   try {
     const method = withMethods(req, ['POST', 'DELETE'])
@@ -46,6 +51,7 @@ export default async function ShareWithMember(
         message: `${myName} shared their private photos!`,
         button_text: 'View Photos',
         button_url: `/member/${me.id}`,
+        icon: 'success'
       })
 
       await sendNotificationEmail(

@@ -1,6 +1,6 @@
 import { Loading } from "components";
 import { useWarnIfUnsavedChanges } from "hooks/use-warn-if-unsaved";
-import { ApiError, ApiResult, debouncedPromise } from "lib/utils";
+import { ApiError, debouncedPromise } from "lib/utils";
 import { ReactElement, ReactNode, useCallback, useEffect } from "react";
 import {
   FormProvider,
@@ -11,14 +11,14 @@ import {
 
 import { useToast } from "@chakra-ui/react";
 
-type FormProps<TData = any, TResponse = TData> = {
+export type FormProps<TData = any, TResponse = TData> = {
   successMessage?: string
   defaultValues?: Partial<TData> | Promise<Partial<TResponse>>
   children: (
     context: UseFormReturn<TData>
   ) => ReactElement | ReactNode | ReactNode[]
   autoSave?: boolean
-  onSubmit: (data: TData) => Promise<ApiResult<TResponse>>
+  onSubmit: (data: TData) => Promise<TResponse>
   onSuccess?: (data: TResponse) => void
   onError?: (error: ApiError) => void
 }
@@ -28,8 +28,8 @@ export default function Form<TData = any, TResponse = TData>({
   defaultValues,
   children,
   onSubmit,
-  onSuccess = () => {},
-  onError = () => {},
+  onSuccess = () => { },
+  onError = () => { },
   autoSave = false
 }: FormProps<TData, TResponse>) {
   const methods = useForm<TData>({
@@ -58,34 +58,36 @@ export default function Form<TData = any, TResponse = TData>({
 
   const onSubmitWrapper = useCallback(
     async (data: TData) => {
-      const { data: response, success, error } = await debouncedSubmit(data)
-
-      if (success) {
-        toast({
-          title: 'Success',
-          description: successMessage,
-          status: 'success',
-          duration: autoSave ? 1000 : 4000,
-          isClosable: true,
-          onCloseComplete: () => {
+      debouncedSubmit(data)
+        .then((result) => {
+          if (successMessage) {
+            toast({
+              title: 'Success',
+              description: successMessage,
+              status: 'success',
+              duration: autoSave ? 1000 : 4000,
+              isClosable: true,
+              onCloseComplete: () => {
+                reset()
+                onSuccess(result)
+              }
+            })
+          }
+          else {
             reset()
-            onSuccess(response)
+            onSuccess(result)
           }
         })
-      } else if (error?.field) {
-        // @ts-ignore
-        setError(error!.field, error.message)
-        onError(error)
-      } else {
-        toast({
-          title: 'Error',
-          description: `Something went wrong ${error.message || error}`,
-          status: 'error',
-          duration: 9000,
-          isClosable: true
+        .catch((error) => {
+          toast({
+            title: 'Error',
+            description: `Something went wrong ${error.message || error}`,
+            status: 'error',
+            duration: 9000,
+            isClosable: true
+          })
+          onError(error)
         })
-        onError(error)
-      }
     },
     [
       autoSave,

@@ -1,4 +1,4 @@
-import { EventDetail, EventUser, Member, MemberLevel } from "lib/models";
+import { EventDetail, EventUser, Member } from "lib/models";
 import {
   addAppNotificationUser,
   addUserNotification,
@@ -10,24 +10,31 @@ import {
   updateEventUsers,
   updateSurvey
 } from "lib/services/directus/server";
-import { ApiResponse, withMethods, withStaff } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMethods,
+  withStaff
+} from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function Event(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<EventDetail | EventUser[]>>
+  res: NextApiResponse<ApiResponseType<EventDetail | EventUser[]>>
 ) {
   try {
     withMethods(req, ['GET'])
     await withStaff(req, res)
-    const { id: i } = req.query
+    const { id: i, expenses: e } = req.query
     const id = String(i)
+    const expenses = e ? Number(e) : 0
 
     const event = await getEventDetail(id)
     if (!event) throw new Error('Event not found')
 
     await updateEvent(id, {
       status: 'occurred',
+      expenses
     })
 
     // create event survey
@@ -46,24 +53,25 @@ export default async function Event(
     await Promise.all(attendees.map(u => addAppNotificationUser(notification.id, u)))
 
 
-    let noShows = (event.attendance.filter(a => a.rsvp == 'confirmed' && a.attended != true) as EventUser[])
+    let noShows = (event.attendance.filter(a => a.rsvp == 'confirmed' && a.attended == null) as EventUser[])
 
-    const ids = noShows.map((n: EventUser) => n.id)
-    const userIds = noShows.map((n: EventUser) => n.users_id as Partial<Member>).map((m: Partial<Member>) => m.id)
+    const noShowInviteIds = noShows.map((n: EventUser) => n.id)
+    const nowShowUserIds = noShows.map((n: EventUser) => n.users_id as Partial<Member>).map((m: Partial<Member>) => m.id)
 
-    await updateEventUsers(ids, {
+    await updateEventUsers(noShowInviteIds, {
       attended: false,
     })
 
-    const ratings = await Promise.all(userIds.map((i) => setUserAverageRating(i)))
+    const ratings = await Promise.all(nowShowUserIds.map((i) => setUserAverageRating(i)))
 
-    await Promise.all(userIds.map((u, i) => {
+    await Promise.all(nowShowUserIds.map((u, i) => {
       let rating = ratings[i]
-      let message = (rating < 5) ? `Your rating decreased to ${rating}` : 'Your rating did not change.'
+      let message = (rating < 5) ? `Your rating was adjusted to ${rating}` : 'Your rating did not change.'
       addUserNotification(u, {
         message: `You were marked as a no-show for ${event.name}. ` + message,
         button_text: 'View Event',
-        button_url: `/events/${event.id}`
+        button_url: `/events/${event.id}`,
+        icon: 'warning'
       })
     }))
 

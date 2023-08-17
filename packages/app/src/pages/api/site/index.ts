@@ -1,9 +1,9 @@
 import { adminBaseUrl } from "lib/config";
 import { Site } from "lib/models";
-import { ApiResponse } from "lib/utils/server";
+import { ApiResponse, ApiResponseType } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function Site(req: NextApiRequest, res: NextApiResponse<ApiResponse<Site>>) {
+export default async function Site(req: NextApiRequest, res: NextApiResponse<ApiResponseType<Site>>) {
   const url = `${adminBaseUrl}/items/site`
 
   const response = await fetch(url)

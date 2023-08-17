@@ -13,7 +13,7 @@ import {
   Text
 } from "@chakra-ui/react";
 
-type Props = BoxProps & {
+export type PageProps = BoxProps & {
   id?: string
   title: string
   loading?: boolean
@@ -37,7 +37,7 @@ export const Page = chakra(
     hideHeader = false,
     full = false,
     ...props
-  }: Props) => {
+  }: PageProps) => {
     const router = useRouter()
 
     const { setMeta } = useMeta()

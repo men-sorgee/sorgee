@@ -148,27 +148,21 @@ export const useUser = ({
 
   useEffect(() => {
     if (!redirectsEnabled) return
-    if (!loading && member?.application_status) {
-      if (authenticated) {
+    if (!loading) {
+      let destination = null
+      if (authenticated && member) {
         const status = ApplicationStatus[member.application_status]
-        if (status < minAppStatus) {
-          const destination = '/apply/' + member.application_status
-          if (router.asPath != destination)
-            router.push(destination, destination).catch(console.error)
-          return
-        }
-        if (level < minLevel) {
-          const destination = `/unauthorized?level=${MemberLevel[minLevel]}`
-          if (router.asPath != destination)
-            router.push(destination, destination).catch(console.error)
-          return
-        }
-        if (requiredFeature && !hasFeature(requiredFeature)) {
-          const destination = `/member/subscription?feature=${requiredFeature}`
-          if (router.asPath != destination)
-            router.push(destination, destination).catch(console.error)
-          return
-        }
+        if (status < minAppStatus)
+          destination = '/apply/' + member.application_status
+        if (level < minLevel)
+          destination = `/unauthorized?level=${MemberLevel[minLevel]}`
+        if (requiredFeature && !hasFeature(requiredFeature))
+          destination = `/member/subscription?feature=${requiredFeature}`
+
+        if (destination && router.asPath != destination)
+          setTimeout(() => {
+            window.location.href = destination
+          }, 100)
       } else {
         signIn()
       }

@@ -15,6 +15,11 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 
 import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
   Alert,
   AlertIcon,
   Box,
@@ -98,11 +103,13 @@ export default function InviteAdmin() {
 
   return (
     <Page title={`Check-in`} description="Invite Admin" loading={loading || inviteLoading}>
-      <Form<FormProps, EventInvite>
+      <Form
         onSubmit={updateInvite}
         onSuccess={() => router.push(`/admin/event/${event?.id}`)}
+        onError={(error) => {
+
+        }}
         defaultValues={defaultValues}
-        successMessage="The invite was successfully updated."
       >
         {({ formState: { isValid, isSubmitting }, watch, register }) => (
           <>
@@ -129,6 +136,7 @@ export default function InviteAdmin() {
                   title="Change Photo"
                   onClick={() => setCamera(true)}
                   cursor="pointer"
+                  mr={2}
                 />
                 <Box>
                   <Heading size={['sm', 'sm', 'md']} textTransform="uppercase" mt={0} mb={2}>
@@ -156,8 +164,10 @@ export default function InviteAdmin() {
                       label="Paid"
                       size="lg"
                       registerOptions={{
-                        required: 'Member must pay',
+                        required: invite?.amount > 0 ? false : 'Member must pay',
                       }}
+                      _disabled={{ opacity: 0.5 }}
+                      isDisabled={invite?.amount > 0}
                     />
                     {watch('paid') && (
                       <FieldNumber
@@ -167,6 +177,8 @@ export default function InviteAdmin() {
                         }}
                         placeholder={event?.cost.toString()}
                         leftAddon="$"
+                        isDisabled={invite?.amount > 0}
+                        _readOnly={{ opacity: 0.5 }}
                       />
                     )}
                   </>
@@ -179,6 +191,7 @@ export default function InviteAdmin() {
                     registerOptions={{
                       required: 'Waiver must be signed',
                     }}
+
                   />
                 )}
               </Flex>
@@ -198,19 +211,19 @@ export default function InviteAdmin() {
                     {invite?.rsvp}
                   </Button>
                 )) || (
-                  <Button
-                    colorScheme={'accent'}
-                    p={8}
-                    hidden={invite?.attended}
-                    size="xl"
-                    onClick={() => {
-                      setCamera(true)
-                    }}
-                    w="full"
-                  >
-                    Take Picture
-                  </Button>
-                )}
+                    <Button
+                      colorScheme={'accent'}
+                      p={8}
+                      hidden={invite?.attended}
+                      size="xl"
+                      onClick={() => {
+                        setCamera(true)
+                      }}
+                      w="full"
+                    >
+                      Take Picture
+                    </Button>
+                  )}
                 {invite?.attended && (
                   <Alert size="xl" status="warning" rounded="lg" shadow="lg" mt={4}>
                     <AlertIcon />
@@ -224,6 +237,39 @@ export default function InviteAdmin() {
           </>
         )}
       </Form>
+      <Accordion allowToggle>
+        <AccordionItem>
+          <AccordionButton>
+            <Box as="span" flex="1" textAlign="center" color="text">
+              More <AccordionIcon />
+            </Box>
+
+          </AccordionButton>
+          <AccordionPanel pb={4}>
+
+            <Heading textAlign='center'>Purchase Membership Plan</Heading>
+
+            <Flex
+              mt={2}
+              direction={['column', 'column', 'row']}
+              alignItems="center"
+              justifyItems="center"
+              display={visible(!camera)}
+              gap={4}
+              w="full"
+              p={4}
+              border="1px solid"
+              borderColor="text"
+              shadow="lg"
+              rounded="lg"
+              my={4}
+            >
+              Coming Soon
+            </Flex>
+
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
       {camera && (
         <Box display={visible(camera)} w="full">
           <PhotoCapture onAccept={takePhoto} facingMode="environment" />
@@ -237,13 +283,13 @@ export default function InviteAdmin() {
           </Text>
         </Alert>
       )}
-      <HStack spacing={4}>
+      <HStack w='full' spacing={4} mx='auto' justifyItems='space-around' alignItems={'center'} textAlign={'center'}>
         <ButtonLink colorScheme="gray" href={'/admin/event/' + event?.id} my={4}>
           Return to Event
         </ButtonLink>
-        <ButtonLink colorScheme="primary" href="/admin/scan" my={4}>
+        {/**<ButtonLink colorScheme="primary" href="/admin/scan" my={4}>
           Scan Another
-        </ButtonLink>
+        </ButtonLink>**/}
       </HStack>
     </Page>
   )

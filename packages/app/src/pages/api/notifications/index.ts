@@ -1,12 +1,17 @@
 import { AppNotification } from "lib/models";
 import { getAppNotifications } from "lib/services/directus/server/notifications";
-import { ApiResponse, withMethods, withUser } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMethods,
+  withUser
+} from "lib/utils/server";
 
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function AppNotifications(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse>
+  res: NextApiResponse<ApiResponseType>
 ) {
   try {
     withMethods(req, ['GET'])

@@ -183,7 +183,7 @@ function ApplyForm({
         We collect this information for verification purposes only. We will not share, show or sell
         this information to anyone.
       </Text>
-      <Form<ApplyFormProps>
+      <Form
         defaultValues={{
           nickname: user?.nickname || user.first_name || '',
           first_name: user?.first_name || '',

@@ -18,6 +18,7 @@ export const AccessDenied = () => {
           onClick={(e) => {
             e.preventDefault()
             signIn()
+            return false
           }}
         >
           Sign in

@@ -1,6 +1,5 @@
 import { authOptions } from "lib/auth/config";
 import { baseUrl } from "lib/config";
-import { EventUser } from "lib/models";
 import {
   findInvite,
   getEvent,
@@ -21,7 +20,7 @@ export default async function InviteRSVP(req: NextApiRequest, res: NextApiRespon
 
     if (!event || event.status !== 'scheduled') return res.redirect(baseUrl + '/events')
 
-    const invite = (await findInvite(event_id as string, user_id as string)) as EventUser
+    const invite = await findInvite(event_id as string, user_id as string)
 
     let success = false
     if (invite != null) {

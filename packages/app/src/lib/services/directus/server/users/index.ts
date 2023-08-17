@@ -11,8 +11,7 @@ import {
   User,
   UserEmailEvent,
   UserFields,
-  UserType,
-  UserView
+  UserType
 } from "lib/models";
 
 import { FieldFilter } from "@directus/sdk";
@@ -213,11 +212,12 @@ export async function getUserStats(start: string): Promise<{
 
 
 
+export * from './billing';
+export * from './blocks';
+export * from './buddies';
+export * from './invites';
+export * from './likes';
+export * from './ratings';
+export * from './shares';
+export * from './views';
 
-export * from './invites'
-export * from './buddies'
-export * from './shares'
-export * from './likes'
-export * from './blocks'
-export * from './ratings'
-export * from './views'

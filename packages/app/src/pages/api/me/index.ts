@@ -1,11 +1,16 @@
 import { Member, memberFields, User } from "lib/models";
 import { getUser, updateUser } from "lib/services/directus/server/users";
-import { ApiResponse, withMethods, withUser } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMethods,
+  withUser
+} from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function CurrentMember(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<Member> | ApiResponse>
+  res: NextApiResponse<ApiResponseType<Member> | ApiResponseType>
 ) {
   try {
     const method = withMethods(req, ['GET', 'POST'])

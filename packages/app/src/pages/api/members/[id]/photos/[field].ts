@@ -14,12 +14,17 @@ import {
 } from "lib/services/directus/server";
 import { getUser, updateUser } from "lib/services/directus/server/users";
 import { addUserPhoto } from "lib/services/directus/server/users/photos";
-import { ApiResponse, withMethods, withUser } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMethods,
+  withUser
+} from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function MemberImage(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<Applicant> | ApiResponse>
+  res: NextApiResponse<ApiResponseType<Applicant> | ApiResponseType>
 ) {
   try {
     const method = withMethods(req, ['POST', 'DELETE', 'GET'])

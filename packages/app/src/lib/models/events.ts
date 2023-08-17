@@ -1,4 +1,4 @@
-import { DirectusFile } from "lib/models";
+import { DirectusFile, UserPayment } from "lib/models";
 
 import { Rating, Survey } from "./surveys";
 import { Member, User, UserType } from "./users";
@@ -59,6 +59,7 @@ export type GroupEvent = {
   location?: string | Location
   description?: string
   cost: number
+  expenses?: number
   type: string
   invite_only: boolean
   online_payments: boolean
@@ -69,7 +70,7 @@ export type GroupEvent = {
 }
 
 export type EventUser = {
-  id: number
+  id?: number
   events_id: string | GroupEvent
   users_id: string | Member
   engagement?: unknown
@@ -79,25 +80,17 @@ export type EventUser = {
   paid?: boolean
   paid_at?: string
   confirmed_at?: string
+  receipt?: string
   amount?: number
   guest?: boolean
   reason?: string
   attendance?: string
+  payment?: string | UserPayment
 }
 
-export type EventInvite = {
-  id?: number
+export type EventInvite = Omit<EventUser, 'users_id' | 'events_id'> & {
   event: GroupEvent
   member: Member
-  attended: boolean
-  rsvp: InviteRSVPType
-  paid: boolean
-  paid_at?: string
-  confirmed_at?: string
-  amount: number
-  guest: boolean
-  reason: string
-  attendance?: string
 }
 
 export type EventStats = {
@@ -106,10 +99,13 @@ export type EventStats = {
   maybe_count: number
   attended_count: number
   paid_count: number
+  prepaid_count: number
+  cash_count: number
 }
 
 export type EventDetail = EventInfo & {
   attendance: EventUser[]
+  expenses?: number
   stats: EventStats
   // members: SearchableMember[]
   surveys: Survey[]

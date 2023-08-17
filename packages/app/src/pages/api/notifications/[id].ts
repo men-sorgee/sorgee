@@ -1,15 +1,19 @@
-import { AppNotificationStatusType } from "lib/models";
 import {
   getAppNotificationUser,
   updateAppNotificationUser
 } from "lib/services/directus/server";
-import { ApiResponse, withMethods, withUser } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMethods,
+  withUser
+} from "lib/utils/server";
 
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function getUserNotifications(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse>
+  res: NextApiResponse<ApiResponseType>
 ) {
   try {
     const method = withMethods(req, ['GET', 'DELETE', 'PUT'])

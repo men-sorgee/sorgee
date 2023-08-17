@@ -5,6 +5,7 @@ import { Button, ButtonProps, chakra, Spinner } from "@chakra-ui/react";
 
 export type BusyButtonProps = ButtonProps & {
   onClick?: () => Promise<any> | any
+  onResult: (result: any) => void
   timeout?: number
   children: React.ReactNode | React.ReactNode[]
 }
@@ -12,6 +13,7 @@ export type BusyButtonProps = ButtonProps & {
 export const ButtonBusy = chakra(
   ({
     onClick,
+    onResult = () => null,
     timeout = 5000,
     disabled,
     children,
@@ -37,9 +39,10 @@ export const ButtonBusy = chakra(
           }, timeout)
         })
       setBusy(true)
-      clickPromise().catch(() => {
-        setBusy(false)
-      })
+      clickPromise().then(onResult)
+        .finally(() => {
+          setBusy(false)
+        })
 
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [busy, onClick, timeout, setBusy])

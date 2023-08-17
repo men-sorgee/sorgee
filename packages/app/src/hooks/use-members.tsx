@@ -1,8 +1,12 @@
+'use client'
+
 import { MemberSearchQueryParams, SearchableMember } from "lib/models";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
 import { ManyItems } from "@directus/sdk";
+
+import { useAuthenticated } from "./use-authenticated";
 
 export type MemberSearchContext = {
   members: SearchableMember[]
@@ -16,28 +20,37 @@ export type MemberSearchContext = {
   error: string
 }
 
-function useMemberSearch({
-  page = 1,
-  size = 20,
-  sort = '-last_login',
-  ...query
-}: Partial<MemberSearchQueryParams>) {
+export const useMemberSearch = (
+  { page = 1, size = 20, sort = '-last_login', ...query }: Partial<MemberSearchQueryParams>,
+  skip: boolean = false
+) => {
+  const authenticated = useAuthenticated()
   const [members, setMembers] = useState<SearchableMember[]>([])
   const [pageCount, setPageCount] = useState<number>(0)
   const [meta, setMeta] = useState({
     total: 0,
     filtered: 0,
   })
+  const [key, setKey] = useState<string>(null)
+  const [filters, setFilters] = useState<string>(undefined)
 
-  const filters = Object.keys(query) ? `&${new URLSearchParams(query as any).toString()}` : ''
-  const key = `/api/members?limit=${size}&page=${page}&sort=${sort}${filters}`
+  useEffect(() => {
+    if (query && filters == undefined) {
+      setFilters(
+        Object.keys(query).length ? `&${new URLSearchParams(query as any).toString()}` : ''
+      )
+    }
+    if (filters != undefined) {
+      setKey(`/api/members?limit=${size}&page=${page}&sort=${sort}${filters}`)
+    }
+  }, [filters, setFilters, query, page, size, sort, key])
 
   const {
     data: response,
     error,
     isLoading,
     isValidating,
-  } = useSWR<ManyItems<SearchableMember>>(key, {
+  } = useSWR<ManyItems<SearchableMember>>(authenticated && !skip ? key : null, {
     keepPreviousData: false,
     refreshInterval: 0,
     fallbackData: {
@@ -74,11 +87,5 @@ function useMemberSearch({
     error,
   }
 
-  console.dir({
-    result,
-  })
-
   return result
 }
-
-export { useMemberSearch }

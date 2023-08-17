@@ -5,10 +5,8 @@ import {
   GroupEvent,
   InviteRSVPType,
   Location,
-  SearchableMember,
   searchableMemberFields,
-  Survey,
-  UserType
+  Survey
 } from "lib/models";
 
 import { getAdminClient } from "./";
@@ -22,20 +20,6 @@ function count<T>(ary: T[], classifier: (i: T) => any) {
   }, {})
 }
 
-export async function listUpcomingEvents(user_type: UserType): Promise<GroupEvent[]> {
-  const client = await getAdminClient()
-  const { data } = await client.items('events').readByQuery({
-    filter: {
-      status: { _in: ['scheduled', 'planned'] },
-      datetime: { _gte: '$NOW(-7 days)' },
-      invite_only: { _eq: false },
-    },
-    fields: ['*.*'],
-    sort: ['datetime'],
-  })
-  if (user_type == 'staff') return data as unknown as GroupEvent[]
-  return (data?.filter((e) => e.visibility?.includes(user_type)) || []) as unknown as GroupEvent[]
-}
 
 export async function listAdminEvents(): Promise<GroupEvent[]> {
   const client = await getAdminClient()
@@ -156,12 +140,15 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
     invite_only,
     online_payments,
     location,
+    expenses: event.expenses,
     stats: {
       invited_count: attendance.length,
       confirmed_count: attendance.filter((u) => u.rsvp === 'confirmed').length,
       maybe_count: attendance.filter((u) => u.rsvp === 'maybe').length,
       attended_count: attendance.filter((u) => u.attended).length,
       paid_count: attendance.filter((u) => u.paid).length,
+      prepaid_count: attendance.filter((u) => u.payment).length,
+      cash_count: attendance.filter((u) => u.paid).length - attendance.filter((u) => u.payment).length
     },
     //members: attendance.map((u) => u.users_id as any as SearchableMember),
     surveys: survey as Survey[]

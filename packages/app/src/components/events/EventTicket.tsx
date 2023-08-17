@@ -10,8 +10,6 @@ export type EventTicketProps = {
 }
 
 export const EventTicket = ({ member, event, responsive = false }: EventTicketProps) => {
-  const [showTicket, setShowTicket] = useState<boolean>(undefined)
-
   if (!member || !event) return null
 
   const checkinUrl = `/api/events/${event?.id}/checkin?user_id=${member?.id}`

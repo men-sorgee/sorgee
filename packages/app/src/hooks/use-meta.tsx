@@ -1,14 +1,10 @@
-import { MetaProps } from "lib/models";
-import { useRouter } from "next/router";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState
-} from "react";
+'use client'
 
-import { useSite } from "./use-site";
+import { MetaProps } from 'lib/models'
+import { useRouter } from 'next/router'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+
+import { useSite } from './use-site'
 
 export type MetaContextData = MetaProps & {
   siteTitle: string
@@ -52,12 +48,10 @@ export function MetaContextProvider(props: any) {
     metaBlob,
     image,
     setMeta,
-    setMetaBlob
+    setMetaBlob,
   }
 
-  return (
-    <MetaContext.Provider value={meta}>{props.children}</MetaContext.Provider>
-  )
+  return <MetaContext.Provider value={meta}>{props.children}</MetaContext.Provider>
 }
 
 export const useMeta = () => useContext(MetaContext)

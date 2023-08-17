@@ -1,11 +1,16 @@
 import { Rating } from "lib/models";
 import { getRatings } from "lib/services/directus/server/users";
-import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMember,
+  withMethods
+} from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function MemberRatings(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<Rating[]>>
+  res: NextApiResponse<ApiResponseType<Rating[]>>
 ) {
   try {
     withMethods(req, ['GET'])

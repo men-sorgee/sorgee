@@ -4,28 +4,34 @@ import {
   getUserNotification,
   markUserNotificationRead
 } from "lib/services/directus/server";
-import { ApiResponse, withMethods, withUser } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMethods,
+  withUser
+} from "lib/utils/server";
 
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next';
 export default async function PutUserNotification(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse>
+  res: NextApiResponse<ApiResponseType>
 ) {
   try {
     const method = withMethods(req, ['PUT', 'DELETE'])
     const member = await withUser(req, res)
     const { id } = req.query
+    const notificationId = String(id)
 
-    const notification = await getUserNotification(id as string)
+    const notification = await getUserNotification(notificationId)
     if (notification.user_id !== member.id)
       throw new Error('Unauthorized')
 
     switch (method) {
       case 'PUT':
-        await markUserNotificationRead(id as string)
+        await markUserNotificationRead(notificationId)
         break
       case 'DELETE':
-        await deleteUserNotification(id as string)
+        await deleteUserNotification(notificationId)
         break
     }
 

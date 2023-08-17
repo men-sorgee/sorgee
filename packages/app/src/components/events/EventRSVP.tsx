@@ -1,8 +1,9 @@
-import { ButtonConfirm } from "components";
+import { ButtonBusy, ButtonConfirm } from "components";
 import { useInvite } from "hooks";
 import { EventInvite } from "lib/models";
-import { ApiResult, getJSON } from "lib/utils";
-import { useSearchParams } from "next/navigation";
+import { PurchaseResponse } from "lib/services/stripe/client";
+import { ApiResult } from "lib/utils";
+import { useRouter } from "next/router";
 import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
 import {
@@ -21,29 +22,32 @@ export type RSVPProps = BoxProps & {
   eventId: string
   canConfirm: boolean
   invite?: EventInvite
-  onChange?: () => void
+  onChange?: (invite: EventInvite) => void
 }
 
-export type PurchaseResponse = {
-  id: string
-  amount: number
-}
-
-export const EventRSVP = ({ eventId, invite: eventUser, canConfirm, onChange }: RSVPProps) => {
-  const params = useSearchParams()
+export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
+  const router = useRouter()
   const [working, setWorking] = useState(false)
   const [showPayButton, setShowPayButton] = useState<boolean>(undefined)
-  const [paid, setPaid] = useState<boolean>(params.get('success') == 'true' || undefined)
-  const { invite, mutate, loading } = useInvite(eventId, eventUser)
+  const [results, setResults] = useState<string>(undefined)
+  const [paid, setPaid] = useState<boolean>(undefined)
+  const [nonRefundable, setNonRefundable] = useState<boolean>(undefined)
+  const [nonRefundableReason, setNonRefundableReason] = useState<string>(undefined)
+
+  const { invite, event, mutate, pay, refund, loading } = useInvite(eventId)
 
   useEffect(() => {
-    if (!loading && invite && showPayButton == undefined) {
-      setShowPayButton(invite.event.online_payments)
+    if (!loading && invite && event && showPayButton == undefined) {
+      setShowPayButton(event.online_payments && !invite.paid && invite.paid_at == null)
     }
-    if (!loading && invite && paid == undefined) {
-      setPaid(invite.paid || invite.guest)
+  }, [invite, showPayButton, loading, paid, event])
+
+  useEffect(() => {
+    if (!loading && invite) {
+      if (router.query.result) setResults(router.query.result as string)
+      setPaid(invite.paid || invite.paid_at != null)
     }
-  }, [invite, showPayButton, loading, paid, eventUser])
+  }, [invite, loading, paid, router.query.result, mutate])
 
   const reasonRef = useRef<HTMLTextAreaElement>(null)
 
@@ -51,12 +55,32 @@ export const EventRSVP = ({ eventId, invite: eventUser, canConfirm, onChange }: 
     const { loadStripe } = await import('@stripe/stripe-js')
     const stripe = await loadStripe(
       process.env.STRIPE_PUBLIC_KEY ||
-        'pk_live_51LoPw1EoEUGL2Bgubxo5vTjGRx0ONP4JHo6A0zVJivv7ToiCBoRnKdmRoCIWFbikTTenBSQZ7xy8wmF0woyx4NBH00MykU8UsN'
+      'pk_live_51LoPw1EoEUGL2Bgubxo5vTjGRx0ONP4JHo6A0zVJivv7ToiCBoRnKdmRoCIWFbikTTenBSQZ7xy8wmF0woyx4NBH00MykU8UsN'
     )
     stripe.redirectToCheckout({
       sessionId: data.id,
     })
   }, [])
+
+  const cancelRSVP = useCallback(async () => {
+    const reason = reasonRef.current.value
+    if (paid) {
+      let {
+        data: { paid: didPay, refunded, reason: noRefundReason, continue: shouldContinue },
+      } = await refund(reason || 'Cancelled through website.')
+      if (didPay && !refunded) {
+        setNonRefundable(true)
+        setNonRefundableReason(noRefundReason)
+      }
+      if (!shouldContinue) {
+        setWorking(false)
+        setNonRefundableReason(noRefundReason)
+        return await invite
+      }
+    }
+    setWorking(false)
+    return await mutate({ rsvp: 'cancelled', reason })
+  }, [paid, mutate, refund, invite])
 
   const PrePayButton = ({ children = 'Pre-Pay' }) => (
     <>
@@ -67,16 +91,14 @@ export const EventRSVP = ({ eventId, invite: eventUser, canConfirm, onChange }: 
           buttonText={children}
           confirmedAction={() => {
             setWorking(true)
-            return mutate({ paid: true })
-              .then(({ data }) => data)
-              .then((i: EventInvite) => getJSON<PurchaseResponse>(`/api/stripe/event/${i.id}`))
+            return mutate({ paid_at: new Date().toISOString() }).then(() => pay())
           }}
           onSuccess={({ data }) => completePurchase(data)}
           colorScheme="accent"
           w={['full', 'full', 'auto']}
           title="Guarantee your spot at this event and leave your cash at home. Pay now for less hassle later."
         >
-          You will be charged for this event today, confirming your place at the event.
+          You will be charged for this event today, guaranteeing your place at the event.
         </ButtonConfirm>
       )}
     </>
@@ -93,11 +115,14 @@ export const EventRSVP = ({ eventId, invite: eventUser, canConfirm, onChange }: 
           successMessage="Your RSVP has been registered."
           confirmedAction={() => {
             setWorking(true)
-            return mutate({ rsvp: 'confirmed', paid: true })
-              .then(({ data }) => data)
-              .then((i: EventInvite) => getJSON<PurchaseResponse>(`/api/stripe/event/${i.id}`))
+            return mutate({ rsvp: 'confirmed', paid_at: new Date().toISOString() }).then(() =>
+              pay()
+            )
           }}
           onSuccess={({ data }) => completePurchase(data)}
+          onError={() => {
+            setWorking(false)
+          }}
           colorScheme="accent"
           w={['full', 'full', 'auto']}
           title="Guarantee your spot at this event by paying for your spot now."
@@ -125,10 +150,16 @@ export const EventRSVP = ({ eventId, invite: eventUser, canConfirm, onChange }: 
         buttonText={children}
         failureMessage="Unable to confirm."
         successMessage="Your RSVP has been registered."
-        confirmedAction={() => mutate({ rsvp: 'confirmed' })}
-        onSuccess={() => {
+        confirmedAction={() => {
+          setWorking(true)
+          return mutate({ rsvp: 'confirmed' })
+        }}
+        onSuccess={({ data: i }) => {
           setWorking(false)
-          if (onChange) onChange()
+          if (onChange) onChange(i)
+        }}
+        onError={() => {
+          setWorking(false)
         }}
         colorScheme="accent"
         w={['full', 'full', 'auto']}
@@ -141,78 +172,86 @@ export const EventRSVP = ({ eventId, invite: eventUser, canConfirm, onChange }: 
       </ButtonConfirm>
     )
 
-  const MaybeRSVPButton = ({ children = 'Maybe' }) => (
-    <ButtonConfirm
-      flex={1}
-      alertTitle="Event RSVP"
-      buttonText={children}
-      failureMessage="Unable to RSVP."
-      successMessage="Your RSVP has been registered."
-      confirmedAction={() => mutate({ rsvp: 'maybe' })}
-      onSuccess={() => {
-        setWorking(false)
-        if (onChange) onChange()
-      }}
-      colorScheme="secondary"
-      w={['full', 'full', 'auto']}
-    >
-      <Text>
-        <strong>
-          Only confirmed attendees will be sent the event details on the day of the event.
-        </strong>{' '}
-        Be sure to update your RSVP as soon as you are sure if you can attend or not.
-      </Text>
-    </ButtonConfirm>
-  )
+  const MaybeRSVPButton = ({ children = 'Maybe' }) =>
+    !paid && (
+      <ButtonConfirm
+        flex={1}
+        alertTitle="Event RSVP"
+        buttonText={children}
+        failureMessage="Unable to RSVP."
+        successMessage="Your RSVP has been registered."
+        confirmedAction={() => {
+          setWorking(true)
+          return mutate({ rsvp: 'maybe' })
+        }}
+        onSuccess={({ data: i }) => {
+          setWorking(false)
+          if (onChange) onChange(i)
+        }}
+        onError={() => {
+          setWorking(false)
+        }}
+        colorScheme="secondary"
+        w={['full', 'full', 'auto']}
+      >
+        <Text>
+          <strong>
+            Only confirmed attendees will be sent the event details on the day of the event.
+          </strong>{' '}
+          Be sure to update your RSVP as soon as you are sure if you can attend or not.
+        </Text>
+      </ButtonConfirm>
+    )
 
-  const DeclineRSVPButton = ({ children = 'Cannot Go' }) => (
-    <ButtonConfirm
-      flex={1}
-      alertTitle="Event RSVP"
-      buttonText={children}
-      failureMessage="Unable to RSVP."
-      successMessage="This invitation has been declined. It will not show anymore."
-      confirmedAction={() => mutate({ rsvp: 'declined' })}
-      onSuccess={() => {
-        setWorking(false)
-        if (onChange) onChange()
-      }}
-      colorScheme="black"
-      w={['full', 'full', 'auto']}
-    >
-      <Text>
-        <strong>
-          Declined events will be hidden from your calendar and you will not be able to see them.
-        </strong>
-        Are you sure you want to decline this event?
-      </Text>
-    </ButtonConfirm>
-  )
+  const DeclineRSVPButton = ({ children = 'Not Interested' }) =>
+    !paid && (
+      <ButtonBusy
+        onClick={() => {
+          setWorking(true)
+          return mutate({ rsvp: 'declined' })
+        }}
+        onResult={() => {
+          setWorking(false)
+        }}
+        flex={1}
+        colorScheme="black"
+        w={['full', 'full', 'auto']}
+      >{children}
+      </ButtonBusy>
+    )
 
-  const CancelRSVPButton = ({ important = false, children = 'Cannot Go' }) => (
+  const CancelRSVPButton = ({ children = 'Cannot Go' }) => (
     <ButtonConfirm
       flex={1}
       alertTitle="Event RSVP"
       buttonText={children}
       failureMessage="Unable to cancel."
       successMessage="Your RSVP has been cancelled."
-      confirmedAction={() => mutate({ rsvp: 'cancelled', reason: reasonRef.current.value })}
-      onSuccess={() => {
+      confirmedAction={() => {
+        setWorking(true)
+        return cancelRSVP()
+      }}
+      onSuccess={(i: EventInvite) => {
         setWorking(false)
-        if (onChange) onChange()
+        if (onChange) onChange(i)
+      }}
+      onError={() => {
+        setWorking(false)
       }}
       focusRef={reasonRef}
-      colorScheme="blackAlpha"
+      colorScheme="red"
       w={['full', 'full', 'auto']}
     >
       <>
         <Text>
           Are you sure you want to cancel your RSVP? If so, please provide a reason and click the
           button below.
-          {invite?.paid && (
-            <strong>There are no refunds if you are within 24 hours of the event-start.</strong>
-          )}
         </Text>
+        {paid && (
+          <Text>
+            <strong>There are no refunds if you are within 24 hours of the event-start.</strong>
+          </Text>
+        )}
         <Textarea mt={4} ref={reasonRef} placeholder="Reason..." w="full" required />
       </>
     </ButtonConfirm>
@@ -224,21 +263,36 @@ export const EventRSVP = ({ eventId, invite: eventUser, canConfirm, onChange }: 
     children,
     change = true,
   }: {
-    heading: ReactNode | ReactNode[]
+    heading?: ReactNode | ReactNode[]
     body?: ReactNode | ReactNode[]
-    children: ReactNode | ReactNode[]
+    children?: ReactNode | ReactNode[]
     change?: boolean
   }) => (
-    <Box rounded="lg" shadow="inset" bg="bg" color="text" mt={2} p={2}>
-      <Heading as="h4" size="h4" my={1} color="text">
+    <Box mt={4} rounded="lg" shadow="inset" bg="bg" color="text" p={2}
+      borderColor="success.500" border={paid ? '2px solid' : null}>
+      <Heading as="h4" size="h4" mt={0} color="text" >
         {heading}
       </Heading>
+      {paid && change && (
+        <Text>You pre-paid ${invite?.amount || invite?.event.cost} to guarantee your spot!</Text>
+      )}
       {body}
-      <Box mt={2}>
-        {change && <Text mt={0}>Change of plans?</Text>}
+      {nonRefundable && (
+        <Alert rounded="lg" status="warning" my={2}>
+          <AlertIcon />
+          <Text>
+            <strong>
+              Your cancellation occurred within 24 hours of the event start time. You may not be
+              refunded as the host already purchased supplies.
+            </strong>
+          </Text>
+        </Alert>
+      )}
+      {children != undefined && <Box mt={4} pt={2}>
+        {change && <Text py={2} borderTop={'3px dotted'}>Change of plans?</Text>}
         <Flex
           direction={['column', 'row']}
-          mt={4}
+
           w="full"
           align="center"
           justify="stretch"
@@ -246,7 +300,7 @@ export const EventRSVP = ({ eventId, invite: eventUser, canConfirm, onChange }: 
         >
           {children}
         </Flex>
-      </Box>
+      </Box>}
     </Box>
   )
 
@@ -256,7 +310,7 @@ export const EventRSVP = ({ eventId, invite: eventUser, canConfirm, onChange }: 
   if (invite?.event.status == 'planned') {
     return (
       <>
-        <Heading>This event is tentatively planned, depending on interest.</Heading>
+        <Text fontSize="lg" my={2}>This event is tentatively planned, depending on interest.</Text>
         <RSVPView heading="Are you interested?!" change={false}>
           <MaybeRSVPButton>Yes</MaybeRSVPButton>
           <DeclineRSVPButton>No</DeclineRSVPButton>
@@ -265,21 +319,26 @@ export const EventRSVP = ({ eventId, invite: eventUser, canConfirm, onChange }: 
     )
   }
 
+  if (results == 'success')
+    return (
+      <RSVPView
+        change={false}
+        heading="You purchase just guaranteed a spot at this event!"
+        body={<Text>Your payment of ${invite?.event.cost} was successful.</Text>}
+      />
+    )
+
   switch (rsvp) {
     case 'confirmed':
-      if (paid) {
-        return (
-          <RSVPView heading="You are guaranteed a spot at this event.">
-            <CancelRSVPButton>Cancel Reservation</CancelRSVPButton>
-          </RSVPView>
-        )
-      }
       return (
         <>
-          <RSVPView heading="You have a first-come, first-serve reservation.">
+          <RSVPView
+            heading="You are confirmed for this event."
+            body={!paid && <Text>You reservation is not pre-paid. If we reach capacity, entrance will be first-come/first-serve.</Text>}
+          >
             <PayButton>Pre-Pay</PayButton>
             <MaybeRSVPButton>May Not Attend</MaybeRSVPButton>
-            <CancelRSVPButton important>Cannot Attend</CancelRSVPButton>
+            <CancelRSVPButton>Cannot Attend</CancelRSVPButton>
           </RSVPView>
         </>
       )
@@ -301,18 +360,30 @@ export const EventRSVP = ({ eventId, invite: eventUser, canConfirm, onChange }: 
             }
           >
             <ConfirmRSVPButton>Can Attend</ConfirmRSVPButton>
-            <CancelRSVPButton>Not Interested</CancelRSVPButton>
+            <DeclineRSVPButton>Not Interested</DeclineRSVPButton>
           </RSVPView>
         </>
       )
-    case 'cancelled':
+
     case 'declined':
       return (
-        <RSVPView heading="You are not attending.">
+        <RSVPView heading="You declined this event.">
           <ConfirmRSVPButton>Can Attend</ConfirmRSVPButton>
-
-          <PayButton />
           <MaybeRSVPButton />
+        </RSVPView>
+      )
+    case 'cancelled':
+      return (
+        <RSVPView heading="You cancelled your RSVP.">
+          <ConfirmRSVPButton>Can Attend</ConfirmRSVPButton>
+          <MaybeRSVPButton />
+        </RSVPView>
+      )
+
+    case 'not_invited':
+      return (
+        <RSVPView heading="Event On Hold" change={false}>
+
         </RSVPView>
       )
     default:
@@ -320,9 +391,8 @@ export const EventRSVP = ({ eventId, invite: eventUser, canConfirm, onChange }: 
         <>
           <RSVPView heading="You are invited!" change={false}>
             <ConfirmRSVPButton>Can Attend</ConfirmRSVPButton>
-            <PayButton>Pre-Pay</PayButton>
-            <MaybeRSVPButton />
-            <DeclineRSVPButton />
+            <MaybeRSVPButton></MaybeRSVPButton>
+            <DeclineRSVPButton>Not Interested</DeclineRSVPButton>
           </RSVPView>
         </>
       )

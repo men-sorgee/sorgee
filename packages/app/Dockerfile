@@ -19,7 +19,7 @@ ENV ADMIN_TOKEN=${ADMIN_TOKEN}
 RUN yarn run build
 
 # Production image, copy all the files and run next
-FROM node:18-alpine AS runner
+FROM node:18.16.0-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV production

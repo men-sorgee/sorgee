@@ -6,10 +6,10 @@ import {
   MemberShare,
   Page
 } from "components";
-import { formatDistanceToNow, set } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 import { useMessages, useUser } from "hooks";
 import { userImageId } from "lib/config";
-import { ChatMessage, Member, MemberLevel, Message } from "lib/models";
+import { ChatMessage, MemberLevel, Message } from "lib/models";
 import { getAssetUrl, postJSON } from "lib/utils";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
@@ -33,15 +33,16 @@ import {
 } from "@chatscope/chat-ui-kit-react";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
-const MessagesStyles = dynamic(
-  () => import('components/controls/MessagesStyles'),
-  { ssr: false }
-)
-
 export default function ChatPage({ id }: { id?: string }) {
+  const Style = useMemo<any>(() => {
+    return dynamic(() => import('components/controls/MessagesStyles'), {
+      ssr: false,
+    }) as any
+  }, [])
+
   const { member, loading } = useUser({
     minLevel: MemberLevel.pledge,
-    redirectsEnabled: true
+    redirectsEnabled: true,
   })
   const [socket, setSocket] = useState<Socket>(undefined)
   const {
@@ -51,7 +52,7 @@ export default function ChatPage({ id }: { id?: string }) {
     mutate,
     activeId,
     setActiveId,
-    delete: d
+    delete: d,
   } = useMessages()
   const router = useRouter()
 
@@ -98,17 +99,17 @@ export default function ChatPage({ id }: { id?: string }) {
         display: 'flex',
         flexBasis: 'auto',
         width: '100%',
-        maxWidth: '100%'
+        maxWidth: '100%',
       })
       setConversationContentStyle({
-        display: 'flex'
+        display: 'flex',
       })
       setConversationAvatarStyle({
         marginRight: '1em',
-        cursor: 'pointer'
+        cursor: 'pointer',
       })
       setChatContainerStyle({
-        display: 'none'
+        display: 'none',
       })
     } else {
       setSidebarStyle({})
@@ -125,7 +126,7 @@ export default function ChatPage({ id }: { id?: string }) {
     setChatContainerStyle,
     activeId,
     setActiveId,
-    conversations
+    conversations,
   ])
 
   const audioRef = useRef<HTMLAudioElement>(null)
@@ -133,9 +134,8 @@ export default function ChatPage({ id }: { id?: string }) {
   const messagesSeen = useCallback(() => {
     if (
       activeConversation &&
-      activeConversation.messages.filter(
-        (m) => m.direction == 'incoming' && m.status == 'new'
-      ).length > 0
+      activeConversation.messages.filter((m) => m.direction == 'incoming' && m.status == 'new')
+        .length > 0
     ) {
       markAsRead(
         activeConversation.messages
@@ -153,8 +153,8 @@ export default function ChatPage({ id }: { id?: string }) {
           ...messages,
           {
             ...message,
-            direction: 'incoming'
-          }
+            direction: 'incoming',
+          },
         ])
         setTimeout(() => {
           messagesSeen()
@@ -170,7 +170,7 @@ export default function ChatPage({ id }: { id?: string }) {
     })
     let socket = io({
       path: '/api/socket.io',
-      addTrailingSlash: false
+      addTrailingSlash: false,
     })
     socket.on('connect', () => {
       socket.emit('join', member?.id)
@@ -202,7 +202,7 @@ export default function ChatPage({ id }: { id?: string }) {
     if (socket) {
       socket.emit('user-typing', {
         to: activeId,
-        from: member?.id
+        from: member?.id,
       })
     }
   }, [activeId, member?.id, socket])
@@ -237,8 +237,8 @@ export default function ChatPage({ id }: { id?: string }) {
         nickname: member?.nickname,
         picture: member?.picture as string,
         last_login: member?.last_login,
-        presence: member?.presence
-      }
+        presence: member?.presence,
+      },
     })
   }
   const [inputValue, setInputValue] = useState('')
@@ -265,7 +265,7 @@ export default function ChatPage({ id }: { id?: string }) {
         nickname: member?.nickname,
         picture: member?.picture as string,
         last_login: member?.last_login,
-        presence: member?.presence
+        presence: member?.presence,
       }
       setMessages([
         ...messages,
@@ -275,15 +275,15 @@ export default function ChatPage({ id }: { id?: string }) {
           image,
           timestamp,
           direction: 'outgoing',
-          user
-        } as ChatMessage
+          user,
+        } as ChatMessage,
       ])
       postJSON<Message>('/api/my/messages', {
         body,
         image,
         type,
         to: activeId,
-        from: member?.id
+        from: member?.id,
       } as Message).then(({ data }) => {
         const { type, body, image, date_created } = data
         socket.emit('send-message', activeId, {
@@ -291,7 +291,7 @@ export default function ChatPage({ id }: { id?: string }) {
           body,
           image,
           user,
-          timestamp: new Date(date_created).toISOString()
+          timestamp: new Date(date_created).toISOString(),
         })
       })
     },
@@ -303,7 +303,7 @@ export default function ChatPage({ id }: { id?: string }) {
       member?.picture,
       member?.presence,
       messages,
-      socket
+      socket,
     ]
   )
 
@@ -315,15 +315,29 @@ export default function ChatPage({ id }: { id?: string }) {
     }
   }, [activeConversation, conversations, setActiveId])
 
+  const UserAvatar = useMemo(
+    () =>
+      activeConversation && (
+        <Avatar
+          key={activeConversation.user.id}
+          id={id}
+          src={getAssetUrl(activeConversation.user.picture || userImageId)}
+          name={activeConversation.user.nickname}
+          status={activeConversation.user.presence == 'online' ? 'available' : 'unavailable'}
+          style={{
+            ...conversationAvatarStyle,
+            cursor: 'pointer',
+          }}
+          active={activeConversation.user.presence == 'online'}
+          onClick={() => onOpen()}
+        />
+      ),
+
+    [activeConversation, conversationAvatarStyle, id, onOpen]
+  )
   return (
-    <Page
-      title="Brother Chat"
-      loading={loading}
-      hideHeader
-      full
-      position="relative"
-    >
-      <MessagesStyles />
+    <Page title="Brother Chat" loading={loading} hideHeader full position="relative" bg="gray.500">
+      <Style />
       <audio ref={audioRef} src="/sounds/click.mp3" preload="auto" />
 
       <MainContainer responsive className="bg">
@@ -335,11 +349,9 @@ export default function ChatPage({ id }: { id?: string }) {
                 id,
                 user: { nickname, picture, presence },
                 newMessageCount,
-                messages
+                messages,
               } = c
-              const lastMessage = messages.length
-                ? messages[messages.length - 1]
-                : null
+              const lastMessage = messages.length ? messages[messages.length - 1] : null
               const lastMessageDate = lastMessage
                 ? formatDistanceToNow(lastMessage?.timestamp as Date) + ' ago'
                 : 'now'
@@ -351,9 +363,7 @@ export default function ChatPage({ id }: { id?: string }) {
                   onClick={() => {
                     handleConversationClick(id)
                   }}
-                  lastActivityTime={
-                    lastMessageDate ? lastMessageDate : 'Just now'
-                  }
+                  lastActivityTime={lastMessageDate ? lastMessageDate : 'Just now'}
                   unreadDot={newMessageCount > 0}
                 >
                   <Avatar
@@ -379,25 +389,7 @@ export default function ChatPage({ id }: { id?: string }) {
           >
             <ConversationHeader>
               <ConversationHeader.Back onClick={handleBackClick} />
-              <Avatar
-                key={activeConversation.user.id}
-                id={id}
-                src={getAssetUrl(
-                  activeConversation.user.picture || userImageId
-                )}
-                name={activeConversation.user.nickname}
-                status={
-                  activeConversation.user.presence == 'online'
-                    ? 'available'
-                    : 'unavailable'
-                }
-                style={{
-                  ...conversationAvatarStyle,
-                  cursor: 'pointer'
-                }}
-                active={activeConversation.user.presence == 'online'}
-                onClick={() => onOpen()}
-              />
+              {UserAvatar}
               <ConversationHeader.Content
                 userName={activeConversation.user.nickname}
                 style={conversationContentStyle}
@@ -410,10 +402,7 @@ export default function ChatPage({ id }: { id?: string }) {
               </ConversationHeader.Actions>
             </ConversationHeader>
 
-            <MessageList
-              scrollBehavior="auto"
-              typingIndicator={typingIndicator}
-            >
+            <MessageList scrollBehavior="auto" typingIndicator={typingIndicator}>
               {activeId &&
                 messages.map((m, i) => (
                   <MessageGroup key={i} direction={m.direction}>
@@ -423,13 +412,13 @@ export default function ChatPage({ id }: { id?: string }) {
                           type: m.type,
                           payload: decodeHtml(m.body),
                           direction: m.direction,
-                          position: 'single'
+                          position: 'single',
                         }}
                       >
                         {m.direction == 'outgoing' && (
                           <MessageCtrl.Header
                             style={{
-                              flexDirection: 'row-reverse'
+                              flexDirection: 'row-reverse',
                             }}
                             itemType={m.type}
                           >
@@ -447,7 +436,7 @@ export default function ChatPage({ id }: { id?: string }) {
                               opacity={0.2}
                               _hover={{
                                 bg: 'secondary.500',
-                                opacity: 1
+                                opacity: 1,
                               }}
                             />
                           </MessageCtrl.Header>
@@ -456,36 +445,21 @@ export default function ChatPage({ id }: { id?: string }) {
                         <MessageCtrl.Footer
                           style={{
                             display: 'block',
-                            textAlign:
-                              m.direction == 'outgoing' ? 'right' : 'left'
+                            textAlign: m.direction == 'outgoing' ? 'right' : 'left',
                           }}
                           itemType={m.type}
                         >
-                          <Flex
-                            color="text"
-                            justify="space-between"
-                            align="center"
-                            gap={2}
-                            pt={1}
-                          >
-                            {m.status == 'read' &&
-                              m.direction == 'outgoing' && (
-                                <HStack align="center" spacing={0}>
-                                  <CheckIcon
-                                    fill={'white'}
-                                    width={11}
-                                    height={11}
-                                    title="Read"
-                                  />
-                                  <small>read</small>
-                                </HStack>
-                              )}
+                          <Flex color="text" justify="space-between" align="center" gap={2} pt={1}>
+                            {m.status == 'read' && m.direction == 'outgoing' && (
+                              <HStack align="center" spacing={0}>
+                                <CheckIcon fill={'white'} width={11} height={11} title="Read" />
+                                <small>read</small>
+                              </HStack>
+                            )}
 
                             <small title={m.timestamp.toISOString()}>
                               sent{' '}
-                              {formatDistanceToNow(
-                                (m.timestamp as Date) || new Date()
-                              ) + ' ago'}
+                              {formatDistanceToNow((m.timestamp as Date) || new Date()) + ' ago'}
                             </small>
                           </Flex>
                         </MessageCtrl.Footer>
@@ -498,7 +472,7 @@ export default function ChatPage({ id }: { id?: string }) {
 
             <MessageInput
               style={{
-                marginBlock: '1rem'
+                marginBlock: '1rem',
               }}
               attachButton={false}
               onAttachClick={() => {
@@ -521,12 +495,7 @@ export default function ChatPage({ id }: { id?: string }) {
         onChange={handleFileChange}
         style={{ display: 'none' }}
       />
-      <MemberModal
-        memberId={activeId}
-        isOpen={isOpen}
-        onClose={onClose}
-        size="lg"
-      />
+      <MemberModal memberId={activeId} isOpen={isOpen} onClose={onClose} size="lg" />
     </Page>
   )
 }

@@ -5,7 +5,7 @@ import {
   updateAppNotificationUser,
   updateEmailEvent
 } from "lib/services/db/server";
-import { ApiResponse } from "lib/utils/server";
+import { ApiResponse, ApiResponseType } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 import { v4 as uuidv4 } from "uuid";
 
@@ -27,7 +27,7 @@ type SendGridEvent = {
 
 
 
-export default async function HandleEvents(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
+export default async function HandleEvents(req: NextApiRequest, res: NextApiResponse<ApiResponseType>) {
   const emailMap = new Map<string, string>()
   const statesWeCareAbout = ['delivered', 'open', 'click']
   try {

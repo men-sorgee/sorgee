@@ -7,12 +7,17 @@ import {
   getUser,
   updateUser
 } from "lib/services/directus/server";
-import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMember,
+  withMethods
+} from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function VouchForMember(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<UserBuddy> | ApiResponse>
+  res: NextApiResponse<ApiResponseType<UserBuddy> | ApiResponseType>
 ) {
   try {
     const method = withMethods(req, ['POST', 'GET', 'DELETE'])
@@ -54,6 +59,7 @@ export default async function VouchForMember(
           message: `You have been vouched for by ${me.nickname}!`,
           button_text: 'View Profile',
           button_url: `/member/${me.id}`,
+          icon: 'success'
         })
 
         return res.status(200).json(

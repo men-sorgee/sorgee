@@ -1,10 +1,7 @@
 import { baseUrl } from "lib/config";
 import { NextPageContext } from "next";
 import dynamic from "next/dynamic";
-
-const QrCode = dynamic<any>(() => import('react-qrcode-svg'), {
-  ssr: false
-})
+import { ReactNode } from "react";
 
 interface Props {
   url: string
@@ -17,8 +14,12 @@ export async function getServerSideProps(context: NextPageContext) {
 }
 
 export default function QRPage({ url }: Props) {
+  const QrCode = dynamic<ReactNode>(() => import('react-qrcode-svg'), {
+    ssr: false,
+  })
+  const QR = QrCode as any
   return (
-    <QrCode
+    <QR
       bgColor="url(#gradientFill)"
       style={{ height: 'auto', maxWidth: '800px', width: '100%' }}
       data={url}
@@ -29,6 +30,6 @@ export default function QRPage({ url }: Props) {
         <stop offset="0%" stopColor="#f857a6" />
         <stop offset="100%" stopColor="#ff5858" />
       </linearGradient>
-    </QrCode>
+    </QR>
   )
 }

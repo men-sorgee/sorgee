@@ -1,11 +1,16 @@
 import { EventInvite, GroupEvent, Member } from "lib/models";
 import { getInvite } from "lib/services/directus/server";
-import { ApiResponse, withMethods, withStaff } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMethods,
+  withStaff
+} from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function InviteAdmin(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<EventInvite> | null>
+  res: NextApiResponse<ApiResponseType<EventInvite> | null>
 ) {
   try {
     withMethods(req, ['GET'])

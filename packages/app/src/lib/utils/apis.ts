@@ -1,5 +1,10 @@
 import { pruneUndefined } from "./";
 
+export type ApiResponseType<T = object | any | never> = {
+  error: ApiError
+  data: T
+}
+
 export type ApiResult<T = any> = {
   success: boolean
   data?: T
@@ -37,10 +42,9 @@ export async function putJSON<T = never | any, R = DefaultTo<null, T>>(
 
 
 export async function deleteJSON<T = never | any, R = DefaultTo<null, T>>(
-  url: string,
-  data?: T
+  url: string
 ): Promise<ApiResult<R>> {
-  return await fetchJSON<T, R>(url, data, 'DELETE')
+  return await fetchJSON<T, R>(url, undefined, 'DELETE')
 }
 
 export async function fetchJSON<T = object | any, R = DefaultTo<null, T>>(
@@ -51,10 +55,11 @@ export async function fetchJSON<T = object | any, R = DefaultTo<null, T>>(
     'Content-Type': 'application/json',
   }
 ): Promise<ApiResult<R>> {
+  const body = data ? Buffer.from(JSON.stringify(pruneUndefined(data))) : undefined
   const response = await fetch(url, {
     method,
     headers,
-    body: data ? Buffer.from(JSON.stringify(pruneUndefined(data))) : undefined,
+    body
   })
   const { ok: success } = response
   try {

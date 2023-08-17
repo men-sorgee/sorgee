@@ -82,6 +82,7 @@ export const Plan = ({ plan, interval }: Params) => {
             bg="secondary.500"
             color="white"
             bottom={4}
+            title="Update Plan"
             _hover={{ bg: 'accent.500' }}
           >
             Update Plan

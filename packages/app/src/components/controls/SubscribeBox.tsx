@@ -28,7 +28,7 @@ export const SubscribeBox = chakra(({ ...props }: BoxProps) => {
         Drop your email and what to call ya. We&apos;ll reach out when we&apos;re opened up.
       </Text>
 
-      <Form<SubscriptionData>
+      <Form
         onSubmit={(data) => postJSON<SubscriptionData>('/api/subscribe', data)}
         onSuccess={() => setSubscribed(true)}
         successMessage="Successfully subscribed to our newsletter"

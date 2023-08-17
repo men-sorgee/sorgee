@@ -6,12 +6,7 @@ import {
   Page,
   Pager
 } from "components";
-import {
-  FieldCheckbox,
-  FieldCheckboxes,
-  FieldInput,
-  Form
-} from "components/forms";
+import { FieldCheckbox, FieldCheckboxes, FieldInput } from "components/forms";
 import { useFields, useMemberSearch, useUser } from "hooks";
 import {
   FieldMap,
@@ -151,13 +146,13 @@ export default function Members() {
               onClick={() => setParams({ sort: `-${sortTerm}`, page: 1 })}
             />
           )) || (
-            <IconButton
-              aria-label="Ascending"
-              title="Sorted by descending. Click to sort by ascending"
-              icon={<ArrowUpIcon height={20} />}
-              onClick={() => setParams({ sort: sortTerm, page: 1 })}
-            />
-          )}
+              <IconButton
+                aria-label="Ascending"
+                title="Sorted by descending. Click to sort by ascending"
+                icon={<ArrowUpIcon height={20} />}
+                onClick={() => setParams({ sort: sortTerm, page: 1 })}
+              />
+            )}
           <Select
             value={sortTerm}
             onChange={(e) => {

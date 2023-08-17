@@ -15,6 +15,9 @@ export async function getMessages(user_id: string) {
       status: {
         _neq: 'archived',
       },
+      date_created: {
+        _gt: '$NOW(-30d)',
+      },
       _or: [
         {
           to: {

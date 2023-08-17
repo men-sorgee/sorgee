@@ -1,6 +1,6 @@
 import { MemberAlertCard } from "components";
 import { useUserNotifications } from "hooks";
-import { Member, UserNotification } from "lib/models";
+import { Member, MemberAlert } from "lib/models";
 import { useCallback, useEffect, useState } from "react";
 
 import { useToast } from "@chakra-ui/react";
@@ -9,10 +9,10 @@ interface Props {
   member: Member
 }
 
-const MemberNotifications = ({ member }: Props) => {
+const MemberAlerts = ({ member }: Props) => {
   const toast = useToast()
 
-  const [activeNotification, setActiveNotification] = useState<UserNotification>(undefined)
+  const [activeNotification, setActiveNotification] = useState<MemberAlert>(undefined)
 
   const { notifications, hasNewNotifications, deleteNotification, markAsRead } =
     useUserNotifications()
@@ -80,4 +80,5 @@ const MemberNotifications = ({ member }: Props) => {
   return <></>
 }
 
-export { MemberNotifications as UserNotifications }
+export { MemberAlerts as UserNotifications };
+

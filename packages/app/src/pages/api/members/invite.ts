@@ -1,9 +1,14 @@
 import { InviteLink } from "lib/models";
 import { createUser, findUser, updateUser } from "lib/services/directus/server";
-import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMember,
+  withMethods
+} from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
-async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
+async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponseType>) {
   try {
     withMethods(req, ['POST'])
     const member = await withMember(req, res)

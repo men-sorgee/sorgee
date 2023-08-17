@@ -1,6 +1,5 @@
-import { Applicant, ApplicationStatus, DirectusFile } from "lib/models";
+import { Applicant, DirectusFile } from "lib/models";
 import {
-  deleteFile,
   getFileInfo,
   updateUser,
   uploadFile,
@@ -11,10 +10,15 @@ import {
   SendGridTemplate,
   sendNotificationEmail
 } from "lib/services/sendgrid/server";
-import { ApiResponse, withApplicant, withMethods } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withApplicant,
+  withMethods
+} from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
-async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponse<Applicant>>) {
+async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponseType<Applicant>>) {
   try {
     withMethods(req, ['POST'])
 

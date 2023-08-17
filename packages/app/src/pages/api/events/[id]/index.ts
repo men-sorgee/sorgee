@@ -1,11 +1,16 @@
 import { EventDetail, EventUser, Member, MemberLevel } from "lib/models";
 import { getEventDetail } from "lib/services/directus/server";
-import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMember,
+  withMethods
+} from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function Event(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<EventDetail | EventUser[]>>
+  res: NextApiResponse<ApiResponseType<EventDetail | EventUser[]>>
 ) {
   try {
     withMethods(req, ['GET'])

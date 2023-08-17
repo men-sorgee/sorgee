@@ -2,6 +2,7 @@ import {
   BillingEvent,
   EventUser,
   GroupEvent,
+  MemberAlert,
   Message,
   Notification,
   NotificationUser,
@@ -23,7 +24,6 @@ import {
   UserEmailEvent,
   UserFile,
   UserLike,
-  UserNotification,
   UserPayment,
   UserPhoto,
   UserSession,
@@ -156,7 +156,7 @@ export type DirectusTypes = {
   location: Location
   notifications: Notification
   notifications_users: NotificationUser
-  user_notification: UserNotification
+  user_notification: MemberAlert
   page: Page
   promos: Promo
   page_content: PageContent

@@ -36,16 +36,28 @@ export async function findUserByCustomer(customer: string) {
 
 export async function addUserPayment(payment: UserPayment) {
   const admin = await getAdminClient()
+  let { data: items } = await admin.items('user_payment').readByQuery({
+    filter: {
+      id: {
+        _eq: payment.payment_intent
+      }
+    }
+  })
+  if (items.length > 0)
+    return await admin.items('user_payment').updateOne(payment.id, payment)
   return await admin.items('user_payment').createOne(payment)
 }
 
 
 
-export async function findUserPayments(user_id: string, by?: {
-  type?: PaymentType,
-  product_type?: PaymentProductType,
-  status?: PaymentStatusType
-}) {
+export async function findUserPayments(
+  user_id: string, by?: {
+    type?: PaymentType,
+    product_type?: PaymentProductType,
+    status?: PaymentStatusType
+    payment_intent?: string
+    redeemed_id?: string
+  }) {
   const admin = await getAdminClient()
   const filter = {
     user: { _eq: user_id },
@@ -53,6 +65,8 @@ export async function findUserPayments(user_id: string, by?: {
   if (by?.type) filter['type'] = { _eq: by.type }
   if (by?.product_type) filter['product_type'] = { _eq: by.product_type }
   if (by?.status) filter['status'] = { _eq: by.status }
+  if (by?.payment_intent) filter['payment_intent'] = { _eq: by.payment_intent }
+  if (by?.redeemed_id) filter['redeemed_id'] = { _eq: by.redeemed_id }
 
   const { data } = await admin.items('user_payment').readByQuery({
     filter,

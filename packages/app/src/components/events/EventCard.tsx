@@ -4,8 +4,8 @@ import { Markdown } from "components";
 import { differenceInDays, isAfter, isFuture, isToday } from "date-fns";
 import { GroupEvent, Location } from "lib/models";
 import { getEventDate } from "lib/utils";
+import dynamic from "next/dynamic";
 import { ReactNode, useEffect, useState } from "react";
-import Countdown from "react-countdown";
 
 import {
   Card,
@@ -29,6 +29,11 @@ import {
   useColorModeValue
 } from "@chakra-ui/react";
 import { MapPinIcon } from "@heroicons/react/24/solid";
+
+const Countdown = dynamic(() => import("react-countdown"), {
+  ssr: false
+});
+
 
 export type EventCardProps = CardProps & {
   showDescription?: boolean
@@ -58,6 +63,7 @@ export const EventCard = ({
   padding,
   ...props
 }: EventCardProps) => {
+
   const [viewLocation, setViewLocation] = useState<boolean>(undefined)
   const [eventStartDate, setEventStartDate] = useState<{
     day: string
@@ -78,6 +84,7 @@ export const EventCard = ({
     time: string
   }>()
   const [date, setDate] = useState<Date>(undefined)
+
 
   const renderer = ({ days, hours, minutes, seconds, completed }) => {
     if (completed) return isToday(date) ? <h4>Event has started!</h4> : null
@@ -312,12 +319,12 @@ export const EventCard = ({
                   location={
                     viewLocation
                       ? [
-                          location?.street,
-                          location?.unit,
-                          location?.city,
-                          location?.state,
-                          location?.zip,
-                        ].join(' ')
+                        location?.street,
+                        location?.unit,
+                        location?.city,
+                        location?.state,
+                        location?.zip,
+                      ].join(' ')
                       : ''
                   }
                   timeZone="America/Denver"
@@ -334,7 +341,7 @@ export const EventCard = ({
           {(event.status == 'planned' && (
             <Text as="em">* This is date is subject to change.</Text>
           )) ||
-            (event.status == 'scheduled' && date && isFuture(date) && (
+            ((event.status == 'scheduled' && date && isFuture(date)) && (
               <Countdown date={date} renderer={renderer} />
             ))}
         </CardFooter>

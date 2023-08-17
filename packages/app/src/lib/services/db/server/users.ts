@@ -183,8 +183,7 @@ export async function addVerificationToken(
     token,
     expires,
   })
-  let id = await repo.insert(verificationToken)
-  return await repo.findOne(id.identifiers[0]['id'])
+  return await repo.save(verificationToken)
 }
 
 export async function findVerificationToken(email: string, token?: string) {

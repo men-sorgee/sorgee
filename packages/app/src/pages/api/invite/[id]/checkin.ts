@@ -12,12 +12,17 @@ import {
   findUserPayment,
   updateUserPayment
 } from "lib/services/directus/server/users/billing";
-import { ApiResponse, withMethods, withStaff } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMethods,
+  withStaff
+} from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function InviteAdmin(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<EventInvite> | null>
+  res: NextApiResponse<ApiResponseType<EventInvite> | null>
 ) {
   try {
     withMethods(req, ['GET', 'POST'])
@@ -43,7 +48,7 @@ export default async function InviteAdmin(
       member = await getUser<Member>(member)
 
     await updateInvite(inviteId, { paid, attended: true, amount })
-    if (paid) {
+    if (paid && amount > 0 && !eventUser.guest) {
       if (amount < event.cost)
         throw new Error('Amount paid is less than the cost of the event')
 

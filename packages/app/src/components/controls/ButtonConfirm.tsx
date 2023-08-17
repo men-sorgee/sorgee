@@ -106,22 +106,22 @@ export function ButtonConfirm<TResponse = void>({
           {...props}
         />
       )) || (
-        <Button
-          onClick={onOpen}
-          aria-label={title}
-          title={title}
-          py={py}
-          color={color}
-          w={w}
-          bgGradient={bgGradient}
-          _hover={{
-            bgGradient: bgGradientHover,
-          }}
-          {...props}
-        >
-          {buttonText}
-        </Button>
-      )}
+          <Button
+            onClick={onOpen}
+            aria-label={title}
+            title={title}
+            py={py}
+            color={color}
+            w={w}
+            bgGradient={bgGradient}
+            _hover={{
+              bgGradient: bgGradientHover,
+            }}
+            {...props}
+          >
+            {buttonText}
+          </Button>
+        )}
 
       <AlertDialog
         isOpen={isOpen}
@@ -134,9 +134,9 @@ export function ButtonConfirm<TResponse = void>({
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
               {alertTitle}
             </AlertDialogHeader>
-
-            <AlertDialogBody>{children}</AlertDialogBody>
-
+            <AlertDialogBody>
+              {children}
+            </AlertDialogBody>
             <AlertDialogFooter>
               <ButtonGroup gap={2}>
                 <Button
@@ -168,7 +168,7 @@ export function ButtonConfirm<TResponse = void>({
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialogOverlay>
-      </AlertDialog>
+      </AlertDialog >
     </>
   )
 }

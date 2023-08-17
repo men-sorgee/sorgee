@@ -76,13 +76,14 @@ export default function Register({ promo, birthMonthOptions, markdown }: Props) 
       </Box>
 
       {(!submitted && (
-        <Form<SignUpForm>
+        <Form
           defaultValues={{
             promo: promo?.code,
-          }}
+          } as SignUpForm}
           onSubmit={(data) => {
             setSubmitted(true)
-            return postJSON<SignUpForm>('/api/register', data)
+            return postJSON<Partial<SignUpForm>>('/api/register', data)
+              .then(({ data }) => data)
           }}
           onSuccess={({ email }) => {
             signIn('email', {
@@ -132,6 +133,7 @@ export default function Register({ promo, birthMonthOptions, markdown }: Props) 
                     Promo Code: <strong>{promo?.code}</strong>
                   </Heading>
                   <Markdown content={promo?.description} />
+                  <input type="hidden" {...register('promo')} />
                 </>
               )}
               <ButtonBusy type="submit" bg="accent.500" size="lg" mt={4}>
@@ -141,10 +143,10 @@ export default function Register({ promo, birthMonthOptions, markdown }: Props) 
           )}
         </Form>
       )) || (
-        <Center>
-          <Spinner />
-        </Center>
-      )}
+          <Center>
+            <Spinner />
+          </Center>
+        )}
     </Page>
   )
 }

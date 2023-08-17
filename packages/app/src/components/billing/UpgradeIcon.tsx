@@ -66,7 +66,10 @@ const UpgradeIcon = chakra(
                   colorScheme="red"
                   href={`/member/subscription?plan=${membershipType}`}
                   ml={3}
-                  onClick={onClose}
+                  onClick={() => {
+                    onClose()
+                    return false
+                  }}
                 >
                   Upgrade
                 </ButtonLink>

@@ -48,7 +48,7 @@ export type NotificationUser = {
 }
 
 
-export type UserNotification = {
+export type MemberAlert = {
   id: string
   read: boolean
   date_created?: string
@@ -56,7 +56,7 @@ export type UserNotification = {
   message?: string
   button_text?: string
   button_url?: string
-  icon?: string
+  icon: 'success' | 'warning' | 'error' | 'info' | 'loading'
 }
 
 export type UserEmailEvent = {

@@ -1,11 +1,11 @@
 import { GroupEvent } from "lib/models";
 import { listUpcomingEvents } from "lib/services/directus/server";
-import { ApiResponse, withMember } from "lib/utils/server";
+import { ApiResponse, ApiResponseType, withMember } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function Events(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<GroupEvent[]>>
+  res: NextApiResponse<ApiResponseType<GroupEvent[]>>
 ) {
   try {
     const member = await withMember(req, res)

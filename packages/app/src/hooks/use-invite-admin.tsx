@@ -1,6 +1,6 @@
 'use client'
 import { EventInvite } from "lib/models";
-import { ApiResult, postJSON } from "lib/utils";
+import { postJSON } from "lib/utils";
 import useSWR from "swr";
 
 export type InviteAdminProps = {
@@ -10,7 +10,7 @@ export type InviteAdminProps = {
     paid: boolean,
     amount: number,
     signed_waiver: boolean
-  ) => Promise<ApiResult<EventInvite>>
+  ) => Promise<EventInvite>
   reload: () => Promise<EventInvite>
 }
 
@@ -24,22 +24,18 @@ export const useInviteAdmin = (inviteId: string): InviteAdminProps => {
   return {
     invite,
     loading: isLoading,
-    checkin: async (paid: boolean, amount: number, signed_waiver: boolean) => {
-      const {
-        data: i,
-        success,
-        error,
-      } = await postJSON<any, EventInvite>(`/api/invite/${inviteId}/checkin`, {
+    checkin: (paid: boolean, amount: number, signed_waiver: boolean) => {
+      return postJSON<any, EventInvite>(`/api/invite/${inviteId}/checkin`, {
         paid,
         signed_waiver,
         amount,
       })
-      if (success) {
-        await mutate(i)
-      } else {
-        throw new Error(error.message)
-      }
-      return { data: i, success, error } as ApiResult<EventInvite>
+        .then(({
+          data: i
+        }) =>
+          mutate(i)
+        )
+
     },
     reload: () => mutate(),
   }

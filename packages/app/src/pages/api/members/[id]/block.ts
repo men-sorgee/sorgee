@@ -5,12 +5,17 @@ import {
   getUser,
   removeBlock
 } from "lib/services/directus/server/users";
-import { ApiResponse, withMember, withMethods } from "lib/utils/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMember,
+  withMethods
+} from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function MemberBlock(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<UserBlock> | ApiResponse>
+  res: NextApiResponse<ApiResponseType<UserBlock> | ApiResponseType>
 ) {
   try {
     const method = withMethods(req, ['POST', 'DELETE', 'GET'])

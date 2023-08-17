@@ -1,11 +1,11 @@
 import { FieldMap } from "lib/models";
 import { getFields } from "lib/services/directus/server";
-import { ApiResponse } from "lib/utils/server";
+import { ApiResponse, ApiResponseType } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function SiteFields(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<FieldMap>>
+  res: NextApiResponse<ApiResponseType<FieldMap>>
 ) {
   const { collection: c = 'users' } = req.query
   const collection = String(c)
