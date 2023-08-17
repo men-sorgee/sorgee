@@ -54,6 +54,7 @@
     "tanstack",
     "twind",
     "typeorm",
+    "uncaptured",
     "uuidv",
     "wellenplan"
   ],

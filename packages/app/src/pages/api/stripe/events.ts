@@ -129,22 +129,33 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
     switch (event.type) {
       case 'checkout.session.completed': {
         const paymentData = extractFromCheckout(checkoutSession)
-
-        const payment = await addUserPayment({
-          ...paymentData,
-          user: user.id,
-        })
-        const { product_type, amount } = payment
-        let inviteId = payment.redeemed_id
-        if (product_type == 'event' && inviteId) {
-          await updateInvite(Number(inviteId), {
-            paid: true,
-            rsvp: 'confirmed',
-            amount,
-            paid_at: paymentData.date_created,
-            confirmed_at: new Date().toISOString(),
-            payment: payment.id,
-          })
+        switch (paymentData.product_type) {
+          case 'subscription': {
+            const payment = await addUserPayment({
+              ...paymentData,
+              user: user.id,
+            })
+            break;
+          }
+          case 'event': {
+            const payment = await addUserPayment({
+              ...paymentData,
+              user: user.id,
+            })
+            const { product_type, amount } = payment
+            let inviteId = payment.redeemed_id
+            if (inviteId) {
+              await updateInvite(Number(inviteId), {
+                paid: true,
+                rsvp: 'confirmed',
+                amount,
+                paid_at: paymentData.date_created,
+                confirmed_at: new Date().toISOString(),
+                payment: payment.id,
+              })
+            }
+            break;
+          }
         }
         break
       }
@@ -161,14 +172,21 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
             status: 'refunded',
             description: `Refunded $${amount} for ${payment.description}`
           })
-          if (payment.product_type == 'event' && payment.redeemed_id) {
-            await updateInvite(Number(payment.redeemed_id), {
-              rsvp: 'cancelled',
-              paid: false,
-              paid_at: null,
-              confirmed_at: null,
-              amount: 0
-            })
+          if (!payment.redeemed_id) return
+          switch (payment.product_type) {
+            case 'event': {
+              await updateInvite(Number(payment.redeemed_id), {
+                rsvp: 'cancelled',
+                paid: false,
+                paid_at: null,
+                confirmed_at: null,
+                amount: 0
+              })
+              break;
+            }
+            case 'subscription': {
+              // do nothing for now
+            }
           }
         }
         break;
@@ -195,7 +213,15 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
         {
           const membershipData = extractFromSubscription(subscription, user)
           await updateUser(user.id, membershipData)
-          break
+          const payment = await findUserPayments(user.id, {
+            redeemed_id: String(membershipData.subscription_id)
+          })
+          if (payment)
+            await updateUserPayment(payment.id, {
+              date_created: membershipData.membership_start,
+              description: `Membership ${membershipData.renewal_type} payment for ${membershipData.membership_type}`,
+            })
+          break;
         }
       case 'customer.subscription.expired':
         {
@@ -283,8 +309,8 @@ function extractFromSubscription(subscription: Stripe.Subscription, user: User):
 }
 
 function extractFromCheckout(checkout: Stripe.Checkout.Session): UserPayment {
-  const { amount_total: amount, created, currency, metadata, mode, payment_intent } = checkout
-  const { name, inviteId, eventId, userId } = metadata
+  const { amount_total: amount, created, currency, metadata, mode, payment_intent, subscription } = checkout
+  const { name, inviteId, userId } = metadata
 
   const type = mode == 'payment' ? 'event' : mode
   let payment: UserPayment = {
@@ -292,12 +318,12 @@ function extractFromCheckout(checkout: Stripe.Checkout.Session): UserPayment {
     type: 'stripe',
     amount: amount / 100,
     currency: currency as any,
-    redeemed_id: inviteId || userId,
+    redeemed_id: type == 'subscription' ? String(subscription) : inviteId,
     payment_intent: String(payment_intent),
     product_type: type as any,
-    description: `${name}\nRedeem Type: ${type}`,
+    description: name,
     date_created: new Date(created * 1000).toISOString(),
-    redeemed: false,
+    redeemed: type == 'subscription',
     status: 'collected'
   }
   return payment

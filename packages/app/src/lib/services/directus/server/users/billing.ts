@@ -55,7 +55,8 @@ export async function findUserPayments(
     type?: PaymentType,
     product_type?: PaymentProductType,
     status?: PaymentStatusType
-    payment_intent: string
+    payment_intent?: string
+    redeemed_id?: string
   }) {
   const admin = await getAdminClient()
   const filter = {
@@ -65,6 +66,7 @@ export async function findUserPayments(
   if (by?.product_type) filter['product_type'] = { _eq: by.product_type }
   if (by?.status) filter['status'] = { _eq: by.status }
   if (by?.payment_intent) filter['payment_intent'] = { _eq: by.payment_intent }
+  if (by?.redeemed_id) filter['redeemed_id'] = { _eq: by.redeemed_id }
 
   const { data } = await admin.items('user_payment').readByQuery({
     filter,
