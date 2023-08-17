@@ -103,7 +103,7 @@ export default function InviteAdmin() {
 
   return (
     <Page title={`Check-in`} description="Invite Admin" loading={loading || inviteLoading}>
-      <Form<FormProps, EventInvite>
+      <Form
         onSubmit={updateInvite}
         onSuccess={() => router.push(`/admin/event/${event?.id}`)}
         onError={(error) => {

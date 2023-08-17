@@ -3,19 +3,24 @@ import {
   MessagesProvider,
   MetaContextProvider,
   UserNotificationsProvider,
-  UserProvider,
-} from 'hooks'
-import Layout from 'layout'
-import { SessionProvider } from 'next-auth/react'
-import { AppProps, NextWebVitalsMetric } from 'next/app'
-import { Arvo, Manrope, Roboto_Mono } from 'next/font/google'
-import { event, GoogleAnalytics } from 'nextjs-google-analytics'
-import React from 'react'
+  UserProvider
+} from "hooks";
+import Layout from "layout";
+import { SessionProvider } from "next-auth/react";
+import { AppProps, NextWebVitalsMetric } from "next/app";
+import dynamic from "next/dynamic";
+import { Arvo, Manrope, Roboto_Mono } from "next/font/google";
+import { event, GoogleAnalytics } from "nextjs-google-analytics";
+import React from "react";
 
-import { ChakraProvider, cookieStorageManager, extendTheme } from '@chakra-ui/react'
+import {
+  ChakraProvider,
+  cookieStorageManager,
+  extendTheme
+} from "@chakra-ui/react";
 
-import { SWRProvider } from '../hooks/swr'
-import getTheme from '../theme'
+import { SWRProvider } from "../hooks/swr";
+import getTheme from "../theme";
 
 const heading = Arvo({
   variable: '--heading-font',
@@ -37,7 +42,7 @@ const mono = Roboto_Mono({
 
 const theme = extendTheme(getTheme(body, heading, mono))
 
-export default function MyApp({ Component, pageProps, router }: AppProps) {
+function GNHApp({ Component, pageProps, router }: AppProps) {
   const Content = Component as any
   if (router?.pathname.startsWith('/code/')) {
     return <Content {...pageProps} />
@@ -46,10 +51,10 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
   return (
     <>
       <GoogleAnalytics trackPageViews />
-      <MetaContextProvider>
+      <SWRProvider>
         <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
-          <SessionProvider session={pageProps.session}>
-            <SWRProvider>
+          <MetaContextProvider>
+            <SessionProvider session={pageProps.session}>
               <UserProvider>
                 <AppNotificationsProvider>
                   <UserNotificationsProvider>
@@ -63,13 +68,17 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
                   </UserNotificationsProvider>
                 </AppNotificationsProvider>
               </UserProvider>
-            </SWRProvider>
-          </SessionProvider>
+            </SessionProvider>
+          </MetaContextProvider>
         </ChakraProvider>
-      </MetaContextProvider>
+      </SWRProvider >
     </>
   )
 }
+
+export default dynamic(() => Promise.resolve(GNHApp), {
+  ssr: false,
+});
 
 export function reportWebVitals({ id, name, label, value }: NextWebVitalsMetric) {
   event(name, {

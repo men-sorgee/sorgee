@@ -139,14 +139,17 @@ export default async function InvitePayment(
           continue: true
         }))
 
-      const { reason } = req.body
       try {
         const refund = await stripe.refunds.create({
           payment_intent: payment.payment_intent,
           reason: "requested_by_customer",
           currency: payment.currency,
           metadata: {
-            reason,
+            name: payment.description,
+            eventId: String(eventId),
+            inviteId: String(id),
+            userId: member.id,
+            type: 'event'
           },
           amount: payment.amount,
         })

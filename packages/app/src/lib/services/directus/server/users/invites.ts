@@ -3,7 +3,6 @@ import {
   EventUser,
   GroupEvent,
   Invite,
-  InviteRSVPType,
   Member,
   UserType
 } from "lib/models";
@@ -46,22 +45,13 @@ export async function listInvites(member: Member): Promise<EventUser[]> {
   })
 
   let invites = data.map((invite: EventUser): Partial<EventInvite> => {
-    const event = invite.events_id as GroupEvent
-    const member = invite.users_id as unknown as Member
-    const rsvp = invite.rsvp as InviteRSVPType
-    const { id, attended, paid, guest, reason, amount, paid_at, confirmed_at } = invite
+    const { events_id, users_id, ...rest } = invite
+    const event = events_id as GroupEvent
+    const member = users_id as Member
     return {
-      id,
       event,
       member,
-      rsvp,
-      attended,
-      paid,
-      amount,
-      guest,
-      reason,
-      paid_at,
-      confirmed_at,
+      ...rest
     }
   })
 
@@ -73,11 +63,11 @@ export async function listInvites(member: Member): Promise<EventUser[]> {
   const events = await listUpcomingEvents(member.user_type)
   events.forEach((event) => {
     const invite = invites.find((i) => i.event.id === event.id)
-    if (!invite) {
+    if (!invite && event.status == 'scheduled' && event.invite_only == false) {
       invites.push({
         event,
+        member,
         rsvp: 'invited',
-        member: member,
       })
     }
   })
@@ -86,20 +76,17 @@ export async function listInvites(member: Member): Promise<EventUser[]> {
 
 export async function listUpcomingEvents(user_type: UserType): Promise<GroupEvent[]> {
   const client = await getAdminClient()
-  const filter = {
-    status: { _in: ['scheduled', 'planned'] },
-    datetime: { _gte: '$NOW(-7 days)' },
-  }
-  if (user_type != 'staff')
-    filter['invite_only'] = { _eq: false }
-
-  const { data } = await client.items('events').readByQuery({
-    filter,
+  const { data = [] } = await client.items('events').readByQuery({
+    filter: {
+      status: { _in: ['scheduled', 'planned'] },
+      datetime: { _gte: '$NOW(-1 days)' },
+      invite_only: { _eq: false },
+    },
     fields: ['*.*'],
     sort: ['datetime'],
   })
-  if (user_type == 'staff') return data as unknown as GroupEvent[]
-  return (data?.filter((e) => e.visibility?.includes(user_type)) || []) as unknown as GroupEvent[]
+  //if (user_type == 'staff') return data as unknown as GroupEvent[]
+  return (data.filter((e) => e.visibility?.includes(user_type)) || []) as unknown as GroupEvent[]
 }
 
 export async function updateInvite(

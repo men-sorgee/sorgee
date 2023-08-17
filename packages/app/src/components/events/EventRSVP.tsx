@@ -1,4 +1,4 @@
-import { ButtonConfirm } from "components";
+import { ButtonBusy, ButtonConfirm } from "components";
 import { useInvite } from "hooks";
 import { EventInvite } from "lib/models";
 import { PurchaseResponse } from "lib/services/stripe/client";
@@ -203,35 +203,21 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
       </ButtonConfirm>
     )
 
-  const DeclineRSVPButton = ({ children = 'Cannot Go' }) =>
+  const DeclineRSVPButton = ({ children = 'Not Interested' }) =>
     !paid && (
-      <ButtonConfirm
-        flex={1}
-        alertTitle="Event RSVP"
-        buttonText={children}
-        failureMessage="Unable to RSVP."
-        successMessage="This invitation has been declined. It will not show anymore."
-        confirmedAction={() => {
+      <ButtonBusy
+        onClick={() => {
           setWorking(true)
           return mutate({ rsvp: 'declined' })
         }}
-        onSuccess={({ data: i }) => {
-          setWorking(false)
-          if (onChange) onChange(i)
-        }}
-        onError={(err) => {
+        onResult={() => {
           setWorking(false)
         }}
+        flex={1}
         colorScheme="black"
         w={['full', 'full', 'auto']}
-      >
-        <Text>
-          <strong>
-            Declined events will be hidden from your calendar and you will not be able to see them.
-          </strong>
-          Are you sure you want to decline this event?
-        </Text>
-      </ButtonConfirm>
+      >{children}
+      </ButtonBusy>
     )
 
   const CancelRSVPButton = ({ children = 'Cannot Go' }) => (
@@ -253,7 +239,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
         setWorking(false)
       }}
       focusRef={reasonRef}
-      colorScheme="blackAlpha"
+      colorScheme="red"
       w={['full', 'full', 'auto']}
     >
       <>
@@ -284,7 +270,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
   }) => (
     <Box mt={4} rounded="lg" shadow="inset" bg="bg" color="text" p={2}
       borderColor="success.500" border={paid ? '2px solid' : null}>
-      <Heading as="h4" size="h4" my={1} color="text" >
+      <Heading as="h4" size="h4" mt={0} color="text" >
         {heading}
       </Heading>
       {paid && change && (
@@ -302,11 +288,11 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
           </Text>
         </Alert>
       )}
-      <Box mt={4} pt={2} borderTop={'3px dotted'}>
-        {change && <Text mt={0}>Change of plans?</Text>}
+      {children != undefined && <Box mt={4} pt={2}>
+        {change && <Text py={2} borderTop={'3px dotted'}>Change of plans?</Text>}
         <Flex
           direction={['column', 'row']}
-          mt={4}
+
           w="full"
           align="center"
           justify="stretch"
@@ -314,7 +300,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
         >
           {children}
         </Flex>
-      </Box>
+      </Box>}
     </Box>
   )
 
@@ -324,7 +310,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
   if (invite?.event.status == 'planned') {
     return (
       <>
-        <Heading>This event is tentatively planned, depending on interest.</Heading>
+        <Text fontSize="lg" my={2}>This event is tentatively planned, depending on interest.</Text>
         <RSVPView heading="Are you interested?!" change={false}>
           <MaybeRSVPButton>Yes</MaybeRSVPButton>
           <DeclineRSVPButton>No</DeclineRSVPButton>
@@ -374,14 +360,21 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
             }
           >
             <ConfirmRSVPButton>Can Attend</ConfirmRSVPButton>
-            <CancelRSVPButton>Not Interested</CancelRSVPButton>
+            <DeclineRSVPButton>Not Interested</DeclineRSVPButton>
           </RSVPView>
         </>
       )
-    case 'cancelled':
+
     case 'declined':
       return (
-        <RSVPView heading="You are not attending.">
+        <RSVPView heading="You declined this event.">
+          <ConfirmRSVPButton>Can Attend</ConfirmRSVPButton>
+          <MaybeRSVPButton />
+        </RSVPView>
+      )
+    case 'cancelled':
+      return (
+        <RSVPView heading="You cancelled your RSVP.">
           <ConfirmRSVPButton>Can Attend</ConfirmRSVPButton>
           <MaybeRSVPButton />
         </RSVPView>
@@ -389,7 +382,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
 
     case 'not_invited':
       return (
-        <RSVPView heading="Event Full" change={false}>
+        <RSVPView heading="Event On Hold" change={false}>
 
         </RSVPView>
       )
@@ -399,7 +392,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
           <RSVPView heading="You are invited!" change={false}>
             <ConfirmRSVPButton>Can Attend</ConfirmRSVPButton>
             <MaybeRSVPButton></MaybeRSVPButton>
-            <CancelRSVPButton>Not Interested</CancelRSVPButton>
+            <DeclineRSVPButton>Not Interested</DeclineRSVPButton>
           </RSVPView>
         </>
       )

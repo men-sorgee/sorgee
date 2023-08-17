@@ -18,6 +18,7 @@ export const SWRProvider = ({ children }) => {
         dedupingInterval: 1000 * 30,
         focusThrottleInterval: 1000 * 10,
       }}
+
     >
       {children}
     </SWRConfig>

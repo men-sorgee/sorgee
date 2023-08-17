@@ -1,10 +1,10 @@
 'use client'
 
-import { EventInvite, EventUser, GroupEvent, Member } from 'lib/models'
-import { PurchaseResponse, RefundResponse } from 'lib/services/stripe/client'
-import { ApiResult, deleteJSON, getJSON, postJSON } from 'lib/utils'
-import { useEffect, useState } from 'react'
-import useSWR from 'swr'
+import { EventInvite, EventUser, GroupEvent, Member } from "lib/models";
+import { PurchaseResponse, RefundResponse } from "lib/services/stripe/client";
+import { ApiResult, deleteJSON, getJSON, postJSON } from "lib/utils";
+import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 export type InviteResults = {
   invite: EventInvite
@@ -40,10 +40,8 @@ export const useInvite = (eventId: string): InviteResults => {
     event,
     user,
     loading: isLoading,
-    refund: (reason) =>
-      deleteJSON<any, RefundResponse>(`/api/stripe/invite/${invite?.id}`, {
-        reason,
-      }),
+    refund: () =>
+      deleteJSON<any, RefundResponse>(`/api/stripe/invite/${invite?.id}`),
     pay: () => getJSON<PurchaseResponse>(`/api/stripe/invite/${invite?.id}`),
     mutate: async ({ rsvp, reason, paid_at, paid }: Partial<EventUser>) => {
       const {

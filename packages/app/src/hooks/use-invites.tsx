@@ -1,7 +1,8 @@
 'use client'
+
 import { isAfter, isToday } from "date-fns";
 import { EventInvite } from "lib/models";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import { postJSON } from "../lib/utils";
@@ -33,18 +34,21 @@ export const useInvites = (): InvitesResults => {
     fallbackData: [],
   })
 
-  const upComing = ['scheduled', 'planned']
-  const attending = ['confirmed', 'maybe']
+  const upComing = useMemo(() => ['scheduled', 'planned'], [])
+  const attending = useMemo(() => ['confirmed', 'maybe'], [])
 
-  const invitations = invites?.filter(
-    (i) => !attending.includes(i.rsvp) && upComing.includes(i.event.status) || []
-  )
-  const upcoming = invites?.filter(
+  const invitations = useMemo(() => invites?.filter((i) =>
+    (!i.rsvp || !attending.includes(i.rsvp)) &&
+    upComing.includes(i.event.status)) || [], [attending, invites, upComing])
+
+  const upcoming = useMemo(() => invites?.filter(
     (i) => attending.includes(i.rsvp) && upComing.includes(i.event.status)
-  ) || []
-  const past = invites?.filter((i) => i.event.status == 'occurred' && i.rsvp == 'confirmed') || []
-  const newInvitationCount = invitations?.filter((i) => i.rsvp == 'invited').length || 0
+  ) || [], [attending, invites, upComing])
 
+  const past = useMemo(() => invites?.filter((i) => i.event.status == 'occurred' && i.rsvp == 'confirmed') || [], [invites])
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const newInvitationCount = useMemo(() => invitations?.filter((i) => i.rsvp == 'invited').length || 0, [invites, invitations])
 
   useEffect(() => {
     let activeInvite = upcoming.find(
@@ -69,7 +73,6 @@ export const useInvites = (): InvitesResults => {
     })
   }, [invites, mutate])
 
-
   if (invites == null || invites == undefined)
     return {
       invitations: [],
@@ -82,10 +85,6 @@ export const useInvites = (): InvitesResults => {
       updateRSVP: () => Promise.resolve(null),
       activeInvite: null,
     }
-
-
-
-
 
 
   return {
