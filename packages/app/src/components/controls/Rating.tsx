@@ -43,14 +43,8 @@ export const Rating = ({
   const onClick = (index: number) => {
     if (readonly) return
     if (!isNaN(index)) {
-      // allow user to click first icon and set rating to zero if rating is already 1
-      if (rating === 1 && index === 1) {
-        setRating(0)
-        if (onRateChange) onRateChange(0)
-      } else {
-        setRating(index)
-        if (onRateChange) onRateChange(index)
-      }
+      setRating(index)
+      if (onRateChange) onRateChange(index)
     }
   }
 
@@ -81,7 +75,7 @@ export const Rating = ({
         cursor={readonly ? 'default' : 'pointer'}
         {...props}
       >
-        Are you sure you want to rate this item? Members will be sent a notification of your rating.
+        Are you sure you want to go with {index}?
       </ButtonConfirm>
     )
   }
