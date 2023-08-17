@@ -34,6 +34,8 @@ import {
   SimpleGrid,
   Spacer,
   Stat,
+  StatGroup,
+  StatHelpText,
   StatLabel,
   StatNumber,
   Text,
@@ -58,6 +60,7 @@ export default function EventAdmin() {
   const { event, loading: eventLoading, closeEvent, reload } = useEvent(eventId, true)
   const [email, setEmail] = useState<string>(undefined)
   const [fees, setFees] = useState<number>()
+  const [prePaid, setPrePaid] = useState<number>()
   const [stats, setStats] = useState<EventStats>()
   const [collected, setCollected] = useState<number>(0)
   const emailRef = useRef<HTMLInputElement>(null)
@@ -78,12 +81,16 @@ export default function EventAdmin() {
 
   useEffect(() => {
     if (!eventLoading && event && event.attendance) {
-      setCollected(event?.cost * event?.attendance.filter((a) => a.paid).length || 0)
+      setCollected(event?.cost * (event?.stats.paid_count - event?.stats.prepaid_count) || 0)
+      setPrePaid(event.cost * event?.stats.prepaid_count || 0)
     }
   }, [event, event?.attendance, member, eventLoading])
 
   const confirmedAttendees = getAttendees(event?.attendance, 'confirmed', email)
   const maybeAttendees = getAttendees(event?.attendance, 'maybe', email)
+
+  const attendees = event?.attendance?.filter((a) => a.attended).map(mapUser) || []
+  const noShows = event?.attendance?.filter((a) => !a.attended && a.rsvp == 'confirmed').map(mapUser) || []
 
   return (
     <Page title={'Event Admin'} loading={userLoading || eventLoading}>
@@ -144,9 +151,10 @@ export default function EventAdmin() {
             </Flex>
           }
         >
-          <SimpleGrid columns={[2, 4, 6]} spacing={4} mb={4}>
-            {stats && (
-              <>
+          {stats && (
+            <>
+              <StatGroup gap={4} mb={4}>
+
                 {stats.invited_count && (
                   <Stat>
                     <StatLabel>Invited</StatLabel>
@@ -156,6 +164,7 @@ export default function EventAdmin() {
                 <Stat>
                   <StatLabel>Confirmed</StatLabel>
                   <StatNumber>{stats.confirmed_count}</StatNumber>
+
                 </Stat>
                 <Stat>
                   <StatLabel>Maybe</StatLabel>
@@ -166,29 +175,77 @@ export default function EventAdmin() {
                   <Stat>
                     <StatLabel>Attended</StatLabel>
                     <StatNumber>{stats.attended_count}</StatNumber>
+                    <StatHelpText>
+                      {Math.floor(stats.attended_count / stats.confirmed_count) * 100}%
+                    </StatHelpText>
                   </Stat>
                 )}
                 {stats.paid_count != undefined && (
                   <Stat>
-                    <StatLabel>Paid</StatLabel>
-                    <StatNumber>{stats.paid_count}</StatNumber>
+                    <StatLabel>Paid Cash</StatLabel>
+                    <StatNumber>{stats.cash_count}</StatNumber>
+                    <StatHelpText>
+                      {Math.floor(stats.cash_count / stats.paid_count) * 100}%
+                    </StatHelpText>
                   </Stat>
                 )}
-                {event?.status == EventStatusType.Occurred && (
+                {stats.prepaid_count != undefined && (
                   <Stat>
-                    <StatLabel>Total Fees</StatLabel>
-                    <StatNumber>${collected}</StatNumber>
+                    <StatLabel>Paid Online</StatLabel>
+                    <StatNumber>{stats.prepaid_count}</StatNumber>
+                    <StatHelpText>
+                      {Math.floor(stats.prepaid_count / stats.paid_count) * 100}%
+                    </StatHelpText>
                   </Stat>
                 )}
-              </>
-            )}
-          </SimpleGrid>
+              </StatGroup>
+
+              {event?.status == EventStatusType.Occurred && (
+                <StatGroup>
+                  {stats.prepaid_count != undefined && (<>
+                    <Stat>
+                      <StatLabel>Collected Online</StatLabel>
+                      <StatNumber>${prePaid}</StatNumber>
+                      <StatHelpText>
+                        ${event?.cost} x {stats.prepaid_count} Online
+                      </StatHelpText>
+                    </Stat>
+                    <Stat>
+                      <StatLabel>&nbsp;</StatLabel>
+                      <StatNumber fontSize="xxx-large">+</StatNumber>
+                    </Stat>
+                  </>)}
+                  <Stat>
+                    <StatLabel>Collected Cash</StatLabel>
+                    <StatNumber>${collected}</StatNumber>
+                    <StatHelpText>
+                      ${event?.cost} x {stats.cash_count} Cash
+                    </StatHelpText>
+                  </Stat>
+                  {stats.prepaid_count != undefined && (<>
+                    <Stat>
+                      <StatLabel>&nbsp;</StatLabel>
+                      <StatNumber fontSize="xxx-large">=</StatNumber>
+
+                    </Stat>
+                  </>)}
+                  <Stat>
+                    <StatLabel>Total</StatLabel>
+                    <StatNumber>${fees}</StatNumber>
+                    <StatHelpText>
+                      ${event?.cost} x {stats.paid_count}
+                    </StatHelpText>
+                  </Stat>
+                </StatGroup>
+              )}
+            </>
+          )}
           <Flex direction={['column', 'row']} gap={2} justify="space-between" w="full">
             {/**<ButtonLink size={['sm', 'md', 'lg']} href="/admin/scan" w="full">
               Scan
                 </ButtonLink>
             <Spacer w={[0, 40, 800]} />**/}
-            <Flex gap={1} w={'full'} justify="stretch">
+            {event?.status == 'scheduled' && <Flex gap={1} w={'full'} justify="stretch">
               <Input
                 type="email"
                 rounded="md"
@@ -213,16 +270,30 @@ export default function EventAdmin() {
                 Checkin
               </ButtonLink>
             </Flex>
+            }
           </Flex>
-          <UserList
+          {event?.status == 'scheduled' && <UserList
             title="Confirmed"
             attendees={confirmedAttendees}
             event={event}
             reload={reload}
-          />
-          <UserList title="Maybe" attendees={maybeAttendees} event={event} reload={reload} />
+          />}
+          {event?.status == 'scheduled' && <UserList title="Maybe" attendees={maybeAttendees} event={event} reload={reload} />}
+          {event?.status == 'occurred' && <UserList
+            title="Attended"
+            attendees={attendees}
+            event={event}
+            reload={reload}
+          />}
+          {event?.status == 'occurred' && <UserList
+            title="No Shows"
+            attendees={noShows}
+            event={event}
+            reload={reload}
+          />}
         </EventCard>
-      )}
+      )
+      }
       <HStack spacing={4} my={4}>
         <Link as={NextLink} href="/admin/event">
           <ArrowBackIcon mr={2} w={'50'} />
@@ -232,7 +303,7 @@ export default function EventAdmin() {
           Event Details
         </Link>
       </HStack>
-    </Page>
+    </Page >
   )
 }
 
@@ -246,26 +317,29 @@ type InvitedUser = {
   user: Partial<Member>
 }
 
+const mapUser = (u: EventUser) => {
+  const user = u.users_id as Partial<Member>
+  const picture = user.picture as string
+  const name = `${user.first_name || ''} ${user.last_name || ''}`
+  const src = getAssetUrl(picture)
+  const email = user.email
+  return {
+    id: u.id,
+    name,
+    rsvp: u.rsvp,
+    attended: u.attended,
+    email,
+    src,
+    user,
+  } as InvitedUser
+}
+
 const getAttendees = (attendance: EventUser[], rsvp: string, email?: string): InvitedUser[] => {
   let results =
     attendance
       ?.filter((u) => u.rsvp == rsvp)
-      .map((u) => {
-        const user = u.users_id as Partial<Member>
-        const picture = user.picture as string
-        const name = `${user.first_name || ''} ${user.last_name || ''}`
-        const src = getAssetUrl(picture)
-        const email = user.email
-        return {
-          id: u.id,
-          name,
-          rsvp: u.rsvp,
-          attended: u.attended,
-          email,
-          src,
-          user,
-        } as InvitedUser
-      }) || []
+      .map(mapUser)
+    || []
   if (email) {
     results = results.filter((u) => u.email.includes(email))
   }
@@ -311,26 +385,31 @@ const UserList = ({
               <Link title={email} href={`mailto:${email}`} color="text" mb={1}>
                 {email}
               </Link>
-              <Spacer />
-              {!attended && (
-                <ButtonLink
+              {event.status == 'scheduled' && (<>
+
+                <Spacer />
+                {!attended && (
+                  <ButtonLink
+                    as='a'
+                    variant="solid"
+                    title={attended ? name : `Click to check ${name} in`}
+                    href={`/api/events/${event.id}/checkin?user_id=${user.id}`}
+                    size="xs"
+                  >
+                    CHECK-IN
+                  </ButtonLink>
+                ) || <ButtonLink
                   as='a'
                   variant="solid"
-                  title={attended ? name : `Click to check ${name} in`}
-                  href={`/api/events/${event.id}/checkin?user_id=${user.id}`}
+                  title={attended ? name : `Click to view ${name} check-in`}
+                  href={`/admin/event/invite/${id}`}
                   size="xs"
                 >
-                  CHECK-IN
-                </ButtonLink>
-              ) || <ButtonLink
-                as='a'
-                variant="solid"
-                title={attended ? name : `Click to view ${name} check-in`}
-                href={`/admin/event/invite/${id}`}
-                size="xs"
-              >
-                  REVIEW
-                </ButtonLink>}
+                    REVIEW
+                  </ButtonLink>
+                }
+              </>
+              )}
             </Box>
 
             {attended && (

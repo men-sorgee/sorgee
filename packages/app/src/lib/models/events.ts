@@ -98,6 +98,8 @@ export type EventStats = {
   maybe_count: number
   attended_count: number
   paid_count: number
+  prepaid_count: number
+  cash_count: number
 }
 
 export type EventDetail = EventInfo & {

@@ -1,5 +1,4 @@
 import { gradient } from "lib/utils";
-import NextLink from "next/link";
 
 import {
   Button,
@@ -21,7 +20,6 @@ export const ButtonLink = chakra(
   ({
     href,
     children,
-    as,
     colorScheme = 'primary',
     onClick,
     replace = false,
@@ -44,38 +42,39 @@ export const ButtonLink = chakra(
         }}
 
       >
-        <LinkOverlay as={as || NextLink} href={href} />
-        {(icon && (
-          <IconButton
-            aria-label={title}
-            title={title}
-            icon={icon}
-            colorScheme={colorScheme}
-            bgGradient={bgGradient}
-            color={color}
-            _hover={{
-              bgGradient: bgGradientHover,
-            }}
-            w={w}
-            {...props}
-          />
-        )) || (
-            <Button
-              variant="solid"
+        <LinkOverlay href={href} >
+          {(icon && (
+            <IconButton
+              aria-label={title}
+              title={title}
+              icon={icon}
               colorScheme={colorScheme}
               bgGradient={bgGradient}
               color={color}
-              title={title}
-
               _hover={{
                 bgGradient: bgGradientHover,
               }}
-              w='full'
+              w={w}
               {...props}
-            >
-              {children}
-            </Button>
-          )}
+            />
+          )) || (
+              <Button
+                variant="solid"
+                colorScheme={colorScheme}
+                bgGradient={bgGradient}
+                color={color}
+                title={title}
+
+                _hover={{
+                  bgGradient: bgGradientHover,
+                }}
+                w='full'
+                {...props}
+              >
+                {children}
+              </Button>
+            )}
+        </LinkOverlay>
       </LinkBox>
     )
   }

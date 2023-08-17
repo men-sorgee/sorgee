@@ -5,10 +5,8 @@ import {
   GroupEvent,
   InviteRSVPType,
   Location,
-  SearchableMember,
   searchableMemberFields,
-  Survey,
-  UserType
+  Survey
 } from "lib/models";
 
 import { getAdminClient } from "./";
@@ -148,6 +146,8 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
       maybe_count: attendance.filter((u) => u.rsvp === 'maybe').length,
       attended_count: attendance.filter((u) => u.attended).length,
       paid_count: attendance.filter((u) => u.paid).length,
+      prepaid_count: attendance.filter((u) => u.payment).length,
+      cash_count: attendance.filter((u) => u.paid).length - attendance.filter((u) => u.payment).length
     },
     //members: attendance.map((u) => u.users_id as any as SearchableMember),
     surveys: survey as Survey[]
