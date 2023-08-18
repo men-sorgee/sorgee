@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-export default function Index({}) {
+export default function Index({ }) {
   const { member, loading } = useUser({
     minLevel: MemberLevel.applicant,
     minAppStatus: ApplicationStatus.apply,
@@ -15,7 +15,7 @@ export default function Index({}) {
 
   useEffect(() => {
     if (loading) return
-    if (member) {
+    if (member && !router.query?.override) {
       const { application_status } = member
       if (application_status === 'approved') {
         router.push('/member')

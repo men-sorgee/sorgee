@@ -1,45 +1,61 @@
-import { Step, Steps, useSteps } from "chakra-ui-steps";
+
 import { ApplicationStatus } from "lib/models";
 import { useEffect } from "react";
 
-import { Hide, Show } from "@chakra-ui/react";
+import {
+  Heading,
+  Show,
+  Step,
+  StepIcon,
+  StepIndicator,
+  StepNumber,
+  Stepper,
+  StepSeparator,
+  StepStatus,
+  StepTitle,
+  useSteps
+} from "@chakra-ui/react";
 
 export default function ApplicationSteps({ status }: { status: string }) {
-  const steps = ['Application', 'Verification', 'Review', 'Agreement']
-  const { activeStep, setStep } = useSteps({
-    initialStep: 0
+  const steps = ['Application', 'Verification', 'Wait for Review', 'Agreement']
+  const { activeStep, setActiveStep } = useSteps({
+    index: 0,
+    count: steps.length,
+
   })
   useEffect(() => {
-    if (status && activeStep == 0) setStep(ApplicationStatus[status])
-  }, [activeStep, setStep, status])
+    if (status && activeStep == 0) setActiveStep(ApplicationStatus[status])
+  }, [activeStep, setActiveStep, status])
   return (
     <>
-      <Show above="md">
-        <Steps
-          activeStep={activeStep}
-          my={8}
-          colorScheme={'primary'}
-          color={'white'}
-          responsive={false}
-        >
-          {steps.map((step, index) => (
-            <Step key={index} color={'white'} label={step} />
-          ))}
-        </Steps>
-      </Show>
-      <Hide above="md">
-        <Steps
-          activeStep={activeStep}
-          my={8}
-          colorScheme="primary"
-          color="white"
-          responsive={false}
-        >
-          {steps.map((step, index) => (
-            <Step key={index} color={'white'} title={step} />
-          ))}
-        </Steps>
-      </Hide>
+
+      <Stepper
+        index={activeStep}
+        my={8}
+        mr={4}
+        colorScheme={'primary'}
+        color={'white'}
+
+      >
+        {steps.map((step, index) => (
+          <Step key={index}>
+            <StepIndicator title={step}>
+              <StepStatus
+                complete={<StepIcon />}
+                incomplete={<StepNumber />}
+                active={<StepNumber />}
+              />
+            </StepIndicator>
+
+            <Show above="md">
+              <StepTitle as={Heading} size="md" my={0}>{step}</StepTitle>
+            </Show>
+            <StepSeparator />
+          </Step>
+        ))}
+      </Stepper>
+
+
     </>
   )
 }

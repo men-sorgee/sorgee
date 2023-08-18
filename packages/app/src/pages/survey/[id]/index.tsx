@@ -1,4 +1,4 @@
-import { Step, Steps } from "chakra-ui-steps";
+
 import {
   ButtonLink,
   FieldCheckbox,
@@ -26,7 +26,6 @@ import {
   SurveyAnswer
 } from "lib/models";
 import { getJSON, postJSON, pruneUndefined } from "lib/utils";
-import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
@@ -38,6 +37,13 @@ import {
   HStack,
   Spacer,
   Spinner,
+  Step,
+  StepIcon,
+  StepIndicator,
+  StepNumber,
+  Stepper,
+  StepSeparator,
+  StepStatus,
   Text,
   useBreakpointValue,
   useToast
@@ -77,7 +83,6 @@ export const getServerSideProps = async (context) => {
 }
 
 export default function SurveyPage({ survey, question, step }: Props) {
-  const router = useRouter()
   const { loading: userLoading, member } = useUser({
     minLevel: MemberLevel.pledge,
     redirectsEnabled: true,
@@ -116,9 +121,9 @@ export default function SurveyPage({ survey, question, step }: Props) {
 
   const next = useCallback(
     (i?: number) => {
-      router.push(`/survey/${survey.id}/${i || step + 1}`)
+      location.href = `/survey/${survey.id}/${i || step + 1}`
     },
-    [survey.id, step, router]
+    [survey.id, step]
   )
 
   const onSubmit = useCallback(
@@ -151,26 +156,35 @@ export default function SurveyPage({ survey, question, step }: Props) {
   return (
     <Page title={survey.name} loading={userLoading}>
       {member && survey && (
-        <Flex gap={4} direction={['row', 'row', 'column']} align="start" justify="stretch">
-          <Steps
+        <Flex gap={4} w='full' direction={['row', 'row', 'column']} align="start" justify="stretch">
+          <Stepper
             orientation={orientation}
-            activeStep={index}
+            index={index}
             my={8}
             colorScheme="primary"
             color="white"
-            responsive={false}
+            w='full'
           >
             {survey.questions.map((q, i) => (
               <Step
-                color="white"
                 key={i}
-                cursor="pointer"
                 onClick={() => {
                   next(i + 1)
                 }}
-              />
+              >
+                <StepIndicator>
+                  <StepStatus
+                    complete={<StepIcon />}
+                    incomplete={<StepNumber />}
+                    active={<StepNumber />}
+                  />
+                </StepIndicator>
+
+
+                <StepSeparator />
+              </Step>
             ))}
-          </Steps>
+          </Stepper>
           <Box flex="shrink" w="full">
             <Markdown content={survey.description} />
             {(question && (
@@ -203,19 +217,19 @@ export default function SurveyPage({ survey, question, step }: Props) {
                 )}
               </Box>
             )) || (
-              <Box textAlign="center">
-                <Heading textAlign="center">
-                  Thank you
-                  <br /> for completing the survey!
-                </Heading>
-                <Markdown content={survey.closing?.replaceAll('$NAME$', member.nickname)} />
-                {event && (
-                  <ButtonLink href={`/events/${event.id}`} mt={4}>
-                    Rate Event Attendees
-                  </ButtonLink>
-                )}
-              </Box>
-            )}
+                <Box textAlign="center">
+                  <Heading textAlign="center">
+                    Thank you
+                    <br /> for completing the survey!
+                  </Heading>
+                  <Markdown content={survey.closing?.replaceAll('$NAME$', member.nickname)} />
+                  {event && (
+                    <ButtonLink href={`/events/${event.id}`} mt={4}>
+                      Rate Event Attendees
+                    </ButtonLink>
+                  )}
+                </Box>
+              )}
           </Box>
         </Flex>
       )}
