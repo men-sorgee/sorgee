@@ -18,6 +18,7 @@ import {
   MemberReport,
   MemberShare
 } from "./";
+import { MemberDistance } from "./MemberDistance";
 
 export type MemberActionsProps = {
   member: Partial<Member>
@@ -41,14 +42,16 @@ export const MemberActions = chakra(({ member, size = ['sm', 'md', 'lg'] }: Memb
           <MemberShare member={member} size={size} />
         </ButtonGroup>
       </Flex>
-      <Flex w="full">
+      <Flex w="full" align='bottom' justify='space-between'>
         <Text fontSize="xs">
           {member?.show_profile && member.last_login && (
             <>Last Login: {formatDistanceToNowStrict(new Date(member.last_login))} ago</>
           )}
         </Text>
-        <Spacer />
-        <Text fontSize="xs">
+        <Text fontSize="xs" textAlign='center'>
+          <MemberDistance member={member} />
+        </Text>
+        <Text fontSize="xs" textAlign='right'>
           Member Since: {new Date(member.approved_date || member.date_created).toLocaleDateString()}
         </Text>
       </Flex>

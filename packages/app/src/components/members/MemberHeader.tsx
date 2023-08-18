@@ -26,6 +26,7 @@ export const MemberHeader = ({
     <Lazy>
       <Flex direction="column" align="center" justify="center" gap={2}>
         <MemberIcon member={member} size={size} {...props}>
+
           {iconChildren}
         </MemberIcon>
         {(minimal && <>{children}</>) || (

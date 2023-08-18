@@ -16,6 +16,7 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  Select,
   Show,
   Spinner,
   useColorMode
@@ -55,6 +56,7 @@ export default function UserMenu(_props: Props) {
     level,
     hasFeature,
     loading,
+    mutate
   } = useUser({
     redirectsEnabled: false,
   })
@@ -92,6 +94,23 @@ export default function UserMenu(_props: Props) {
                 {member?.email}
               </span>
             </Box>
+            <MenuItem>
+              <Select name="presence"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  e.preventDefault()
+                }}
+                onChange={(e) => {
+
+                  return mutate({
+                    presence: e.target.value as any
+                  })
+                }}>
+                <option value="online">Online</option>
+                <option value="away">Away</option>
+                <option value="offline">Offline</option>
+              </Select>
+            </MenuItem>
             <MenuDivider />
             <MenuItem
               icon={

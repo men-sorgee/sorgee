@@ -108,7 +108,7 @@ export default function Members() {
 
 
   return (
-    <Page title={'Men Nearby'} description={''} loading={loading || fieldsLoading} w="full">
+    <Page title={'Member Directory'} description={''} loading={loading || fieldsLoading} w="full">
       <FormProvider {...methods}>
         <form
           id="filter-form"

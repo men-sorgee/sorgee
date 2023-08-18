@@ -53,23 +53,25 @@ function GNHApp({ Component, pageProps, router }: AppProps) {
       <GoogleAnalytics trackPageViews />
       <SWRProvider>
         <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
-          <MetaContextProvider>
-            <SessionProvider session={pageProps.session}>
-              <UserProvider>
-                <AppNotificationsProvider>
-                  <UserNotificationsProvider>
-                    <MessagesProvider>
-                      <React.StrictMode>
+          <React.StrictMode>
+
+            <MetaContextProvider>
+              <SessionProvider session={pageProps.session}>
+                <UserProvider>
+                  <AppNotificationsProvider>
+                    <UserNotificationsProvider>
+                      <MessagesProvider>
                         <Layout fonts={[heading.variable, body.variable, mono.variable]}>
                           <Content {...pageProps} />
                         </Layout>
-                      </React.StrictMode>
-                    </MessagesProvider>
-                  </UserNotificationsProvider>
-                </AppNotificationsProvider>
-              </UserProvider>
-            </SessionProvider>
-          </MetaContextProvider>
+
+                      </MessagesProvider>
+                    </UserNotificationsProvider>
+                  </AppNotificationsProvider>
+                </UserProvider>
+              </SessionProvider>
+            </MetaContextProvider>
+          </React.StrictMode>
         </ChakraProvider>
       </SWRProvider >
     </>

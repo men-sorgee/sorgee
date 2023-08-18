@@ -1,18 +1,32 @@
-import { useUser } from 'hooks'
-import { brand } from 'lib/config/brand'
-import { MemberLevel } from 'lib/models'
-import { useRouter } from 'next/router'
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import { ErrorBoundary } from 'react-error-boundary'
+import { useUser } from "hooks";
+import { brand } from "lib/config/brand";
+import { MemberLevel } from "lib/models";
+import { useRouter } from "next/router";
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
+import { ErrorBoundary } from "react-error-boundary";
 
-import { Box, Flex, Slide, Spacer, Text, useDisclosure } from '@chakra-ui/react'
+import {
+  Box,
+  Flex,
+  Slide,
+  Spacer,
+  Text,
+  useDisclosure
+} from "@chakra-ui/react";
 
-import { postJSON } from '../lib/utils'
-import Actions from './actions'
-import Footer from './Footer'
-import Header from './Header'
-import Meta from './Meta'
-import Splash from './Splash'
+import { postJSON } from "../lib/utils";
+import Actions from "./actions";
+import Footer from "./Footer";
+import Header from "./Header";
+import Meta from "./Meta";
+import Splash from "./Splash";
 
 export const constrained = {
   maxW: brand.breakPoints,
@@ -34,7 +48,9 @@ export default function Layout({
   const [path, setPath] = useState<string>()
   const [hideFooter, setHideFooter] = useState<boolean>(false)
   const { isOpen, onOpen } = useDisclosure()
-  const showActions = authenticated && level >= MemberLevel.pledge
+
+  const showActions = useMemo(() => authenticated && level >= MemberLevel.pledge, [authenticated, level])
+
   useEffect(() => {
     if (path == undefined) {
       setPath(router?.asPath)
@@ -47,6 +63,7 @@ export default function Layout({
       }
     }
   }, [authenticated, loading, onOpen, isOpen, showActions, level, path, router?.asPath])
+
   const headerRef = useRef<HTMLDivElement>(null)
 
   const handleRouteChange = useCallback((url: string) => {

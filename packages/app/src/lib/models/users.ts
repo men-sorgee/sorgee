@@ -469,6 +469,7 @@ export const memberFeatures: MemberFeature[] = [
   'chat',
   'share_photos',
 ]
+
 export type Coordinates = {
   type: 'Point'
   coordinates: [number, number]

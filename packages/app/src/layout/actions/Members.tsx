@@ -5,6 +5,8 @@ import NextLink from "next/link";
 import { Icon, IconButton, Link } from "@chakra-ui/react";
 import { UserGroupIcon } from "@heroicons/react/24/outline";
 
+import { useGeolocation } from "../../hooks/use-geolocation";
+
 interface Props {
   member: Member
   active: boolean
@@ -15,6 +17,8 @@ interface Props {
 
 const MembersAction = ({ member, active, hasFeature, iconSize, iconDimensions }: Props) => {
   const level = MemberLevel[member?.user_type]
+  const { capture } = useGeolocation(member?.show_location)
+
   if (level < MemberLevel.brother) {
     return <></>
   }
@@ -34,9 +38,10 @@ const MembersAction = ({ member, active, hasFeature, iconSize, iconDimensions }:
       <Link href="/members" as={NextLink} zIndex="fixed">
         <IconButton
           variant="primary"
+          onClick={() => capture()}
           size={iconSize}
           w={iconDimensions}
-          icon={<Icon as={UserGroupIcon} w={iconDimensions} h={iconDimensions} />}
+          icon={< Icon as={UserGroupIcon} w={iconDimensions} h={iconDimensions} />}
           zIndex="fixed"
           color={active ? 'accent.500' : 'white'}
           aria-label={'View Members'}

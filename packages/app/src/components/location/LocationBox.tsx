@@ -21,7 +21,7 @@ export const LocationBox = chakra(({ member, children, ...props }: LocationBoxPr
       {show_location && location == undefined && (
         <Box {...props}>
           {children}
-          <LocationCapture />
+          <LocationCapture>Share Location</LocationCapture>
         </Box>
       )}
     </>

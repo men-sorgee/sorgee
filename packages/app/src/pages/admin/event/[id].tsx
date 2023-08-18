@@ -266,7 +266,7 @@ export default function EventAdmin() {
             />}
           </Box>
           {event?.status == EventStatusType.Occurred && (
-            <StatGroup justifyItems='space-between' alignItems="center">
+            <StatGroup>
               {stats?.prepaid_count != undefined && (<>
                 <Stat>
                   <StatLabel>Collected Online</StatLabel>
@@ -314,6 +314,8 @@ export default function EventAdmin() {
                 </StatHelpText>
               </Stat>
             </StatGroup>
+
+
           )}
         </EventCard>
       )

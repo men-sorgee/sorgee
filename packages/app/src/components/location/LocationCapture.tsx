@@ -1,13 +1,15 @@
 'use client'
 import { Coordinates } from "lib/models";
 import { gradient, postJSON } from "lib/utils";
-import { useCallback, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 
 import { Button } from "@chakra-ui/react";
 
-export type LocationCaptureProps = {}
+export type LocationCaptureProps = {
+  children?: ReactNode
+}
 
-export const LocationCapture = () => {
+export const LocationCapture = ({ children }) => {
   const [sharedLocation, setSharedLocation] = useState<boolean>(undefined)
 
   useEffect(() => {
@@ -31,7 +33,7 @@ export const LocationCapture = () => {
         }).catch(console.error)
       },
       (error) => {
-        console.error('Error getting location:', error.message)
+        console.warn('Error getting location:', error.message)
       }
     )
   }, [])
@@ -50,7 +52,7 @@ export const LocationCapture = () => {
   return (
     <>
       <Button onClick={getLocation} bgGradient={gradient('gray')}>
-        Share Location
+        {children}
       </Button>
     </>
   )

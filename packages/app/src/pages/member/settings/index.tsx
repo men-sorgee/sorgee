@@ -469,7 +469,7 @@ function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps & { fieldM
                             label="Show Location "
                             help="Turn this off, if you'd prefer to not display this information to other verified members."
                           />
-                          {showLocation && <LocationCapture />}
+                          {showLocation && <LocationCapture>Share Location</LocationCapture>}
                         </Flex>
                       </Alert>
                     )}
