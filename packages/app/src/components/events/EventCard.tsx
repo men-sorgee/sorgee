@@ -16,12 +16,14 @@ import {
   Divider,
   Flex,
   Heading,
+  HStack,
   Icon,
   LinkBox,
   LinkOverlay,
   Show,
   Spacer,
   Stat,
+  StatGroup,
   StatHelpText,
   StatLabel,
   StatNumber,
@@ -90,32 +92,32 @@ export const EventCard = ({
     if (completed) return isToday(date) ? <h4>Event has started!</h4> : null
     if (days < 99) {
       return (
-        <Flex flex="shrink" gap={2} align="center">
+        <StatGroup as={HStack} gap={2}>
           <Stat>
-            <StatNumber textAlign="center" fontSize={['lg', 'xl']}>
+            <StatNumber fontSize={['lg', 'xl']}>
               {days.toString().padStart(2, '0')}
             </StatNumber>
             <StatHelpText>Days</StatHelpText>
           </Stat>
           <Stat>
-            <StatNumber textAlign="center" fontSize={['lg', 'xl']}>
+            <StatNumber fontSize={['lg', 'xl']}>
               {hours.toString().padStart(2, '0')}
             </StatNumber>
             <StatHelpText>Hours</StatHelpText>
           </Stat>
           <Stat>
-            <StatNumber textAlign="center" fontSize={['lg', 'xl']}>
+            <StatNumber fontSize={['lg', 'xl']}>
               {minutes.toString().padStart(2, '0')}
             </StatNumber>
             <StatHelpText>Minutes</StatHelpText>
           </Stat>
           <Stat>
-            <StatNumber textAlign="center" fontSize={['lg', 'xl']}>
+            <StatNumber fontSize={['lg', 'xl']}>
               {seconds.toString().padStart(2, '0')}
             </StatNumber>
             <StatHelpText>Seconds</StatHelpText>
           </Stat>
-        </Flex>
+        </StatGroup>
       )
     }
   }
@@ -123,6 +125,7 @@ export const EventCard = ({
   const location = event?.location as Location
   useEffect(() => {
     if (event && eventStartDate == undefined) {
+      setDate(new Date(event.datetime))
       setEventStartDate(getEventDate(event.datetime))
       setEventEndDate(getEventDate(event.datetime_end))
     }
@@ -304,9 +307,9 @@ export const EventCard = ({
       </CardBody>
 
       {!hideFooter && (
-        <CardFooter as={Flex} direction="column">
+        <CardFooter as={Flex} direction="column" >
           <Flex direction={['column', 'row']} gap={4} w="full" align="center">
-            {event.status == 'scheduled' && eventStartDate?.dateOnly && showAddToCalendar && (
+            {event.status == 'scheduled' && showAddToCalendar && (
               <>
                 <AddToCalendarButton
                   uid={event.id}
@@ -338,12 +341,12 @@ export const EventCard = ({
             )}
             {footer}
           </Flex>
-          {(event.status == 'planned' && (
+          {event.status == 'planned' && (
             <Text as="em">* This is date is subject to change.</Text>
-          )) ||
-            ((event.status == 'scheduled' && date && isFuture(date)) && (
-              <Countdown date={date} renderer={renderer} />
-            ))}
+          )}
+          {(event.status == 'scheduled' && date && isFuture(date)) && (
+            <HStack spacing={2} w='full'><Spacer flexGrow={1} /><Countdown date={date} renderer={renderer} /></HStack>
+          )}
         </CardFooter>
       )}
     </Card>
