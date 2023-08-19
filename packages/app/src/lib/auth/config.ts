@@ -5,7 +5,8 @@ import {
   findUser,
   findUserByAccount,
   getUser,
-  recordUserLogin
+  recordUserLogin,
+  recordUserLogout
 } from "lib/services/db/server/users";
 import {
   SendGridCategory,
@@ -112,9 +113,9 @@ export const authOptions: AuthOptions = {
       console.log('event:signIn')
       await recordUserLogin(user.id)
     },
-    async signOut(props) {
-      console.log('event:signOut', props)
-      //if (session?.user.id) await recordUserLogout(session.user.id)
+    async signOut({ session }) {
+      console.log('event:signOut')
+      if (session?.user?.id) await recordUserLogout(session.user.id)
     },
   },
   providers: [

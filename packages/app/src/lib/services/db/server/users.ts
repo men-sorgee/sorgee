@@ -62,16 +62,14 @@ export async function recordUserLogin(id: string) {
   )
 }
 
-export async function extendUserPresence(id: string) {
-  const threeHours = addHours(getUTCNow(), 3)
-  await updateUser(id,
+export async function recordUserLogout(id: string) {
+  return await updateUser(id,
     {
-      presence: 'online',
-      sessionExpire: threeHours
+      presence: 'offline'
     }
   )
-  await expireSessions()
 }
+
 
 export async function expireSessions() {
   const repo = await getRepository<User>(User)
