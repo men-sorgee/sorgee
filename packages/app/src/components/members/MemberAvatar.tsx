@@ -62,6 +62,17 @@ export const MemberAvatar = chakra(
             />
           </Tooltip>
         )}
+        {member?.presence == 'away' && (
+          <Tooltip label={lastLogin} placement="top">
+            <AvatarBadge
+              borderWidth="thin"
+              borderColor="orange.500"
+              bgGradient="linear(to-b, green.200, green.400)"
+              boxSize={'.75em'}
+              shadow="md"
+            />
+          </Tooltip>
+        )}
       </Avatar>
     )
   }
