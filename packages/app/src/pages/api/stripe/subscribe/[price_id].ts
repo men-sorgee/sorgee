@@ -63,17 +63,15 @@ export default async function SubscribeProduct(req, res) {
       },
       client_reference_id: member.id,
       allow_promotion_codes: true,
-      payment_intent_data: {
+      subscription_data: {
         description: price.description,
         metadata: {
           name: price.name,
           userId: member.id,
           type: 'subscription'
-        },
-        statement_descriptor: 'Fraternity Dues',
-        receipt_email: member.email,
-      },
 
+        },
+      },
       cancel_url: `${baseUrl}/member/subscription/cancelled?product=${price.product}`,
       success_url: `${baseUrl}/member/subscription/success?product=${price.product}`
     })
