@@ -9,7 +9,7 @@ import {
   PhotoCapture
 } from "components";
 import { useInviteAdmin, useUser } from "hooks";
-import { EventInvite, GroupEvent, Member, MemberLevel } from "lib/models";
+import { GroupEvent, Member, MemberLevel } from "lib/models";
 import { getAssetUrl } from "lib/utils";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
@@ -287,9 +287,9 @@ export default function InviteAdmin() {
         <ButtonLink colorScheme="gray" href={'/admin/event/' + event?.id} my={4}>
           Return to Event
         </ButtonLink>
-        {/**<ButtonLink colorScheme="primary" href="/admin/scan" my={4}>
+        <ButtonLink colorScheme="primary" href="/admin/scan" my={4}>
           Scan Another
-        </ButtonLink>**/}
+        </ButtonLink>
       </HStack>
     </Page>
   )

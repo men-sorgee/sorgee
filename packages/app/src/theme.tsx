@@ -1,4 +1,3 @@
-import { StepsTheme } from "chakra-ui-steps";
 import { brand } from "lib/config/brand";
 
 import { defineStyleConfig, StyleFunctionProps } from "@chakra-ui/react";
@@ -28,18 +27,6 @@ export default function getTheme(body: any, heading: any, mono: any) {
           control: {
             borderRadius: '12px', // change the border radius
             borderColor: 'accent.500' // change the border color
-          }
-        }
-      },
-      Steps: {
-        ...StepsTheme,
-        baseStyle: (props) => {
-          return {
-            ...StepsTheme.baseStyle(props),
-            iconLabel: {
-              ...StepsTheme.baseStyle(props).iconLabel,
-              color: 'white'
-            }
           }
         }
       },

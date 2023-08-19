@@ -213,10 +213,10 @@ export default function EventAdmin() {
             </>
           )}
           <Flex direction={['column', 'row']} gap={2} justify="space-between" w="full">
-            {/**<ButtonLink size={['sm', 'md', 'lg']} href="/admin/scan" w="full">
+            <ButtonLink size={['sm', 'md', 'lg']} href="/admin/scan" w="full">
               Scan
-                </ButtonLink>
-            <Spacer w={[0, 40, 800]} />**/}
+            </ButtonLink>
+            <Spacer w={[0, 40, 800]} />
             {event?.status == 'scheduled' && <Flex gap={1} w={'full'} justify="stretch">
               <Input
                 type="email"

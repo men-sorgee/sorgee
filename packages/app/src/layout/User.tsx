@@ -31,13 +31,15 @@ import {
   CreditCardIcon,
   IdentificationIcon,
   MoonIcon,
+  PaintBrushIcon,
   PaperAirplaneIcon,
   ServerStackIcon,
   SquaresPlusIcon,
   SunIcon,
   UserCircleIcon,
   UserGroupIcon,
-  UsersIcon
+  UsersIcon,
+  ViewfinderCircleIcon
 } from "@heroicons/react/24/outline";
 
 interface Props { }
@@ -288,7 +290,7 @@ export default function UserMenu(_props: Props) {
                     >
                       Event Admin
                     </MenuItem>
-                    {/**<MenuItem
+                    <MenuItem
                       icon={<ViewfinderCircleIcon color={'white'} width={'1.5rem'} />}
                       bg="black"
                       _hover={{ bg: 'gray.400', textDecoration: 'none' }}
@@ -305,7 +307,7 @@ export default function UserMenu(_props: Props) {
                       href="/styles"
                     >
                       Styles
-                    </MenuItem>**/}
+                    </MenuItem>
                   </>
                 )}
               </>

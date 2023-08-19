@@ -56,7 +56,8 @@
     "typeorm",
     "uncaptured",
     "uuidv",
-    "wellenplan"
+    "wellenplan",
+    "Zxing"
   ],
   "[typescript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
