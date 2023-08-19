@@ -1,11 +1,7 @@
 'use client'
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import {
-  BrowserMultiFormatReader,
-  DecodeHintType,
-  Result
-} from "@zxing/library";
+import { DecodeHintType, Result } from "@zxing/library";
 
 export type ZxingOptions = {
   hints?: Map<DecodeHintType, any>
@@ -27,16 +23,20 @@ export const useZxing = ({
   onResult = () => { },
   onError = () => { },
 }: ZxingOptions = {}) => {
+  const [reader, setReader] = useState(null);
   const ref = useRef<HTMLVideoElement>(null);
 
-  const reader = useMemo<BrowserMultiFormatReader>(() => {
-    const instance = new BrowserMultiFormatReader(hints);
-    instance.timeBetweenDecodingAttempts = timeBetweenDecodingAttempts;
-    return instance;
+  useEffect(() => {
+    import("@zxing/library")
+      .then(({ BrowserMultiFormatReader }) => {
+        const instance = new BrowserMultiFormatReader(hints);
+        instance.timeBetweenDecodingAttempts = timeBetweenDecodingAttempts;
+        setReader(instance);
+      })
   }, [hints, timeBetweenDecodingAttempts]);
 
   useEffect(() => {
-    if (!ref.current) return;
+    if (!ref.current || !reader) return;
     reader.decodeFromConstraints(constraints, ref.current, (result, error) => {
       if (result) onResult(result);
       if (error) onError(error);
@@ -44,7 +44,7 @@ export const useZxing = ({
     return () => {
       reader.reset();
     };
-  }, [ref, reader, constraints, onResult, onError]);
+  })
 
   return { ref };
 };
