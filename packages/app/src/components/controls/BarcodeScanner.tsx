@@ -1,4 +1,4 @@
-
+'use client'
 import { useZxing, ZxingOptions } from "hooks/use-zxing";
 
 export const BarcodeScanner: React.FC<ZxingOptions> = ((options: ZxingOptions = {
