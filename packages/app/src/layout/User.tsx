@@ -103,11 +103,11 @@ export default function UserMenu(_props: Props) {
                   e.preventDefault()
                 }}
                 onChange={(e) => {
-
                   return mutate({
                     presence: e.target.value as any
                   })
-                }}>
+                }}
+                value={member?.presence}>
                 <option value="online">Online</option>
                 <option value="away">Away</option>
                 <option value="offline">Offline</option>
