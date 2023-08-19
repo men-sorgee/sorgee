@@ -12,6 +12,7 @@ export type MemberHeaderProps = MemberIconProps & {
   iconChildren?: ReactNode | ReactNode[]
   children?: ReactNode
   minimal?: boolean
+  onChange?: () => void
 }
 
 export const MemberHeader = ({
@@ -20,12 +21,15 @@ export const MemberHeader = ({
   children,
   minimal = false,
   size = 'lg',
+  onChange,
   ...props
 }: MemberHeaderProps) => {
   return (
     <Lazy>
       <Flex direction="column" align="center" justify="center" gap={2}>
-        <MemberIcon member={member} size={size} {...props}>
+        <MemberIcon member={member} size={size} onChange={() => {
+          if (onChange) onChange()
+        }} {...props}>
 
           {iconChildren}
         </MemberIcon>

@@ -15,9 +15,10 @@ import { CheckBadgeIcon, CurrencyDollarIcon } from "@heroicons/react/24/solid";
 export type MemberBadgeProps = BadgeProps & {
   member: Partial<Member>
   size?: string
+  onChange?: () => void
 }
 
-export const MemberBadge = chakra(({ member, size = 'md', ...props }: MemberBadgeProps) => {
+export const MemberBadge = chakra(({ member, size = 'md', onChange, ...props }: MemberBadgeProps) => {
   const [levelValue, setLevelValue] = useState<MemberLevel>(undefined)
   const [levelName, setLevelName] = useState<string>(undefined)
   const [levelColor, setLevelColor] = useState<string[]>(['red.500', 'red.100'])
@@ -78,7 +79,9 @@ export const MemberBadge = chakra(({ member, size = 'md', ...props }: MemberBadg
   return (
     <HStack spacing={1} alignItems="center" justify="flex-start">
       <UserBadge />
-      {needsVoucher && <MemberVouch member={member} size={size as any} />}
+      {needsVoucher && <MemberVouch member={member} size={size as any} onChange={() => {
+        if (onChange) onChange()
+      }} />}
 
       {levelValue >= MemberLevel.brother && (
         <Icon

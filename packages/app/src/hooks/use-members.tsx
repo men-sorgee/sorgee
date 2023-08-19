@@ -2,7 +2,7 @@
 
 import { MemberSearchQueryParams, SearchableMember } from "lib/models";
 import { useEffect, useState } from "react";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 
 import { ManyItems } from "@directus/sdk";
 
@@ -11,6 +11,7 @@ import { useAuthenticated } from "./use-authenticated";
 export type MemberSearchContext = {
   members: SearchableMember[]
   meta: { total: number; filtered: number }
+  reload: () => void
   pageCount: number
   pageIndex: number
   pageSize: number
@@ -39,13 +40,15 @@ export const useMemberSearch = (
     )
   }, [filters, setFilters, query, page, size, sort])
 
+  const key = `/api/members?limit=${size}&page=${page}&sort=${sort}${filters || ''}`
+
   const {
     data: response,
     error,
     isLoading,
     isValidating,
   } = useSWR<ManyItems<SearchableMember>>(authenticated && !skip
-    ? `/api/members?limit=${size}&page=${page}&sort=${sort}${filters || ''}`
+    ? key
     : null, {
     keepPreviousData: false,
     refreshInterval: 0,
@@ -73,6 +76,9 @@ export const useMemberSearch = (
   const result = {
     members,
     meta,
+    reload: () => {
+      mutate(key, true)
+    },
     pageCount,
     page,
     pageIndex: page - 1,

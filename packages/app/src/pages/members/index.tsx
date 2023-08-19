@@ -104,6 +104,7 @@ export default function Members() {
     loading: membersLoading,
     sortTerm,
     direction,
+    reload
   } = useMemberSearch({ page, size, sort, ...query })
 
 
@@ -180,6 +181,9 @@ export default function Members() {
                     viewer={currentMember}
                     member={member}
                     onClick={() => setId(member.id)}
+                    onChange={() => {
+                      reload()
+                    }}
                   />
                 </Lazy>
               ))}

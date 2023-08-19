@@ -25,6 +25,7 @@ export default function PledgeListPage() {
     members,
     meta,
     loading: pledgesLoading,
+    reload
   } = useMemberSearch({
     size: 100,
     sort: 'approved_date',
@@ -69,6 +70,10 @@ export default function PledgeListPage() {
               viewer={currentMember}
               member={m}
               onClick={() => setPledge(m)}
+              onChange={() => {
+                reload()
+                setPledge(undefined)
+              }}
             ></MemberCard>
           </Lazy>
         ))}

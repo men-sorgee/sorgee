@@ -29,15 +29,17 @@ import { Loading, MemberAvatar } from "../";
 export type MemberVouchProps = Omit<IconButtonProps, 'aria-label'> & {
   member: Partial<Member>
   hideVouch?: boolean
+  onChange?: () => void
 }
 
 export const MemberVouch = chakra(
-  ({ member, hideVouch = false, size = ['sm', 'md', 'lg'], ...props }: MemberVouchProps) => {
+  ({ member, hideVouch = false, size = ['sm', 'md', 'lg'], onChange, ...props }: MemberVouchProps) => {
     const toast = useToast()
     const [working, setWorking] = useState(false)
     const { user_type: level, nickname: name, vouched_by } = member
     const { loading: userLoading, member: me, level: myLevel, reload } = useUser()
     const [showVouchButton, setShowVouchButton] = useState(false)
+    const { onOpen, onClose, isOpen } = useDisclosure()
 
     const {
       data: voucher,
@@ -53,6 +55,7 @@ export const MemberVouch = chakra(
       postJSON<any, VouchingUser>(`/api/members/${member?.id}/vouch`, {}).then(
         ({ data: v, success }) => {
           if (success) {
+            onClose()
             mutate(v).then(() => {
               setWorking(false)
               setShowVouchButton(false)
@@ -62,6 +65,9 @@ export const MemberVouch = chakra(
                 status: 'success',
                 duration: 5000,
                 isClosable: true,
+                onCloseComplete() {
+                  onChange && onChange()
+                },
               })
             })
           } else {
@@ -76,7 +82,7 @@ export const MemberVouch = chakra(
           }
         }
       )
-    }, [member?.id, member?.nickname, mutate, toast])
+    }, [member?.id, member?.nickname, mutate, onChange, toast])
 
     useEffect(() => {
       if (!userLoading && voucher?.id == undefined) {
@@ -88,7 +94,6 @@ export const MemberVouch = chakra(
         setShowVouchButton(false)
       }
     }, [me, member?.id, userLoading, setShowVouchButton, voucher, level, myLevel])
-    const { onOpen, onClose, isOpen } = useDisclosure()
 
     if (member?.id == me?.id) return null
 
@@ -126,7 +131,7 @@ export const MemberVouch = chakra(
                 onOpen()
               }}
             />
-            <PopoverContent color="text">
+            <PopoverContent color="text" zIndex='popover'>
               <PopoverArrow />
               <PopoverCloseButton
                 onClick={(e) => {

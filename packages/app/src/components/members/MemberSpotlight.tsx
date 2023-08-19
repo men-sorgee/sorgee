@@ -105,7 +105,7 @@ export const MemberSpotlight = chakra(
     ...props
   }: MemberSpotlightProps) => {
     const [blocked, setBlocked] = useState(false)
-    const { member, name, level, picture, loading } = useMember(memberId)
+    const { member, name, level, picture, loading, reload } = useMember(memberId)
     const { member: me, level: viewerLevel } = useUser()
     const { setMeta } = useMeta()
 
@@ -186,7 +186,9 @@ export const MemberSpotlight = chakra(
           borderTopLeftRadius="lg"
           overflow="clip"
         >
-          <MemberHeader member={member} size={size} minimal={!full}>
+          <MemberHeader member={member} size={size} minimal={!full} onChange={() => {
+            reload()
+          }}>
             {header}
           </MemberHeader>
           {level == MemberLevel.pledge && (

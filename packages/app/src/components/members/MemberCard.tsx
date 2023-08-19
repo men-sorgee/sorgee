@@ -31,6 +31,7 @@ export type MemberCardProps = CardProps & {
   member: Partial<Member>
   full?: boolean
   onClick?: () => void
+  onChange?: () => void
   href?: string
   children?: ReactNode | ReactNode[]
 }
@@ -43,6 +44,7 @@ export const MemberCard = chakra(
     size = ['lg', 'xl'],
     href = `/member/${member.id}`,
     children,
+    onChange,
     ...props
   }: MemberCardProps) => {
     const levelValue = MemberLevel[member?.user_type || 'applicant']
@@ -79,7 +81,9 @@ export const MemberCard = chakra(
                   }
                 }}
               >
-                <MemberHeader member={member} size={size} minimal={!full}>
+                <MemberHeader member={member} size={size} minimal={!full} onChange={() => {
+                  if (onChange) onChange()
+                }}>
                   {(!member.show_profile && (
                     <>
                       <Flex
@@ -91,7 +95,7 @@ export const MemberCard = chakra(
                         justify="center"
                       >
                         <LockIcon color="primary.500" h={20} w={20} mx={'auto'} />
-                        <Heading as="h3" mt={-10} size="sm" p={0} textAlign="center" color="white">
+                        <Heading as="h3" mt={10} size="sm" p={0} textAlign="center" color="white">
                           PRIVATE PROFILE
                         </Heading>
                       </Flex>
