@@ -1,9 +1,8 @@
 
-import { MemberLevel, UserBuddy } from "lib/models";
+import { MemberLevel, User, UserBuddy } from "lib/models";
 import {
   addUserNotification,
   addUserToCongratsEmail,
-  getMember,
   getUser,
   updateUser
 } from "lib/services/directus/server";
@@ -26,19 +25,28 @@ export default async function VouchForMember(
     const { id } = req.query
     const user_id = String(id)
 
-    const them = await getUser(user_id)
+
+    if (!user_id) throw new Error('Not Found')
+
+    const them = await getUser(user_id, [
+      'id',
+      'nickname',
+      'vouched_by.id',
+      'vouched_by.nickname',
+      'vouched_by.picture',
+    ])
+    if (!them) throw new Error('Not Found')
 
     switch (method) {
       case 'GET': {
         res.setHeader('Cache-Control', 'cache, store, max-age=30')
         if (them.vouched_by) {
-          const voucher = await getMember(them.vouched_by as string)
+          const voucher = them.vouched_by as Partial<User>
           const { id, nickname, picture } = voucher || {}
           return res.status(200).json(ApiResponse({ id, nickname, picture }))
         } else {
           return res.status(200).json(ApiResponse({ id: undefined }))
         }
-        break
       }
       case 'POST': {
         if (them == null || them.user_type != 'pledge' || them.vouched_by != undefined)
@@ -69,7 +77,6 @@ export default async function VouchForMember(
             picture: me.picture,
           })
         )
-        break
       }
       case 'DELETE': {
         if (them == null || them.user_type != 'pledge' || them.vouched_by != undefined) {

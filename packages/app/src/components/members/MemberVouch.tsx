@@ -33,7 +33,7 @@ export type MemberVouchProps = Omit<IconButtonProps, 'aria-label'> & {
 }
 
 export const MemberVouch = chakra(
-  ({ member, hideVouch = false, size = ['sm', 'md', 'lg'], onChange, ...props }: MemberVouchProps) => {
+  ({ member, size = ['sm', 'md', 'lg'], onChange, ...props }: MemberVouchProps) => {
     const toast = useToast()
     const [working, setWorking] = useState(false)
     const { user_type: level, nickname: name, vouched_by } = member
@@ -82,7 +82,7 @@ export const MemberVouch = chakra(
           }
         }
       )
-    }, [member?.id, member?.nickname, mutate, onChange, toast])
+    }, [member?.id, member?.nickname, mutate, onChange, onClose, toast])
 
     useEffect(() => {
       if (!userLoading && voucher?.id == undefined) {
@@ -93,7 +93,7 @@ export const MemberVouch = chakra(
       if (voucher?.id) {
         setShowVouchButton(false)
       }
-    }, [me, member?.id, userLoading, setShowVouchButton, voucher, level, myLevel])
+    }, [me, member?.id, userLoading, setShowVouchButton, voucher?.id, level, myLevel])
 
     if (member?.id == me?.id) return null
 
@@ -113,7 +113,7 @@ export const MemberVouch = chakra(
             <AvatarBadge as={CheckIcon} bg="green" borderColor="white" boxSize={4} />
           </MemberAvatar>
         )}
-        {showVouchButton && !hideVouch && (
+        {showVouchButton && (
           <Popover isOpen={isOpen}>
             <IconButton
               size={'sm'}
