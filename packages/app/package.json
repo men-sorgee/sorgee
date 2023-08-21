@@ -80,7 +80,7 @@
     "web-vitals": "^3.4.0"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "^13.4.10",
+    "@next/eslint-plugin-next": "^13.4.19",
     "@testing-library/react": "^14.0.0",
     "@types/formidable": "^3.4.1",
     "@types/node": "^20.5.0",
