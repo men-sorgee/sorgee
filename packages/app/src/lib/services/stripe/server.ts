@@ -55,7 +55,7 @@ export async function getProductPrices(): Promise<ProductView[]> {
           type: subscriptionData[product.id].type,
           features: subscriptionData[product.id].features,
           label: subscriptionData[product.id].label,
-          prices: prices.map((price) => {
+          prices: prices.filter(p => p.active).map((price) => {
             return {
               id: price.id,
               amount: price.unit_amount / 100,
@@ -66,6 +66,12 @@ export async function getProductPrices(): Promise<ProductView[]> {
       })
   )
 
+  plans.forEach((plan) => {
+    // sort prices
+    plan.prices = plan.prices.sort((a, b) => a.amount - b.amount)
+  })
+
+  // sort plans
   const sortedPlans = plans.sort((a, b) => a.prices[0].amount - b.prices[0].amount)
 
   return sortedPlans
