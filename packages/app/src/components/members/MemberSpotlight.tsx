@@ -106,7 +106,7 @@ export const MemberSpotlight = chakra(
   }: MemberSpotlightProps) => {
     const [blocked, setBlocked] = useState(false)
     const { member, name, level, picture, loading, reload } = useMember(memberId)
-    const { member: me, level: viewerLevel } = useUser()
+    const { member: me, level: viewerLevel, hasFeature } = useUser()
     const { setMeta } = useMeta()
 
     useEffect(() => {
@@ -441,7 +441,7 @@ export const MemberSpotlight = chakra(
             </AccordionItem>
           )}
 
-          {full && member.show_events && level > MemberLevel.pledge && (
+          {full && member.show_events && level > MemberLevel.pledge && hasFeature('view_attendees') && (
             <AccordionItem>
               <AccordionButton>
                 <Box as="span" flex="1" textAlign="left" color="text">
