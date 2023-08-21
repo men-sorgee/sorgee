@@ -1,26 +1,33 @@
-import { Page, Plan } from "components";
-import { useProducts, useStripeSession, useUser } from "hooks";
-import { MembershipType, ProductView } from "lib/models";
+import { Page, Plans } from "components";
+import { useProducts, useUser } from "hooks";
+import { MembershipRenewalType, MembershipType } from "lib/models";
 import { useRouter } from "next/router";
 import { event } from "nextjs-google-analytics";
-import { use, useEffect, useState } from "react";
-
-import { Heading, Text } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 
 export default function SubscriptionCancelledPage() {
-  const [product, setProduct] = useState<ProductView>(null)
+  const [item, setItem] = useState<{
+    plan: MembershipType
+    interval: MembershipRenewalType
+    product_id: string
+  }>(null)
   const router = useRouter()
   const { products, loading: productsLoading } = useProducts()
   const { member, loading } = useUser()
-  const { product: productId } = router.query
+  const { price: price_id } = router.query
 
   useEffect(() => {
-    if (!loading && !productsLoading && products && productId) {
-      const p = products.find((p) => p.id == String(productId))
-      if (!p) return
-      setProduct(p)
+    if (!loading && !productsLoading && products && price_id) {
+      const product = products.find((p) => p.prices.find(price => price.id == String(price_id)))
+      const price = product.prices.find(i => i.id == String(price_id))
+      if (!price) return
+      setItem({
+        plan: MembershipType[product.type],
+        interval: price.interval,
+        product_id: product.id
+      })
     }
-  }, [loading, productsLoading, products, productId])
+  }, [loading, productsLoading, products, price_id, item?.interval])
 
   useEffect(() => {
     if (
@@ -28,26 +35,24 @@ export default function SubscriptionCancelledPage() {
       !productsLoading &&
       products &&
       member?.id &&
-      productId &&
-      product
+      item
+
     ) {
       event('plans_purchase_cancelled', {
         category: 'monetization',
-        plan: MembershipType[product.type],
-        productId,
+        plan: MembershipType[item.plan],
+        product: item.product_id,
         userId: member.id
       })
       setTimeout(async () => {
         await router.push('/member/subscription')
-      }, 1000)
+      }, 5000)
     }
-  }, [member, loading, productId, router, productsLoading, products, product])
+  }, [member, loading, router, productsLoading, products, item])
 
   return (
     <Page title="Subscription" loading={loading}>
-      <Text fontSize="xl" textAlign="center">
-        Your purchase was cancelled.
-      </Text>
+      <Plans allowSubscribe={true} />
     </Page>
   )
 }

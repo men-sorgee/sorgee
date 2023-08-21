@@ -1,56 +1,58 @@
 import { Page, Plan } from "components";
-import { useProducts, useStripeSession, useUser } from "hooks";
-import { MembershipType, ProductView } from "lib/models";
+import { useProducts, useUser } from "hooks";
+import {
+  MembershipNames,
+  MembershipRenewalType,
+  MembershipType
+} from "lib/models";
 import { useRouter } from "next/router";
 import { event } from "nextjs-google-analytics";
 import { useEffect, useState } from "react";
 
-import { Heading, Text } from "@chakra-ui/react";
+import { Text } from "@chakra-ui/react";
 
 export default function SubscriptionSuccessPage() {
-  const [product, setProduct] = useState<ProductView>(null)
+  const [item, setItem] = useState<{
+    plan: MembershipNames
+    interval: MembershipRenewalType
+    product_id: string
+  }>(null)
   const router = useRouter()
   const { products, loading: productsLoading } = useProducts()
   const { member, loading } = useUser()
-  const { product: productId } = router.query
+  const { price: price_id } = router.query
 
   useEffect(() => {
-    if (!loading && !productsLoading && products && productId) {
-      const subscription = products.find((p) => p.id == String(productId))
-      if (!subscription) return
-      setProduct(subscription)
-    }
-  }, [loading, productsLoading, products, productId])
-
-  useEffect(() => {
-    if (
-      !loading &&
-      !productsLoading &&
-      products &&
-      member?.id &&
-      productId &&
-      product
-    ) {
-      event('purchase', {
+    if (!loading && !productsLoading && products && price_id) {
+      const product = products.find((p) => p.prices.find(price => price.id == String(price_id)))
+      const price = product.prices.find(i => i.id == String(price_id))
+      if (!price) return
+      event('plans_purchase_cancelled', {
         category: 'monetization',
         plan: MembershipType[product.type],
-        productId,
-        userId: member.id,
-        value: product.prices[member?.renewal_type || 'monthly'],
-        currency: product.currency
+        product: product.id,
+        userId: member.id
+      })
+      setItem({
+        plan: product.type,
+        interval: price.interval,
+        product_id: product.id
       })
       setTimeout(async () => {
-        await router.push('/member/account/plan')
-      }, 5000)
+        await router.push('/member/subscription')
+      }, 1000)
     }
-  }, [member, loading, productId, router, productsLoading, products, product])
+  }, [loading, productsLoading, products, price_id, item?.interval, member?.id, router])
+
+
 
   return (
     <Page title="Subscription Success" loading={loading}>
       <Text>
         Thanks for contributing with your membership subscription. This money
-        will go to help paying for the servers needed for all you horny fuckers.
+        will go to help paying for the servers needed for you horny fuckers.
       </Text>
+      <Plan plan={item?.plan} interval={item?.interval} />
     </Page>
   )
 }

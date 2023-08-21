@@ -1,4 +1,9 @@
-import { MemberFeature, MembershipType, ProductView } from "lib/models";
+import {
+  MemberFeature,
+  MembershipType,
+  PriceView,
+  ProductView
+} from "lib/models";
 import { subscriptionData } from "lib/services/stripe/client";
 import StripeClient, { Stripe } from "stripe";
 
@@ -18,54 +23,52 @@ export function getClient() {
   return stripeClient
 }
 
-export type ProductPriceView = ProductView & Omit<Stripe.Price, 'type'>
+export type ProductPriceView = PriceView & Omit<Stripe.Price, 'type'>
 
-let Products: { [key: string]: ProductView } = null
 
-export async function getProducts(): Promise<{ [key: string]: ProductView }> {
-  if (Products) return Products;
+
+
+export async function getProductPrices(): Promise<ProductView[]> {
 
   const stripe = getClient()
-  const { data: prices } = await stripe.prices.list()
+  const { data: products } = await stripe.products.list({
+    type: 'service',
+    active: true
+  })
+
   const plans = await Promise.all(
-    prices
-      .filter((p) => p.active && p.type === 'recurring')
-      .map(async (price) => {
-        const product = await stripe.products.retrieve(price.product as string)
+    products
+      .filter((product) => subscriptionData[product.id]?.enabled)
+      .map(async (product) => {
+
+        const { data: prices } = await stripe.prices.list({
+          active: true,
+          type: 'recurring',
+          product: product.id
+        })
+        const { id, name, description } = product
         return {
-          id: price.id,
-          product: product.id,
-          name: product.name,
-          description: product.description,
-          price: price,
-          amount: price.unit_amount,
-          interval: price.recurring.interval,
-          currency: price.currency,
-          ...subscriptionData[product.id],
-        }
+          id,
+          name,
+          description,
+          currency: 'usd',
+          type: subscriptionData[product.id].type,
+          features: subscriptionData[product.id].features,
+          label: subscriptionData[product.id].label,
+          prices: prices.map((price) => {
+            return {
+              id: price.id,
+              amount: price.unit_amount / 100,
+              interval: price.recurring.interval,
+            }
+          })
+        } as ProductView
       })
   )
 
-  const sortedPlans = plans.sort((a, b) => a.price - b.price)
+  const sortedPlans = plans.sort((a, b) => a.prices[0].amount - b.prices[0].amount)
 
-  const products: { [key: string]: ProductView } = Products = sortedPlans.reduce(
-    (acc, { name, price, amount, interval, ...details }) => {
-      if (!acc[name]) {
-        acc[name] = {
-          name,
-          priceData: [],
-          prices: {},
-          ...details,
-        }
-      }
-      acc[name].priceData.push(price)
-      acc[name].prices[interval] = amount
-      return acc
-    },
-    {}
-  )
-
-  return products
+  return sortedPlans
 }
 
 export type SubscriptionExtension = {

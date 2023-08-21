@@ -35,14 +35,14 @@ export const useInvite = (eventId: string): InviteResults => {
     }
   }, [invite, event, user, setEvent, setUser])
 
+  const stripeKey = `/api/stripe/invites/${invite?.id}`
   return {
     invite,
     event,
     user,
     loading: isLoading,
-    refund: () =>
-      deleteJSON<any, RefundResponse>(`/api/stripe/invite/${invite?.id}`),
-    pay: () => getJSON<PurchaseResponse>(`/api/stripe/invite/${invite?.id}`),
+    refund: () => deleteJSON<any, RefundResponse>(stripeKey),
+    pay: () => getJSON<PurchaseResponse>(stripeKey),
     mutate: async ({ rsvp, reason, paid_at, paid }: Partial<EventUser>) => {
       const {
         data: i,

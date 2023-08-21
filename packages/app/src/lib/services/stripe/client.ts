@@ -2,15 +2,18 @@ import { MembershipType } from "lib/models";
 
 const subscriptionData = {
   prod_O1Vn4HTEQ7zIi4: {
+    enabled: true,
     type: MembershipType[MembershipType.free],
     features: ['view_directory', 'flirt'],
+    label: 'Nearly Free!'
   },
   prod_O1PIu1Fr6aHIYV: {
+    enabled: true,
     type: MembershipType[MembershipType.basic],
-    features: ['view_directory', 'flirt', 'view_attendees', 'buddy_list'],
-    label: 'Popular',
+    features: ['view_directory', 'flirt', 'view_attendees', 'buddy_list']
   },
   prod_O1PVvHrcOFN9kR: {
+    enabled: true,
     type: MembershipType[MembershipType.plus],
     features: ['view_directory', 'flirt', 'view_attendees', 'buddy_list', 'chat', 'share_photos'],
   },

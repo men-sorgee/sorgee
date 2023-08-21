@@ -13,7 +13,7 @@ export default async function DeleteUser(
     const cancelled = String(c) == 'true'
     if (user.membership_type != 'none' && !cancelled) {
       // user has a subscription, we need to cancel this first
-      return res.redirect(`/api/stripe/cancel?callbackUrl=/api/me/delete?cancelled=true`)
+      return res.redirect(`/api/stripe/subscriptions/cancel?callbackUrl=/api/me/delete?cancelled=true`)
     }
 
     await updateUser<User>(user.id, {

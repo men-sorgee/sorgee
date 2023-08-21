@@ -47,7 +47,7 @@ export const Plan = ({ plan, interval }: Params) => {
             Your Plan: {product.name}
           </Heading>
           <Heading as="h3">
-            ${product.prices[interval] / 100} / {interval == 'month' ? 'mo' : 'yr'}
+            ${product.prices[interval].price / 100} / {interval == 'month' ? 'mo' : 'yr'}
           </Heading>
           <Text m={0} p={0}>
             {product.description}
@@ -91,7 +91,7 @@ export const Plan = ({ plan, interval }: Params) => {
             w="full"
             position="inherit"
             onSuccess={async () => {
-              window.location.href = '/api/stripe/cancel'
+              window.location.href = '/api/stripe/subscriptions/cancel'
             }}
             size="lg"
             bg="red.500"

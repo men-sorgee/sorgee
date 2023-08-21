@@ -13,12 +13,12 @@ export const useProducts = (): ProductResults => {
     data: products,
     error,
     isLoading,
-  } = useSWR<ProductView[], Error>(`/api/stripe/products`, {
+  } = useSWR<ProductView[], Error>(`/api/stripe/subscriptions`, {
     refreshWhenHidden: false,
     refreshWhenOffline: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
-    fallbackData: [],
+
   })
 
   return {

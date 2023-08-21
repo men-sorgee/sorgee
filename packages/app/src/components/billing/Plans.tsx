@@ -1,16 +1,16 @@
 import { sentenceCase } from "change-case";
-import { ButtonLink } from "components";
+import { ButtonBusy, ButtonLink, Loading } from "components";
 import { useProducts, useUser } from "hooks";
-import { baseUrl } from "lib/config";
 import {
   memberFeatures,
   MemberLevel,
   MembershipType,
+  PriceView,
   ProductView
 } from "lib/models";
 import { getJSON } from "lib/utils";
 import { event } from "nextjs-google-analytics";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Badge,
@@ -61,25 +61,24 @@ export const Plans = ({
 
   const bgColor = useColorModeValue('secondary.500', 'gray.700')
 
-  const processSubscription = async (productId: string) => {
+  const processSubscription = async (product: ProductView, priceId: string) => {
     const { loadStripe } = await import('@stripe/stripe-js')
     const stripe = await loadStripe(
       process.env.STRIPE_PUBLIC_KEY ||
-        'pk_live_51LoPw1EoEUGL2Bgubxo5vTjGRx0ONP4JHo6A0zVJivv7ToiCBoRnKdmRoCIWFbikTTenBSQZ7xy8wmF0woyx4NBH00MykU8UsN'
+      'pk_live_51LoPw1EoEUGL2Bgubxo5vTjGRx0ONP4JHo6A0zVJivv7ToiCBoRnKdmRoCIWFbikTTenBSQZ7xy8wmF0woyx4NBH00MykU8UsN'
     )
     const { data, error, success } = await getJSON<{
       id: string
       amount: number
-    }>(`/api/stripe/subscribe/${productId}`)
+    }>(`/api/stripe/subscriptions/${priceId}`)
     if (!success) {
       console.error(error)
       return
     }
-    const subscription = products.find((p) => p.id == productId)
     event('add_to_cart', {
       category: 'monetization',
-      plan: MembershipType[subscription?.type || 'none'],
-      productId,
+      plan: MembershipType[product?.type || 'none'],
+      productId: product.id,
       userId: member?.id,
       value: data?.amount,
       currency: 'usd',
@@ -88,8 +87,8 @@ export const Plans = ({
 
     event('begin_checkout', {
       category: 'monetization',
-      plan: MembershipType[subscription.type],
-      productId,
+      plan: MembershipType[product.type],
+      productId: product.id,
       userId: member?.id,
       value: data.amount,
       currency: 'usd',
@@ -118,8 +117,13 @@ export const Plans = ({
     }
   }
 
+  const getPrice = (prices: PriceView[], interval: string) => {
+    let price = prices.find((p) => p.interval == interval)
+    return price
+  }
+
   if (loading || productsLoading) {
-    return <></>
+    return <Loading />
   }
   return (
     <>
@@ -137,9 +141,9 @@ export const Plans = ({
               key={product.id}
               w={['full', 'full', 'fit']}
               rounded="md"
-              shadow={'dark-lg'}
-              border={shouldHighlight(product) ? '3px solid' : ''}
-              borderColor={'accent.500'}
+              shadow={'lg'}
+              border={shouldHighlight(product) ? '3px solid' : '1px dashed'}
+              borderColor={shouldHighlight(product) ? 'accent.500' : 'text'}
               px={[4, 4, 6]}
               gap={2}
               justify="space-between"
@@ -156,17 +160,29 @@ export const Plans = ({
                     position="static"
                     mx="auto"
                   >
-                    {product.label || 'Recommended'}
+                    {'Recommended'}
                   </Badge>
-                )) || <span>&nbsp;</span>}
+                )) || product.label != undefined && (
+                  <Badge
+                    variant="solid"
+                    bg="primary.500"
+                    size="xl"
+                    rounded="md"
+                    m={0}
+                    position="static"
+                    mx="auto"
+                  >
+                    {product.label}
+                  </Badge>
+                ) || <span>&nbsp;</span>}
               </Box>
               <VStack>
-                <Heading as="h2" fontSize="3xl" mt={0}>
+                <Heading as="h2" fontSize="3xl" mt={0} noOfLines={1}>
                   {product.name}
                 </Heading>
 
                 <Heading as="h3">
-                  ${product.prices[interval] / 100} / {interval == 'month' ? 'mo' : 'yr'}
+                  ${getPrice(product.prices, interval)?.amount} / {interval == 'month' ? 'mo' : 'yr'}
                 </Heading>
               </VStack>
               <Text m={0} p={0}>
@@ -192,15 +208,11 @@ export const Plans = ({
               {showButtons && (
                 <Box>
                   {showSubscribeButton && (
-                    <Button
-                      onClick={() => processSubscription(product.id)}
-                      variant="solid"
-                      bg="primary.500"
-                      color="white"
-                      _hover={{ bg: 'accent.600' }}
+                    <ButtonBusy
+                      onClick={() => processSubscription(product, getPrice(product.prices, interval)?.id)}
                     >
                       Subscribe
-                    </Button>
+                    </ButtonBusy>
                   )}
                   {showNoButton && (
                     <Button disabled cursor="not-allowed">

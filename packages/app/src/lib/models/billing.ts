@@ -20,20 +20,22 @@ export enum MembershipType {
   pro = 4,
 }
 
+export type PriceView = {
+  id: string
+  amount: number
+  interval: MembershipRenewalType
+}
+
 export type ProductView = {
   id: string
   name: string
-  product: string
   description: string
-  prices: {
-    [key: string]: number
-  }
-  currency: string
   features: string[]
   type: MembershipNames
   label?: string
-}
+  prices: PriceView[]
 
+}
 export type PaymentType = 'stripe' | 'cash'
 export type PaymentProductType = 'event' | 'subscription' | 'donation' | 'payment'
 export type PaymentStatusType = 'collected' | 'refunded' | 'uncaptured'
