@@ -34,7 +34,7 @@ export async function findUserByCustomer(customer: string) {
   return data?.length ? data[0] as unknown as User : null
 }
 
-export async function addUserPayment(payment: UserPayment) {
+export async function addUserPayment(payment: Partial<UserPayment>) {
   const admin = await getAdminClient()
   let { data: items } = await admin.items('user_payment').readByQuery({
     filter: {

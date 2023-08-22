@@ -24,6 +24,8 @@ import {
 import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 
+import { pruneUndefined } from "../../../lib/utils";
+
 async function getRawBody(readable: Readable): Promise<Buffer> {
   const chunks = []
   for await (const chunk of readable) {
@@ -128,28 +130,38 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
     // Handle the event payloads accordingly
     switch (event.type) {
       case 'checkout.session.completed': {
-        const paymentData = extractFromCheckout(checkoutSession)
-        switch (paymentData.product_type) {
+        const { date_created, product_type, amount, redeemed_id, payment_intent, ...data } = extractFromCheckout(checkoutSession)
+        const existing = await findUserPayments(user.id, {
+          payment_intent: String(payment_intent)
+        })
+        if (existing) return
+        switch (product_type) {
           case 'subscription': {
-            const payment = await addUserPayment({
-              ...paymentData,
+            await addUserPayment({
+              ...data,
+              amount,
+              product_type,
+              redeemed_id,
+              payment_intent,
               user: user.id,
             })
             break;
           }
           case 'event': {
             const payment = await addUserPayment({
-              ...paymentData,
+              ...data,
+              product_type,
+              amount,
+              redeemed_id,
+              payment_intent,
               user: user.id,
             })
-            const { product_type, amount } = payment
-            let inviteId = payment.redeemed_id
-            if (inviteId) {
-              await updateInvite(Number(inviteId), {
+            if (redeemed_id) {
+              await updateInvite(Number(redeemed_id), {
                 paid: true,
                 rsvp: 'confirmed',
                 amount,
-                paid_at: paymentData.date_created,
+                paid_at: date_created,
                 confirmed_at: new Date().toISOString(),
                 payment: payment.id,
               })
@@ -269,7 +281,7 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
   }
 }
 
-function extractFromSubscription(subscription: Stripe.Subscription, user: User): Pick<Member,
+export type MemberShipData = Pick<Member,
   'subscription_id' |
   'customer_id' |
   'has_features' |
@@ -277,7 +289,9 @@ function extractFromSubscription(subscription: Stripe.Subscription, user: User):
   'membership_start' |
   'membership_end' |
   'renewal_type'
-> {
+>
+
+function extractFromSubscription(subscription: Stripe.Subscription, user: User): MemberShipData {
   const {
     id: subscription_id,
     customer,
@@ -292,12 +306,11 @@ function extractFromSubscription(subscription: Stripe.Subscription, user: User):
   let { type: membership_type, features } = subscriptionData[product]
   const renewal_type = item.price?.recurring?.interval as 'month' | 'year'
 
-
   let active = status == 'active'
   let has_features = active ? features : user.has_features
   membership_type = active ? membership_type : user.membership_type || 'free'
 
-  return {
+  const data = {
     subscription_id,
     customer_id: customer as string,
     has_features,
@@ -306,9 +319,10 @@ function extractFromSubscription(subscription: Stripe.Subscription, user: User):
     membership_end: ended_at ? new Date(ended_at * 1000).toISOString() : null,
     renewal_type
   }
+  return pruneUndefined<MemberShipData>(data)
 }
 
-function extractFromCheckout(checkout: Stripe.Checkout.Session): UserPayment {
+function extractFromCheckout(checkout: Stripe.Checkout.Session): Partial<UserPayment> {
   const { amount_total: amount, created, currency, metadata, mode, payment_intent, subscription } = checkout
   const { name, inviteId, userId } = metadata
 
@@ -319,21 +333,21 @@ function extractFromCheckout(checkout: Stripe.Checkout.Session): UserPayment {
     amount: amount / 100,
     currency: currency as any,
     redeemed_id: type == 'subscription' ? String(subscription) : inviteId,
-    payment_intent: String(payment_intent),
+    payment_intent: payment_intent ? String(payment_intent) : undefined,
     product_type: type as any,
-    description: name,
+    description: name + (type == 'subscription' ? ' Membership' : 'Event'),
     date_created: new Date(created * 1000).toISOString(),
     redeemed: type == 'subscription',
     status: 'collected'
   }
-  return payment
+  return pruneUndefined(payment) as Partial<UserPayment>
 }
 
 function extractFromCharge(charge: Stripe.Charge): Partial<UserPayment> {
   const { amount, amount_refunded, created, currency, metadata, payment_intent, receipt_url: receipt } = charge
   const { eventId, userId } = metadata
 
-  return {
+  const payment = {
     user: userId,
     amount: amount_refunded ? amount_refunded / 100 : amount / 100,
     currency: currency as any,
@@ -342,6 +356,8 @@ function extractFromCharge(charge: Stripe.Charge): Partial<UserPayment> {
     date_created: new Date(created * 1000).toISOString(),
     receipt
   }
+
+  return pruneUndefined(payment) as Partial<UserPayment>
 }
 
 export const config = {
