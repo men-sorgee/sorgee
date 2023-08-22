@@ -1,18 +1,21 @@
-import { Applicant } from "lib/models";
+import { Applicant, MemberLevel } from "lib/models";
 import { getUser, updateUser } from "lib/services/directus/server";
 import {
   ApiResponse,
   ApiResponseType,
-  withAuthUser,
-  withMethods
+  withMethods,
+  withUser
 } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 async function Apply(req: NextApiRequest, res: NextApiResponse<ApiResponseType>) {
   try {
     withMethods(req, ['POST'])
-    const user = await withAuthUser(req, res)
+    const user = await withUser(req, res)
     if (!user) throw new Error('Unauthorized')
+
+    if (user.application_status == 'approved' || MemberLevel[user.user_type] > MemberLevel.applicant)
+      return res.status(200).end(ApiResponse(user))
 
     const userDetails = req.body as Applicant
     userDetails.email = user.email.toLocaleLowerCase()

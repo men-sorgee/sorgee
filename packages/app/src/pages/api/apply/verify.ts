@@ -1,4 +1,4 @@
-import { Applicant, DirectusFile } from "lib/models";
+import { Applicant, DirectusFile, MemberLevel } from "lib/models";
 import {
   getFileInfo,
   updateUser,
@@ -23,6 +23,10 @@ async function Verify(req: NextApiRequest, res: NextApiResponse<ApiResponseType<
     withMethods(req, ['POST'])
 
     const applicant = await withApplicant(req, res)
+
+    const { application_status, user_type: current_level } = applicant
+    if (application_status >= 'verify' || MemberLevel[current_level] > MemberLevel.applicant)
+      return res.status(200).end(ApiResponse(applicant))
 
     let previousPhoto = null
     if (applicant.photo) {
