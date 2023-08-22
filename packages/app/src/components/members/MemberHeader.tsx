@@ -34,7 +34,7 @@ export const MemberHeader = ({
           {iconChildren}
         </MemberIcon>
         {(minimal && <>{children}</>) || (
-          <Flex direction="column" justify="center" align="center" my={2} gap={1} w="full">
+          <Flex direction="column" justify="center" align="center" gap={1} w="full">
             {children}
             {member?.rating > 0 && (
               <Rating

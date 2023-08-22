@@ -67,7 +67,7 @@ export const MemberCard = chakra(
           {...props}
         >
           <LinkBox key={member.id}>
-            <CardHeader>
+            <CardHeader mb={0}>
               <LinkOverlay
                 as={NextLink}
                 href={href}
@@ -88,7 +88,7 @@ export const MemberCard = chakra(
                     <>
                       <Flex
                         px={4}
-                        mt={-8}
+
                         direction="column"
                         w="25%"
                         align="start"
@@ -105,7 +105,7 @@ export const MemberCard = chakra(
               </LinkOverlay>
             </CardHeader>
 
-            <CardBody pt={0}>
+            <CardBody pt={0} m={0}>
               {levelValue == MemberLevel.pledge && (
                 <MemberMessageStats memberId={member?.id} viewerLevel={level} />
               )}

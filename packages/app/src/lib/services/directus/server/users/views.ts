@@ -1,19 +1,36 @@
-import { UserView } from "lib/models";
+import { SearchableMember, UserView, UserViews } from "lib/models";
 
 import { getAdminClient } from "../";
 
-export async function getUserViews(user_id: string): Promise<UserView[]> {
+export async function getUserViews(user_id: string): Promise<UserViews> {
   const adminClient = await getAdminClient()
-  const { data } = await adminClient.items('user_views').readByQuery({
+  const { data: views } = await adminClient.items('user_views').readByQuery({
     filter: {
-      user_id: {
+      viewed_id: {
         _eq: user_id,
+      },
+      user_id: {
+        id: { _neq: user_id },
+        user_type: {
+          _neq: 'staff',
+        }
       }
     },
-    fields: ['*'],
-    sort: ['-date_created'],
+    fields: ['*', 'user_id.*' as any],
+    limit: -1,
+    sort: ['-count'],
   })
-  return data as UserView[]
+
+  const myViews: UserViews = {
+    count: views.map((v: UserView) => v.count).reduce((a, b) => a + b, 0),
+    users: views.map((v: UserView) => {
+      return {
+        user: v.user_id as unknown as SearchableMember,
+        count: v.count,
+      }
+    })
+  }
+  return myViews
 }
 
 export async function addUserView(user_id: string, viewed_id: string): Promise<void> {

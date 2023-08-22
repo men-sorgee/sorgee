@@ -86,11 +86,19 @@ export type UserShare = {
 
 export type UserView = {
   id: string
-  user_id: string
-  viewed_id: string
+  user_id: string | User
+  viewed_id: string | User
   count: number
   date_created: string
   date_updated: string
+}
+
+export type UserViews = {
+  count: number
+  users: Array<{
+    user: SearchableMember
+    count: number
+  }>
 }
 
 export type UserBlock = {
@@ -460,6 +468,7 @@ export type MemberFeature =
   | 'buddy_list'
   | 'flirt'
   | 'view_attendees'
+  | 'my_views'
 
 export const memberFeatures: MemberFeature[] = [
   'view_directory',
