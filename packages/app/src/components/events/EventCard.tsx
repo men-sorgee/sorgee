@@ -1,7 +1,7 @@
 import { AddToCalendarButton } from "add-to-calendar-button-react";
 import { capitalCase } from "change-case";
 import { Markdown } from "components";
-import { differenceInDays, isAfter, isFuture, isToday } from "date-fns";
+import { differenceInDays, isAfter, isFuture } from "date-fns";
 import { GroupEvent, Location } from "lib/models";
 import { getEventDate } from "lib/utils";
 import dynamic from "next/dynamic";
@@ -85,12 +85,12 @@ export const EventCard = ({
     date: Date
     time: string
   }>()
-  const [date, setDate] = useState<Date>(undefined)
+
 
 
   const renderer = ({ days, hours, minutes, seconds, completed }) => {
-    if (completed) return isToday(date) ? <h4>Event has started!</h4> : null
-    if (days < 99) {
+    if (completed) return isFuture(eventEndDate.date) ? <h4>Event is happening!</h4> : null
+    if (days < 30) {
       return (
         <StatGroup as={HStack} gap={2}>
           <Stat>
@@ -125,7 +125,6 @@ export const EventCard = ({
   const location = event?.location as Location
   useEffect(() => {
     if (event && eventStartDate == undefined) {
-      setDate(new Date(event.datetime))
       setEventStartDate(getEventDate(event.datetime))
       setEventEndDate(getEventDate(event.datetime_end))
     }
@@ -344,8 +343,8 @@ export const EventCard = ({
           {event.status == 'planned' && (
             <Text as="em">* This is date is subject to change.</Text>
           )}
-          {(event.status == 'scheduled' && date && isFuture(date)) && (
-            <HStack spacing={2} w='full'><Spacer flexGrow={1} /><Countdown date={date} renderer={renderer} /></HStack>
+          {(event.status == 'scheduled' && eventStartDate && isFuture(eventStartDate.date)) && (
+            <HStack spacing={2} w='full'><Spacer flexGrow={1} /><Countdown date={eventStartDate.date} renderer={renderer} /></HStack>
           )}
         </CardFooter>
       )}

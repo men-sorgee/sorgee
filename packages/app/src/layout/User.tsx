@@ -18,6 +18,7 @@ import {
   MenuList,
   Select,
   Show,
+  Spacer,
   Spinner,
   useColorMode
 } from "@chakra-ui/react";
@@ -77,10 +78,11 @@ export default function UserMenu(_props: Props) {
       {authenticated ? (
         <Menu placement="bottom">
           <Flex gap={4} justify="end" align="center">
+            <Spacer />
             {level == MemberLevel.brother &&
               subscription == MembershipType.none &&
               !hideSubscribe && (
-                <ButtonLink size="sm" href="/member/subscription" bg="primary.500" color="white">
+                <ButtonLink flexShrink={1} size="sm" href="/member/subscription" bg="primary.500" color="white">
                   <Hide below="md">Want More Features?</Hide>
                   <Show below="md">Upgrade</Show>
                 </ButtonLink>

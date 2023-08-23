@@ -11,11 +11,14 @@ import {
   AlertIcon,
   Box,
   BoxProps,
+  Button,
+  Collapse,
   Flex,
   Heading,
   Spinner,
   Text,
-  Textarea
+  Textarea,
+  useDisclosure
 } from "@chakra-ui/react";
 
 export type RSVPProps = BoxProps & {
@@ -33,6 +36,9 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
   const [paid, setPaid] = useState<boolean>(undefined)
   const [nonRefundable, setNonRefundable] = useState<boolean>(undefined)
   const [nonRefundableReason, setNonRefundableReason] = useState<string>(undefined)
+
+  const { isOpen, onToggle } = useDisclosure()
+
 
   const { invite, event, mutate, pay, refund, loading } = useInvite(eventId)
 
@@ -270,13 +276,17 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
   }) => (
     <Box mt={4} rounded="lg" shadow="inset" bg="bg" color="text" p={2}
       borderColor="success.500" border={paid ? '2px solid' : null}>
-      <Heading as="h4" size="h4" mt={0} color="text" >
-        {heading}
-      </Heading>
+      <Flex align='start' justify='space-between' gap={2}>
+        <Heading as="h4" size="lg" mt={0} color="text" >
+          {heading}
+        </Heading>
+
+        {change && <Button size="sm" py={2} onClick={onToggle} >{isOpen ? 'Cancel Changes' : 'Change RSVP'}</Button>}
+      </Flex>
       {paid && change && (
         <Text>You pre-paid ${invite?.amount || invite?.event.cost} to guarantee your spot!</Text>
       )}
-      {body}
+
       {nonRefundable && (
         <Alert rounded="lg" status="warning" my={2}>
           <AlertIcon />
@@ -288,20 +298,25 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
           </Text>
         </Alert>
       )}
-      {children != undefined && <Box mt={4} pt={2}>
-        {change && <Text py={2} borderTop={'3px dotted'}>Change of plans?</Text>}
-        <Flex
-          direction={['column', 'row']}
+      {body}
+      {children != undefined &&
+        <>
 
-          w="full"
-          align="center"
-          justify="stretch"
-          gap="2"
-        >
-          {children}
-        </Flex>
-      </Box>}
-    </Box>
+          <Collapse in={isOpen || change == false} animate>
+            <Flex
+              direction={['column', 'row']}
+              w="full"
+              align="center"
+              justify="stretch"
+              gap="2"
+              pt={4}
+            >
+              {children}
+            </Flex>
+          </Collapse >
+        </>
+      }
+    </Box >
   )
 
   if (working || loading) return <Spinner m="2rem auto" />
@@ -311,7 +326,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
     return (
       <>
         <Text fontSize="lg" my={2}>This event is tentatively planned, depending on interest.</Text>
-        <RSVPView heading="Are you interested?!" change={false}>
+        <RSVPView heading="Are you interested?" change={false}>
           <MaybeRSVPButton>Yes</MaybeRSVPButton>
           <DeclineRSVPButton>No</DeclineRSVPButton>
         </RSVPView>
@@ -323,7 +338,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
     return (
       <RSVPView
         change={false}
-        heading="You purchase just guaranteed a spot at this event!"
+        heading="You are Pre-Paid"
         body={<Text>Your payment of ${invite?.event.cost} was successful.</Text>}
       />
     )
@@ -333,7 +348,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
       return (
         <>
           <RSVPView
-            heading="You are confirmed for this event."
+            heading={paid ? "You are Pre-Paid" : "You are Confirmed"}
             body={!paid && <Text>You reservation is not pre-paid. If we reach capacity, entrance will be first-come/first-serve.</Text>}
           >
             <PayButton>Pre-Pay</PayButton>
@@ -346,7 +361,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
       return (
         <>
           <RSVPView
-            heading="You are interested, but have no reservation."
+            heading="You are Interested"
             body={
               <Alert rounded="lg">
                 <AlertIcon />
@@ -367,14 +382,14 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
 
     case 'declined':
       return (
-        <RSVPView heading="You declined this event.">
+        <RSVPView heading="You Declined">
           <ConfirmRSVPButton>Can Attend</ConfirmRSVPButton>
           <MaybeRSVPButton />
         </RSVPView>
       )
     case 'cancelled':
       return (
-        <RSVPView heading="You cancelled your RSVP.">
+        <RSVPView heading="You Cancelled">
           <ConfirmRSVPButton>Can Attend</ConfirmRSVPButton>
           <MaybeRSVPButton />
         </RSVPView>
@@ -389,7 +404,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
     default:
       return (
         <>
-          <RSVPView heading="You are invited!" change={false}>
+          <RSVPView heading="You are Invited!" change={false}>
             <ConfirmRSVPButton>Can Attend</ConfirmRSVPButton>
             <MaybeRSVPButton></MaybeRSVPButton>
             <DeclineRSVPButton>Not Interested</DeclineRSVPButton>

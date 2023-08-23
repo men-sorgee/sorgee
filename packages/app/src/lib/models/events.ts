@@ -40,6 +40,8 @@ export type EventInfo = {
   status: EventStatusType
   datetime: string
   datetime_end: string
+  start: string
+  end: string
   name: string
   location?: Location
   description: string
@@ -55,6 +57,8 @@ export type GroupEvent = {
   status: string | EventStatusType
   datetime: string
   datetime_end: string
+  start: string
+  end: string
   name: string
   location?: string | Location
   description?: string

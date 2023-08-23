@@ -37,7 +37,7 @@ export type PageProps = {}
 
 export default function EventsPage({ }: PageProps) {
   const [tabValue, setTabValue] = useState(0)
-  const { member, loading, authorized } = useUser({
+  const { member, loading, authorized, reload: reloadUser } = useUser({
     minLevel: MemberLevel.inductee,
     redirectsEnabled: true,
   })
@@ -46,14 +46,15 @@ export default function EventsPage({ }: PageProps) {
     newInvitationCount,
     upcoming,
     past,
-    reload,
+    reload: reloadEvents,
     loading: eventsLoading,
     activeInvite,
   } = useInvites()
 
   const onEventsChange = useCallback(() => {
-    reload()
-  }, [reload])
+    reloadEvents()
+    reloadUser()
+  }, [reloadEvents, reloadUser])
 
   const canConfirm = member?.rating && member?.rating > 2
 
