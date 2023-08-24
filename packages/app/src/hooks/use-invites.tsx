@@ -12,6 +12,7 @@ export type InvitesResults = {
   invitations: EventInvite[]
   newInvitationCount: number
   upcoming: EventInvite[]
+  declined: EventInvite[]
   activeInvite: EventInvite
   past: EventInvite[]
   error?: any
@@ -21,11 +22,22 @@ export type InvitesResults = {
   updateRSVP: (eventId: string, rsvp: string, reason: string) => Promise<EventInvite>
 }
 
+function take<T>(arr: Array<T>, filter: (_: T) => boolean) {
+  let take = []
+  let leave = []
+  arr.forEach(item => {
+    if (filter(item)) take.push(item)
+    else leave.push(item)
+  })
+  arr = leave
+  return take
+}
+
 export const useInvites = (): InvitesResults => {
   const [activeInvite, setActiveInvite] = useState<EventInvite>(null)
   const { authenticated } = useAuthenticated()
   const {
-    data: invites = [],
+    data,
     mutate,
     error,
     isLoading,
@@ -34,21 +46,23 @@ export const useInvites = (): InvitesResults => {
     fallbackData: [],
   })
 
-  const upComing = useMemo(() => ['scheduled', 'planned'], [])
-  const attending = useMemo(() => ['confirmed', 'maybe'], [])
+  let invites = useMemo(() => [...data], [data])
 
-  const invitations = useMemo(() => invites?.filter((i) =>
-    (!i.rsvp || !attending.includes(i.rsvp)) &&
-    upComing.includes(i.event.status)) || [], [attending, invites, upComing])
+  let past = take<EventInvite>(invites, (i) =>
+    i.event.status == 'occurred' && i.rsvp == 'confirmed')
 
-  const upcoming = useMemo(() => invites?.filter(
-    (i) => attending.includes(i.rsvp) && upComing.includes(i.event.status)
-  ) || [], [attending, invites, upComing])
+  let upcoming = take<EventInvite>(invites, (i) =>
+    ['confirmed', 'maybe'].includes(i.rsvp) && ['scheduled', 'planned'].includes(i.event.status))
 
-  const past = useMemo(() => invites?.filter((i) => i.event.status == 'occurred' && i.rsvp == 'confirmed') || [], [invites])
+  let declined = take<EventInvite>(invites, (i) =>
+    ['declined', 'cancelled'].includes(i.rsvp) && ['scheduled', 'planned'].includes(i.event.status))
+
+  let invitations = take<EventInvite>(invites, (i) =>
+    (!i.rsvp || i.rsvp == 'invited') && ['scheduled', 'planned'].includes(i.event.status))
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const newInvitationCount = useMemo(() => invitations?.filter((i) => i.rsvp == 'invited').length || 0, [invites, invitations])
+  const newInvitationCount = useMemo(() => invitations?.filter((i) => i.rsvp == 'invited').length || 0,
+    [invitations])
 
   useEffect(() => {
     let activeInvite = upcoming.find(
@@ -78,6 +92,7 @@ export const useInvites = (): InvitesResults => {
       invitations: [],
       newInvitationCount: 0,
       upcoming: [],
+      declined: [],
       past: [],
       loading: true,
       mutate: (_) => null,
@@ -91,6 +106,7 @@ export const useInvites = (): InvitesResults => {
     invitations,
     newInvitationCount,
     upcoming,
+    declined,
     past,
     error,
     loading: isLoading,

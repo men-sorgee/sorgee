@@ -294,7 +294,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
             <strong>
               Your cancellation occurred within 24 hours of the event start time. You may not be
               refunded as the host already purchased supplies.
-            </strong>
+            </strong> {nonRefundableReason || ''}
           </Text>
         </Alert>
       )}

@@ -37,7 +37,7 @@ export type PageProps = {}
 
 export default function EventsPage({ }: PageProps) {
   const [tabValue, setTabValue] = useState(0)
-  const { member, loading, authorized, reload: reloadUser } = useUser({
+  const { member, loading, reload: reloadUser } = useUser({
     minLevel: MemberLevel.inductee,
     redirectsEnabled: true,
   })
@@ -45,16 +45,17 @@ export default function EventsPage({ }: PageProps) {
     invitations,
     newInvitationCount,
     upcoming,
+    declined,
     past,
     reload: reloadEvents,
     loading: eventsLoading,
     activeInvite,
   } = useInvites()
 
-  const onEventsChange = useCallback(() => {
+  const onEventsChange = () => {
     reloadEvents()
     reloadUser()
-  }, [reloadEvents, reloadUser])
+  }
 
   const canConfirm = member?.rating && member?.rating > 2
 
@@ -66,131 +67,137 @@ export default function EventsPage({ }: PageProps) {
       hideHeader
       pt={2}
     >
-      {authorized ? (
-        <>
-          {activeInvite && member && (
-            <Box mb={4}>
-              <EventCard
-                key={activeInvite.id}
-                event={activeInvite.event as GroupEvent}
-                showDescription={false}
-                isGuest={activeInvite.guest}
-                isPaid={activeInvite.paid}
-                mb={4}
-                showAddToCalendar={false}
-                showLocation={true}
-                hideBody={false}
-              >
-                <ButtonLink
-                  rounded="lg"
-                  w="full"
-                  colorScheme="primary"
-                  href={`/events/${activeInvite.event.id}`}
-                  p={6}
-                  flex={1}
-                >
-                  View Details
-                </ButtonLink>
 
-                <EventRSVP
-                  canConfirm={canConfirm}
-                  eventId={activeInvite.event.id}
-                  onChange={onEventsChange}
-                />
-                {activeInvite.rsvp == 'confirmed' && (
-                  <ButtonLink
-                    rounded="lg"
-                    w="full"
-                    colorScheme="secondary"
-                    href={`/events/${activeInvite.event.id}/ticket`}
-                    p={6}
-                    flex={1}
-                    mt={4}
-                  >
-                    View Ticket
-                  </ButtonLink>)}
-              </EventCard>
-            </Box>
-          )}
-          <EventCalendar events={[...upcoming, ...invitations].map((i) => i.event)} />
-
-          {!canConfirm && (
-            <Alert status="warning" rounded="lg" shadow="lg" my={4}>
-              <AlertIcon />
-              You cannot confirm events. Your reputation for attending events is too low. Showing up
-              to events you RSVP to will improve your
-            </Alert>
-          )}
-
-          <Tabs
-            isFitted
-            variant="enclosed"
-            defaultIndex={tabValue}
-            onChange={(index) => setTabValue(index)}
-            isLazy
-            size={['sm', 'lg']}
+      {activeInvite && member && (
+        <Box mb={4}>
+          <EventCard
+            key={activeInvite.id}
+            event={activeInvite.event as GroupEvent}
+            showDescription={false}
+            isGuest={activeInvite.guest}
+            isPaid={activeInvite.paid}
+            mb={4}
+            showAddToCalendar={false}
+            showLocation={true}
+            hideBody={false}
           >
-            <div className="no-print">
-              <TabList>
-                <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 0 ? 'bold' : null}>
-                  Upcoming
-                </Tab>
-                <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 1 ? 'bold' : null}>
-                  Invitations
-                  {newInvitationCount > 0 && (
-                    <Badge ml={1} bg="red.500" rounded="full" px={2} py={0.5} color="white">
-                      {newInvitationCount}
-                    </Badge>
-                  )}
-                </Tab>
-                <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 2 ? 'bold' : null}>
-                  Past
-                </Tab>
-              </TabList>
-            </div>
-            <TabPanels>
-              <TabPanel p={0}>
-                <Heading mb={4}>Your Upcoming Events</Heading>
+            <ButtonLink
+              rounded="lg"
+              w="full"
+              colorScheme="primary"
+              href={`/events/${activeInvite.event.id}`}
+              p={6}
+              flex={1}
+            >
+              View Details
+            </ButtonLink>
 
-                <Invitations
-                  list={upcoming.filter((e) => e != activeInvite)}
-                  member={member}
-                  onChange={onEventsChange}
-                  name="Upcoming Events"
-                  showLink={true}
-                  text="Check back later for upcoming events."
-                />
-              </TabPanel>
-              <TabPanel p={0}>
-                <Heading mb={4}>Your Invitations</Heading>
-                <Invitations
-                  list={invitations}
-                  member={member}
-                  onChange={onEventsChange}
-                  name="Invitations"
-                  text={
-                    invitations.length == 0 &&
-                    'If you never see invitations, make sure your account is set to receive invites and that you never no-show to an event.'
-                  }
-                />
-              </TabPanel>
-
-              <TabPanel p={0}>
-                <Heading mb={4}>Your Past Events</Heading>
-                <PastEvents member={member} list={past} />
-              </TabPanel>
-            </TabPanels>
-          </Tabs>
-        </>
-      ) : (
-        <Box>
-          <Heading>No Events</Heading>
-          <Text>
-            You cannot see or attend events yet. Once you have completed the application and vetting
-            process, events will show up here.
-          </Text>
+            <EventRSVP
+              canConfirm={canConfirm}
+              eventId={activeInvite.event.id}
+              onChange={onEventsChange}
+            />
+            {activeInvite.rsvp == 'confirmed' && (
+              <ButtonLink
+                rounded="lg"
+                w="full"
+                colorScheme="secondary"
+                href={`/events/${activeInvite.event.id}/ticket`}
+                p={6}
+                flex={1}
+                mt={4}
+              >
+                View Ticket
+              </ButtonLink>)}
+          </EventCard>
         </Box>
       )}
+      <EventCalendar events={[...upcoming, ...invitations, ...declined].map((i) => i.event)} />
+
+      {!canConfirm && (
+        <Alert status="warning" rounded="lg" shadow="lg" my={4}>
+          <AlertIcon />
+          You cannot confirm events. Your reputation for attending events is too low, either due to
+          being an Inductee or for missing too many events.
+          You can still RSVP as Maybe. If there is space available, you will be
+          added to the event and receive event access. If you show-up, your reputation will improve.
+          Inductees will be given full-reputation.
+        </Alert>
+      )}
+
+      <Tabs
+        isFitted
+        variant="enclosed"
+        defaultIndex={tabValue}
+        onChange={(index) => setTabValue(index)}
+        isLazy
+        size={['sm', 'lg']}
+      >
+        <div className="no-print">
+          <TabList>
+            <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 0 ? 'bold' : null}>
+              Invitations
+              {newInvitationCount > 0 && (
+                <Badge ml={1} bg="red.500" rounded="full" px={2} py={0.5} color="white">
+                  {newInvitationCount}
+                </Badge>
+              )}
+            </Tab>
+            {upcoming.length > 0 && <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 1 ? 'bold' : null}>
+              Upcoming
+            </Tab>}
+            {declined.length > 0 && <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 2 ? 'bold' : null}>
+              Declined
+            </Tab>}
+            {past.length > 0 && <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 3 ? 'bold' : null}>
+              Past
+            </Tab>}
+          </TabList>
+        </div>
+        <TabPanels>
+          <TabPanel p={0}>
+            <Heading mb={4}>Your Invitations</Heading>
+            <Invitations
+              list={invitations}
+              member={member}
+              onChange={onEventsChange}
+              name="Invitations"
+              text={
+                invitations.length == 0 &&
+                'If you never see invitations, make sure your account is set to receive invites and that you never no-show to an event.'
+              }
+            />
+          </TabPanel>
+          {upcoming.length > 0 && <TabPanel p={0}>
+            <Heading mb={4}>Your Upcoming Events</Heading>
+
+            <Invitations
+              list={upcoming.filter((e) => e != activeInvite)}
+              member={member}
+              onChange={onEventsChange}
+              name="Upcoming Events"
+              showLink={true}
+              text="Check back later for upcoming events."
+            />
+          </TabPanel>}
+
+          {declined.length > 0 && <TabPanel p={0}>
+            <Heading mb={4}>Your Declined Invitations</Heading>
+            <Invitations
+              list={declined}
+              member={member}
+              onChange={onEventsChange}
+              name="Declined"
+
+            />
+          </TabPanel>}
+          {past.length && <TabPanel p={0}>
+            <Heading mb={4}>Your Past Events</Heading>
+            <PastEvents member={member} list={past} />
+          </TabPanel>}
+        </TabPanels>
+      </Tabs>
+
     </Page>
   )
 }
@@ -261,7 +268,7 @@ function Invitations({
                   View Details
                 </ButtonLink>
               )}
-              <EventRSVP canConfirm={canConfirm} eventId={invite.event.id} invite={invite} mt={4} />
+              <EventRSVP canConfirm={canConfirm} eventId={invite.event.id} onChange={onChange} invite={invite} mt={4} />
             </EventCard>
           </Lazy>
         )
