@@ -55,32 +55,32 @@ export const Markdown = ({ content, size, noOfLines, ...props }: MarkdownProps) 
           )
         },
         p: ({ children }: { children: React.ReactNode }) => (
-          <Text noOfLines={noOfLines} fontSize={size}>
+          <Text noOfLines={noOfLines} fontSize={size} {...props}>
             {children}
           </Text>
         ),
         h1: ({ children }: { children: React.ReactNode }) => (
-          <Heading as="h1" size={size || 'h1'}>
+          <Heading as="h1" size={size || 'h1'} {...props}>
             {children}
           </Heading>
         ),
         h2: ({ children }: { children: React.ReactNode }) => (
-          <Heading as="h2" size={size || 'h2'}>
+          <Heading as="h2" size={size || 'h2'} {...props}>
             {children}
           </Heading>
         ),
         h3: ({ children }: { children: React.ReactNode }) => (
-          <Heading as="h3" size={size || 'h3'}>
+          <Heading as="h3" size={size || 'h3'} {...props}>
             {children}
           </Heading>
         ),
         h4: ({ children }: { children: React.ReactNode }) => (
-          <Heading as="h4" size={size || 'h4'}>
+          <Heading as="h4" size={size || 'h4'} {...props}>
             {children}
           </Heading>
         ),
         h5: ({ children }: { children: React.ReactNode }) => (
-          <Heading as="h5" size={size || 'h5'}>
+          <Heading as="h5" size={size || 'h5'} {...props}>
             {children}
           </Heading>
         ),

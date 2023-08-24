@@ -247,7 +247,6 @@ const all_pages = `
   }
 }
 `
-// require('./queries/all_pages.gql');
 
 export async function listPages(parentId: string = null): Promise<Page[]> {
   const { Directus } = await import('@directus/sdk')

@@ -1,6 +1,6 @@
 import {
-  getAppNotificationUser,
-  updateAppNotificationUser
+  getNotificationUser,
+  updateNotificationUser
 } from "lib/services/directus/server";
 import {
   ApiResponse,
@@ -21,19 +21,19 @@ export default async function getUserNotifications(
     const { id: i } = req.query
     const id = Number(i)
 
-    let notification = await getAppNotificationUser(id)
+    let notification = await getNotificationUser(id)
     if (notification.user_id as string !== user.id) throw new Error('Unauthorized')
 
     switch (method) {
       case 'GET': {
-        notification = await updateAppNotificationUser(id, { read: true })
+        notification = await updateNotificationUser(id, { read: true })
         return res.status(200).send(ApiResponse(notification))
       }
       case 'DELETE':
-        notification = await updateAppNotificationUser(id, { status: 'deleted' })
+        notification = await updateNotificationUser(id, { status: 'deleted' })
         return res.status(200).send(ApiResponse({ success: true }))
       case 'PUT': {
-        notification = await updateAppNotificationUser(id, req.body)
+        notification = await updateNotificationUser(id, req.body)
         return res.status(200).send(ApiResponse(notification))
       }
     }

@@ -109,6 +109,17 @@ export type Site = {
   site_title?: string
   invite_only?: boolean
   description?: string
+  announcement?: string
 }
 
-export * from './directus'
+export type Announcement = {
+  id: string;
+  status: string;
+  message?: string;
+  type?: string;
+  show_from?: string;
+  show_until?: string;
+};
+
+export * from './directus';
+

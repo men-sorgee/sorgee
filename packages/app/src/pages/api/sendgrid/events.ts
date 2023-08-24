@@ -2,8 +2,8 @@ import { UserEmailEvents } from "lib/services/db/entities";
 import {
   findUserId,
   storeEmailEvents,
-  updateAppNotificationUser,
-  updateEmailEvent
+  updateEmailEvent,
+  updateNotificationUser
 } from "lib/services/db/server";
 import { ApiResponse, ApiResponseType } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -54,7 +54,7 @@ export default async function HandleEvents(req: NextApiRequest, res: NextApiResp
       for await (const { id, notification_id, event, email } of saved) {
         if (notification_id && statesWeCareAbout.includes(event)) {
           try {
-            await updateAppNotificationUser(notification_id, {
+            await updateNotificationUser(notification_id, {
               status: event
             })
           } catch (e) {

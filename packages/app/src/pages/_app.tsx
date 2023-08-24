@@ -1,8 +1,8 @@
 import {
-  AppNotificationsProvider,
+  AlertsProvider,
   MessagesProvider,
   MetaContextProvider,
-  UserNotificationsProvider,
+  NotificationsProvider,
   UserProvider
 } from "hooks";
 import Layout from "layout";
@@ -58,16 +58,15 @@ function GNHApp({ Component, pageProps, router }: AppProps) {
             <MetaContextProvider>
               <SessionProvider session={pageProps.session}>
                 <UserProvider>
-                  <AppNotificationsProvider>
-                    <UserNotificationsProvider>
+                  <NotificationsProvider>
+                    <AlertsProvider>
                       <MessagesProvider>
-                        <Layout fonts={[heading.variable, body.variable, mono.variable]}>
+                        <Layout router={router} fonts={[heading.variable, body.variable, mono.variable]}>
                           <Content {...pageProps} />
                         </Layout>
-
                       </MessagesProvider>
-                    </UserNotificationsProvider>
-                  </AppNotificationsProvider>
+                    </AlertsProvider>
+                  </NotificationsProvider>
                 </UserProvider>
               </SessionProvider>
             </MetaContextProvider>

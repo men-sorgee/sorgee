@@ -81,7 +81,7 @@ export class Notifications {
     nullable: true,
     default: () => 'true',
   })
-  appNotification: boolean | null
+  notification: boolean | null
 
   @typeorm.Column('integer', { name: 'sort', nullable: true, default: () => '0' })
   sort: number | null

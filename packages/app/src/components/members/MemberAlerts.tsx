@@ -1,5 +1,5 @@
 import { MemberAlertCard } from "components";
-import { useUserNotifications } from "hooks";
+import { useAlerts } from "hooks";
 import { Member, MemberAlert } from "lib/models";
 import { useCallback, useEffect, useState } from "react";
 
@@ -14,8 +14,8 @@ const MemberAlerts = ({ member }: Props) => {
 
   const [activeNotification, setActiveNotification] = useState<MemberAlert>(undefined)
 
-  const { notifications, hasNewNotifications, deleteNotification, markAsRead } =
-    useUserNotifications()
+  const { alerts: notifications, hasNewAlerts: hasNewNotifications, deleteAlert: deleteNotification, markAsRead } =
+    useAlerts()
 
   const popMessage = useCallback(async () => {
     if (activeNotification == undefined) {

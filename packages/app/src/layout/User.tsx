@@ -1,10 +1,10 @@
 import { ButtonLink, MemberAvatar, MemberIcon } from "components";
 import { useSite, useUser } from "hooks";
 import { pledgeSurvey } from "lib/config";
-import { MemberLevel, MembershipType } from "lib/models";
+import { MemberLevel, MembershipType, Site } from "lib/models";
 import { signIn, signOut } from "next-auth/react";
 import NextLink from "next/link";
-import { useRouter } from "next/router";
+import { Router, useRouter } from "next/router";
 
 import {
   Box,
@@ -43,11 +43,14 @@ import {
   ViewfinderCircleIcon
 } from "@heroicons/react/24/outline";
 
-interface Props { }
+interface Props {
+  site: Site
+  router: Router
+}
 
-export default function UserMenu(_props: Props) {
+export default function UserMenu({ site, router }: Props) {
   const { colorMode, toggleColorMode } = useColorMode()
-  const { site } = useSite()
+
   const {
     member,
     authenticated,
@@ -64,13 +67,11 @@ export default function UserMenu(_props: Props) {
     redirectsEnabled: false,
   })
   const showApply = !site?.invite_only
-  const router = useRouter()
   const hideSubscribe = router.pathname.startsWith('/member/subscription')
-
   const hasDirectory = level >= MemberLevel.brother && hasFeature('view_directory')
   const hasBuddyList = level >= MemberLevel.brother && hasFeature('buddy_list')
   const hasChat = level >= MemberLevel.brother && hasFeature('chat')
-  const { show_location } = member || {}
+
   if (loading) return <Spinner />
 
   return (

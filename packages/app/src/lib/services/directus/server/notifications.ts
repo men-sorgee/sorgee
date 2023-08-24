@@ -1,6 +1,5 @@
 import { notifications } from "lib/config";
 import {
-  AppNotification,
   EventDetail,
   MemberAlert,
   Notification,
@@ -11,17 +10,17 @@ import {
 import { sendAdminNotification } from "../../webhooks/directus";
 import { getAdminClient } from "./";
 
-export async function getAppNotification(id: string): Promise<Notification> {
+export async function getNotification(id: string): Promise<Notification> {
   const adminClient = await getAdminClient()
   return (await adminClient.items('notifications').readOne(id)) as unknown as Notification
 }
 
-export async function createAppNotification(notification: Partial<Notification>) {
+export async function createNotification(notification: Partial<Notification>) {
   const admin = await getAdminClient()
   return admin.items('notifications').createOne(notification)
 }
 
-export async function getAppNotifications(user_id: string): Promise<AppNotification[]> {
+export async function getNotifications(user_id: string): Promise<Notification[]> {
   const adminClient = await getAdminClient()
   const { data: notificationsRaw } = await adminClient.items('notifications_users').readByQuery({
     filter: {
@@ -45,44 +44,27 @@ export async function getAppNotifications(user_id: string): Promise<AppNotificat
   const notifications = notificationsRaw.map((userNotification: NotificationUser) => {
     const notification: Notification = userNotification.notification_id as Notification
 
-    const {
-      subject,
-      body,
-      message,
-      button_url: button_link,
-      button_text,
-      link,
-      category,
-      date_created,
-    } = notification
     return {
       id: userNotification.id,
       status: userNotification.status,
-      subject,
-      body,
-      message,
-      button_url: button_link,
-      button_text,
-      link,
-      category,
       read: userNotification.read,
-      date_created
-    } as AppNotification
+      ...notification
+    } as Notification
   })
   return notifications
 }
 
-export async function getAppNotificationUser(id: number) {
+export async function getNotificationUser(id: number) {
   const adminClient = await getAdminClient()
   return adminClient.items('notifications_users').readOne(id) as Promise<NotificationUser>
 }
 
-export async function updateAppNotificationUser(id: number, notification: Partial<NotificationUser>) {
+export async function updateNotificationUser(id: number, notification: Partial<NotificationUser>) {
   const admin = await getAdminClient()
   return admin.items('notifications_users').updateOne(id, notification) as Promise<NotificationUser>
 }
 
-export async function addAppNotificationUser(notificationId: string, userId: string) {
+export async function addNotificationUser(notificationId: string, userId: string) {
   const admin = await getAdminClient()
   return admin.items('notifications_users').createOne({
     notification_id: notificationId,
@@ -93,7 +75,7 @@ export async function addAppNotificationUser(notificationId: string, userId: str
 }
 
 export async function addUserToPledgeSurveyEmail(user_id: string) {
-  await addAppNotificationUser(notifications.pledgeSurvey, user_id)
+  await addNotificationUser(notifications.pledgeSurvey, user_id)
   try {
     await sendAdminNotification(notifications.pledgeSurvey)
   } catch (e) {
@@ -102,7 +84,7 @@ export async function addUserToPledgeSurveyEmail(user_id: string) {
 }
 
 export async function addUserToCongratsEmail(user_id: string, user_type: UserType) {
-  await addAppNotificationUser(notifications.congratsEmail[user_type], user_id)
+  await addNotificationUser(notifications.congratsEmail[user_type], user_id)
   try {
     await sendAdminNotification(notifications.congratsEmail[user_type])
   } catch (e) {
@@ -111,7 +93,7 @@ export async function addUserToCongratsEmail(user_id: string, user_type: UserTyp
 }
 
 export async function createEventSurveyNotification(surveyId: string, event: EventDetail) {
-  let template = await getAppNotification(notifications.eventSurvey)
+  let template = await getNotification(notifications.eventSurvey)
   delete template.id
   template.static = false
   Object.keys(template).forEach((key) => {
@@ -127,7 +109,7 @@ export async function createEventSurveyNotification(surveyId: string, event: Eve
     survey_id: surveyId,
   }
 
-  return await createAppNotification(template)
+  return await createNotification(template)
 }
 
 

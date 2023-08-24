@@ -38,6 +38,9 @@ export default async function PutUserNotification(
     return res.status(200).end()
 
   } catch (e) {
+    console.dir({
+      query: req.query,
+    })
     if (e.message == 'Unauthorized')
       return res.status(403).json(ApiResponse([]))
     console.error(e.message || e, e.stack)

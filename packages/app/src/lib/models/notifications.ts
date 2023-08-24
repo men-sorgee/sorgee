@@ -1,15 +1,15 @@
 import { User, UserType } from "./users";
 
-export type AppNotification = Omit<
-  Notification,
-  'id' | 'status' | 'users' | 'data' | 'template'
-> & {
-  id: number
-  status: AppNotificationStatusType
-  read: boolean
-}
+//export type Notification = Omit<
+//  Notification,
+//  'id' | 'status' | 'users' | 'data' | 'template'
+//> & {
+//  id: number
+//  status: NotificationStatusType
+//  read: boolean
+//}
 
-export type AppNotificationStatusType =
+export type NotificationStatusType =
   | 'new'
   | 'sent'
   | 'deleted'
@@ -23,6 +23,7 @@ export type Notification = {
   date_created?: string
   link?: string
   subject?: string
+  read: boolean
   send_email?: boolean
   app_notification?: boolean
   button_url?: string
@@ -42,7 +43,7 @@ export type NotificationUser = {
   id: number
   notification_id?: string | Notification
   user_id?: string | User
-  status: AppNotificationStatusType
+  status: NotificationStatusType
   email_events?: string[] | UserEmailEvent[]
   read: boolean
 }

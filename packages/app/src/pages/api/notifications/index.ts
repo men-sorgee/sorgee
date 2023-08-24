@@ -1,5 +1,5 @@
-import { AppNotification } from "lib/models";
-import { getAppNotifications } from "lib/services/directus/server/notifications";
+import { Notification } from "lib/models";
+import { getNotifications } from "lib/services/directus/server/notifications";
 import {
   ApiResponse,
   ApiResponseType,
@@ -9,16 +9,14 @@ import {
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function AppNotifications(
+export default async function Notifications(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponseType>
 ) {
   try {
     withMethods(req, ['GET'])
     const user = await withUser(req, res)
-    let notifications: AppNotification[] = []
-
-    notifications = await getAppNotifications(user.id)
+    let notifications: Notification[] = await getNotifications(user.id)
     return res.status(200).json(ApiResponse(notifications))
 
   } catch (e) {

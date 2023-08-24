@@ -1,7 +1,7 @@
-import { useUser } from "hooks";
+import { useSite, useUser } from "hooks";
 import { brand } from "lib/config/brand";
 import { MemberLevel } from "lib/models";
-import { useRouter } from "next/router";
+import { Router } from "next/router";
 import {
   ReactNode,
   useCallback,
@@ -13,14 +13,18 @@ import {
 import { ErrorBoundary } from "react-error-boundary";
 
 import {
+  Alert,
+  AlertIcon,
   Box,
   Flex,
+  HStack,
   Slide,
   Spacer,
   Text,
   useDisclosure
 } from "@chakra-ui/react";
 
+import { Markdown } from "../components";
 import { postJSON } from "../lib/utils";
 import Actions from "./actions";
 import Footer from "./Footer";
@@ -34,9 +38,11 @@ export const constrained = {
 }
 
 export default function Layout({
+  router,
   children,
   fonts: [heading, body, mono],
 }: {
+  router: Router,
   children?: ReactNode
   className?: string
   fonts: any[]
@@ -44,10 +50,11 @@ export default function Layout({
   const { authenticated, member, level, loading } = useUser({
     redirectsEnabled: false,
   })
-  const router = useRouter()
+
   const [path, setPath] = useState<string>()
   const [hideFooter, setHideFooter] = useState<boolean>(false)
   const { isOpen, onOpen } = useDisclosure()
+  const { site } = useSite()
 
   const showActions = useMemo(() => authenticated && level >= MemberLevel.pledge, [authenticated, level])
 
@@ -100,13 +107,20 @@ export default function Layout({
     <>
       <Meta />
       <Flex direction="column" flex="1" overflowX="clip">
-        <Header isAuthenticated={authenticated} userType={member?.user_type} />
+        {site && <Header router={router} site={site} isAuthenticated={authenticated} userType={member?.user_type} />}
         <ErrorBoundary
           fallbackRender={Error}
           onError={(error, errorInfo) => {
             postJSON('/api/errors', { error, errorInfo }).catch(console.error)
           }}
         >
+          {site?.announcement && <Alert status="info">
+
+            <HStack {...constrained}>
+              <AlertIcon />
+              <Markdown content={site?.announcement} m={0} />
+            </HStack>
+          </Alert>}
           <Flex
             as="main"
             flex="1 100%"
@@ -123,7 +137,9 @@ export default function Layout({
               className={` ${heading} ${body} ${mono}}`}
               {...constrained}
             >
+
               <Box minH={`calc(80vh - ${showActions ? '146px' : '75px'})`} ref={headerRef}>
+
                 {children}
               </Box>
               {!hideFooter && (

@@ -13,31 +13,31 @@ import useSWR from "swr";
 import { useAuthenticated } from "./use-authenticated";
 
 export type MemberAlertsContextData = {
-  notifications: MemberAlert[]
-  hasNotifications: boolean
-  notificationCount: number
-  hasNewNotifications: boolean
-  newNotificationCount: number
+  alerts: MemberAlert[]
+  hasAlerts: boolean
+  alertCount: number
+  hasNewAlerts: boolean
+  newAlertCount: number
   error?: any
   markAsRead: (id: string) => Promise<void>
-  deleteNotification: (id: string) => Promise<void>
-  loading: boolean
-  reload: () => void
+  deleteAlert: (id: string) => Promise<void>
+  alertsLoading: boolean
+  reloadAlerts: () => void
 }
 
-export const UserNotificationsContext = createContext<MemberAlertsContextData>({
-  notifications: [],
-  hasNotifications: false,
-  notificationCount: 0,
-  hasNewNotifications: false,
-  newNotificationCount: 0,
+export const AlertsContext = createContext<MemberAlertsContextData>({
+  alerts: [],
+  hasAlerts: false,
+  alertCount: 0,
+  hasNewAlerts: false,
+  newAlertCount: 0,
   markAsRead: async (_) => { },
-  deleteNotification: async () => { },
-  loading: true,
-  reload: () => { },
+  deleteAlert: async () => { },
+  alertsLoading: true,
+  reloadAlerts: () => { },
 })
 
-export function UserNotificationsProvider({ children }: { children: ReactNode }) {
+export function AlertsProvider({ children }: { children: ReactNode }) {
   const { authenticated } = useAuthenticated()
   const key = `/api/my/alerts`
   const {
@@ -47,7 +47,7 @@ export function UserNotificationsProvider({ children }: { children: ReactNode })
     isLoading,
   } = useSWR<MemberAlert[], Error>(authenticated ? key : null, {
     refreshInterval: 1000 * 60 * 5,
-    fallbackData: [],
+    keepPreviousData: false
   })
   const [hasNewNotifications, setHasNewNotifications] = useState(false)
   const newNotifications = notifications?.filter((n) => n?.read != true) || []
@@ -87,24 +87,24 @@ export function UserNotificationsProvider({ children }: { children: ReactNode })
   }
 
   const context: MemberAlertsContextData = {
-    notifications,
-    hasNotifications: notifications?.length > 0,
-    notificationCount: notifications?.length || 0,
-    hasNewNotifications,
-    newNotificationCount: newNotifications?.length || 0,
+    alerts: notifications,
+    hasAlerts: notifications?.length > 0,
+    alertCount: notifications?.length || 0,
+    hasNewAlerts: hasNewNotifications,
+    newAlertCount: newNotifications?.length || 0,
     error,
     markAsRead,
-    deleteNotification: del,
-    loading: isLoading,
-    reload: () => {
+    deleteAlert: del,
+    alertsLoading: isLoading,
+    reloadAlerts: () => {
       mutate()
     },
   }
   return (
-    <UserNotificationsContext.Provider value={context}>
+    <AlertsContext.Provider value={context}>
       {children}
-    </UserNotificationsContext.Provider>
+    </AlertsContext.Provider>
   )
 }
 
-export const useUserNotifications = () => useContext(UserNotificationsContext)
+export const useAlerts = () => useContext(AlertsContext)

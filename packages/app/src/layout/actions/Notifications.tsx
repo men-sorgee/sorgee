@@ -3,7 +3,7 @@ import {
   MemberNotificationCard,
   UserNotifications
 } from "components";
-import { useAppNotifications, useUserNotifications } from "hooks";
+import { useAlerts, useNotifications } from "hooks";
 import { Member } from "lib/models";
 import { useEffect } from "react";
 
@@ -31,25 +31,18 @@ interface Props {
 const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const { notifications, notificationCount, newNotificationCount, deleteNotification, markAsRead } =
-    useUserNotifications()
-  const { appNotifications, newAppNotificationCount, appNotificationCount } = useAppNotifications()
+  const { alerts, alertCount, newAlertCount, deleteAlert, markAsRead } =
+    useAlerts()
+  const { notifications, newNotificationCount, notificationCount } = useNotifications()
 
   useEffect(() => {
-    if (isOpen && appNotificationCount == 0 && notificationCount == 0) {
+    if (isOpen && alertCount == 0 && notificationCount == 0) {
       onClose()
     }
-  }, [
-    appNotifications?.length,
-    appNotifications,
-    isOpen,
-    newAppNotificationCount,
-    onClose,
-    appNotificationCount,
-    notificationCount,
-  ])
-  const totalNew = newAppNotificationCount + newNotificationCount
-  const total = appNotificationCount + notificationCount
+  }, [onClose, alertCount, notificationCount, isOpen])
+
+  const totalNew = newAlertCount + newNotificationCount
+  const total = alertCount + notificationCount
 
   if (total == 0) {
     return null
@@ -91,24 +84,24 @@ const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
         <DrawerContent>
           <DrawerHeader bg="primary.900" color="white" m={0} p={2}>
             Notifications
-            {(newAppNotificationCount > 0 && (
+            {(totalNew > 0 && (
               <Badge color="white" bg="accent.500" ml={1}>
-                {newAppNotificationCount + notificationCount}
+                {totalNew}
               </Badge>
-            )) || <Badge ml={1}>{appNotificationCount}</Badge>}
+            )) || <Badge ml={1}>{total}</Badge>}
             <DrawerCloseButton />
           </DrawerHeader>
           <DrawerBody p={0}>
-            {notifications?.map((notification) => (
+            {alerts?.map((alert) => (
               <MemberAlertCard
-                key={notification.id}
+                key={alert.id}
                 member={member}
-                notification={notification}
-                onRead={() => markAsRead(notification.id)}
-                onDelete={() => deleteNotification(notification.id)}
+                notification={alert}
+                onRead={() => markAsRead(alert.id)}
+                onDelete={() => deleteAlert(alert.id)}
               />
             ))}
-            {appNotifications?.map((notification) => (
+            {notifications?.map((notification) => (
               <MemberNotificationCard
                 key={notification.id}
                 member={member}

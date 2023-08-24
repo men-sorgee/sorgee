@@ -1,6 +1,6 @@
-import { Page, PageItem, UserType } from "lib/models";
+import { Page, PageItem, Site, UserType } from "lib/models";
 import NextLink from "next/link";
-import { useRouter } from "next/router";
+import { Router } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
@@ -29,13 +29,14 @@ import { Logo } from "./Logo";
 import User from "./User";
 
 export type Props = BoxProps & {
+  router: Router
+  site: Site
   isAuthenticated?: boolean
   userType?: UserType
   children?: React.ReactNode | React.ReactNode[]
 }
 
-function Header({ isAuthenticated, userType, children, ...props }: Props) {
-  const router = useRouter()
+function Header({ site, router, isAuthenticated, userType, children, ...props }: Props) {
   const { isOpen, onToggle, onClose } = useDisclosure()
   const [pages, setPages] = useState<PageItem[]>()
   const ref = useRef()
@@ -174,7 +175,7 @@ function Header({ isAuthenticated, userType, children, ...props }: Props) {
           alignItems="center"
           alignContent="center"
           py={2}
-          pr={[4, 6, 2]}
+          pr={[4, 2]}
           align="center"
           w="full"
           {...constrained}
@@ -198,7 +199,7 @@ function Header({ isAuthenticated, userType, children, ...props }: Props) {
 
           <Logo isAuthenticated={isAuthenticated} />
           <Box flex={1} textAlign="right">
-            <User />
+            {site && <User site={site} router={router} />}
           </Box>
         </HStack>
         <Collapse in={isOpen} animateOpacity ref={ref}>
@@ -254,19 +255,19 @@ const NavMenuItem = ({
                     {child.title}
                   </a>
                 )) || (
-                  <Link
-                    as={NextLink}
-                    display="block"
-                    _hover={{ textDecoration: 'none' }}
-                    onClick={() => {
-                      onClose()
-                    }}
-                    py={2}
-                    href={child.path}
-                  >
-                    {child.title}
-                  </Link>
-                )}
+                    <Link
+                      as={NextLink}
+                      display="block"
+                      _hover={{ textDecoration: 'none' }}
+                      onClick={() => {
+                        onClose()
+                      }}
+                      py={2}
+                      href={child.path}
+                    >
+                      {child.title}
+                    </Link>
+                  )}
               </Box>
             ))}
           </Stack>

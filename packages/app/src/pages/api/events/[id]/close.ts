@@ -1,6 +1,6 @@
 import { EventDetail, EventUser, Member } from "lib/models";
 import {
-  addAppNotificationUser,
+  addNotificationUser,
   addUserNotification,
   createEventSurvey,
   createEventSurveyNotification,
@@ -50,7 +50,7 @@ export default async function Event(
       .filter(a => a.attended).map((a: EventUser) => a.users_id as Partial<Member>)
       .map((m: Partial<Member>) => m.id)
 
-    await Promise.all(attendees.map(u => addAppNotificationUser(notification.id, u)))
+    await Promise.all(attendees.map(u => addNotificationUser(notification.id, u)))
 
 
     let noShows = (event.attendance.filter(a => a.rsvp == 'confirmed' && a.attended == null) as EventUser[])

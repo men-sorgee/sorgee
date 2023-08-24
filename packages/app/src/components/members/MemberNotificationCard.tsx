@@ -1,7 +1,7 @@
 import { ButtonLink, Markdown } from "components";
 import distance from "date-fns/formatDistanceToNow";
-import { useAppNotifications } from "hooks/use-app-notifications";
-import { AppNotification, Member } from "lib/models";
+import { useNotifications } from "hooks/use-notifications";
+import { Member, Notification } from "lib/models";
 import { gradient } from "lib/utils";
 import { useCallback, useEffect, useState } from "react";
 
@@ -31,7 +31,7 @@ import { EnvelopeOpenIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { EnvelopeIcon } from "@heroicons/react/24/solid";
 
 export type MemberNotificationCardProps = {
-  notification: AppNotification
+  notification: Notification
   member: Member
   closeDrawer?: () => void
 }
@@ -40,8 +40,8 @@ export const MemberNotificationCard = chakra(
   ({ member, notification, closeDrawer }: MemberNotificationCardProps) => {
     const [deleted, setDeleted] = useState<boolean>(false)
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const { readAppNotification, deleteAppNotification, reloadAppNotifications } =
-      useAppNotifications()
+    const { readNotification, deleteNotification, reloadNotifications } =
+      useNotifications()
     const [isNew, setIsNew] = useState<boolean>(undefined)
     const [body, setBody] = useState<string>(undefined)
     const [message, setMessage] = useState<string>(undefined)
@@ -75,16 +75,16 @@ export const MemberNotificationCard = chakra(
 
     const openMessage = useCallback(() => {
       onOpen()
-      return readAppNotification(notification.id).then(() => {
-        reloadAppNotifications()
+      return readNotification(notification.id).then(() => {
+        reloadNotifications()
       })
-    }, [notification.id, onOpen, readAppNotification, reloadAppNotifications])
+    }, [notification.id, onOpen, readNotification, reloadNotifications])
 
     const markAsDeleted = useCallback(() => {
       onClose()
-      deleteAppNotification(notification.id)
+      deleteNotification(notification.id)
       setDeleted(true)
-    }, [deleteAppNotification, notification.id, onClose])
+    }, [deleteNotification, notification.id, onClose])
 
     const textNew = useColorModeValue('secondary.800', 'secondary.100')
     const textRead = useColorModeValue('text', 'secondary.300')
