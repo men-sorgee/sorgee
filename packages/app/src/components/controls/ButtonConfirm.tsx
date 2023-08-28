@@ -16,7 +16,7 @@ import {
   useToast
 } from "@chakra-ui/react";
 
-export type ButtonConfirmProps<TResponse = void> = Omit<
+export type ButtonConfirmProps<TResponse> = Omit<
   IconButtonProps,
   'aria-label' | 'onError'
 > & {
@@ -94,7 +94,11 @@ export function ButtonConfirm<TResponse = void>({
     <>
       {(icon && (
         <IconButton
-          onClick={onOpen}
+          onClick={(e) => {
+            e.stopPropagation()
+            e.preventDefault()
+            onOpen()
+          }}
           aria-label={title}
           title={title}
           icon={icon}
@@ -107,7 +111,11 @@ export function ButtonConfirm<TResponse = void>({
         />
       )) || (
           <Button
-            onClick={onOpen}
+            onClick={(e) => {
+              e.stopPropagation()
+              e.preventDefault()
+              onOpen()
+            }}
             aria-label={title}
             title={title}
             py={py}
