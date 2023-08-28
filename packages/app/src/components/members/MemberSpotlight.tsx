@@ -1,5 +1,4 @@
 import { capitalCase } from "change-case";
-import { formatDistanceToNowStrict } from "date-fns";
 import { useMember, useMeta, useUser } from "hooks";
 import {
   DirectusField,
@@ -28,7 +27,6 @@ import {
   AccordionPanel,
   AvatarProps,
   Box,
-  ButtonGroup,
   Center,
   chakra,
   Flex,
@@ -38,7 +36,6 @@ import {
   List,
   ListIcon,
   ListItem,
-  Spacer,
   Stat,
   StatGroup,
   StatLabel,
@@ -49,7 +46,6 @@ import {
   TabPanels,
   Tabs,
   Text,
-  useColorModeValue,
   VStack
 } from "@chakra-ui/react";
 import {
@@ -61,16 +57,12 @@ import { EyeSlashIcon } from "@heroicons/react/24/solid";
 import {
   Loading,
   Markdown,
-  MemberBlock,
-  MemberBuddy,
+  MemberActions,
   MemberHeader,
   MemberIcon,
-  MemberLike,
-  MemberMessages,
   MemberMessageStats,
   MemberPropertyGroup,
-  MemberReport,
-  MemberShare,
+  MemberRelationBanner,
   PhotoGallery
 } from "../";
 
@@ -121,7 +113,7 @@ export const MemberSpotlight = chakra(
       }
     }, [memberId, loading, member, me])
 
-    const headingColor = useColorModeValue('primary.700', 'primary.300')
+    const headingColor = "white"
     if (loading || !memberId || !member) return <Loading />
     const photos = member.my_photos || []
 
@@ -152,7 +144,7 @@ export const MemberSpotlight = chakra(
           borderColor={'primary.500'}
           rounded="lg"
           bgGradient={`linear(to-bl, ${levelColor[1]}, ${levelColor[0]})`}
-          color="white"
+          color={headingColor}
           {...props}
         >
           <MemberIcon member={member} size="lg">
@@ -174,14 +166,14 @@ export const MemberSpotlight = chakra(
         border="1px solid"
         borderColor={'primary.500'}
         rounded="lg"
-        bg={'black'}
+        bg={'primary.500'}
         {...props}
       >
         <Box
           px={5}
           py={4}
           bgGradient={`linear(to-bl, ${levelColor[1]}, ${levelColor[0]})`}
-          color="white"
+          color={headingColor}
           borderTopRightRadius="lg"
           borderTopLeftRadius="lg"
           overflow="clip"
@@ -191,46 +183,19 @@ export const MemberSpotlight = chakra(
           }}>
             {header}
           </MemberHeader>
-          {level == MemberLevel.pledge && (
+          {(level == MemberLevel.pledge || viewerLevel == MemberLevel.staff) && (
             <MemberMessageStats memberId={member?.id} viewerLevel={viewerLevel} />
           )}
           {children}
           {full && <Markdown content={member?.biography} />}
         </Box>
-        {full && (
-          <Box p={4} bg="primary.700">
-            <Flex w="full">
-              <ButtonGroup>
-                <MemberBlock member={member} size="lg" />
-                <MemberReport member={member} size="lg" />
-              </ButtonGroup>
-              <Spacer />
-              <ButtonGroup>
-                <MemberLike member={member} size="lg" />
-                <MemberMessages member={member} size="lg" />
-                <MemberBuddy member={member} size="lg" />
-                <MemberShare member={member} size="lg" />
-              </ButtonGroup>
-            </Flex>
-            <Flex w="full">
-              <Text fontSize="xs">
-                {member?.show_profile && member.last_login && (
-                  <>Last Login: {formatDistanceToNowStrict(toLocalDate(member.last_login))} ago</>
-                )}
-              </Text>
-              <Spacer />
-              <Text fontSize="xs">
-                Member Since:{' '}
-                {toLocalDate(member.approved_date || member.date_created).toLocaleDateString()}
-              </Text>
-            </Flex>
-          </Box>
-        )}
-        <Accordion defaultIndex={0} rounded="lg">
+
+
+        {full && <Accordion defaultIndex={0} rounded="lg" color={headingColor}>
           {accordionItems?.map((item, i) => (
             <AccordionItem key={i}>
               <AccordionButton>
-                <Box as="span" flex="1" textAlign="left" color="text">
+                <Box as="span" flex="1" textAlign="left" color={headingColor}>
                   {item.title}
                 </Box>
                 <AccordionIcon />
@@ -246,7 +211,7 @@ export const MemberSpotlight = chakra(
           {full && member.show_photos && photos?.length > 0 && (
             <AccordionItem>
               <AccordionButton>
-                <Box as="span" flex="1" textAlign="left" color="text">
+                <Box as="span" flex="1" textAlign="left" color={headingColor}>
                   Photos
                 </Box>
                 <AccordionIcon />
@@ -269,7 +234,7 @@ export const MemberSpotlight = chakra(
           {full && fields && (
             <AccordionItem>
               <AccordionButton>
-                <Box as="span" flex="1" textAlign="left" color="text">
+                <Box as="span" flex="1" textAlign="left" color={headingColor}>
                   Stats
                 </Box>
                 <AccordionIcon />
@@ -278,25 +243,26 @@ export const MemberSpotlight = chakra(
                 <Tabs
                   isFitted
                   variant="enclosed"
-                  colorScheme="primary"
+                  colorScheme="white"
                   fontSize={['xs', 'sm', 'md', 'lg']}
                   w="full"
                   p={0}
                   flex="grow"
                   size={['sm', 'md', 'lg']}
                   mt={4}
+                  color={headingColor}
                 >
-                  <TabList px={1}>
-                    <Tab p={1} fontWeight="bold">
+                  <TabList px={1} >
+                    <Tab p={1} borderBottom='none'>
                       General
                     </Tab>
-                    <Tab p={1} fontWeight="bold">
+                    <Tab p={1} borderBottom='none'>
                       Sexual
                     </Tab>
-                    <Tab p={1} fontWeight="bold">
-                      Interests
+                    <Tab p={1} borderBottom='none'>
+                      Interest
                     </Tab>
-                    <Tab p={1} fontWeight="bold">
+                    <Tab p={1} borderBottom='none'>
                       Health
                     </Tab>
                   </TabList>
@@ -444,7 +410,7 @@ export const MemberSpotlight = chakra(
           {full && member.show_events && level > MemberLevel.pledge && hasFeature('view_attendees') && (
             <AccordionItem>
               <AccordionButton>
-                <Box as="span" flex="1" textAlign="left" color="text">
+                <Box as="span" flex="1" textAlign="left" color={headingColor}>
                   Events
                 </Box>
                 <AccordionIcon />
@@ -566,7 +532,15 @@ export const MemberSpotlight = chakra(
               </AccordionPanel>
             </AccordionItem>
           )}
-        </Accordion>
+        </Accordion>}
+
+        {full && (<>
+          <MemberRelationBanner member={member} viewer={me} bg={'primary.900'} />
+          <Box p={4} bg="primary.700">
+            <MemberActions member={member} size="lg" />
+          </Box>
+        </>
+        )}
         {footer}
       </Flex>
     )

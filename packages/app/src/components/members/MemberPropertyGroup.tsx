@@ -1,3 +1,4 @@
+import { capitalCase } from "change-case";
 import { DirectusField, Member } from "lib/models";
 
 import { LockIcon } from "@chakra-ui/icons";
@@ -7,8 +8,7 @@ import {
   GridItem,
   Heading,
   SimpleGrid,
-  Text,
-  useColorModeValue
+  Text
 } from "@chakra-ui/react";
 
 export type MemberPropertyGroupProps = {
@@ -34,7 +34,7 @@ export const MemberPropertyGroup = ({
     fieldList?.filter(
       (f) => member[f] != undefined && (Array.isArray(member[f]) ? member[f]?.length > 0 : true)
     ) || []
-  const color = useColorModeValue('primary.500', 'white')
+  const color = 'white'
   if (!show)
     return (
       <Flex direction="column" textAlign="center" align="center">
@@ -61,7 +61,7 @@ export const MemberPropertyGroup = ({
       const option = fields[field].meta.options.choices.find(
         (choice: any) => normalize(choice.value) == normalize(value)
       )
-      return option?.text ? option.text : value
+      return capitalCase(option?.text ? option.text : value)
     }
     return value
   }
@@ -77,8 +77,8 @@ export const MemberPropertyGroup = ({
             >
               {Array.isArray(member[field]) ? (
                 <>
-                  <Heading as="h4" size="sm" my={2} textTransform="capitalize">
-                    {fields[field].field}
+                  <Heading as="h4" color={color} size="sm" my={2} textTransform="capitalize">
+                    {capitalCase(fields[field].field)}
                   </Heading>
                   <Box gap={2} mb={2}>
                     {member[field]?.map((item: any, d: number) => (
@@ -98,8 +98,8 @@ export const MemberPropertyGroup = ({
                 </>
               ) : (
                 <Box mb={2}>
-                  <Heading as="h4" size="sm" my={2} textTransform="capitalize">
-                    {fields[field].field}:
+                  <Heading as="h4" color={color} size="sm" my={2} textTransform="capitalize">
+                    {capitalCase(fields[field].field)}:
                   </Heading>
                   <Text m={0} fontSize="md" color={color} textTransform="capitalize">
                     {getValue(field, member[field])}

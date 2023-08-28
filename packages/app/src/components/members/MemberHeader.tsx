@@ -1,5 +1,5 @@
 import { Lazy } from "components/controls";
-import { Member } from "lib/models";
+import { Member, MemberLevel } from "lib/models";
 import { ReactNode } from "react";
 
 import { Flex } from "@chakra-ui/react";
@@ -24,6 +24,7 @@ export const MemberHeader = ({
   onChange,
   ...props
 }: MemberHeaderProps) => {
+  const level = MemberLevel[member?.user_type || 'applicant']
   return (
     <Lazy>
       <Flex direction="column" align="center" justify="center" gap={2}>
@@ -36,7 +37,7 @@ export const MemberHeader = ({
         {(minimal && <>{children}</>) || (
           <Flex direction="column" justify="center" align="center" gap={1} w="full">
             {children}
-            {member?.rating > 0 && (
+            {member?.rating > 0 && level >= MemberLevel.brother && (
               <Rating
                 value={member.rating || 0}
                 mt={2}
