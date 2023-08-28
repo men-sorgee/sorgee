@@ -38,7 +38,7 @@ export const MembersNewBox = chakra(({ member, children, ...props }: MembersNewP
                 member={p}
                 viewer={member}
                 full={false}
-                href={`/members/pledges?id=${p.id}`}
+                href={`/pledges?id=${p.id}`}
               />
             ))}
           </SimpleGrid>
@@ -56,13 +56,13 @@ export const MembersNewBox = chakra(({ member, children, ...props }: MembersNewP
                 member={p}
                 viewer={member}
                 full={false}
-                href={`/members/pledges#${p.id}`}
+                href={`/pledges?id=${p.id}`}
               />
             ))}
           </SimpleGrid>
         )}
         <ButtonLink
-          href="/members/pledges"
+          href="/pledges"
           colorScheme="accent"
           mx="auto"
           mt={4}

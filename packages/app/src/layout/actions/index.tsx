@@ -80,7 +80,7 @@ const ActionsBar = forwardRef<HTMLDivElement, {}>((_props, ref) => {
         />
         <Pledges
           member={member}
-          active={path.startsWith('/members/pledges')}
+          active={path.startsWith('/pledges')}
           iconSize={iconSize}
           iconDimensions={iconDimensions}
         />

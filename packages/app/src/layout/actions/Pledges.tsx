@@ -1,8 +1,8 @@
-import { Member, MemberLevel } from 'lib/models'
-import NextLink from 'next/link'
+import { Member, MemberLevel } from "lib/models";
+import NextLink from "next/link";
 
-import { Icon, IconButton, Link } from '@chakra-ui/react'
-import { UserCircleIcon } from '@heroicons/react/24/outline'
+import { Icon, IconButton, Link } from "@chakra-ui/react";
+import { UserCircleIcon } from "@heroicons/react/24/outline";
 
 interface Props {
   member: Member
@@ -29,7 +29,7 @@ const PledgesAction = ({ member, active, iconSize, iconDimensions }: Props) => {
 
   return (
     <>
-      <Link href="/members/pledges" as={NextLink} zIndex="fixed">
+      <Link href="/pledges" as={NextLink} zIndex="fixed">
         <IconButton
           variant="primary"
           zIndex="fixed"
