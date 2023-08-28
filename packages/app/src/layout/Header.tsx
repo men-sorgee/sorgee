@@ -1,7 +1,14 @@
 import { Page, PageItem, Site, UserType } from "lib/models";
 import NextLink from "next/link";
 import { Router } from "next/router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  forwardRef,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from "react";
 
 import {
   Accordion,
@@ -33,10 +40,18 @@ export type Props = BoxProps & {
   site: Site
   isAuthenticated?: boolean
   userType?: UserType
-  children?: React.ReactNode | React.ReactNode[]
+  children?: ReactNode | ReactNode[]
 }
 
-function Header({ site, router, isAuthenticated, userType, children, ...props }: Props) {
+const Header = forwardRef<HTMLDivElement, Props>(({
+  site,
+  router,
+  isAuthenticated,
+  userType,
+  children,
+  ...props
+},
+  boxRef) => {
   const { isOpen, onToggle, onClose } = useDisclosure()
   const [pages, setPages] = useState<PageItem[]>()
   const ref = useRef()
@@ -170,7 +185,7 @@ function Header({ site, router, isAuthenticated, userType, children, ...props }:
 
   return (
     <>
-      <Box {...props} as="header" color="white" shadow="xl" bg={bg} minH="60px" px={0}>
+      <Box ref={boxRef} {...props} as="header" color="white" shadow="xl" bg={bg} minH="60px" px={0}>
         <HStack
           alignItems="center"
           alignContent="center"
@@ -208,7 +223,8 @@ function Header({ site, router, isAuthenticated, userType, children, ...props }:
       </Box>
     </>
   )
-}
+})
+Header.displayName = 'Header'
 
 const NavMenuItem = ({
   onClose,

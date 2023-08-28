@@ -3,6 +3,7 @@ import { brand } from "lib/config/brand";
 import { MemberLevel } from "lib/models";
 import { Router } from "next/router";
 import {
+  forwardRef,
   ReactNode,
   useCallback,
   useEffect,
@@ -71,13 +72,13 @@ export default function Layout({
     }
   }, [authenticated, loading, onOpen, isOpen, showActions, level, path, router?.asPath])
 
-  const headerRef = useRef<HTMLDivElement>(null)
+  const bodyRef = useRef<HTMLDivElement>(null)
 
   const handleRouteChange = useCallback((url: string) => {
     setHideFooter(url.startsWith('/members/chat') || url.endsWith('/ticket'))
     setTimeout(() => {
-      if (headerRef.current != null) {
-        headerRef.current.scrollIntoView({
+      if (bodyRef.current != null) {
+        bodyRef.current.scrollIntoView({
           behavior: 'smooth',
           block: 'start',
         })
@@ -92,6 +93,32 @@ export default function Layout({
     }
   }, [router.events, loading, authenticated, level, showActions, isOpen, handleRouteChange])
 
+  const [heightSubtraction, setHeightSubtraction] = useState<number>(0)
+  const headerRef = useRef<HTMLDivElement>(null)
+  const actionsRef = useRef<HTMLDivElement>(null)
+  const announcementRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    let reduceBy = (headerRef?.current?.clientHeight || 80) +
+      (actionsRef?.current?.clientHeight || 0) +
+      (announcementRef?.current?.clientHeight || 0)
+
+    if (announcementRef?.current)
+      reduceBy += 12
+    if (actionsRef?.current)
+      reduceBy += 12
+    //console.dir({
+    //  header: headerRef?.current?.clientHeight,
+    //  actions: actionsRef?.current?.clientHeight,
+    //  announcement: announcementRef?.current?.clientHeight,
+    //  reduceBy
+    //})
+    if (reduceBy != heightSubtraction) {
+      setHeightSubtraction(reduceBy)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [headerRef?.current, actionsRef?.current, announcementRef?.current, heightSubtraction])
+
   if (path?.startsWith('/code')) {
     return <>{children}</>
   }
@@ -103,29 +130,24 @@ export default function Layout({
     </Box>
   )
 
+
   return (
     <>
       <Meta />
       <Flex direction="column" flex="1" overflowX="clip">
-        {site && <Header router={router} site={site} isAuthenticated={authenticated} userType={member?.user_type} />}
+        {site && <Header ref={headerRef} router={router} site={site} isAuthenticated={authenticated} userType={member?.user_type} />}
         <ErrorBoundary
           fallbackRender={Error}
           onError={(error, errorInfo) => {
             postJSON('/api/errors', { error, errorInfo }).catch(console.error)
           }}
         >
-          {site?.announcement && <Alert status="info">
-
-            <HStack {...constrained}>
-              <AlertIcon />
-              <Markdown content={site?.announcement} m={0} />
-            </HStack>
-          </Alert>}
+          {site?.announcement && <Announcement ref={announcementRef} constrained={constrained} announcement={site?.announcement} />}
           <Flex
             as="main"
             flex="1 100%"
             direction="column"
-            maxH={`calc(100vh - ${showActions ? '146px' : '75px'})`}
+            maxH={`calc(100vh - ${heightSubtraction}px)`}
             overflowY={'auto'}
             overflowX="hidden"
             w="full"
@@ -138,7 +160,7 @@ export default function Layout({
               {...constrained}
             >
 
-              <Box minH={`calc(80vh - ${showActions ? '146px' : '75px'})`} ref={headerRef}>
+              <Box minH={`calc(80vh - ${showActions ? '146px' : '75px'})`} ref={bodyRef}>
 
                 {children}
               </Box>
@@ -153,7 +175,7 @@ export default function Layout({
 
           {showActions && (
             <Slide in={isOpen} direction="bottom">
-              <Actions />
+              <Actions ref={actionsRef} />
             </Slide>
           )}
         </ErrorBoundary>
@@ -162,3 +184,18 @@ export default function Layout({
     </>
   )
 }
+
+const Announcement = forwardRef<HTMLDivElement, {
+  constrained: any,
+  announcement: string
+}>(({ constrained, announcement }, announcementRef) =>
+  <Alert status="info">
+    <HStack ref={announcementRef} {...constrained} alignItems="start">
+      <AlertIcon />
+      <Box flex="1">
+        <Markdown content={announcement} m={0} />
+      </Box>
+    </HStack>
+  </Alert>
+)
+Announcement.displayName = 'Announcement'

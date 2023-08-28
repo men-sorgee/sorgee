@@ -1,10 +1,10 @@
 import { ButtonLink, MemberAvatar, MemberIcon } from "components";
-import { useSite, useUser } from "hooks";
+import { useUser } from "hooks";
 import { pledgeSurvey } from "lib/config";
 import { MemberLevel, MembershipType, Site } from "lib/models";
 import { signIn, signOut } from "next-auth/react";
 import NextLink from "next/link";
-import { Router, useRouter } from "next/router";
+import { Router } from "next/router";
 
 import {
   Box,
@@ -364,7 +364,7 @@ export default function UserMenu({ site, router }: Props) {
               })
             }}
           >
-            members
+            sign in
           </Link>
           {showApply && (
             <>
@@ -376,7 +376,7 @@ export default function UserMenu({ site, router }: Props) {
                 color="white"
                 fontWeight={600}
               >
-                apply
+                sign up
               </Link>
             </>
           )}
