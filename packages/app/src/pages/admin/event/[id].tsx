@@ -3,6 +3,7 @@ import {
   ButtonLink,
   EventCard,
   MemberAvatar,
+  MemberModal,
   Page
 } from "components";
 import { isPast } from "date-fns";
@@ -45,14 +46,14 @@ import {
   StatLabel,
   StatNumber,
   Text,
-  useToast
+  useDisclosure
 } from "@chakra-ui/react";
 
 import { getAssetUrl } from "../../../lib/utils";
 
 export default function EventAdmin() {
   const router = useRouter()
-  const toast = useToast()
+
   const { id } = router.query
   const eventId = id ? String(id) : undefined
   const {
@@ -84,6 +85,12 @@ export default function EventAdmin() {
     }
     return '/admin/events/' + event?.id
   }
+
+  const [memberId, setMemberId] = useState<string>(undefined)
+  const { isOpen, onClose, onOpen } = useDisclosure({
+    onClose: () => setMemberId(undefined),
+    isOpen: memberId != undefined
+  })
 
   useEffect(() => {
     if (!eventLoading && event && event.attendance) {
@@ -170,16 +177,18 @@ export default function EventAdmin() {
                   <Stat>
                     <StatLabel>Invited</StatLabel>
                     <StatNumber>{stats.invited_count}</StatNumber>
+                    <StatHelpText>&nbsp;</StatHelpText>
                   </Stat>
                 )}
                 <Stat>
                   <StatLabel>Confirmed</StatLabel>
                   <StatNumber>{stats.confirmed_count}</StatNumber>
-
+                  <StatHelpText>{Math.floor(stats.confirmed_count / stats.invited_count * 100)}%</StatHelpText>
                 </Stat>
                 <Stat>
                   <StatLabel>Maybe</StatLabel>
                   <StatNumber>{stats.maybe_count}</StatNumber>
+                  <StatHelpText>{Math.floor(stats.maybe_count / stats.invited_count * 100)}%</StatHelpText>
                 </Stat>
 
                 {stats.attended_count != undefined && (
@@ -187,7 +196,7 @@ export default function EventAdmin() {
                     <StatLabel>Attended</StatLabel>
                     <StatNumber>{stats.attended_count}</StatNumber>
                     <StatHelpText>
-                      {Math.floor(stats.attended_count / stats.confirmed_count) * 100}%
+                      {Math.floor(stats.attended_count / stats.confirmed_count * 100)}%
                     </StatHelpText>
                   </Stat>
                 )}
@@ -196,7 +205,7 @@ export default function EventAdmin() {
                     <StatLabel>Paid Cash</StatLabel>
                     <StatNumber>{stats.cash_count}</StatNumber>
                     <StatHelpText>
-                      {Math.floor(stats.cash_count / stats.paid_count) * 100}%
+                      {Math.floor(stats.cash_count / stats.paid_count * 100)}%
                     </StatHelpText>
                   </Stat>
                 )}
@@ -205,7 +214,7 @@ export default function EventAdmin() {
                     <StatLabel>Paid Online</StatLabel>
                     <StatNumber>{stats.prepaid_count}</StatNumber>
                     <StatHelpText>
-                      {Math.floor(stats.prepaid_count / stats.paid_count) * 100}%
+                      {Math.floor(stats.prepaid_count / stats.paid_count * 100)}%
                     </StatHelpText>
                   </Stat>
                 )}
@@ -213,9 +222,9 @@ export default function EventAdmin() {
             </>
           )}
           <Flex direction={['column', 'row']} gap={2} justify="space-between" w="full">
-            <ButtonLink size={['sm', 'md', 'lg']} href="/admin/scan" w="full">
+            {event?.status == 'scheduled' && <ButtonLink size={['sm', 'md', 'lg']} href="/admin/scan" w="full">
               Scan
-            </ButtonLink>
+            </ButtonLink>}
             <Spacer w={[0, 40, 800]} />
             {event?.status == 'scheduled' && <Flex gap={1} w={'full'} justify="stretch">
               <Input
@@ -250,38 +259,58 @@ export default function EventAdmin() {
               attendees={confirmedAttendees}
               event={event}
               reload={reload}
+              onClick={(id) => {
+                setMemberId(id)
+                onOpen()
+              }}
             />}
-            {event?.status == 'scheduled' && <UserList title="Maybe" attendees={maybeAttendees} event={event} reload={reload} />}
+            {event?.status == 'scheduled' && <UserList
+              title="Maybe"
+              attendees={maybeAttendees}
+              event={event}
+              reload={reload}
+              onClick={(id) => {
+                setMemberId(id)
+                onOpen()
+              }} />}
             {event?.status == 'occurred' && <UserList
               title="Attended"
               attendees={attendees}
               event={event}
               reload={reload}
+              onClick={(id) => {
+                setMemberId(id)
+                onOpen()
+              }}
             />}
             {event?.status == 'occurred' && <UserList
               title="No Shows"
               attendees={noShows}
               event={event}
               reload={reload}
+              onClick={(id) => {
+                setMemberId(id)
+                onOpen()
+              }}
             />}
           </Box>
           {event?.status == EventStatusType.Occurred && (
-            <StatGroup>
+            <StatGroup gap={4} justifyItems="space-between">
               {stats?.prepaid_count != undefined && (<>
                 <Stat>
-                  <StatLabel>Collected Online</StatLabel>
+                  <StatLabel>Online</StatLabel>
                   <StatNumber fontSize="xxx-large">${prePaid}</StatNumber>
                   <StatHelpText>
                     ${event?.cost} x {stats?.prepaid_count} Online
                   </StatHelpText>
                 </Stat>
                 <Stat>
-
+                  <StatLabel>&nbsp;</StatLabel>
                   <StatNumber fontSize="xxx-large">+</StatNumber>
                 </Stat>
               </>)}
               <Stat>
-                <StatLabel>Collected Cash</StatLabel>
+                <StatLabel>Cash</StatLabel>
                 <StatNumber fontSize="xxx-large">${collected}</StatNumber>
                 <StatHelpText>
                   ${event?.cost} x {stats?.cash_count} Cash
@@ -289,7 +318,7 @@ export default function EventAdmin() {
               </Stat>
               {event?.expenses && (<>
                 <Stat>
-
+                  <StatLabel>&nbsp;</StatLabel>
                   <StatNumber fontSize="xxx-large">-</StatNumber>
 
                 </Stat>
@@ -303,6 +332,7 @@ export default function EventAdmin() {
               </>)}
               {stats?.prepaid_count != undefined && (<>
                 <Stat>
+                  <StatLabel>&nbsp;</StatLabel>
                   <StatNumber fontSize="xxx-large">=</StatNumber>
                 </Stat>
               </>)}
@@ -329,7 +359,9 @@ export default function EventAdmin() {
           Event Details
         </Link>
       </HStack>
+      <MemberModal memberId={memberId} isOpen={isOpen} onClose={onClose} />
     </Page >
+
   )
 }
 
@@ -377,11 +409,13 @@ const UserList = ({
   attendees,
   event,
   reload,
+  onClick
 }: {
   title: string
   attendees: InvitedUser[]
   event: EventDetail
   reload: () => void
+  onClick: (id: string) => void
 }) => {
   if (attendees.length == 0) return null
   return (
@@ -403,7 +437,10 @@ const UserList = ({
             position="relative"
             align="center"
           >
-            <MemberAvatar member={user} opacity={attended ? 1 : 0.5} name={name} src={src} />
+            <MemberAvatar member={user} opacity={attended ? 1 : 0.5} name={name} src={src} onClick={
+              () => onClick(user.id)
+            } cursor="pointer" />
+
             <Box as="strong" fontSize="xs">
               <Text title={name} mt={0}>
                 {name}
@@ -444,6 +481,7 @@ const UserList = ({
           </HStack>
         ))}
       </SimpleGrid>
+
     </>
   )
 }
