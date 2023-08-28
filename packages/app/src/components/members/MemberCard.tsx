@@ -50,6 +50,7 @@ export const MemberCard = chakra(
     const levelValue = MemberLevel[member?.user_type || 'applicant']
     const levelColor = MemberLevelColorMap[levelValue]
     const { member: viewer, level } = useUser()
+    const viewerLevel = MemberLevel[viewer?.user_type || 'applicant']
 
     return (
       <>
@@ -106,7 +107,7 @@ export const MemberCard = chakra(
             </CardHeader>
 
             <CardBody pt={0} m={0}>
-              {levelValue == MemberLevel.pledge && (
+              {(levelValue == MemberLevel.pledge || viewerLevel == MemberLevel.staff) && (
                 <MemberMessageStats memberId={member?.id} viewerLevel={level} />
               )}
               {children}

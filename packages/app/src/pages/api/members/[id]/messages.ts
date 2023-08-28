@@ -24,7 +24,8 @@ export default async function UserMessages(
     const them = await getUser(id)
 
     // only show stats when a brother is looking at a pledge
-    if (MemberLevel[me.user_type] >= MemberLevel.brother && MemberLevel[them.user_type] == MemberLevel.pledge) {
+    if (MemberLevel[me.user_type] >= MemberLevel.brother && (MemberLevel[them.user_type] == MemberLevel.pledge ||
+      MemberLevel[me.user_type] == MemberLevel.staff)) {
 
       const messages = await getMessages(id)
       const messageStats: UserMessageStats = {
