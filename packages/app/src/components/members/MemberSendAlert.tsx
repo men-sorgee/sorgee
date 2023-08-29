@@ -1,6 +1,6 @@
 import { Member, MemberAlert } from "lib/models";
 import { postJSON } from "lib/utils";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 
 import {
   ButtonProps,
@@ -24,17 +24,12 @@ export const MemberSendAlert = chakra(({
   member,
   color = 'white'
 }: MemberSendAlertProps) => {
-  const [showUrl, setShowUrl] = useState(false)
   const messageRef = useRef<HTMLTextAreaElement>(null)
   const buttonUrlRef = useRef<HTMLInputElement>(null)
   const buttonTextRef = useRef<HTMLInputElement>(null)
   const iconRef = useRef<HTMLSelectElement>(null)
 
-  useEffect(() => {
-    if (buttonTextRef.current?.value) {
-      setShowUrl(true)
-    }
-  }, [buttonTextRef.current?.value, showUrl])
+
 
   return (
     <ButtonConfirm
@@ -78,12 +73,12 @@ export const MemberSendAlert = chakra(({
         <FormLabel color="text">Button Text:</FormLabel>
         <Input ref={buttonTextRef} name="button_text" type="text" placeholder="Button Text" />
       </FormControl>
-      {showUrl && (
-        <FormControl>
-          <FormLabel color="text">Button URL:</FormLabel>
-          <Input ref={buttonUrlRef} name="button_url" type="text" placeholder="Button URL" />
-        </FormControl>
-      )}
+
+      <FormControl>
+        <FormLabel color="text">Button URL:</FormLabel>
+        <Input ref={buttonUrlRef} name="button_url" type="text" placeholder="Button URL" />
+      </FormControl>
+
     </ButtonConfirm>
 
   )
