@@ -16,7 +16,7 @@ export default function MessagesStyles() {
   const accent = useColorModeValue(brand.colors.accent[400], brand.colors.accent[400])
   const gray = useColorModeValue(brand.colors.gray[400], brand.colors.gray[400])
 
-  const mobileHeight = isIos ? 'calc(95vh - 8rem)' : 'calc(95vh - 145px)'
+
 
   return (
     <style>
@@ -30,8 +30,8 @@ export default function MessagesStyles() {
         bottom: 0;
         
         flex-direction: row;
-        height: calc(100vh - 145px);
-      
+        height: 85dvh;
+        height: 85vh;
         overflow: auto;
         box-sizing: border-box;
         color: ${color};
@@ -108,7 +108,8 @@ export default function MessagesStyles() {
       }
       @media (max-width: 768px) {
         .cs-main-container--responsive {
-          height: calc(100vh - 145px);
+          height: 75dvh;
+          height: 75vh;);
         }
         .cs-main-container--responsive .cs-search {
           display: none;
@@ -156,7 +157,8 @@ export default function MessagesStyles() {
       @media (max-width: 576px) {
         .cs-main-container--responsive {
           min-width: auto;
-          height: ${mobileHeight}; 
+          height: 75dvh;
+          height: 75vh;
         }
         .cs-main-container--responsive > .cs-sidebar.cs-sidebar--left {
           display: none;

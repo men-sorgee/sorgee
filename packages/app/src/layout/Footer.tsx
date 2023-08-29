@@ -19,6 +19,7 @@ export default function Footer() {
       borderTop={'1px solid'}
       borderColor={useColorModeValue('primary.500', 'accent.500')}
       p={4}
+      mt={2}
     >
       <HStack spacing={5}>
         <Link href="https://www.instagram.com/guysnheat/" target={'_blank'} rel="noreferrer">

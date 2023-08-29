@@ -20,7 +20,6 @@ import {
   Flex,
   HStack,
   Slide,
-  Spacer,
   Text,
   useDisclosure
 } from "@chakra-ui/react";
@@ -107,12 +106,7 @@ export default function Layout({
       reduceBy += 12
     if (actionsRef?.current)
       reduceBy += 12
-    //console.dir({
-    //  header: headerRef?.current?.clientHeight,
-    //  actions: actionsRef?.current?.clientHeight,
-    //  announcement: announcementRef?.current?.clientHeight,
-    //  reduceBy
-    //})
+
     if (reduceBy != heightSubtraction) {
       setHeightSubtraction(reduceBy)
     }
@@ -159,16 +153,11 @@ export default function Layout({
               className={` ${heading} ${body} ${mono}}`}
               {...constrained}
             >
-
-              <Box minH={`calc(80vh - ${showActions ? '146px' : '75px'})`} ref={bodyRef}>
-
+              <Box ref={bodyRef}>
                 {children}
               </Box>
               {!hideFooter && (
-                <>
-                  <Spacer h="1rem" />
-                  <Footer />
-                </>
+                <Footer />
               )}
             </Box>
           </Flex>
