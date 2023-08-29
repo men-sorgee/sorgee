@@ -59,10 +59,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
 
   const completePurchase = useCallback(async (data: PurchaseResponse) => {
     const { loadStripe } = await import('@stripe/stripe-js')
-    const stripe = await loadStripe(
-      process.env.STRIPE_PUBLIC_KEY ||
-      'pk_live_51LoPw1EoEUGL2Bgubxo5vTjGRx0ONP4JHo6A0zVJivv7ToiCBoRnKdmRoCIWFbikTTenBSQZ7xy8wmF0woyx4NBH00MykU8UsN'
-    )
+    const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY)
     stripe.redirectToCheckout({
       sessionId: data.id,
     })

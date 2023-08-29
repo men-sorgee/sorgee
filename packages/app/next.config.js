@@ -13,8 +13,7 @@ const getConfig = (phase) => {
    */
   const nextConfig = {
     publicRuntimeConfig: {
-      dev,
-      stripePublicKey: process.env.STRIPE_PUBLIC_KEY
+      dev
     },
     pageExtensions: ['tsx'],
     experimental: { appDir: false },
