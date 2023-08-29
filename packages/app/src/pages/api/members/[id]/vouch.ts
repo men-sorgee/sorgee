@@ -1,7 +1,7 @@
 
 import { MemberLevel, User, UserBuddy } from "lib/models";
 import {
-  addUserNotification,
+  addAlert,
   addUserToCongratsEmail,
   getUser,
   updateUser
@@ -65,7 +65,7 @@ export default async function VouchForMember(
         // send congrats email
         await addUserToCongratsEmail(user_id, 'inductee')
 
-        await addUserNotification(them.id, {
+        await addAlert(them.id, {
           message: `You have been vouched for by ${me.nickname}!`,
           button_text: 'View Profile',
           button_url: `/member/${me.id}`,

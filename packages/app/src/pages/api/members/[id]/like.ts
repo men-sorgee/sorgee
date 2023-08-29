@@ -1,6 +1,6 @@
 import { baseUrl } from "lib/config";
 import { Member, UserLike } from "lib/models";
-import { addUserNotification } from "lib/services/directus/server";
+import { addAlert } from "lib/services/directus/server";
 import {
   addLike,
   getLike,
@@ -58,7 +58,7 @@ export default async function MemberLike(
           message = `${myName} likes you back!`
         }
 
-        await addUserNotification(them.id, {
+        await addAlert(them.id, {
           message,
           button_text: action,
           button_url: `/member/${me.id}`,

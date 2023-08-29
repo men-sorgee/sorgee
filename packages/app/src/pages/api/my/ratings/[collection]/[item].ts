@@ -1,6 +1,6 @@
 import { Rating, RatingCollection } from "lib/models";
 import {
-  addUserNotification,
+  addAlert,
   getRating,
   setRating,
   setUserAverageRating
@@ -43,7 +43,7 @@ export default async function MemberItemRating(
           if (rate >= 3) {
 
             // send notification
-            await addUserNotification(item, {
+            await addAlert(item, {
               message: `Someone rated your event behavior ${rate} stars`,
               button_text: `View Your Rating`,
               button_url: `/member/${item}`,

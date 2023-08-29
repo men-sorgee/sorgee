@@ -1,7 +1,7 @@
 import { EventDetail, EventUser, Member } from "lib/models";
 import {
+  addAlert,
   addNotificationUser,
-  addUserNotification,
   createEventSurvey,
   createEventSurveyNotification,
   getEventDetail,
@@ -67,7 +67,7 @@ export default async function Event(
     await Promise.all(nowShowUserIds.map((u, i) => {
       let rating = ratings[i]
       let message = (rating < 5) ? `Your rating was adjusted to ${rating}` : 'Your rating did not change.'
-      addUserNotification(u, {
+      addAlert(u, {
         message: `You were marked as a no-show for ${event.name}. ` + message,
         button_text: 'View Event',
         button_url: `/events/${event.id}`,

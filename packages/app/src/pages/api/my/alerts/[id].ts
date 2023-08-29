@@ -1,8 +1,8 @@
 
 import {
-  deleteUserNotification,
-  getUserNotification,
-  markUserNotificationRead
+  deleteAlert,
+  getAlert,
+  markAlertRead
 } from "lib/services/directus/server";
 import {
   ApiResponse,
@@ -22,16 +22,16 @@ export default async function PutUserNotification(
     const { id } = req.query
     const notificationId = String(id)
 
-    const notification = await getUserNotification(notificationId)
+    const notification = await getAlert(notificationId)
     if (notification.user_id !== member.id)
       throw new Error('Unauthorized')
 
     switch (method) {
       case 'PUT':
-        await markUserNotificationRead(notificationId)
+        await markAlertRead(notificationId)
         break
       case 'DELETE':
-        await deleteUserNotification(notificationId)
+        await deleteAlert(notificationId)
         break
     }
 

@@ -1,7 +1,7 @@
 import { baseUrl } from "lib/config";
 import { UserShare } from "lib/models";
 import {
-  addUserNotification,
+  addAlert,
   createUserShare,
   deleteUserShare,
   getMember
@@ -47,7 +47,7 @@ export default async function ShareWithMember(
       let myName = me.nickname || me.first_name
 
       // send notification
-      await addUserNotification(them.id, {
+      await addAlert(them.id, {
         message: `${myName} shared their private photos!`,
         button_text: 'View Photos',
         button_url: `/member/${me.id}`,

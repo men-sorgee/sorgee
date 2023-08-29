@@ -1,6 +1,6 @@
 import { baseUrl } from "lib/config";
 import { UserBuddy } from "lib/models";
-import { addUserNotification } from "lib/services/directus/server";
+import { addAlert } from "lib/services/directus/server";
 import {
   addBuddy,
   getBuddy,
@@ -57,7 +57,7 @@ export default async function MemberBuddy(
         }
 
         // send notification
-        await addUserNotification(them.id, {
+        await addAlert(them.id, {
           message: title,
           button_text: action,
           button_url: `/member/${me.id}`,

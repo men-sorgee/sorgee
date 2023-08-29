@@ -73,9 +73,11 @@ export async function getFieldOptions<T = User>(fieldName: keyof T, collection: 
   return field.options
 }
 
-export * from './events'
-export * from './files'
-export * from './users'
-export * from './surveys'
-export * from './messages'
-export * from './notifications'
+export * from './alerts';
+export * from './events';
+export * from './files';
+export * from './messages';
+export * from './notifications';
+export * from './surveys';
+export * from './users';
+
