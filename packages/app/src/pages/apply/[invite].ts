@@ -1,9 +1,10 @@
-import { parseInvite } from "lib/utils/server";
+
 import { NextPageContext } from "next";
 
 import Apply, { getServerSideProps as getProps } from "./apply";
 
 export async function getServerSideProps(context: NextPageContext) {
+  const { parseInvite } = await import("lib/utils/server");
   const { props } = await getProps(context)
 
   try {

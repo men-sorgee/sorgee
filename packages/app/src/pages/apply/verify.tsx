@@ -288,33 +288,43 @@ function VerifyForm({
         )}
 
         {!complete && (
-          <HStack spacing={4} justify="center">
-            {(hasPhoto || hasUpload) && previewUrl && (
-              <Button size="lg" disabled={!previewUrl} onClick={onCancelFile}>
-                Clear
-              </Button>
-            )}
-            {hasPhoto && member?.photo_denial_reason === null && (
-              <ButtonBusy
-                size="lg"
-                disabled={!isVerified}
-                onClick={() => submitExisting()}
-                colorScheme="primary"
-              >
-                Use Existing
-              </ButtonBusy>
-            )}
-            {hasUpload && (
-              <ButtonBusy
-                size="lg"
-                disabled={!isVerified}
-                colorScheme="accent"
-                onClick={() => submitNew()}
-              >
-                Upload & Continue
-              </ButtonBusy>
-            )}
-          </HStack>
+          <>
+            <HStack spacing={4} justify="center">
+              {(hasPhoto || hasUpload) && previewUrl && (
+                <Button size="lg" disabled={!previewUrl} onClick={onCancelFile}>
+                  Clear
+                </Button>
+              )}
+              {hasPhoto && member?.photo_denial_reason === null && (
+                <ButtonBusy
+                  size="lg"
+                  disabled={!isVerified}
+                  onClick={() => submitExisting()}
+                  colorScheme="primary"
+                >
+                  Use Existing
+                </ButtonBusy>
+              )}
+              {hasUpload && (
+                <ButtonBusy
+                  size="lg"
+                  disabled={!isVerified}
+                  colorScheme="accent"
+                  onClick={() => submitNew()}
+                >
+                  Upload & Continue
+                </ButtonBusy>
+              )}
+            </HStack>
+            {error && <Alert rounded="lg" shadow="lg" status="warning" alignItems="start" w={['full', '75%']}>
+              <AlertIcon />
+              <Text fontSize="xl" textAlign="left" mt={0}>
+                <strong>If you are having troubles uploading a photo, it may be due to
+                  an ad-blocker. Please disable your ad-blocker and try again.
+                </strong> If you need to email your photo, please do so to <a href="mailto:system@guysnheat.com">system@guysnheat.com</a>
+              </Text>
+            </Alert>}
+          </>
         )}
       </Stack>
     </>
