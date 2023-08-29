@@ -27,6 +27,7 @@ export type MemberActionsProps = {
 
 export const MemberActions = chakra(({ member, size = ['sm', 'md', 'lg'] }: MemberActionsProps) => {
   if (!member) return null
+  const color = "white"
   return (
     <>
       <Flex w="full" justify="space-between">
@@ -43,15 +44,15 @@ export const MemberActions = chakra(({ member, size = ['sm', 'md', 'lg'] }: Memb
         </ButtonGroup>
       </Flex>
       <Flex w="full" align='bottom' justify='space-between'>
-        <Text fontSize="xs">
+        <Text fontSize="xs" color={color}>
           {member?.show_profile && member.last_login && (
             <>Last Login: {formatDistanceToNowStrict(new Date(member.last_login))} ago</>
           )}
         </Text>
-        <Text fontSize="xs" textAlign='center'>
+        <Text fontSize="xs" textAlign='center' color={color}>
           <MemberDistance member={member} />
         </Text>
-        <Text fontSize="xs" textAlign='right'>
+        <Text fontSize="xs" textAlign='right' color={color}>
           Member Since: {new Date(member.approved_date || member.date_created).toLocaleDateString()}
         </Text>
       </Flex>
