@@ -20,6 +20,7 @@ export type MemberMessagesProps = Omit<IconButtonProps, 'aria-label'> & {
 export const MemberMessages = chakra(
   ({ member: them, size = ['sm', 'md', 'lg'], ...props }: MemberMessagesProps) => {
     const { loading: userLoading, level, member: me, hasFeature } = useUser()
+    const theirLevel = MemberLevel[them?.user_type || 'pledge']
     //const { member: them, name, loading: memberLoading } = useMember(member.id)
     const { conversations, chatWith, loading } = useMessages()
     const [hasConversation, setHasConversation] = useState<boolean>(undefined)
@@ -43,8 +44,8 @@ export const MemberMessages = chakra(
 
     if (loading || userLoading || level < MemberLevel.brother) return <></>
 
-    if (me?.allow_messages == 'staff' && them?.user_type != 'staff') return <></>
-    if (them?.allow_messages == 'staff' && me?.user_type != 'staff') return <></>
+    if (me?.allow_messages == 'staff' && theirLevel != MemberLevel.staff) return <></>
+    if (them?.allow_messages == 'staff' && level != MemberLevel.staff) return <></>
     if (them?.allow_messages == 'buddies' && them?.buddies) {
       const memberBuddies = them?.buddies as UserBuddy[]
       if (
@@ -55,7 +56,7 @@ export const MemberMessages = chakra(
         return <></>
     }
 
-    if (them?.user_type !== 'pledge' && me?.id != them?.vouched_by?.id && !hasFeature('chat'))
+    if (theirLevel !== MemberLevel.pledge && me?.id != them?.vouched_by?.id && !hasFeature('chat'))
       return (
         <UpgradeIcon
           title={`Chat with ${name}`}

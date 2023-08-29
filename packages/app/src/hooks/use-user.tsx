@@ -91,7 +91,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const hasFeature = (feature: MemberFeature): boolean => {
     if (!member) return false
     if (isStaff) return true
-    if (level == MemberLevel.big_brother) return true
     return member.has_features?.includes(feature)
   }
 

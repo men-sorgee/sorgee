@@ -58,7 +58,7 @@ function GNHApp({ Component, pageProps, router }: AppProps) {
             <MetaContextProvider>
               <SessionProvider session={pageProps.session}>
                 <UserProvider>
-                  {pageProps.session && <NotificationsProvider>
+                  <NotificationsProvider>
                     <AlertsProvider>
                       <MessagesProvider>
                         <Layout router={router} fonts={[heading.variable, body.variable, mono.variable]}>
@@ -66,10 +66,7 @@ function GNHApp({ Component, pageProps, router }: AppProps) {
                         </Layout>
                       </MessagesProvider>
                     </AlertsProvider>
-                  </NotificationsProvider> || (
-                      <Layout router={router} fonts={[heading.variable, body.variable, mono.variable]}>
-                        <Content {...pageProps} />
-                      </Layout>)}
+                  </NotificationsProvider>
                 </UserProvider>
               </SessionProvider>
             </MetaContextProvider>
