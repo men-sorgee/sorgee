@@ -69,6 +69,11 @@ export async function getFileInfo(req: NextApiRequest): Promise<FileInfo & { for
       fileWriteStreamHandler: () => fileConsumer(chunks),
     })
 
+    console.dir({
+      files,
+      form,
+    })
+
     const media = files.media[0] as File
     //const fileInfo: File = files as File
     const data = Buffer.concat(chunks)

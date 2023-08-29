@@ -98,7 +98,7 @@ export const MemberSpotlight = chakra(
   }: MemberSpotlightProps) => {
     const [blocked, setBlocked] = useState(false)
     const { member, name, level, picture, loading, reload } = useMember(memberId)
-    const { member: me, level: viewerLevel, hasFeature } = useUser()
+    const { member: viewer, level: viewerLevel, hasFeature } = useUser()
     const { setMeta } = useMeta()
 
     useEffect(() => {
@@ -106,12 +106,12 @@ export const MemberSpotlight = chakra(
     }, [member, name, picture, full, updateMeta, setMeta])
 
     useEffect(() => {
-      if (!loading && member && me) {
-        if (member.blocked.map((b) => b.blocked_id).includes(me.id) && me.user_type != 'staff') {
+      if (!loading && member && viewer) {
+        if (member.blocked.map((b) => b.blocked_id).includes(viewer.id) && viewer.user_type != 'staff') {
           setBlocked(true)
         }
       }
-    }, [memberId, loading, member, me])
+    }, [memberId, loading, member, viewer])
 
     const headingColor = "white"
     if (loading || !memberId || !member) return <Loading />
@@ -535,9 +535,9 @@ export const MemberSpotlight = chakra(
         </Accordion>}
 
         {full && (<>
-          <MemberRelationBanner member={member} viewer={me} bg={'primary.900'} />
+          <MemberRelationBanner member={member} viewer={viewer} bg={'primary.900'} />
           <Box p={4} bg="primary.700">
-            <MemberActions member={member} size="lg" />
+            <MemberActions viewer={viewer} member={member} size="lg" />
           </Box>
         </>
         )}

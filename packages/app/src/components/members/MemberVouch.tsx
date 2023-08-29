@@ -50,7 +50,8 @@ export const MemberVouch = chakra(({ member, size = ['sm', 'md', 'lg'], onChange
     }
     if (!userLoading && member?.id) {
       if (MemberLevel[level] == MemberLevel.pledge
-        && myLevel >= MemberLevel.brother) {
+        && myLevel >= MemberLevel.brother
+        && me?.id != member?.id) {
         setShowVouchButton(true)
       } else {
         setShowVouchButton(false)
@@ -62,7 +63,8 @@ export const MemberVouch = chakra(({ member, size = ['sm', 'md', 'lg'], onChange
 
   if (working || isLoading || statsLoading) return <Loading />
 
-  if (!hasChatted) return <MemberMessages member={member} size="sm" />
+  if (!hasChatted)
+    return <MemberMessages member={member} size="sm" />
 
   return (
     <>

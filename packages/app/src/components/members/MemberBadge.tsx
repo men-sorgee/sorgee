@@ -79,9 +79,9 @@ export const MemberBadge = chakra(({ member, size = 'md', onChange, ...props }: 
   return (
     <HStack spacing={1} alignItems="center" justify="flex-start">
       <UserBadge />
-      <MemberVouch member={member} size={size as any} onChange={() => {
+      {levelValue >= MemberLevel.pledge && <MemberVouch member={member} size={size as any} onChange={() => {
         if (onChange) onChange()
-      }} />
+      }} />}
 
       {levelValue >= MemberLevel.brother && (
         <Icon

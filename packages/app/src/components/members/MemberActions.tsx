@@ -16,18 +16,21 @@ import {
   MemberLike,
   MemberMessages,
   MemberReport,
+  MemberSendAlert,
   MemberShare
 } from "./";
 import { MemberDistance } from "./MemberDistance";
 
 export type MemberActionsProps = {
-  member: Partial<Member>
+  member: Partial<Member>,
+  viewer: Partial<Member>,
   size?: ResponsiveValue<(string & {}) | 'sm' | 'md' | 'lg'>
 }
 
-export const MemberActions = chakra(({ member, size = ['sm', 'md', 'lg'] }: MemberActionsProps) => {
-  if (!member) return null
+export const MemberActions = chakra(({ viewer, member, size = ['sm', 'md', 'lg'] }: MemberActionsProps) => {
+
   const color = "white"
+  if (!member || !viewer) return null
   return (
     <>
       <Flex w="full" justify="space-between">
@@ -37,6 +40,9 @@ export const MemberActions = chakra(({ member, size = ['sm', 'md', 'lg'] }: Memb
         </ButtonGroup>
         <Spacer />
         <ButtonGroup size={size}>
+          {viewer?.user_type == 'staff' && (
+            <MemberSendAlert member={member} size={size} />
+          )}
           <MemberLike member={member} size={size} />
           <MemberMessages member={member} size={size} />
           <MemberBuddy member={member} size={size} />

@@ -75,7 +75,6 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
         }),
       ])
 
-      setHasNewNotifications(newNotifications?.length > 0)
     }
   }
 

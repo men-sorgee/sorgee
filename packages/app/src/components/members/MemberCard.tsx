@@ -127,7 +127,7 @@ export const MemberCard = chakra(
             bg="primary.800"
             p={4}
           >
-            <MemberActions member={member} size={['sm', 'md']} />
+            <MemberActions viewer={viewer} member={member} size={['sm', 'md']} />
           </CardFooter>
         </Card>
       </>

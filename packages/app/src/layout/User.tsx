@@ -99,7 +99,7 @@ export default function UserMenu({ site, router }: Props) {
                 {member?.email}
               </span>
             </Box>
-            <MenuItem>
+            <MenuItem bg="black">
               <Select name="presence"
                 onClick={(e) => {
                   e.stopPropagation()
