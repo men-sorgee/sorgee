@@ -184,7 +184,7 @@ export type User = {
   last_tested?: string
   vaccinations?: unknown
   reviewed_by?: string | DirectusUser
-  application_status: string | ApplicationStatusType
+  application_status: ApplicationStatusType
   in_sendgrid?: boolean
   picture?: string | DirectusFile
   video_consent?: boolean

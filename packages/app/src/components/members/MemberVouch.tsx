@@ -1,177 +1,164 @@
-import { useUser } from "hooks";
+import {
+  ButtonConfirm,
+  Loading,
+  MemberAvatar,
+  MemberMessages
+} from "components";
+import { useMessageStats, useUser } from "hooks";
 import { Member, MemberLevel, VouchingUser } from "lib/models";
-import { postJSON } from "lib/utils";
-import { useCallback, useEffect, useState } from "react";
+import { ApiResult, postJSON, putJSON } from "lib/utils";
+import { useEffect, useRef, useState } from "react";
 import swr from "swr";
 
 import { CheckIcon } from "@chakra-ui/icons";
 import {
   AvatarBadge,
-  Button,
+  ButtonProps,
   chakra,
-  Heading,
-  IconButton,
-  IconButtonProps,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverHeader,
+  FormLabel,
   Text,
-  useDisclosure,
-  useToast
+  Textarea
 } from "@chakra-ui/react";
-import { HandThumbUpIcon } from "@heroicons/react/24/solid";
+import { HandThumbDownIcon, HandThumbUpIcon } from "@heroicons/react/24/solid";
 
-import { Loading, MemberAvatar } from "../";
-
-export type MemberVouchProps = Omit<IconButtonProps, 'aria-label'> & {
+export type MemberVouchProps = Omit<ButtonProps, 'onError'> & {
   member: Partial<Member>
   hideVouch?: boolean
   onChange?: () => void
 }
 
-export const MemberVouch = chakra(
-  ({ member, size = ['sm', 'md', 'lg'], onChange, ...props }: MemberVouchProps) => {
-    const toast = useToast()
-    const [working, setWorking] = useState(false)
-    const { user_type: level, nickname: name, vouched_by } = member
-    const { loading: userLoading, member: me, level: myLevel, reload } = useUser()
-    const [showVouchButton, setShowVouchButton] = useState(false)
-    const { onOpen, onClose, isOpen } = useDisclosure()
+export const MemberVouch = chakra(({ member, size = ['sm', 'md', 'lg'], onChange, ...props }: MemberVouchProps) => {
+  const { loading: statsLoading, stats } = useMessageStats(member?.id)
+  const reasonRef = useRef<HTMLTextAreaElement>(null)
+  const [working, setWorking] = useState(false)
+  const { user_type: level, nickname: name, vouched_by } = member
+  const { loading: userLoading, member: me, level: myLevel } = useUser()
+  const [hasChatted, setHasChatted] = useState(false)
+  const [showVouchButton, setShowVouchButton] = useState(false)
+  const {
+    data: voucher,
+    isLoading,
+    mutate,
+  } = swr<VouchingUser>(member?.id ? `/api/members/${member?.id}/vouch` : null, {
+    fallbackData: vouched_by,
+  })
 
-    const {
-      data: voucher,
-      isLoading,
-      mutate,
-    } = swr<VouchingUser>(member?.id ? `/api/members/${member?.id}/vouch` : null, {
-      fallbackData: vouched_by,
-    })
 
-    const vouchForPledge = useCallback(() => {
-      // add buddy
-      setWorking(true)
-      postJSON<any, VouchingUser>(`/api/members/${member?.id}/vouch`, {}).then(
-        ({ data: v, success }) => {
-          if (success) {
-            onClose()
-            mutate(v).then(() => {
-              setWorking(false)
-              setShowVouchButton(false)
-              toast({
-                title: 'Thanks!',
-                description: `You have vouched for ${member?.nickname}. It may take a few moments for their new status to appear.`,
-                status: 'success',
-                duration: 5000,
-                isClosable: true,
-                onCloseComplete() {
-                  onChange && onChange()
-                },
-              })
-            })
-          } else {
-            setWorking(false)
-            toast({
-              title: 'Error',
-              description: `There was an error vouching for ${member?.nickname}. Please try again later.`,
-              status: 'error',
-              duration: 5000,
-              isClosable: true,
-            })
-          }
-        }
-      )
-    }, [member?.id, member?.nickname, mutate, onChange, onClose, toast])
-
-    useEffect(() => {
-      if (!userLoading && voucher?.id == undefined) {
-        if (MemberLevel[level] == MemberLevel.pledge) {
-          setShowVouchButton(true)
-        }
-      }
-      if (voucher?.id) {
+  useEffect(() => {
+    if (!statsLoading && stats) {
+      setHasChatted(stats.conversations.find(c => c.id == me?.id) != undefined)
+    }
+    if (!userLoading && member?.id) {
+      if (MemberLevel[level] == MemberLevel.pledge
+        && myLevel >= MemberLevel.brother) {
+        setShowVouchButton(true)
+      } else {
         setShowVouchButton(false)
       }
-    }, [me, member?.id, userLoading, setShowVouchButton, voucher?.id, level, myLevel])
+    }
+  }, [me, member?.id, userLoading, setShowVouchButton, voucher?.id, level, myLevel, statsLoading, stats])
 
-    if (member?.id == me?.id) return null
+  if (member?.id == me?.id) return null
 
-    if (working || isLoading) return <Loading />
+  if (working || isLoading || statsLoading) return <Loading />
 
-    return (
-      <>
-        {voucher?.id && (
-          <MemberAvatar
-            id={`vouched-${member?.id}`}
-            size="sm"
-            borderColor="white"
-            m={2}
-            title={`Vouched for by ${voucher.nickname}`}
-            member={voucher}
-          >
-            <AvatarBadge as={CheckIcon} bg="green" borderColor="white" boxSize={4} />
-          </MemberAvatar>
-        )}
-        {showVouchButton && (
-          <Popover isOpen={isOpen}>
-            <IconButton
-              size={'sm'}
-              title={`Vouch for ${name}`}
-              aria-label={`Vouch for ${name}`}
-              icon={<HandThumbUpIcon width="30px" />}
-              _hover={{ color: 'primary.500' }}
-              mx={2}
-              {...props}
-              color="primary.300"
-              fill="white"
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                onOpen()
-              }}
-            />
-            <PopoverContent color="text" zIndex='popover'>
-              <PopoverArrow />
-              <PopoverCloseButton
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  onClose()
-                }}
-              />
-              <PopoverHeader>
-                <Heading fontSize="xl" m={0}>
-                  Vouching for a {name}
-                </Heading>
-              </PopoverHeader>
-              <PopoverBody>
-                <Text>
-                  When you vouch for someone, you put your reputation on the line. If this member is
-                  found to be disruptive, untrustworthy or otherwise not a good fit and needs to be
-                  banned, you may also get banned. Only vouch pledges you have met in person or have
-                  otherwise vetted and are certain they would make a great Brother.
-                </Text>
-                <Button
-                  my={2}
-                  w="full"
-                  size="lg"
-                  bg="primary"
-                  color="white"
-                  _hover={{ bg: 'accent.500' }}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    e.preventDefault()
-                    vouchForPledge()
-                  }}
-                >
-                  Vouch for {name}
-                </Button>
-              </PopoverBody>
-            </PopoverContent>
-          </Popover>
-        )}
+  if (!hasChatted) return <MemberMessages member={member} size="sm" />
+
+  return (
+    <>
+      {voucher?.id && (
+        <MemberAvatar
+          id={`vouched-${member?.id}`}
+          size="sm"
+          borderColor="white"
+          m={2}
+          title={`Vouched for by ${voucher.nickname}`}
+          member={voucher}
+        >
+          <AvatarBadge as={CheckIcon} bg="green" borderColor="white" boxSize={4} />
+        </MemberAvatar>
+      )}
+      {showVouchButton && (<>
+
+        <ButtonConfirm<ApiResult<VouchingUser>>
+          size={'sm'}
+          title={`Vouch for ${name}`}
+          aria-label={`Vouch for ${name}`}
+          icon={<HandThumbUpIcon width="30px" />}
+          _hover={{ color: 'primary.500' }}
+          mx={2}
+          variant='ghost'
+          alertTitle="Vouch for this user?"
+          buttonText={`Vouch for ${name}`}
+          confirmedAction={() => {
+            setWorking(true)
+            return postJSON<any, VouchingUser>(`/api/members/${member?.id}/vouch`, {})
+          }}
+          onSuccess={({ data }) => {
+            mutate(data)
+            setWorking(false)
+            setShowVouchButton(false)
+            if (onChange) onChange()
+          }}
+          onError={(error) => {
+            console.error(error)
+            setWorking(false)
+          }}
+          failureMessage="There was an error vouching for this user. Please try again later."
+          successMessage="You have vouched for this user."
+          {...props}
+        >
+
+          <Text>
+            When you vouch for someone, you put your reputation on the line. If this member is
+            found to be disruptive, untrustworthy or otherwise not a good fit and needs to be
+            banned, you may also get banned. Only vouch pledges you have met in person or have
+            otherwise vetted and are certain they would make a great Brother.
+          </Text>
+
+        </ButtonConfirm>
+        <ButtonConfirm<ApiResult<VouchingUser>>
+          size={'sm'}
+          title={`Deny ${name}`}
+          aria-label={`Deny ${name}`}
+          alertTitle="Deny this user?"
+          buttonText="Deny"
+          variant='ghost'
+          confirmedAction={() => {
+            setWorking(true)
+            return putJSON<any, VouchingUser>(`/api/members/${member?.id}/vouch`, {
+              reason: reasonRef.current?.value,
+            })
+          }}
+          failureMessage="There was an error voting NO for this user. Please try again later."
+          successMessage="You have voted NO for this user."
+          onSuccess={({ data }) => {
+            mutate(data)
+            setWorking(false)
+            setShowVouchButton(false)
+            if (onChange) onChange()
+          }}
+          onError={(error) => {
+            console.error(error)
+            setWorking(false)
+          }}
+
+          icon={<HandThumbDownIcon width="30px" />}
+          _hover={{ color: 'primary.500' }}
+          mx={2}
+          {...props}
+
+        >
+          <Text mb={2}>
+            When you vote NO for someone, that user is not allowed to join the community.
+            Please provide a reason for your decision.
+          </Text>
+          <FormLabel htmlFor="reason">Denial Reason: </FormLabel>
+          <Textarea id="reason" required placeholder="Reason..." ref={reasonRef} />
+        </ButtonConfirm>
       </>
-    )
-  }
-)
+      )}
+    </>
+  )
+})
+

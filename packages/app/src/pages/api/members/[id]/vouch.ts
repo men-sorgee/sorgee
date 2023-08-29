@@ -19,23 +19,25 @@ export default async function VouchForMember(
   res: NextApiResponse<ApiResponseType<UserBuddy> | ApiResponseType>
 ) {
   try {
-    const method = withMethods(req, ['POST', 'GET', 'DELETE'])
+    const method = withMethods(req, ['POST', 'GET', 'PUT'])
     const me = await withMember(req, res)
 
     const { id } = req.query
     const user_id = String(id)
 
 
-    if (!user_id) throw new Error('Not Found')
+    if (!user_id) throw new Error('Member ID missing')
 
     const them = await getUser(user_id, [
       'id',
       'nickname',
+      'user_type',
+
       'vouched_by.id',
       'vouched_by.nickname',
       'vouched_by.picture',
     ])
-    if (!them) throw new Error('Not Found')
+    if (!them) throw new Error('Pledge not found')
 
     switch (method) {
       case 'GET': {
@@ -78,10 +80,13 @@ export default async function VouchForMember(
           })
         )
       }
-      case 'DELETE': {
-        if (them == null || them.user_type != 'pledge' || them.vouched_by != undefined) {
-          throw new Error('Not Found')
-        }
+      case 'PUT': {
+        if (them.user_type != 'pledge')
+          throw new Error('Member is not a pledge: ' + them.user_type)
+        if (them.vouched_by != null)
+          throw new Error('Member is already vouched-for')
+
+
         if (MemberLevel[me.user_type] < MemberLevel.brother) {
           throw new Error('Unauthorized')
         }
@@ -92,8 +97,10 @@ export default async function VouchForMember(
         await updateUser(user_id, {
           application_status: 'denied',
           notes: `${them.notes}\nPledge denied by ${me.email} for: ${reason}`,
-          user_type: 'applicant',
+          user_type: 'reject',
         })
+
+        addUserToCongratsEmail
 
         return res.status(200).json(
           ApiResponse(null)

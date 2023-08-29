@@ -240,7 +240,7 @@ export default function UserMenu({ site, router }: Props) {
                         bg="black"
                         _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                         as={Link}
-                        href="/members/pledges"
+                        href="/pledges"
                       >
                         Meet Pledges
                       </MenuItem>

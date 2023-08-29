@@ -16,13 +16,14 @@ import { PhotoModal } from "../";
 import { MemberAvatar, MemberBadge } from "./";
 
 export type MemberIconProps = AvatarProps & {
+  onChange?: () => void
   color?: string
   member: Partial<Member>
   children?: ReactNode
 }
 
 export const MemberIcon = chakra(
-  ({ member, size = 'lg', color = 'white', children, ...props }: MemberIconProps) => {
+  ({ member, size = 'lg', color = 'white', onChange, children, ...props }: MemberIconProps) => {
     const [isOpen, setOpen] = useState<boolean>(undefined)
     let name = member?.nickname || member?.first_name
     return (
@@ -72,7 +73,10 @@ export const MemberIcon = chakra(
                 w="full"
               >
                 <Box>
-                  <MemberBadge member={member} my={2} />
+                  <MemberBadge member={member} my={2}
+                    onChange={() => {
+                      if (onChange) onChange()
+                    }} />
                   {member.show_location && (
                     <Text fontSize="sm" color={color} mt={0}>
                       {member?.city} {member?.state}

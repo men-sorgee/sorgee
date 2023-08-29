@@ -147,7 +147,7 @@ export const MemberSpotlight = chakra(
           color={headingColor}
           {...props}
         >
-          <MemberIcon member={member} size="lg">
+          <MemberIcon member={member} size="lg" >
             <Center>
               <VStack>
                 <EyeSlashIcon width="30%" fill="red" />
