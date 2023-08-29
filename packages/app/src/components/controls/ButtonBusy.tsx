@@ -54,7 +54,10 @@ export const ButtonBusy = chakra(
         <Button
           ref={buttonRef}
           isDisabled={busy || disabled}
-          onClick={handleClick}
+          onClick={(e) => {
+            e.preventDefault()
+            handleClick()
+          }}
           bgGradient={bgGradient}
           w={w}
           color="white"

@@ -1,5 +1,5 @@
 import { MemberAlert } from "lib/models";
-import { getAlerts } from "lib/services/directus/server/notifications";
+import { getAlerts } from "lib/services/directus/server";
 import { ApiResponse, ApiResponseType, withUser } from "lib/utils/server";
 
 import type { NextApiRequest, NextApiResponse } from 'next';

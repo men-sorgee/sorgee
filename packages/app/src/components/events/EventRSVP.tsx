@@ -39,7 +39,6 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
 
   const { isOpen, onToggle } = useDisclosure()
 
-
   const { invite, event, mutate, pay, refund, loading } = useInvite(eventId)
 
   useEffect(() => {
@@ -272,16 +271,16 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
     change?: boolean
   }) => (
     <Box mt={4} rounded="lg" shadow="inset" bg="bg" color="text" p={2}
-      borderColor="success.500" border={paid ? '2px solid' : null}>
+      borderColor="success.500" >
       <Flex align='start' justify='space-between' gap={2}>
-        <Heading as="h4" size="lg" mt={0} color="text" >
+        <Heading as="h5" size="md" mt={0} color="text" >
           {heading}
         </Heading>
 
-        {change && <Button size="sm" py={2} onClick={onToggle} >{isOpen ? 'Cancel Changes' : 'Change RSVP'}</Button>}
+        {change && <Button size="sm" variant="solid" colorScheme="primary" py={2} onClick={onToggle} >{isOpen ? 'Cancel Changes' : 'Change RSVP'}</Button>}
       </Flex>
       {paid && change && (
-        <Text>You pre-paid ${invite?.amount || invite?.event.cost} to guarantee your spot!</Text>
+        <Text textAlign='left'>You pre-paid ${invite?.amount || invite?.event.cost} to guarantee your spot!</Text>
       )}
 
       {nonRefundable && (

@@ -14,13 +14,14 @@ import {
   InputRightElement,
   SimpleGrid,
   Switch,
-  Text
+  Text,
+  useColorModeValue
 } from "@chakra-ui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 export type PageProps = {}
 
-export default function BuddiesPage({}: PageProps) {
+export default function BuddiesPage({ }: PageProps) {
   const [onlineOnly, setOnlineOnly] = useState(false)
   const [memberId, setMemberId] = useState<string>(undefined)
   const [search, setSearch] = useState<string>(undefined)
@@ -38,6 +39,7 @@ export default function BuddiesPage({}: PageProps) {
     refreshWhenHidden: true,
     fallbackData: [],
   })
+  let barBG = useColorModeValue('primary.300', 'gray.700')
 
   let members = buddies?.map((b) => b) || []
   const onlineMembers = buddies?.filter((m) => m.presence == 'online') || []
@@ -58,12 +60,13 @@ export default function BuddiesPage({}: PageProps) {
         textAlign={['center', 'center', 'left']}
         justify="space-around"
         minWidth={['full', '15%']}
-        bg="gray.700"
+        bg={barBG}
         p={4}
         rounded="md"
         shadow="md"
         gap={4}
         mt={4}
+        color='white'
       >
         <InputGroup size="lg" w={['full', 'full', '50%']}>
           <Flex alignItems="center" direction="row" gap={4} mr={4}>

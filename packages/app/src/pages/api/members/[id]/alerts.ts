@@ -26,11 +26,12 @@ export default async function MemberAlerts(
 
     switch (method) {
       case 'POST': {
-        const { message, button_url, button_text } = req.body
+        const { message, button_url, button_text, icon } = req.body
         const notification = addAlert(user_id, {
           message,
           button_url,
           button_text,
+          icon
         })
         return res.status(200).json(ApiResponse(notification))
       }

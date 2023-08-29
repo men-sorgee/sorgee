@@ -32,7 +32,7 @@ export type ButtonConfirmProps<TResponse> = Omit<
   children: ReactNode | ReactNode[]
 }
 
-export function ButtonConfirm<TResponse = void>({
+export function ButtonConfirm<TResponse>({
   confirmedAction = () => Promise.resolve<TResponse>(null),
   onSuccess,
   onError,
@@ -55,9 +55,12 @@ export function ButtonConfirm<TResponse = void>({
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const cancelRef = useRef<HTMLButtonElement>()
+  const formRef = useRef<HTMLFormElement>()
   const goRef = useRef<HTMLButtonElement>()
   const action = useCallback(async () => {
     if (disabled) return
+
+
     try {
       const response = await confirmedAction()
       if (onSuccess) await onSuccess(response as any)
@@ -68,6 +71,7 @@ export function ButtonConfirm<TResponse = void>({
           status: 'success',
           duration: 3000,
         })
+      onClose()
     } catch (err) {
       if (onError) await onError(err)
       if (failureMessage)
@@ -78,16 +82,8 @@ export function ButtonConfirm<TResponse = void>({
           duration: 5000,
         })
     }
-  }, [
-    disabled,
-    confirmedAction,
-    onSuccess,
-    successMessage,
-    toast,
-    alertTitle,
-    failureMessage,
-    onError,
-  ])
+    onClose
+  }, [disabled, onClose, confirmedAction, onSuccess, successMessage, toast, alertTitle, onError, failureMessage])
   const bgGradient = gradient(colorScheme)
   const bgGradientHover = gradient(colorScheme, 100)
   return (
@@ -143,39 +139,52 @@ export function ButtonConfirm<TResponse = void>({
               {alertTitle}
             </AlertDialogHeader>
             <AlertDialogBody>
-              {children}
+              <form ref={formRef} onSubmit={(e) => {
+                e.preventDefault()
+              }}>
+                {children}
+
+                <ButtonGroup mt={2}>
+                  <Button
+                    type="submit"
+                    ref={goRef}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      e.preventDefault()
+                      if (!formRef.current?.checkValidity()) {
+                        formRef.current?.reportValidity()
+                        return
+                      }
+                      action()
+                    }}
+                    ml={3}
+                    title={title}
+                    color={color}
+                    bgGradient={gradient(confirmColorScheme)}
+                    _hover={{
+                      bgGradient: gradient(confirmColorScheme, 100),
+                    }}
+                  >
+                    {buttonText}
+                  </Button>
+                  <Button
+                    ref={cancelRef}
+                    bgGradient={gradient('gray')}
+                    _hover={{
+                      bgGradient: gradient('gray', 100),
+                    }}
+                    onClick={onClose}
+                    color={color}
+                  >
+                    Cancel
+                  </Button>
+                </ButtonGroup>
+              </form>
             </AlertDialogBody>
             <AlertDialogFooter>
-              <ButtonGroup gap={2}>
-                <Button
-                  ref={goRef}
-                  onClick={() => {
-                    onClose()
-                    action()
-                  }}
-                  ml={3}
-                  title={title}
-                  color={color}
-                  bgGradient={gradient(confirmColorScheme)}
-                  _hover={{
-                    bgGradient: gradient(confirmColorScheme, 100),
-                  }}
-                >
-                  {buttonText}
-                </Button>
-                <Button
-                  ref={cancelRef}
-                  bgGradient={gradient('gray')}
-                  _hover={{
-                    bgGradient: gradient('gray', 100),
-                  }}
-                  onClick={onClose}
-                  color={color}
-                >
-                  Cancel
-                </Button>
-              </ButtonGroup>
+
             </AlertDialogFooter>
+
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog >
