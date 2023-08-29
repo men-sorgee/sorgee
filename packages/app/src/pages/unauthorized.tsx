@@ -10,33 +10,33 @@ export default function UnauthorizedPage() {
   const { level, plan, error } = router.query
   return (
     <Page title="Unauthorized">
-      {(error && (
+      {(error != undefined && (
         <Alert status="error" mb={4} rounded="lg" shadow="lg">
           <AlertIcon />
           <Text>{error}</Text>
         </Alert>
       )) || (
-        <Text align="center">
-          Unfortunately, the page you tried to access is only available to{' '}
-          {level || 'brother'}s.
-          {(plan && (
-            <>
-              <br />
-              You will also need the {plan || 'plus'} plan:{' '}
-              <Link href={`/member/subscription?plan=${plan}`}>
-                Subscribe Here
-              </Link>
-              .
-            </>
-          )) || (
-            <>
-              {' '}
-              Learn how to advance your level in our{' '}
-              <Link href="/brothers">brotherhood guide</Link>.
-            </>
-          )}
-        </Text>
-      )}
+          <Text align="center">
+            Unfortunately, the page you tried to access is only available to{' '}
+            {level || 'brother'}s.
+            {(plan && (
+              <>
+                <br />
+                You will also need the {plan || 'plus'} plan:{' '}
+                <Link href={`/member/subscription?plan=${plan}`}>
+                  Subscribe Here
+                </Link>
+                .
+              </>
+            )) || (
+                <>
+                  {' '}
+                  Learn how to advance your level in our{' '}
+                  <Link href="/brothers">brotherhood guide</Link>.
+                </>
+              )}
+          </Text>
+        )}
 
       <Image
         src="/images/sad-panda.png"

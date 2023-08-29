@@ -316,7 +316,7 @@ function VerifyForm({
                 </ButtonBusy>
               )}
             </HStack>
-            {error && <Alert rounded="lg" shadow="lg" status="warning" alignItems="start" w={['full', '75%']}>
+            {error != undefined && <Alert rounded="lg" shadow="lg" status="warning" alignItems="start" w={['full', '75%']}>
               <AlertIcon />
               <Text fontSize="xl" textAlign="left" mt={0}>
                 <strong>If you are having troubles uploading a photo, it may be due to

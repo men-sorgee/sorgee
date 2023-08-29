@@ -49,7 +49,7 @@ export const Page = chakra(
     const error = e as string
 
     const ErrorAlert = () =>
-      error && (
+      error != undefined && (
         <Alert status="error" mb={8} rounded="lg" shadow="lg">
           <AlertIcon />
           <Text my={0}>{error}</Text>

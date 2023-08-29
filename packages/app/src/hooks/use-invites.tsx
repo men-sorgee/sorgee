@@ -25,7 +25,7 @@ export type InvitesResults = {
 function take<T>(arr: Array<T>, filter: (_: T) => boolean) {
   let take = []
   let leave = []
-  arr.forEach(item => {
+  arr?.forEach(item => {
     if (filter(item)) take.push(item)
     else leave.push(item)
   })
@@ -37,7 +37,7 @@ export const useInvites = (): InvitesResults => {
   const [activeInvite, setActiveInvite] = useState<EventInvite>(null)
   const { authenticated } = useAuthenticated()
   const {
-    data,
+    data: invites,
     mutate,
     error,
     isLoading,
@@ -46,7 +46,6 @@ export const useInvites = (): InvitesResults => {
     fallbackData: [],
   })
 
-  let invites = useMemo(() => [...data], [data])
 
   let past = take<EventInvite>(invites, (i) =>
     i.event.status == 'occurred' && i.rsvp == 'confirmed')

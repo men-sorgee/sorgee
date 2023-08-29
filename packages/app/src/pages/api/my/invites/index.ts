@@ -3,7 +3,7 @@ import { listInvites } from "lib/services/directus/server/users";
 import { ApiResponse, ApiResponseType, withMember } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function listUserInvites(
+export default async function Invites(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponseType<EventUser[]>>
 ) {
