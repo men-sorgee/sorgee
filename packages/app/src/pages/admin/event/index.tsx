@@ -66,7 +66,7 @@ export default function AdminEventList() {
           <TabPanel p={0}>
             <Heading mb={4}>Past Events</Heading>
             {past.map((event) => (
-              <EventCard key={event.id} size="md" event={event} showDescription={false} mb={4}>
+              <EventCard key={event.id} event={event} showDescription={false} mb={4}>
                 <ButtonLink my={2} href={`/admin/event/${event.id}`}>
                   View Event
                 </ButtonLink>
