@@ -50,7 +50,7 @@ export const authOptions: AuthOptions = {
     logo: '/logo.svg',
     brandColor: brand.colors.primary.DEFAULT,
     colorScheme: 'dark',
-    buttonText: 'Use',
+    buttonText: 'white',
   },
 
   callbacks: {
@@ -148,9 +148,10 @@ export const authOptions: AuthOptions = {
       clientId: yahoo.clientId,
       clientSecret: yahoo.clientSecret,
       allowDangerousEmailAccountLinking: true,
+
     }),
     EmailProvider({
-      maxAge: 60 * 60, // 1 hour
+      maxAge: 60 * 60, // 1 hour]
       async sendVerificationRequest({ identifier: email, url }) {
         const user = await findUser(email)
         console.log('sendVerificationRequest')
@@ -186,6 +187,7 @@ export const authOptions: AuthOptions = {
         let [local, domain] = identifier.toLowerCase().trim().split('@')
         return `${local}@${domain}`
       },
+
     }),
   ],
 }
