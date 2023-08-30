@@ -2,7 +2,7 @@ import * as typeorm from "typeorm";
 
 import { Events } from "./Events";
 import { NotificationsUsers } from "./NotificationsUsers";
-import { Surveys } from "./Surveys";
+import { Survey } from "./Surveys";
 
 @typeorm.Index('notifications_pkey', ['id'], { unique: true })
 @typeorm.Entity('notifications', { schema: 'public' })
@@ -102,6 +102,6 @@ export class Notifications {
   )
   notificationsUsers: typeorm.Relation<NotificationsUsers[]>
 
-  @typeorm.OneToMany(() => Surveys, (surveys) => surveys.notification)
-  surveys: Surveys[]
+  @typeorm.OneToMany(() => Survey, (surveys) => surveys.notification)
+  surveys: Survey[]
 }

@@ -2,7 +2,7 @@ import * as typeorm from "typeorm";
 
 import { DirectusFile } from "./DirectusFiles";
 import { SurveyQuestions } from "./SurveyQuestions";
-import { Surveys } from "./Surveys";
+import { Survey } from "./Surveys";
 import { User } from "./User";
 
 @typeorm.Index('survey_answers_pkey', ['id'], { unique: true })
@@ -47,11 +47,11 @@ export class SurveyAnswers {
   @typeorm.JoinColumn([{ name: 'question', referencedColumnName: 'id' }])
   question: typeorm.Relation<SurveyQuestions>
 
-  @typeorm.ManyToOne(() => Surveys, (surveys) => surveys.surveyAnswers, {
+  @typeorm.ManyToOne(() => Survey, (surveys) => surveys.answers, {
     onDelete: 'SET NULL',
   })
   @typeorm.JoinColumn([{ name: 'survey', referencedColumnName: 'id' }])
-  survey: typeorm.Relation<Surveys>
+  survey: typeorm.Relation<Survey>
 
   @typeorm.ManyToOne(() => User, (users) => users.surveyAnswers, {
     onDelete: 'SET NULL',

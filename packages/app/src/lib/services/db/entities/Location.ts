@@ -2,7 +2,7 @@ import * as typeorm from "typeorm";
 
 import { DirectusFile } from "./DirectusFiles";
 import { Events } from "./Events";
-import { Surveys } from "./Surveys";
+import { Survey } from "./Surveys";
 import { User } from "./User";
 
 @typeorm.Index('location_pkey', ['id'], { unique: true })
@@ -55,6 +55,6 @@ export class Location {
   @typeorm.JoinColumn([{ name: 'owner', referencedColumnName: 'id' }])
   owner: typeorm.Relation<User>
 
-  @typeorm.OneToMany(() => Surveys, (surveys) => surveys.location)
-  surveys: typeorm.Relation<Surveys[]>
+  @typeorm.OneToMany(() => Survey, (surveys) => surveys.location)
+  surveys: typeorm.Relation<Survey[]>
 }

@@ -2,7 +2,7 @@ import * as typeorm from "typeorm";
 
 import { DirectusUsers } from "./DirectusUsers";
 import { SurveyAnswers } from "./SurveyAnswers";
-import { SurveysSurveyQuestions } from "./SurveysSurveyQuestions";
+import { SurveysSurveyQuestion } from "./SurveysSurveyQuestions";
 
 @typeorm.Index('survey_questions_pkey', ['id'], { unique: true })
 @typeorm.Entity('survey_questions', { schema: 'public' })
@@ -60,8 +60,8 @@ export class SurveyQuestions {
   userUpdated: typeorm.Relation<DirectusUsers>
 
   @typeorm.OneToMany(
-    () => SurveysSurveyQuestions,
-    (surveysSurveyQuestions) => surveysSurveyQuestions.surveyQuestions
+    () => SurveysSurveyQuestion,
+    (surveysSurveyQuestions) => surveysSurveyQuestions.question
   )
-  surveysSurveyQuestions: typeorm.Relation<SurveysSurveyQuestions[]>
+  surveysSurveyQuestions: typeorm.Relation<SurveysSurveyQuestion[]>
 }

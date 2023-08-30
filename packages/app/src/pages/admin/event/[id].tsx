@@ -26,8 +26,8 @@ import {
   Box,
   Flex,
   FormLabel,
-  Heading,
   HStack,
+  Heading,
   Input,
   Link,
   List,
@@ -49,6 +49,7 @@ import {
   useDisclosure
 } from "@chakra-ui/react";
 
+import { EventSurveyAnswers } from "../../../components/events/EventSurveyAnswers";
 import { getAssetUrl } from "../../../lib/utils";
 
 export default function EventAdmin() {
@@ -294,8 +295,11 @@ export default function EventAdmin() {
               }}
             />}
           </Box>
-          {event?.status == EventStatusType.Occurred && (
-            <StatGroup gap={4} justifyItems="space-between">
+          {event?.status == EventStatusType.Occurred && (<>
+
+
+            {event.surveys?.length > 0 && <Box borderBottom="2px dotted" mt={4} borderColor="text"><EventSurveyAnswers surveyId={event.surveys[0].id} member={member} /></Box>}
+            <StatGroup gap={4} justifyItems="space-between" >
               {stats?.prepaid_count != undefined && (<>
                 <Stat>
                   <StatLabel>Online</StatLabel>
@@ -346,6 +350,7 @@ export default function EventAdmin() {
             </StatGroup>
 
 
+          </>
           )}
         </EventCard>
       )

@@ -13,7 +13,7 @@ import { EventsUser } from "./EventsUsers";
 import { Location } from "./Location";
 import { Notifications } from "./Notifications";
 import { Rating } from "./Rating";
-import { Surveys } from "./Surveys";
+import { Survey } from "./Surveys";
 
 @Index('events_pkey', ['id'], { unique: true })
 @Entity('events', { schema: 'public' })
@@ -96,6 +96,6 @@ export class Events {
   @OneToMany(() => Rating, (rating) => rating.event)
   ratings: Rating[]
 
-  @OneToMany(() => Surveys, (surveys) => surveys.event)
-  surveys: Surveys[]
+  @OneToMany(() => Survey, (surveys) => surveys.event)
+  surveys: Survey[]
 }

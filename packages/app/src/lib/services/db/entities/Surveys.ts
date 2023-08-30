@@ -5,11 +5,11 @@ import { Events } from "./Events";
 import { Location } from "./Location";
 import { Notifications } from "./Notifications";
 import { SurveyAnswers } from "./SurveyAnswers";
-import { SurveysSurveyQuestions } from "./SurveysSurveyQuestions";
+import { SurveysSurveyQuestion } from "./SurveysSurveyQuestions";
 
 @typeorm.Index('surveys_pkey', ['id'], { unique: true })
 @typeorm.Entity('surveys', { schema: 'public' })
-export class Surveys {
+export class Survey {
   @typeorm.Column('uuid', { primary: true, name: 'id' })
   id: string
 
@@ -47,7 +47,7 @@ export class Surveys {
   closing: string | null
 
   @typeorm.OneToMany(() => SurveyAnswers, (surveyAnswers) => surveyAnswers.survey)
-  surveyAnswers: typeorm.Relation<SurveyAnswers[]>
+  answers: typeorm.Relation<SurveyAnswers[]>
 
   @typeorm.ManyToOne(() => Events, (events) => events.surveys, { onDelete: 'CASCADE' })
   @typeorm.JoinColumn([{ name: 'event', referencedColumnName: 'id' }])
@@ -72,8 +72,22 @@ export class Surveys {
   userUpdated: typeorm.Relation<DirectusUsers>
 
   @typeorm.OneToMany(
-    () => SurveysSurveyQuestions,
-    (surveysSurveyQuestions) => surveysSurveyQuestions.surveys
+    () => SurveysSurveyQuestion,
+    (surveysSurveyQuestions) => surveysSurveyQuestions.survey
   )
-  surveysSurveyQuestions: typeorm.Relation<SurveysSurveyQuestions[]>
+  questions: typeorm.Relation<SurveysSurveyQuestion[]>
+}
+
+export type QuestionResult = {
+  question_id: string
+  question_type: 'text' | 'string' | 'boolean' | 'string_array' | 'number' | 'number_array' | 'file' | 'color'
+  aggregated_result: string
+  question?: string
+  order: number
+}
+
+export type SurveyResult = {
+  id: string
+  name: string
+  questions: QuestionResult[]
 }

@@ -1,11 +1,11 @@
 import * as typeorm from "typeorm";
 
 import { SurveyQuestions } from "./SurveyQuestions";
-import { Surveys } from "./Surveys";
+import { Survey } from "./Surveys";
 
 @typeorm.Index('surveys_survey_questions_pkey', ['id'], { unique: true })
 @typeorm.Entity('surveys_survey_questions', { schema: 'public' })
-export class SurveysSurveyQuestions {
+export class SurveysSurveyQuestion {
   @typeorm.PrimaryGeneratedColumn({ type: 'integer', name: 'id' })
   id: number
 
@@ -17,9 +17,9 @@ export class SurveysSurveyQuestions {
     (surveyQuestions) => surveyQuestions.surveysSurveyQuestions
   )
   @typeorm.JoinColumn([{ name: 'survey_questions_id', referencedColumnName: 'id' }])
-  surveyQuestions: typeorm.Relation<SurveyQuestions>
+  question: typeorm.Relation<SurveyQuestions>
 
-  @typeorm.ManyToOne(() => Surveys, (surveys) => surveys.surveysSurveyQuestions)
+  @typeorm.ManyToOne(() => Survey, (surveys) => surveys.questions)
   @typeorm.JoinColumn([{ name: 'surveys_id', referencedColumnName: 'id' }])
-  surveys: typeorm.Relation<Surveys>
+  survey: typeorm.Relation<Survey>
 }
