@@ -157,8 +157,8 @@ export default function MessagesStyles() {
       @media (max-width: 576px) {
         .cs-main-container--responsive {
           min-width: auto;
-          height: 75dvh;
-          height: 75vh;
+          height: 70dvh;
+          height: 70vh;
         }
         .cs-main-container--responsive > .cs-sidebar.cs-sidebar--left {
           display: none;
