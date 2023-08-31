@@ -22,7 +22,7 @@
     "directus-extension-api-trigger-interface": "^1.0.0",
     "directus-extension-display-link": "^1.6.1",
     "directus-extension-editorjs": "^1.5.0",
-    "directus-extension-grid-layout": "^1.0.2",
+    "directus-extension-grid-layout": "^1.0.12",
     "directus-extension-group-modal-interface": "^1.2.0",
     "directus-extension-masked-interface": "^1.1.0",
     "directus-extension-schema-management-module": "^1.3.0",
