@@ -4,23 +4,45 @@ import {
   DirectusTypes,
   FieldMap,
   Promo,
+  Promos,
   User
 } from "lib/models";
 
-import { Directus } from "@directus/sdk";
+import {
+  authentication,
+  createDirectus,
+  DirectusClient,
+  graphql,
+  readItem,
+  readItems,
+  realtime,
+  rest
+} from "@directus/sdk";
 
-const _adminDb = new Directus<DirectusTypes>(adminUrl)
+import { Promos } from "../../db/entities";
+
+const _adminDb = createDirectus<DirectusTypes>(adminUrl)
+  .with(rest({
+
+  }))
+  .with(graphql)
+  .with(authentication("json", {
+    autoRefresh: true
+  }))
+  .with(realtime({
+
+  }))
 const cache: { [key: string]: any } = {}
 
-export async function getAdminClient(): Promise<Directus<DirectusTypes>> {
-  if (await _adminDb.auth.token) return _adminDb
-  let success = await _adminDb.auth.static(process.env.ADMIN_TOKEN)
+export async function getAdminClient() {
+  if (await _adminDb.getToken()) return _adminDb
+  _adminDb.setToken(process.env.ADMIN_TOKEN)
   return _adminDb
 }
 
 export async function findPromo(code: string): Promise<Promo | null> {
   const adminClient = await getAdminClient()
-  const { data } = await adminClient.items('promos').readByQuery({
+  const data = await adminClient.request<Promos[]>(readItems('promos', {
     filter: {
       code: { _eq: code },
     },
@@ -34,7 +56,7 @@ export async function getFields(collection: string = 'users'): Promise<FieldMap>
     return cache[key]
   }
   const adminClient = await getAdminClient()
-  const { data } = await adminClient.fields.readMany(collection)
+  const { data } = await adminClient..readMany(collection)
   if (!data) return {}
 
   const fieldMap = data.reduce((acc: any, field: DirectusField): any => {
