@@ -1,4 +1,4 @@
-import { adminBaseUrl, baseUrl } from "lib/config";
+import { adminBaseUrl, baseUrl, userImageId } from "lib/config";
 import app from "lib/config/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -15,8 +15,12 @@ export default async function Asset(req: NextApiRequest, res: NextApiResponse) {
     let response = await fetch(url, { cache: 'force-cache', keepalive: true })
     if (response.ok) {
       return await proxyCachedResponse(res, response)
-    } else if (response.status > 500) {
+    } else if (response.status > 400) {
       response = await fetch(`${adminBaseUrl}/assets/${id}`)
+      if (response.ok)
+        return await proxyCachedResponse(res, response)
+    } else if (response.status === 404) {
+      response = await fetch(`${adminBaseUrl}/assets/${userImageId}`)
       if (response.ok)
         return await proxyCachedResponse(res, response)
     }
