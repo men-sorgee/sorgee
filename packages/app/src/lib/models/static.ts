@@ -74,20 +74,6 @@ export type Promo = {
   vouching_user?: string | VouchingUser
 }
 
-export type Promos = {
-  id: number
-  user_created?: string | DirectusUser
-  date_created?: string
-  user_updated?: string | DirectusUser
-  date_updated?: string
-  code: string
-  expires?: string
-  override?: unknown
-  vouching_user?: string | User
-  description?: string
-  name?: string
-}
-
 export type PageContent = {
   id: string
   status: 'published' | 'draft'

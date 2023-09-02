@@ -19,7 +19,7 @@ import {
 } from "@chakra-ui/react";
 
 export async function getServerSideProps(_context) {
-  const { getPageBySlug } = await import('lib/services/directus/static')
+  const { getPageBySlug } = await import('lib/services/directus/server/pages')
   const page = await getPageBySlug('blog')
 
   if (!page) {

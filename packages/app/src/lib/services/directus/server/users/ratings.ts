@@ -2,11 +2,13 @@
 
 import { Rating, RatingCollection } from "lib/models";
 
+import { createItem, readItems, updateItem } from "@directus/sdk";
+
 // Service Calls ------------------------------------
 import { getAdminClient } from "../";
 
 export async function getRating(user_id: string, collection: RatingCollection, item_id: string) {
-  const adminClient = await getAdminClient()
+  const admin = await getAdminClient()
   const filter = {
     user: {
       _eq: user_id,
@@ -30,9 +32,9 @@ export async function getRating(user_id: string, collection: RatingCollection, i
     }
   }
 
-  const { data: ratings } = await adminClient.items('rating').readByQuery({
-    filter,
-  })
+  const ratings = await admin.request(readItems('rating', {
+    filter
+  }))
 
   if (ratings && ratings.length > 0) {
     return ratings[0] as Rating
@@ -42,15 +44,16 @@ export async function getRating(user_id: string, collection: RatingCollection, i
 }
 
 export async function getRatings(user_id: string) {
-  const adminClient = await getAdminClient()
+  const admin = await getAdminClient()
 
-  const { data: ratings } = await adminClient.items('rating').readByQuery({
+  const ratings = await admin.request(readItems('rating', {
+
     filter: {
       user: {
         _eq: user_id,
       },
     },
-  })
+  }))
 
   return ratings as Rating[]
 }
@@ -61,12 +64,10 @@ export async function setRating(
   item: string,
   rate: number
 ) {
-  const adminClient = await getAdminClient()
+  const admin = await getAdminClient()
   const existingRating = await getRating(user_id, collection, item)
   if (existingRating) {
-    return (await adminClient.items('rating').updateOne(existingRating.id, {
-      rate,
-    })) as Rating
+    return (await admin.request(updateItem('rating', existingRating.id, { rate, item }))) as Rating
   } else {
     let value = {} as Partial<Rating>
     switch (collection) {
@@ -79,30 +80,32 @@ export async function setRating(
         break
       }
     }
-    return (await adminClient.items('rating').createOne({
+    return (await admin.request(createItem('rating', {
       user: user_id,
       collection,
       rate,
       ...value,
-    })) as Rating
+    }))) as Rating
   }
 }
 
 export async function setUserAverageRating(user_id: string) {
-  const adminClient = await getAdminClient()
-  const { data: ratings } = await adminClient.items('rating').readByQuery({
+  const admin = await getAdminClient()
+  const ratings = await admin.request<Rating[]>(readItems('rating', {
+
     filter: {
       member: {
         _eq: user_id,
       },
     }
-  })
+  }))
 
   const average = ratings.reduce((acc, rating) => acc + rating.rate, 0) / ratings.length
 
   if (average == 0) return
 
-  const attendedEvents = await adminClient.items('events_users').readByQuery({
+  const attendedEvents = await admin.request(readItems('events_users', {
+
     filter: {
       users_id: {
         id: {
@@ -113,9 +116,10 @@ export async function setUserAverageRating(user_id: string) {
         _eq: true,
       }
     }
-  })
+  }))
 
-  const missedEvents = await adminClient.items('events_users').readByQuery({
+  const missedEvents = await admin.request(readItems('events_users', {
+
     filter: {
       users_id: {
         id: {
@@ -126,11 +130,11 @@ export async function setUserAverageRating(user_id: string) {
         _eq: false,
       }
     }
-  })
+  }))
 
   let penalPoints = 0
-  const missedEventsCount = missedEvents.data.length
-  const attendedEventsCount = attendedEvents.data.length
+  const missedEventsCount = missedEvents.length
+  const attendedEventsCount = attendedEvents.length
   if (missedEventsCount > 0) {
     // penalize 1 point for every missed events
 
@@ -147,8 +151,6 @@ export async function setUserAverageRating(user_id: string) {
   if (rating > 5) rating = 5
 
   if (rating && average !== rating)
-    await adminClient.items('users').updateOne(user_id, {
-      rating: rating,
-    })
+    await admin.request(updateItem('users', user_id, { rating }))
   return rating
 }

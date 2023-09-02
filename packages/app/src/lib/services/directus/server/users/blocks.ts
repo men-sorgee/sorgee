@@ -1,10 +1,13 @@
 import { UserBlock } from "lib/models";
 
+import { createItem, deleteItem, readItems } from "@directus/sdk";
+
 import { getAdminClient } from "../";
 
 export async function getBlock(user_id: string, blocked_id: string): Promise<UserBlock> {
-  const adminClient = await getAdminClient()
-  const { data: buddies } = await adminClient.items('user_block').readByQuery({
+  const admin = await getAdminClient()
+  const buddies = await admin.request(readItems('user_block', {
+
     filter: {
       user_id: {
         _eq: user_id,
@@ -14,7 +17,7 @@ export async function getBlock(user_id: string, blocked_id: string): Promise<Use
       },
     },
     fields: '*, blocked_id.*' as any,
-  })
+  }))
   if (buddies.length) {
     return buddies[0] as UserBlock
   }
@@ -28,10 +31,10 @@ export async function addBlock(user_id: string, blocked_id: string): Promise<Use
   if (relationship) {
     return relationship
   } else {
-    const block = await admin.items('user_block').createOne({
+    const block = await admin.request(createItem('user_block', {
       user_id,
       blocked_id,
-    })
+    }))
     return block as UserBlock
   }
 }
@@ -41,6 +44,6 @@ export async function removeBlock(user_id: string, blocked_id: string) {
   const relation = await getBlock(user_id, blocked_id)
 
   if (relation) {
-    return admin.items('user_block').deleteOne(relation.id)
+    return admin.request(deleteItem('user_block', relation.id))
   }
 }

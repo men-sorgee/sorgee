@@ -143,12 +143,7 @@ export default async function FindMembers(
     let results = null
     try {
       results = await searchUsers<SearchableMember>(
-        searchParams as any,
-        searchableMemberFields,
-        limit,
-        page,
-        sort
-      )
+        { filter: searchParams as any, fields: searchableMemberFields, limit, page, sort })
     } catch (e) {
       console.error('Errored with params:', JSON.stringify(searchParams, null, 2))
       console.dir(searchParams, { depth: 10 })

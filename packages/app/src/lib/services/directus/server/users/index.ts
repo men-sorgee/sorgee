@@ -3,6 +3,7 @@ import {
   applicantFields,
   Member,
   memberFields,
+  MemberSearchResults,
   MemberStats,
   Profile,
   profileFields,
@@ -14,22 +15,28 @@ import {
   UserType
 } from "lib/models";
 
-import { FieldFilter } from "@directus/sdk";
-
 // Service Calls ------------------------------------
+import {
+  aggregate,
+  createItem,
+  readItem,
+  readItems,
+  updateItem
+} from "@directus/sdk";
+
 import { getAdminClient } from "../";
 
 export async function createUser(member: Partial<User>): Promise<User> {
-  const adminClient = await getAdminClient()
-  const user = await adminClient.items('users').createOne(member)
+  const admin = await getAdminClient()
+  const user = await admin.request<User>(createItem('users', member))
   if (!user) throw new Error('Failed to create user')
   return user as unknown as User
 }
 
 export async function updateUser<T extends User | Member | Applicant | Profile = User>(id: string, userData: Partial<T>) {
-  const adminClient = await getAdminClient()
+  const admin = await getAdminClient()
 
-  const user = await adminClient.items('users').updateOne(id, userData)
+  const user = await admin.request<T>(updateItem('users', id, userData))
   return user as T
 }
 
@@ -37,8 +44,8 @@ export async function getUser<T extends User | Member | Applicant | Profile = Us
   id: string,
   fields: UserFields = memberFields
 ): Promise<T | null> {
-  const adminClient = await getAdminClient()
-  const user = await adminClient.items('users').readOne(id, {
+  const admin = await getAdminClient()
+  const user = await admin.request<T>(readItem('users', id, {
     fields: fields as any,
     filter: {
       status: {
@@ -54,7 +61,7 @@ export async function getUser<T extends User | Member | Applicant | Profile = Us
       }
 
     },
-  })
+  }))
   return (user as T) || null
 }
 
@@ -62,16 +69,17 @@ export async function findUser<T extends User | Member | Applicant | Profile = P
   email: string,
   fields: UserFields = profileFields
 ): Promise<T | null> {
-  const adminClient = await getAdminClient()
+  const admin = await getAdminClient()
   // @ts-ignore
-  const existingUserQuery = await adminClient.items('users').readByQuery({
+  const existingUserQuery = await admin.request(readItems('users', {
+
     filter: {
       email: {
         _eq: email,
       },
     },
     fields: [...fields],
-  })
+  }))
 
   // @ts-ignore
   const user = existingUserQuery?.data?.length ? existingUserQuery.data[0] : null
@@ -79,46 +87,61 @@ export async function findUser<T extends User | Member | Applicant | Profile = P
   return user as T
 }
 
+
 export async function searchUsers<T extends User | SearchableMember = SearchableMember>(
-  filter: FieldFilter<T>,
+  filter: any,
   fields: UserFields = searchableMemberFields,
   limit: number = 20,
   page: number = 1,
   sort: any = '-last_login'
-) {
-  const adminClient = await getAdminClient()
+): Promise<MemberSearchResults<T>> {
+  const admin = await getAdminClient()
 
-  const results = await adminClient.items('users').readByQuery({
-    filter: filter as any,
-    fields,
+  const data = await admin.request<T[]>(readItems('users', {
+    filter,
+    fields: [...fields,],
     limit,
     page,
     meta: '*',
     sort,
-  })
-  return results
+  }))
+
+  const meta = await admin.request<{ count: number }>(aggregate('users', {
+    aggregate: {
+      count: '*',
+    },
+    filter,
+  }))
+  return {
+    data,
+    meta: {
+      total: meta.count,
+      count: data.length,
+    }
+  }
 }
 
 export async function getApplicant(id: string): Promise<Applicant | null> {
-  const adminClient = await getAdminClient()
-  const applicant = await adminClient.items('users').readOne(id, { fields: applicantFields as any })
+  const admin = await getAdminClient()
+  const applicant = await admin.request<Applicant>(readItem('users', id, { fields: applicantFields as any }))
   return (applicant as unknown as Applicant) || null
 }
 
 export async function getMember(id: string): Promise<Member | null> {
-  const adminClient = await getAdminClient()
-  const member = await adminClient.items('users').readOne(id, {
+  const admin = await getAdminClient()
+  const member = await admin.request<Member>(readItem('users', id, {
     fields: memberFields as any,
-  })
+  }))
   return (member as unknown as Member) || null
 }
 
 export async function getUserId(email: string) {
-  const adminClient = await getAdminClient()
-  const { data } = await adminClient.items('users').readByQuery({
+  const admin = await getAdminClient()
+  const data = await admin.request(readItems('users', {
+
     filter: { email: { _eq: email } },
     fields: ['id'],
-  })
+  }))
 
   if (data && data?.length) {
     return data[0].id
@@ -127,17 +150,17 @@ export async function getUserId(email: string) {
 }
 
 export async function storeEmailEvent(event: UserEmailEvent) {
-  const adminClient = await getAdminClient()
+  const admin = await getAdminClient()
 
-  return await adminClient.items('user_email_events').createOne(event)
+  return await admin.request(createItem('user_email_events', event))
 }
 
 export async function listUsersByLevel<T = Member>(
-  type: string,
+  type: UserType,
   fields: UserFields = memberFields
 ): Promise<T[]> {
-  const adminClient = await getAdminClient()
-  const { data } = await adminClient.items('users').readByQuery({
+  const admin = await getAdminClient()
+  return await admin.request<T[]>(readItems('users', {
     filter: {
       user_type: {
         _eq: type,
@@ -147,8 +170,7 @@ export async function listUsersByLevel<T = Member>(
       },
     },
     fields: [...fields],
-  })
-  return data as T[]
+  }))
 }
 
 
@@ -161,8 +183,8 @@ export async function getUserStats(start: string): Promise<{
   big_brothers: number
   staff: number
 }> {
-  const adminClient = await getAdminClient()
-  const { data } = await adminClient.graphql.items<{
+  const admin = await getAdminClient()
+  const data = await admin.query<{
     users_aggregated: Array<{
       group: {
         user_type: UserType

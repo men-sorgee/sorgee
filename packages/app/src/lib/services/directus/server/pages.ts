@@ -1,5 +1,6 @@
-import { adminBaseUrl } from "lib/config";
-import { DirectusTypes, Page } from "lib/models";
+import { Page } from "lib/models";
+
+import { getAdminClient } from "./";
 
 const get_page = `query getPage($id: ID!) {
   page: page_by_id(id: $id) {
@@ -153,15 +154,10 @@ export async function getPageBySlug(slug: string) {
 }
 
 export async function getPageContent(query: string, variables: any): Promise<Page> {
-  const { Directus } = await import('@directus/sdk')
-  const directusDB = new Directus<DirectusTypes>(adminBaseUrl)
-  const results = await directusDB.graphql.items<{ page: Page }>(query, variables)
-
-  let { page } = results.data
+  const admin = await getAdminClient()
+  const { page } = await admin.query<{ page: Page }>(query, variables)
   if (!page) return null
-
-  if (Array.isArray(page)) page = page[0]
-
+  if (Array.isArray(page)) return page[0]
   return page
 }
 
@@ -249,11 +245,10 @@ const all_pages = `
 `
 
 export async function listPages(parentId: string = null): Promise<Page[]> {
-  const { Directus } = await import('@directus/sdk')
-  const directusDB = new Directus<DirectusTypes>(adminBaseUrl)
+  const admin = await getAdminClient()
   let {
-    data: { pages },
-  } = await directusDB.graphql.items<{ pages: Page[] }>(all_pages)
+    pages
+  } = await admin.query<{ pages: Page[] }>(all_pages)
 
   const mapParent = (page: Page): Page => {
     const { parent } = page

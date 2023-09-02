@@ -32,6 +32,8 @@ import {
   UserView
 } from "lib/models";
 
+import { CoreSchema } from "@directus/sdk";
+
 export type DirectusCollection = {
   collection: string
   icon?: string
@@ -150,42 +152,42 @@ export type DirectusUser = {
 
 export type FieldMap = Record<string, DirectusField>
 
-export type DirectusTypes = {
-  events: GroupEvent
-  events_users: EventUser
-  location: Location
-  notifications: Notification
-  notifications_users: NotificationUser
-  user_notification: MemberAlert
-  page: Page
-  promos: Promo
-  page_content: PageContent
-  site: Site
-  surveys: Survey
-  survey_questions: Question
-  survey_survey_questions: SurveyQuestion
-  survey_answers: SurveyAnswer
-  user_account: UserAccount
-  user_session: UserSession
-  billing_event: BillingEvent
-  user_payment: UserPayment
-  user_verification_token: UserVerificationToken
-  user_email_events: UserEmailEvent
-  user_buddy: UserBuddy
-  user_like: UserLike
-  user_shares: UserShare
-  user_views: UserView
-  users: User
-  users_files: UserFile
-  users_photos: UserPhoto
-  user_block: UserBlock
-  rating: Rating
-  rooms: Room
-  room_events: RoomEvent
-  messages: Message
-  directus_collections: DirectusCollection
-  directus_fields: DirectusField
-  directus_files: DirectusFile
-  directus_folders: DirectusFolder
-  directus_users: DirectusUser
+export type GNHSchema = CoreSchema & {
+  events: GroupEvent[]
+  events_users: EventUser[]
+  location: Location[]
+  notifications: Notification[]
+  notifications_users: NotificationUser[]
+  user_notification: MemberAlert[]
+  page: Page[]
+  promos: Promo[]
+  page_content: PageContent[]
+  site: Site[]
+  surveys: Survey[]
+  survey_questions: Question[]
+  survey_survey_questions: SurveyQuestion[]
+  survey_answers: SurveyAnswer[]
+  user_account: UserAccount[]
+  user_session: UserSession[]
+  billing_event: BillingEvent[]
+  user_payment: UserPayment[]
+  user_verification_token: UserVerificationToken[]
+  user_email_events: UserEmailEvent[]
+  user_buddy: UserBuddy[]
+  user_like: UserLike[]
+  user_shares: UserShare[]
+  user_views: UserView[]
+  users: User[]
+  users_files: UserFile[]
+  users_photos: UserPhoto[]
+  user_block: UserBlock[]
+  rating: Rating[]
+  rooms: Room[]
+  room_events: RoomEvent[]
+  messages: Message[]
+  //directus_collections: DirectusCollection[]
+  //directus_fields: DirectusField[]
+  //directus_files: DirectusFile[]
+  //directus_folders: DirectusFolder[]
+  //directus_users: DirectusUser[]
 }

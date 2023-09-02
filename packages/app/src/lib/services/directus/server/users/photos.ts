@@ -1,10 +1,19 @@
 import { UserPhoto } from "lib/models";
 
+import {
+  createItem,
+  deleteItem,
+  readItem,
+  readItems,
+  updateItem
+} from "@directus/sdk";
+
 import { getAdminClient } from "../";
 
 export async function getUserPhotos(userId: string, is_public: boolean = true) {
-  const adminClient = await getAdminClient()
-  const photos = await adminClient.items('users_photos').readByQuery({
+  const admin = await getAdminClient()
+  const photos = await admin.request(readItems('users_photos', {
+
     filter: {
       users_id: {
         _eq: userId,
@@ -14,28 +23,28 @@ export async function getUserPhotos(userId: string, is_public: boolean = true) {
       },
     },
     sort: ['sort'],
-  })
-  return photos.data
+  }))
+  return photos
 }
 
 export async function getUserPhoto(id: string): Promise<UserPhoto> {
-  const adminClient = await getAdminClient()
-  const photo = await adminClient.items('users_photos').readOne(id)
+  const admin = await getAdminClient()
+  const photo = await admin.request(readItem('users_photos', id))
   return photo as UserPhoto
 }
 
 export async function addUserPhoto(photo: UserPhoto) {
-  const adminClient = await getAdminClient()
-  const file = await adminClient.items('users_photos').createOne(photo)
+  const admin = await getAdminClient()
+  const file = await admin.request(createItem('users_photos', photo))
   return file?.id
 }
 
 export async function deleteUserPhoto(id: string) {
-  const adminClient = await getAdminClient()
-  await adminClient.items('users_photos').deleteOne(id)
+  const admin = await getAdminClient()
+  await admin.request(deleteItem('users_photos', id))
 }
 
 export async function updateUserPhoto(id: string, photo: Partial<UserPhoto>) {
-  const adminClient = await getAdminClient()
-  await adminClient.items('users_photos').updateOne(id, photo)
+  const admin = await getAdminClient()
+  await admin.request(updateItem('users_photos', id, photo))
 }

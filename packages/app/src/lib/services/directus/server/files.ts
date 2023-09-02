@@ -1,9 +1,19 @@
-import FormData from "form-data";
+
 import formidable, { Fields, File, Files } from "formidable";
 import IncomingForm from "formidable/Formidable";
 import { DirectusFile, DirectusFolder } from "lib/models";
 import { NextApiRequest } from "next";
 import { Writable } from "node:stream";
+
+import {
+  createFolder as createDirectusFolder,
+  deleteFile as deleteDirectusFile,
+  importFile as importDirectusFile,
+  readFile,
+  readFolders,
+  updateFile as updateDirectusFile,
+  uploadFiles
+} from "@directus/sdk";
 
 import { getAdminClient } from "./";
 
@@ -112,24 +122,24 @@ export async function createFolder(newFolder: {
   id?: string
   parent?: string
 }): Promise<DirectusFolder> {
-  const adminClient = await getAdminClient()
-  const folder = await adminClient.folders.createOne(newFolder)
+  const admin = await getAdminClient()
+  const folder = await admin.request(createDirectusFolder(newFolder))
   return folder
 }
 
 export async function findFolder(name: string, parent?: string): Promise<DirectusFolder> {
-  const adminClient = await getAdminClient()
+  const admin = await getAdminClient()
   const filter = {
     name: { _eq: name },
   }
   if (parent) {
     filter['parent'] = { _eq: parent }
   }
-  const folders = await adminClient.folders.readByQuery({
+  const folders = await admin.request(readFolders({
     filter,
-  })
-  if (folders.data.length === 0) return null
-  return folders.data[0] as DirectusFolder
+  }))
+  if (folders.length === 0) return null
+  return folders[0] as DirectusFolder
 }
 
 export async function uploadFile(
@@ -138,61 +148,48 @@ export async function uploadFile(
   title: string,
   description?: string
 ) {
-  const adminClient = await getAdminClient()
+  const admin = await getAdminClient()
   const { mimetype: type, originalFilename: name, filepath: path, data } = fileInfo
   const formData = new FormData()
   formData.append('folder', folder)
   formData.append('title', title)
-  formData.append('filename', name || 'photo')
+  formData.append('filename_download', name || 'photo')
+  formData.append('filename_disk', name || 'photo')
   formData.append('description', description)
-  formData.append('mimetype', type)
-  formData.append('file', data, {
-    ...fileInfo,
-    filename: name || 'photo',
-    filepath: path,
-    contentType: type,
-  })
-  const file = await adminClient.files.createOne(
-    formData,
-    {
-    },
-    {
-      requestOptions: {
-        headers: {
-          ...formData.getHeaders(),
-        },
-      },
-    }
-  )
+  formData.append('type', type)
+  formData.append('filename', name)
+  formData.append('filepath', path)
+  formData.append('content_type', type)
+  formData.append('mime_type', type)
+  formData.append('type', type)
+  formData.append('file', new Blob([data], {
+    type,
+  }))
+
+  const file = await admin.request(uploadFiles(formData))
   return file
 }
 
 export async function uploadBase64Image(image: string, folder: UploadFolder, title: string) {
   const { type, data, extension } = await decodeBase64Image(image)
-  const adminClient = await getAdminClient()
+  const admin = await getAdminClient()
   // const { type, name } = blob
   const formData = new FormData()
   formData.append('folder', folder)
   formData.append('title', title)
-  formData.append('filename', title + '.' + extension)
-  formData.append('mimetype', type)
-  formData.append('file', data, {
-    filename: title + '.' + extension,
-    filepath: '',
-    contentType: type,
-    knownLength: data.length,
-  })
-  const file = adminClient.files.createOne(
-    formData,
-    {},
-    {
-      requestOptions: {
-        headers: {
-          ...formData.getHeaders(),
-        },
-      },
-    }
-  )
+  formData.append('filename_download', title || 'photo')
+  formData.append('filename_disk', title || 'photo')
+  formData.append('type', type)
+  formData.append('filename', title)
+  formData.append('content_type', type)
+  formData.append('mime_type', type)
+  formData.append('type', type)
+  formData.append('file', new Blob([data], {
+    type: type,
+  }))
+
+  const file = admin.request(uploadFiles(formData))
+
   return file
 }
 
@@ -201,31 +198,28 @@ export async function importFile(
   folder: UploadFolder,
   title: string
 ): Promise<DirectusFile> {
-  const adminClient = await getAdminClient()
+  const admin = await getAdminClient()
 
-  const file = await adminClient.files.import({
-    url,
-    data: {
-      folder,
-      title,
-    },
-  })
+  const file = await admin.request<DirectusFile>(importDirectusFile(url, {
+    folder,
+    title,
+  }))
   return file as DirectusFile
 }
 
 export async function deleteFile(id: string) {
-  const adminClient = await getAdminClient()
-  await adminClient.files.deleteOne(id)
+  const admin = await getAdminClient()
+  await admin.request(deleteDirectusFile(id))
 }
 
 export async function getFile(id: string) {
-  const adminClient = await getAdminClient()
-  const file = await adminClient.files.readOne(id)
+  const admin = await getAdminClient()
+  const file = await admin.request(readFile(id))
   if (!file) return null
   return file as unknown as DirectusFile
 }
 
 export async function updateFile(id: string, fileInfo: DirectusFile) {
-  const adminClient = await getAdminClient()
-  await adminClient.files.updateOne(id, fileInfo as any)
+  const admin = await getAdminClient()
+  await admin.request(updateDirectusFile(id, fileInfo as any))
 }

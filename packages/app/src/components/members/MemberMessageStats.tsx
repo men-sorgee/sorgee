@@ -7,10 +7,10 @@ import {
   Box,
   chakra,
   Flex,
-  HStack,
   Icon,
   IconProps,
-  Text
+  Text,
+  Wrap
 } from "@chakra-ui/react";
 import { ChatBubbleBottomCenterIcon as ChatIconOn } from "@heroicons/react/24/solid";
 
@@ -35,9 +35,8 @@ export const MemberMessageStats = chakra(
 
     if (!showStats) return null
 
-    const message = `${convoCount} ${
-      convoCount != 1 ? 'brothers have' : 'brother has'
-    } chatted with him.`
+    const message = `${convoCount} ${convoCount != 1 ? 'brothers have' : 'brother has'
+      } chatted with him.`
 
     const color = convoCount > 0 ? 'primary.400' : 'primary.200'
     return (
@@ -58,7 +57,7 @@ export const MemberMessageStats = chakra(
         </Flex>
 
         {viewerLevel == MemberLevel.staff && convoCount > 0 && (
-          <HStack align="middle" justifyContent="middle" mt={2}>
+          <Wrap align="middle" justifyContent="middle" mt={2}>
             {stats.conversations.map((c) => (
               <MemberAvatar
                 key={c.id}
@@ -71,7 +70,7 @@ export const MemberMessageStats = chakra(
                 title={c.name}
               />
             ))}
-          </HStack>
+          </Wrap>
         )}
       </Box>
     )

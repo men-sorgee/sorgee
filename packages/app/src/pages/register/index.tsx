@@ -33,7 +33,7 @@ export type Props = {
 export async function getServerSideProps() {
   const { getFieldOptions } = await import('lib/services/directus/server')
   const birthMonthOptions = await getFieldOptions<User>('birth_month')
-  const { getPageById } = await import('lib/services/directus/static')
+  const { getPageById } = await import('lib/services/directus/server/pages')
   const page = await getPageById(pages.registrationPage)
   const { markdown } = page
 

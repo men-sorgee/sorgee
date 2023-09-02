@@ -1,17 +1,9 @@
 import { adminUrl } from "lib/config";
-import {
-  DirectusField,
-  DirectusTypes,
-  FieldMap,
-  Promo,
-  Promos,
-  User
-} from "lib/models";
+import { DirectusField, FieldMap, GNHSchema, Promo, User } from "lib/models";
 
 import {
   authentication,
   createDirectus,
-  DirectusClient,
   graphql,
   readItem,
   readItems,
@@ -19,18 +11,18 @@ import {
   rest
 } from "@directus/sdk";
 
-import { Promos } from "../../db/entities";
-
-const _adminDb = createDirectus<DirectusTypes>(adminUrl)
-  .with(rest({
-
-  }))
-  .with(graphql)
+const _adminDb = createDirectus<GNHSchema>(adminUrl)
+  .with(rest())
+  .with(graphql())
   .with(authentication("json", {
     autoRefresh: true
   }))
   .with(realtime({
-
+    reconnect: {
+      delay: 1000,
+      retries: 10
+    },
+    authMode: 'handshake'
   }))
 const cache: { [key: string]: any } = {}
 
@@ -41,12 +33,12 @@ export async function getAdminClient() {
 }
 
 export async function findPromo(code: string): Promise<Promo | null> {
-  const adminClient = await getAdminClient()
-  const data = await adminClient.request<Promos[]>(readItems('promos', {
+  const admin = await getAdminClient()
+  const data = await admin.request<Promo[]>(readItems('promos', {
     filter: {
       code: { _eq: code },
     },
-  })
+  }))
   return data?.length ? (data[0] as Promo) : null
 }
 
@@ -55,8 +47,12 @@ export async function getFields(collection: string = 'users'): Promise<FieldMap>
   if (cache[key]) {
     return cache[key]
   }
-  const adminClient = await getAdminClient()
-  const { data } = await adminClient..readMany(collection)
+  const admin = await getAdminClient()
+  const data = await admin.request(readItems('directus_fields', {
+    filter: {
+      collection: { _eq: collection },
+    }
+  }))
   if (!data) return {}
 
   const fieldMap = data.reduce((acc: any, field: DirectusField): any => {
@@ -82,8 +78,8 @@ export async function getField<T = User>(field: keyof T, collection: string = 'u
   if (cache[key]) {
     return cache[key]
   }
-  const adminClient = await getAdminClient()
-  const response: DirectusField = await adminClient.fields.readOne(collection, String(field))
+  const admin = await getAdminClient()
+  const response = await admin.request<DirectusField>(readItem('directus_fields', String(field)))
   if (!response) return null
   response.options = response?.meta?.options?.choices || []
   return response ? (cache[key] = response) : null
