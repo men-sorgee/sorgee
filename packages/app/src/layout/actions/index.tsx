@@ -34,7 +34,7 @@ const ActionsBar = forwardRef<HTMLDivElement, {}>((_props, ref) => {
   const hasBuddyList = hasFeature('buddy_list')
 
   let iconDimensions = ['35px', '40px', '50px']
-  let iconSize = ['xs', 'sm', 'md', 'lg']
+  let iconSize = ['xxs', 'xs', 'sm', 'md', 'lg']
 
   return (
     <Box
@@ -53,7 +53,8 @@ const ActionsBar = forwardRef<HTMLDivElement, {}>((_props, ref) => {
       bottom={0}
       px={8}
     >
-      <Flex justify="center" w="full" gap={[2, 4, 6]} p={4} {...constrained}>
+      <Flex w="full" align='center' justify='space-between' gap={[2, 4, 6]} p={4} pl={[5, 12, 12, 0]} {...constrained}>
+
         <Events
           member={member}
           active={path.startsWith('/events')}
@@ -97,6 +98,7 @@ const ActionsBar = forwardRef<HTMLDivElement, {}>((_props, ref) => {
           iconSize={iconSize}
           iconDimensions={iconDimensions}
         />
+
       </Flex>
     </Box>
   )
