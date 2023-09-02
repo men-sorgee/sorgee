@@ -114,7 +114,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps & { fieldMap: 
     (tab: number) => {
       if (tab != tabValue) {
         setTabValue(tab)
-        router.push(`/member/account/${PageSection[tab]}`)
+        router.push(`/member/account/${PageSection[tab]}`, undefined, { shallow: true })
       }
     },
     [router, tabValue]
@@ -239,14 +239,16 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps & { fieldMap: 
                       />
                     </GridItem>
                     {isText && <GridItem colSpan={[1, 2]}>
-                      <Text p={2} rounded="lg" bg='primary.500' shadow="md" fontSize="sm" textStyle='italic'>
+                      <Text p={2} rounded="lg" bg='bg' shadow="md" fontSize="sm" textStyle='italic' color='text'>
                         By selecting SMS, you agree to receive text messages from us (720-724-9426) for the purpose of accessing this site.
                         We will never send you marketing messages or share your phone number with anyone else.
                       </Text>
                     </GridItem>}
-
                     <GridItem colSpan={[1, 2]}>
                       <Divider />
+                    </GridItem>
+                    <GridItem colSpan={[1, 2]}>
+
                       <Alert px={[4, 4, 6]} gap={2} justifyItems="space-between" rounded="lg" mb={4}>
                         <Box>
                           <Heading as="h3" fontSize="xl" mt={0}>

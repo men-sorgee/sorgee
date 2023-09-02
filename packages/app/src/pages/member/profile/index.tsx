@@ -14,6 +14,7 @@ import {
 import { useFields, useUser } from "hooks";
 import { FieldMap, Member, MemberLevel } from "lib/models";
 import { ApiResult } from "lib/utils";
+import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 
 import {
@@ -137,19 +138,15 @@ const ProfileForm = ({
 }: FormProps & { fieldMap: FieldMap }) => {
   const section = PageSection[s]
   const [tabValue, setTabValue] = useState(section)
+  const router = useRouter()
 
-  const setSection = useCallback(
-    (tab: number) => {
-      if (tab != tabValue) {
-        setTabValue(tab)
-        window.history.pushState(
-          {},
-          null,
-          `/member/profile/${PageSection[tab]}`
-        )
-      }
-    },
-    [tabValue]
+  const setSection = useCallback((tab: number) => {
+    if (tab != tabValue) {
+      setTabValue(tab)
+      router.push(`/member/profile/${PageSection[tab]}`, undefined, { shallow: true })
+    }
+  },
+    [tabValue, router]
   )
 
   const {
