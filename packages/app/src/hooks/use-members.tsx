@@ -38,7 +38,7 @@ export const useMemberSearch = (
     setFilters(
       Object.keys(query).length ? `&${new URLSearchParams(query as any).toString()}` : ''
     )
-  }, [filters, setFilters, query, page, size, sort])
+  }, [query, page, size, sort])
 
   const key = `/api/members?limit=${size}&page=${page}&sort=${sort}${filters || ''}`
 
@@ -71,7 +71,7 @@ export const useMemberSearch = (
       setPageCount(filter_count ? Math.ceil(filter_count / size) : 0)
       setMembers(response.data as SearchableMember[])
     }
-  }, [meta.filtered, response?.data, response?.meta, size])
+  }, [response?.data, response?.meta, size])
 
   const result = {
     members,
