@@ -204,90 +204,105 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps & { fieldMap: 
             defaultValues={defaultValues}
             successMessage="Your settings were updated."
           >
-            {({ formState: { isSubmitting } }) => (
-              <>
-                <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
-                  <FieldInput
-                    field="first_name"
-                    label="First Name"
-                    registerOptions={{ required }}
-                  />
-                  <FieldInput field="last_name" label="Last Name" registerOptions={{ required }} />
-                  <FieldSelect
-                    field="birth_month"
-                    label="Birth Month"
-                    registerOptions={{ required }}
-                    options={getOptions('birth_month')}
-                  />
-                  <FieldNumber
-                    field="birth_year"
-                    label="Birth Year"
-                    registerOptions={{ required, min: minYear, max: maxYear }}
-                  />
-                  <GridItem colSpan={[1, 2]}>
-                    <Divider />
-                    <Text>
-                      The following information may be shared if you choose to share contact data
-                      with your buddies.
-                    </Text>
-                  </GridItem>
-                  <FieldInput
-                    field="email"
-                    label="Email"
-                    type="email"
-                    registerOptions={{ required }}
-                    readOnly={true}
-                  />
-                  <FieldInput
-                    field="phone"
-                    label="Mobile Phone"
-                    registerOptions={{
-                      pattern: {
-                        value: /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
-                        message: 'US numbers only. Format: 123 456 7890',
-                      },
-                    }}
-                    placeholder="000 456 7890"
-                  />
-                  <GridItem colSpan={[1, 2]}>
-                    <Divider />
-                    <Text>Change how you sign in to this site.</Text>
-                  </GridItem>
-                  <GridItem colSpan={[1, 2]}>
-                    <FieldRadioButtons
-                      field="auth_with_phone"
-                      label="Sign-in Link"
-                      help="If you are having issues receiving the sign-in link, you can switch it to use your cell number instead."
-                      options={[
-                        { value: 'false', text: 'Send via Email' },
-                        { value: 'true', text: 'Send via SMS' },
-                      ]}
+            {({ formState: { isSubmitting }, watch }) => {
+              const isText = watch('auth_with_phone')
+              return (
+                <>
+                  <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
+                    <FieldInput
+                      field="first_name"
+                      label="First Name"
+                      registerOptions={{ required }}
                     />
-                  </GridItem>
-                </SimpleGrid>
-                <Box
-                  backdropFilter="blur(2px)"
-                  position="sticky"
-                  h="80px"
-                  w="full"
-                  bottom={0}
-                ></Box>
-                <Button
-                  mt={-10}
-                  size="lg"
-                  type="submit"
-                  bg="primary.500"
-                  color="white"
-                  disabled={isSubmitting}
-                  position="sticky"
-                  bottom={4}
-                  _hover={{ bg: 'accent.500' }}
-                  w={['full', 'auto']}
-                >
-                  Update Info
-                </Button>
-              </>
-            )}
+                    <FieldInput field="last_name" label="Last Name" registerOptions={{ required }} />
+                    <FieldSelect
+                      field="birth_month"
+                      label="Birth Month"
+                      registerOptions={{ required }}
+                      options={getOptions('birth_month')}
+                    />
+                    <FieldNumber
+                      field="birth_year"
+                      label="Birth Year"
+                      registerOptions={{ required, min: minYear, max: maxYear }}
+                    />
+
+                    <GridItem colSpan={[1, 2]}>
+                      <FieldRadioButtons
+                        field="auth_with_phone"
+                        label="Sign-in Link"
+                        help="If you are having issues receiving the sign-in link, you can switch it to use your cell number instead."
+                        options={[
+                          { value: 'false', text: 'Send via Email' },
+                          { value: 'true', text: 'Send via SMS' },
+                        ]}
+                      />
+                    </GridItem>
+                    {isText && <GridItem colSpan={[1, 2]}>
+                      <Text p={2} rounded="lg" bg='primary.500' shadow="md" fontSize="sm" textStyle='italic'>
+                        By selecting SMS, you agree to receive text messages from us (720-724-9426) for the purpose of accessing this site.
+                        We will never send you marketing messages or share your phone number with anyone else.
+                      </Text>
+                    </GridItem>}
+
+                    <GridItem colSpan={[1, 2]}>
+                      <Divider />
+                      <Alert px={[4, 4, 6]} gap={2} justifyItems="space-between" rounded="lg" mb={4}>
+                        <Box>
+                          <Heading as="h3" fontSize="xl" mt={0}>
+                            Contact Information
+                          </Heading>
+                          <Text>
+                            The following information may be shared if you choose to share contact data
+                            with your buddies.
+                          </Text>
+                        </Box>
+                      </Alert>
+                    </GridItem>
+                    <FieldInput
+                      field="email"
+                      label="Email"
+                      type="email"
+                      registerOptions={{ required }}
+                      readOnly={true}
+                    />
+                    <FieldInput
+                      field="phone"
+                      label="Mobile Phone"
+                      registerOptions={{
+                        pattern: {
+                          value: /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
+                          message: 'US numbers only. Format: 123 456 7890',
+                        },
+                      }}
+                      placeholder="000 456 7890"
+                    />
+
+                  </SimpleGrid>
+                  <Box
+                    backdropFilter="blur(2px)"
+                    position="sticky"
+                    h="80px"
+                    w="full"
+                    bottom={0}
+                  ></Box>
+                  <Button
+                    mt={-10}
+                    size="lg"
+                    type="submit"
+                    bg="primary.500"
+                    color="white"
+                    disabled={isSubmitting}
+                    position="sticky"
+                    bottom={4}
+                    _hover={{ bg: 'accent.500' }}
+                    w={['full', 'auto']}
+                  >
+                    Update Info
+                  </Button>
+                </>
+              )
+            }}
           </Form>
         </TabPanel>
 
@@ -439,6 +454,6 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps & { fieldMap: 
           </Alert>
         </TabPanel>
       </TabPanels>
-    </Tabs>
+    </Tabs >
   )
 }
