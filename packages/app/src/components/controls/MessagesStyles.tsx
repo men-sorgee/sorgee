@@ -30,8 +30,8 @@ export default function MessagesStyles() {
         bottom: 0;
         
         flex-direction: row;
-        height: 85dvh;
-        height: 85vh;
+        height: 80dvh;
+        height: 80vh;
         overflow: auto;
         box-sizing: border-box;
         color: ${color};

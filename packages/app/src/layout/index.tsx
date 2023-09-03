@@ -104,8 +104,6 @@ export default function Layout({
 
     if (announcementRef?.current)
       reduceBy += 12
-    if (actionsRef?.current)
-      reduceBy += 12
 
     if (reduceBy != heightSubtraction) {
       setHeightSubtraction(reduceBy)

@@ -243,7 +243,7 @@ export default function ChatPage({ id }: { id?: string }) {
   }
   const [inputValue, setInputValue] = useState('')
   const [previewSrc, setPreviewSrc] = useState<string>(undefined)
-  const handleAttachment = async (file: File) => {}
+  const handleAttachment = async (file: File) => { }
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0]
@@ -284,7 +284,12 @@ export default function ChatPage({ id }: { id?: string }) {
         type,
         to: activeId,
         from: member?.id,
-      } as Message).then(({ data }) => {
+      } as Message).then(({ success, data, error }) => {
+        if (!data) {
+          return console.error(error)
+        }
+
+
         const { type, body, image, date_created } = data
         socket.emit('send-message', activeId, {
           type,
