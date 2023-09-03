@@ -47,11 +47,12 @@ export const MemberMessages = chakra(
     if (me?.allow_messages == 'staff' && theirLevel != MemberLevel.staff) return <></>
     if (them?.allow_messages == 'staff' && level != MemberLevel.staff) return <></>
     if (them?.allow_messages == 'buddies' && them?.buddies) {
+
       const memberBuddies = them?.buddies as UserBuddy[]
       if (
         !memberBuddies?.some((b: UserBuddy) => {
           return b.buddy_id == me.id
-        })
+        }) && level != MemberLevel.staff
       )
         return <></>
     }
