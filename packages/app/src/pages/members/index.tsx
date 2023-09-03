@@ -61,10 +61,10 @@ export default function Members() {
 
   const [id, setId] = useState(undefined)
   useEffect(() => {
-    if (id == undefined && i) {
+    if (i) {
       setId(i)
     }
-  }, [i, id, setId])
+  }, [i])
 
   const { fields, loading: fieldsLoading } = useFields('users')
   const { member: currentMember, loading } = useUser({
@@ -86,7 +86,7 @@ export default function Members() {
       console.dir(query)
       router.push({
         query,
-      })
+      }, undefined, { shallow: true })
     },
     [router, size, page, sort]
   )

@@ -53,12 +53,15 @@ export default async function getUserMessages(
 
       case 'POST':
         const them = await getMember(to)
-        if (them == null || them.allow_messages == "none") {
-          return res.status(404).json(ApiResponse(null, 'Not Found'))
-        } else if (them.allow_messages == "buddies" && !them.buddies?.some((f) => f.buddy_id == me.id)) {
-          return res.status(404).json(ApiResponse(null, 'Not Found'))
-        } else if (them.allow_messages == "staff" && me.user_type != "staff") {
-          return res.status(404).json(ApiResponse(null, 'Not Found'))
+        if (them == null) throw new Error('User not found')
+        if (me.user_type != "staff") {
+          if (them.allow_messages == "none") {
+            throw new Error('User does not allow messages')
+          } else if (them.allow_messages == "buddies" && !them.buddies?.some((f) => f.buddy_id == me.id)) {
+            throw new Error('User does not allow messages from non-buddies')
+          } else if (them.allow_messages == "staff") {
+            throw new Error('User does not allow messages from non-staff')
+          }
         }
 
         message = await sendMessage({

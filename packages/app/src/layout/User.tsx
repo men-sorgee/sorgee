@@ -94,7 +94,7 @@ export default function UserMenu({ site, router }: Props) {
           </Flex>
           <MenuList bg="black" maxH="80vh" overflowY="auto" zIndex="10">
             <Box p={4} m={2} mt={0} bgGradient="linear(to-bl, primary.300, accent.300)">
-              <MemberIcon member={member} size={['sm', 'md']} />
+              <MemberIcon member={member} size={['xs', 'sm']} />
               <span id="account-email" hidden>
                 {member?.email}
               </span>

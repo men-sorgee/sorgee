@@ -41,18 +41,18 @@ export type MessagesContextData = {
 
 export const MessagesContext = createContext<MessagesContextData>({
   activeId: null,
-  setActiveId: (_) => {},
+  setActiveId: (_) => { },
   lastActiveId: null,
-  chatWith: (_: Partial<Member>) => {},
+  chatWith: (_: Partial<Member>) => { },
   activeConversation: null,
   conversations: [],
   hasNewMessages: false,
   newMessageCount: 0,
-  markAsRead: async (_) => {},
-  clear: async () => {},
-  delete: async () => {},
+  markAsRead: async (_) => { },
+  clear: async () => { },
+  delete: async () => { },
   loading: true,
-  reload: () => {},
+  reload: () => { },
   mutate: () => Promise.resolve<any>(null),
 })
 
@@ -194,7 +194,9 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
     newMessageCount: newMessages,
     error,
     markAsRead: (ids: string[]) => mark(ids, 'read'),
-    delete: (id: string) => mark([id], 'archived'),
+    delete: async (id: string) => {
+      if (id) mark([id], 'archived')
+    },
     clear: (cid: string) =>
       mark(
         conversations[cid].messages.map((m) => m.id),

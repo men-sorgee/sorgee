@@ -120,7 +120,7 @@ function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps & { fieldM
     (tab: number) => {
       if (tab != tabValue) {
         setTabValue(tab)
-        router.push(`/member/settings/${PageSection[tab]}`)
+        router.push(`/member/settings/${PageSection[tab]}`, undefined, { shallow: true })
       }
     },
     [router, tabValue]

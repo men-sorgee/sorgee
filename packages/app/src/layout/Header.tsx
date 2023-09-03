@@ -213,7 +213,7 @@ const Header = forwardRef<HTMLDivElement, Props>(({
           </Box>
 
           <Logo isAuthenticated={isAuthenticated} />
-          <Box flex={1} textAlign="right">
+          <Box flex={1} textAlign="right" pr={4}>
             {site && <User site={site} router={router} />}
           </Box>
         </HStack>

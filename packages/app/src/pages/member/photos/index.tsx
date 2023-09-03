@@ -9,6 +9,7 @@ import {
 import { useUser } from "hooks/use-user";
 import { UserPhoto } from "lib/models";
 import { deleteJSON, getAssetUrl } from "lib/utils";
+import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 
 import {
@@ -37,16 +38,56 @@ import {
 } from "@chakra-ui/react";
 import { ArrowUpTrayIcon, CameraIcon } from "@heroicons/react/24/outline";
 
-type Props = {}
+export type PageProps = {
+  section?: string
+}
+
+enum PageSection {
+  public,
+  private,
+}
 
 type PhotoItem = {
   fileId: string
   photoId: number
   is_public: boolean
 }
-export default function PhotoAlbums({}: Props) {
+
+export async function getServerSideProps(context) {
+  if (context?.params == undefined)
+    return {
+      redirect: {
+        destination: `/member/account/${PageSection[0]}`,
+        permanent: false,
+      },
+    }
+  const { section } = context.params
+
+  const props: PageProps = {}
+  if (section) {
+    props.section = String(section)
+  }
+  return {
+    props,
+  }
+}
+
+export default function PhotoAlbums({ section: s = 'public' }: PageProps) {
   const { member, loading, reload } = useUser()
   const [pictureSrc, setPictureSrc] = useState<string>(undefined)
+  const section = PageSection[s]
+  const [tabValue, setTabValue] = useState(section)
+  const router = useRouter()
+
+  const setSection = useCallback((tab: number) => {
+    if (tab != tabValue) {
+      setTabValue(tab)
+      router.push(`/member/photos/${PageSection[tab]}`, undefined, { shallow: true })
+    }
+  },
+    [tabValue, router]
+  )
+
 
   useEffect(() => {
     if (!loading && member) {
@@ -105,22 +146,38 @@ export default function PhotoAlbums({}: Props) {
                 </ButtonConfirm>
               </Flex>
             )) || (
-              <AddPhoto
-                name={`Avatar for ${member?.id}`}
-                title={'Avatar Picture'}
-                field={'picture'}
-                memberId={member?.id}
-                reload={reload}
-                rounded="full"
-              />
-            )}
+                <AddPhoto
+                  name={`Avatar for ${member?.id}`}
+                  title={'Avatar Picture'}
+                  field={'picture'}
+                  memberId={member?.id}
+                  reload={reload}
+                  rounded="full"
+                />
+              )}
           </Flex>
 
           {(member.show_photos && (
-            <Tabs size="lg" align="center" variant="line" w="full" mb={10}>
+            <Tabs size="lg"
+              isFitted
+              fontSize={{ base: 'sm', md: 'lg' }}
+              mb={10}
+              defaultIndex={tabValue}
+              onChange={(index) => setSection(index)}>
               <TabList>
-                <Tab>Public Album</Tab>
-                <Tab>Private Album</Tab>
+                <Tab
+                  fontSize={['md', 'lg', '2xl']}
+                  fontWeight={tabValue == 0 ? 'bold' : null}
+                  px={[1, 2, 4]}
+                >
+
+                  Public Album</Tab>
+                <Tab
+                  fontSize={['md', 'lg', '2xl']}
+                  fontWeight={tabValue == 1 ? 'bold' : null}
+                  px={[1, 2, 4]}
+                >
+                  Private Album</Tab>
               </TabList>
 
               <TabPanels>
@@ -145,12 +202,12 @@ export default function PhotoAlbums({}: Props) {
               </TabPanels>
             </Tabs>
           )) || (
-            <Alert mt={4} status="warning" rounded="lg" shadow="lg">
-              <AlertIcon />
-              You have photo-sharing turned off. Update&nbsp;
-              <Link href="/member/profile">your profile</Link>&nbsp; to change that.
-            </Alert>
-          )}
+              <Alert mt={4} status="warning" rounded="lg" shadow="lg">
+                <AlertIcon />
+                You have photo-sharing turned off. Update&nbsp;
+                <Link href="/member/profile">your profile</Link>&nbsp; to change that.
+              </Alert>
+            )}
         </>
       )}
     </Page>

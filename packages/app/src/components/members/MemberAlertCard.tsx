@@ -56,8 +56,9 @@ export const MemberAlertCard = chakra(
           p={2}
           w="full"
           gap={2}
-          onClick={() => {
-            return onRead()
+          onClick={async () => {
+            await onRead()
+            onClose()
           }}
         >
           <AlertIcon color="text" w={[6]} h={[6]} />{' '}
