@@ -16,7 +16,13 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import io, { Socket } from "socket.io-client";
 
-import { Flex, HStack, IconButton, useDisclosure } from "@chakra-ui/react";
+import {
+  Flex,
+  HStack,
+  Icon,
+  IconButton,
+  useDisclosure
+} from "@chakra-ui/react";
 import {
   Avatar,
   ChatContainer,
@@ -285,7 +291,7 @@ export default function ChatPage({ id }: { id?: string }) {
         to: activeId,
         from: member?.id,
       } as Message).then(({ success, data, error }) => {
-        if (!data) {
+        if (!success) {
           return console.error(error)
         }
 
@@ -457,7 +463,7 @@ export default function ChatPage({ id }: { id?: string }) {
                           <Flex color="text" justify="space-between" align="center" gap={2} pt={1}>
                             {m.status == 'read' && m.direction == 'outgoing' && (
                               <HStack align="center" spacing={0}>
-                                <CheckIcon fill={'white'} width={11} height={11} title="Read" />
+                                <Icon as={CheckIcon} width={11} height={11} color='text' stroke='text' fill='text' title="Read" />
                                 <small>read</small>
                               </HStack>
                             )}
