@@ -33,7 +33,10 @@ export default async function MemberBuddy(
 
     const them = await getUser(user_id)
     if (them == null) {
-      res.status(404).json(ApiResponse(null, 'Not Found'))
+      throw new Error('User not found')
+    }
+    if (them.id == me.id) {
+      throw new Error('Cannot add yourself as a buddy')
     }
 
     switch (method) {
