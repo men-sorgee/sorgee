@@ -1,4 +1,4 @@
-import { Notification } from "lib/models";
+import { UserNotification } from "lib/models";
 import { getNotifications } from "lib/services/directus/server/notifications";
 import {
   ApiResponse,
@@ -16,7 +16,7 @@ export default async function Notifications(
   try {
     withMethods(req, ['GET'])
     const user = await withUser(req, res)
-    let notifications: Notification[] = await getNotifications(user.id)
+    let notifications: UserNotification[] = await getNotifications(user.id)
     return res.status(200).json(ApiResponse(notifications))
 
   } catch (e) {

@@ -1,5 +1,5 @@
 'use client'
-import { Notification } from "lib/models";
+import { UserNotification } from "lib/models";
 import { deleteJSON, getJSON } from "lib/utils";
 import {
   createContext,
@@ -14,7 +14,7 @@ import useSWR from "swr";
 import { useAuthenticated } from "./use-authenticated";
 
 export type NotificationsContextData = {
-  notifications: Notification[]
+  notifications: UserNotification[]
   hasNotifications: boolean
   notificationCount: number
   hasNewNotifications: boolean
@@ -51,7 +51,7 @@ export function NotificationsProvider({
     mutate,
     error,
     isLoading
-  } = useSWR<Notification[], Error>(authenticated ? key : null, {
+  } = useSWR<UserNotification[], Error>(authenticated ? key : null, {
     refreshInterval: 1000 * 60 * 10, // 10 minutes
     fallbackData: []
   })
@@ -65,7 +65,7 @@ export function NotificationsProvider({
 
   const readNotification = useCallback(
     async (id: number) => {
-      const { success } = await getJSON<Partial<Notification>>(key + '/' + id)
+      const { success } = await getJSON<Partial<UserNotification>>(key + '/' + id)
       if (success) {
         await mutate(
           [

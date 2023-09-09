@@ -1,7 +1,7 @@
 import { ButtonLink, Markdown } from "components";
 import distance from "date-fns/formatDistanceToNow";
 import { useNotifications } from "hooks/use-notifications";
-import { Member, Notification } from "lib/models";
+import { Member, UserNotification } from "lib/models";
 import { gradient } from "lib/utils";
 import { useCallback, useEffect, useState } from "react";
 
@@ -31,7 +31,7 @@ import { EnvelopeOpenIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { EnvelopeIcon } from "@heroicons/react/24/solid";
 
 export type MemberNotificationCardProps = {
-  notification: Notification
+  notification: UserNotification
   member: Member
   closeDrawer?: () => void
 }
@@ -65,7 +65,7 @@ export const MemberNotificationCard = chakra(
         setId(notification.id)
       }
 
-    }, [body, id, isNew, member, message, notification.body, notification.id, notification.message, notification.read, notification.status, notification.subject, notification.users, subject])
+    }, [body, id, isNew, member, message, notification.body, notification.id, notification.message, notification.read, notification.subject, subject])
 
     const openMessage = useCallback(() => {
       onOpen()

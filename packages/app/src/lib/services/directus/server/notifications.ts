@@ -3,6 +3,7 @@ import {
   EventDetail,
   Notification,
   NotificationUser,
+  UserNotification,
   UserType
 } from "lib/models";
 
@@ -19,7 +20,7 @@ export async function createNotification(notification: Partial<Notification>) {
   return admin.items('notifications').createOne(notification)
 }
 
-export async function getNotifications(user_id: string): Promise<Notification[]> {
+export async function getNotifications(user_id: string): Promise<UserNotification[]> {
   const adminClient = await getAdminClient()
   const { data: notificationsRaw } = await adminClient.items('notifications_users').readByQuery({
     filter: {
@@ -46,9 +47,7 @@ export async function getNotifications(user_id: string): Promise<Notification[]>
       message,
       button_text,
       button_url,
-      category,
       subject,
-      template,
       link,
       data,
       status,
@@ -63,13 +62,11 @@ export async function getNotifications(user_id: string): Promise<Notification[]>
       message,
       button_text,
       button_url,
-      category,
       link,
       subject,
-      template,
       data,
       date_created
-    } as Notification
+    } as UserNotification
   })
   return notifications
 }
