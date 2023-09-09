@@ -15,7 +15,7 @@ export const useViewHeight = () => {
 
   useEffect(() => {
     if (isIos) {
-      setViewHeight(`calc(80vh - ${subtract}px)`)
+      setViewHeight(`calc(90dvh - ${subtract}px)`)
     } else {
       setViewHeight(`calc(100dvh - ${subtract}px)`)
     }
