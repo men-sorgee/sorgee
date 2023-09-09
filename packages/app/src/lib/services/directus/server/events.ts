@@ -9,7 +9,13 @@ import {
   Survey
 } from "lib/models";
 
-import { readItems } from "@directus/sdk";
+import {
+  createItem,
+  readItem,
+  readItems,
+  updateItem,
+  updateItems
+} from "@directus/sdk";
 
 import { getAdminClient } from "./";
 
@@ -28,7 +34,7 @@ export async function listAdminEvents(): Promise<GroupEvent[]> {
   const filter = {
     status: { _in: ['scheduled', 'occurred', 'planned'] },
   }
-  const data = await client.request(readItems('events', {
+  const data = await admin.request(readItems('events', {
     filter,
     fields: ['*',
       { location: ['*'] },
@@ -56,19 +62,19 @@ export async function registerForEvent(
   paid_at: string = undefined
 ): Promise<EventUser> {
   const admin = await getAdminClient()
-  const invite = await client.items('events_users').createItem({
+  const invite = await admin.request(createItem('events_users', {
     events_id: event_id,
     users_id: user_id,
     rsvp,
     paid_at
-  })
+  }))
   return invite as unknown as EventUser
 }
 
 
 export async function getEvent(id: string, filter?: any): Promise<GroupEvent> {
   const admin = await getAdminClient()
-  const event: GroupEvent = (await client.items('events').readItem(id, {
+  const event: GroupEvent = (await admin.request(readItem('events', id, {
     fields: [
       '*',
       'location.*',
@@ -82,26 +88,25 @@ export async function getEvent(id: string, filter?: any): Promise<GroupEvent> {
       },
     },
     filter: filter || {},
-  })) as any as GroupEvent
+  }))) as any as GroupEvent
   if (!event) return null
   return event as GroupEvent
 }
 
 export async function updateEvent(id: string, data: Partial<GroupEvent>): Promise<GroupEvent> {
   const admin = await getAdminClient()
-  const event = await client.items('events').updateItem(id, data)
-  return event as unknown as GroupEvent
+  return await admin.request(updateItem('events', id, data))
 }
 
 export async function updateEventUsers(ids: number[], data: Partial<EventUser>): Promise<EventUser[]> {
   const admin = await getAdminClient()
-  const attendees = await client.items('events_users').updateMany(ids, data)
+  const attendees = await admin.request(updateItems('events_users', ids, data))
   return attendees as unknown as EventUser[]
 }
 
 export async function getEventDetail(id: string): Promise<EventDetail> {
   const admin = await getAdminClient()
-  const event = await client.items('events').readItem(id, {
+  const event = await admin.request(readItem('events', id, {
     fields: [
       '*',
       'location.*',
@@ -115,7 +120,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
         _limit: -1,
       },
     },
-  })
+  }))
   const {
     name,
     description,

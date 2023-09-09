@@ -1,6 +1,6 @@
-import { randomUUID } from "crypto";
+
 import { addHours } from "date-fns";
-import { getUTCNow } from "lib/utils";
+import { getUTCNow, uuidv4 } from "lib/utils";
 import { LessThan, MoreThan } from "typeorm";
 
 import {
@@ -123,7 +123,7 @@ export async function createSession(session: UserSession) {
   const repo = await getRepository(UserSession)
   return await repo.save({
     ...session,
-    id: randomUUID(),
+    id: uuidv4(),
   })
 }
 
