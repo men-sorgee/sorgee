@@ -100,6 +100,17 @@ export default function Layout({
   const headerRef = useRef<HTMLDivElement>(null)
   const actionsRef = useRef<HTMLDivElement>(null)
   const announcementRef = useRef<HTMLDivElement>(null)
+  const [screenSize, setScreenSize] = useState<number>(window?.innerWidth)
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      setScreenSize(window.innerWidth)
+    });
+    return () => {
+      window.removeEventListener("resize", () => {
+        setScreenSize(window.innerWidth)
+      })
+    }
+  }, [screenSize]);
 
   useEffect(() => {
     let reduceBy = (headerRef?.current?.clientHeight || 80) +
@@ -113,7 +124,7 @@ export default function Layout({
       setHeightSubtraction(reduceBy)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [headerRef?.current, actionsRef?.current, announcementRef?.current, heightSubtraction])
+  }, [headerRef?.current, actionsRef?.current, announcementRef?.current, heightSubtraction, screenSize])
 
   const viewHeight = `calc(100vh - ${heightSubtraction}px)`
 
