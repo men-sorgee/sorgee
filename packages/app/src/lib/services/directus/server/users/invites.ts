@@ -13,7 +13,7 @@ import { getAdminClient } from "../";
 
 export async function getInvite(inviteId: number): Promise<EventUser | null> {
   const admin = await getAdminClient()
-  const query = await client.request<Invite>(readItem('events_users', inviteId, {
+  const query = await admin.request<Invite>(readItem('events_users', inviteId, {
     fields: ['*',
       { events_id: ['*'] },
       { users_id: ['*'] }
@@ -26,7 +26,7 @@ export async function getInvite(inviteId: number): Promise<EventUser | null> {
 
 export async function findInvite(eventId: string, userId: string): Promise<EventUser | null> {
   const admin = await getAdminClient()
-  const query = await client.request(readItems('events_users', {
+  const query = await admin.request(readItems('events_users', {
     filter: {
       events_id: { _eq: eventId },
       users_id: { _eq: userId },
@@ -39,7 +39,7 @@ export async function findInvite(eventId: string, userId: string): Promise<Event
 
 export async function listInvites(member: Member): Promise<EventUser[]> {
   const admin = await getAdminClient()
-  const data = await client.request(readItems('events_users', {
+  const data = await admin.request(readItems('events_users', {
     filter: {
       users_id: { _eq: member.id },
       events_id: {
@@ -85,7 +85,7 @@ export async function listInvites(member: Member): Promise<EventUser[]> {
 
 export async function listUpcomingEvents(user_type: UserType): Promise<GroupEvent[]> {
   const admin = await getAdminClient()
-  const data = await client.request(readItems('events', {
+  const data = await admin.request(readItems('events', {
     filter: {
       status: { _in: ['scheduled', 'planned'] },
       datetime: { _gte: '$NOW(-1 days)' },
@@ -111,14 +111,14 @@ export async function updateInvite(
   if (!invite) {
     throw new Error('No invite found')
   }
-  invite = await client.request(updateItem('events_users', inviteId, data)) as EventUser
+  invite = await admin.request(updateItem('events_users', inviteId, data)) as EventUser
 
   return invite
 }
 
 export async function getUserEvents(user_id: string) {
   const admin = await getAdminClient()
-  const data = await client.request<EventUser[]>(readItems('events_users', {
+  const data = await admin.request<EventUser[]>(readItems('events_users', {
     filter: {
       users_id: { _eq: user_id },
     },

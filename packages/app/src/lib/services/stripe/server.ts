@@ -12,7 +12,7 @@ let stripeClient: StripeClient = null
 export function getClient() {
   if (stripeClient != null) return stripeClient
   stripeClient = new StripeClient(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2022-11-15',
+    apiVersion: '2023-08-16',
     typescript: true,
     stripeAccount: process.env.STRIPE_ACCOUNT_ID,
     appInfo: {

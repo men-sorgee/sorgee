@@ -235,7 +235,7 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
             })
           break;
         }
-      case 'customer.subscription.expired':
+      case 'customer.subscription.pending_update_expired':
         {
           const { membership_end } = extractFromSubscription(subscription, user)
           await updateUser(user.id, {

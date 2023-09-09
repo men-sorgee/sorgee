@@ -6,23 +6,15 @@ import {
   SurveyAnswer,
   UserSurvey
 } from "lib/models";
-import { uuidv4 } from "lib/utils";
 
 import { createItem, readItem, readItems, updateItem } from "@directus/sdk";
 
 import { getAdminClient } from "./";
 
-export async function createSurvey(survey: Partial<Survey>): Promise<Survey> {
-  const admin = await getAdminClient()
-  const data = await admin.request(createItem('surveys', survey))
-  return data as unknown as Survey
-}
-
 export async function getSurvey(id: string): Promise<Survey> {
   const admin = await getAdminClient()
 
-  const survey = await admin.request(readItem('surveys', id, {
-    filter: { status: { _eq: 'published' } },
+  return admin.request(readItem('surveys', id, {
     fields: [
       'id',
       'name',
@@ -31,19 +23,12 @@ export async function getSurvey(id: string): Promise<Survey> {
       'type',
       'closing',
       { event: ['id', 'name'] },
-      {
-        questions: ['sort',
-          {
-            survey_questions_id: ['*']
-          }
-        ]
-      },
+      { questions: ['sort', { survey_questions_id: ['*'] }] },
     ],
-    sort: [{ questions: 'sort' }],
-  })
-  if (!survey) return null
-
-  return survey as Survey
+    questions: {
+      sort: ['sort'],
+    },
+  })) as unknown as Survey
 }
 
 export async function updateSurvey(id: string, survey: Partial<Survey>): Promise<Survey> {
@@ -51,6 +36,13 @@ export async function updateSurvey(id: string, survey: Partial<Survey>): Promise
   const data = await admin.request(updateItem('surveys', id, survey))
   return data as unknown as Survey
 }
+
+export async function createSurvey(survey: Partial<Survey>): Promise<Survey> {
+  const admin = await getAdminClient()
+  return admin.request(createItem('surveys', survey)) as unknown as Survey
+}
+
+
 
 export async function getQuestion(id: string): Promise<Question> {
   const admin = await getAdminClient()

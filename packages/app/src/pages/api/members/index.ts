@@ -11,8 +11,6 @@ import { normalize } from "lib/utils";
 import { ApiResponse, ApiResponseType, withMember } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { ManyItems } from "@directus/sdk";
-
 export type MemberSearch = SearchableMember & {
   offset?: number
   limit?: number
@@ -23,7 +21,7 @@ export type MemberSearch = SearchableMember & {
 
 export default async function FindMembers(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponseType<ManyItems<Partial<User>>> | ApiResponseType>
+  res: NextApiResponse<ApiResponseType<Partial<User>> | ApiResponseType>
 ) {
   try {
     const member = await withMember(req, res)
