@@ -1,13 +1,26 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 export type ViewHeightContextType = {
-  viewHeight: string
+  subtract: number
 }
 
 export const ViewHeightContext = createContext<ViewHeightContextType>({
-  viewHeight: '100vh'
+  subtract: 0
 })
 
 export const useViewHeight = () => {
-  return useContext(ViewHeightContext)
+  const [viewHeight, setViewHeight] = useState('100vh')
+  const isIos = navigator.userAgent.match(/(iPod|iPhone|iPad)/) ? true : false
+  const { subtract } = useContext(ViewHeightContext)
+
+  useEffect(() => {
+    if (isIos) {
+      setViewHeight(`calc(80vh - ${subtract}px)`)
+    } else {
+      setViewHeight(`calc(100dvh - ${subtract}px)`)
+    }
+  }, [isIos, subtract])
+
+  return { viewHeight }
+
 }
