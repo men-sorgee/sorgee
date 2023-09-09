@@ -6,6 +6,7 @@ import {
   SurveyAnswer,
   UserSurvey
 } from "lib/models";
+import { uuidv4 } from "lib/utils";
 
 import { createItem, readItem, readItems, updateItem } from "@directus/sdk";
 

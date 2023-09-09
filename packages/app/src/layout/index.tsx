@@ -160,7 +160,7 @@ export default function Layout({
               {...constrained}
             >
               <Box ref={bodyRef}>
-                <ViewHeightContext.Provider value={{ viewHeight }}>{children}</ViewHeightContext.Provider>
+                <ViewHeightContext.Provider value={{ subtract: heightSubtraction }}>{children}</ViewHeightContext.Provider>
               </Box>
               {!hideFooter && (
                 <Footer />
