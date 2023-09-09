@@ -20,8 +20,8 @@ export type NotificationsContextData = {
   hasNewNotifications: boolean
   newNotificationCount: number
   error?: any
-  readNotification: (id: string) => Promise<void>
-  deleteNotification: (id: string) => Promise<void>
+  readNotification: (id: number) => Promise<void>
+  deleteNotification: (id: number) => Promise<void>
   notificationsLoading: boolean
   reloadNotifications: () => void
 }
@@ -64,7 +64,7 @@ export function NotificationsProvider({
   }, [notifications, isLoading, newNotifications?.length, hasNewNotifications])
 
   const readNotification = useCallback(
-    async (id: string) => {
+    async (id: number) => {
       const { success } = await getJSON<Partial<Notification>>(key + '/' + id)
       if (success) {
         await mutate(
@@ -90,7 +90,7 @@ export function NotificationsProvider({
   )
 
   const deleteNotification = useCallback(
-    async (id: string) => {
+    async (id: number) => {
       const { success } = await deleteJSON(key + '/' + id)
       if (success) {
         await mutate([...notifications.filter((i) => i.id !== id)], {

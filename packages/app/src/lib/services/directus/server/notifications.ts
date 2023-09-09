@@ -1,7 +1,6 @@
 import { notifications } from "lib/config";
 import {
   EventDetail,
-  MemberAlert,
   Notification,
   NotificationUser,
   UserType
@@ -42,13 +41,34 @@ export async function getNotifications(user_id: string): Promise<Notification[]>
   })
 
   const notifications = notificationsRaw.map((userNotification: NotificationUser) => {
-    const notification: Notification = userNotification.notification_id as Notification
+    const {
+      body,
+      message,
+      button_text,
+      button_url,
+      category,
+      subject,
+      template,
+      link,
+      data,
+      status,
+      date_created
+    } = userNotification.notification_id as Notification
 
     return {
       id: userNotification.id,
-      status: userNotification.status,
+      status,
       read: userNotification.read,
-      ...notification
+      body,
+      message,
+      button_text,
+      button_url,
+      category,
+      link,
+      subject,
+      template,
+      data,
+      date_created
     } as Notification
   })
   return notifications

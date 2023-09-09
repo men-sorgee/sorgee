@@ -18,7 +18,7 @@ export type NotificationStatusType =
   | 'delivered'
 
 export type Notification = {
-  id: string
+  id: number
   status: 'ready' | 'draft'
   date_created?: string
   link?: string
