@@ -25,6 +25,7 @@ import {
 } from "@chakra-ui/react";
 
 import { Markdown } from "../components";
+import { ViewHeightContext } from "../hooks/use-view-height";
 import { postJSON } from "../lib/utils";
 import Actions from "./actions";
 import Footer from "./Footer";
@@ -36,6 +37,8 @@ export const constrained = {
   maxW: brand.breakPoints,
   mx: [2, 'auto'],
 }
+
+
 
 export default function Layout({
   router,
@@ -87,10 +90,11 @@ export default function Layout({
 
   useEffect(() => {
     router.events.on('routeChangeComplete', handleRouteChange)
+    setHideFooter(router?.asPath.startsWith('/members/chat') || router?.asPath.endsWith('/ticket') || false)
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange)
     }
-  }, [router.events, loading, authenticated, level, showActions, isOpen, handleRouteChange])
+  }, [router?.events, loading, authenticated, level, showActions, isOpen, handleRouteChange, router?.asPath])
 
   const [heightSubtraction, setHeightSubtraction] = useState<number>(0)
   const headerRef = useRef<HTMLDivElement>(null)
@@ -111,6 +115,8 @@ export default function Layout({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [headerRef?.current, actionsRef?.current, announcementRef?.current, heightSubtraction])
 
+  const viewHeight = `calc(100vh - ${heightSubtraction}px)`
+
   if (path?.startsWith('/code')) {
     return <>{children}</>
   }
@@ -123,10 +129,12 @@ export default function Layout({
   )
 
 
+
+
   return (
     <>
       <Meta />
-      <Flex direction="column" flex="1" overflowX="clip">
+      <Flex direction="column" flex="1">
         {site && <Header ref={headerRef} router={router} site={site} isAuthenticated={authenticated} userType={member?.user_type} />}
         <ErrorBoundary
           fallbackRender={Error}
@@ -139,7 +147,7 @@ export default function Layout({
             as="main"
             flex="1 100%"
             direction="column"
-            maxH={`calc(100vh - ${heightSubtraction}px)`}
+            maxH={viewHeight}
             overflowY={'auto'}
             overflowX="hidden"
             w="full"
@@ -152,7 +160,7 @@ export default function Layout({
               {...constrained}
             >
               <Box ref={bodyRef}>
-                {children}
+                <ViewHeightContext.Provider value={{ viewHeight }}>{children}</ViewHeightContext.Provider>
               </Box>
               {!hideFooter && (
                 <Footer />

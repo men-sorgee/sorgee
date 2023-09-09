@@ -23,7 +23,6 @@ export type Notification = {
   date_created?: string
   link?: string
   subject?: string
-  read: boolean
   send_email?: boolean
   app_notification?: boolean
   button_url?: string
@@ -38,6 +37,23 @@ export type Notification = {
   data: Record<string, any>
   static: boolean
 }
+
+export type UserNotification = {
+  id: number
+  date_created?: string
+  link?: string
+  subject?: string
+  read: boolean
+  send_email?: boolean
+  app_notification?: boolean
+  button_url?: string
+  button_text?: string
+  message?: string
+  body?: string
+  date_sent?: string
+  data: Record<string, any>
+}
+
 
 export type NotificationUser = {
   id: number

@@ -1,5 +1,5 @@
 'use client'
-import { Notification } from "lib/models";
+import { UserNotification } from "lib/models";
 import { deleteJSON, getJSON } from "lib/utils";
 import {
   createContext,
@@ -14,14 +14,14 @@ import useSWR from "swr";
 import { useAuthenticated } from "./use-authenticated";
 
 export type NotificationsContextData = {
-  notifications: Notification[]
+  notifications: UserNotification[]
   hasNotifications: boolean
   notificationCount: number
   hasNewNotifications: boolean
   newNotificationCount: number
   error?: any
-  readNotification: (id: string) => Promise<void>
-  deleteNotification: (id: string) => Promise<void>
+  readNotification: (id: number) => Promise<void>
+  deleteNotification: (id: number) => Promise<void>
   notificationsLoading: boolean
   reloadNotifications: () => void
 }
@@ -51,7 +51,7 @@ export function NotificationsProvider({
     mutate,
     error,
     isLoading
-  } = useSWR<Notification[], Error>(authenticated ? key : null, {
+  } = useSWR<UserNotification[], Error>(authenticated ? key : null, {
     refreshInterval: 1000 * 60 * 10, // 10 minutes
     fallbackData: []
   })
@@ -64,8 +64,8 @@ export function NotificationsProvider({
   }, [notifications, isLoading, newNotifications?.length, hasNewNotifications])
 
   const readNotification = useCallback(
-    async (id: string) => {
-      const { success } = await getJSON<Partial<Notification>>(key + '/' + id)
+    async (id: number) => {
+      const { success } = await getJSON<Partial<UserNotification>>(key + '/' + id)
       if (success) {
         await mutate(
           [
@@ -90,7 +90,7 @@ export function NotificationsProvider({
   )
 
   const deleteNotification = useCallback(
-    async (id: string) => {
+    async (id: number) => {
       const { success } = await deleteJSON(key + '/' + id)
       if (success) {
         await mutate([...notifications.filter((i) => i.id !== id)], {

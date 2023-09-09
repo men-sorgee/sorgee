@@ -1,7 +1,7 @@
 import { ButtonLink, Markdown } from "components";
 import distance from "date-fns/formatDistanceToNow";
 import { useNotifications } from "hooks/use-notifications";
-import { Member, Notification } from "lib/models";
+import { Member, UserNotification } from "lib/models";
 import { gradient } from "lib/utils";
 import { useCallback, useEffect, useState } from "react";
 
@@ -31,7 +31,7 @@ import { EnvelopeOpenIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { EnvelopeIcon } from "@heroicons/react/24/solid";
 
 export type MemberNotificationCardProps = {
-  notification: Notification
+  notification: UserNotification
   member: Member
   closeDrawer?: () => void
 }
@@ -46,6 +46,7 @@ export const MemberNotificationCard = chakra(
     const [body, setBody] = useState<string>(undefined)
     const [message, setMessage] = useState<string>(undefined)
     const [subject, setSubject] = useState<string>(undefined)
+    const [id, setId] = useState<number>(undefined)
     useEffect(() => {
       let name = member?.nickname || member?.first_name || 'Friend'
       if (member && body == undefined && notification?.body) {
@@ -60,31 +61,24 @@ export const MemberNotificationCard = chakra(
       if (isNew == undefined) {
         setIsNew(!notification.read)
       }
-    }, [
-      body,
-      isNew,
-      member,
-      message,
-      notification.body,
-      notification.message,
-      notification.read,
-      notification.status,
-      notification.subject,
-      subject,
-    ])
+      if (id == undefined) {
+        setId(notification.id)
+      }
+
+    }, [body, id, isNew, member, message, notification.body, notification.id, notification.message, notification.read, notification.subject, subject])
 
     const openMessage = useCallback(() => {
       onOpen()
-      return readNotification(notification.id).then(() => {
-        reloadNotifications()
+      return readNotification(id).then(() => {
+        reloadNotifications
       })
-    }, [notification.id, onOpen, readNotification, reloadNotifications])
+    }, [id, onOpen, readNotification, reloadNotifications])
 
     const markAsDeleted = useCallback(() => {
       onClose()
-      deleteNotification(notification.id)
+      deleteNotification(id)
       setDeleted(true)
-    }, [deleteNotification, notification.id, onClose])
+    }, [deleteNotification, id, onClose])
 
     const textNew = useColorModeValue('secondary.800', 'secondary.100')
     const textRead = useColorModeValue('text', 'secondary.300')
@@ -113,7 +107,7 @@ export const MemberNotificationCard = chakra(
             h={6}
           />
           <VStack alignItems="start" justify="center" w="full">
-            <Text p={0} m={0} noOfLines={1} fontWeight={isNew ? 'bold' : 'normal'} flex={1}>
+            <Text p={0} m={0} noOfLines={2} fontWeight={isNew ? 'bold' : 'normal'} flex={1}>
               {subject}
             </Text>
             <HStack w="full" gap={2} align="flex-start" justify="space-between">
