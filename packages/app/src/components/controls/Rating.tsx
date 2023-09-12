@@ -48,13 +48,24 @@ export const Rating = ({
     }
   }
 
+  const RatingIcon = ({ on }: { on: boolean }) => {
+    return (<Icon
+      as={on ? StarOnIcon : StarOffIcon}
+      boxSize={[7, 8, 9]}
+      color={fillColor}
+      stroke={strokeColor}
+      fill={on ? fillColor : null}
+      cursor={readonly ? 'default' : 'pointer'}
+      aria-label={readonly ? `Rated ${rating}` : `Rate this ${itemName}`}
+    />)
+  }
+
   const RatingButton = ({ index, fill }: { index: number; fill: boolean }) => {
-    const [on, setOn] = useState(fill)
+    const [on, setOn] = useState(fill != undefined)
     return (
       <ButtonConfirm<number>
         onMouseOver={() => setOn(true)}
         onMouseOut={() => setOn(fill)}
-        as={Icon}
         boxSize={[5, 6, 7, 8, 9]}
         _hover={{ stroke: 'white' }}
         aria-label={`Rate ${index}`}
@@ -81,7 +92,10 @@ export const Rating = ({
   }
 
   for (let i = 1; i <= scale; i++) {
-    buttons.push(<RatingButton key={i} index={i} fill={i <= rating} />)
+    if (readonly)
+      buttons.push(<RatingIcon key={i} on={i <= rating} />)
+    else
+      buttons.push(<RatingButton key={i} index={i} fill={i <= rating} />)
   }
 
   if (simple)
@@ -94,7 +108,7 @@ export const Rating = ({
   return (
     <Tooltip
       label={tooltip}
-      aria-label={`Rate this ${itemName}`}
+
       bg="black"
       rounded="lg"
       shadow="xl"

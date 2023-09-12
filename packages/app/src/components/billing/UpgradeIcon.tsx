@@ -41,6 +41,7 @@ const UpgradeIcon = chakra(
           ref={cancelRef}
           size={size}
           p={0}
+          px={[.1, .5]}
           {...props}
         />
 
@@ -82,4 +83,5 @@ const UpgradeIcon = chakra(
   }
 )
 
-export { UpgradeIcon }
+export { UpgradeIcon };
+

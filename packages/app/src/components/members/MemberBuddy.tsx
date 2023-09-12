@@ -90,37 +90,39 @@ export const MemberBuddy = chakra(
             aria-label={`Remove ${member?.nickname || 'this member'} as a Buddy`}
             size={size}
             color="white"
+            px={[.1, .5]}
             _hover={{ bg: 'primary.500' }}
             disabled={me?.id === member?.id}
             {...props}
           />
         )) || (
-          <IconButton
-            icon={
-              hover ? (
-                <AddBuddyIcon width="30px" fill={'white'} />
-              ) : (
-                <UserIcon width="30px" stroke="white" />
-              )
-            }
-            onMouseOver={() => {
-              setHover(true)
-            }}
-            onMouseOut={() => {
-              setHover(false)
-            }}
-            variant="ghost"
-            aria-label={`Add ${member?.nickname || 'this member'} as a Buddy`}
-            title={`Add ${member?.nickname || 'this member'} as a Buddy`}
-            cursor="pointer"
-            onClick={toggleBuddy}
-            color="white"
-            size={size}
-            _hover={{ bg: 'primary.500' }}
-            disabled={me?.id === member?.id}
-            {...props}
-          />
-        )}
+            <IconButton
+              icon={
+                hover ? (
+                  <AddBuddyIcon width="30px" fill={'white'} />
+                ) : (
+                  <UserIcon width="30px" stroke="white" />
+                )
+              }
+              onMouseOver={() => {
+                setHover(true)
+              }}
+              onMouseOut={() => {
+                setHover(false)
+              }}
+              variant="ghost"
+              aria-label={`Add ${member?.nickname || 'this member'} as a Buddy`}
+              title={`Add ${member?.nickname || 'this member'} as a Buddy`}
+              cursor="pointer"
+              onClick={toggleBuddy}
+              color="white"
+              size={size}
+              px={[.1, .5]}
+              _hover={{ bg: 'primary.500' }}
+              disabled={me?.id === member?.id}
+              {...props}
+            />
+          )}
       </>
     )
   }

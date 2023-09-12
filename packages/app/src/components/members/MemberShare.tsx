@@ -84,6 +84,7 @@ export const MemberShare = chakra(
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
           disabled={me?.id === member?.id}
+          px={[.1, .5]}
           {...props}
         />
       </>

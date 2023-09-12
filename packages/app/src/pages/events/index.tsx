@@ -145,6 +145,11 @@ export default function EventsPage({ }: PageProps) {
             </Tab>
             {upcoming.length > 0 && <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 1 ? 'bold' : null}>
               Upcoming
+
+              <Badge ml={1} bg="text" color="bg" rounded="full" px={2} py={0.5}>
+                {upcoming.length}
+              </Badge>
+
             </Tab>}
             {declined.length > 0 && <Tab fontSize={['md', 'lg', '2xl']} fontWeight={tabValue == 2 ? 'bold' : null}>
               Declined

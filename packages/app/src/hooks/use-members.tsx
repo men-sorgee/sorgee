@@ -50,15 +50,9 @@ export const useMemberSearch = (
   } = useSWR<ManyItems<SearchableMember>>(authenticated && !skip
     ? key
     : null, {
-    keepPreviousData: false,
+    keepPreviousData: true,
     refreshInterval: 0,
-    fallbackData: {
-      data: [],
-      meta: {
-        total_count: 0,
-        filter_count: 0,
-      },
-    },
+
   })
 
   useEffect(() => {

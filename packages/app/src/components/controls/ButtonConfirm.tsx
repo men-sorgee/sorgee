@@ -47,6 +47,7 @@ export function ButtonConfirm<TResponse>({
   title,
   disabled,
   py = 2,
+  px = [.1, .5],
   color = 'white',
   colorScheme,
   w = ['full', 'auto'],
@@ -103,6 +104,8 @@ export function ButtonConfirm<TResponse>({
           _hover={{
             bgGradient: bgGradientHover,
           }}
+          py={py}
+          px={px}
           {...props}
         />
       )) || (

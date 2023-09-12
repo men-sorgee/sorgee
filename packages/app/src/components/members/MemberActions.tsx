@@ -1,14 +1,7 @@
 import { formatDistanceToNowStrict } from "date-fns";
 import { Member } from "lib/models";
 
-import {
-  ButtonGroup,
-  chakra,
-  Flex,
-  ResponsiveValue,
-  Spacer,
-  Text
-} from "@chakra-ui/react";
+import { chakra, Flex, ResponsiveValue, Spacer, Text } from "@chakra-ui/react";
 
 import {
   MemberBlock,
@@ -34,20 +27,18 @@ export const MemberActions = chakra(({ viewer, member, size = ['sm', 'md', 'lg']
   return (
     <>
       <Flex w="full" justify="space-between">
-        <ButtonGroup size={size}>
-          <MemberBlock member={member} size={size} />
-          <MemberReport member={member} size={size} />
-        </ButtonGroup>
+
+        <MemberBlock member={member} size={size} />
+        <MemberReport member={member} size={size} />
+        {viewer?.user_type == 'staff' && (
+          <MemberSendAlert member={member} size={size} />
+        )}
         <Spacer />
-        <ButtonGroup size={size}>
-          {viewer?.user_type == 'staff' && (
-            <MemberSendAlert member={member} size={size} />
-          )}
-          <MemberLike member={member} size={size} />
-          <MemberMessages member={member} size={size} />
-          <MemberBuddy member={member} size={size} />
-          <MemberShare member={member} size={size} />
-        </ButtonGroup>
+        <MemberLike member={member} size={size} />
+        <MemberMessages member={member} size={size} />
+        <MemberBuddy member={member} size={size} />
+        <MemberShare member={member} size={size} />
+
       </Flex>
       <Flex w="full" align='bottom' justify='space-between'>
         <Text fontSize="xs" color={color}>

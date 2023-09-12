@@ -41,9 +41,11 @@ export async function listInvites(member: Member): Promise<EventInvite[]> {
       },
     },
     fields: ['*', '*.*', 'events_id.*'],
-    events_id: {
-      _limit: -1,
-      sort: ['datetime'],
+    deep: {
+      events_id: {
+        _limit: -1,
+        sort: ['datetime'],
+      }
     }
   })
 

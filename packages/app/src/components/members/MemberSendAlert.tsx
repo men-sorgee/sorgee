@@ -22,7 +22,8 @@ export type MemberSendAlertProps = ButtonProps & {
 
 export const MemberSendAlert = chakra(({
   member,
-  color = 'white'
+  color = 'white',
+  size
 }: MemberSendAlertProps) => {
   const messageRef = useRef<HTMLTextAreaElement>(null)
   const buttonUrlRef = useRef<HTMLInputElement>(null)
@@ -33,6 +34,7 @@ export const MemberSendAlert = chakra(({
 
   return (
     <ButtonConfirm
+      size={size}
       variant="ghost"
       _hover={{ bg: 'primary.500' }}
       color={color}

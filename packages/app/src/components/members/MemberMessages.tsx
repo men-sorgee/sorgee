@@ -69,33 +69,34 @@ export const MemberMessages = chakra(
       )
 
     return (
-      <div style={{ position: 'relative' }}>
-        <IconButton
-          variant="ghost"
-          icon={
-            hasConversation ? (
-              <ChatIconOn width="30px" color="yellow" />
-            ) : hover ? (
-              <ChatIconOn width="30px" />
-            ) : (
-              <ChatIconOff width="30px" />
-            )
-          }
-          position="relative"
-          color="white"
-          onClick={() => {
-            if (them?.id == me?.id) return
-            chatWith(them as Member)
-          }}
-          aria-label={`Chat with ${them?.nickname || 'this member'}`}
-          title={`Chat with ${them?.nickname || 'this member'}`}
-          size={size}
-          _hover={{ bg: 'primary.500' }}
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => setHover(false)}
-          disabled={me?.id === them?.id}
-          {...props}
-        />
+
+      <IconButton
+        variant="ghost"
+        position='relative'
+        icon={
+          hasConversation ? (
+            <ChatIconOn width="30px" color="yellow" />
+          ) : hover ? (
+            <ChatIconOn width="30px" />
+          ) : (
+            <ChatIconOff width="30px" />
+          )
+        }
+        color="white"
+        onClick={() => {
+          if (them?.id == me?.id) return
+          chatWith(them as Member)
+        }}
+        aria-label={`Chat with ${them?.nickname || 'this member'}`}
+        title={`Chat with ${them?.nickname || 'this member'}`}
+        size={size}
+        _hover={{ bg: 'primary.500' }}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+        px={[.1, .5]}
+        disabled={me?.id === them?.id}
+        {...props}
+      >
         {hasNewMessages && (
           <Badge
             bg="red"
@@ -111,7 +112,8 @@ export const MemberMessages = chakra(
             {newMessageCount}
           </Badge>
         )}
-      </div>
+      </IconButton>
+
     )
   }
 )

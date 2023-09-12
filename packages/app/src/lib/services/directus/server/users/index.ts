@@ -103,15 +103,11 @@ export async function findUser<T extends User | Member | Applicant | Profile = P
         _eq: email,
       },
     },
-    fields: [...fields],
+    fields
   })
 
   // @ts-ignore
   const user = existingUserQuery?.data?.length ? existingUserQuery.data[0] : null
-
-  if (user.invites) {
-    user.invites = user.invites = mapInvites(user)
-  }
 
   return user as T
 }

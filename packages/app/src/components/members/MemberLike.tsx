@@ -48,8 +48,8 @@ export const MemberLike = chakra(
     const label = mutual
       ? `Mutual Like with ${member?.nickname}`
       : isLiked
-      ? `Unlike ${member?.nickname}`
-      : `Like ${member?.nickname}`
+        ? `Unlike ${member?.nickname}`
+        : `Like ${member?.nickname}`
 
     // SWAP BETWEEN LIKED AND HOVER
     useEffect(() => {
@@ -97,6 +97,7 @@ export const MemberLike = chakra(
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
           disabled={me?.id === member?.id}
+          px={[.1, .5]}
           {...props}
         />
       </>

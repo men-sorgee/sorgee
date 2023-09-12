@@ -3,19 +3,19 @@ import { Member, MemberLevel, UserBlock } from "lib/models";
 import { deleteJSON, postJSON } from "lib/utils";
 import { useEffect, useState } from "react";
 
-import { chakra, IconButtonProps, Text } from "@chakra-ui/react";
+import { chakra, IconButtonProps, Spinner, Text } from "@chakra-ui/react";
 import { EyeIcon as ViewIcon } from "@heroicons/react/24/outline";
 import { EyeSlashIcon as BlockedIcon } from "@heroicons/react/24/solid";
 
 import { ButtonConfirm } from "../";
 
-export type MemberBlockProps = Omit<IconButtonProps, 'aria-label'> & {
+export type MemberBlockProps = Omit<IconButtonProps, 'aria-label' | 'onError'> & {
   member: Partial<Member>
 }
 
 export const MemberBlock = chakra(
-  ({ member, size = ['sm', 'md', 'lg'], onError: _, ...props }: MemberBlockProps) => {
-    const { loading, member: me, reload } = useUser()
+  ({ member, size = ['sm', 'md', 'lg'], ...props }: MemberBlockProps) => {
+    const { loading, member: me } = useUser()
     const [hover, setHover] = useState(false)
     const [isBlocked, setIsBlocked] = useState<boolean>(false)
     const [mutual, setMutual] = useState<boolean>(false)
@@ -35,10 +35,7 @@ export const MemberBlock = chakra(
       }
     }, [me, member?.id, loading])
 
-    if (loading || !me) return <ViewIcon width="30px" stroke="white" />
-
-    if (MemberLevel[member?.user_type || 'applicant'] == MemberLevel.staff)
-      return <ViewIcon width="30px" stroke="white" />
+    if (loading) return <Spinner size="sm" />
 
     return (
       <>
@@ -46,11 +43,15 @@ export const MemberBlock = chakra(
           <ButtonConfirm
             size={size}
             color={mutual ? 'yellow' : 'white'}
+            _hover={{ bg: 'primary.500' }}
             alertTitle={`Unblock ${member?.nickname || 'this member'}`}
             title={`Unblock ${member?.nickname || 'this member'}`}
             variant="ghost"
-            _hover={{ bg: 'primary.500' }}
-            confirmedAction={() => deleteJSON(`/api/members/${member.id}/block`)}
+            confirmedAction={() => {
+              if (MemberLevel[member?.user_type || 'applicant'] == MemberLevel.staff) return
+              if (me?.id === member?.id) return
+              return deleteJSON(`/api/members/${member.id}/block`)
+            }}
             onSuccess={() => {
               setIsBlocked(false)
             }}
@@ -72,39 +73,39 @@ export const MemberBlock = chakra(
             <Text>Are you sure you want to unblock {member?.nickname}?</Text>
           </ButtonConfirm>
         )) || (
-          <ButtonConfirm
-            size={size}
-            color={mutual ? 'yellow' : 'white'}
-            alertTitle={`Block ${member?.nickname || 'this member'}`}
-            title={`Block ${member?.nickname || 'this member'}`}
-            variant="ghost"
-            _hover={{ bg: 'primary.500' }}
-            confirmedAction={() => postJSON(`/api/members/${member.id}/block`, {})}
-            onSuccess={() => {
-              setIsBlocked(true)
-              return Promise.resolve()
-            }}
-            onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => setHover(false)}
-            successMessage="The user was blocked"
-            failureMessage="The user could not be blocked"
-            buttonText={isBlocked ? 'Unblock' : 'Block'}
-            icon={
-              hover ? (
-                <BlockedIcon width="30px" fill="red" />
-              ) : (
-                <ViewIcon width="30px" stroke="white" />
-              )
-            }
-            disabled={me?.id === member?.id}
-            {...props}
-          >
-            <Text>
-              Are you sure you want to block {member?.nickname}? They will not be able to see you in
-              the directory or view your profile. They will see your avatar on the event page.
-            </Text>
-          </ButtonConfirm>
-        )}
+            <ButtonConfirm
+              size={size}
+              color={mutual ? 'yellow' : 'white'}
+              alertTitle={`Block ${member?.nickname || 'this member'}`}
+              title={`Block ${member?.nickname || 'this member'}`}
+              variant="ghost"
+              _hover={{ bg: 'primary.500' }}
+              confirmedAction={() => postJSON(`/api/members/${member.id}/block`, {})}
+              onSuccess={() => {
+                setIsBlocked(true)
+                return Promise.resolve()
+              }}
+              onMouseEnter={() => setHover(true)}
+              onMouseLeave={() => setHover(false)}
+              successMessage="The user was blocked"
+              failureMessage="The user could not be blocked"
+              buttonText={isBlocked ? 'Unblock' : 'Block'}
+              icon={
+                hover ? (
+                  <BlockedIcon width="30px" fill="red" />
+                ) : (
+                  <ViewIcon width="30px" stroke="white" />
+                )
+              }
+              disabled={me?.id === member?.id}
+              {...props}
+            >
+              <Text>
+                Are you sure you want to block {member?.nickname}? They will not be able to see you in
+                the directory or view your profile. They will see your avatar on the event page.
+              </Text>
+            </ButtonConfirm>
+          )}
       </>
     )
   }
