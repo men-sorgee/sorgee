@@ -5,21 +5,10 @@ import {
   GroupEvent,
   InviteRSVPType,
   Location,
-  searchableMemberFields,
   Survey
 } from "lib/models";
 
 import { getAdminClient } from "./";
-
-function count<T>(ary: T[], classifier: (i: T) => any) {
-  classifier = classifier || String
-  return ary.reduce(function (counter, item) {
-    var p = classifier(item)
-    counter[p] = counter.hasOwnProperty(p) ? counter[p] + 1 : 1
-    return counter
-  }, {})
-}
-
 
 export async function listAdminEvents(): Promise<GroupEvent[]> {
   const client = await getAdminClient()
@@ -59,14 +48,13 @@ export async function registerForEvent(
 
 export async function getEvent(id: string, filter?: any): Promise<GroupEvent> {
   const client = await getAdminClient()
-  const event: GroupEvent = (await client.items('events').readOne(id, {
+  const event = (await client.items('events').readOne(id, {
     fields: [
       '*',
       'location.*',
       'invites.*',
-      ...searchableMemberFields.map((f) => `invites.users_id.${f}`),
       'survey.*',
-    ] as any,
+    ],
     deep: {
       invites: {
         _limit: -1,
@@ -97,9 +85,8 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
       '*',
       'location.*',
       'invites.*',
-      'invites.users_id.email',
-      ...searchableMemberFields.map((f) => `invites.users_id.${f}`),
-      'survey.*',
+      ...['nickname', 'picture', 'id', 'email'].map((f) => `invites.users_id.${f}`),
+      'survey.*'
     ] as any,
     deep: {
       invites: {

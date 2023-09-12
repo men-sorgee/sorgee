@@ -35,7 +35,7 @@ export const MemberReport = chakra(
       return postJSON(`/api/members/${member.id}/report`, {
         message,
       })
-    }, [member?.id, member?.nickname, message])
+    }, [member?.id, me?.id, me?.user_type, member?.nickname, message])
 
     const label = `Report ${member?.nickname}`
 
