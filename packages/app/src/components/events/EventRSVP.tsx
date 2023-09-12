@@ -36,10 +36,9 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
   const [paid, setPaid] = useState<boolean>(undefined)
   const [nonRefundable, setNonRefundable] = useState<boolean>(undefined)
   const [nonRefundableReason, setNonRefundableReason] = useState<string>(undefined)
-
-  const { isOpen, onToggle } = useDisclosure()
-
+  const { isOpen, onToggle, onClose } = useDisclosure()
   const { invite, event, mutate, pay, refund, loading } = useInvite(eventId)
+  const reasonRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
     if (!loading && invite && event && showPayButton == undefined) {
@@ -54,7 +53,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
     }
   }, [invite, loading, paid, router.query.result, mutate])
 
-  const reasonRef = useRef<HTMLTextAreaElement>(null)
+
 
   const completePurchase = useCallback(async (data: PurchaseResponse) => {
     const { loadStripe } = await import('@stripe/stripe-js')
@@ -77,12 +76,13 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
       if (!shouldContinue) {
         setWorking(false)
         setNonRefundableReason(noRefundReason)
-        return await invite
+        return invite
       }
     }
     setWorking(false)
+    onClose()
     return await mutate({ rsvp: 'cancelled', reason })
-  }, [paid, mutate, refund, invite])
+  }, [paid, mutate, refund, invite, onClose])
 
   const PrePayButton = ({ children = 'Pre-Pay' }) => (
     <>
@@ -159,6 +159,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
         onSuccess={({ data: i }) => {
           setWorking(false)
           if (onChange) onChange(i)
+          onClose()
         }}
         onError={() => {
           setWorking(false)
@@ -189,6 +190,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
         onSuccess={({ data: i }) => {
           setWorking(false)
           if (onChange) onChange(i)
+          onClose()
         }}
         onError={() => {
           setWorking(false)
@@ -214,6 +216,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
         }}
         onResult={() => {
           setWorking(false)
+          onClose()
         }}
         flex={1}
         colorScheme="black"
@@ -236,6 +239,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
       onSuccess={(i: EventInvite) => {
         setWorking(false)
         if (onChange) onChange(i)
+        onClose()
       }}
       onError={() => {
         setWorking(false)
@@ -277,7 +281,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
           {heading}
         </Heading>
 
-        {change && <Button size="sm" variant="solid" colorScheme="primary" py={2} onClick={onToggle} >{isOpen ? 'Cancel Changes' : 'Change RSVP'}</Button>}
+        {change && <Button size="xs" mb={1} variant="solid" colorScheme="primary" py={2} onClick={onToggle} >{isOpen ? 'Cancel Changes' : 'Change RSVP'}</Button>}
       </Flex>
       {paid && change && (
         <Text textAlign='left'>You pre-paid ${invite?.amount || invite?.event.cost} to guarantee your spot!</Text>

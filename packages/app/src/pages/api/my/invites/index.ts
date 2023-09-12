@@ -1,11 +1,11 @@
-import { EventUser } from "lib/models";
+import { EventInvite } from "lib/models";
 import { listInvites } from "lib/services/directus/server/users";
 import { ApiResponse, ApiResponseType, withMember } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function Invites(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponseType<EventUser[]>>
+  res: NextApiResponse<ApiResponseType<EventInvite[]>>
 ) {
   try {
     const member = await withMember(req, res)

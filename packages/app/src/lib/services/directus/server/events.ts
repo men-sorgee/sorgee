@@ -31,7 +31,7 @@ export async function listAdminEvents(): Promise<GroupEvent[]> {
     fields: ['*.*'],
     sort: ['datetime'],
     deep: {
-      users: {
+      invites: {
         _limit: -1,
       }
     }
@@ -63,12 +63,12 @@ export async function getEvent(id: string, filter?: any): Promise<GroupEvent> {
     fields: [
       '*',
       'location.*',
-      'users.*',
-      ...searchableMemberFields.map((f) => `users.users_id.${f}`),
+      'invites.*',
+      ...searchableMemberFields.map((f) => `invites.users_id.${f}`),
       'survey.*',
     ] as any,
     deep: {
-      users: {
+      invites: {
         _limit: -1,
       },
     },
@@ -96,13 +96,13 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
     fields: [
       '*',
       'location.*',
-      'users.*',
-      'users.users_id.email',
-      ...searchableMemberFields.map((f) => `users.users_id.${f}`),
+      'invites.*',
+      'invites.users_id.email',
+      ...searchableMemberFields.map((f) => `invites.users_id.${f}`),
       'survey.*',
     ] as any,
     deep: {
-      users: {
+      invites: {
         _limit: -1,
       },
     },
@@ -118,7 +118,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
     type,
     visibility,
     cost,
-    users: eventUsers,
+    invites,
     invite_only,
     location: l,
     online_payments,
@@ -126,7 +126,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
   } = event
 
   const location = l as unknown as Location
-  const attendance = (eventUsers as EventUser[]) || []
+  const attendance = invites as unknown as EventUser[]
 
   const detail: EventDetail = {
     id,

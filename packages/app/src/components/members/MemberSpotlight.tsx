@@ -123,17 +123,17 @@ export const MemberSpotlight = chakra(
     })
 
     const levelColor = MemberLevelColorMap[level]
-    const eventsAttended = member?.events?.filter((e) => e.attended)?.length || 0
+    const eventsAttended = member?.invites?.filter((e) => e.attended)?.length || 0
     const eventsFlaked =
-      member?.events?.filter((e: EventUser) => e.rsvp == 'confirmed' && e.attended == false)
+      member?.invites?.filter((e) => e.rsvp == 'confirmed' && e.attended == false)
         ?.length || 0
     const eventsConfirmed =
-      member?.events?.filter((e: EventUser) => e.rsvp == 'confirmed')?.length || 0
-    const eventsMaybe = member?.events?.filter((e: EventUser) => e.rsvp == 'maybe')?.length || 0
+      member?.invites?.filter((e) => e.rsvp == 'confirmed')?.length || 0
+    const eventsMaybe = member?.invites?.filter((e) => e.rsvp == 'maybe')?.length || 0
     const eventsCancelled =
-      member?.events?.filter((e: EventUser) => e.rsvp == 'cancelled')?.length || 0
+      member?.invites?.filter((e) => e.rsvp == 'cancelled')?.length || 0
     const eventsDeclined =
-      member?.events?.filter((e: EventUser) => e.rsvp == 'declined')?.length || 0
+      member?.invites?.filter((e) => e.rsvp == 'declined')?.length || 0
 
     if (blocked) {
       return (
@@ -488,7 +488,7 @@ export const MemberSpotlight = chakra(
                     </Stat>
                   )}
                 </Flex>
-                {member?.events?.length > 0 && (
+                {member?.invites?.length > 0 && (
                   <>
                     <Heading
                       as="h3"
@@ -503,12 +503,12 @@ export const MemberSpotlight = chakra(
                       Event Schedule
                     </Heading>
                     <List>
-                      {member?.events
+                      {member?.invites
                         ?.filter((e) => ['maybe', 'confirmed'].includes(e.rsvp))
                         .map((e) => {
                           return {
                             id: e.id,
-                            event: e.events_id as GroupEvent,
+                            event: e.event,
                             rsvp: e.rsvp,
                           }
                         })

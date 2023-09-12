@@ -1,6 +1,9 @@
 import {
   Applicant,
   applicantFields,
+  EventInvite,
+  EventUser,
+  GroupEvent,
   Member,
   memberFields,
   MemberStats,
@@ -16,8 +19,19 @@ import {
 
 import { FieldFilter } from "@directus/sdk";
 
-// Service Calls ------------------------------------
 import { getAdminClient } from "../";
+
+function mapInvites<T extends User>(user: T): EventInvite[] {
+  const invites = user.invites as EventUser[]
+  return invites.map((invite: EventUser) => {
+    const { events_id, users_id, ...rest } = invite
+    const event = events_id as GroupEvent
+    return {
+      event,
+      ...rest
+    } as EventInvite
+  })
+}
 
 export async function createUser(member: Partial<User>): Promise<User> {
   const adminClient = await getAdminClient()
@@ -44,6 +58,16 @@ export async function getUser<T extends User | Member | Applicant | Profile = Us
       status: {
         _eq: 'active',
       },
+      invites: {
+        rsvp: {
+          _in: ['invited', 'confirmed', 'maybe'],
+        },
+        events_id: {
+          status: {
+            _in: ['scheduled', 'planned'],
+          }
+        }
+      }
     },
     deep: {
       buddies: {
@@ -51,11 +75,20 @@ export async function getUser<T extends User | Member | Applicant | Profile = Us
       },
       buddy_of: {
         _limit: -1,
+      },
+      invites: {
+        events_id: {
+          _sort: ['datetime'],
+        }
       }
-
-    },
+    }
   })
-  return (user as T) || null
+
+  if (user.invites) {
+    user.invites = mapInvites(user as any) as any
+  }
+
+  return user as T
 }
 
 export async function findUser<T extends User | Member | Applicant | Profile = Profile>(
@@ -76,8 +109,14 @@ export async function findUser<T extends User | Member | Applicant | Profile = P
   // @ts-ignore
   const user = existingUserQuery?.data?.length ? existingUserQuery.data[0] : null
 
+  if (user.invites) {
+    user.invites = user.invites = mapInvites(user)
+  }
+
   return user as T
 }
+
+
 
 export async function searchUsers<T extends User | SearchableMember = SearchableMember>(
   filter: FieldFilter<T>,

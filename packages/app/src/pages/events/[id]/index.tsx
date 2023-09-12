@@ -7,16 +7,23 @@ import {
   MemberCard,
   MemberModal,
   Page,
-  RateItem,
-} from 'components'
-import { isAfter, isToday } from 'date-fns'
-import { useEvent, useUser } from 'hooks'
-import { EventDetail, EventStats, EventUser, GroupEvent, Member, MemberLevel } from 'lib/models'
-import NextLink from 'next/link'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+  RateItem
+} from "components";
+import { isAfter, isToday } from "date-fns";
+import { useEvent, useInvite, useUser } from "hooks";
+import {
+  EventDetail,
+  EventInvite,
+  EventStats,
+  EventUser,
+  Member,
+  MemberLevel
+} from "lib/models";
+import NextLink from "next/link";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
-import { ArrowBackIcon } from '@chakra-ui/icons'
+import { ArrowBackIcon } from "@chakra-ui/icons";
 import {
   Alert,
   AlertIcon,
@@ -35,8 +42,8 @@ import {
   StatNumber,
   Text,
   useToast,
-  Wrap,
-} from '@chakra-ui/react'
+  Wrap
+} from "@chakra-ui/react";
 
 export default function EventPage() {
   const router = useRouter()
@@ -49,31 +56,27 @@ export default function EventPage() {
     level,
     reload: reloadUser,
     hasFeature,
+    loading: userLoading,
   } = useUser({ minLevel: MemberLevel.inductee, redirectsEnabled: true })
 
   const [showTicket, setShowTicket] = useState<boolean>(false)
 
   const [stats, setStats] = useState<EventStats>(undefined)
-  const [invite, setInvite] = useState<EventUser>(undefined)
+  const { invite } = useInvite(eventId)
   const [memberId, setMemberId] = useState<string>(undefined)
 
   const { event, loading: eventLoading, reload: reloadEvent } = useEvent(eventId)
 
   useEffect(() => {
-    if (!eventLoading && event?.stats && stats == undefined) {
+    if (eventLoading) return
+
+    if (event?.stats && stats == undefined) {
       setStats(event.stats)
       setShowTicket(
         isToday(new Date(event.datetime)) && !isAfter(new Date(), new Date(event.datetime_end))
       )
     }
-    if (member?.events && !invite) {
-      const i = member.events.find((e) => {
-        let event = e.events_id as GroupEvent
-        return event.id == eventId
-      })
-      setInvite(i)
-    }
-  }, [member, event, eventId, eventLoading, invite, member?.events, member?.id, stats, reloadEvent])
+  }, [event, eventLoading, stats])
 
   const getAttendees = (rsvp: string, filter = (u) => u) => {
     return event?.attendance
@@ -223,7 +226,7 @@ export default function EventPage() {
                     setMemberId={setMemberId}
                   />
                 )}
-                {event.status != 'occurred' && (invite || !event?.invite_only) && (
+                {event.status == 'scheduled' && (invite || !event?.invite_only) && (
                   <EventRSVP canConfirm={canConfirm} eventId={eventId} onChange={reloadEvent} />
                 )}
               </>
@@ -265,7 +268,7 @@ const AttendedEvent = ({
 }: {
   event: EventDetail
   member: Member
-  invite: EventUser
+  invite: EventInvite
   reloadUser: () => void
   setMemberId: (id: string) => void
 }) => {

@@ -1,6 +1,7 @@
 import {
   DirectusFile,
   DirectusUser,
+  EventInvite,
   EventUser,
   MembershipNames,
   MembershipRenewalType,
@@ -193,7 +194,7 @@ export type User = {
   tags?: string[]
   location?: Coordinates
   state: string
-  events: string[] | EventUser[]
+  invites: string[] | EventUser[]
   my_photos: string[] | UserPhoto[]
   // email_events: string[] | UserEmailEvent[]
   images: string[] | UserFile[]
@@ -513,7 +514,7 @@ export type Member = Applicant & {
   can_host?: boolean
   can_host_events: string[]
   event_invites?: boolean
-  events: EventUser[]
+  invites: EventInvite[]
 
   //-profile
   show_profile: boolean
@@ -774,7 +775,7 @@ export const memberFields: Array<keyof Member> = [
   'show_interests',
   ...memberInterestsFields,
   'show_events',
-  'events.*.*' as any,
+  'invites.*.*' as any,
   'can_host',
   'can_host_events',
   ...memberEventFields,
