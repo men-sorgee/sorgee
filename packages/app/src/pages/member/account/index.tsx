@@ -3,7 +3,6 @@ import {
   ButtonLink,
   FieldInput,
   FieldNumber,
-  FieldRadioButtons,
   FieldSelect,
   Form,
   Page,
@@ -227,7 +226,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps & { fieldMap: 
                       registerOptions={{ required, min: minYear, max: maxYear }}
                     />
 
-                    <GridItem colSpan={[1, 2]}>
+                    {/*<GridItem colSpan={[1, 2]}>
                       <FieldRadioButtons
                         field="auth_with_phone"
                         label="Sign-in Link"
@@ -237,7 +236,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps & { fieldMap: 
                           { value: 'true', text: 'Send via SMS' },
                         ]}
                       />
-                    </GridItem>
+                    </GridItem>*/}
                     {isText && <GridItem colSpan={[1, 2]}>
                       <Text p={2} rounded="lg" bg='bg' shadow="md" fontSize="sm" textStyle='italic' color='text'>
                         By selecting SMS, you agree to receive text messages from us (720-724-9426) for the purpose of accessing this site.
