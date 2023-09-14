@@ -5,9 +5,9 @@ import {
   updateEmailEvent,
   updateNotificationUser
 } from "lib/services/db/server";
+import { uuidv4 } from "lib/utils";
 import { ApiResponse, ApiResponseType } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
-import { v4 as uuidv4 } from "uuid";
 
 type SendGridEvent = {
   sg_event_id: string
