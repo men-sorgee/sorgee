@@ -57,7 +57,7 @@ export async function getServerSideProps(context) {
   if (context?.params == undefined)
     return {
       redirect: {
-        destination: `/member/account/${PageSection[0]}`,
+        destination: `/member/photos/${PageSection[0]}`,
         permanent: false,
       },
     }
@@ -82,7 +82,7 @@ export default function PhotoAlbums({ section: s = 'public' }: PageProps) {
   const setSection = useCallback((tab: number) => {
     if (tab != tabValue) {
       setTabValue(tab)
-      router.push(`/member/photos/${PageSection[tab]}`, undefined, { shallow: true })
+      router.push(`/member/photos/${PageSection[tab]}`, null, { shallow: true })
     }
   },
     [tabValue, router]
@@ -114,8 +114,8 @@ export default function PhotoAlbums({ section: s = 'public' }: PageProps) {
         <>
           <Flex align="center" justify="center">
             {(pictureSrc && (
-              <Flex direction="column" mb={4}>
-                <MemberAvatar member={member} width="150px" height="150px" rounded="full" />
+              <Flex direction="column" justify="space-around" align="center" mb={4}>
+                <MemberAvatar member={member} size='2xl' />
                 <ButtonConfirm
                   alertTitle="Delete Avatar"
                   buttonText="Delete"
@@ -130,16 +130,16 @@ export default function PhotoAlbums({ section: s = 'public' }: PageProps) {
                     setPictureSrc(null)
                     reload()
                   }}
-                  size="sm"
+                  size="xs"
                   maxW="fit-content"
                   margin="auto"
                   successMessage="Avatar deleted"
                   failureMessage="Avatar not deleted"
-                  mt={'-3rem'}
+                  mt={'-2rem'}
                   variant="ghost"
-                  bg="bg"
-                  opacity=".5"
-                  color="text"
+                  bg="white"
+                  opacity=".8"
+                  color="black"
                   _hover={{ opacity: 1, bg: 'white' }}
                 >
                   Are you sure you want to delete this photo?
@@ -240,11 +240,13 @@ function PhotoList({ title, field, images, memberId, reload }: PhotoListProps) {
             }}
             successMessage="Photo deleted"
             failureMessage="Photo not deleted"
-            mt={'-6rem'}
+            mt={'-4rem'}
             variant="ghost"
+            size='xs'
             bg="white"
-            opacity=".5"
+            opacity=".8"
             color="black"
+            ml={2}
             _hover={{ opacity: 1, bg: 'white' }}
           >
             Are you sure you want to delete this photo?

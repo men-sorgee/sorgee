@@ -3,13 +3,7 @@ import { Member } from "lib/models";
 import { getAssetUrl, gradient, toLocalDate } from "lib/utils";
 import { useEffect, useState } from "react";
 
-import {
-  Avatar,
-  AvatarBadge,
-  AvatarProps,
-  chakra,
-  Tooltip
-} from "@chakra-ui/react";
+import { Avatar, AvatarBadge, AvatarProps, chakra } from "@chakra-ui/react";
 
 export type MemberAvatarProps = AvatarProps & {
   member: Partial<Member>
@@ -52,27 +46,16 @@ export const MemberAvatar = chakra(
         {...props}
       >
         {member?.presence == 'online' && (
-          <Tooltip label={lastLogin} placement="top">
-            <AvatarBadge
-              borderWidth="thin"
-              borderColor="green.500"
-              bgGradient="linear(to-b, green.200, green.400)"
-              boxSize={'.75em'}
-              shadow="md"
-            />
-          </Tooltip>
+          <AvatarBadge
+            title={lastLogin}
+            borderWidth="thin"
+            borderColor="green.500"
+            bgGradient="linear(to-b, green.200, green.400)"
+            boxSize={'.75em'}
+            shadow="md"
+          />
         )}
-        {member?.presence == 'away' && (
-          <Tooltip label={lastLogin} placement="top">
-            <AvatarBadge
-              borderWidth="thin"
-              borderColor="orange.500"
-              bgGradient="linear(to-b, green.200, green.400)"
-              boxSize={'.75em'}
-              shadow="md"
-            />
-          </Tooltip>
-        )}
+
       </Avatar>
     )
   }

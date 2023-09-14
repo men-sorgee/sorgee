@@ -162,7 +162,7 @@ export function ButtonConfirm<TResponse>({
                     }}
                     ml={3}
                     title={title}
-                    color={color}
+                    color='white'
                     bgGradient={gradient(confirmColorScheme)}
                     _hover={{
                       bgGradient: gradient(confirmColorScheme, 100),
@@ -177,7 +177,7 @@ export function ButtonConfirm<TResponse>({
                       bgGradient: gradient('gray', 100),
                     }}
                     onClick={onClose}
-                    color={color}
+                    color='white'
                   >
                     Cancel
                   </Button>
