@@ -5,8 +5,8 @@
   "private": true,
   "scripts": {
     "clean": "rm -rf .next && rm -rf node_modules",
-    "dev": "next dev ",
-    "build": "next build",
+    "dev": "next dev --turbo ",
+    "build": "next build -t",
     "start": "next start",
     "lint": "next lint",
     "fix": "next lint --fix",
@@ -34,7 +34,7 @@
     "@hookform/error-message": "^2.0.1",
     "@hypertheme-editor/chakra-ui": "^0.1.6-rc.0",
     "@sendgrid/mail": "^7.7.0",
-    "@stripe/stripe-js": "2.1.2",
+    "@stripe/stripe-js": "2.1.5",
     "add-to-calendar-button-react": "^2.4.1",
     "change-case": "^4.1.2",
     "client-only": "^0.0.1",
@@ -73,11 +73,10 @@
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",
     "stripe": "^13.5.0",
-    "styled-components": "^6.0.7",
+    "styled-components": "^6.0.8",
     "swr": "2.2.2",
     "twilio": "^4.17.0",
     "typeorm": "^0.3.17",
-    "uuid": "^9.0.0",
     "web-vitals": "^3.4.0"
   },
   "devDependencies": {
@@ -88,8 +87,8 @@
     "@types/qrcode": "^1.5.2",
     "@types/react": "^18.2.21",
     "@types/react-calendar": "^4.1.0",
-    "@typescript-eslint/eslint-plugin": "^6.6.0",
-    "@typescript-eslint/parser": "^6.6.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.0",
+    "@typescript-eslint/parser": "^6.7.0",
     "@vitejs/plugin-react": "^4.0.4",
     "@vitest/ui": "^0.34.4",
     "eslint": "^8.49.0",
@@ -102,5 +101,10 @@
     "typescript": "^5.2.2",
     "vite": "^4.4.5",
     "vitest": "^0.34.4"
-  }
+  },
+  "browserslist": [
+    "last 1 version",
+    "> 1%",
+    "not dead"
+  ]
 }
