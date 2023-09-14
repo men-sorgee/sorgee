@@ -74,7 +74,7 @@
     "stripe": "^12.18.0",
     "styled-components": "^6.0.7",
     "swr": "2.2.1",
-    "twilio": "^4.15.0",
+    "twilio": "^4.16.0",
     "typeorm": "^0.3.17",
     "web-vitals": "^3.4.0"
   },
