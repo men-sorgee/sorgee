@@ -1,3 +1,5 @@
+
+import { UploadFolder } from "lib/models";
 import {
   User,
   UserSession,
@@ -18,7 +20,7 @@ import {
   updateSession,
   updateUser
 } from "lib/services/db/server/users";
-import { importFile, UploadFolder } from "lib/services/directus/server/files";
+import { importFile } from "lib/services/directus/server";
 import { getAssetUrl } from "lib/utils";
 import {
   Adapter,
@@ -230,4 +232,5 @@ const authAdapter: Adapter = {
   },
 }
 
-export { authAdapter }
+export { authAdapter };
+

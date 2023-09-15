@@ -1,6 +1,6 @@
 import { Rating as RatingControl, RatingControlProps } from "components";
 import { Rating, RatingCollection } from "lib/models";
-import { JsonFetcher, postJSON } from "lib/utils";
+import { JsonFetcher, postJSON } from "lib/utils/apis";
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import useSWR from "swr";
 
@@ -12,11 +12,11 @@ export type RateItemProps = RatingControlProps & {
   onChange?: (rate: number) => void
   children?: ReactNode
   direction?:
-    | 'row'
-    | 'column'
-    | 'row-reverse'
-    | 'column-reverse'
-    | Array<'row' | 'column' | 'row-reverse' | 'column-reverse'>
+  | 'row'
+  | 'column'
+  | 'row-reverse'
+  | 'column-reverse'
+  | Array<'row' | 'column' | 'row-reverse' | 'column-reverse'>
 }
 
 const itemMap = {
@@ -27,7 +27,7 @@ const itemMap = {
 export const RateItem = ({
   item_id,
   collection,
-  onChange = () => {},
+  onChange = () => { },
   direction = ['column', 'row'],
   children,
   ...props

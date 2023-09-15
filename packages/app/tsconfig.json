@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES5",
+    "target": "ES6",
     "lib": [
       "dom",
       "dom.iterable",
@@ -21,7 +21,6 @@
     "isolatedModules": true,
     "incremental": true,
     "jsx": "preserve",
-    //"jsxImportSource": "@emotion/react",
     "paths": {
       "components/*": [
         "components/*"

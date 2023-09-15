@@ -1,6 +1,6 @@
 'use client'
 import { MemberAlert } from "lib/models";
-import { deleteJSON, putJSON } from "lib/utils";
+import { deleteJSON, putJSON } from "lib/utils/apis";
 import {
   createContext,
   ReactNode,

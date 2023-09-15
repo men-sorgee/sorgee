@@ -1,7 +1,6 @@
+import { Coordinates } from "lib/models";
+import { postJSON } from "lib/utils";
 import { useCallback, useState } from "react";
-
-import { Coordinates } from "../lib/models";
-import { postJSON } from "../lib/utils";
 
 export type GeoLocationResults = {
   capture: () => void

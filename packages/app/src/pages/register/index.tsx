@@ -9,7 +9,7 @@ import {
 import { useSite } from "hooks/use-site";
 import { pages } from "lib/config";
 import { FieldOptions, Promo, SignUpForm, User } from "lib/models";
-import { postJSON } from "lib/utils";
+import { postJSON } from "lib/utils/apis";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -33,7 +33,7 @@ export type Props = {
 export async function getServerSideProps() {
   const { getFieldOptions } = await import('lib/services/directus/server')
   const birthMonthOptions = await getFieldOptions<User>('birth_month')
-  const { getPageById } = await import('lib/services/directus/server/pages')
+  const { getPageById } = await import('lib/services/directus/static/pages')
   const page = await getPageById(pages.registrationPage)
   const { markdown } = page
 

@@ -1,6 +1,7 @@
 import { useSite, useUser } from "hooks";
 import { brand } from "lib/config/brand";
 import { MemberLevel } from "lib/models";
+import { postJSON } from "lib/utils";
 import { Router } from "next/router";
 import {
   forwardRef,
@@ -26,7 +27,6 @@ import {
 
 import { Markdown } from "../components";
 import { ViewHeightContext } from "../hooks/use-view-height";
-import { postJSON } from "../lib/utils";
 import Actions from "./actions";
 import Footer from "./Footer";
 import Header from "./Header";

@@ -1,6 +1,6 @@
 import { useUser } from "hooks";
-import { Member } from "lib/models";
-import { getDistance, LocationCoordinates } from "lib/utils";
+import { LocationCoordinates, Member } from "lib/models";
+import { getDistance } from "lib/utils";
 import { useEffect, useState } from "react";
 
 export type MemberDistanceProps = {

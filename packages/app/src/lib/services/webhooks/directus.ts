@@ -1,4 +1,3 @@
-import { postJSON } from "lib/utils";
 
 export async function sendAdminNotification(notificationId: string) {
   // disabled until I get this working

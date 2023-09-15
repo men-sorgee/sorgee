@@ -8,7 +8,7 @@ import {
   PriceView,
   ProductView
 } from "lib/models";
-import { getJSON } from "lib/utils";
+import { getJSON } from "lib/utils/apis";
 import { event } from "nextjs-google-analytics";
 import { useEffect, useState } from "react";
 

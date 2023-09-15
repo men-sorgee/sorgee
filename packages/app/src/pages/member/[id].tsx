@@ -1,7 +1,6 @@
 import { MemberSpotlight, Page } from "components";
 import { useFields, useMember, useUser } from "hooks";
-
-import { MemberLevel } from "../../lib/models";
+import { MemberLevel } from "lib/models";
 
 export function getServerSideProps({ params }) {
   return {

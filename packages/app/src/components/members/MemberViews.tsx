@@ -1,7 +1,7 @@
 import { UpgradeIcon } from "components";
 import { useUser } from "hooks";
 import { Member, MemberLevel, MembershipType } from "lib/models";
-import { deleteJSON, postJSON } from "lib/utils";
+import { deleteJSON, postJSON } from "lib/utils/apis";
 import { useCallback, useEffect, useState } from "react";
 
 import { chakra, IconButton, IconButtonProps } from "@chakra-ui/react";
@@ -48,8 +48,8 @@ export const MemberLike = chakra(
     const label = mutual
       ? `Mutual Like with ${member?.nickname}`
       : isLiked
-      ? `Unlike ${member?.nickname}`
-      : `Like ${member?.nickname}`
+        ? `Unlike ${member?.nickname}`
+        : `Like ${member?.nickname}`
 
     // SWAP BETWEEN LIKED AND HOVER
     useEffect(() => {

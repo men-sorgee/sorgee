@@ -1,6 +1,7 @@
 
 import { addHours } from "date-fns";
-import { getUTCNow, uuidv4 } from "lib/utils";
+import { uuidv4 } from "lib/utils";
+import { getUTCNow } from "lib/utils/dates";
 import { LessThan, MoreThan } from "typeorm";
 
 import {

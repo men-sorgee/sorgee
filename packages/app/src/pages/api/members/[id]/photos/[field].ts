@@ -1,6 +1,7 @@
 import {
   Applicant,
   DirectusFile,
+  UploadFolder,
   User,
   UserPhoto,
   UserPhotoFieldType
@@ -9,8 +10,7 @@ import {
   createFolder,
   findFolder,
   getFileInfo,
-  uploadFile,
-  UploadFolder
+  uploadFile
 } from "lib/services/directus/server";
 import { getUser, updateUser } from "lib/services/directus/server/users";
 import { addUserPhoto } from "lib/services/directus/server/users/photos";

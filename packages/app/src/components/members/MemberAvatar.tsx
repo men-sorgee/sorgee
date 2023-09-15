@@ -1,6 +1,7 @@
 import { formatDistanceToNowStrict } from "date-fns";
 import { Member } from "lib/models";
-import { getAssetUrl, gradient, toLocalDate } from "lib/utils";
+import { getAssetUrl, gradient } from "lib/utils";
+import { toLocalDate } from "lib/utils/dates";
 import { useEffect, useState } from "react";
 
 import {

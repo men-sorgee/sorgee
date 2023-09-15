@@ -96,6 +96,3 @@ export async function postForm<T = any>(
     return { success, error: { message: error.message || error } }
   }
 }
-
-export * from './fetchers';
-

@@ -7,7 +7,7 @@ import {
   User,
   UserBuddy
 } from "lib/models";
-import { deleteJSON, postJSON } from "lib/utils";
+import { deleteJSON, postJSON } from "lib/utils/apis";
 import { useCallback, useEffect, useState } from "react";
 
 import { chakra, IconButton, IconButtonProps } from "@chakra-ui/react";
@@ -95,32 +95,32 @@ export const MemberBuddy = chakra(
             {...props}
           />
         )) || (
-          <IconButton
-            icon={
-              hover ? (
-                <AddBuddyIcon width="30px" fill={'white'} />
-              ) : (
-                <UserIcon width="30px" stroke="white" />
-              )
-            }
-            onMouseOver={() => {
-              setHover(true)
-            }}
-            onMouseOut={() => {
-              setHover(false)
-            }}
-            variant="ghost"
-            aria-label={`Add ${member?.nickname || 'this member'} as a Buddy`}
-            title={`Add ${member?.nickname || 'this member'} as a Buddy`}
-            cursor="pointer"
-            onClick={toggleBuddy}
-            color="white"
-            size={size}
-            _hover={{ bg: 'primary.500' }}
-            disabled={me?.id === member?.id}
-            {...props}
-          />
-        )}
+            <IconButton
+              icon={
+                hover ? (
+                  <AddBuddyIcon width="30px" fill={'white'} />
+                ) : (
+                  <UserIcon width="30px" stroke="white" />
+                )
+              }
+              onMouseOver={() => {
+                setHover(true)
+              }}
+              onMouseOut={() => {
+                setHover(false)
+              }}
+              variant="ghost"
+              aria-label={`Add ${member?.nickname || 'this member'} as a Buddy`}
+              title={`Add ${member?.nickname || 'this member'} as a Buddy`}
+              cursor="pointer"
+              onClick={toggleBuddy}
+              color="white"
+              size={size}
+              _hover={{ bg: 'primary.500' }}
+              disabled={me?.id === member?.id}
+              {...props}
+            />
+          )}
       </>
     )
   }

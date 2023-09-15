@@ -2,10 +2,10 @@
 
 import { isAfter, isToday } from "date-fns";
 import { EventInvite } from "lib/models";
+import { postJSON } from "lib/utils";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
-import { postJSON } from "../lib/utils";
 import { useAuthenticated } from "./use-authenticated";
 
 export type InvitesResults = {

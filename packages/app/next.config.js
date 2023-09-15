@@ -1,10 +1,10 @@
 const { PHASE_DEVELOPMENT_SERVER } = require('next/constants')
 
-const withPWA = require('next-pwa')({
-  dest: 'public',
-  disable: process.env.PWA !== 'true'
-})
-
+//const withPWA = require('next-pwa')({
+//  dest: 'public',
+//  disable: process.env.PWA !== 'true'
+//})
+//
 const getConfig = (phase) => {
   const dev = PHASE_DEVELOPMENT_SERVER === phase
 
@@ -16,7 +16,12 @@ const getConfig = (phase) => {
       dev
     },
     pageExtensions: ['tsx'],
-    experimental: { appDir: false },
+    experimental: { 
+      appDir: false,
+      optimizeFonts: true,
+      optimizeImages: true,
+      
+    },
     images: {
       domains: [
         'guysnheat.com',
@@ -46,4 +51,4 @@ const getConfig = (phase) => {
   return nextConfig
 }
 
-module.exports = withPWA(getConfig)
+module.exports = getConfig // withPWA(getConfig)

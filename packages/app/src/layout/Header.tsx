@@ -96,7 +96,7 @@ const Header = forwardRef<HTMLDivElement, Props>(({
   )
   useEffect(() => {
     if (!pages) {
-      import('lib/services/directus/server/pages')
+      import('lib/services/directus/static/pages')
         .then(({ listPages }) => listPages())
         .then((pages) => {
           setPages(

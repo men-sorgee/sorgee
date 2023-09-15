@@ -3,7 +3,7 @@ import { capitalCase } from "change-case";
 import { Markdown } from "components";
 import { differenceInDays, isAfter, isFuture } from "date-fns";
 import { GroupEvent, Location } from "lib/models";
-import { getEventDate } from "lib/utils";
+import { getEventDate } from "lib/utils/dates";
 import dynamic from "next/dynamic";
 import { ReactNode, useEffect, useState } from "react";
 

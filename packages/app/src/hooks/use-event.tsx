@@ -1,7 +1,7 @@
 'use client'
 
 import { EventDetail, EventStatusType, EventUser } from "lib/models";
-import { ApiResult, getJSON } from "lib/utils";
+import { ApiResult, getJSON } from "lib/utils/apis";
 import { useCallback } from "react";
 import useSWR from "swr";
 

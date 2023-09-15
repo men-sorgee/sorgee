@@ -1,6 +1,7 @@
 import { capitalCase } from "change-case";
 import { Member } from "lib/models";
-import { JsonFetcher } from "lib/utils";
+import { QuestionResult, SurveyResult } from "lib/services/db/entities";
+import { JsonFetcher } from "lib/utils/fetchers";
 import { ReactNode } from "react";
 import swr from "swr";
 
@@ -12,8 +13,6 @@ import {
   useColorModeValue,
   Wrap
 } from "@chakra-ui/react";
-
-import { QuestionResult, SurveyResult } from "../../lib/services/db/entities";
 
 export type EventSurveyAnswersProps = {
   surveyId: string

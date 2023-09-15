@@ -6,7 +6,7 @@ import {
 } from "components";
 import { useMessageStats, useUser } from "hooks";
 import { Member, MemberLevel, VouchingUser } from "lib/models";
-import { ApiResult, postJSON, putJSON } from "lib/utils";
+import { ApiResult, postJSON, putJSON } from "lib/utils/apis";
 import { useEffect, useRef, useState } from "react";
 import swr from "swr";
 

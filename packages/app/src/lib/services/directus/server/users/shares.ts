@@ -1,7 +1,8 @@
+import { UserShare } from "lib/models";
+
 import { createItem, deleteItem, readItems } from "@directus/sdk";
 
 import { getAdminClient } from "../";
-import { UserShare } from "../../../../models";
 
 export async function createUserShare(user_id: string, viewer_id: string): Promise<void> {
   const admin = await getAdminClient()

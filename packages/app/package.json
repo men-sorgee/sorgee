@@ -5,8 +5,8 @@
   "private": true,
   "scripts": {
     "clean": "rm -rf .next && rm -rf node_modules",
-    "dev": "next dev --turbo ",
-    "build": "next build -t",
+    "dev": "next dev",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "fix": "next lint --fix",

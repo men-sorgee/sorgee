@@ -41,7 +41,7 @@ const mono = Roboto_Mono({
 
 const theme = extendTheme(getTheme(body, heading, mono))
 
-function GNHApp({ Component, pageProps, router }: AppProps) {
+export default function App({ Component, pageProps, router }: AppProps) {
   const Content = Component as any
   if (router?.pathname.startsWith('/code/')) {
     return <Content {...pageProps} />

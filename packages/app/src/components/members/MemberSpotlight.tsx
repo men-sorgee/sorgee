@@ -15,7 +15,7 @@ import {
   memberProfileHealthFields,
   UserPhoto
 } from "lib/models";
-import { toLocalDate } from "lib/utils";
+import { toLocalDate } from "lib/utils/dates";
 import NextLink from "next/link";
 import { ReactNode, useEffect, useState } from "react";
 

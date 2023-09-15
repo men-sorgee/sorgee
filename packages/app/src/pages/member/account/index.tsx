@@ -11,7 +11,7 @@ import {
 } from "components";
 import { useFields, useUser } from "hooks";
 import { FieldMap, Member, MemberLevel, UserEmailChange } from "lib/models";
-import { ApiResult, postJSON } from "lib/utils";
+import { ApiResult, postJSON } from "lib/utils/apis";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 

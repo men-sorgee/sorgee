@@ -2,7 +2,7 @@ import { ButtonBusy, FieldCheckbox, Form, Markdown, Page } from "components";
 import { useUser } from "hooks/use-user";
 import { pages } from "lib/config";
 import { AgreementData, ApplicationStatus, MemberLevel } from "lib/models";
-import { postJSON } from "lib/utils";
+import { postJSON } from "lib/utils/apis";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const getStaticProps = async () => {
-  const { getPageById } = await import('lib/services/directus/server/pages')
+  const { getPageById } = await import('lib/services/directus/static/pages')
   const page = await getPageById(pages.rulesPage)
   const { markdown } = page
   return {

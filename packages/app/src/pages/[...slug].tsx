@@ -21,7 +21,7 @@ interface Params extends ParsedUrlQuery {
 }
 
 export const getStaticPaths = async () => {
-  const { listPages } = await import('lib/services/directus/server/pages')
+  const { listPages } = await import('lib/services/directus/static/pages')
   const pages = await listPages()
   const paths = pages
     ?.filter((p) => !p.static && !p.blog_article && !p.slug.startsWith('blog'))
@@ -55,7 +55,7 @@ interface Props {
 }
 
 export const getStaticProps = async ({ params }: { params: Params }) => {
-  const { listPages } = await import('lib/services/directus/server/pages')
+  const { listPages } = await import('lib/services/directus/static/pages')
   const pages = await listPages()
   const { slug } = params
   const path = slug.join('/')
