@@ -16,10 +16,6 @@ export default async function CurrentMember(
     const method = withMethods(req, ['GET', 'POST'])
     const me = await withUser(req, res)
 
-    let fields = [
-      ...memberFields,
-      'buddies.buddy_id.id' as any,
-      'likes.liked_id.id' as any]
 
     if (method == 'POST') {
       const userDetails = req.body as Partial<User>
@@ -27,13 +23,22 @@ export default async function CurrentMember(
       return res.status(200).json(ApiResponse(updated))
     }
 
+    let fields = [
+      ...memberFields,
+      'buddies.buddy_id.id' as any,
+      'likes.liked_id.id' as any]
+
     const user = await getUser<Member>(me.id, fields)
+    user.invites = user.invites?.filter(i => {
+      return ['invited', 'confirmed', 'maybe'].includes(i.rsvp) && ['scheduled', 'planned'].includes(i.event.status)
+    }) || []
+
     if (user != null)
       return res.status(200).json(ApiResponse(me))
 
     return res.status(200).json(ApiResponse(user))
   } catch (e) {
-    console.error(e.message)
+    console.error('Unable to retrieve user: ' + e.message)
     res.status(401).json(ApiResponse(null, e.message || e))
   }
 }

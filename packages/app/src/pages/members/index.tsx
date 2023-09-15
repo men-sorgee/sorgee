@@ -83,7 +83,6 @@ export default function Members() {
     (q: Partial<MemberSearchQueryParams>) => {
       //let url = `/members?${new URLSearchParams({ page, size, ...q } as any).toString()}`
       const query = { sort, size, page, ...q }
-      console.dir(query)
       router.push({
         query,
       }, undefined, { shallow: true })

@@ -18,7 +18,9 @@ export class UserSession {
   @typeorm.Column('timestamp with time zone', { name: 'expires', nullable: true })
   expires: Date | null
 
-
+  @typeorm.ManyToOne(() => User, (user) => user.userSessions, {
+    onDelete: 'CASCADE',
+  })
   @typeorm.JoinColumn([{ name: 'user', referencedColumnName: 'id' }])
   user: typeorm.Relation<User>
 }

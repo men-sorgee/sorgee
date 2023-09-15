@@ -306,7 +306,7 @@ export default function UserMenu({ site, router }: Props) {
                       icon={<PaintBrushIcon color={'white'} width={'1.5rem'} />}
                       bg="black"
                       _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                      as={Link}
+                      as={NextLink}
                       href="/styles"
                     >
                       Styles
@@ -352,7 +352,6 @@ export default function UserMenu({ site, router }: Props) {
         <Flex direction={['column', 'row']} align="center" justify="end">
           <Link
             mr={2}
-            as={NextLink}
             href={`/api/auth/signin`}
             fontWeight={600}
             size={['sm', 'md']}
@@ -370,7 +369,7 @@ export default function UserMenu({ site, router }: Props) {
             <>
               <Show above="sm">&nbsp;| &nbsp;</Show>
               <Link
-                as={NextLink}
+
                 size={['sm', 'md']}
                 href={`/register`}
                 color="white"

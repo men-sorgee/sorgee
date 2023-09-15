@@ -21,6 +21,7 @@ import { UserAccount } from "./UserAccount";
 import { UserBuddy } from "./UserBuddy";
 import { UserContactAttempt } from "./UserContactAttempt";
 import { UserRelationships } from "./UserRelationships";
+import { UserSession } from "./UserSession";
 import { UsersFiles } from "./UsersFiles";
 import { UsersPhotos } from "./UsersPhotos";
 
@@ -494,8 +495,14 @@ export class User {
   @OneToMany(() => UserAccount, (userAccount) => userAccount.user)
   userAccounts: UserAccount[]
 
+  @OneToMany(() => UserSession, (userSession) => userSession.user)
+  userSessions: UserSession[]
+
   @OneToMany(() => UserContactAttempt, (userContactAttempt) => userContactAttempt.user)
   userContactAttempts: UserContactAttempt[]
+
+  // @OneToMany(() => UserEmailEvents, (userEmailEvents) => userEmailEvents.user)
+  // userEmailEvents: UserEmailEvents[]
 
   @OneToMany(() => UserRelationships, (userRelationships) => userRelationships.relatedUsers)
   userRelationships: UserRelationships[]

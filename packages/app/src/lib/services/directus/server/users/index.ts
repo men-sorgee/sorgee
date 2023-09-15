@@ -58,16 +58,7 @@ export async function getUser<T extends User | Member | Applicant | Profile = Us
       status: {
         _eq: 'active',
       },
-      invites: {
-        rsvp: {
-          _in: ['invited', 'confirmed', 'maybe'],
-        },
-        events_id: {
-          status: {
-            _in: ['scheduled', 'planned'],
-          }
-        }
-      }
+
     },
     deep: {
       buddies: {
