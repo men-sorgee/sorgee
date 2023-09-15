@@ -1,6 +1,6 @@
 
 import { addHours } from "date-fns";
-import { getUTCNow, uuidv4 } from "lib/utils";
+import { getUTCNow } from "lib/utils";
 import { LessThan, MoreThan } from "typeorm";
 
 import {
@@ -82,7 +82,7 @@ export async function expireSessions() {
     },
   })
 
-  if (!expired?.length) return
+  if (expired.length == 0) return
 
   const ids = expired.map((u) => u.id)
 
@@ -121,10 +121,7 @@ export async function deleteAccount(provider: string, id: string) {
 
 export async function createSession(session: UserSession) {
   const repo = await getRepository(UserSession)
-  return await repo.save({
-    ...session,
-    id: uuidv4(),
-  })
+  return await repo.save(session)
 }
 
 export async function findSession(sessionToken: string): Promise<UserSession> {

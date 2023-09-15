@@ -96,8 +96,10 @@ export async function findUser<T extends User | Member | Applicant | Profile = P
   fields: UserFields = profileFields
 ): Promise<T | null> {
   const adminClient = await getAdminClient()
-  // @ts-ignore
-  const existingUserQuery = await adminClient.items('users').readByQuery({
+  console.dir({
+    email,
+  })
+  const { data: users } = await adminClient.items('users').readByQuery({
     filter: {
       email: {
         _eq: email,
@@ -106,10 +108,9 @@ export async function findUser<T extends User | Member | Applicant | Profile = P
     fields
   })
 
-  // @ts-ignore
-  const user = existingUserQuery?.data?.length ? existingUserQuery.data[0] : null
+  if (!users || !users.length) return null
 
-  return user as T
+  return users[0] as T
 }
 
 

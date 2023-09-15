@@ -177,15 +177,15 @@ const authAdapter: Adapter = {
     try {
       log('getSessionAndUser', sessionToken)
       const session = await findSession(sessionToken)
-      if (!session) return null
+      if (!session) throw new Error('Session not found: ' + sessionToken)
       const user = await getUser(session.user.id)
-      if (!user) return null
+      if (!user) throw new Error('User not found: ' + session.user.id)
       return {
         user: mapUser(user),
         session: mapSession(session),
       }
     } catch (e) {
-      console.error(e)
+      console.error('Errored on getSessionAndUser: ' + e)
     }
   },
   async updateSession(session: AdapterSession) {
@@ -230,4 +230,5 @@ const authAdapter: Adapter = {
   },
 }
 
-export { authAdapter }
+export { authAdapter };
+

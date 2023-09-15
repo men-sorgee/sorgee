@@ -1,7 +1,6 @@
 import { Page } from "components";
 import { useUser } from "hooks";
 import { ApplicationStatus, MemberLevel } from "lib/models";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
@@ -15,17 +14,13 @@ export default function Index({ }) {
 
   useEffect(() => {
     if (loading) return
-    if (member && !router.query?.override) {
+    if (member) {
       const { application_status } = member
       if (application_status === 'approved') {
         router.push('/member')
-      } else {
+      } else if (!router.query?.override) {
         router.push('/apply/' + application_status)
       }
-    } else {
-      signIn(null, {
-        callbackUrl: '/apply',
-      })
     }
   }, [loading, router, member])
 

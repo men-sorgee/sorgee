@@ -1,17 +1,26 @@
 import { withUser } from "lib/utils/server";
+import { NextApiResponse } from "next";
 
-export default async function Home(req, res) {
+export default async function Home(req, res: NextApiResponse) {
   try {
     const user = await withUser(req, res)
 
-    const { application_status } = user
-    if (application_status === 'approved') {
-      return res.redirect('/member', 301)
-    } else {
-      return res.redirect('/apply/' + application_status, 301)
+    if (!user)
+      return res.redirect(301, '/')
+
+    const { status, application_status } = user
+    if (status !== 'active') {
+      return res.redirect(301, '/register')
     }
-  } catch (_) {
-    return res.redirect('/api/auth/signin?callbackUrl=/api/my/home', 301)
+
+    if (application_status === 'approved') {
+      return res.redirect(301, '/member')
+    } else {
+      return res.redirect(301, '/apply/' + application_status)
+    }
+  } catch (error) {
+    console.error(error)
+    return res.redirect(301, '/')
   }
 
 }

@@ -16,11 +16,7 @@ export default async function listUserInvites(
     const member = await findUser<Member>(email,
       ['id', 'email', 'email_new', 'email_token'])
 
-    console.dir({
-      email,
-      email_token: token,
-      member
-    })
+
     if (!member)
       throw new Error('Email address not found.')
 

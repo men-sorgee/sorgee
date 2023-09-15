@@ -21,15 +21,17 @@ export default async function CurrentMember(
       'buddies.buddy_id.id' as any,
       'likes.liked_id.id' as any]
 
-    const user = await getUser<Member>(me.id, fields)
-
     if (method == 'POST') {
       const userDetails = req.body as Partial<User>
       const updated = await updateUser(me.id, userDetails)
       return res.status(200).json(ApiResponse(updated))
     }
 
-    return res.status(200).json(ApiResponse(user || me))
+    const user = await getUser<Member>(me.id, fields)
+    if (user != null)
+      return res.status(200).json(ApiResponse(me))
+
+    return res.status(200).json(ApiResponse(user))
   } catch (e) {
     console.error(e.message)
     res.status(401).json(ApiResponse(null, e.message || e))
