@@ -65,7 +65,7 @@ export default function EventsPage({ }: PageProps) {
       title="Events"
       description="Upcoming events."
       hideHeader
-      pt={2}
+      py={4}
     >
 
       {activeInvite && member && (

@@ -100,7 +100,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
           w={['full', 'full', 'auto']}
           title="Guarantee your spot at this event and leave your cash at home. Pay now for less hassle later."
         >
-          You will be charged for this event today, guaranteeing your place at the event.
+          You will be charged for this event today. This will ensure your place at the event.
         </ButtonConfirm>
       )}
     </>
@@ -302,7 +302,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
       {children != undefined &&
         <>
 
-          <Collapse in={isOpen || change == false} animate>
+          <Collapse in={isOpen || change == false} animate >
             <Flex
               direction={['column', 'row']}
               w="full"
@@ -310,10 +310,12 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
               justify="stretch"
               gap="2"
               pt={4}
+              pb={4}
             >
               {children}
             </Flex>
           </Collapse >
+          {!isOpen && showPayButton && <Box mt={2}><PrePayButton>Pre-Pay to Save Time</PrePayButton></Box>}
         </>
       }
     </Box >
