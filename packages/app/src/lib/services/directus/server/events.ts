@@ -48,6 +48,7 @@ export async function registerForEvent(
 const userFields: Array<keyof Member> = [
   'nickname', 'picture', 'id', 'email',
   'show_profile', 'biography', 'user_type',
+  'has_features', 'status', 'application_status',
   'date_created', 'last_login', 'location']
 
 export async function getEvent(id: string, filter?: any): Promise<GroupEvent> {
