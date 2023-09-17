@@ -68,7 +68,8 @@ export const MemberCard = chakra(
           {...props}
         >
           <LinkBox key={member.id}>
-            <CardHeader mb={0}>
+
+            <CardHeader mb={0} >
               <LinkOverlay
                 as={NextLink}
                 href={href}
@@ -85,39 +86,35 @@ export const MemberCard = chakra(
                 <MemberHeader member={member} size={size} minimal={!full} onChange={() => {
                   if (onChange) onChange()
                 }}>
-                  {(!member.show_profile && (
-                    <>
-                      <Flex
-                        px={4}
-
-                        direction="column"
-                        w="25%"
-                        align="start"
-                        justify="center"
-                      >
-                        <LockIcon color="primary.500" h={20} w={20} mx={'auto'} />
-                        <Heading as="h3" mt={10} size="sm" p={0} textAlign="center" color="white">
-                          PRIVATE PROFILE
-                        </Heading>
-                      </Flex>
-                    </>
-                  )) || <MemberAttributeBanner member={member} />}
+                  {member?.show_profile && <MemberAttributeBanner member={member} />}
                 </MemberHeader>
               </LinkOverlay>
             </CardHeader>
-
-            <CardBody pt={0} m={0}>
-              {(levelValue == MemberLevel.pledge || viewerLevel == MemberLevel.staff) && (
-                <MemberMessageStats memberId={member?.id} viewerLevel={level} />
-              )}
-              {children}
-              {full && member?.show_profile && (
-                <>
-                  <Markdown content={member?.biography} noOfLines={2} py={0} my={0} />
-                </>
-              )}
-            </CardBody>
           </LinkBox>
+          <CardBody pt={0} m={0}>
+            {(full && (levelValue == MemberLevel.pledge || viewerLevel == MemberLevel.staff)) && (
+              <MemberMessageStats memberId={member?.id} viewerLevel={level} />
+            )}
+            {full && !member.show_profile && (
+              <>
+                <Flex
+                  px={4}
+                  direction="column"
+                  align="center"
+                  justify="center"
+                >
+                  <LockIcon color="primary.500" h={20} w={20} mx={'auto'} />
+                  <Heading as="h3" mt={10} size="sm" p={0} textAlign="center" color="white">
+                    PRIVATE PROFILE
+                  </Heading>
+                </Flex>
+              </>
+            )}
+            {children}
+            {full && member?.show_profile && (
+              <Markdown content={member?.biography} noOfLines={2} py={0} my={0} />
+            )}
+          </CardBody>
           <Spacer />
           <MemberRelationBanner member={member} viewer={viewer} bg={'primary.900'} />
           <CardFooter
@@ -129,7 +126,10 @@ export const MemberCard = chakra(
           >
             <MemberActions viewer={viewer} member={member} size={['sm', 'md']} />
           </CardFooter>
+
         </Card>
+
+
       </>
     )
   }

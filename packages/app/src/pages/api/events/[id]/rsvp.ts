@@ -1,3 +1,4 @@
+
 import { EventInvite } from "lib/models";
 import {
   findInvite,
@@ -24,8 +25,6 @@ export default async function EventRSVP(
     const { id } = req.query
 
     const eventId = String(id)
-
-    console.dir({ eventId, user: member.id })
 
     const event = await getEvent(eventId)
 

@@ -52,12 +52,18 @@ export async function getEvent(id: string, filter?: any): Promise<GroupEvent> {
       '*',
       'location.*',
       'invites.*',
-      'survey.*',
-    ],
+      ...['nickname', 'picture', 'id', 'email', 'show_profile', 'biography'].map((f) => `invites.users_id.${f}`),
+      'survey.*'
+    ] as any,
     deep: {
       invites: {
         _limit: -1,
       },
+      survey: {
+        status: {
+          _eq: 'published'
+        }
+      }
     },
     filter: filter || {},
   })) as any as GroupEvent
@@ -84,13 +90,18 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
       '*',
       'location.*',
       'invites.*',
-      ...['nickname', 'picture', 'id', 'email'].map((f) => `invites.users_id.${f}`),
+      ...['nickname', 'picture', 'id', 'email', 'show_profile', 'biography'].map((f) => `invites.users_id.${f}`),
       'survey.*'
     ] as any,
     deep: {
       invites: {
         _limit: -1,
       },
+      survey: {
+        status: {
+          _eq: 'published'
+        }
+      }
     },
   })
   const {

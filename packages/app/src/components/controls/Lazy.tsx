@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Box, Spinner } from "@chakra-ui/react";
 
@@ -40,7 +40,7 @@ export const Lazy = ({ children }) => {
   }, [ref])
 
   return (
-    <Box ref={containerRef} minH="200px" minW="100%">
+    <Box ref={containerRef} minH={isVisible ? 'min-content' : '100px'} minW="100%">
       {isVisible ? children : <Spinner />}
     </Box>
   )

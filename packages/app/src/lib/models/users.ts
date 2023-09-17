@@ -389,6 +389,26 @@ export type Profile = {
   vouched_by?: string | VouchingUser
 }
 export const profileFields: Array<keyof Profile> = [
+  'id',
+  'picture',
+  'nickname',
+  'first_name',
+  'last_name',
+  'email',
+  'email_new',
+  'email_token',
+  'email_verified',
+  'phone',
+  'phone_verified',
+  'last_login',
+  'user_type',
+  'application_status',
+  'status',
+  'auth_with_phone',
+  'vouched_by',
+  'sessions',
+  'in_sendgrid',
+  'session_expire',
 
 ]
 
@@ -422,23 +442,7 @@ export type Applicant = Profile & {
   date_updated: string
 }
 export const applicantFields: Array<keyof Applicant> = [
-  'id',
-  'picture',
-  'nickname',
-  'first_name',
-  'last_name',
-  'email',
-  'email_new',
-  'email_token',
-  'email_verified',
-  'phone',
-  'phone_verified',
-  'last_login',
-  'user_type',
-  'application_status',
-  'status',
-  'auth_with_phone',
-
+  ...profileFields,
   'show_contact',
   'contact_preference',
   'biography',
@@ -611,6 +615,7 @@ export type SearchableMember = Omit<
   | 'application_status'
   | 'accounts'
   | 'photo_denial_reason'
+  | 'show_profile'
 >
 
 export const userPrivateFields: Array<keyof User> = [

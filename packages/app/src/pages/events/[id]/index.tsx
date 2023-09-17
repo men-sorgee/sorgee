@@ -99,6 +99,7 @@ export default function EventPage() {
           src,
           paid,
           guest,
+          show_profile: u.show_profile,
         }
       })
   }
@@ -299,7 +300,7 @@ const AttendedEvent = ({
         />
         <Spacer />
         {invite.attended &&
-          event.surveys?.map((s) => (
+          event.surveys?.filter(s => s.status == 'published').map((s) => (
             <ButtonLink key={s.id} size="md" href={`/survey/${s.id}/1`} colorScheme="accent">
               {s.title}
             </ButtonLink>
@@ -327,10 +328,8 @@ const AttendedEvent = ({
               <Lazy key={event.id + '-' + m.id}>
                 <MemberCard
                   viewer={member}
-                  mb={4}
                   member={m}
-                  mt={4}
-                  size="lg"
+                  size="xl"
                   onClick={() => {
                     setMemberId(m.id)
                   }}

@@ -31,7 +31,6 @@ export const MemberHeader = ({
         <MemberIcon member={member} size={size} onChange={() => {
           if (onChange) onChange()
         }} {...props}>
-
           {iconChildren}
         </MemberIcon>
         {(minimal && <>{children}</>) || (
@@ -42,6 +41,7 @@ export const MemberHeader = ({
                 value={member.rating || 0}
                 mt={2}
                 itemName="User"
+                readonly
                 tooltip="Ratings are based on the number of stars a member has received from other members and event hosts. No-shows automatically receive -1 star ratings by the event."
               />
             )}
