@@ -33,7 +33,7 @@ export default async function CurrentMember(
       return ['invited', 'confirmed', 'maybe'].includes(i.rsvp) && ['scheduled', 'planned'].includes(i.event.status)
     }) || []
 
-    if (user != null)
+    if (user == null)
       return res.status(200).json(ApiResponse(me))
 
     return res.status(200).json(ApiResponse(user))

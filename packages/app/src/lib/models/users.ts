@@ -752,6 +752,8 @@ export const searchableMemberFields: Array<keyof Member> = [
   'photo_shares.viewer_id' as any,
   'approved_date' as any,
   'membership_type' as any,
+  'show_profile',
+  'has_features'
 ]
 
 export const memberSubscriptionFields: Array<keyof Member> = [
@@ -761,6 +763,7 @@ export const memberSubscriptionFields: Array<keyof Member> = [
   'membership_start',
   'membership_end',
   'renewal_type',
+  'has_features'
 ]
 
 export const memberFields: Array<keyof Member> = [
