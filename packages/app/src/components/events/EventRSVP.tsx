@@ -219,7 +219,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
           onClose()
         }}
         flex={1}
-        colorScheme="black"
+        colorScheme="gray"
         w={['full', 'full', 'auto']}
       >{children}
       </ButtonBusy>
@@ -315,7 +315,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
               {children}
             </Flex>
           </Collapse >
-          {!isOpen && showPayButton && <Box mt={2}><PrePayButton>Pre-Pay to Save Time</PrePayButton></Box>}
+          {!isOpen && showPayButton && rsvp == 'confirmed' && <Box mt={2}><PrePayButton>Pre-Pay to Save Time</PrePayButton></Box>}
         </>
       }
     </Box >
@@ -351,7 +351,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
         <>
           <RSVPView
             heading={paid ? "You are Pre-Paid" : "You are Confirmed"}
-            body={!paid && <Text>You reservation is not pre-paid. If we reach capacity, entrance will be first-come/first-serve.</Text>}
+            body={(event?.online_payments && !paid) && <Text>You reservation is not pre-paid. If we reach capacity, entrance will be first-come/first-serve.</Text>}
           >
             <PayButton>Pre-Pay</PayButton>
             <MaybeRSVPButton>May Not Attend</MaybeRSVPButton>
