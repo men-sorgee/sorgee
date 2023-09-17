@@ -87,9 +87,7 @@ export async function findUser<T extends User | Member | Applicant | Profile = P
   fields: UserFields = profileFields
 ): Promise<T | null> {
   const adminClient = await getAdminClient()
-  console.dir({
-    email,
-  })
+
   const { data: users } = await adminClient.items('users').readByQuery({
     filter: {
       email: {
