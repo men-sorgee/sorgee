@@ -2,10 +2,9 @@ import FormData from "form-data";
 import formidable, { Fields, File, Files } from "formidable";
 import IncomingForm from "formidable/Formidable";
 import { DirectusFile, DirectusFolder } from "lib/models";
+import { getAdminClient } from "lib/services/directus/server";
 import { NextApiRequest } from "next";
 import { Writable } from "node:stream";
-
-import { getAdminClient } from "./";
 
 export enum UploadFolder {
   members = '8c3d5472-6b02-4056-affd-ab3d461b273d',

@@ -1,4 +1,5 @@
-import { NotificationsUsers, UserEmailEvents } from "../entities";
+import { NotificationsUsers, UserEmailEvents } from "lib/services/db/entities";
+
 import { getRepository } from "./data-source";
 
 export async function storeEmailEvents(events: Omit<UserEmailEvents, 'id' | 'date_created' | 'date_updated'>[]): Promise<UserEmailEvents[]> {

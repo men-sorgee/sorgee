@@ -6,8 +6,7 @@ import {
   User,
   UserPayment
 } from "lib/models";
-
-import { getAdminClient } from "../";
+import { getAdminClient } from "lib/services/directus/server";
 
 export async function saveBillingEvent(event: BillingEvent) {
   const admin = await getAdminClient()

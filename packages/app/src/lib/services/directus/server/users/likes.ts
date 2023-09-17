@@ -1,6 +1,5 @@
 import { UserLike } from "lib/models";
-
-import { getAdminClient } from "../";
+import { getAdminClient } from "lib/services/directus/server";
 
 export async function getLike(user_id: string, like_id: string): Promise<UserLike> {
   const adminClient = await getAdminClient()

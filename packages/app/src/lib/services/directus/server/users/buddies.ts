@@ -1,6 +1,5 @@
 import { UserBuddy } from "lib/models";
-
-import { getAdminClient } from "../";
+import { getAdminClient } from "lib/services/directus/server";
 
 export async function getBuddy(user_id: string, buddy_id: string): Promise<UserBuddy> {
   const adminClient = await getAdminClient()

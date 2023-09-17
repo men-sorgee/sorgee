@@ -1,15 +1,14 @@
 
 import { addHours } from "date-fns";
-import { getUTCNow } from "lib/utils";
-import { LessThan, MoreThan } from "typeorm";
-
 import {
   User,
   UserAccount,
   UserSession,
   UserVerificationToken
-} from "../entities";
-import { getRepository } from "./data-source";
+} from "lib/services/db/entities";
+import { getRepository } from "lib/services/db/server/data-source";
+import { getUTCNow } from "lib/utils";
+import { LessThan, MoreThan } from "typeorm";
 
 export async function createUser(userData: Partial<User>) {
   const repo = await getRepository(User)

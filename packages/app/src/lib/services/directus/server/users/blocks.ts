@@ -1,6 +1,5 @@
 import { UserBlock } from "lib/models";
-
-import { getAdminClient } from "../";
+import { getAdminClient } from "lib/services/directus/server";
 
 export async function getBlock(user_id: string, blocked_id: string): Promise<UserBlock> {
   const adminClient = await getAdminClient()

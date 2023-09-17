@@ -1,6 +1,5 @@
 import { MemberAlert } from "lib/models";
-
-import { getAdminClient } from "./";
+import { getAdminClient } from "lib/services/directus/server";
 
 // Alerts
 

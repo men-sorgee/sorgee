@@ -5,8 +5,7 @@ import {
   MessageStatusType,
   User
 } from "lib/models";
-
-import { getAdminClient } from "./";
+import { getAdminClient } from "lib/services/directus/server";
 
 export async function getMessages(user_id: string) {
   const adminClient = await getAdminClient()

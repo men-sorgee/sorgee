@@ -1,5 +1,6 @@
 
-import { QuestionResult, Survey } from "../entities";
+import { QuestionResult, Survey } from "lib/services/db/entities";
+
 import { getRepository } from "./data-source";
 
 export async function getSurvey(id: string): Promise<Survey> {

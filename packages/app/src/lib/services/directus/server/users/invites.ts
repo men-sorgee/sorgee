@@ -6,8 +6,7 @@ import {
   Member,
   UserType
 } from "lib/models";
-
-import { getAdminClient } from "../";
+import { getAdminClient } from "lib/services/directus/server";
 
 export async function getInvite(inviteId: number): Promise<EventUser | null> {
   const client = await getAdminClient()

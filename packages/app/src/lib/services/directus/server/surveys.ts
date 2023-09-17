@@ -1,16 +1,12 @@
-import { create } from "domain";
 import { surveys } from "lib/config";
 import {
   EventDetail,
-  GroupEvent,
   Question,
   Survey,
   SurveyAnswer,
   UserSurvey
 } from "lib/models";
-import { uuidv4 } from "lib/utils";
-
-import { getAdminClient } from "./";
+import { getAdminClient } from "lib/services/directus/server";
 
 export async function createSurvey(survey: Partial<Survey>): Promise<Survey> {
   const client = await getAdminClient()

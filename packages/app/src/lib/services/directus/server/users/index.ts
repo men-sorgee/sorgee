@@ -16,10 +16,9 @@ import {
   UserFields,
   UserType
 } from "lib/models";
+import { getAdminClient } from "lib/services/directus/server";
 
 import { FieldFilter } from "@directus/sdk";
-
-import { getAdminClient } from "../";
 
 function mapInvites<T extends User>(user: T): EventInvite[] {
   const invites = user.invites as EventUser[]

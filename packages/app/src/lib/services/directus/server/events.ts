@@ -7,8 +7,7 @@ import {
   Location,
   Survey
 } from "lib/models";
-
-import { getAdminClient } from "./";
+import { getAdminClient } from "lib/services/directus/server";
 
 export async function listAdminEvents(): Promise<GroupEvent[]> {
   const client = await getAdminClient()

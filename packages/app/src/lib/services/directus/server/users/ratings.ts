@@ -1,9 +1,8 @@
 //@ts-ignore-file
 
 import { Rating, RatingCollection } from "lib/models";
-
 // Service Calls ------------------------------------
-import { getAdminClient } from "../";
+import { getAdminClient } from "lib/services/directus/server";
 
 export async function getRating(user_id: string, collection: RatingCollection, item_id: string) {
   const adminClient = await getAdminClient()

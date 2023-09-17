@@ -1,6 +1,5 @@
 import { UserPhoto } from "lib/models";
-
-import { getAdminClient } from "../";
+import { getAdminClient } from "lib/services/directus/server";
 
 export async function getUserPhotos(userId: string, is_public: boolean = true) {
   const adminClient = await getAdminClient()

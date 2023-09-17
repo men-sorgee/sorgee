@@ -1,6 +1,5 @@
 import { SearchableMember, UserView, UserViews } from "lib/models";
-
-import { getAdminClient } from "../";
+import { getAdminClient } from "lib/services/directus/server";
 
 export async function getUserViews(user_id: string): Promise<UserViews> {
   const adminClient = await getAdminClient()

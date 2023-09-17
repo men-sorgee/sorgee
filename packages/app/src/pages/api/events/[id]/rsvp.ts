@@ -25,9 +25,11 @@ export default async function EventRSVP(
 
     const eventId = String(id)
 
+    console.dir({ eventId, user: member.id })
+
     const event = await getEvent(eventId)
 
-    if (!event || !['planned', 'scheduled'].includes(event.status))
+    if (!event || !['planned', 'scheduled', 'occurred'].includes(event.status))
       throw new Error('Event not found')
 
     let eventUser = await findInvite(eventId, member.id)
@@ -68,10 +70,6 @@ export default async function EventRSVP(
         ...eventUser
       }))
     }
-
-
-
-
   } catch (e) {
     console.error(e)
     return res.status(400).json(ApiResponse(null, e))
