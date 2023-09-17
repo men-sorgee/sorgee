@@ -167,7 +167,7 @@ export const authOptions: AuthOptions = {
               log(`Sent sign in link to ${user.phone} for ${user.email} `)
               return
             } catch (e) {
-              error(e)
+              console.error(e)
             }
           }
           log(`Sending sign in link to ${user.email} `)
