@@ -5,6 +5,7 @@ import {
   GroupEvent,
   InviteRSVPType,
   Location,
+  Member,
   Survey
 } from "lib/models";
 import { getAdminClient } from "lib/services/directus/server";
@@ -44,6 +45,10 @@ export async function registerForEvent(
   return invite as unknown as EventUser
 }
 
+const userFields: Array<keyof Member> = [
+  'nickname', 'picture', 'id', 'email',
+  'show_profile', 'biography', 'user_type',
+  'date_created', 'last_login', 'location']
 
 export async function getEvent(id: string, filter?: any): Promise<GroupEvent> {
   const client = await getAdminClient()
@@ -52,7 +57,7 @@ export async function getEvent(id: string, filter?: any): Promise<GroupEvent> {
       '*',
       'location.*',
       'invites.*',
-      ...['nickname', 'picture', 'id', 'email', 'show_profile', 'biography'].map((f) => `invites.users_id.${f}`),
+      ...userFields.map((f) => `invites.users_id.${f}`),
       'survey.*'
     ] as any,
     deep: {
@@ -90,7 +95,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
       '*',
       'location.*',
       'invites.*',
-      ...['nickname', 'picture', 'id', 'email', 'show_profile', 'biography'].map((f) => `invites.users_id.${f}`),
+      ...userFields.map((f) => `invites.users_id.${f}`),
       'survey.*'
     ] as any,
     deep: {
