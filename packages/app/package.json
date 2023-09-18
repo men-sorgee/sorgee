@@ -34,7 +34,7 @@
     "@hookform/error-message": "^2.0.1",
     "@hypertheme-editor/chakra-ui": "^0.1.6-rc.0",
     "@sendgrid/mail": "^7.7.0",
-    "@stripe/stripe-js": "2.1.0",
+    "@stripe/stripe-js": "2.1.6",
     "add-to-calendar-button-react": "^2.3.1",
     "change-case": "^4.1.2",
     "client-only": "^0.0.1",
