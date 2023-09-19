@@ -50,7 +50,7 @@ function GNHApp({ Component, pageProps, router }: AppProps) {
 
   return (
     <>
-      <GoogleAnalytics trackPageViews={{ ignoreHashChange: true }} />
+      <GoogleAnalytics gaMeasurementId="G-SJX78PVP26" trackPageViews={{ ignoreHashChange: true }} />
 
       <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
         <React.StrictMode>
