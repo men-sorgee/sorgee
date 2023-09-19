@@ -48,7 +48,7 @@ export default async function ShareWithMember(
 
       // send notification
       await addAlert(them.id, {
-        message: `${myName} shared their private photos!`,
+        message: `${myName} shared their private photos! You can now see them on his profile.`,
         button_text: 'View Photos',
         button_url: `/member/${me.id}`,
         icon: 'success'
@@ -57,8 +57,8 @@ export default async function ShareWithMember(
       await sendNotificationEmail(
         them.email,
         them.first_name,
-        `${myName} has shared their private photos with you!`,
-        'Congratulations! You have been granted access to view private photos from a member of the community. Click the button below to view their photos.',
+        `${myName} has shared their private photos with you!  You can now see them on his profile.`,
+        'Congratulations! You have been granted access to view private photos from a member of the community. Click the button below to view their profile.',
         {
           button_text: 'View Photos',
           button_url: `${baseUrl}/member/${me.id}`,
