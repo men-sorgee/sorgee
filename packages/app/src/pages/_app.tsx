@@ -8,7 +8,6 @@ import {
 import Layout from "layout";
 import { SessionProvider } from "next-auth/react";
 import { AppProps, NextWebVitalsMetric } from "next/app";
-import dynamic from "next/dynamic";
 import { Arvo, Manrope, Roboto_Mono } from "next/font/google";
 import { event, GoogleAnalytics } from "nextjs-google-analytics";
 import React from "react";
@@ -42,7 +41,7 @@ const mono = Roboto_Mono({
 
 const theme = extendTheme(getTheme(body, heading, mono))
 
-function GNHApp({ Component, pageProps, router }: AppProps) {
+export default function GNHApp({ Component, pageProps, router }: AppProps) {
   const Content = Component as any
   if (router?.pathname.startsWith('/code/')) {
     return <Content {...pageProps} />
@@ -62,6 +61,7 @@ function GNHApp({ Component, pageProps, router }: AppProps) {
                     <AlertsProvider>
                       <MessagesProvider>
                         <Layout router={router} fonts={[heading.variable, body.variable, mono.variable]}>
+
                           <Content {...pageProps} />
                         </Layout>
                       </MessagesProvider>
@@ -78,9 +78,9 @@ function GNHApp({ Component, pageProps, router }: AppProps) {
   )
 }
 
-export default dynamic(() => Promise.resolve(GNHApp), {
-  ssr: false,
-});
+// export default dynamic(() => Promise.resolve(GNHApp), {
+//   ssr: false,
+// });
 
 export function reportWebVitals({ id, name, label, value }: NextWebVitalsMetric) {
   event(name, {
