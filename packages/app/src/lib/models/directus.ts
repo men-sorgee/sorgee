@@ -11,8 +11,6 @@ import {
   Promo,
   Question,
   Rating,
-  Room,
-  RoomEvent,
   Site,
   Survey,
   SurveyAnswer,
@@ -180,8 +178,6 @@ export type DirectusTypes = {
   users_photos: UserPhoto
   user_block: UserBlock
   rating: Rating
-  rooms: Room
-  room_events: RoomEvent
   messages: Message
   directus_collections: DirectusCollection
   directus_fields: DirectusField
