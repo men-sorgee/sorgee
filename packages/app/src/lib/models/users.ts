@@ -68,6 +68,7 @@ export type UserBuddy = {
   buddy_id: string | {
     id: string
     presence: PresenceType
+    status: UserStatusType
   } | User
   sort: number
 }
@@ -563,8 +564,8 @@ export type Member = Applicant & {
 
   allow_messages: AllowedMessageType
 
-  buddies: Pick<UserBuddy, 'buddy_id'>[]
-  buddy_of: Pick<UserBuddy, 'user_id'>[]
+  buddies: UserBuddy[]
+  buddy_of: UserBuddy[]
 
   photo_shares: Pick<UserShare, 'viewer_id'>[]
 

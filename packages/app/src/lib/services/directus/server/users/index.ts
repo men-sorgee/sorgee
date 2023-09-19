@@ -12,6 +12,7 @@ import {
   SearchableMember,
   searchableMemberFields,
   User,
+  UserBuddy,
   UserEmailEvent,
   UserFields,
   UserType
@@ -29,7 +30,7 @@ function mapInvites<T extends User>(user: T): EventInvite[] {
       event,
       ...rest
     } as EventInvite
-  })
+  }).filter((i) => ['invited', 'confirmed', 'maybe'].includes(i.rsvp) && ['scheduled', 'planned'].includes(i.event.status))
 }
 
 export async function createUser(member: Partial<User>): Promise<User> {
@@ -57,14 +58,13 @@ export async function getUser<T extends User | Member | Applicant | Profile = Us
       status: {
         _eq: 'active',
       },
-
     },
     deep: {
       buddies: {
         _limit: -1,
       },
       buddy_of: {
-        _limit: -1,
+        _limit: -1
       },
       invites: {
         events_id: {
@@ -76,6 +76,11 @@ export async function getUser<T extends User | Member | Applicant | Profile = Us
 
   if (user.invites) {
     user.invites = mapInvites(user as any) as any
+  }
+
+  if (user.buddies) {
+    const buddies = user.buddies as UserBuddy[]
+    user.buddies = buddies.filter(({ buddy_id: b }) => (b as User).status == 'active') || []
   }
 
   return user as T

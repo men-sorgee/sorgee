@@ -1,10 +1,12 @@
-
+import { memo } from "react";
 
 export type PageProps<T> = Record<keyof T, string | string[]> & {
   page: number
   size: number
   sort: string
 }
+
+
 
 
 export * from './billing'

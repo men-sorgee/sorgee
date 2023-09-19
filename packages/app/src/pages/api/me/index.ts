@@ -23,18 +23,15 @@ export default async function CurrentMember(
       return res.status(200).json(ApiResponse(updated))
     }
 
+    let userFields = ['id', 'presence', 'last_login', 'status']
     let fields = [
       ...memberFields,
-      'buddies.buddy_id.id' as any,
-      'likes.liked_id.id' as any]
+      ...userFields.map(f => `buddies.buddy_id.${f}`),
+      ...userFields.map(f => `likes.liked_id.${f}`)]
 
     const user = await getUser<Member>(me.id, fields)
-    user.invites = user.invites?.filter(i => {
-      return ['invited', 'confirmed', 'maybe'].includes(i.rsvp) && ['scheduled', 'planned'].includes(i.event.status)
-    }) || []
 
-    if (user == null)
-      return res.status(200).json(ApiResponse(me))
+
 
     return res.status(200).json(ApiResponse(user))
   } catch (e) {
