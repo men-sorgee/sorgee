@@ -1,4 +1,5 @@
 import { gradient } from "lib/utils";
+import { memo } from "react";
 
 import {
   Button,
@@ -16,8 +17,8 @@ export type ButtonLinkProps = Omit<IconButtonProps, 'aria-label'> & {
   replace?: boolean
 }
 
-export const ButtonLink = chakra(
-  ({
+export const ButtonLink = memo(chakra(
+  function ButtonLink({
     href,
     children,
     colorScheme = 'primary',
@@ -29,7 +30,7 @@ export const ButtonLink = chakra(
     icon,
     title,
     ...props
-  }: ButtonLinkProps) => {
+  }: ButtonLinkProps) {
     const bgGradient = gradient(colorScheme)
     const bgGradientHover = gradient(colorScheme, 100)
     return (
@@ -78,4 +79,4 @@ export const ButtonLink = chakra(
       </LinkBox>
     )
   }
-)
+))

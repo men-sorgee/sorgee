@@ -1,5 +1,5 @@
 import { ButtonConfirm } from "components";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 import { HStack, Icon, IconButtonProps, Tooltip } from "@chakra-ui/react";
 import { StarIcon as StarOffIcon } from "@heroicons/react/24/outline";
@@ -17,7 +17,7 @@ export type RatingControlProps = Omit<IconButtonProps, 'aria-label'> & {
   tooltip?: string
 }
 
-export const Rating = ({
+export const Rating = memo(function Rating({
   value,
   readonly = true,
   scale = 5,
@@ -30,7 +30,7 @@ export const Rating = ({
   itemName = 'Item',
   onError: _error,
   ...props
-}: RatingControlProps) => {
+}: RatingControlProps) {
   const [rating, setRating] = useState<number>(undefined)
   const buttons = []
 
@@ -120,4 +120,4 @@ export const Rating = ({
       </HStack>
     </Tooltip>
   )
-}
+})

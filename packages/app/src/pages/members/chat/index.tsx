@@ -6,12 +6,12 @@ import {
   MemberShare,
   Page
 } from "components";
+import MessagesStyles from "components/controls/MessagesStyles";
 import { formatDistanceToNow } from "date-fns";
 import { useMessages, useUser } from "hooks";
 import { userImageId } from "lib/config";
 import { ChatMessage, MemberLevel, Message } from "lib/models";
 import { getAssetUrl, postJSON } from "lib/utils";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import io, { Socket } from "socket.io-client";
@@ -40,11 +40,7 @@ import {
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
 export default function ChatPage({ id }: { id?: string }) {
-  const Style = useMemo<any>(() => {
-    return dynamic(() => import('components/controls/MessagesStyles'), {
-      ssr: false,
-    }) as any
-  }, [])
+
 
   const { member, loading } = useUser({
     minLevel: MemberLevel.pledge,
@@ -262,6 +258,7 @@ export default function ChatPage({ id }: { id?: string }) {
       handleAttachment(file)
     }
   }
+  const [stylesLoaded, setStylesLoaded] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const inputRef = useRef()
   const sendMessage = useCallback(
@@ -343,170 +340,174 @@ export default function ChatPage({ id }: { id?: string }) {
           onClick={() => onOpen()}
         />
       ),
-
     [activeConversation, conversationAvatarStyle, id, onOpen]
   )
+
   return (
     <Page title="Brother Chat" loading={loading} hideHeader full position="relative" bg="gray.500">
-      <Style />
+      <MessagesStyles onLoad={() => {
+        setStylesLoaded(true)
+      }} />
       <audio ref={audioRef} src="/sounds/click.mp3" preload="auto" />
 
-      <MainContainer responsive className="bg">
-        <Sidebar position="left" style={sidebarStyle}>
-          <ConversationList>
-            {conversations.map((c) => {
-              // Helper for getting the data of the first participant
-              const {
-                id,
-                user: { nickname, picture, presence },
-                newMessageCount,
-                messages,
-              } = c
-              const lastMessage = messages.length ? messages[messages.length - 1] : null
-              const lastMessageDate = lastMessage
-                ? formatDistanceToNow(lastMessage?.timestamp as Date) + ' ago'
-                : 'now'
-              return (
-                <ConversationCtrl
-                  key={id}
-                  name={nickname}
-                  active={activeConversation?.id === id}
-                  onClick={() => {
-                    handleConversationClick(id)
-                  }}
-                  lastActivityTime={lastMessageDate ? lastMessageDate : 'Just now'}
-                  unreadDot={newMessageCount > 0}
-                >
-                  <Avatar
+      {stylesLoaded ? <>
+        <MainContainer responsive className="bg">
+          <Sidebar position="left" style={sidebarStyle}>
+            <ConversationList>
+              {conversations.map((c) => {
+                // Helper for getting the data of the first participant
+                const {
+                  id,
+                  user: { nickname, picture, presence },
+                  newMessageCount,
+                  messages,
+                } = c
+                const lastMessage = messages.length ? messages[messages.length - 1] : null
+                const lastMessageDate = lastMessage
+                  ? formatDistanceToNow(lastMessage?.timestamp as Date) + ' ago'
+                  : 'now'
+                return (
+                  <ConversationCtrl
                     key={id}
-                    id={id}
-                    src={getAssetUrl(picture || userImageId)}
                     name={nickname}
-                    style={conversationAvatarStyle}
-                    status={presence == 'online' ? 'available' : 'unavailable'}
-                    active={presence == 'online'}
-                  />
-                </ConversationCtrl>
-              )
-            })}
-          </ConversationList>
-        </Sidebar>
-        {activeConversation?.user && (
-          <ChatContainer
-            onFocus={() => {
-              messagesSeen()
-            }}
-            style={chatContainerStyle}
-          >
-            <ConversationHeader>
-              <ConversationHeader.Back onClick={handleBackClick} />
-              {UserAvatar}
-              <ConversationHeader.Content
-                userName={activeConversation.user.nickname}
-                style={conversationContentStyle}
-                info={activeConversation?.user?.presence}
-              />
-              <ConversationHeader.Actions>
-                <MemberBlock size="md" member={activeConversation?.user} />
-                <MemberReport size="md" member={activeConversation?.user} />
-                <MemberShare size="md" member={activeConversation?.user} />
-              </ConversationHeader.Actions>
-            </ConversationHeader>
+                    active={activeConversation?.id === id}
+                    onClick={() => {
+                      handleConversationClick(id)
+                    }}
+                    lastActivityTime={lastMessageDate ? lastMessageDate : 'Just now'}
+                    unreadDot={newMessageCount > 0}
+                  >
+                    <Avatar
+                      key={id}
+                      id={id}
+                      src={getAssetUrl(picture || userImageId)}
+                      name={nickname}
+                      style={conversationAvatarStyle}
+                      status={presence == 'online' ? 'available' : 'unavailable'}
+                      active={presence == 'online'}
+                    />
+                  </ConversationCtrl>
+                )
+              })}
+            </ConversationList>
+          </Sidebar>
+          {activeConversation?.user && (
+            <ChatContainer
+              onFocus={() => {
+                messagesSeen()
+              }}
+              style={chatContainerStyle}
+            >
+              <ConversationHeader>
+                <ConversationHeader.Back onClick={handleBackClick} />
+                {UserAvatar}
+                <ConversationHeader.Content
+                  userName={activeConversation.user.nickname}
+                  style={conversationContentStyle}
+                  info={activeConversation?.user?.presence}
+                />
+                <ConversationHeader.Actions>
+                  <MemberBlock size="md" member={activeConversation?.user} />
+                  <MemberReport size="md" member={activeConversation?.user} />
+                  <MemberShare size="md" member={activeConversation?.user} />
+                </ConversationHeader.Actions>
+              </ConversationHeader>
 
-            <MessageList scrollBehavior="auto" typingIndicator={typingIndicator}>
-              {activeId &&
-                messages.map((m, i) => (
-                  <MessageGroup key={i} direction={m.direction}>
-                    <MessageGroup.Messages>
-                      <MessageCtrl
-                        model={{
-                          type: m.type,
-                          payload: decodeHtml(m.body),
-                          direction: m.direction,
-                          position: 'single',
-                        }}
-                      >
-                        {m.direction == 'outgoing' && (
-                          <MessageCtrl.Header
+              <MessageList scrollBehavior="auto" typingIndicator={typingIndicator}>
+                {activeId &&
+                  messages.map((m, i) => (
+                    <MessageGroup key={i} direction={m.direction}>
+                      <MessageGroup.Messages>
+                        <MessageCtrl
+                          model={{
+                            type: m.type,
+                            payload: decodeHtml(m.body),
+                            direction: m.direction,
+                            position: 'single',
+                          }}
+                        >
+                          {m.direction == 'outgoing' && (
+                            <MessageCtrl.Header
+                              style={{
+                                flexDirection: 'row-reverse',
+                              }}
+                              itemType={m.type}
+                            >
+                              <IconButton
+                                variant={'ghost'}
+                                position={'absolute'}
+                                float={'right'}
+                                aria-label="Delete"
+                                title="Delete"
+                                icon={<XMarkIcon fill={'white'} width={10} />}
+                                onClick={() => d(m.id)}
+                                size="xs"
+                                color={'white'}
+                                m={1}
+                                opacity={0.2}
+                                _hover={{
+                                  bg: 'secondary.500',
+                                  opacity: 1,
+                                }}
+                              />
+                            </MessageCtrl.Header>
+                          )}
+
+                          <MessageCtrl.Footer
                             style={{
-                              flexDirection: 'row-reverse',
+                              display: 'block',
+                              textAlign: m.direction == 'outgoing' ? 'right' : 'left',
                             }}
                             itemType={m.type}
                           >
-                            <IconButton
-                              variant={'ghost'}
-                              position={'absolute'}
-                              float={'right'}
-                              aria-label="Delete"
-                              title="Delete"
-                              icon={<XMarkIcon fill={'white'} width={10} />}
-                              onClick={() => d(m.id)}
-                              size="xs"
-                              color={'white'}
-                              m={1}
-                              opacity={0.2}
-                              _hover={{
-                                bg: 'secondary.500',
-                                opacity: 1,
-                              }}
-                            />
-                          </MessageCtrl.Header>
-                        )}
+                            <Flex color="text" justify="space-between" align="center" gap={2} pt={1}>
+                              {m.status == 'read' && m.direction == 'outgoing' && (
+                                <HStack align="center" spacing={0}>
+                                  <Icon as={CheckIcon} width={11} height={11} color='text' stroke='text' fill='text' title="Read" />
+                                  <small>read</small>
+                                </HStack>
+                              )}
 
-                        <MessageCtrl.Footer
-                          style={{
-                            display: 'block',
-                            textAlign: m.direction == 'outgoing' ? 'right' : 'left',
-                          }}
-                          itemType={m.type}
-                        >
-                          <Flex color="text" justify="space-between" align="center" gap={2} pt={1}>
-                            {m.status == 'read' && m.direction == 'outgoing' && (
-                              <HStack align="center" spacing={0}>
-                                <Icon as={CheckIcon} width={11} height={11} color='text' stroke='text' fill='text' title="Read" />
-                                <small>read</small>
-                              </HStack>
-                            )}
+                              <small title={m.timestamp.toISOString()}>
+                                sent{' '}
+                                {formatDistanceToNow((m.timestamp as Date) || new Date()) + ' ago'}
+                              </small>
+                            </Flex>
+                          </MessageCtrl.Footer>
+                        </MessageCtrl>
+                      </MessageGroup.Messages>
+                    </MessageGroup>
+                  ))}
+                {typingIndicator}
+              </MessageList>
 
-                            <small title={m.timestamp.toISOString()}>
-                              sent{' '}
-                              {formatDistanceToNow((m.timestamp as Date) || new Date()) + ' ago'}
-                            </small>
-                          </Flex>
-                        </MessageCtrl.Footer>
-                      </MessageCtrl>
-                    </MessageGroup.Messages>
-                  </MessageGroup>
-                ))}
-              {typingIndicator}
-            </MessageList>
-
-            <MessageInput
-              style={{
-                marginBlock: '1rem',
-              }}
-              attachButton={false}
-              onAttachClick={() => {
-                fileInputRef.current.click()
-              }}
-              onSend={handleSend}
-              onChange={handleInputChange}
-              ref={inputRef}
-              autoFocus
-              placeholder="Type message here"
-              content={inputValue}
-            ></MessageInput>
-          </ChatContainer>
-        )}
-      </MainContainer>
-      <input
-        type="file"
-        accept="image/*"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-        style={{ display: 'none' }}
-      />
-      <MemberModal memberId={activeId} isOpen={isOpen} onClose={onClose} size="lg" />
+              <MessageInput
+                style={{
+                  marginBlock: '1rem',
+                }}
+                attachButton={false}
+                onAttachClick={() => {
+                  fileInputRef.current.click()
+                }}
+                onSend={handleSend}
+                onChange={handleInputChange}
+                ref={inputRef}
+                autoFocus
+                placeholder="Type message here"
+                content={inputValue}
+              ></MessageInput>
+            </ChatContainer>
+          )}
+        </MainContainer>
+        <input
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          style={{ display: 'none' }}
+        />
+        <MemberModal memberId={activeId} isOpen={isOpen} onClose={onClose} size="lg" />
+      </> : null}
     </Page>
   )
 }

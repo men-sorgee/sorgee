@@ -7,7 +7,7 @@ import {
 import { useMessageStats, useUser } from "hooks";
 import { Member, MemberLevel, VouchingUser } from "lib/models";
 import { ApiResult, postJSON, putJSON } from "lib/utils";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import swr from "swr";
 
 import { CheckIcon } from "@chakra-ui/icons";
@@ -27,7 +27,7 @@ export type MemberVouchProps = Omit<ButtonProps, 'onError'> & {
   onChange?: () => void
 }
 
-export const MemberVouch = chakra(({ member, size = ['sm', 'md', 'lg'], onChange, ...props }: MemberVouchProps) => {
+export const MemberVouch = memo(chakra(function MemberVouch({ member, size = ['sm', 'md', 'lg'], onChange, ...props }: MemberVouchProps) {
   const { loading: statsLoading, stats } = useMessageStats(member?.id)
   const reasonRef = useRef<HTMLTextAreaElement>(null)
   const [working, setWorking] = useState(false)
@@ -155,5 +155,4 @@ export const MemberVouch = chakra(({ member, size = ['sm', 'md', 'lg'], onChange
       )}
     </>
   )
-})
-
+}))

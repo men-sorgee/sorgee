@@ -2,8 +2,6 @@ import { capitalCase } from "change-case";
 import { useMember, useMeta, useUser } from "hooks";
 import {
   DirectusField,
-  EventUser,
-  GroupEvent,
   memberEventFields,
   memberInterestsFields,
   MemberLevel,
@@ -17,7 +15,7 @@ import {
 } from "lib/models";
 import { toLocalDate } from "lib/utils";
 import NextLink from "next/link";
-import { ReactNode, useEffect, useState } from "react";
+import { memo, ReactNode, useEffect, useState } from "react";
 
 import {
   Accordion,
@@ -82,8 +80,8 @@ export type MemberSpotlightProps = FlexProps & {
   children?: ReactNode
 }
 
-export const MemberSpotlight = chakra(
-  ({
+export const MemberSpotlight = memo(chakra(
+  function MemberSpotlight({
     memberId,
     fields,
     full = false,
@@ -95,7 +93,7 @@ export const MemberSpotlight = chakra(
     accordionItems,
     children,
     ...props
-  }: MemberSpotlightProps) => {
+  }: MemberSpotlightProps) {
     const [blocked, setBlocked] = useState(false)
     const { member, name, level, picture, loading, reload } = useMember(memberId)
     const { member: viewer, level: viewerLevel, hasFeature } = useUser()
@@ -545,4 +543,4 @@ export const MemberSpotlight = chakra(
       </Flex>
     )
   }
-)
+))

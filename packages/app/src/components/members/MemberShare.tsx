@@ -2,7 +2,7 @@ import { UpgradeIcon } from "components";
 import { useUser } from "hooks";
 import { Member, MemberLevel, MembershipType } from "lib/models";
 import { deleteJSON, postJSON } from "lib/utils";
-import { useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 
 import { chakra, IconButton, IconButtonProps } from "@chakra-ui/react";
 import { LockClosedIcon } from "@heroicons/react/24/outline";
@@ -12,8 +12,8 @@ export type MemberShareProps = Omit<IconButtonProps, 'aria-label'> & {
   member: Partial<Member>
 }
 
-export const MemberShare = chakra(
-  ({ member, size = ['sm', 'md', 'lg'], ...props }: MemberShareProps) => {
+export const MemberShare = memo(chakra(
+  function MemberShare({ member, size = ['sm', 'md', 'lg'], ...props }: MemberShareProps) {
     const { loading, member: me, reload, level, hasFeature } = useUser()
     const [hover, setHover] = useState(false)
     const [showLock, setShowLock] = useState(false)
@@ -90,4 +90,4 @@ export const MemberShare = chakra(
       </>
     )
   }
-)
+), (prev, next) => (prev.member?.id == next.member?.id && prev.isShared == next.isShared))

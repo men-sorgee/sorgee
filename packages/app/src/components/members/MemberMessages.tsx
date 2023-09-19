@@ -7,7 +7,7 @@ import {
   SearchableMember,
   UserBuddy
 } from "lib/models";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 import { Badge, chakra, IconButton, IconButtonProps } from "@chakra-ui/react";
 import { ChatBubbleBottomCenterIcon as ChatIconOff } from "@heroicons/react/24/outline";
@@ -17,8 +17,8 @@ export type MemberMessagesProps = Omit<IconButtonProps, 'aria-label'> & {
   member: SearchableMember | Partial<Member>
 }
 
-export const MemberMessages = chakra(
-  ({ member: them, size = ['sm', 'md', 'lg'], ...props }: MemberMessagesProps) => {
+export const MemberMessages = memo(chakra(
+  function MemberMessages({ member: them, size = ['sm', 'md', 'lg'], ...props }: MemberMessagesProps) {
     const { loading: userLoading, level, member: me, hasFeature } = useUser()
     const theirLevel = MemberLevel[them?.user_type || 'pledge']
     //const { member: them, name, loading: memberLoading } = useMember(member.id)
@@ -116,4 +116,4 @@ export const MemberMessages = chakra(
 
     )
   }
-)
+), (prev, next) => (prev.member?.id == next.member?.id && prev.size == next.size))

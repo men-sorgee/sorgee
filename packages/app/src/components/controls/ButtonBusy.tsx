@@ -1,5 +1,5 @@
 import { gradient } from "lib/utils";
-import { useCallback, useRef, useState } from "react";
+import { memo, useCallback, useRef, useState } from "react";
 
 import { Button, ButtonProps, chakra, Spinner } from "@chakra-ui/react";
 
@@ -10,8 +10,8 @@ export type BusyButtonProps = ButtonProps & {
   children: React.ReactNode | React.ReactNode[]
 }
 
-export const ButtonBusy = chakra(
-  ({
+export const ButtonBusy = memo(chakra(
+  function ButtonBusy({
     onClick,
     onResult = () => null,
     timeout = 5000,
@@ -20,7 +20,7 @@ export const ButtonBusy = chakra(
     colorScheme = 'primary',
     w = ['full', 'auto'],
     ...props
-  }) => {
+  }) {
     const [busy, setBusy] = useState(false)
     const buttonRef = useRef<HTMLButtonElement>(null)
     const handleClick = useCallback(() => {
@@ -69,4 +69,4 @@ export const ButtonBusy = chakra(
       </>
     )
   }
-)
+))

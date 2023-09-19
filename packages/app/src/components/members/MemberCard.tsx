@@ -1,7 +1,7 @@
 import { useUser } from "hooks";
 import { Member, MemberLevel, MemberLevelColorMap } from "lib/models";
 import NextLink from "next/link";
-import { ReactNode } from "react";
+import { memo, ReactNode } from "react";
 
 import { LockIcon } from "@chakra-ui/icons";
 import {
@@ -15,7 +15,8 @@ import {
   Heading,
   LinkBox,
   LinkOverlay,
-  Spacer
+  Spacer,
+  Text
 } from "@chakra-ui/react";
 
 import { Markdown, MemberActions } from "../";
@@ -36,8 +37,8 @@ export type MemberCardProps = CardProps & {
   children?: ReactNode | ReactNode[]
 }
 
-export const MemberCard = chakra(
-  ({
+export const MemberCard = memo(chakra(
+  function MemberCard({
     member,
     onClick,
     full = false,
@@ -46,7 +47,7 @@ export const MemberCard = chakra(
     children,
     onChange,
     ...props
-  }: MemberCardProps) => {
+  }: MemberCardProps) {
     const levelValue = MemberLevel[member?.user_type || 'applicant']
     const levelColor = MemberLevelColorMap[levelValue]
     const { member: viewer, level } = useUser()
@@ -67,70 +68,72 @@ export const MemberCard = chakra(
           _hover={{ shadow: '2xl', borderColor: 'accent.500' }}
           {...props}
         >
-          <LinkBox key={member.id}>
+          {member.status == 'active' ? (
+            <>
+              <LinkBox key={member.id}>
 
-            <CardHeader mb={0} >
-              <LinkOverlay
-                as={NextLink}
-                href={href}
-                onClick={(e) => {
-                  if (onClick) {
-                    e.stopPropagation()
-                    e.preventDefault()
-                    onClick()
-                  } else {
-                    return member.show_profile
-                  }
-                }}
+                <CardHeader mb={0} >
+                  <LinkOverlay
+                    as={NextLink}
+                    href={href}
+                    onClick={(e) => {
+                      if (onClick) {
+                        e.stopPropagation()
+                        e.preventDefault()
+                        onClick()
+                      } else {
+                        return member.show_profile
+                      }
+                    }}
+                  >
+                    <MemberHeader member={member} size={size} minimal={!full} onChange={() => {
+                      if (onChange) onChange()
+                    }}>
+                      {member?.show_profile && <MemberAttributeBanner member={member} />}
+                    </MemberHeader>
+                  </LinkOverlay>
+                </CardHeader>
+              </LinkBox>
+              <CardBody pt={0} m={0}>
+                {(full && (levelValue == MemberLevel.pledge || viewerLevel == MemberLevel.staff)) && (
+                  <MemberMessageStats memberId={member?.id} viewerLevel={level} />
+                )}
+                {full && !member.show_profile && (
+                  <>
+                    <Flex
+                      px={4}
+                      direction="column"
+                      align="center"
+                      justify="center"
+                    >
+                      <LockIcon color="primary.500" h={20} w={20} mx={'auto'} />
+                      <Heading as="h3" mt={10} size="sm" p={0} textAlign="center" color="white">
+                        PRIVATE PROFILE
+                      </Heading>
+                    </Flex>
+                  </>
+                )}
+                {children}
+                {full && member?.show_profile && (
+                  <Markdown content={member?.biography} noOfLines={2} py={0} my={0} />
+                )}
+              </CardBody>
+              <Spacer />
+              <MemberRelationBanner member={member} viewer={viewer} bg={'primary.900'} />
+              <CardFooter
+                flexDir="column"
+                justify="space-between"
+                alignItems="end"
+                bg="primary.800"
+                p={4}
               >
-                <MemberHeader member={member} size={size} minimal={!full} onChange={() => {
-                  if (onChange) onChange()
-                }}>
-                  {member?.show_profile && <MemberAttributeBanner member={member} />}
-                </MemberHeader>
-              </LinkOverlay>
-            </CardHeader>
-          </LinkBox>
-          <CardBody pt={0} m={0}>
-            {(full && (levelValue == MemberLevel.pledge || viewerLevel == MemberLevel.staff)) && (
-              <MemberMessageStats memberId={member?.id} viewerLevel={level} />
-            )}
-            {full && !member.show_profile && (
-              <>
-                <Flex
-                  px={4}
-                  direction="column"
-                  align="center"
-                  justify="center"
-                >
-                  <LockIcon color="primary.500" h={20} w={20} mx={'auto'} />
-                  <Heading as="h3" mt={10} size="sm" p={0} textAlign="center" color="white">
-                    PRIVATE PROFILE
-                  </Heading>
-                </Flex>
-              </>
-            )}
-            {children}
-            {full && member?.show_profile && (
-              <Markdown content={member?.biography} noOfLines={2} py={0} my={0} />
-            )}
-          </CardBody>
-          <Spacer />
-          <MemberRelationBanner member={member} viewer={viewer} bg={'primary.900'} />
-          <CardFooter
-            flexDir="column"
-            justify="space-between"
-            alignItems="end"
-            bg="primary.800"
-            p={4}
-          >
-            <MemberActions viewer={viewer} member={member} size={['sm', 'md']} />
-          </CardFooter>
-
+                <MemberActions viewer={viewer} member={member} size={['sm', 'md']} />
+              </CardFooter>
+            </>) : (<CardBody><Text>Deleted User</Text></CardBody>)}
         </Card>
 
 
       </>
     )
   }
-)
+))

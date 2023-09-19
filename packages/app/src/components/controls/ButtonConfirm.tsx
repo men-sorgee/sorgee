@@ -1,5 +1,5 @@
 import { gradient } from "lib/utils";
-import { ReactNode, RefObject, useCallback, useRef } from "react";
+import { memo, ReactNode, RefObject, useCallback, useRef } from "react";
 
 import {
   AlertDialog,
@@ -32,7 +32,7 @@ export type ButtonConfirmProps<TResponse> = Omit<
   children: ReactNode | ReactNode[]
 }
 
-export function ButtonConfirm<TResponse>({
+function ButtonConfirmComponent<TResponse>({
   confirmedAction = () => Promise.resolve<TResponse>(null),
   onSuccess,
   onError,
@@ -194,3 +194,4 @@ export function ButtonConfirm<TResponse>({
     </>
   )
 }
+export const ButtonConfirm = memo(ButtonConfirmComponent) as typeof ButtonConfirmComponent

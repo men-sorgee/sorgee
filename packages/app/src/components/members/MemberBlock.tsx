@@ -1,7 +1,7 @@
 import { useUser } from "hooks";
 import { Member, MemberLevel, UserBlock } from "lib/models";
 import { deleteJSON, postJSON } from "lib/utils";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 import { chakra, IconButtonProps, Spinner, Text } from "@chakra-ui/react";
 import { EyeIcon as ViewIcon } from "@heroicons/react/24/outline";
@@ -13,8 +13,8 @@ export type MemberBlockProps = Omit<IconButtonProps, 'aria-label' | 'onError'> &
   member: Partial<Member>
 }
 
-export const MemberBlock = chakra(
-  ({ member, size = ['sm', 'md', 'lg'], ...props }: MemberBlockProps) => {
+export const MemberBlock = memo(chakra(
+  function MemberBlock({ member, size = ['sm', 'md', 'lg'], ...props }: MemberBlockProps) {
     const { loading, member: me } = useUser()
     const [hover, setHover] = useState(false)
     const [isBlocked, setIsBlocked] = useState<boolean>(false)
@@ -109,4 +109,4 @@ export const MemberBlock = chakra(
       </>
     )
   }
-)
+), (prev, next) => prev.member?.id == next.member?.id && prev.size == next.size)

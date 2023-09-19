@@ -1,7 +1,7 @@
 'use client'
 
 import NextLink from "next/link";
-import { useEffect } from "react";
+import { memo, useEffect } from "react";
 import { useRemark } from "react-remark";
 
 import {
@@ -22,7 +22,7 @@ export type MarkdownProps = TextProps & {
   content: string
   size?: string
 }
-export const Markdown = ({ content, size, noOfLines, ...props }: MarkdownProps) => {
+export const Markdown = memo(function Markdown({ content, size, noOfLines, ...props }: MarkdownProps) {
   const [reactContent, setMarkdownSource] = useRemark({
     rehypeReactOptions: {
       components: {
@@ -137,4 +137,4 @@ export const Markdown = ({ content, size, noOfLines, ...props }: MarkdownProps) 
     setMarkdownSource(content || '')
   }, [content, setMarkdownSource])
   return reactContent
-}
+})

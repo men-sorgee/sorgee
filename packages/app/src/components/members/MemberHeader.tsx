@@ -1,6 +1,6 @@
 import { Lazy } from "components/controls";
 import { Member, MemberLevel } from "lib/models";
-import { ReactNode } from "react";
+import { memo, ReactNode } from "react";
 
 import { Flex } from "@chakra-ui/react";
 
@@ -15,7 +15,7 @@ export type MemberHeaderProps = MemberIconProps & {
   onChange?: () => void
 }
 
-export const MemberHeader = ({
+export const MemberHeader = memo(function MemberHeader({
   member,
   iconChildren,
   children,
@@ -23,7 +23,7 @@ export const MemberHeader = ({
   size = 'lg',
   onChange,
   ...props
-}: MemberHeaderProps) => {
+}: MemberHeaderProps) {
   const level = MemberLevel[member?.user_type || 'applicant']
   return (
     <Lazy>
@@ -50,4 +50,4 @@ export const MemberHeader = ({
       </Flex>
     </Lazy>
   )
-}
+}, (prev, next) => prev.member?.rating == next.member?.rating && prev.member?.user_type == next.member?.user_type)

@@ -1,7 +1,7 @@
 import { useUser } from "hooks";
 import { Member } from "lib/models";
 import { getDistance, LocationCoordinates } from "lib/utils";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 export type MemberDistanceProps = {
   member: Pick<Member, 'location'>
@@ -11,9 +11,9 @@ export type Distance = {
   miles: number
   feet: number
 }
-export const MemberDistance = ({
+export const MemberDistance = memo(function MemberDistance({
   member
-}: MemberDistanceProps) => {
+}: MemberDistanceProps) {
   const { member: viewer } = useUser()
   const [myLocation, setMyLocation] = useState<LocationCoordinates>(undefined)
   const [theirLocation, setTheirLocation] = useState<LocationCoordinates>(undefined)
@@ -47,4 +47,6 @@ export const MemberDistance = ({
       {Math.floor(distance.miles)} miles away
     </>
   )
-}
+}, (prev, next) => {
+  return prev.member?.location == next.member?.location
+})
