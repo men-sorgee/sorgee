@@ -5,8 +5,8 @@ import {
   MembershipRenewalType,
   MembershipType
 } from "lib/models";
+import { logEvent } from "lib/utils";
 import { useRouter } from "next/router";
-import { event } from "nextjs-google-analytics";
 import { useEffect, useState } from "react";
 
 import { Text } from "@chakra-ui/react";
@@ -27,7 +27,7 @@ export default function SubscriptionSuccessPage() {
       const product = products.find((p) => p.prices.find(price => price.id == String(price_id)))
       const price = product.prices.find(i => i.id == String(price_id))
       if (!price) return
-      event('plans_purchase_cancelled', {
+      logEvent('plans_purchase_cancelled', {
         category: 'monetization',
         plan: MembershipType[product.type],
         product: product.id,

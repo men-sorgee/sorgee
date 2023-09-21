@@ -16,7 +16,7 @@ const getConfig = (phase) => {
       dev
     },
     pageExtensions: ['tsx'],
-    experimental: { appDir: false },
+    experimental: { appDir: false, },
     images: {
       domains: [
         'guysnheat.com',

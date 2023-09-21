@@ -8,8 +8,7 @@ import {
   PriceView,
   ProductView
 } from "lib/models";
-import { getJSON } from "lib/utils";
-import { event } from "nextjs-google-analytics";
+import { getJSON, logEvent } from "lib/utils";
 import { useEffect, useState } from "react";
 
 import {
@@ -44,13 +43,13 @@ export const Plans = ({
 
   useEffect(() => {
     if (!loading && !productsLoading && products && member) {
-      event('session_start', {
+      logEvent('session_start', {
         category: 'monetization',
         userId: member?.id,
       })
 
       if (highlightedPlan) {
-        event('view_item', {
+        logEvent('view_item', {
           category: 'monetization',
           productId: products.find((p) => p.type == MembershipType[highlightedPlan])?.id,
           userId: member?.id,
@@ -72,7 +71,7 @@ export const Plans = ({
       console.error(error)
       return
     }
-    event('add_to_cart', {
+    logEvent('add_to_cart', {
       category: 'monetization',
       plan: MembershipType[product?.type || 'none'],
       productId: product.id,
@@ -82,7 +81,7 @@ export const Plans = ({
       sessionId: data?.id,
     })
 
-    event('begin_checkout', {
+    logEvent('begin_checkout', {
       category: 'monetization',
       plan: MembershipType[product.type],
       productId: product.id,

@@ -4,7 +4,7 @@ import { pledgeSurvey } from "lib/config";
 import { MemberLevel, MembershipType, Site } from "lib/models";
 import { signIn, signOut } from "next-auth/react";
 import NextLink from "next/link";
-import { Router } from "next/router";
+import { useRouter } from "next/router";
 import { useMemo } from "react";
 
 import {
@@ -46,12 +46,11 @@ import {
 
 interface Props {
   site: Site
-  router: Router
 }
 
-export default function UserMenu({ site, router }: Props) {
+export default function UserMenu({ site }: Props) {
   const { colorMode, toggleColorMode } = useColorMode()
-
+  const router = useRouter()
   const {
     member,
     authenticated,

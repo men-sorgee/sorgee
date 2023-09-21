@@ -1,8 +1,8 @@
 import { Page, Plans } from "components";
 import { useProducts, useUser } from "hooks";
 import { MembershipRenewalType, MembershipType } from "lib/models";
+import { logEvent } from "lib/utils";
 import { useRouter } from "next/router";
-import { event } from "nextjs-google-analytics";
 import { useEffect, useState } from "react";
 
 export default function SubscriptionCancelledPage() {
@@ -38,7 +38,7 @@ export default function SubscriptionCancelledPage() {
       item
 
     ) {
-      event('plans_purchase_cancelled', {
+      logEvent('plans_purchase_cancelled', {
         category: 'monetization',
         plan: MembershipType[item.plan],
         product: item.product_id,
