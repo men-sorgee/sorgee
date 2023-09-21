@@ -7,7 +7,7 @@ import {
   MemberLevelColorMap,
   MembershipType
 } from "lib/models";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 
 import { Badge, BadgeProps, chakra, HStack, Icon } from "@chakra-ui/react";
 import { CheckBadgeIcon, CurrencyDollarIcon } from "@heroicons/react/24/solid";
@@ -18,7 +18,7 @@ export type MemberBadgeProps = BadgeProps & {
   onChange?: () => void
 }
 
-export const MemberBadge = chakra(({ member, size = 'md', onChange, ...props }: MemberBadgeProps) => {
+export const MemberBadge = memo(chakra(function MemberBadge({ member, size = 'md', onChange, ...props }: MemberBadgeProps) {
   const [levelValue, setLevelValue] = useState<MemberLevel>(undefined)
   const [levelName, setLevelName] = useState<string>(undefined)
   const [levelColor, setLevelColor] = useState<string[]>(['red.500', 'red.100'])
@@ -36,49 +36,30 @@ export const MemberBadge = chakra(({ member, size = 'md', onChange, ...props }: 
     }
   }, [isMember, levelValue, member, member?.id, member?.user_type])
 
-  const pledgeAge =
-    member?.approved_date != undefined
-      ? differenceInDays(new Date(), new Date(member.approved_date))
-      : null
+  const pledgeAge = useMemo(() => member?.approved_date != undefined
+    ? differenceInDays(new Date(), new Date(member.approved_date))
+    : null
+    , [member?.approved_date])
 
-  const needsVoucher = levelValue == MemberLevel.pledge && viewerLevel >= MemberLevel.brother
+  const needsVoucher = useMemo(() => levelValue == MemberLevel.pledge && viewerLevel >= MemberLevel.brother, [levelValue, viewerLevel])
 
   if (!member || loading) return null
 
-  const UserBadge = () =>
-    needsVoucher ? (
-      <Badge
-        rounded={size}
-        fontSize={size}
-        textTransform="uppercase"
-        color="white"
-        bg="accent.300"
-        py={1}
-        px={2}
-        mr={1}
-        {...props}
-      >
-        {levelName}: {pledgeAge} days
-      </Badge>
-    ) : (
+  return (
+    <HStack spacing={1} alignItems="center" justify="flex-start">
       <Badge
         rounded={size}
         fontSize={size}
         textTransform={'uppercase'}
-        color={levelColor[1]}
-        bg="white"
+        color={needsVoucher ? 'white' : levelColor[1]}
+        bg={needsVoucher ? 'accent.400' : "white"}
         py={1}
         px={2}
         mr={1}
         {...props}
       >
-        {levelName}
+        {levelName}{needsVoucher ? <>: {pledgeAge} days</> : null}
       </Badge>
-    )
-
-  return (
-    <HStack spacing={1} alignItems="center" justify="flex-start">
-      <UserBadge />
       {levelValue >= MemberLevel.pledge && <MemberVouch member={member} size={size as any} onChange={() => {
         if (onChange) onChange()
       }} />}
@@ -104,4 +85,4 @@ export const MemberBadge = chakra(({ member, size = 'md', onChange, ...props }: 
       )}
     </HStack>
   )
-})
+}))

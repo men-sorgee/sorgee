@@ -1,7 +1,7 @@
 import { Rating as RatingControl, RatingControlProps } from "components";
 import { Rating, RatingCollection } from "lib/models";
-import { JsonFetcher, postJSON } from "lib/utils/apis";
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import { JsonFetcher, postJSON } from "lib/utils";
+import { memo, ReactNode, useCallback, useEffect, useState } from "react";
 import useSWR from "swr";
 
 import { Box, Flex } from "@chakra-ui/react";
@@ -24,14 +24,14 @@ const itemMap = {
   events: 'event',
 }
 
-export const RateItem = ({
+export const RateItem = memo(function RateItem({
   item_id,
   collection,
   onChange = () => { },
   direction = ['column', 'row'],
   children,
   ...props
-}: RateItemProps) => {
+}: RateItemProps) {
   const [value, setValue] = useState<number>(undefined)
   const { data = [], mutate } = useSWR<Rating[], Error>(`/api/my/ratings`, JsonFetcher, {
     fallbackData: [],
@@ -87,4 +87,4 @@ export const RateItem = ({
       />
     </Flex>
   )
-}
+})

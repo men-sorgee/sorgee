@@ -45,6 +45,9 @@ export default async function FindMembers(
       show_profile: {
         _eq: true,
       },
+      status: {
+        _eq: 'active',
+      }
     })
 
     let blockList = member.blocked_by.map((u) => u.user_id)

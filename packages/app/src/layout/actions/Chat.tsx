@@ -52,6 +52,7 @@ const ChatActions = ({
       as={NextLink}
       zIndex="fixed"
     >
+      <audio ref={audioRef} src="/sounds/click.mp3" preload="auto" />
       <IconButton
         aria-label="Brother Chat"
         title="Brother Chat"
@@ -80,7 +81,7 @@ const ChatActions = ({
     </Link>
   )
 
-  if (hasNewMessages) return <ActionIcon />
+  if (conversations?.length) return <ActionIcon />
 
   if (!hasFeature && level >= MemberLevel.brother)
     return (
@@ -94,12 +95,7 @@ const ChatActions = ({
 
   if (!hasNewMessages && level < MemberLevel.brother) return null
 
-  return (
-    <>
-      <audio ref={audioRef} src="/sounds/click.mp3" preload="auto" />
-      <ActionIcon />
-    </>
-  )
+  return <ActionIcon />
 }
 
 export default ChatActions

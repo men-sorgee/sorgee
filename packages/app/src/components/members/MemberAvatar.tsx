@@ -1,24 +1,19 @@
 import { formatDistanceToNowStrict } from "date-fns";
 import { Member } from "lib/models";
 import { getAssetUrl, gradient } from "lib/utils";
-import { toLocalDate } from "lib/utils/dates";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import {
-  Avatar,
-  AvatarBadge,
-  AvatarProps,
-  chakra,
-  Tooltip
-} from "@chakra-ui/react";
+import { Avatar, AvatarBadge, AvatarProps, chakra } from "@chakra-ui/react";
+
+import { toLocalDate } from "../../lib/utils/dates";
 
 export type MemberAvatarProps = AvatarProps & {
   member: Partial<Member>
   children?: React.ReactNode | React.ReactNode[]
 }
 
-export const MemberAvatar = chakra(
-  ({ member, color = 'white', children, size = 'md', ...props }: MemberAvatarProps) => {
+export const MemberAvatar = React.memo(chakra(
+  function MemberAvatar({ member, color = 'white', children, size = 'md', ...props }: MemberAvatarProps) {
     const [lastLogin, setLastLogin] = useState<string | null>(null)
     const { nickname, first_name, picture } = member || {
       nickname: 'Brother',
@@ -53,28 +48,17 @@ export const MemberAvatar = chakra(
         {...props}
       >
         {member?.presence == 'online' && (
-          <Tooltip label={lastLogin} placement="top">
-            <AvatarBadge
-              borderWidth="thin"
-              borderColor="green.500"
-              bgGradient="linear(to-b, green.200, green.400)"
-              boxSize={'.75em'}
-              shadow="md"
-            />
-          </Tooltip>
+          <AvatarBadge
+            title={lastLogin}
+            borderWidth="thin"
+            borderColor="green.500"
+            bgGradient="linear(to-b, green.200, green.400)"
+            boxSize={'.75em'}
+            shadow="md"
+          />
         )}
-        {member?.presence == 'away' && (
-          <Tooltip label={lastLogin} placement="top">
-            <AvatarBadge
-              borderWidth="thin"
-              borderColor="orange.500"
-              bgGradient="linear(to-b, green.200, green.400)"
-              boxSize={'.75em'}
-              shadow="md"
-            />
-          </Tooltip>
-        )}
+
       </Avatar>
     )
   }
-)
+))

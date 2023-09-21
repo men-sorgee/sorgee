@@ -6,7 +6,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function GetUserNotifications(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponseType>
+  res: NextApiResponse<ApiResponseType<MemberAlert[]> | ApiResponseType>
 ) {
   try {
     const user = await withUser(req, res)

@@ -5,7 +5,7 @@ import {
   GroupEvent,
   InviteRSVPType,
   Location,
-  searchableMemberFields,
+  Member,
   Survey
 } from "lib/models";
 
@@ -46,7 +46,7 @@ export async function listAdminEvents(): Promise<GroupEvent[]> {
       { survey: ['*'] }],
     sort: ['datetime'],
     deep: {
-      users: {
+      invites: {
         _limit: -1,
       }
     }
@@ -71,6 +71,11 @@ export async function registerForEvent(
   return invite as unknown as EventUser
 }
 
+const userFields: Array<keyof Member> = [
+  'nickname', 'picture', 'id', 'email',
+  'show_profile', 'biography', 'user_type',
+  'has_features', 'status', 'application_status',
+  'date_created', 'last_login', 'location']
 
 export async function getEvent(id: string, filter?: any): Promise<GroupEvent> {
   const admin = await getAdminClient()
@@ -78,14 +83,19 @@ export async function getEvent(id: string, filter?: any): Promise<GroupEvent> {
     fields: [
       '*',
       'location.*',
-      'users.*',
-      ...searchableMemberFields.map((f) => `users.users_id.${f}`),
-      'survey.*',
+      'invites.*',
+      ...userFields.map((f) => `invites.users_id.${f}`),
+      'survey.*'
     ] as any,
     deep: {
-      users: {
+      invites: {
         _limit: -1,
       },
+      survey: {
+        status: {
+          _eq: 'published'
+        }
+      }
     },
     filter: filter || {},
   }))) as any as GroupEvent
@@ -110,15 +120,19 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
     fields: [
       '*',
       'location.*',
-      'users.*',
-      'users.users_id.email',
-      ...searchableMemberFields.map((f) => `users.users_id.${f}`),
-      'survey.*',
+      'invites.*',
+      ...userFields.map((f) => `invites.users_id.${f}`),
+      'survey.*'
     ] as any,
     deep: {
-      users: {
+      invites: {
         _limit: -1,
       },
+      survey: {
+        status: {
+          _eq: 'published'
+        }
+      }
     },
   }))
   const {
@@ -132,7 +146,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
     type,
     visibility,
     cost,
-    users: eventUsers,
+    invites,
     invite_only,
     location: l,
     online_payments,
@@ -140,7 +154,7 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
   } = event
 
   const location = l as unknown as Location
-  const attendance = (eventUsers as EventUser[]) || []
+  const attendance = invites as unknown as EventUser[]
 
   const detail: EventDetail = {
     id,

@@ -36,10 +36,9 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
   const [paid, setPaid] = useState<boolean>(undefined)
   const [nonRefundable, setNonRefundable] = useState<boolean>(undefined)
   const [nonRefundableReason, setNonRefundableReason] = useState<string>(undefined)
-
-  const { isOpen, onToggle } = useDisclosure()
-
+  const { isOpen, onToggle, onClose } = useDisclosure()
   const { invite, event, mutate, pay, refund, loading } = useInvite(eventId)
+  const reasonRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
     if (!loading && invite && event && showPayButton == undefined) {
@@ -54,7 +53,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
     }
   }, [invite, loading, paid, router.query.result, mutate])
 
-  const reasonRef = useRef<HTMLTextAreaElement>(null)
+
 
   const completePurchase = useCallback(async (data: PurchaseResponse) => {
     const { loadStripe } = await import('@stripe/stripe-js')
@@ -77,12 +76,13 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
       if (!shouldContinue) {
         setWorking(false)
         setNonRefundableReason(noRefundReason)
-        return await invite
+        return invite
       }
     }
     setWorking(false)
+    onClose()
     return await mutate({ rsvp: 'cancelled', reason })
-  }, [paid, mutate, refund, invite])
+  }, [paid, mutate, refund, invite, onClose])
 
   const PrePayButton = ({ children = 'Pre-Pay' }) => (
     <>
@@ -100,7 +100,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
           w={['full', 'full', 'auto']}
           title="Guarantee your spot at this event and leave your cash at home. Pay now for less hassle later."
         >
-          You will be charged for this event today, guaranteeing your place at the event.
+          You will be charged for this event today. This will ensure your place at the event.
         </ButtonConfirm>
       )}
     </>
@@ -159,6 +159,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
         onSuccess={({ data: i }) => {
           setWorking(false)
           if (onChange) onChange(i)
+          onClose()
         }}
         onError={() => {
           setWorking(false)
@@ -189,6 +190,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
         onSuccess={({ data: i }) => {
           setWorking(false)
           if (onChange) onChange(i)
+          onClose()
         }}
         onError={() => {
           setWorking(false)
@@ -214,9 +216,10 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
         }}
         onResult={() => {
           setWorking(false)
+          onClose()
         }}
         flex={1}
-        colorScheme="black"
+        colorScheme="gray"
         w={['full', 'full', 'auto']}
       >{children}
       </ButtonBusy>
@@ -236,6 +239,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
       onSuccess={(i: EventInvite) => {
         setWorking(false)
         if (onChange) onChange(i)
+        onClose()
       }}
       onError={() => {
         setWorking(false)
@@ -277,7 +281,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
           {heading}
         </Heading>
 
-        {change && <Button size="sm" variant="solid" colorScheme="primary" py={2} onClick={onToggle} >{isOpen ? 'Cancel Changes' : 'Change RSVP'}</Button>}
+        {change && <Button size="xs" mb={1} variant="solid" colorScheme="primary" py={2} onClick={onToggle} >{isOpen ? 'Cancel Changes' : 'Change RSVP'}</Button>}
       </Flex>
       {paid && change && (
         <Text textAlign='left'>You pre-paid ${invite?.amount || invite?.event.cost} to guarantee your spot!</Text>
@@ -298,7 +302,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
       {children != undefined &&
         <>
 
-          <Collapse in={isOpen || change == false} animate>
+          <Collapse in={isOpen || change == false} animate >
             <Flex
               direction={['column', 'row']}
               w="full"
@@ -306,10 +310,12 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
               justify="stretch"
               gap="2"
               pt={4}
+              pb={4}
             >
               {children}
             </Flex>
           </Collapse >
+          {!isOpen && showPayButton && rsvp == 'confirmed' && <Box mt={2}><PrePayButton>Pre-Pay to Save Time</PrePayButton></Box>}
         </>
       }
     </Box >
@@ -345,7 +351,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
         <>
           <RSVPView
             heading={paid ? "You are Pre-Paid" : "You are Confirmed"}
-            body={!paid && <Text>You reservation is not pre-paid. If we reach capacity, entrance will be first-come/first-serve.</Text>}
+            body={(event?.online_payments && !paid) && <Text>You reservation is not pre-paid. If we reach capacity, entrance will be first-come/first-serve.</Text>}
           >
             <PayButton>Pre-Pay</PayButton>
             <MaybeRSVPButton>May Not Attend</MaybeRSVPButton>

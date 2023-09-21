@@ -25,8 +25,10 @@ export async function getSurvey(id: string): Promise<Survey> {
       { event: ['id', 'name'] },
       { questions: ['sort', { survey_questions_id: ['*'] }] },
     ],
-    questions: {
-      sort: ['sort'],
+    deep: {
+      questions: {
+        sort: ['sort'],
+      }
     },
   })) as unknown as Survey
 }

@@ -37,7 +37,7 @@ export async function findInvite(eventId: string, userId: string): Promise<Event
   return query ? query[0] as EventUser : null
 }
 
-export async function listInvites(member: Member): Promise<EventUser[]> {
+export async function listInvites(member: Member): Promise<EventInvite[]> {
   const admin = await getAdminClient()
   const data = await admin.request(readItems('events_users', {
     filter: {
@@ -53,20 +53,16 @@ export async function listInvites(member: Member): Promise<EventUser[]> {
     sort: ['events_id.datetime' as any],
   }))
 
-  let invites = data.map((invite: EventUser): Partial<EventInvite> => {
-    const { events_id, users_id, ...rest } = invite
-    const event = events_id as GroupEvent
-    const member = users_id as Member
+  let invites: EventInvite[] = data.map(e => {
+    const event = e.events_id as GroupEvent
     return {
       event,
-      member,
-      ...rest
-    }
+      ...e
+    } as any
   })
 
   if (member.event_invites == false) {
-    invites = invites.filter((i: EventInvite) => i.rsvp !== 'invited')
-    return invites as EventUser[]
+    return invites.filter((i) => i.rsvp !== 'invited')
   }
 
   const events = await listUpcomingEvents(member.user_type)
@@ -80,7 +76,7 @@ export async function listInvites(member: Member): Promise<EventUser[]> {
       })
     }
   })
-  return (invites || []) as EventUser[]
+  return invites || []
 }
 
 export async function listUpcomingEvents(user_type: UserType): Promise<GroupEvent[]> {

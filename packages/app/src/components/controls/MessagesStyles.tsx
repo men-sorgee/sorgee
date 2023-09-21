@@ -1,10 +1,17 @@
-'use client'
 import { useViewHeight } from "hooks";
 import { brand } from "lib/config/brand";
+import { useEffect, useRef } from "react";
 
 import { useColorModeValue } from "@chakra-ui/react";
 
-export default function MessagesStyles() {
+export type MessagesStylesProps = {
+  onLoad?: () => void
+}
+
+export default function MessagesStyles({
+  onLoad = () => { }
+}: MessagesStylesProps) {
+  const stylesRef = useRef<HTMLStyleElement>(null)
   const { viewHeight } = useViewHeight()
   const bg = useColorModeValue('white', brand.colors.gray[500])
   const color = useColorModeValue(brand.colors.gray[800], 'white')
@@ -15,9 +22,19 @@ export default function MessagesStyles() {
   const accent = useColorModeValue(brand.colors.accent[400], brand.colors.accent[400])
   const gray = useColorModeValue(brand.colors.gray[400], brand.colors.gray[400])
 
+  useEffect(() => {
+    let ref = stylesRef.current
+    ref?.addEventListener('load', onLoad)
+    return () => {
+      ref?.removeEventListener('load', onLoad)
+    }
+
+  }, [onLoad])
 
   return (
-    <style>
+    <style ref={stylesRef} onLoadedData={() => {
+      onLoad()
+    }}>
       {`
       body {
         background-color: ${bg};
@@ -42,7 +59,7 @@ export default function MessagesStyles() {
         border-top: solid 0px ${borderColor};
         border-right: solid 1px ${borderColor};
         border-bottom: solid 0px ${borderColor};
-        border-left: solid 0px ${borderColor};
+        border-left: solid 1px ${borderColor};
         /* Hmm without this, box shadow is cut at bottom */
         
         background-color: ${bg};

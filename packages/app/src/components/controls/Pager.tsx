@@ -1,4 +1,5 @@
 import { MemberSearchQueryParams } from "lib/models";
+import { memo } from "react";
 
 import {
   ArrowLeftIcon,
@@ -11,14 +12,10 @@ import { Flex, Text } from "@chakra-ui/react";
 import { ButtonLink } from "./ButtonLink";
 
 export type PagerProps = Partial<MemberSearchQueryParams> & {
-  //page: number
-  //size: number
-  //query: MemberSearchQueryParams
-  //setPage: (page: number) => void
   pageCount: number
 }
 
-export const Pager = ({ page, size, pageCount, ...query }: PagerProps) => {
+export const Pager = memo(function Pager({ page, size, pageCount, ...query }: PagerProps) {
   if (pageCount == undefined || pageCount == 0) return null
   return (
     <>
@@ -84,4 +81,4 @@ export const Pager = ({ page, size, pageCount, ...query }: PagerProps) => {
       </Flex>
     </>
   )
-}
+})

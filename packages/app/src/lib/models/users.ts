@@ -1,6 +1,7 @@
 import {
   DirectusFile,
   DirectusUser,
+  EventInvite,
   EventUser,
   MembershipNames,
   MembershipRenewalType,
@@ -67,6 +68,7 @@ export type UserBuddy = {
   buddy_id: string | {
     id: string
     presence: PresenceType
+    status: UserStatusType
   } | User
   sort: number
 }
@@ -193,7 +195,7 @@ export type User = {
   tags?: string[]
   location?: Coordinates
   state: string
-  events: string[] | EventUser[]
+  invites: string[] | EventUser[]
   my_photos: string[] | UserPhoto[]
   // email_events: string[] | UserEmailEvent[]
   images: string[] | UserFile[]
@@ -388,6 +390,26 @@ export type Profile = {
   vouched_by?: string | VouchingUser
 }
 export const profileFields: Array<keyof Profile> = [
+  'id',
+  'picture',
+  'nickname',
+  'first_name',
+  'last_name',
+  'email',
+  'email_new',
+  'email_token',
+  'email_verified',
+  'phone',
+  'phone_verified',
+  'last_login',
+  'user_type',
+  'application_status',
+  'status',
+  'auth_with_phone',
+  'vouched_by',
+  'sessions',
+  'in_sendgrid',
+  'session_expire',
 
 ]
 
@@ -421,23 +443,7 @@ export type Applicant = Profile & {
   date_updated: string
 }
 export const applicantFields: Array<keyof Applicant> = [
-  'id',
-  'picture',
-  'nickname',
-  'first_name',
-  'last_name',
-  'email',
-  'email_new',
-  'email_token',
-  'email_verified',
-  'phone',
-  'phone_verified',
-  'last_login',
-  'user_type',
-  'application_status',
-  'status',
-  'auth_with_phone',
-
+  ...profileFields,
   'show_contact',
   'contact_preference',
   'biography',
@@ -513,7 +519,7 @@ export type Member = Applicant & {
   can_host?: boolean
   can_host_events: string[]
   event_invites?: boolean
-  events: EventUser[]
+  invites: EventInvite[]
 
   //-profile
   show_profile: boolean
@@ -558,8 +564,8 @@ export type Member = Applicant & {
 
   allow_messages: AllowedMessageType
 
-  buddies: Pick<UserBuddy, 'buddy_id'>[]
-  buddy_of: Pick<UserBuddy, 'user_id'>[]
+  buddies: UserBuddy[]
+  buddy_of: UserBuddy[]
 
   photo_shares: Pick<UserShare, 'viewer_id'>[]
 
@@ -610,6 +616,7 @@ export type SearchableMember = Omit<
   | 'application_status'
   | 'accounts'
   | 'photo_denial_reason'
+  | 'show_profile'
 >
 
 export const userPrivateFields: Array<keyof User> = [
@@ -746,6 +753,8 @@ export const searchableMemberFields: Array<keyof Member> = [
   'photo_shares.viewer_id' as any,
   'approved_date' as any,
   'membership_type' as any,
+  'show_profile',
+  'has_features'
 ]
 
 export const memberSubscriptionFields: Array<keyof Member> = [
@@ -755,6 +764,7 @@ export const memberSubscriptionFields: Array<keyof Member> = [
   'membership_start',
   'membership_end',
   'renewal_type',
+  'has_features'
 ]
 
 export const memberFields: Array<keyof Member> = [
@@ -774,7 +784,7 @@ export const memberFields: Array<keyof Member> = [
   'show_interests',
   ...memberInterestsFields,
   'show_events',
-  'events.*.*' as any,
+  'invites.*.*' as any,
   'can_host',
   'can_host_events',
   ...memberEventFields,

@@ -1,7 +1,7 @@
 import { brand } from "lib/config/brand";
 
 import { defineStyleConfig, StyleFunctionProps } from "@chakra-ui/react";
-import { theme as defaultTheme } from "@chakra-ui/theme";
+import { baseTheme as defaultTheme } from "@chakra-ui/theme";
 import { mode } from "@chakra-ui/theme-tools";
 
 export default function getTheme(body: any, heading: any, mono: any) {

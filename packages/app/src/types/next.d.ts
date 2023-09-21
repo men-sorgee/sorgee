@@ -7,5 +7,5 @@ declare global {
     }
   }
 
-  function ga(...args: any[])
+  function gtag(...args: any[])
 }

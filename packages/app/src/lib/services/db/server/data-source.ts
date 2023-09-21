@@ -1,8 +1,7 @@
 import "reflect-metadata";
 
+import gnhDBConfig from "lib/services/db/ormconfig";
 import { DataSource, EntityTarget, ObjectLiteral } from "typeorm";
-
-import gnhDBConfig from "../ormconfig";
 
 const AppDataSource = new DataSource(gnhDBConfig)
 

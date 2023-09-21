@@ -52,7 +52,7 @@ export const useMemberSearch = (
   } = useSWR<MemberSearchResults>(authenticated && !skip
     ? key
     : null, {
-    keepPreviousData: false,
+    keepPreviousData: true,
     refreshInterval: 0,
     fallbackData: {
       data: [],

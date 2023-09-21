@@ -1,15 +1,7 @@
-import {
-  AlertsProvider,
-  MessagesProvider,
-  MetaContextProvider,
-  NotificationsProvider,
-  UserProvider
-} from "hooks";
 import Layout from "layout";
-import { SessionProvider } from "next-auth/react";
-import { AppProps, NextWebVitalsMetric } from "next/app";
+import Providers from "layout/Providers";
+import { AppProps } from "next/app";
 import { Arvo, Manrope, Roboto_Mono } from "next/font/google";
-import { event, GoogleAnalytics } from "nextjs-google-analytics";
 import React from "react";
 
 import {
@@ -18,8 +10,8 @@ import {
   extendTheme
 } from "@chakra-ui/react";
 
-import { SWRProvider } from "../hooks/swr";
 import getTheme from "../theme";
+import WebVitals from "./_vitals";
 
 const heading = Arvo({
   variable: '--heading-font',
@@ -43,36 +35,23 @@ const theme = extendTheme(getTheme(body, heading, mono))
 
 export default function App({ Component, pageProps, router }: AppProps) {
   const Content = Component as any
-  if (router?.pathname.startsWith('/code/')) {
+  if (router?.asPath.startsWith('/code/')) {
+
     return <Content {...pageProps} />
   }
 
   return (
     <>
-      <GoogleAnalytics trackPageViews />
-
       <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
         <React.StrictMode>
-          <SWRProvider>
-            <MetaContextProvider>
-              <SessionProvider session={pageProps.session}>
-                <UserProvider>
-                  <NotificationsProvider>
-                    <AlertsProvider>
-                      <MessagesProvider>
-                        <Layout router={router} fonts={[heading.variable, body.variable, mono.variable]}>
-                          <Content {...pageProps} />
-                        </Layout>
-                      </MessagesProvider>
-                    </AlertsProvider>
-                  </NotificationsProvider>
-                </UserProvider>
-              </SessionProvider>
-            </MetaContextProvider>
-          </SWRProvider >
-
+          <Providers session={pageProps.session}>
+            <Layout fonts={[heading.variable, body.variable, mono.variable]}>
+              <Content {...pageProps} />
+            </Layout>
+          </Providers>
         </React.StrictMode>
       </ChakraProvider>
+      <WebVitals />
     </>
   )
 }
@@ -81,11 +60,3 @@ export default function App({ Component, pageProps, router }: AppProps) {
 //  ssr: false,
 //});
 
-export function reportWebVitals({ id, name, label, value }: NextWebVitalsMetric) {
-  event(name, {
-    category: label === 'web-vital' ? 'Web Vitals' : 'Next.js custom metric',
-    value: Math.round(name === 'CLS' ? value * 1000 : value), // values must be integers
-    label: id, // id unique to current page load
-    nonInteraction: true, // avoids affecting bounce rate.
-  })
-}

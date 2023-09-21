@@ -18,7 +18,7 @@ import {
 } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function Event(
+export default async function EventClose(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponseType<EventDetail | EventUser[]>>
 ) {

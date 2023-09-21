@@ -9,7 +9,6 @@ import {
 
 import { createItem, readItem, readItems, updateItem } from "@directus/sdk";
 
-import { sendAdminNotification } from "../../webhooks/directus";
 import { getAdminClient } from "./";
 
 export async function getNotification(id: string): Promise<Notification> {
@@ -97,7 +96,7 @@ export async function addNotificationUser(notificationId: string, userId: string
 export async function addUserToPledgeSurveyEmail(user_id: string) {
   await addNotificationUser(notifications.pledgeSurvey, user_id)
   try {
-    await sendAdminNotification(notifications.pledgeSurvey)
+    //await sendAdminNotification(notifications.pledgeSurvey)
   } catch (e) {
     console.error(e)
   }
@@ -106,7 +105,7 @@ export async function addUserToPledgeSurveyEmail(user_id: string) {
 export async function addUserToCongratsEmail(user_id: string, user_type: UserType) {
   await addNotificationUser(notifications.congratsEmail[user_type], user_id)
   try {
-    await sendAdminNotification(notifications.congratsEmail[user_type])
+    //await sendAdminNotification(notifications.congratsEmail[user_type])
   } catch (e) {
     console.error(e)
   }

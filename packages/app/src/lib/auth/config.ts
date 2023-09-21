@@ -38,6 +38,10 @@ const userCanSignin = (user: User | any) => {
   return can
 }
 
+const log = (...args) => {
+  //console.debug(...args)
+}
+
 export const authOptions: AuthOptions = {
   adapter: authAdapter,
   secret: process.env.NEXTAUTH_SECRET,
@@ -62,11 +66,11 @@ export const authOptions: AuthOptions = {
         ((account?.user || account?.sub || account?.userId || account?.email) as string)
 
       if (is?.verificationRequest) {
-        console.debug('callback:signIn:verificationRequest')
+        log('callback:signIn:verificationRequest')
         let found = (await getUser(user.id)) || (await findUser(email))
         return found != null
       }
-      console.debug('callback:signIn')
+      log('callback:signIn')
 
       if (email) {
         let user = await findUser(email)
@@ -83,7 +87,7 @@ export const authOptions: AuthOptions = {
       return false
     },
     async session({ session, user }) {
-      console.debug('callback:session')
+      log('callback:session')
       const fullUser = await findUser(user.email)
       session.user = fullUser
       return session
@@ -91,7 +95,7 @@ export const authOptions: AuthOptions = {
   },
   events: {
     async createUser({ user }) {
-      console.log('event:createUser')
+      log('event:createUser')
       await recordUserLogin(user.id)
 
       const member = await findUser(user.email)
@@ -110,11 +114,11 @@ export const authOptions: AuthOptions = {
         )
     },
     async signIn({ user }) {
-      console.log('event:signIn')
+      log('event:signIn')
       await recordUserLogin(user.id)
     },
     async signOut({ session }) {
-      console.log('event:signOut')
+      log('event:signOut')
       if (session?.user?.id) await recordUserLogout(session.user.id)
     },
   },
@@ -154,19 +158,19 @@ export const authOptions: AuthOptions = {
       maxAge: 60 * 60, // 1 hour]
       async sendVerificationRequest({ identifier: email, url }) {
         const user = await findUser(email)
-        console.log('sendVerificationRequest')
+        log('sendVerificationRequest')
         if (userCanSignin(user)) {
           // check if the user needs to sign in with their phone
           if (user.phone && user.phoneVerified && user.authWithPhone) {
             try {
               await sendNotification(user.phone, `Sign in:  ${url}`)
-              console.log(`Sent sign in link to ${user.phone} for ${user.email} `)
+              log(`Sent sign in link to ${user.phone} for ${user.email} `)
               return
             } catch (e) {
               console.error(e)
             }
           }
-          console.log(`Sending sign in link to ${user.email} `)
+          log(`Sending sign in link to ${user.email} `)
           await sendNotificationEmail(
             email,
             'User',
@@ -180,7 +184,7 @@ export const authOptions: AuthOptions = {
             SendGridCategory.Notification
           )
         } else {
-          console.log('User not active')
+          log('User not active')
         }
       },
       normalizeIdentifier(identifier: string): string {

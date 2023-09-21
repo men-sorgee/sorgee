@@ -68,7 +68,7 @@ export type GroupEvent = {
   invite_only: boolean
   online_payments: boolean
   visibility: UserType[]
-  users: string | EventUser[]
+  invites: string[] | EventUser[]
   survey?: string[] | Survey[]
   ratings: string[] | Rating[]
 }
@@ -80,7 +80,7 @@ export type EventUser = {
   engagement?: unknown
   attended?: boolean
   flags?: unknown
-  rsvp?: InviteRSVPType
+  rsvp: InviteRSVPType
   paid?: boolean
   paid_at?: string
   confirmed_at?: string
@@ -111,7 +111,7 @@ export type EventDetail = EventInfo & {
   attendance: EventUser[]
   expenses?: number
   stats: EventStats
-  // members: SearchableMember[]
+  //members: SearchableMember[]
   surveys: Survey[]
 }
 

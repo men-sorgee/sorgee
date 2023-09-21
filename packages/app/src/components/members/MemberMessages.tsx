@@ -7,7 +7,7 @@ import {
   SearchableMember,
   UserBuddy
 } from "lib/models";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 import { Badge, chakra, IconButton, IconButtonProps } from "@chakra-ui/react";
 import { ChatBubbleBottomCenterIcon as ChatIconOff } from "@heroicons/react/24/outline";
@@ -17,8 +17,8 @@ export type MemberMessagesProps = Omit<IconButtonProps, 'aria-label'> & {
   member: SearchableMember | Partial<Member>
 }
 
-export const MemberMessages = chakra(
-  ({ member: them, size = ['sm', 'md', 'lg'], ...props }: MemberMessagesProps) => {
+export const MemberMessages = memo(chakra(
+  function MemberMessages({ member: them, size = ['sm', 'md', 'lg'], ...props }: MemberMessagesProps) {
     const { loading: userLoading, level, member: me, hasFeature } = useUser()
     const theirLevel = MemberLevel[them?.user_type || 'pledge']
     //const { member: them, name, loading: memberLoading } = useMember(member.id)
@@ -69,33 +69,34 @@ export const MemberMessages = chakra(
       )
 
     return (
-      <div style={{ position: 'relative' }}>
-        <IconButton
-          variant="ghost"
-          icon={
-            hasConversation ? (
-              <ChatIconOn width="30px" color="yellow" />
-            ) : hover ? (
-              <ChatIconOn width="30px" />
-            ) : (
-              <ChatIconOff width="30px" />
-            )
-          }
-          position="relative"
-          color="white"
-          onClick={() => {
-            if (them?.id == me?.id) return
-            chatWith(them as Member)
-          }}
-          aria-label={`Chat with ${them?.nickname || 'this member'}`}
-          title={`Chat with ${them?.nickname || 'this member'}`}
-          size={size}
-          _hover={{ bg: 'primary.500' }}
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => setHover(false)}
-          disabled={me?.id === them?.id}
-          {...props}
-        />
+
+      <IconButton
+        variant="ghost"
+        position='relative'
+        icon={
+          hasConversation ? (
+            <ChatIconOn width="30px" color="yellow" />
+          ) : hover ? (
+            <ChatIconOn width="30px" />
+          ) : (
+            <ChatIconOff width="30px" />
+          )
+        }
+        color="white"
+        onClick={() => {
+          if (them?.id == me?.id) return
+          chatWith(them as Member)
+        }}
+        aria-label={`Chat with ${them?.nickname || 'this member'}`}
+        title={`Chat with ${them?.nickname || 'this member'}`}
+        size={size}
+        _hover={{ bg: 'primary.500' }}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+        px={[.1, .5]}
+        disabled={me?.id === them?.id}
+        {...props}
+      >
         {hasNewMessages && (
           <Badge
             bg="red"
@@ -111,7 +112,8 @@ export const MemberMessages = chakra(
             {newMessageCount}
           </Badge>
         )}
-      </div>
+      </IconButton>
+
     )
   }
-)
+), (prev, next) => (prev.member?.id == next.member?.id && prev.size == next.size))

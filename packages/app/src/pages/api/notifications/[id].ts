@@ -20,7 +20,7 @@ export default async function getUserNotifications(
     const user = await withUser(req, res)
     const { id: i } = req.query
     const id = Number(i)
-    console.dir({ id })
+
 
     let notification = await getNotificationUser(id)
     if (notification.user_id as string !== user.id) throw new Error('Unauthorized')

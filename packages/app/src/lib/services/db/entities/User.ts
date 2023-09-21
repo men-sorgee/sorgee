@@ -20,7 +20,6 @@ import { SurveyAnswers } from "./SurveyAnswers";
 import { UserAccount } from "./UserAccount";
 import { UserBuddy } from "./UserBuddy";
 import { UserContactAttempt } from "./UserContactAttempt";
-import { UserEmailEvents } from "./UserEmailEvents";
 import { UserRelationships } from "./UserRelationships";
 import { UserSession } from "./UserSession";
 import { UsersFiles } from "./UsersFiles";

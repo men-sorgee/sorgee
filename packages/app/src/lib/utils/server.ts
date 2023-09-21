@@ -43,7 +43,7 @@ export async function withAuthUser(
   res: NextApiResponse
 ): Promise<AuthUser | null> {
   const session = await getServerSession(req, res, authOptions)
-  if (!session) throw new Error('Unauthorized')
+  if (!session || !session.user) throw new Error('Unauthorized')
   return session.user as AuthUser
 }
 

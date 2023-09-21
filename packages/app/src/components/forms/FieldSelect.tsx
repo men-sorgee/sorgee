@@ -42,8 +42,8 @@ const SelectField = (props: Props) => {
         p={p}
         w={w}
         size={size}
-        {...opts}
         {...register(field as any, registerOptions)}
+        {...opts}
       >
         {options?.map(({ text, value }, index) => (
           <option key={index.toString()} value={value}>

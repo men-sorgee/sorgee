@@ -1,6 +1,8 @@
+'use client'
+
 import { Page, PageItem, Site, UserType } from "lib/models";
 import NextLink from "next/link";
-import { Router } from "next/router";
+import { useRouter } from "next/router";
 import {
   forwardRef,
   ReactNode,
@@ -36,7 +38,6 @@ import { Logo } from "./Logo";
 import User from "./User";
 
 export type Props = BoxProps & {
-  router: Router
   site: Site
   isAuthenticated?: boolean
   userType?: UserType
@@ -45,13 +46,13 @@ export type Props = BoxProps & {
 
 const Header = forwardRef<HTMLDivElement, Props>(({
   site,
-  router,
   isAuthenticated,
   userType,
   children,
   ...props
 },
   boxRef) => {
+  const router = useRouter()
   const { isOpen, onToggle, onClose } = useDisclosure()
   const [pages, setPages] = useState<PageItem[]>()
   const ref = useRef()
@@ -214,7 +215,7 @@ const Header = forwardRef<HTMLDivElement, Props>(({
 
           <Logo isAuthenticated={isAuthenticated} />
           <Box flex={1} textAlign="right" pr={4}>
-            {site && <User site={site} router={router} />}
+            {site && <User site={site} />}
           </Box>
         </HStack>
         <Collapse in={isOpen} animateOpacity ref={ref}>

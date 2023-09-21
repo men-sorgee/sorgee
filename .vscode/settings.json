@@ -1,5 +1,6 @@
 {
   "cSpell.words": [
+    "adduser",
     "authentification",
     "basemaps",
     "BUILDKIT",
@@ -58,6 +59,8 @@
     "typeorm",
     "uncaptured",
     "uuidv",
+    "videocall",
+    "voicecall",
     "wellenplan",
     "Zxing"
   ],

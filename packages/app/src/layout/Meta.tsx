@@ -2,8 +2,9 @@ import { useMeta } from "hooks/use-meta";
 import { baseUrl } from "lib/config";
 import { getAssetUrl } from "lib/utils";
 import Head from "next/head";
+import Script from "next/script";
 
-interface Props {}
+interface Props { }
 const Meta = (_props: Props) => {
   const { title, description, url, image } = useMeta()
   const img = image && !image.includes('/') ? getAssetUrl(image) : image
@@ -64,6 +65,7 @@ const Meta = (_props: Props) => {
       <meta name="msapplication-config" content="/browserconfig.xml" />
       <meta name="msapplication-TileColor" content="#000000" />
       <meta name="msapplication-tap-highlight" content="no" />
+
     </Head>
   )
 }

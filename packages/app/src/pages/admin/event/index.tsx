@@ -23,7 +23,7 @@ export default function AdminEventList() {
   const { active: activeEvent, past, upcoming, loading: eventsLoading } = useEventsAdmin()
 
   const getCollected = (event: GroupEvent) => {
-    const users = event.users as EventUser[]
+    const users = event.invites as EventUser[]
     const attended = users?.filter((m) => m.attended == true).length
     const paid = users?.filter((m) => m.paid == true).length
     const collected = paid * event.cost - (event.expenses || 0)

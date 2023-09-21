@@ -7,8 +7,8 @@ import {
   User,
   UserBuddy
 } from "lib/models";
-import { deleteJSON, postJSON } from "lib/utils/apis";
-import { useCallback, useEffect, useState } from "react";
+import { deleteJSON, postJSON } from "lib/utils";
+import { memo, useCallback, useEffect, useState } from "react";
 
 import { chakra, IconButton, IconButtonProps } from "@chakra-ui/react";
 import {
@@ -24,8 +24,8 @@ export type MemberBuddyProps = Omit<IconButtonProps, 'aria-label'> & {
   member: Partial<Member>
 }
 
-export const MemberBuddy = chakra(
-  ({ member, size = ['sm', 'md', 'lg'], ...props }: MemberBuddyProps) => {
+export const MemberBuddy = memo(chakra(
+  function MemberBuddy({ member, size = ['sm', 'md', 'lg'], ...props }: MemberBuddyProps) {
     const { loading: userLoading, member: me, level, reload, hasFeature } = useUser()
     const [hover, setHover] = useState(false)
     const [isBuddy, setIsBuddy] = useState<boolean | undefined>(undefined)
@@ -90,6 +90,7 @@ export const MemberBuddy = chakra(
             aria-label={`Remove ${member?.nickname || 'this member'} as a Buddy`}
             size={size}
             color="white"
+            px={[.1, .5]}
             _hover={{ bg: 'primary.500' }}
             disabled={me?.id === member?.id}
             {...props}
@@ -116,6 +117,7 @@ export const MemberBuddy = chakra(
               onClick={toggleBuddy}
               color="white"
               size={size}
+              px={[.1, .5]}
               _hover={{ bg: 'primary.500' }}
               disabled={me?.id === member?.id}
               {...props}
@@ -124,4 +126,4 @@ export const MemberBuddy = chakra(
       </>
     )
   }
-)
+), (prev, next) => (prev.member?.id == next.member?.id && prev.size == next.size))

@@ -4,7 +4,8 @@ import { pledgeSurvey } from "lib/config";
 import { MemberLevel, MembershipType, Site } from "lib/models";
 import { signIn, signOut } from "next-auth/react";
 import NextLink from "next/link";
-import { Router } from "next/router";
+import { useRouter } from "next/router";
+import { useMemo } from "react";
 
 import {
   Box,
@@ -45,12 +46,11 @@ import {
 
 interface Props {
   site: Site
-  router: Router
 }
 
-export default function UserMenu({ site, router }: Props) {
+export default function UserMenu({ site }: Props) {
   const { colorMode, toggleColorMode } = useColorMode()
-
+  const router = useRouter()
   const {
     member,
     authenticated,
@@ -66,18 +66,30 @@ export default function UserMenu({ site, router }: Props) {
   } = useUser({
     redirectsEnabled: false,
   })
-  const showApply = !site?.invite_only
-  const hideSubscribe = router.pathname.startsWith('/member/subscription')
-  const hasDirectory = level >= MemberLevel.brother && hasFeature('view_directory')
-  const hasBuddyList = level >= MemberLevel.brother && hasFeature('buddy_list')
-  const hasChat = level >= MemberLevel.brother && hasFeature('chat')
+  const showApply = useMemo(() => !site?.invite_only,
+    [site?.invite_only])
+  const hideSubscribe = useMemo(() => router.pathname.startsWith('/member/subscription'),
+    [router.pathname])
+  const hasDirectory = useMemo(() => level >= MemberLevel.brother && hasFeature('view_directory'),
+    [level, hasFeature])
+  const hasBuddyList = useMemo(() => level >= MemberLevel.brother && hasFeature('buddy_list'),
+    [level, hasFeature])
+  const hasChat = useMemo(() => level >= MemberLevel.brother && hasFeature('chat'),
+    [level, hasFeature])
+
+  const optionStyle = useMemo(() => {
+    return {
+      backgroundColor: "black",
+      color: "white"
+    }
+  }, [])
 
   if (loading) return <Spinner />
 
   return (
     <>
       {authenticated ? (
-        <Menu placement="bottom">
+        <Menu placement="bottom" >
           <Flex gap={4} justify="end" align="center">
             <Spacer />
             {level == MemberLevel.brother &&
@@ -92,14 +104,14 @@ export default function UserMenu({ site, router }: Props) {
               {member && <MemberAvatar member={member} size={['sm', 'md', 'lg']} />}
             </MenuButton>
           </Flex>
-          <MenuList bg="black" maxH="80vh" overflowY="auto" zIndex="10">
+          <MenuList bg="black" maxH="80vh" overflowY="auto" zIndex="10" >
             <Box p={4} m={2} mt={0} bgGradient="linear(to-bl, primary.300, accent.300)">
               <MemberIcon member={member} size={['xs', 'sm']} />
               <span id="account-email" hidden>
                 {member?.email}
               </span>
             </Box>
-            <MenuItem bg="black">
+            <MenuItem bg="black" my={0}>
               <Select name="presence"
                 onClick={(e) => {
                   e.stopPropagation()
@@ -110,10 +122,15 @@ export default function UserMenu({ site, router }: Props) {
                     presence: e.target.value as any
                   })
                 }}
-                value={member?.presence}>
-                <option value="online">Online</option>
-                <option value="away">Away</option>
-                <option value="offline">Offline</option>
+                value={member?.presence}
+                color="white"
+                bg="black"
+                variant="flushed"
+                my={0}
+              >
+                <option style={optionStyle} value="online">Online</option>
+                <option style={optionStyle} value="away">Away</option>
+                <option style={optionStyle} value="offline">Offline</option>
               </Select>
             </MenuItem>
             <MenuDivider />
@@ -306,7 +323,7 @@ export default function UserMenu({ site, router }: Props) {
                       icon={<PaintBrushIcon color={'white'} width={'1.5rem'} />}
                       bg="black"
                       _hover={{ bg: 'gray.400', textDecoration: 'none' }}
-                      as={Link}
+                      as={NextLink}
                       href="/styles"
                     >
                       Styles
@@ -352,7 +369,6 @@ export default function UserMenu({ site, router }: Props) {
         <Flex direction={['column', 'row']} align="center" justify="end">
           <Link
             mr={2}
-            as={NextLink}
             href={`/api/auth/signin`}
             fontWeight={600}
             size={['sm', 'md']}
@@ -370,7 +386,7 @@ export default function UserMenu({ site, router }: Props) {
             <>
               <Show above="sm">&nbsp;| &nbsp;</Show>
               <Link
-                as={NextLink}
+
                 size={['sm', 'md']}
                 href={`/register`}
                 color="white"

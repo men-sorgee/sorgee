@@ -1,3 +1,4 @@
+
 import { EventInvite } from "lib/models";
 import {
   findInvite,
@@ -21,17 +22,20 @@ export default async function EventRSVP(
     const method = withMethods(req, ['POST', 'GET'])
     const member = await withMember(req, res)
 
-    const { id, rsvp, reason, paid_at: p } = { ...req.query, ...req.body } as any
+    const { id } = req.query
+
     const eventId = String(id)
-    const paid_at = p ? String(p) : undefined
+
     const event = await getEvent(eventId)
 
-    if (!event || !['planned', 'scheduled'].includes(event.status))
+    if (!event || !['planned', 'scheduled', 'occurred'].includes(event.status))
       throw new Error('Event not found')
 
     let eventUser = await findInvite(eventId, member.id)
 
     if (method == 'POST') {
+      const { rsvp, reason, paid_at: p } = req.body
+      const paid_at = (p ? String(p) : null) as any
       if (!rsvp) throw new Error('Missing rsvp')
       if (eventUser) {
         eventUser = await updateInvite(eventUser.id, { rsvp, reason, paid_at })
@@ -65,10 +69,6 @@ export default async function EventRSVP(
         ...eventUser
       }))
     }
-
-
-
-
   } catch (e) {
     console.error(e)
     return res.status(400).json(ApiResponse(null, e))

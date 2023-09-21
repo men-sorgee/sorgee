@@ -1,6 +1,9 @@
 import {
   Applicant,
   applicantFields,
+  EventInvite,
+  EventUser,
+  GroupEvent,
   Member,
   memberFields,
   MemberSearchResults,
@@ -10,10 +13,12 @@ import {
   SearchableMember,
   searchableMemberFields,
   User,
+  UserBuddy,
   UserEmailEvent,
   UserFields,
   UserType
 } from "lib/models";
+import { getAdminClient } from "lib/services/directus/server";
 
 // Service Calls ------------------------------------
 import {
@@ -57,7 +62,12 @@ export async function getUser<T extends User | Member | Applicant | Profile = Us
         _limit: -1,
       },
       buddy_of: {
-        _limit: -1,
+        _limit: -1
+      },
+      invites: {
+        events_id: {
+          _sort: ['datetime'],
+        }
       }
 
     },
@@ -81,10 +91,9 @@ export async function findUser<T extends User | Member | Applicant | Profile = P
     fields: [...fields],
   }))
 
-  // @ts-ignore
-  const user = existingUserQuery?.data?.length ? existingUserQuery.data[0] : null
+  if (!users || !users.length) return null
 
-  return user as T
+  return users[0] as T
 }
 
 

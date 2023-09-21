@@ -1,8 +1,35 @@
-import { LocationCoordinates } from "lib/models";
+import { addMinutes, format } from "date-fns";
 
-export const gradient = (color: string, value: number = 400, step: number = 100) => `linear(to-b, ${color}.${value}, ${color}.${value + step}, ${color}.${value + step})`
+export function toLocalDate(value: string) {
+  return addMinutes(new Date(value), new Date().getTimezoneOffset())
+}
 
-export const uuidv4 = () => {
+export function getUTCNow() {
+  var now = new Date()
+  return new Date(
+    Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate(),
+      now.getUTCHours(),
+      now.getUTCMinutes() - now.getTimezoneOffset(),
+      now.getUTCSeconds(),
+      now.getUTCMilliseconds()
+    )
+  )
+}
+
+export function logEvent(action: string, params?: Record<string, any>) {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', action, params)
+  }
+}
+
+export function gradient(color: string, value: number = 400, step: number = 100) {
+  return `linear(to-b, ${color}.${value}, ${color}.${value + step}, ${color}.${value + step})`
+}
+
+export function uuidv4() {
   return 'xxxxxxxx-xxxx-4xxx-xxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8)
     return v.toString(16)

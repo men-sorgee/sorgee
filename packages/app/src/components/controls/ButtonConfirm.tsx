@@ -1,5 +1,5 @@
 import { gradient } from "lib/utils";
-import { ReactNode, RefObject, useCallback, useRef } from "react";
+import { memo, ReactNode, RefObject, useCallback, useRef } from "react";
 
 import {
   AlertDialog,
@@ -32,7 +32,7 @@ export type ButtonConfirmProps<TResponse> = Omit<
   children: ReactNode | ReactNode[]
 }
 
-export function ButtonConfirm<TResponse>({
+function ButtonConfirmComponent<TResponse>({
   confirmedAction = () => Promise.resolve<TResponse>(null),
   onSuccess,
   onError,
@@ -47,6 +47,7 @@ export function ButtonConfirm<TResponse>({
   title,
   disabled,
   py = 2,
+  px = [.1, .5],
   color = 'white',
   colorScheme,
   w = ['full', 'auto'],
@@ -103,6 +104,8 @@ export function ButtonConfirm<TResponse>({
           _hover={{
             bgGradient: bgGradientHover,
           }}
+          py={py}
+          px={px}
           {...props}
         />
       )) || (
@@ -159,7 +162,7 @@ export function ButtonConfirm<TResponse>({
                     }}
                     ml={3}
                     title={title}
-                    color={color}
+                    color='white'
                     bgGradient={gradient(confirmColorScheme)}
                     _hover={{
                       bgGradient: gradient(confirmColorScheme, 100),
@@ -174,7 +177,7 @@ export function ButtonConfirm<TResponse>({
                       bgGradient: gradient('gray', 100),
                     }}
                     onClick={onClose}
-                    color={color}
+                    color='white'
                   >
                     Cancel
                   </Button>
@@ -191,3 +194,4 @@ export function ButtonConfirm<TResponse>({
     </>
   )
 }
+export const ButtonConfirm = memo(ButtonConfirmComponent) as typeof ButtonConfirmComponent

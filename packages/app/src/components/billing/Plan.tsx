@@ -17,7 +17,7 @@ type Params = {
   interval: MembershipRenewalType
 }
 
-export const Plan = ({ plan, interval }: Params) => {
+export const Plan = ({ plan, interval = 'month' }: Params) => {
   const { products, loading } = useProducts()
   const [product, setProduct] = useState<ProductView>(undefined)
 
@@ -47,7 +47,7 @@ export const Plan = ({ plan, interval }: Params) => {
             Your Plan: {product.name}
           </Heading>
           <Heading as="h3">
-            ${product.prices[interval].price / 100} / {interval == 'month' ? 'mo' : 'yr'}
+            ${product.prices.find(p => p.interval == interval)?.amount / 100} / {interval == 'month' ? 'mo' : 'yr'}
           </Heading>
           <Text m={0} p={0}>
             {product.description}
