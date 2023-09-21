@@ -47,7 +47,10 @@ class MyDocument extends Document {
               "complete"===document.readyState?a():t.attachEvent?t.attachEvent("onload",a):t.addEventListener("load",a,!1)}();`
             }}
           />
-          <Script async src="https://www.googletagmanager.com/gtag/js?id=G-SJX78PVP26" />
+          <Script
+            id="google-analytics-init"
+            strategy="beforeInteractive"
+            src="https://www.googletagmanager.com/gtag/js?id=G-SJX78PVP26" />
           <Script
             id="google-analytics"
             dangerouslySetInnerHTML={{
