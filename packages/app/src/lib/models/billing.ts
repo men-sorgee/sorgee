@@ -1,4 +1,4 @@
-import { User } from "./users";
+import { MemberFeature, User } from "./users";
 
 export type BillingEvent = {
   id: string
@@ -30,7 +30,7 @@ export type ProductView = {
   id: string
   name: string
   description: string
-  features: string[]
+  features: MemberFeature[]
   type: MembershipNames
   label?: string
   prices: PriceView[]
@@ -65,4 +65,35 @@ export type PurchasePlanDetails = {
   membership_start?: string
   membership_end?: string
   amount: number
+}
+
+
+
+
+export const MembershipFeatureMap: Record<MemberFeature, string> = {
+  view_directory: 'View Directory',
+  chat: 'Chat',
+  share_photos: 'Share Photos',
+  buddy_list: 'Buddy List',
+  flirt: 'Flirt',
+  view_attendees: 'View Attendees',
+  my_views: 'My Views',
+  private_events: 'Private Events',
+}
+
+export type PlanExtension = {
+  enabled?: boolean
+  type?: string
+  features?: Array<MemberFeature>
+}
+
+export type PurchaseResponse = {
+  id: string
+}
+
+export type RefundResponse = {
+  paid: boolean
+  refunded: boolean
+  reason: string
+  continue: boolean
 }

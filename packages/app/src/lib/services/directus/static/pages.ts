@@ -3,11 +3,9 @@ import { GNHSchema, Page } from "lib/models";
 
 import { createDirectus, graphql } from "@directus/sdk";
 
-const admin = createDirectus<GNHSchema>(adminUrl)
-  .with(graphql())
-
-
 export async function getPageById(id: string): Promise<Page> {
+  const admin = createDirectus<GNHSchema>(adminUrl)
+    .with(graphql())
   const { page } = await admin.query<{ page: Page }>(`query getPage($id: ID!) {
     page: page_by_id(id: $id) {
       id
@@ -78,6 +76,8 @@ export async function getPageById(id: string): Promise<Page> {
 
 
 export async function getPageBySlug(slug: string): Promise<Page> {
+  const admin = createDirectus<GNHSchema>(adminUrl)
+    .with(graphql())
   const { pages } = await admin.query<{ pages: Page[] }>(`query findPage($slug: String) {
     pages: page(filter: { slug: { _eq: $slug } }) {
       id
@@ -162,7 +162,8 @@ export async function getPageBySlug(slug: string): Promise<Page> {
 
 
 export async function listPages(parentId: string = null): Promise<Page[]> {
-
+  const admin = createDirectus<GNHSchema>(adminUrl)
+    .with(graphql())
   let { pages } = await admin.query<{ pages: Page[] }>(`query listPages
   {
     pages: page (

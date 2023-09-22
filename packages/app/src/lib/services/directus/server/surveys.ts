@@ -12,9 +12,9 @@ import { createItem, readItem, readItems, updateItem } from "@directus/sdk";
 import { getAdminClient } from "./";
 
 export async function getSurvey(id: string): Promise<Survey> {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
 
-  return admin.request(readItem('surveys', id, {
+  return admin.request(readItem<Survey>('surveys', id, {
     fields: [
       'id',
       'name',
@@ -30,34 +30,34 @@ export async function getSurvey(id: string): Promise<Survey> {
         sort: ['sort'],
       }
     },
-  })) as unknown as Survey
+  }))
 }
 
 export async function updateSurvey(id: string, survey: Partial<Survey>): Promise<Survey> {
-  const admin = await getAdminClient()
-  const data = await admin.request(updateItem('surveys', id, survey))
-  return data as unknown as Survey
+  const admin = getAdminClient()
+  const data = await admin.request<Survey>(updateItem('surveys', id, survey))
+  return data
 }
 
 export async function createSurvey(survey: Partial<Survey>): Promise<Survey> {
-  const admin = await getAdminClient()
-  return admin.request(createItem('surveys', survey)) as unknown as Survey
+  const admin = getAdminClient()
+  return admin.request<Survey>(createItem('surveys', survey)) as unknown as Survey
 }
 
 
 
 export async function getQuestion(id: string): Promise<Question> {
-  const admin = await getAdminClient()
-  const question = await admin.request(readItem('survey_questions', id))
+  const admin = getAdminClient()
+  const question = await admin.request<Question>(readItem('survey_questions', id))
 
   if (!question) return null
-  return question as unknown as Question
+  return question
 }
 
 export async function getUserSurveyAnswers(surveyId: string, userId: string): Promise<UserSurvey> {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   const survey = await getSurvey(surveyId)
-  const answers = await admin.request(readItems('survey_answers', {
+  const answers = await admin.request<SurveyAnswer[]>(readItems('survey_answers', {
     filter: {
       survey: { _eq: surveyId },
       user: { _eq: userId },
@@ -76,12 +76,12 @@ export async function getUserSurveyAnswers(surveyId: string, userId: string): Pr
   return {
     ...survey,
     questions
-  }
+  } as UserSurvey
 }
 
 export async function getSurveyAnswer(surveyId: string, userId: string, questionId: string) {
-  const admin = await getAdminClient()
-  const answers = await admin.request(readItems('survey_answers', {
+  const admin = getAdminClient()
+  const answers = await admin.request<SurveyAnswer[]>(readItems('survey_answers', {
     filter: {
       survey: { _eq: surveyId },
       user: { _eq: userId },
@@ -98,14 +98,14 @@ export async function setSurveyAnswer(
   question: string,
   answer: Record<keyof Omit<SurveyAnswer, 'id' | 'survey' | 'user' | 'question'>, any>
 ) {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   const existingAnswer = await getSurveyAnswer(survey, user, question)
   if (existingAnswer) {
-    return (await admin.request(updateItem('survey_answers', existingAnswer.id, {
+    return (await admin.request<SurveyAnswer>(updateItem('survey_answers', existingAnswer.id, {
       ...answer,
     }))) as SurveyAnswer
   } else {
-    return (await admin.request(createItem('survey_answers', {
+    return (await admin.request<SurveyAnswer>(createItem('survey_answers', {
       survey,
       user,
       question,

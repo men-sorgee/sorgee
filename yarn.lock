@@ -302,11 +302,6 @@
   resolved "https://registry.yarnpkg.com/@babel/helper-validator-identifier/-/helper-validator-identifier-7.22.19.tgz#2f34ab1e445f5b95e2e6edfe50ea2449e610583a"
   integrity sha512-Tinq7ybnEPFFXhlYOYFiSjespWQk0dq2dRNAiMdRTOYQzEGqnnNyrTxPYHP5r6wGjlF1rFgABdDV0g8EwD6Qbg==
 
-"@babel/helper-validator-identifier@^7.22.20":
-  version "7.22.20"
-  resolved "https://registry.yarnpkg.com/@babel/helper-validator-identifier/-/helper-validator-identifier-7.22.20.tgz#c4ae002c61d2879e724581d96665583dbc1dc0e0"
-  integrity sha512-Y4OZ+ytlatR8AI+8KZfKuL5urKp7qey08ha31L8b3BwewJAoJamTzyvxPR/5D+KkdJCGPq/+8TukHBlY10FX9A==
-
 "@babel/helper-validator-option@^7.22.15":
   version "7.22.15"
   resolved "https://registry.yarnpkg.com/@babel/helper-validator-option/-/helper-validator-option-7.22.15.tgz#694c30dfa1d09a6534cdfcafbe56789d36aba040"
@@ -1980,10 +1975,10 @@
     prop-types "15.8.1"
     rxjs "6.6.7"
 
-"@directus/sdk@^11.0.3":
-  version "11.0.3"
-  resolved "https://registry.yarnpkg.com/@directus/sdk/-/sdk-11.0.3.tgz#f88cbcd8915afa206b5c300d0168aad5f8c09128"
-  integrity sha512-fHvHFcDhl8AY5quRP4cgLMHTU6F4c4ynmMpXRsi8dnSd38mIvciFyYmOVOh34Wp2N+a1YNYpXPU+NsHkfIheHw==
+"@directus/sdk@^12.0.0":
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/@directus/sdk/-/sdk-12.0.0.tgz#109f4778a46cb87aea06e0176dfb9bd0eb9b8dbd"
+  integrity sha512-LDOsfjP0YmPgpnZXDIBzy8H9qiE9AeORZbzPkV+r/w1pWR3QBaz1xQDR1SrnX9BZ+q6HykjS3OJ2MTnXoQlW1Q==
 
 "@emotion/babel-plugin@^11.11.0":
   version "11.11.0"

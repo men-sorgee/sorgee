@@ -7,7 +7,7 @@ import { getAdminClient } from "lib/services/directus/server";
 import { createItem, readItems, updateItem } from "@directus/sdk";
 
 export async function getRating(user_id: string, collection: RatingCollection, item_id: string) {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   const filter = {
     user: {
       _eq: user_id,
@@ -43,7 +43,7 @@ export async function getRating(user_id: string, collection: RatingCollection, i
 }
 
 export async function getRatings(user_id: string) {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
 
   const ratings = await admin.request(readItems('rating', {
 
@@ -63,7 +63,7 @@ export async function setRating(
   item: string,
   rate: number
 ) {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   const existingRating = await getRating(user_id, collection, item)
   if (existingRating) {
     return (await admin.request(updateItem('rating', existingRating.id, { rate, item }))) as Rating
@@ -89,7 +89,7 @@ export async function setRating(
 }
 
 export async function setUserAverageRating(user_id: string) {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   const ratings = await admin.request<Rating[]>(readItems('rating', {
 
     filter: {

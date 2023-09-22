@@ -19,27 +19,17 @@ import {
 
 import { getAdminClient } from "./";
 
-function count<T>(ary: T[], classifier: (i: T) => any) {
-  classifier = classifier || String
-  return ary.reduce(function (counter, item) {
-    var p = classifier(item)
-    counter[p] = counter.hasOwnProperty(p) ? counter[p] + 1 : 1
-    return counter
-  }, {})
-}
-
-
 export async function listAdminEvents(): Promise<GroupEvent[]> {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   const filter = {
     status: { _in: ['scheduled', 'occurred', 'planned'] },
   }
-  const data = await admin.request(readItems('events', {
+  const data = await admin.request<GroupEvent[]>(readItems('events', {
     filter,
     fields: ['*',
       { location: ['*'] },
       {
-        users: ['*', {
+        invites: ['*', {
           users_id: ['*']
         }]
       },
@@ -52,7 +42,7 @@ export async function listAdminEvents(): Promise<GroupEvent[]> {
     }
   }))
   if (!data || data.length == 0) return []
-  return data as unknown as GroupEvent[]
+  return data
 }
 
 export async function registerForEvent(
@@ -61,14 +51,14 @@ export async function registerForEvent(
   rsvp: InviteRSVPType,
   paid_at: string = undefined
 ): Promise<EventUser> {
-  const admin = await getAdminClient()
-  const invite = await admin.request(createItem('events_users', {
+  const admin = getAdminClient()
+  const invite = await admin.request<EventUser>(createItem('events_users', {
     events_id: event_id,
     users_id: user_id,
     rsvp,
     paid_at
   }))
-  return invite as unknown as EventUser
+  return invite
 }
 
 const userFields: Array<keyof Member> = [
@@ -78,8 +68,8 @@ const userFields: Array<keyof Member> = [
   'date_created', 'last_login', 'location']
 
 export async function getEvent(id: string, filter?: any): Promise<GroupEvent> {
-  const admin = await getAdminClient()
-  const event: GroupEvent = (await admin.request(readItem('events', id, {
+  const admin = getAdminClient()
+  const event = await admin.request<GroupEvent>(readItem('events', id, {
     fields: [
       '*',
       'location.*',
@@ -98,25 +88,25 @@ export async function getEvent(id: string, filter?: any): Promise<GroupEvent> {
       }
     },
     filter: filter || {},
-  }))) as any as GroupEvent
+  }))
   if (!event) return null
   return event as GroupEvent
 }
 
 export async function updateEvent(id: string, data: Partial<GroupEvent>): Promise<GroupEvent> {
-  const admin = await getAdminClient()
-  return await admin.request(updateItem('events', id, data))
+  const admin = getAdminClient()
+  return await admin.request<GroupEvent>(updateItem('events', id, data))
 }
 
 export async function updateEventUsers(ids: number[], data: Partial<EventUser>): Promise<EventUser[]> {
-  const admin = await getAdminClient()
-  const attendees = await admin.request(updateItems('events_users', ids, data))
-  return attendees as unknown as EventUser[]
+  const admin = getAdminClient()
+  const attendees = await admin.request<EventUser[]>(updateItems('events_users', ids, data))
+  return attendees
 }
 
 export async function getEventDetail(id: string): Promise<EventDetail> {
-  const admin = await getAdminClient()
-  const event = await admin.request(readItem('events', id, {
+  const admin = getAdminClient()
+  const event = await admin.request<GroupEvent>(readItem('events', id, {
     fields: [
       '*',
       'location.*',
@@ -153,8 +143,8 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
     survey,
   } = event
 
-  const location = l as unknown as Location
-  const attendance = invites as unknown as EventUser[]
+  const location = l as Location
+  const attendance = invites as EventUser[]
 
   const detail: EventDetail = {
     id,

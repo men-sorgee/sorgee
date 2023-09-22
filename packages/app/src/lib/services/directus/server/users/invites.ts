@@ -12,7 +12,7 @@ import { readItem, readItems, updateItem } from "@directus/sdk";
 import { getAdminClient } from "../";
 
 export async function getInvite(inviteId: number): Promise<EventUser | null> {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   const query = await admin.request<Invite>(readItem('events_users', inviteId, {
     fields: ['*',
       { events_id: ['*'] },
@@ -25,7 +25,7 @@ export async function getInvite(inviteId: number): Promise<EventUser | null> {
 }
 
 export async function findInvite(eventId: string, userId: string): Promise<EventUser | null> {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   const query = await admin.request(readItems('events_users', {
     filter: {
       events_id: { _eq: eventId },
@@ -38,7 +38,7 @@ export async function findInvite(eventId: string, userId: string): Promise<Event
 }
 
 export async function listInvites(member: Member): Promise<EventInvite[]> {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   const data = await admin.request(readItems('events_users', {
     filter: {
       users_id: { _eq: member.id },
@@ -80,7 +80,7 @@ export async function listInvites(member: Member): Promise<EventInvite[]> {
 }
 
 export async function listUpcomingEvents(user_type: UserType): Promise<GroupEvent[]> {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   const data = await admin.request(readItems('events', {
     filter: {
       status: { _in: ['scheduled', 'planned'] },
@@ -102,7 +102,7 @@ export async function updateInvite(
   inviteId: number,
   data: Partial<EventUser>
 ) {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   let invite = await getInvite(inviteId)
   if (!invite) {
     throw new Error('No invite found')
@@ -113,7 +113,7 @@ export async function updateInvite(
 }
 
 export async function getUserEvents(user_id: string) {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   const data = await admin.request<EventUser[]>(readItems('events_users', {
     filter: {
       users_id: { _eq: user_id },

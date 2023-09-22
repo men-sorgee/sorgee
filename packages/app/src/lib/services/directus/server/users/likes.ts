@@ -5,7 +5,7 @@ import { createItem, readItems, updateItem } from "@directus/sdk";
 import { getAdminClient } from "../";
 
 export async function getLike(user_id: string, like_id: string): Promise<UserLike> {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   const buddies = await admin.request(readItems('user_like', {
 
     filter: {
@@ -25,7 +25,7 @@ export async function getLike(user_id: string, like_id: string): Promise<UserLik
 }
 
 export async function addLike(user_id: string, like_id: string): Promise<UserLike> {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   const relationship = await getLike(user_id, like_id)
 
   if (relationship) {
@@ -40,7 +40,7 @@ export async function addLike(user_id: string, like_id: string): Promise<UserLik
 }
 
 export async function removeLike(user_id: string, like_id: string) {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   const relation = await getLike(user_id, like_id)
 
   if (relation) {

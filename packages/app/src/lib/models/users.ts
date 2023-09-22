@@ -1,4 +1,5 @@
 import {
+  Coordinates,
   DirectusFile,
   DirectusUser,
   EventInvite,
@@ -475,6 +476,7 @@ export type MemberFeature =
   | 'flirt'
   | 'view_attendees'
   | 'my_views'
+  | 'private_events'
 
 export const memberFeatures: MemberFeature[] = [
   'view_directory',
@@ -483,12 +485,10 @@ export const memberFeatures: MemberFeature[] = [
   'view_attendees',
   'chat',
   'share_photos',
+  'my_views',
+  'private_events'
 ]
 
-export type Coordinates = {
-  type: 'Point'
-  coordinates: [number, number]
-}
 
 export type PresenceType = 'offline' | 'online' | 'away'
 

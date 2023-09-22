@@ -1,9 +1,6 @@
 import {
   Applicant,
   applicantFields,
-  EventInvite,
-  EventUser,
-  GroupEvent,
   Member,
   memberFields,
   MemberSearchResults,
@@ -13,7 +10,6 @@ import {
   SearchableMember,
   searchableMemberFields,
   User,
-  UserBuddy,
   UserEmailEvent,
   UserFields,
   UserType
@@ -29,17 +25,15 @@ import {
   updateItem
 } from "@directus/sdk";
 
-import { getAdminClient } from "../";
-
 export async function createUser(member: Partial<User>): Promise<User> {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   const user = await admin.request<User>(createItem('users', member))
   if (!user) throw new Error('Failed to create user')
   return user as unknown as User
 }
 
 export async function updateUser<T extends User | Member | Applicant | Profile = User>(id: string, userData: Partial<T>) {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
 
   const user = await admin.request<T>(updateItem('users', id, userData))
   return user as T
@@ -48,8 +42,8 @@ export async function updateUser<T extends User | Member | Applicant | Profile =
 export async function getUser<T extends User | Member | Applicant | Profile = User>(
   id: string,
   fields: UserFields = memberFields
-): Promise<T | null> {
-  const admin = await getAdminClient()
+): Promise<T> {
+  const admin = getAdminClient()
   const user = await admin.request<T>(readItem('users', id, {
     fields: fields as any,
     filter: {
@@ -72,17 +66,15 @@ export async function getUser<T extends User | Member | Applicant | Profile = Us
 
     },
   }))
-  return (user as T) || null
+  return user
 }
 
 export async function findUser<T extends User | Member | Applicant | Profile = Profile>(
   email: string,
   fields: UserFields = profileFields
-): Promise<T | null> {
-  const admin = await getAdminClient()
-  // @ts-ignore
-  const existingUserQuery = await admin.request(readItems('users', {
-
+): Promise<T> {
+  const admin = getAdminClient()
+  const users = await admin.request<User[]>(readItems('users', {
     filter: {
       email: {
         _eq: email,
@@ -104,7 +96,7 @@ export async function searchUsers<T extends User | SearchableMember = Searchable
   page: number = 1,
   sort: any = '-last_login'
 ): Promise<MemberSearchResults<T>> {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
 
   const data = await admin.request<T[]>(readItems('users', {
     filter,
@@ -131,23 +123,20 @@ export async function searchUsers<T extends User | SearchableMember = Searchable
 }
 
 export async function getApplicant(id: string): Promise<Applicant | null> {
-  const admin = await getAdminClient()
-  const applicant = await admin.request<Applicant>(readItem('users', id, { fields: applicantFields as any }))
-  return (applicant as unknown as Applicant) || null
+  const admin = getAdminClient()
+  return admin.request<Applicant>(readItem('users', id, { fields: applicantFields as any }))]
 }
 
 export async function getMember(id: string): Promise<Member | null> {
-  const admin = await getAdminClient()
-  const member = await admin.request<Member>(readItem('users', id, {
-    fields: memberFields as any,
+  const admin = getAdminClient()
+  return await admin.request<Member>(readItem('users', id, {
+    fields: memberFields,
   }))
-  return (member as unknown as Member) || null
 }
 
 export async function getUserId(email: string) {
-  const admin = await getAdminClient()
-  const data = await admin.request(readItems('users', {
-
+  const admin = getAdminClient()
+  const data = await admin.request<Pick<User, 'id'>[]>(readItems('users', {
     filter: { email: { _eq: email } },
     fields: ['id'],
   }))
@@ -159,17 +148,17 @@ export async function getUserId(email: string) {
 }
 
 export async function storeEmailEvent(event: UserEmailEvent) {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
 
-  return await admin.request(createItem('user_email_events', event))
+  return admin.request<UserEmailEvent>(createItem('user_email_events', event))
 }
 
-export async function listUsersByLevel<T = Member>(
+export async function listUsersByLevel<T extends Applicant = Member>(
   type: UserType,
   fields: UserFields = memberFields
 ): Promise<T[]> {
-  const admin = await getAdminClient()
-  return await admin.request<T[]>(readItems('users', {
+  const admin = getAdminClient()
+  return admin.request<T[]>(readItems('users', {
     filter: {
       user_type: {
         _eq: type,
@@ -192,7 +181,7 @@ export async function getUserStats(start: string): Promise<{
   big_brothers: number
   staff: number
 }> {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   const data = await admin.query<{
     users_aggregated: Array<{
       group: {

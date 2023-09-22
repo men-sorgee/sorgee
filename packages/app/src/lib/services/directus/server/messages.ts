@@ -16,8 +16,8 @@ import {
 
 import { getAdminClient } from "./";
 
-export async function getMessages(user_id: string) {
-  const admin = await getAdminClient()
+export async function getMessages(user_id: string): Promise<Record<string, ChatMessage[]>> {
+  const admin = getAdminClient()
   const messages = await admin.request<Message[]>(readItems('messages', {
     filter: {
       status: {
@@ -85,23 +85,23 @@ export async function getMessages(user_id: string) {
   return userMessages
 }
 
-export async function sendMessage(message: Partial<Message>) {
-  const admin = await getAdminClient()
-  return (await admin.request<Message>(createItem('messages', message)))
+export async function sendMessage(message: Partial<Message>): Promise<Message> {
+  const admin = getAdminClient()
+  return admin.request<Message>(createItem('messages', message))
 }
 
-export async function getMessage(id: string) {
-  const admin = await getAdminClient()
-  return (await admin.request<Message>(readItem('messages', id)))
+export async function getMessage(id: string): Promise<Message> {
+  const admin = getAdminClient()
+  return admin.request<Message>(readItem('messages', id))
 }
 
-export async function updateMessage(id: string, message: Partial<Message>) {
-  const admin = await getAdminClient()
+export async function updateMessage(id: string, message: Partial<Message>): Promise<Message> {
+  const admin = getAdminClient()
   if (message.body) message.status = 'edited'
-  return (await admin.request<Message>(updateItem('messages', id, message)))
+  return admin.request<Message>(updateItem('messages', id, message))
 }
 
-export async function markAs(ids: string[], status: MessageStatusType) {
-  const admin = await getAdminClient()
-  await admin.request(updateItems('messages', ids, { status }))
+export async function markAs(ids: string[], status: MessageStatusType): Promise<void> {
+  const admin = getAdminClient()
+  await admin.request<Message[]>(updateItems('messages', ids, { status }))
 }

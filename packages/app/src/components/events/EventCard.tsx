@@ -32,9 +32,9 @@ import {
 } from "@chakra-ui/react";
 import { MapPinIcon } from "@heroicons/react/24/solid";
 
-const Countdown = dynamic(() => import("react-countdown"), {
+const Countdown = dynamic(() => import("react-countdown") as any, {
   ssr: false
-});
+}) as unknown as JSX.IntrinsicElements['Countdown'];
 
 
 export type EventCardProps = CardProps & {

@@ -12,19 +12,19 @@ import { createItem, readItem, readItems, updateItem } from "@directus/sdk";
 import { getAdminClient } from "./";
 
 export async function getNotification(id: string): Promise<Notification> {
-  const admin = await getAdminClient()
-  return (await admin.request(readItem('notifications', id))) as unknown as Notification
+  const admin = getAdminClient()
+  return (await admin.request<Notification>(readItem('notifications', id))) as unknown as Notification
 }
 
 export async function createNotification(notification: Partial<Notification>) {
-  const admin = await getAdminClient()
-  return admin.request(createItem('notifications', notification))
+  const admin = getAdminClient()
+  return admin.request<Notification>(createItem('notifications', notification))
 }
 
 
 export async function getNotifications(user_id: string): Promise<UserNotification[]> {
-  const admin = await getAdminClient()
-  const notificationsRaw = await admin.request(readItems('notifications_users', {
+  const admin = getAdminClient()
+  const notificationsRaw = await admin.request<NotificationUser[]>(readItems('notifications_users', {
     filter: {
       user_id: {
         _eq: user_id,
@@ -74,23 +74,23 @@ export async function getNotifications(user_id: string): Promise<UserNotificatio
 }
 
 export async function getNotificationUser(id: number) {
-  const admin = await getAdminClient()
-  return admin.request(readItem('notifications_users', id)) as Promise<NotificationUser>
+  const admin = getAdminClient()
+  return admin.request<NotificationUser>(readItem('notifications_users', id))
 }
 
 export async function updateNotificationUser(id: number, notification: Partial<NotificationUser>) {
-  const admin = await getAdminClient()
-  return admin.request(updateItem('notifications_users', id, notification)) as Promise<NotificationUser>
+  const admin = getAdminClient()
+  return admin.request<NotificationUser>(updateItem('notifications_users', id, notification))
 }
 
 export async function addNotificationUser(notificationId: string, userId: string) {
-  const admin = await getAdminClient()
-  return admin.request(createItem('notifications_users', {
+  const admin = getAdminClient()
+  return admin.request<NotificationUser>(createItem('notifications_users', {
     notification_id: notificationId,
     user_id: userId,
     status: 'new',
     read: false,
-  })) as Promise<NotificationUser>
+  }))
 }
 
 export async function addUserToPledgeSurveyEmail(user_id: string) {

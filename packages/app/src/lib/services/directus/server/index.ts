@@ -1,98 +1,22 @@
 import { adminUrl } from "lib/config";
-import { DirectusField, FieldMap, GNHSchema, Promo, User } from "lib/models";
+import { GNHSchema } from "lib/models";
 
-import {
-  authentication,
-  createDirectus,
-  graphql,
-  readItem,
-  readItems,
-  realtime,
-  rest
-} from "@directus/sdk";
+import { createDirectus, graphql, rest, staticToken } from "@directus/sdk";
 
-const _adminDb = createDirectus<GNHSchema>(adminUrl)
-  .with(rest())
-  .with(graphql())
-  .with(authentication("json", {
-    autoRefresh: true
-  }))
-  .with(realtime({
-    reconnect: {
-      delay: 1000,
-      retries: 10
-    },
-    authMode: 'handshake'
-  }))
-const cache: { [key: string]: any } = {}
-
-export async function getAdminClient() {
-  if (await _adminDb.getToken()) return _adminDb
-  _adminDb.setToken(process.env.ADMIN_TOKEN)
-  return _adminDb
-}
-
-export async function findPromo(code: string): Promise<Promo | null> {
-  const admin = await getAdminClient()
-  const data = await admin.request<Promo[]>(readItems('promos', {
-    filter: {
-      code: { _eq: code },
-    },
-  }))
-  return data?.length ? (data[0] as Promo) : null
-}
-
-export async function getFields(collection: string = 'users'): Promise<FieldMap> {
-  const key = `${collection}-fields`
-  if (cache[key]) {
-    return cache[key]
-  }
-  const admin = await getAdminClient()
-  const data = await admin.request(readItems('directus_fields', {
-    filter: {
-      collection: { _eq: collection },
-    }
-  }))
-  if (!data) return {}
-
-  const fieldMap = data.reduce((acc: any, field: DirectusField): any => {
-    field.options = field.meta?.options?.choices || []
-    delete field.translations
-    delete field.note
-    delete field.collection
-    delete field.special
-    delete field.group
-    delete field.conditions
-    delete field.validation
-
-    cache[`${collection}:${field.field}`] = field
-    acc[field.field] = field
-    return acc
-  }, {} as Record<string, DirectusField>)
-
-  return (cache[key] = fieldMap)
-}
-
-export async function getField<T = User>(field: keyof T, collection: string = 'users') {
-  const key = `${collection}:${String(field)}`
-  if (cache[key]) {
-    return cache[key]
-  }
-  const admin = await getAdminClient()
-  const response = await admin.request<DirectusField>(readItem('directus_fields', String(field)))
-  if (!response) return null
-  response.options = response?.meta?.options?.choices || []
-  return response ? (cache[key] = response) : null
-}
-
-export async function getFieldOptions<T = User>(fieldName: keyof T, collection: string = 'users') {
-  const field: DirectusField = await getField<T>(fieldName, collection)
-  if (!field) return []
-  return field.options
+export function getAdminClient() {
+  return createDirectus<GNHSchema>(adminUrl)
+    .with(staticToken(process.env.ADMIN_TOKEN))
+    .with(rest({
+      credentials: 'include',
+    }))
+    .with(graphql({
+      credentials: 'include',
+    }))
 }
 
 export * from './alerts';
 export * from './events';
+export * from './fields';
 export * from './files';
 export * from './messages';
 export * from './notifications';

@@ -5,7 +5,7 @@ import { createItem, deleteItem, readItems } from "@directus/sdk";
 import { getAdminClient } from "../";
 
 export async function getBuddy(user_id: string, buddy_id: string): Promise<UserBuddy> {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   const buddies = await admin.request(readItems('user_buddy', {
 
     filter: {
@@ -25,7 +25,7 @@ export async function getBuddy(user_id: string, buddy_id: string): Promise<UserB
 }
 
 export async function addBuddy(user_id: string, buddy_id: string): Promise<UserBuddy> {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   const relationship = await getBuddy(user_id, buddy_id)
 
   if (relationship) {
@@ -40,7 +40,7 @@ export async function addBuddy(user_id: string, buddy_id: string): Promise<UserB
 }
 
 export async function removeBuddy(user_id: string, buddy_id: string) {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   const relation = await getBuddy(user_id, buddy_id)
 
   if (relation) {

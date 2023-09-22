@@ -5,7 +5,7 @@ import { createItem, deleteItem, readItems } from "@directus/sdk";
 import { getAdminClient } from "../";
 
 export async function createUserShare(user_id: string, viewer_id: string): Promise<void> {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   await admin.request(createItem('user_shares', {
     user_id,
     viewer_id,
@@ -15,7 +15,7 @@ export async function createUserShare(user_id: string, viewer_id: string): Promi
 
 
 export async function deleteUserShare(user_id: string, viewer_id: string) {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   const shares = await admin.request<UserShare[]>(readItems('user_shares', {
 
     filter: {

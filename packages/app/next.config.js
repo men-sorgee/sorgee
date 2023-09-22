@@ -5,6 +5,8 @@ const { PHASE_DEVELOPMENT_SERVER } = require('next/constants')
 //  disable: process.env.PWA !== 'true'
 //})
 //
+
+/// @type {import('next').NextConfig}
 const getConfig = (phase) => {
   const dev = PHASE_DEVELOPMENT_SERVER === phase
 
@@ -17,9 +19,7 @@ const getConfig = (phase) => {
     },
     pageExtensions: ['tsx'],
     experimental: { 
-      appDir: false,
-      optimizeFonts: true,
-      optimizeImages: true,
+     
       
     },
     images: {

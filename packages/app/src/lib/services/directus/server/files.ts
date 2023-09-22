@@ -83,24 +83,24 @@ export async function createFolder(newFolder: {
   id?: string
   parent?: string
 }): Promise<DirectusFolder> {
-  const admin = await getAdminClient()
-  const folder = await admin.request(createDirectusFolder(newFolder))
+  const admin = getAdminClient()
+  const folder = await admin.request<DirectusFolder>(createDirectusFolder(newFolder))
   return folder
 }
 
 export async function findFolder(name: string, parent?: string): Promise<DirectusFolder> {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
   const filter = {
     name: { _eq: name },
   }
   if (parent) {
     filter['parent'] = { _eq: parent }
   }
-  const folders = await admin.request(readFolders({
+  const folders = await admin.request<DirectusFolder[]>(readFolders({
     filter,
   }))
   if (folders.length === 0) return null
-  return folders[0] as DirectusFolder
+  return folders[0]
 }
 
 export async function uploadFile(
@@ -108,8 +108,8 @@ export async function uploadFile(
   folder: UploadFolder | string,
   title: string,
   description?: string
-) {
-  const admin = await getAdminClient()
+): Promise<DirectusFile> {
+  const admin = getAdminClient()
   const { mimetype: type, originalFilename: name, filepath: path, data } = fileInfo
   const formData = new FormData()
   formData.append('folder', folder)
@@ -127,11 +127,9 @@ export async function uploadFile(
     type,
   }))
 
-  const file = await admin.request(uploadFiles(formData))
+  const file = await admin.request<DirectusFile>(uploadFiles(formData))
   return file
 }
-
-
 
 
 export async function importFile(
@@ -139,29 +137,29 @@ export async function importFile(
   folder: UploadFolder,
   title: string
 ): Promise<DirectusFile> {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
 
   const file = await admin.request<DirectusFile>(importDirectusFile(url, {
     folder,
     title,
   }))
-  return file as DirectusFile
+  return file
 }
 
-export async function deleteFile(id: string) {
-  const admin = await getAdminClient()
-  await admin.request(deleteDirectusFile(id))
+export async function deleteFile(id: string): Promise<void> {
+  const admin = getAdminClient()
+  await admin.request<DirectusFile>(deleteDirectusFile(id))
 }
 
-export async function getFile(id: string) {
-  const admin = await getAdminClient()
-  const file = await admin.request(readFile(id))
+export async function getFile(id: string): Promise<DirectusFile> {
+  const admin = getAdminClient()
+  const file = await admin.request<DirectusFile>(readFile(id))
   if (!file) return null
-  return file as unknown as DirectusFile
+  return file
 }
 
 export async function updateFile(id: string, fileInfo: DirectusFile) {
-  const admin = await getAdminClient()
-  await admin.request(updateDirectusFile(id, fileInfo as any))
+  const admin = getAdminClient()
+  await admin.request<DirectusFile>(updateDirectusFile(id, fileInfo as any))
 }
 
