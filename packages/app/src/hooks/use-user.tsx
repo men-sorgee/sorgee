@@ -160,7 +160,7 @@ export const useUser = ({
 
         if (destination && router.asPath != destination)
           setTimeout(() => {
-            window.location.href = destination
+            router.push(destination)
           }, 100)
       } else {
         signIn()

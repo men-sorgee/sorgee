@@ -6,7 +6,7 @@ import { getAdminClient } from "../";
 
 export async function getBuddy(user_id: string, buddy_id: string): Promise<UserBuddy> {
   const admin = getAdminClient()
-  const buddies = await admin.request(readItems('user_buddy', {
+  const buddies = await admin.request<UserBuddy[]>(readItems('user_buddy', {
 
     filter: {
       user_id: {
@@ -19,7 +19,7 @@ export async function getBuddy(user_id: string, buddy_id: string): Promise<UserB
     fields: '*, buddy_id.*' as any,
   }))
   if (buddies.length) {
-    return buddies[0] as UserBuddy
+    return buddies[0]
   }
   return null
 }
@@ -31,11 +31,11 @@ export async function addBuddy(user_id: string, buddy_id: string): Promise<UserB
   if (relationship) {
     return relationship
   } else {
-    const buddy = await admin.request(createItem('user_buddy', {
+    const buddy = await admin.request<UserBuddy>(createItem('user_buddy', {
       user_id,
       buddy_id,
     }))
-    return buddy as UserBuddy
+    return buddy
   }
 }
 

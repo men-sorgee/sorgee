@@ -56,7 +56,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
   )
 }
 
-//export default dynamic(() => Promise.resolve(GNHApp), {
-//  ssr: false,
-//});
+// export default dynamic(() => Promise.resolve(GNHApp), {
+//   ssr: false,
+// });
 

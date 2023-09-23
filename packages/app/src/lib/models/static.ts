@@ -1,8 +1,11 @@
 import { Block } from "editorjs-blocks-react-renderer";
-import { UserType } from "lib/models";
+import { GNHSchema, UserType } from "lib/models";
 
-import { DirectusFile, DirectusUser } from "./directus";
-import { User, VouchingUser } from "./users";
+import { DirectusField, DirectusFile, DirectusUser } from "@directus/sdk";
+
+import { VouchingUser } from "./users";
+
+export type FieldMap = Record<string, DirectusField<GNHSchema>>
 
 export type File = {
   filepath: string
@@ -41,7 +44,7 @@ export type Page = {
   in_menu: boolean
   blog_article: boolean
   static: Boolean
-  image?: DirectusFile
+  image?: DirectusFile<GNHSchema>
   sort: number
   visibility: UserType[]
   parent?: Page
@@ -62,9 +65,9 @@ export type Promo = {
   id: number
   name: string
   description: string
-  user_created?: string | DirectusUser
+  user_created?: string | DirectusUser<GNHSchema>
   date_created?: string
-  user_updated?: string | DirectusUser
+  user_updated?: string | DirectusUser<GNHSchema>
   date_updated?: string
   code: string
   expires?: string
@@ -82,7 +85,7 @@ export type PageContent = {
   html?: string
   markdown?: string
   control?: { time: number; blocks: Block[]; version: string }
-  image?: DirectusFile
+  image?: DirectusFile<GNHSchema>
   type?: string
   page?: Page
   columns: number
@@ -106,6 +109,4 @@ export type Announcement = {
   show_from?: string;
   show_until?: string;
 };
-
-export * from './directus';
 

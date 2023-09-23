@@ -19,8 +19,6 @@ const getConfig = (phase) => {
     },
     pageExtensions: ['tsx'],
     experimental: { 
-     
-      
     },
     images: {
       domains: [

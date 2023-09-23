@@ -1,3 +1,4 @@
+'use client'
 import { useCallback, useRef, useState } from "react";
 import { Camera } from "react-camera-pro";
 
@@ -30,8 +31,6 @@ export const PhotoCapture = chakra(
       onAccept(image)
       setImage(null)
     }, [image, onAccept])
-
-    if (typeof window == 'undefined') return null
 
     return (
       <>

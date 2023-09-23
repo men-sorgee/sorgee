@@ -1,5 +1,5 @@
 'use client'
-import type { RefObject } from 'react'
+import type { RefObject } from 'react';
 import { useEffect, useState } from "react";
 
 interface IntersectionObserverArgs extends IntersectionObserverInit {
@@ -29,7 +29,7 @@ export function useIntersectionObserver(
   useEffect(() => {
     const node = elementRef?.current // DOM Ref
     /* eslint-disable-next-line no-implicit-coercion -- TODO: Fix ESLint Error (#13355) */
-    const hasIOSupport = !!window.IntersectionObserver
+    const hasIOSupport = !!IntersectionObserver
 
     if (!hasIOSupport || frozen || !node) return
 

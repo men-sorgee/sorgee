@@ -66,7 +66,7 @@ export type PageProps<T> = Record<keyof T, string | string[]> & {
   sort: string
 }
 
-export type FieldMap = Record<string, DirectusField<GNHSchema>>
+
 
 export * from './billing';
 export * from './events';
