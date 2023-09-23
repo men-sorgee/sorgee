@@ -47,7 +47,7 @@ export default function Form<TData = any, TResponse = TData>({
   } = methods
 
   useWarnIfUnsavedChanges(isDirty, () => {
-    return window.confirm(
+    return confirm(
       'Are you sure you want to leave? You have unsaved changes.'
     )
   })

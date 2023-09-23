@@ -1,6 +1,6 @@
 'use client'
 
-import { useSite, useUser } from "hooks";
+import { useScreenSize, useSite, useUser } from "hooks";
 import { ViewHeightContext } from "hooks/use-view-height";
 import { brand } from "lib/config/brand";
 import { MemberLevel } from "lib/models";
@@ -47,23 +47,9 @@ export default function Layout({
   const [hideFooter, setHideFooter] = useState<boolean>(false)
   const { isOpen, onOpen } = useDisclosure()
   const { site } = useSite()
-
-  const showActions = useMemo(() => authenticated && level >= MemberLevel.pledge, [authenticated, level])
-
-  useEffect(() => {
-    if (path == undefined) {
-      setPath(router?.asPath)
-    }
-    if (!loading && authenticated) {
-      if (showActions && !isOpen) {
-        setTimeout(() => {
-          onOpen()
-        }, 1000)
-      }
-    }
-  }, [authenticated, loading, onOpen, isOpen, showActions, level, path, router?.asPath])
-
+  const { screenSize } = useScreenSize()
   const bodyRef = useRef<HTMLDivElement>(null)
+  const showActions = useMemo(() => authenticated && level >= MemberLevel.pledge, [authenticated, level])
 
   const handleRouteChange = useCallback((url: string) => {
     startTransition(() => {
@@ -83,6 +69,20 @@ export default function Layout({
   }, [])
 
   useEffect(() => {
+    if (path == undefined) {
+      setPath(router?.asPath)
+    }
+    if (!loading && authenticated) {
+      if (showActions && !isOpen) {
+        setTimeout(() => {
+          onOpen()
+        }, 1000)
+      }
+    }
+  }, [authenticated, loading, onOpen, isOpen, showActions, level, path, router?.asPath])
+
+
+  useEffect(() => {
     if (router?.asPath == undefined) return
     startTransition(() => {
       setHideFooter(router?.asPath.startsWith('/members/chat') || router?.asPath.endsWith('/ticket') || false)
@@ -99,18 +99,6 @@ export default function Layout({
   const headerRef = useRef<HTMLDivElement>(null)
   const actionsRef = useRef<HTMLDivElement>(null)
   const announcementRef = useRef<HTMLDivElement>(null)
-  const [screenSize, setScreenSize] = useState<number>(window?.innerWidth)
-
-  useEffect(() => {
-    window.addEventListener("resize", () => {
-      setScreenSize(window.innerWidth)
-    });
-    return () => {
-      window.removeEventListener("resize", () => {
-        setScreenSize(window.innerWidth)
-      })
-    }
-  }, []);
 
   useEffect(() => {
     let reduceBy = (headerRef?.current?.clientHeight || 80) +

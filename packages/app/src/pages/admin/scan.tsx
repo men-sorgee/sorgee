@@ -4,6 +4,7 @@ import "client-only";
 import { BarcodeScanner, Page } from "components";
 import { useUser } from "hooks";
 import { MemberLevel } from "lib/models";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 import {
@@ -22,7 +23,7 @@ import {
 import { BoltIcon as LightningBoltIconSolid } from "@heroicons/react/24/solid";
 
 export default function Scanner() {
-
+  const router = useRouter()
   const [facing, setFacing] = useState<'user' | 'environment'>('environment')
   const [light, setLight] = useState(false)
   const [show, setShow] = useState(true)
@@ -53,7 +54,7 @@ export default function Scanner() {
     setTimeout(() => setShow(false), 0)
   }
 
-  if (loading || !window || typeof window == 'undefined' || !member) return null
+  if (loading || !member) return null
 
   return (
     <Page title="Scan">
@@ -77,7 +78,7 @@ export default function Scanner() {
                 title={url}
                 colorScheme="primary"
                 onClick={() => {
-                  window?.open(url, '_blank')
+                  router.push(url)
                 }}
               >
                 Go Now
@@ -112,8 +113,6 @@ export default function Scanner() {
                 onResult={(result) => {
                   onScan(null, result)
                 }}
-
-
               />
             </AspectRatio>
             <HStack align="center" position="absolute" zIndex="1" spacing={4} mt={-12} mx={'45%'}>

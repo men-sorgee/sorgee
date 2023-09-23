@@ -1,7 +1,6 @@
 import Layout from "layout";
 import Providers from "layout/Providers";
 import { AppProps } from "next/app";
-import dynamic from "next/dynamic";
 import { Arvo, Manrope, Roboto_Mono } from "next/font/google";
 import React from "react";
 
@@ -34,7 +33,7 @@ const mono = Roboto_Mono({
 
 const theme = extendTheme(getTheme(body, heading, mono))
 
-function GNHApp({ Component, pageProps, router }: AppProps) {
+export default function GNHApp({ Component, pageProps, router }: AppProps) {
   const Content = Component as any
   if (router?.asPath.startsWith('/code/')) {
 
@@ -57,7 +56,7 @@ function GNHApp({ Component, pageProps, router }: AppProps) {
   )
 }
 
-export default dynamic(() => Promise.resolve(GNHApp), {
-  ssr: false,
-});
+// export default dynamic(() => Promise.resolve(GNHApp), {
+//   ssr: false,
+// });
 

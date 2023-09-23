@@ -1,3 +1,4 @@
+'use client'
 import { sentenceCase } from "change-case";
 import { ButtonConfirm, ButtonLink } from "components";
 import { useProducts } from "hooks";
@@ -91,7 +92,7 @@ export const Plan = ({ plan, interval = 'month' }: Params) => {
             w="full"
             position="inherit"
             onSuccess={async () => {
-              window.location.href = '/api/stripe/subscriptions/cancel'
+              location.href = '/api/stripe/subscriptions/cancel'
             }}
             size="lg"
             bg="red.500"

@@ -1,4 +1,4 @@
-import { postJSON } from "lib/utils";
+'use client'
 import React, { ReactNode } from "react";
 
 import { Box, Button } from "@chakra-ui/react";
@@ -27,7 +27,7 @@ export class ErrorBoundary extends React.Component<{
       return (
         <Box mx={[4, 4, 0]}>
           <h2>Something went wrong!</h2>
-          <Button type="button" onClick={() => window.location.reload()}>
+          <Button type="button" onClick={() => location.reload()}>
             Reload Page
           </Button>
         </Box>
