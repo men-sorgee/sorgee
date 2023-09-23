@@ -1,7 +1,6 @@
 import { ButtonBusy, ButtonConfirm } from "components";
 import { useInvite } from "hooks";
-import { EventInvite } from "lib/models";
-import { PurchaseResponse } from "lib/services/stripe/client";
+import { EventInvite, PurchaseResponse } from "lib/models";
 import { ApiResult } from "lib/utils/apis";
 import { useRouter } from "next/router";
 import { ReactNode, useCallback, useEffect, useRef, useState } from "react";

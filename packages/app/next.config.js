@@ -44,7 +44,6 @@ const getConfig = (phase) => {
       ]
     },
     poweredByHeader: false,
-    crossOrigin: false
   }
   return nextConfig
 }

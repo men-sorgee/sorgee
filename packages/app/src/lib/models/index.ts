@@ -1,10 +1,14 @@
-import { User } from "next-auth";
-import { Message } from "react-hook-form";
 
-import { DirectusField } from "@directus/sdk";
+
+import {
+  DirectusField as DField,
+  DirectusFile as DFile,
+  DirectusUser as DUser
+} from "@directus/sdk";
 
 import { BillingEvent, UserPayment } from "./billing";
 import { EventUser, GroupEvent } from "./events";
+import { Message } from "./messages";
 import { MemberAlert, NotificationUser, UserEmailEvent } from "./notifications";
 import { Page, PageContent, Promo, Site } from "./static";
 import {
@@ -15,6 +19,7 @@ import {
   SurveyQuestion
 } from "./surveys";
 import {
+  User,
   UserAccount,
   UserBlock,
   UserBuddy,
@@ -66,6 +71,9 @@ export type PageProps<T> = Record<keyof T, string | string[]> & {
   sort: string
 }
 
+export type DirectusField = DField<GNHSchema>
+export type DirectusFile = DFile<GNHSchema>
+export type DirectusUser = DUser<GNHSchema>
 
 
 export * from './billing';

@@ -1,7 +1,5 @@
 import {
   Coordinates,
-  DirectusFile,
-  DirectusUser,
   EventInvite,
   EventUser,
   MembershipNames,
@@ -13,6 +11,8 @@ import {
   UserInvite
 } from "lib/models";
 import { ProviderType } from "next-auth/providers";
+
+import { DirectusFile, DirectusUser } from "@directus/sdk";
 
 export type MemberSearchQueryParams = PageProps<Partial<Omit<SearchableMember, 'id'>>> & {
   online?: boolean
@@ -120,8 +120,9 @@ export type UserContactAttempt = {
   user?: string
 }
 
-export type User = {
+export interface User {
   id: string
+  invite?: UserInvite
   presence: PresenceType
   status: UserStatusType
   last_login?: string
@@ -188,6 +189,8 @@ export type User = {
   vaccinations?: unknown
   reviewed_by?: string | DirectusUser
   application_status: ApplicationStatusType
+  notifications: string[] | NotificationUser[]
+
   in_sendgrid?: boolean
   picture?: string | DirectusFile
   video_consent?: boolean
@@ -349,13 +352,13 @@ export enum ApplicationStatus {
 export type UserFile = {
   id: number
   users_id?: string | User
-  directus_files_id: DirectusFile
+  Directus_files_id: DirectusFile
 }
 
 export type UserPhoto = {
   id?: number
   users_id?: string | User
-  directus_files_id: DirectusFile | string
+  Directus_files_id: DirectusFile | string
   sort?: number
   is_public: boolean
   status?: 'new' | 'approved' | 'rejected'

@@ -44,7 +44,7 @@ export async function getUser<T extends User | Member | Applicant | Profile = Us
   fields: UserFields = memberFields
 ): Promise<T> {
   const admin = getAdminClient()
-  const user = await admin.request<T>(readItem('users', id, {
+  const user = await admin.request<User>(readItem('users', id, {
     fields: fields as any,
     filter: {
       status: {
@@ -66,7 +66,7 @@ export async function getUser<T extends User | Member | Applicant | Profile = Us
 
     },
   }))
-  return user
+  return user as T
 }
 
 export async function findUser<T extends User | Member | Applicant | Profile = Profile>(
@@ -124,7 +124,7 @@ export async function searchUsers<T extends User | SearchableMember = Searchable
 
 export async function getApplicant(id: string): Promise<Applicant | null> {
   const admin = getAdminClient()
-  return admin.request<Applicant>(readItem('users', id, { fields: applicantFields as any }))]
+  return admin.request<Applicant>(readItem('users', id, { fields: applicantFields as any }))
 }
 
 export async function getMember(id: string): Promise<Member | null> {
