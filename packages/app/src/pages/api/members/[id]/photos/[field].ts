@@ -40,13 +40,12 @@ export default async function MemberImage(
       return res.status(401).json(ApiResponse(null, 'Unauthorized'))
     }
 
-    let user = member
+    let user = await getUser(user_id)
     const self = user_id == member.id
 
     const isPublic = ['picture', 'public'].includes(image_field)
 
     if (!self) {
-      user = await getUser(user_id)
       if (!user) {
         res.status(404).json(ApiResponse(null, 'Not Found'))
       }
@@ -58,15 +57,14 @@ export default async function MemberImage(
     switch (method) {
       case 'GET': {
         const image = user[image_field] as DirectusFile
-        res.setHeader('Cache-Control', 'cache, store, max-age=30')
-        return image ? res.status(200).redirect('/api/asset/' + image.id) : res.status(404).end()
+        return image ? res.status(200).redirect('/api/asset/' + image.id) : res.status(404)
       }
       case 'POST': {
         const { private_folder, public_folder } = await getFolders(user)
         const folder = isPublic ? public_folder : private_folder
         const fileInfo = await getFileInfo(req)
         const file = await uploadFile(fileInfo, folder, image_name, image_description)
-        const list = user.my_photos as UserPhoto[]
+        const list = user.my_photos as UserPhoto[] || []
         const photoSort = list.filter((p) => p.is_public == isPublic).length + 1
 
         if (['public', 'private'].includes(image_field)) {
@@ -94,7 +92,7 @@ export default async function MemberImage(
     return res.status(200).json(ApiResponse('ok'))
   } catch (e) {
     console.error(e.message || e, e.stack)
-    res.status(405).json(ApiResponse(null, e.message || e))
+    res.status(500).json(ApiResponse(null, e.message || e))
   }
 }
 

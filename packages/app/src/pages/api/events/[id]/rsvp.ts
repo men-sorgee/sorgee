@@ -34,9 +34,8 @@ export default async function EventRSVP(
     let eventUser = await findInvite(eventId, member.id)
 
     if (method == 'POST') {
-      const { rsvp, reason, paid_at: p } = req.body
+      const { rsvp = 'maybe', reason, paid_at: p } = req.body
       const paid_at = (p ? String(p) : null) as any
-      if (!rsvp) throw new Error('Missing rsvp')
       if (eventUser) {
         eventUser = await updateInvite(eventUser.id, { rsvp, reason, paid_at })
         if (!eventUser) throw new Error('Error updating registration')
@@ -71,6 +70,6 @@ export default async function EventRSVP(
     }
   } catch (e) {
     console.error(e)
-    return res.status(400).json(ApiResponse(null, e))
+    return res.status(500).json(ApiResponse(null, e))
   }
 }
