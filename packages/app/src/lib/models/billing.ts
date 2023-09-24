@@ -68,8 +68,6 @@ export type PurchasePlanDetails = {
 }
 
 
-
-
 export const MembershipFeatureMap: Record<MemberFeature, string> = {
   view_directory: 'View Directory',
   chat: 'Chat',
@@ -83,8 +81,9 @@ export const MembershipFeatureMap: Record<MemberFeature, string> = {
 
 export type PlanExtension = {
   enabled?: boolean
-  type?: string
+  type?: MembershipNames
   features?: Array<MemberFeature>
+  label?: string
 }
 
 export type PurchaseResponse = {

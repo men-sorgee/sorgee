@@ -1,6 +1,7 @@
 import { capitalCase } from "change-case";
 import { useMember, useMeta, useUser } from "hooks";
 import {
+  DirectusField,
   memberEventFields,
   memberInterestsFields,
   MemberLevel,
@@ -12,7 +13,6 @@ import {
   memberProfileHealthFields,
   UserPhoto
 } from "lib/models";
-import { DirectusField } from "lib/models/DirectusField";
 import { toLocalDate } from "lib/utils/dates";
 import NextLink from "next/link";
 import { memo, ReactNode, useEffect, useState } from "react";

@@ -1,30 +1,19 @@
+import { DirectusField, FieldMap } from "lib/models";
 import { User } from "next-auth";
 
-import { DirectusField, readItem, readItems } from "@directus/sdk";
+import { readField, readFieldsByCollection } from "@directus/sdk";
 
-import { FieldMap } from "../../../models";
 import { getAdminClient } from "./";
 
 export async function getFields(collection: string = 'users'): Promise<FieldMap> {
 
   const admin = getAdminClient()
-  const data = await admin.request(readItems('directus_fields', {
-    filter: {
-      collection: { _eq: collection },
-    }
-  }))
+  const data = await admin.request<DirectusField[]>(readFieldsByCollection(collection))
   if (!data) return {}
 
-  const fieldMap = data.reduce((acc: any, field: DirectusField): any => {
-    field.options = field.meta?.options?.choices || []
-    delete field.translations
-    delete field.note
-    delete field.collection
-    delete field.special
-    delete field.group
-    delete field.conditions
-    delete field.validation
-
+  const fieldMap = data.reduce((acc: any, field: DirectusField) => {
+    field.options = field.meta?.options?.choices || field.meta?.options || []
+    delete field.meta
 
     acc[field.field] = field
     return acc
@@ -37,7 +26,7 @@ export async function getField<T = User>(field: keyof T, collection: string = 'u
   const key = `${collection}:${String(field)}`
 
   const admin = getAdminClient()
-  const response = await admin.request<DirectusField>(readItem('directus_fields', String(field)))
+  const response = await admin.request<DirectusField>(readField(collection, field as string))
   if (!response) return null
   response.options = response?.meta?.options?.choices || []
   return response

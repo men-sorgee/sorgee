@@ -4,7 +4,7 @@ export async function getServerSideProps({ params }) {
   const {
     props: { birthMonthOptions }
   } = await pageProps()
-  const { findPromo } = await import('lib/services/directus/server')
+  const { findPromo } = await import('lib/services/directus/server/site')
   const { code } = params
   if (!code) return { props: { birthMonthOptions } }
 

@@ -1,9 +1,11 @@
 import { Block } from "editorjs-blocks-react-renderer";
-import { UserType } from "lib/models";
-
-import { DirectusField, DirectusFile, DirectusUser } from "@directus/sdk";
-
-import { VouchingUser } from "./users";
+import {
+  DirectusField,
+  DirectusFile,
+  DirectusUser,
+  UserType,
+  VouchingUser
+} from "lib/models";
 
 export type FieldMap = Record<string, DirectusField>
 

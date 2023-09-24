@@ -1,6 +1,6 @@
+import { DirectusUser } from "lib/models";
 import { User } from "next-auth";
 
-import { DirectusUser } from "./directus";
 import { GroupEvent } from "./events";
 
 export type Rating = {

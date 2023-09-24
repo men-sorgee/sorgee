@@ -3,6 +3,7 @@
 import {
   DirectusField as DField,
   DirectusFile as DFile,
+  DirectusFolder as DFolder,
   DirectusUser as DUser
 } from "@directus/sdk";
 
@@ -71,10 +72,10 @@ export type PageProps<T> = Record<keyof T, string | string[]> & {
   sort: string
 }
 
-export type DirectusField = DField<GNHSchema>
+export type DirectusField = DField<GNHSchema> & { options: Array<{ display: string, value: string }> }
 export type DirectusFile = DFile<GNHSchema>
 export type DirectusUser = DUser<GNHSchema>
-
+export type DirectusFolder = DFolder<GNHSchema>
 
 export * from './billing';
 export * from './events';

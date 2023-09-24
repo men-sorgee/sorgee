@@ -1,17 +1,18 @@
 
 import { differenceInHours } from "date-fns";
 import { baseUrl } from "lib/config";
-import { GroupEvent, Member } from "lib/models";
+import {
+  GroupEvent,
+  Member,
+  PurchaseResponse,
+  RefundResponse
+} from "lib/models";
 import {
   findUserPayment,
   getInvite,
   updateUser
 } from "lib/services/directus/server";
-import {
-  getClient,
-  PurchaseResponse,
-  RefundResponse
-} from "lib/services/stripe/server";
+import { getClient } from "lib/services/stripe/server";
 import {
   ApiResponse,
   ApiResponseType,

@@ -1,4 +1,5 @@
-import { addMinutes, format } from "date-fns";
+import { addMinutes } from "date-fns";
+import { LocationCoordinates } from "lib/models";
 
 export function toLocalDate(value: string) {
   return addMinutes(new Date(value), new Date().getTimezoneOffset())

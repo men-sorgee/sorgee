@@ -88,7 +88,7 @@ export async function listUpcomingEvents(user_type: UserType): Promise<GroupEven
       invite_only: { _eq: false },
     },
     fields: ['*', {
-      users: ['*', {
+      invites: ['*', {
         users_id: ['*']
       }]
     }],

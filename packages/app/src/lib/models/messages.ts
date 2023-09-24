@@ -1,5 +1,4 @@
-import { DirectusFile, DirectusUser } from "./directus";
-import { PresenceType, User } from "./users";
+import { DirectusFile, DirectusUser, PresenceType, User } from "lib/models";
 
 export type ConversationStats = {
   id: string

@@ -8,7 +8,7 @@ import {
 import {
   addUserToCongratsEmail,
   addUserToPledgeSurveyEmail,
-  getUserInvites,
+  getUserEvents,
   updateUser
 } from "lib/services/directus/server";
 import { SendGridList, updateSendGrid } from "lib/services/sendgrid/server";
@@ -32,7 +32,7 @@ async function Agree(req: NextApiRequest, res: NextApiResponse<ApiResponseType>)
 
     if (applicant && application_status == 'agreement' && agree) {
 
-      const invites = await getUserInvites(applicant.id)
+      const invites = await getUserEvents(applicant.id)
       const hasAttendedEvent = invites.some((e) => e.attended)
       const user_type: UserType = hasAttendedEvent ? 'brother' : (applicant.vouched_by ? 'inductee' : 'pledge')
 

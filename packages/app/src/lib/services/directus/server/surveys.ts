@@ -14,7 +14,7 @@ import { getAdminClient } from "./";
 export async function getSurvey(id: string): Promise<Survey> {
   const admin = getAdminClient()
 
-  return admin.request(readItem<Survey>('surveys', id, {
+  return admin.request<Survey>(readItem('surveys', id, {
     fields: [
       'id',
       'name',

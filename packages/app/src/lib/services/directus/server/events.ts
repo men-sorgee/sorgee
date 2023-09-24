@@ -82,8 +82,11 @@ export async function getEvent(id: string, filter?: any): Promise<GroupEvent> {
         _limit: -1,
       },
       survey: {
-        status: {
-          _eq: 'published'
+        _sort: ['date_created'],
+        _filter: {
+          status: {
+            _eq: 'published'
+          }
         }
       }
     },
@@ -119,8 +122,10 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
         _limit: -1,
       },
       survey: {
-        status: {
-          _eq: 'published'
+        _filter: {
+          status: {
+            _eq: 'published'
+          }
         }
       }
     },

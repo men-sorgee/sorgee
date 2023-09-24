@@ -1,5 +1,4 @@
 import { Applicant, MemberLevel, SignUpForm, User } from "lib/models";
-import { findPromo } from "lib/services/directus/server";
 import {
   createUser,
   findUser,
@@ -7,6 +6,8 @@ import {
 } from "lib/services/directus/server/users";
 import { ApiResponse, ApiResponseType, withMethods } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
+
+import { findPromo } from "../../../lib/services/directus/server/site";
 
 export default async function Register(
   req: NextApiRequest,

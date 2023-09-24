@@ -1,5 +1,7 @@
 import {
   Coordinates,
+  DirectusFile,
+  DirectusUser,
   EventInvite,
   EventUser,
   MembershipNames,
@@ -11,8 +13,6 @@ import {
   UserInvite
 } from "lib/models";
 import { ProviderType } from "next-auth/providers";
-
-import { DirectusFile, DirectusUser } from "@directus/sdk";
 
 export type MemberSearchQueryParams = PageProps<Partial<Omit<SearchableMember, 'id'>>> & {
   online?: boolean
@@ -358,7 +358,7 @@ export type UserFile = {
 export type UserPhoto = {
   id?: number
   users_id?: string | User
-  Directus_files_id: DirectusFile | string
+  directus_files_id: DirectusFile | string
   sort?: number
   is_public: boolean
   status?: 'new' | 'approved' | 'rejected'
