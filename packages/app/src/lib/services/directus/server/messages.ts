@@ -23,9 +23,6 @@ export async function getMessages(user_id: string): Promise<Record<string, ChatM
       status: {
         _neq: 'archived',
       },
-      date_created: {
-        _gt: '$NOW(-30d)',
-      },
       _or: [
         {
           to: {
