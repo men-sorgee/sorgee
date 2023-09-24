@@ -56,6 +56,11 @@ export const authOptions: AuthOptions = {
     colorScheme: 'dark',
     buttonText: 'white',
   },
+  logger: {
+    debug: (...args) => log('auth:debug', ...args),
+    error: (...args) => console.error('auth:error', ...args),
+    warn: (...args) => console.warn('auth:warn', ...args),
+  },
 
   callbacks: {
     async signIn(data) {

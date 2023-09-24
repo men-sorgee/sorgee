@@ -17,7 +17,6 @@ export default function PledgeListPage() {
   const [pledge, setPledge] = useState<SearchableMember>()
   const { member: currentMember, loading } = useUser({
     minLevel: MemberLevel.brother,
-    requiredFeature: 'view_directory',
     redirectsEnabled: true,
   })
 
