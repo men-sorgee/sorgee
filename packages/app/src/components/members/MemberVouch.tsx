@@ -46,7 +46,7 @@ export const MemberVouch = memo(chakra(function MemberVouch({ member, size = ['s
 
   useEffect(() => {
     if (!statsLoading && stats && me?.id) {
-      setHasChatted(stats.conversations.find(c => c.id == me?.id) != undefined)
+      setHasChatted(myLevel == MemberLevel.staff || stats.conversations.find(c => c.id == me?.id) != undefined)
     }
     if (!isLoading && member?.id && !userLoading && me?.id) {
       setShowVouchButton(MemberLevel[level] == MemberLevel.pledge
