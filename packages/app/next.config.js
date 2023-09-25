@@ -1,24 +1,26 @@
 const { PHASE_DEVELOPMENT_SERVER } = require('next/constants')
 
-//const withPWA = require('next-pwa')({
-//  dest: 'public',
-//  disable: process.env.PWA !== 'true'
-//})
-//
+
+const withPWA = require('next-pwa')({
+  dest: 'public',
+  disable: process.env.PWA !== 'true'
+})
+
 
 /// @type {import('next').NextConfig}
 const getConfig = (phase) => {
   const dev = PHASE_DEVELOPMENT_SERVER === phase
-
   /**
    * @type {import('next').NextConfig}
    */
   const nextConfig = {
-    publicRuntimeConfig: {
-      dev
-    },
     pageExtensions: ['tsx'],
     experimental: { 
+      scrollRestoration: true,
+      turbo: {
+   
+        
+      }
     },
     images: {
       domains: [
@@ -48,4 +50,4 @@ const getConfig = (phase) => {
   return nextConfig
 }
 
-module.exports = getConfig // withPWA(getConfig)
+module.exports = withPWA(getConfig)

@@ -1,3 +1,5 @@
+'use client'
+
 export * from './swr'
 export * from './use-alerts'
 export * from './use-authenticated'
