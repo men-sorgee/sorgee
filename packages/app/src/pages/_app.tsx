@@ -1,8 +1,9 @@
 import Layout from "layout";
 import Providers from "layout/Providers";
+import * as gtag from "lib/utils/gtm";
 import { AppProps } from "next/app";
 import { Arvo, Manrope, Roboto_Mono } from "next/font/google";
-import React from "react";
+import React, { useEffect } from "react";
 
 import {
   ChakraProvider,
@@ -35,13 +36,23 @@ const theme = extendTheme(getTheme(body, heading, mono))
 
 export default function GNHApp({ Component, pageProps, router }: AppProps) {
   const Content = Component as any
-  if (router?.asPath.startsWith('/code/')) {
 
+  useEffect(() => {
+    const handleRouteChange = (url: string) => {
+      gtag.pageView(url)
+    }
+    router.events.on('routeChangeComplete', handleRouteChange)
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange)
+    }
+  }, [router.events])
+
+  if (router?.asPath.startsWith('/code/')) {
     return <Content {...pageProps} />
   }
-
   return (
     <>
+
       <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
         <React.StrictMode>
           <Providers session={pageProps.session}>

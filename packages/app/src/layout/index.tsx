@@ -4,7 +4,7 @@ import { useScreenSize, useSite, useUser } from "hooks";
 import { ViewHeightContext } from "hooks/use-view-height";
 import { brand } from "lib/config/brand";
 import { MemberLevel } from "lib/models";
-import { logEvent, postJSON } from "lib/utils";
+import { gaEvent, postJSON } from "lib/utils";
 import { useRouter } from "next/router";
 import {
   ReactNode,
@@ -20,7 +20,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { Box, Flex, Slide, Text, useDisclosure } from "@chakra-ui/react";
 
 import Actions from "./actions";
-import { Announcement } from "./components/Announcement";
+import Announcement from "./components/Announcement";
 import Footer from "./Footer";
 import Header from "./Header";
 import Meta from "./Meta";
@@ -53,18 +53,16 @@ export default function Layout({
 
   const handleRouteChange = useCallback((url: string) => {
     startTransition(() => {
-      logEvent('page_view', { url })
-
       setHideFooter(url.startsWith('/members/chat') || url.endsWith('/ticket'))
 
-      setTimeout(() => {
-        if (bodyRef.current != null) {
-          bodyRef.current.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-          })
-        }
-      }, 100)
+      //setTimeout(() => {
+      //  if (bodyRef.current != null) {
+      //    bodyRef.current.scrollIntoView({
+      //      behavior: 'smooth',
+      //      block: 'start',
+      //    })
+      //  }
+      //}, 100)
     })
   }, [])
 

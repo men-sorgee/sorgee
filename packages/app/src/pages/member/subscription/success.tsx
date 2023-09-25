@@ -5,7 +5,7 @@ import {
   MembershipRenewalType,
   MembershipType
 } from "lib/models";
-import { logEvent } from "lib/utils";
+import { gaEvent } from "lib/utils";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -27,9 +27,10 @@ export default function SubscriptionSuccessPage() {
       const product = products.find((p) => p.prices.find(price => price.id == String(price_id)))
       const price = product.prices.find(i => i.id == String(price_id))
       if (!price) return
-      logEvent('plans_purchase_cancelled', {
+      gaEvent({
+        action: 'plans_purchase_cancelled',
         category: 'monetization',
-        plan: MembershipType[product.type],
+        label: MembershipType[product.type],
         product: product.id,
         userId: member.id
       })

@@ -1,6 +1,6 @@
 import { Page, Plans } from "components";
 import { MembershipType } from "lib/models";
-import { logEvent } from "lib/utils";
+import { gaEvent } from "lib/utils";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -19,7 +19,8 @@ export default function AccountSubscriptionPage({ }: Params) {
 
   useEffect(() => {
     if (cancelled && !captured && product_id) {
-      logEvent('plans_purchase_cancelled', {
+      gaEvent({
+        action: 'plans_purchase_cancelled',
         category: 'monetization',
         product: product_id,
       })
