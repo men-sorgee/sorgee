@@ -20,11 +20,7 @@ export function getUTCNow() {
   )
 }
 
-export function logEvent(action: string, params?: Record<string, any>) {
-  if (typeof window !== 'undefined' && window.gtag) {
-    window.gtag('event', action, params)
-  }
-}
+
 
 export function gradient(color: string, value: number = 400, step: number = 100) {
   return `linear(to-b, ${color}.${value}, ${color}.${value + step}, ${color}.${value + step})`
@@ -127,3 +123,5 @@ export function getDistance(
 
 
 export * from './apis';
+export * from './gtm';
+

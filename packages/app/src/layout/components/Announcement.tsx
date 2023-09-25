@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 
 import { Alert, AlertIcon, Box, HStack } from "@chakra-ui/react";
 
-export const Announcement = forwardRef<HTMLDivElement, {
+const Announcement = forwardRef<HTMLDivElement, {
   constrained: any,
   announcement: string
 }>(({ constrained, announcement }, announcementRef) =>
@@ -17,3 +17,5 @@ export const Announcement = forwardRef<HTMLDivElement, {
   </Alert>
 )
 Announcement.displayName = 'Announcement'
+
+export default Announcement

@@ -8,7 +8,7 @@ import {
   PriceView,
   ProductView
 } from "lib/models";
-import { getJSON, logEvent } from "lib/utils";
+import { gaEvent, getJSON } from "lib/utils";
 import { useEffect, useState } from "react";
 
 import {
@@ -43,15 +43,19 @@ export const Plans = ({
 
   useEffect(() => {
     if (!loading && !productsLoading && products && member) {
-      logEvent('session_start', {
+      gaEvent({
+        action: 'session_start',
         category: 'monetization',
-        userId: member?.id,
+        label: 'user_id',
+        value: member?.id,
       })
 
       if (highlightedPlan) {
-        logEvent('view_item', {
+        gaEvent({
+          action: 'view_item',
           category: 'monetization',
-          productId: products.find((p) => p.type == MembershipType[highlightedPlan])?.id,
+          label: 'product_id',
+          value: products.find((p) => p.type == MembershipType[highlightedPlan])?.id,
           userId: member?.id,
         })
       }
@@ -71,7 +75,8 @@ export const Plans = ({
       console.error(error)
       return
     }
-    logEvent('add_to_cart', {
+    gaEvent({
+      action: 'add_to_cart',
       category: 'monetization',
       plan: MembershipType[product?.type || 'none'],
       productId: product.id,
@@ -81,7 +86,8 @@ export const Plans = ({
       sessionId: data?.id,
     })
 
-    logEvent('begin_checkout', {
+    gaEvent({
+      action: 'begin_checkout',
       category: 'monetization',
       plan: MembershipType[product.type],
       productId: product.id,

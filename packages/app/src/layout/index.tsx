@@ -4,7 +4,7 @@ import { useScreenSize, useSite, useUser } from "hooks";
 import { ViewHeightContext } from "hooks/use-view-height";
 import { brand } from "lib/config/brand";
 import { MemberLevel } from "lib/models";
-import { logEvent, postJSON } from "lib/utils";
+import { postJSON } from "lib/utils";
 import { Arvo, Manrope, Roboto_Mono } from "next/font/google";
 import { useRouter } from "next/router";
 import {
@@ -31,7 +31,7 @@ import {
 
 import getTheme from "../theme";
 import Actions from "./actions";
-import { Announcement } from "./components/Announcement";
+import Announcement from "./components/Announcement";
 import Footer from "./Footer";
 import Header from "./Header";
 import Meta from "./Meta";
@@ -81,8 +81,6 @@ export default function Layout({
 
   const handleRouteChange = useCallback((url: string) => {
     startTransition(() => {
-      logEvent('page_view', { url })
-
       setHideFooter(url.startsWith('/members/chat') || url.endsWith('/ticket'))
 
       setTimeout(() => {
