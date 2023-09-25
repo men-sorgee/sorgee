@@ -39,7 +39,7 @@ export default function GNHApp({ Component, pageProps, router }: AppProps) {
 
   useEffect(() => {
     const handleRouteChange = (url: string) => {
-      gtag.pageView(url)
+      gtag.pageView(url, pageProps?.session?.user?.id || undefined)
     }
     router.events.on('routeChangeComplete', handleRouteChange)
     return () => {
