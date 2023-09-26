@@ -280,7 +280,11 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
           {heading}
         </Heading>
 
-        {change && <Button size="xs" mb={1} variant="solid" colorScheme="primary" py={2} onClick={onToggle} >{isOpen ? 'Cancel Changes' : 'Change RSVP'}</Button>}
+        {change && <Button size="xs" mb={1} variant="solid" colorScheme="primary" py={2} onClick={(e) => {
+          e.stopPropagation()
+          e.preventDefault()
+          onToggle()
+        }} >{isOpen ? 'Cancel Changes' : 'Change RSVP'}</Button>}
       </Flex>
       {paid && change && (
         <Text textAlign='left'>You pre-paid ${invite?.amount || invite?.event.cost} to guarantee your spot!</Text>
@@ -309,7 +313,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
               justify="stretch"
               gap="2"
               pt={4}
-              pb={4}
+              pb={2}
             >
               {children}
             </Flex>

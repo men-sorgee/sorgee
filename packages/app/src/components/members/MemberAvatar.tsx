@@ -1,7 +1,7 @@
 import { formatDistanceToNowStrict } from "date-fns";
 import { Member } from "lib/models";
 import { getAssetUrl, gradient } from "lib/utils";
-import React, { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 import { Avatar, AvatarBadge, AvatarProps, chakra } from "@chakra-ui/react";
 
@@ -12,7 +12,7 @@ export type MemberAvatarProps = AvatarProps & {
   children?: React.ReactNode | React.ReactNode[]
 }
 
-export const MemberAvatar = React.memo(chakra(
+export const MemberAvatar = memo(chakra(
   function MemberAvatar({ member, color = 'white', children, size = 'md', ...props }: MemberAvatarProps) {
     const [lastLogin, setLastLogin] = useState<string | null>(null)
     const { nickname, first_name, picture } = member || {

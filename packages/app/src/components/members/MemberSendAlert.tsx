@@ -1,6 +1,6 @@
 import { Member, MemberAlert } from "lib/models";
 import { postJSON } from "lib/utils/apis";
-import { useRef } from "react";
+import { memo, useRef } from "react";
 
 import {
   ButtonProps,
@@ -20,11 +20,11 @@ export type MemberSendAlertProps = ButtonProps & {
   member: Partial<Member>
 }
 
-export const MemberSendAlert = chakra(({
+export const MemberSendAlert = memo(chakra(function MemberSendAlert({
   member,
   color = 'white',
   size
-}: MemberSendAlertProps) => {
+}: MemberSendAlertProps) {
   const messageRef = useRef<HTMLTextAreaElement>(null)
   const buttonUrlRef = useRef<HTMLInputElement>(null)
   const buttonTextRef = useRef<HTMLInputElement>(null)
@@ -84,4 +84,4 @@ export const MemberSendAlert = chakra(({
     </ButtonConfirm>
 
   )
-})
+}))

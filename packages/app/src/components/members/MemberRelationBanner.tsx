@@ -1,4 +1,5 @@
 import { Member, UserBuddy, UserLike, UserShare } from "lib/models";
+import { memo } from "react";
 
 import {
   Badge,
@@ -13,9 +14,8 @@ export type MemberRelationBannerProps = FlexProps & {
   member: Partial<Member>
   fontSize?: ResponsiveValue<string | number>
 }
-
-export const MemberRelationBanner = chakra(
-  ({ member, viewer, fontSize = ['xs', 'sm'], ...props }: MemberRelationBannerProps) => {
+export const MemberRelationBanner = memo(chakra(
+  function MemberRelationBanner({ member, viewer, fontSize = ['xs', 'sm'], ...props }: MemberRelationBannerProps) {
     const sharedWithMe = member.photo_shares?.some(
       (s: UserShare) => String(s.viewer_id) == viewer?.id
     )
@@ -79,4 +79,4 @@ export const MemberRelationBanner = chakra(
       </>
     )
   }
-)
+))

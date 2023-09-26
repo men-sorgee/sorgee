@@ -2,6 +2,7 @@ import { capitalCase } from "change-case";
 import { useMember, useMeta, useUser } from "hooks";
 import {
   DirectusField,
+  GroupEvent,
   memberEventFields,
   memberInterestsFields,
   MemberLevel,
@@ -217,7 +218,7 @@ export const MemberSpotlight = memo(chakra(
               <AccordionPanel pb={4}>
                 <Box p={2} flex="grow">
                   <PhotoGallery
-                    images={photos.map((p: UserPhoto) => {
+                    images={(photos as Array<UserPhoto>).map((p: UserPhoto) => {
                       return {
                         src: `/api/asset/${p.directus_files_id}`,
                         private: p.is_public == false,
@@ -506,7 +507,7 @@ export const MemberSpotlight = memo(chakra(
                         .map((e) => {
                           return {
                             id: e.id,
-                            event: e.event,
+                            event: e.events_id as GroupEvent,
                             rsvp: e.rsvp,
                           }
                         })

@@ -22,7 +22,7 @@ export type MemberStatsBoxProps = BoxProps & {
 }
 
 export const MemberStatsBox = chakra(({ member, children, ...props }) => {
-  const { data: stats, isLoading } = useSWR<MemberStats>('/api/stats', {
+  const { data: stats } = useSWR<MemberStats>('/api/stats', {
     revalidateOnMount: true,
     fallbackData: {
       subscribers: 0,

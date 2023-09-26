@@ -1,6 +1,6 @@
 import { Member, Question, SurveyAnswer, UserSurvey } from "lib/models";
 import { JsonFetcher } from "lib/utils";
-import { ReactNode } from "react";
+import { memo, ReactNode } from "react";
 import swr from "swr";
 
 import { Avatar, Box, Heading, HStack, Tag, Text } from "@chakra-ui/react";
@@ -13,7 +13,7 @@ export type MemberSurveyAnswersProps = {
   headingSize?: string
 }
 
-export function MemberSurveyAnswers({
+export const MemberSurveyAnswers = memo(function MemberSurveyAnswers({
   surveyId,
   member,
   headingSize = 'md',
@@ -134,4 +134,4 @@ export function MemberSurveyAnswers({
       )}
     </>
   )
-}
+})

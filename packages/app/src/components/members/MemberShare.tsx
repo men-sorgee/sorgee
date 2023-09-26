@@ -14,7 +14,7 @@ export type MemberShareProps = Omit<IconButtonProps, 'aria-label'> & {
 
 export const MemberShare = memo(chakra(
   function MemberShare({ member, size = ['sm', 'md', 'lg'], ...props }: MemberShareProps) {
-    const { loading, member: me, reload, level, hasFeature } = useUser()
+    const { loading, member: me, level, hasFeature } = useUser()
     const [hover, setHover] = useState(false)
     const [showLock, setShowLock] = useState(false)
     const [isShared, setIsShared] = useState<boolean>(false)

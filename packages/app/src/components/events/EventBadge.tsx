@@ -1,4 +1,5 @@
 import { capitalCase } from "change-case";
+import { memo } from "react";
 
 import { Badge, BadgeProps, chakra } from "@chakra-ui/react";
 
@@ -28,7 +29,7 @@ const typeMap = {
   default: ['gray', 'white'],
 }
 
-export const EventBadge = chakra(({ status, type, size = 'md', ...props }: EventBadgeProps) => {
+export const EventBadge = memo(chakra(({ status, type, size = 'md', ...props }: EventBadgeProps) => {
   if (!status || !type) return null
   const bgColor = typeMap[type] ? typeMap[type][0] : typeMap.default[0]
   const textColor = typeMap[type] ? typeMap[type][1] : typeMap.default[1]
@@ -46,4 +47,4 @@ export const EventBadge = chakra(({ status, type, size = 'md', ...props }: Event
       {capitalCase(type)}
     </Badge>
   )
-})
+}))

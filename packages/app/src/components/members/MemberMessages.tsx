@@ -5,7 +5,8 @@ import {
   MemberLevel,
   MembershipType,
   SearchableMember,
-  UserBuddy
+  UserBuddy,
+  UserIcon
 } from "lib/models";
 import { memo, useEffect, useState } from "react";
 
@@ -56,8 +57,8 @@ export const MemberMessages = memo(chakra(
       )
         return <></>
     }
-
-    if (theirLevel !== MemberLevel.pledge && me?.id != them?.vouched_by?.id && !hasFeature('chat'))
+    const voucher = them?.vouched_by as UserIcon
+    if (theirLevel !== MemberLevel.pledge && me?.id != voucher?.id && !hasFeature('chat'))
       return (
         <UpgradeIcon
           title={`Chat with ${name}`}

@@ -5,7 +5,7 @@ import { differenceInDays, isAfter, isFuture } from "date-fns";
 import { GroupEvent, Location } from "lib/models";
 import { getEventDate } from "lib/utils/dates";
 import dynamic from "next/dynamic";
-import { ReactNode, useEffect, useState } from "react";
+import { memo, ReactNode, useEffect, useState } from "react";
 
 import {
   Card,
@@ -50,7 +50,7 @@ export type EventCardProps = CardProps & {
   event: Partial<GroupEvent>
 }
 
-export const EventCard = ({
+export const EventCard = memo(function EventCard({
   event,
   showDescription = false,
   showLocation = false,
@@ -64,7 +64,7 @@ export const EventCard = ({
   size,
   padding,
   ...props
-}: EventCardProps) => {
+}: EventCardProps) {
 
   const [viewLocation, setViewLocation] = useState<boolean>(undefined)
   const [eventStartDate, setEventStartDate] = useState<{
@@ -350,4 +350,4 @@ export const EventCard = ({
       )}
     </Card>
   )
-}
+})

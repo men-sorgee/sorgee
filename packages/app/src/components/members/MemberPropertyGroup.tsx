@@ -1,5 +1,5 @@
 import { capitalCase } from "change-case";
-import { DirectusField, Member } from "lib/models";
+import { DirectusField, Member, QueryFields, User } from "lib/models";
 
 import { LockIcon } from "@chakra-ui/icons";
 import {
@@ -15,7 +15,7 @@ export type MemberPropertyGroupProps = {
   k: string
   member: Partial<Member>
   show: boolean
-  fieldList: string[]
+  fieldList: QueryFields<User>
   fields: Record<string, DirectusField>
   maxCols?: number
   minCols?: number
@@ -31,7 +31,7 @@ export const MemberPropertyGroup = ({
   maxCols = 3,
 }: MemberPropertyGroupProps) => {
   const populatedFields =
-    fieldList?.filter(
+    fieldList?.map(v => v as string).filter(
       (f) => member[f] != undefined && (Array.isArray(member[f]) ? member[f]?.length > 0 : true)
     ) || []
   const color = 'white'
@@ -58,7 +58,7 @@ export const MemberPropertyGroup = ({
     text?.toString() ? text?.toString()?.toLowerCase() : text
   const getValue = (field: string, value: string) => {
     if (fields[field]?.meta?.options?.choices) {
-      const option = fields[field].meta.options.choices.find(
+      const option = fields[field].options.find(
         (choice: any) => normalize(choice.value) == normalize(value)
       )
       return capitalCase(option?.text ? option.text : value)
@@ -69,7 +69,7 @@ export const MemberPropertyGroup = ({
   return (
     <SimpleGrid key={k} columns={[minCols, 2, maxCols]} spacing={1} alignItems="start">
       {populatedFields.map(
-        (field, i: number) =>
+        (field: string, i: number) =>
           member[field] != undefined && (
             <GridItem
               key={`${field}-${i}`}

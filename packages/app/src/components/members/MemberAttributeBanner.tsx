@@ -1,5 +1,6 @@
 import { capitalCase } from "change-case";
 import { Member } from "lib/models";
+import { memo } from "react";
 
 import {
   Badge,
@@ -14,8 +15,8 @@ export type MemberAttributeBannerProps = FlexProps & {
   fontSize?: ResponsiveValue<string | number>
 }
 
-export const MemberAttributeBanner = chakra(
-  ({ member, fontSize = ['xx-small', 'xs', 'sm'], ...props }: MemberAttributeBannerProps) => {
+export const MemberAttributeBanner = memo(chakra(
+  function MemberAttributeBanner({ member, fontSize = ['xx-small', 'xs', 'sm'], ...props }: MemberAttributeBannerProps) {
     const badgeProps = {
       px: 2,
       py: 0.5,
@@ -51,4 +52,4 @@ export const MemberAttributeBanner = chakra(
       </>
     )
   }
-)
+))
