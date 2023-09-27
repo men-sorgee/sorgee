@@ -29,10 +29,10 @@ export default async function EventRSVP(
     if (!event || !['planned', 'scheduled', 'occurred'].includes(event.status))
       throw new Error('Event not found')
 
-    console.dir({
-      eventId: event.id,
-      userId: member.id,
-    })
+    // console.dir({
+    //   eventId: event.id,
+    //   userId: member.id,
+    // })
     let invite = await findInvite(eventId, member.id)
 
     if (method == 'POST') {

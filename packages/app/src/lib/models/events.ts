@@ -1,6 +1,5 @@
-import { DirectusFile, UserPayment } from "lib/models";
+import { DirectusFile, Member, User, UserPayment, UserType } from "lib/models";
 
-import { Member, User, UserType } from "../../hooks/users";
 import { Rating, Survey } from "./surveys";
 
 export type UserInvite = {
