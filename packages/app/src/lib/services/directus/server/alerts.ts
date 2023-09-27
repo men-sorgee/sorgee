@@ -30,7 +30,7 @@ export async function getAlerts(user_id: string): Promise<MemberAlert[]> {
       }
     },
     sort: ['-date_created'],
-    fields: '*' as any,
+    fields: ['*'],
     limit: 20
   }))
 

@@ -1,4 +1,10 @@
-import { Member, memberFields, User } from "lib/models";
+import {
+  Member,
+  memberFields,
+  QueryFields,
+  searchableMemberFields,
+  User
+} from "lib/models";
 import { getUser, updateUser } from "lib/services/directus/server/users";
 import {
   ApiResponse,
@@ -23,11 +29,11 @@ export default async function CurrentMember(
       return res.status(200).json(ApiResponse(updated))
     }
 
-    let userFields = ['id', 'presence', 'last_login', 'status']
-    let fields = [
+
+    let fields: QueryFields<User> = [
       ...memberFields,
-      ...userFields.map(f => `buddies.buddy_id.${f}`),
-      ...userFields.map(f => `likes.liked_id.${f}`)]
+      ...searchableMemberFields
+    ]
 
     const user = await getUser<Member>(me.id, fields)
 

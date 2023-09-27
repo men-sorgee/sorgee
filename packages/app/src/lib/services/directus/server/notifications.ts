@@ -39,7 +39,10 @@ export async function getNotifications(user_id: string): Promise<UserNotificatio
       },
     },
     sort: ['-id'],
-    fields: '*, notification_id.*' as any,
+    fields: [
+      '*',
+      { notification_id: ['*'] }
+    ],
     limit: 20
   }))
 

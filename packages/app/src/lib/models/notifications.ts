@@ -1,4 +1,4 @@
-import { User, UserType } from "./users";
+import { User, UserType } from "../../hooks/users";
 
 //export type Notification = Omit<
 //  Notification,

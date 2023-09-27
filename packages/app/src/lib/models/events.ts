@@ -1,7 +1,7 @@
 import { DirectusFile, UserPayment } from "lib/models";
 
+import { Member, User, UserType } from "../../hooks/users";
 import { Rating, Survey } from "./surveys";
-import { Member, User, UserType } from "./users";
 
 export type UserInvite = {
   e: string

@@ -15,13 +15,14 @@ export default async function UserMessages(
 ) {
 
   try {
-    const method = withMethods(req, ['GET'])
+    withMethods(req, ['GET'])
     const me = await withMember(req, res)
 
     const { id: i } = req.query
     let id = String(i)
 
     const them = await getUser(id)
+    res.setHeader('Cache-Control', 'cache, store, max-age=1')
 
     // only show stats when a brother is looking at a pledge
     if (MemberLevel[me.user_type] >= MemberLevel.brother && (MemberLevel[them.user_type] == MemberLevel.pledge ||
@@ -42,7 +43,6 @@ export default async function UserMessages(
           messageCount: convo.length
         } as ConversationStats)
       })
-
       return res.status(200).json(ApiResponse(messageStats))
     }
     return res.status(200).json(ApiResponse({

@@ -224,7 +224,7 @@ const ProfileForm = ({
   }
 
   const getOptions = (field: string) => {
-    return fieldMap[field]?.meta.options.choices
+    return fieldMap[field]?.options
   }
 
   const { isOpen, onOpen, onClose } = useDisclosure()

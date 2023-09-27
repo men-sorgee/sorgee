@@ -101,11 +101,11 @@ export default async function getUserMessages(
         }
 
       default:
-        return res.status(404).end()
+        return res.status(404).json(ApiResponse(null, 'Not found'))
     }
   } catch (e) {
     if (e.message == 'Unauthorized') return res.status(200).json(ApiResponse(messages))
     console.error(e.message || e, e.stack)
-    res.status(405).json(ApiResponse(null, e.message || e))
+    res.status(500).json(ApiResponse(null, e.message || e))
   }
 }

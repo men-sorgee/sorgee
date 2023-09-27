@@ -19,7 +19,7 @@ export default async function VouchForMember(
   res: NextApiResponse<ApiResponseType<UserBuddy> | ApiResponseType>
 ) {
   try {
-    const method = withMethods(req, ['POST', 'GET', 'PUT'])
+    const method = withMethods(req, ['GET', 'POST', 'PUT'])
     const me = await withMember(req, res)
 
     const { id } = req.query
@@ -32,10 +32,7 @@ export default async function VouchForMember(
       'id',
       'nickname',
       'user_type',
-
-      'vouched_by.id',
-      'vouched_by.nickname',
-      'vouched_by.picture',
+      { vouched_by: ['id', 'nickname', 'picture'] }
     ])
     if (!them) throw new Error('Pledge not found')
 

@@ -1,4 +1,4 @@
-import { MemberFeature, User } from "./users";
+import { MemberFeature, User } from "../../hooks/users";
 
 export type BillingEvent = {
   id: string

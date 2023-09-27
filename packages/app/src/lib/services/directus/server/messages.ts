@@ -40,18 +40,10 @@ export async function getMessages(user_id: string): Promise<Record<string, ChatM
     limit: -1,
     fields: [
       '*',
-      'from.id',
-      'from.picture',
-      'from.nickname',
-      'from.presence',
-      'from.last_login',
-      'to.id',
-      'to.picture',
-      'to.nickname',
-      'to.presence',
-      'to.last_login',
-      'image.id',
-    ] as any,
+      { from: ['id', 'picture', 'nickname', 'presence', 'last_login'] },
+      { to: ['id', 'picture', 'nickname', 'presence', 'last_login'] },
+      { image: ['id', 'title'] }
+    ],
   }))
 
   const userMessages: Record<string, ChatMessage[]> = {}

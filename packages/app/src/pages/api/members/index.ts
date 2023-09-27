@@ -40,6 +40,7 @@ export default async function FindMembers(
 
     const orSearchItems = []
     const andSearchItems = []
+    const deep = []
 
     andSearchItems.push({
       show_profile: {
@@ -65,10 +66,12 @@ export default async function FindMembers(
     }
 
     if (photos) {
-      andSearchItems.push({
+      deep.push({
         my_photos: {
-          is_public: { _eq: true },
-        },
+          _filter: {
+            is_public: { _eq: true },
+          },
+        }
       })
     }
 
@@ -131,23 +134,33 @@ export default async function FindMembers(
       })
     }
 
-    if (orSearchItems.length > 0) andSearchItems.push({ _or: orSearchItems })
 
-    const searchParams = {
-      _and: andSearchItems,
+
+    const searchParams: {
+      _and: any[]
+      _or?: any[]
+    } = {
+      _and: andSearchItems
     }
-
-    // console.dir({
-    //   searchParams,
-    // }, { depth: 10 })
+    if (orSearchItems.length) {
+      searchParams._or = orSearchItems
+    }
+    //console.dir({
+    //  searchParams,
+    //  deep
+    //}, { depth: 10 })
 
     let results = null
     try {
       results = await searchUsers<SearchableMember>(
-        { filter: searchParams as any, fields: searchableMemberFields, limit, page, sort })
+        searchParams as any, searchableMemberFields, limit, page, sort, deep)
     } catch (e) {
-      console.error('Errored with params:', JSON.stringify(searchParams, null, 2))
-      console.dir(searchParams, { depth: 10 })
+      console.error('Errored with params:', e.errors[0]?.message)
+      console.dir({
+        searchParams,
+        deep,
+        errors: e.errors
+      }, { depth: 10 })
       throw e
     }
 

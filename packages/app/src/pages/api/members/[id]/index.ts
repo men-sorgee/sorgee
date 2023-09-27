@@ -11,7 +11,10 @@ import {
   memberProfileLocationFields,
   memberProfilePhotoFields,
   memberProfilePrivateFields,
+  QueryFields,
   User,
+  UserIconFields,
+  UserPhoto,
   UserShare
 } from "lib/models";
 import { addUserView, getUser, updateUser } from "lib/services/directus/server";
@@ -38,12 +41,14 @@ export default async function Member(
     else user_id = String(id)
 
     let me = viewer.id == user_id
-    let fields = memberFields
+    let fields: QueryFields<User> = memberFields
     if (me) {
       fields = [
         ...memberFields,
-        'buddies.buddy_id.id' as any,
-        'likes.liked_id.id' as any]
+        { buddies: [{ buddy_id: UserIconFields }] },
+        { likes: [{ liked_id: UserIconFields }] },
+        { invites: ['*', { events_id: ['*'] }] },
+      ] as any
     }
 
     let user = await getUser<Member>(user_id, fields)
@@ -62,7 +67,7 @@ export default async function Member(
           let shares = user.photo_shares as UserShare[]
           let canSee = shares?.some((s) => s.viewer_id == viewer.id) || false
           if (!canSee) {
-            user.my_photos = user.my_photos.filter((p) => p.is_public)
+            user.my_photos = user.my_photos.map(p => p as UserPhoto).filter((p) => p.is_public)
           }
           filter(user)
         }
@@ -124,8 +129,8 @@ function filter(member: Member) {
   }
 }
 
-function filterFields(member: Member, fieldList: Array<keyof Member>) {
+function filterFields(member: Member, fieldList: QueryFields<User>) {
   fieldList.forEach((field) => {
-    delete member[field]
+    delete member[field as string]
   })
 }

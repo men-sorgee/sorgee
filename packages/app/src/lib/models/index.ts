@@ -1,10 +1,25 @@
 
 
 import {
+  User,
+  UserAccount,
+  UserBlock,
+  UserBuddy,
+  UserFile,
+  UserLike,
+  UserPhoto,
+  UserSession,
+  UserShare,
+  UserVerificationToken,
+  UserView
+} from "lib/models";
+
+import {
   DirectusField as DField,
   DirectusFile as DFile,
   DirectusFolder as DFolder,
-  DirectusUser as DUser
+  DirectusUser as DUser,
+  QueryFields as QFields
 } from "@directus/sdk";
 
 import { BillingEvent, UserPayment } from "./billing";
@@ -19,19 +34,6 @@ import {
   SurveyAnswer,
   SurveyQuestion
 } from "./surveys";
-import {
-  User,
-  UserAccount,
-  UserBlock,
-  UserBuddy,
-  UserFile,
-  UserLike,
-  UserPhoto,
-  UserSession,
-  UserShare,
-  UserVerificationToken,
-  UserView
-} from "./users";
 
 export interface GNHSchema {
   events: GroupEvent[]
@@ -72,10 +74,11 @@ export type PageProps<T> = Record<keyof T, string | string[]> & {
   sort: string
 }
 
-export type DirectusField = DField<GNHSchema> & { options: Array<{ display: string, value: string }> }
+export type DirectusField = DField<GNHSchema> & { options: Array<{ text: string, value: string }> }
 export type DirectusFile = DFile<GNHSchema>
 export type DirectusUser = DUser<GNHSchema>
 export type DirectusFolder = DFolder<GNHSchema>
+export type QueryFields<T> = QFields<GNHSchema, T>
 
 export * from './billing';
 export * from './events';

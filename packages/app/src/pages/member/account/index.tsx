@@ -106,7 +106,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps & { fieldMap: 
   const { member, loading, mutate } = useUser()
 
   const getOptions = (field: string) => {
-    return fieldMap[field]?.meta.options.choices
+    return fieldMap[field]?.options
   }
 
   const setSection = useCallback(

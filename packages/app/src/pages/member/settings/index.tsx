@@ -113,7 +113,7 @@ function SettingsForm({ fieldMap, section: s = 'contact' }: PageProps & { fieldM
   const { member, mutate, hasFeature } = useUser()
 
   const getOptions = (field: string) => {
-    return fieldMap[field]?.meta.options.choices
+    return fieldMap[field]?.options
   }
 
   const setSection = useCallback(

@@ -112,11 +112,16 @@ export async function getEventDetail(id: string): Promise<EventDetail> {
   const event = await admin.request<GroupEvent>(readItem('events', id, {
     fields: [
       '*',
-      'location.*',
-      'invites.*',
-      ...userFields.map((f) => `invites.users_id.${f}`),
-      'survey.*'
-    ] as any,
+      { location: ['*'] },
+      {
+        invites:
+          ['*',
+            { users_id: userFields }
+          ]
+      },
+      { survey: ['*'] },
+
+    ],
     deep: {
       invites: {
         _limit: -1,

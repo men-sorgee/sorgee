@@ -7,6 +7,7 @@ import {
   MemberStats,
   Profile,
   profileFields,
+  QueryFields,
   SearchableMember,
   searchableMemberFields,
   User,
@@ -41,11 +42,11 @@ export async function updateUser<T extends User | Member | Applicant | Profile =
 
 export async function getUser<T extends User | Member | Applicant | Profile = User>(
   id: string,
-  fields: UserFields = memberFields
+  fields: QueryFields<User> = memberFields
 ): Promise<T> {
   const admin = getAdminClient()
   const user = await admin.request<User>(readItem('users', id, {
-    fields: fields as any,
+    fields,
     filter: {
       status: {
         _eq: 'active',
@@ -66,12 +67,13 @@ export async function getUser<T extends User | Member | Applicant | Profile = Us
 
     },
   }))
+
   return user as T
 }
 
 export async function findUser<T extends User | Member | Applicant | Profile = Profile>(
   email: string,
-  fields: UserFields = profileFields
+  fields: QueryFields<User> = profileFields
 ): Promise<T> {
   const admin = getAdminClient()
   const users = await admin.request<User[]>(readItems('users', {
@@ -91,10 +93,11 @@ export async function findUser<T extends User | Member | Applicant | Profile = P
 
 export async function searchUsers<T extends User | SearchableMember = SearchableMember>(
   filter: any,
-  fields: UserFields = searchableMemberFields,
+  fields: QueryFields<User> = searchableMemberFields,
   limit: number = 20,
   page: number = 1,
-  sort: any = '-last_login'
+  sort: any = '-last_login',
+  deep?: any
 ): Promise<MemberSearchResults<T>> {
   const admin = getAdminClient()
 
@@ -105,6 +108,7 @@ export async function searchUsers<T extends User | SearchableMember = Searchable
     page,
     meta: '*',
     sort,
+    deep
   }))
 
   const meta = await admin.request<{ count: number }>(aggregate('users', {

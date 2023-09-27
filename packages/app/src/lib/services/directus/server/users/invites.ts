@@ -26,15 +26,16 @@ export async function getInvite(inviteId: number): Promise<EventUser | null> {
 
 export async function findInvite(eventId: string, userId: string): Promise<EventUser | null> {
   const admin = getAdminClient()
-  const query = await admin.request(readItems('events_users', {
+  const invites = await admin.request<EventUser[]>(readItems('events_users', {
     filter: {
       events_id: { _eq: eventId },
       users_id: { _eq: userId },
     },
-    fields: ['*'],
+    fields: ['*', { events_id: ['*'] }],
+    limit: -1,
   }))
 
-  return query ? query[0] as EventUser : null
+  return invites.length ? invites[0] : null
 }
 
 export async function listInvites(member: Member): Promise<EventInvite[]> {
@@ -81,7 +82,7 @@ export async function listInvites(member: Member): Promise<EventInvite[]> {
 
 export async function listUpcomingEvents(user_type: UserType): Promise<GroupEvent[]> {
   const admin = getAdminClient()
-  const data = await admin.request(readItems('events', {
+  const data = await admin.request<GroupEvent[]>(readItems('events', {
     filter: {
       status: { _in: ['scheduled', 'planned'] },
       datetime: { _gte: '$NOW(-1 days)' },
@@ -94,8 +95,7 @@ export async function listUpcomingEvents(user_type: UserType): Promise<GroupEven
     }],
     sort: ['datetime'],
   }))
-  //if (user_type == 'staff') return data as unknown as GroupEvent[]
-  return (data.filter((e) => e.visibility?.includes(user_type)) || []) as unknown as GroupEvent[]
+  return data.filter((e) => e.visibility?.includes(user_type)) || []
 }
 
 export async function updateInvite(
@@ -107,9 +107,7 @@ export async function updateInvite(
   if (!invite) {
     throw new Error('No invite found')
   }
-  invite = await admin.request(updateItem('events_users', inviteId, data)) as EventUser
-
-  return invite
+  return await admin.request(updateItem('events_users', inviteId, data)) as EventUser
 }
 
 export async function getUserEvents(user_id: string) {
