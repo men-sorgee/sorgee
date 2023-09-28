@@ -5,7 +5,6 @@ import { forwardRef, useEffect, useState } from "react";
 
 import { Box, Flex, useColorModeValue } from "@chakra-ui/react";
 
-import { constrained } from "../";
 import Buddies from "./Buddies";
 import Chat from "./Chat";
 import Events from "./Events";
@@ -13,7 +12,11 @@ import Members from "./Members";
 import Notifications from "./Notifications";
 import Pledges from "./Pledges";
 
-const ActionsBar = forwardRef<HTMLDivElement, {}>((_props, ref) => {
+export type ActionsBarProps = {
+  constrained: Record<string, any> | any
+}
+
+const ActionsBar = forwardRef<HTMLDivElement, ActionsBarProps>(({ constrained }: ActionsBarProps, ref) => {
   const router = useRouter()
   const { authenticated, isMember, member, hasFeature } = useUser({
     minLevel: MemberLevel.inductee,

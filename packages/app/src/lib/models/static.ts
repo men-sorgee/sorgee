@@ -3,8 +3,8 @@ import {
   DirectusField,
   DirectusFile,
   DirectusUser,
-  UserType,
-  VouchingUser
+  UserIcon,
+  UserType
 } from "lib/models";
 
 export type FieldMap = Record<string, DirectusField>
@@ -76,7 +76,7 @@ export type Promo = {
   override?: {
     site?: Partial<Site>
   }
-  vouching_user?: string | VouchingUser
+  vouching_user?: string | UserIcon
 }
 
 export type PageContent = {

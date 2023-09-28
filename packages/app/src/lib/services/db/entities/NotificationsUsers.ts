@@ -1,7 +1,5 @@
+import { Notifications, User } from "lib/services/db/entities";
 import * as typeorm from "typeorm";
-
-import { Notifications } from "./Notifications";
-import { User } from "./User";
 
 @typeorm.Index('notifications_users_pkey', ['id'], { unique: true })
 @typeorm.Entity('notifications_users', { schema: 'public' })

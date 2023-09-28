@@ -1,9 +1,10 @@
+import {
+  DirectusFile,
+  Survey,
+  SurveyQuestions,
+  User
+} from "lib/services/db/entities";
 import * as typeorm from "typeorm";
-
-import { DirectusFile } from "./DirectusFiles";
-import { SurveyQuestions } from "./SurveyQuestions";
-import { Survey } from "./Surveys";
-import { User } from "./User";
 
 @typeorm.Index('survey_answers_pkey', ['id'], { unique: true })
 @typeorm.Entity('survey_answers', { schema: 'public' })

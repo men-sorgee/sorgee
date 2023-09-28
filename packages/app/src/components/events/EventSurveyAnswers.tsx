@@ -1,7 +1,7 @@
 import { capitalCase } from "change-case";
 import { Member } from "lib/models";
 import { QuestionResult, SurveyResult } from "lib/services/db/entities";
-import { JsonFetcher } from "lib/utils/fetchers";
+import { JsonFetcher } from "lib/utils";
 import { ReactNode } from "react";
 import swr from "swr";
 

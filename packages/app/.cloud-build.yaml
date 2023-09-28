@@ -40,7 +40,7 @@ images:
   - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
 options:
   substitutionOption: ALLOW_LOOSE
-  machineType: 'E2_HIGHCPU_8'
+  machineType: 'E2_HIGHCPU_32'
 
 substitutions:
   _TRIGGER_ID: ba5256ae-2f50-4176-8ea2-055e8bd2e0e3

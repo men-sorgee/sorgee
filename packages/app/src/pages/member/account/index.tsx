@@ -12,7 +12,7 @@ import { useFields, useUser } from "hooks";
 import { FieldMap, Member, MemberLevel, UserEmailChange } from "lib/models";
 import { ApiResult, postJSON } from "lib/utils/apis";
 import { useRouter } from "next/router";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import {
   Alert,
@@ -142,9 +142,10 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps & { fieldMap: 
     auth_with_phone,
   }
 
-  const required = { value: true, message: 'Required' }
-  const minYear = new Date().getFullYear() - 100
-  const maxYear = new Date().getFullYear() - 21
+  const required = useMemo(() => { return { value: true, message: 'Required' } }, [])
+  const minYear = useMemo(() => new Date().getFullYear() - 100, [])
+  const maxYear = useMemo(() => new Date().getFullYear() - 21, [])
+
 
   return (
     <Tabs
@@ -204,7 +205,7 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps & { fieldMap: 
             successMessage="Your settings were updated."
           >
             {({ formState: { isSubmitting }, watch }) => {
-              const isText = watch('auth_with_phone')
+
               return (
                 <>
                   <SimpleGrid spacing={4} columns={{ base: 1, md: 2 }}>
@@ -236,13 +237,13 @@ const AccountForm = ({ fieldMap, section: s = 'info' }: FormProps & { fieldMap: 
                           { value: 'true', text: 'Send via SMS' },
                         ]}
                       />
-                    </GridItem>*/}
+                    </GridItem>
                     {isText && <GridItem colSpan={[1, 2]}>
                       <Text p={2} rounded="lg" bg='bg' shadow="md" fontSize="sm" textStyle='italic' color='text'>
                         By selecting SMS, you agree to receive text messages from us (720-724-9426) for the purpose of accessing this site.
                         We will never send you marketing messages or share your phone number with anyone else.
                       </Text>
-                    </GridItem>}
+                      </GridItem>}*/}
                     <GridItem colSpan={[1, 2]}>
                       <Divider />
                     </GridItem>

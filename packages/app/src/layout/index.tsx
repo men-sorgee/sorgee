@@ -37,10 +37,6 @@ import Header from "./Header";
 import Meta from "./Meta";
 import Splash from "./Splash";
 
-export const constrained = {
-  maxW: brand.breakPoints,
-  mx: [2, 'auto'],
-}
 const heading = Arvo({
   variable: '--heading-font',
   weight: ['400', '700'],
@@ -58,6 +54,11 @@ const mono = Roboto_Mono({
   weight: 'variable',
   subsets: ['latin'],
 })
+
+const constrained = {
+  maxW: brand.breakPoints,
+  mx: [2, 'auto'],
+}
 
 const theme = extendTheme(getTheme(body, heading, mono))
 
@@ -142,6 +143,8 @@ export default function Layout({
 
   const viewHeight = useMemo(() => `calc(100vh - ${heightSubtraction}px)`, [heightSubtraction])
 
+
+
   const Error = ({ error }: { error: string }) => (
     <Box mx={[4, 4, 0]}>
       <h2>Something went wrong!</h2>
@@ -159,7 +162,7 @@ export default function Layout({
       <Meta />
       <Flex direction="column" flex="1" className={` ${heading.className} ${body.className} ${mono.className}}`}
       >
-        {site && <Header ref={headerRef} site={site} isAuthenticated={authenticated} userType={member?.user_type} />}
+        {site && <Header ref={headerRef} site={site} isAuthenticated={authenticated} userType={member?.user_type} constrained={constrained} />}
         <ErrorBoundary
           fallbackRender={Error}
           onError={(error, errorInfo) => {
@@ -193,7 +196,7 @@ export default function Layout({
 
           {showActions && (
             <Slide in={isOpen} direction="bottom">
-              <Actions ref={actionsRef} />
+              <Actions ref={actionsRef} constrained={constrained as any} />
             </Slide>
           )}
         </ErrorBoundary>

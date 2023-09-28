@@ -16,12 +16,9 @@ const getConfig = (phase) => {
   const nextConfig = {
     pageExtensions: ['tsx'],
     experimental: { 
-      scrollRestoration: true,
-      turbo: {
-   
-        
-      }
+      esmExternals: "loose",
     },
+    staticPageGenerationTimeout: 240,
     images: {
       domains: [
         'guysnheat.com',
