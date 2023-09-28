@@ -1,7 +1,5 @@
+import { DirectusFile, User } from "lib/services/db/entities";
 import * as typeorm from "typeorm";
-
-import { DirectusFile } from "./DirectusFiles";
-import { User } from "./User";
 
 @typeorm.Index('users_photos_pkey', ['id'], { unique: true })
 @typeorm.Entity('users_photos', { schema: 'public' })

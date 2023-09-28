@@ -1,4 +1,12 @@
 import {
+  DirectusUsers,
+  EventsUser,
+  Location,
+  Notifications,
+  Rating,
+  Survey
+} from "lib/services/db/entities";
+import {
   Column,
   Entity,
   Index,
@@ -7,13 +15,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn
 } from "typeorm";
-
-import { DirectusUsers } from "./DirectusUsers";
-import { EventsUser } from "./EventsUsers";
-import { Location } from "./Location";
-import { Notifications } from "./Notifications";
-import { Rating } from "./Rating";
-import { Survey } from "./Surveys";
 
 @Index('events_pkey', ['id'], { unique: true })
 @Entity('events', { schema: 'public' })

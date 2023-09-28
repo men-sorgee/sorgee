@@ -1,7 +1,5 @@
-import { DirectusUser } from "lib/models";
+import { DirectusUser, GroupEvent } from "lib/models";
 import { User } from "next-auth";
-
-import { GroupEvent } from "./events";
 
 export type Rating = {
   id: string

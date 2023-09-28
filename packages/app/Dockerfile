@@ -1,9 +1,10 @@
 # Get NPM packages
 FROM node:18-alpine AS dependencies
 RUN apk add --no-cache libc6-compat
+RUN npm install -g bun
 WORKDIR /app
 COPY package.json yarn.lock ./
-RUN yarn 
+RUN bun install --production
 
 # Rebuild the source code only when needed
 FROM node:18-alpine AS builder
@@ -16,17 +17,21 @@ ENV STRIPE_PUBLIC_KEY=pk_live_51LoPw1EoEUGL2Bgubxo5vTjGRx0ONP4JHo6A0zVJivv7ToiCB
 ENV STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
 ENV ADMIN_TOKEN=${ADMIN_TOKEN}
 ENV NEXT_PUBLIC_GA_MEASUREMENT_ID=${NEXT_PUBLIC_GA_MEASUREMENT_ID}
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_OPTIONS=--max-old-space-size=4096
 
-RUN yarn run build
+RUN next build
 
 # Production image, copy all the files and run next
 FROM node:18.17.1-alpine AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001
+
 
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
@@ -36,4 +41,4 @@ COPY --from=builder /app/public ./public
 USER nextjs
 EXPOSE 3000
 
-CMD ["yarn", "start"]
+CMD ["next", "start"]

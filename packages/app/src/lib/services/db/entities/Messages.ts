@@ -1,8 +1,5 @@
+import { DirectusFile, DirectusUsers, User } from "lib/services/db/entities";
 import * as typeorm from "typeorm";
-
-import { DirectusFile } from "./DirectusFiles";
-import { DirectusUsers } from "./DirectusUsers";
-import { User } from "./User";
 
 @typeorm.Index('messages_pkey', ['id'], { unique: true })
 @typeorm.Entity('messages', { schema: 'public' })

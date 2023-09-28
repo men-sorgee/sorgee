@@ -1,7 +1,5 @@
 import * as typeorm from "typeorm";
 
-import { User } from "./User";
-
 @typeorm.Index('user_email_events_pkey', ['id'], { unique: true })
 @typeorm.Entity('user_email_events', { schema: 'public' })
 export class UserEmailEvents {

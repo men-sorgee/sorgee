@@ -6,7 +6,8 @@
   "scripts": {
     "clean": "rm -rf .next && rm -rf node_modules",
     "dev": "next dev",
-    "build": "next build",
+    "next": "next ",
+    "build": "NODE_OPTIONS=\"--max_old_space_size=4096\" next build",
     "start": "next start",
     "lint": "next lint",
     "fix": "next lint --fix",
@@ -19,7 +20,8 @@
     "test": "vitest --config ./vitest.config.ts",
     "coverage": "vitest run --coverage --config ./vitest.config.ts --outDir results",
     "test:view": "vite preview --outDir results",
-    "gen": "bash types.sh"
+    "gen": "bash types.sh",
+    "madge": "madge -i graph.svg -c --extensions ts,tsx ."
   },
   "dependencies": {
     "@chakra-ui/icon": "^3.2.0",
@@ -43,7 +45,7 @@
     "editorjs-blocks-react-renderer": "^1.3.0",
     "formidable": "^3.5.0",
     "framer-motion": "^10.15.2",
-    "next": "13.5.2",
+    "next": "13.5.3",
     "next-auth": "^4.23.0",
     "next-pwa": "^5.6.0",
     "nodemailer": "^6.9.4",
@@ -95,7 +97,6 @@
     "eslint-plugin-prettier": "^5.0.0",
     "jsdom": "^22.1.0",
     "prettier": "^3.0.3",
-    "turbo": "^1.10.14",
     "typeorm-model-generator": "^0.4.6",
     "typescript": "^5.2.2",
     "vite": "^4.4.5",

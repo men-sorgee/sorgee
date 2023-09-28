@@ -1,8 +1,9 @@
+import {
+  DirectusUsers,
+  SurveyAnswers,
+  SurveysSurveyQuestion
+} from "lib/services/db/entities";
 import * as typeorm from "typeorm";
-
-import { DirectusUsers } from "./DirectusUsers";
-import { SurveyAnswers } from "./SurveyAnswers";
-import { SurveysSurveyQuestion } from "./SurveysSurveyQuestions";
 
 @typeorm.Index('survey_questions_pkey', ['id'], { unique: true })
 @typeorm.Entity('survey_questions', { schema: 'public' })

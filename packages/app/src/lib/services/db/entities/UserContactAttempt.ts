@@ -1,7 +1,5 @@
+import { DirectusUsers, User } from "lib/services/db/entities";
 import * as typeorm from "typeorm";
-
-import { DirectusUsers } from "./DirectusUsers";
-import { User } from "./User";
 
 @typeorm.Index('user_contact_attempt_pkey', ['id'], { unique: true })
 @typeorm.Entity('user_contact_attempt', { schema: 'public' })

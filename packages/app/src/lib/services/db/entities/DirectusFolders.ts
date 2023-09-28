@@ -1,3 +1,4 @@
+import { DirectusFile } from "lib/services/db/entities";
 import {
   Column,
   Entity,
@@ -6,8 +7,6 @@ import {
   ManyToOne,
   OneToMany
 } from "typeorm";
-
-import { DirectusFile } from "./DirectusFiles";
 
 @Index('directus_folders_pkey', ['id'], { unique: true })
 @Entity('directus_folders', { schema: 'public' })

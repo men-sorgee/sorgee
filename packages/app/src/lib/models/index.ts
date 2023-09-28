@@ -1,12 +1,29 @@
 
 
 import {
+  BillingEvent,
+  EventUser,
+  GroupEvent,
+  MemberAlert,
+  Message,
+  NotificationUser,
+  Page,
+  PageContent,
+  Promo,
+  Question,
+  Rating,
+  Site,
+  Survey,
+  SurveyAnswer,
+  SurveyQuestion,
   User,
   UserAccount,
   UserBlock,
   UserBuddy,
+  UserEmailEvent,
   UserFile,
   UserLike,
+  UserPayment,
   UserPhoto,
   UserSession,
   UserShare,
@@ -21,19 +38,6 @@ import {
   DirectusUser as DUser,
   QueryFields as QFields
 } from "@directus/sdk";
-
-import { BillingEvent, UserPayment } from "./billing";
-import { EventUser, GroupEvent } from "./events";
-import { Message } from "./messages";
-import { MemberAlert, NotificationUser, UserEmailEvent } from "./notifications";
-import { Page, PageContent, Promo, Site } from "./static";
-import {
-  Question,
-  Rating,
-  Survey,
-  SurveyAnswer,
-  SurveyQuestion
-} from "./surveys";
 
 export interface GNHSchema {
   events: GroupEvent[]
