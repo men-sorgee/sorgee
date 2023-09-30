@@ -4,7 +4,7 @@ RUN apk add --no-cache libc6-compat
 RUN npm install -g bun
 WORKDIR /app
 COPY package.json yarn.lock ./
-RUN bun install --production
+RUN yarn install --production
 
 # Rebuild the source code only when needed
 FROM node:18-alpine AS builder
