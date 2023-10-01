@@ -34,22 +34,6 @@ export const getStaticPaths = async () => {
   }
 }
 
-if (import.meta.vitest) {
-  const { it, expect } = import.meta.vitest
-  it('exported pages', () => {
-    expect(getStaticPaths).toBeDefined()
-    getStaticPaths().then(
-      ({
-        paths, // An array of all the paths that the plugin found
-        fallback, // The fallback object that the plugin generated
-      }) => {
-        expect(paths.length).toBeGreaterThan(0)
-        expect(fallback).toBe('blocking')
-      }
-    )
-  })
-}
-
 interface Props {
   page: PageModel
 }

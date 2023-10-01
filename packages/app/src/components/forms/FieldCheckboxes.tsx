@@ -73,10 +73,11 @@ const CheckboxesField = (props: Props) => {
       {...opts}
     >
       <SimpleGrid gap={4} columns={[1, 2, 2, 3, 3, 4]} ml={[4, 0]}>
-        <CheckboxGroup name={field} {...opts} defaultValue={val}>
+        <CheckboxGroup id={field} name={field} {...opts} defaultValue={val}>
           {options?.map(({ text, value }, index) => (
             <Checkbox
               key={index.toString()}
+              id={`${field}-${index}`}
               value={value}
               {...register(field, registerOptions)}
             >
@@ -93,6 +94,7 @@ const CheckboxesField = (props: Props) => {
           <Input
             color="text"
             size="sm"
+            id={`${field}-other`}
             defaultValue={other}
             onBlur={(e) => {
               setOther(e.target.value)

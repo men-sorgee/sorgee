@@ -131,7 +131,7 @@ export default function Form<TData = any, TResponse = TData>({
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmitWrapper)}>
-        {isSubmitting ? <Loading /> : children(methods)}
+        {isSubmitting ? <Loading /> : children({...methods, })}
       </form>
     </FormProvider>
   )
