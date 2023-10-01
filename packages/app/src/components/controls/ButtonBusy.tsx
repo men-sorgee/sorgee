@@ -13,7 +13,7 @@ export type BusyButtonProps = ButtonProps & {
 export const ButtonBusy = memo(chakra(
   function ButtonBusy({
     onClick,
-    onResult = () => null,
+    onResult = () => { },
     timeout = 5000,
     disabled,
     children,
