@@ -2,29 +2,25 @@ import {
   EventInvite,
   EventUser,
   GroupEvent,
-  Invite,
   Member,
   UserType
 } from "lib/models";
 
 import { readItem, readItems, updateItem } from "@directus/sdk";
 
-import { getAdminClient } from "../";
+import { getAdminClient } from "lib/services/directus/server";
 
-export async function getInvite(inviteId: number): Promise<EventUser | null> {
+export async function getInvite(inviteId: number): Promise<EventUser> {
   const admin = getAdminClient()
-  const query = await admin.request<Invite>(readItem('events_users', inviteId, {
+  return admin.request<EventUser>(readItem('events_users', inviteId, {
     fields: ['*',
       { events_id: ['*'] },
       { users_id: ['*'] }
     ],
-
   }))
-
-  return query as Invite
 }
 
-export async function findInvite(eventId: string, userId: string): Promise<EventUser | null> {
+export async function findInvite(eventId: string, userId: string): Promise<EventUser> {
   const admin = getAdminClient()
   const invites = await admin.request<EventUser[]>(readItems('events_users', {
     filter: {
@@ -32,7 +28,7 @@ export async function findInvite(eventId: string, userId: string): Promise<Event
       users_id: { _eq: userId },
     },
     fields: ['*', { events_id: ['*'] }],
-    limit: -1,
+    limit: 1,
   }))
 
   return invites.length ? invites[0] : null

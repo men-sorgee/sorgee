@@ -6,7 +6,8 @@ import {
   InviteRSVPType,
   Location,
   Member,
-  Survey
+  Survey,
+  searchableMemberFields
 } from "lib/models";
 
 import {
@@ -21,19 +22,14 @@ import { getAdminClient } from "./";
 
 export async function listAdminEvents(): Promise<GroupEvent[]> {
   const admin = getAdminClient()
-  const filter = {
-    status: { _in: ['scheduled', 'occurred', 'planned'] },
-  }
+
   const data = await admin.request<GroupEvent[]>(readItems('events', {
-    filter,
-    fields: ['*',
-      { location: ['*'] },
-      {
-        invites: ['*', {
-          users_id: ['*']
-        }]
+    filter: {
+      status: {
+        _in: ['scheduled', 'occurred', 'planned']
       },
-      { survey: ['*'] }],
+    },
+    fields: ['*'],
     sort: ['datetime'],
     deep: {
       invites: {

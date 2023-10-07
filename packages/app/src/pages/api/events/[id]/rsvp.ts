@@ -1,5 +1,5 @@
 
-import { EventInvite, EventUser } from "lib/models";
+import { EventInvite, EventUser } from "lib/models/events";
 import {
   findInvite,
   getEvent,
