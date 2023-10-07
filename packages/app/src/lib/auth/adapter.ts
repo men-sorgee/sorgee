@@ -19,7 +19,7 @@ import {
   getUser,
   updateSession,
   updateUser
-} from "lib/services/db/server/users";
+} from "lib/services/db/server";
 import { importFile } from "lib/services/directus/server";
 import { getAssetUrl } from "lib/utils";
 import {

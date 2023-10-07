@@ -1,21 +1,5 @@
-import {
-  DirectusFile,
-  DirectusUsers,
-  EventsUser,
-  Location,
-  Messages,
-  NotificationsUsers,
-  Promos,
-  Rating,
-  SurveyAnswers,
-  UserAccount,
-  UserBuddy,
-  UserContactAttempt,
-  UserRelationships,
-  UserSession,
-  UsersFiles,
-  UsersPhotos
-} from "lib/services/db/entities";
+
+
 import {
   Column,
   Entity,
@@ -25,6 +9,22 @@ import {
   OneToMany,
   PrimaryGeneratedColumn
 } from "typeorm";
+import { DirectusUsers } from "./DirectusUsers";
+import { EventsUser } from "./EventsUsers";
+import { Messages } from "./Messages";
+import { NotificationsUsers } from "./NotificationsUsers";
+import { Promos } from "./Promos";
+import { Rating } from "./Rating";
+import { Location } from "./Location";
+import { SurveyAnswers } from "./SurveyAnswers";
+import { UserAccount } from "./UserAccount";
+import { UserBuddy } from "./UserBuddy";
+import { UserContactAttempt } from "./UserContactAttempt";
+import { UserRelationships } from "./UserRelationships";
+import { UserSession } from "./UserSession";
+import { UsersFiles } from "./UsersFiles";
+import { UsersPhotos } from "./UsersPhotos";
+import { DirectusFile } from "./DirectusFiles";
 
 @Index('users_email_unique', ['email'], { unique: true })
 @Index('users_pkey', ['id'], { unique: true })
