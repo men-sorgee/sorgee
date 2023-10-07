@@ -28,15 +28,14 @@ export const getStaticPaths = async () => {
     .map((page) => ({
       params: { slug: page.slug.split('/') },
     }))
+
   return {
     paths,
     fallback: 'blocking',
   }
 }
 
-interface Props {
-  page: PageModel
-}
+
 
 export const getStaticProps = async ({ params }: { params: Params }) => {
   const { listPages } = await import('lib/services/directus/static/pages')
@@ -47,6 +46,7 @@ export const getStaticProps = async ({ params }: { params: Params }) => {
   if (!page) {
     return {
       notFound: true,
+
     }
   }
   if (page.children?.length) {
@@ -64,7 +64,12 @@ export const getStaticProps = async ({ params }: { params: Params }) => {
   }
 }
 
-export default function DynamicPage({ page }: Props) {
+export type DynamicPageProps = {
+  page: PageModel
+}
+
+
+export default function DynamicPage({ page }: DynamicPageProps) {
   const { site, loading } = useSite()
   const [nextText, setNextText] = useState<string>(null)
   const [nextUrl, setNextUrl] = useState<string>('')
@@ -86,9 +91,7 @@ export default function DynamicPage({ page }: Props) {
     }
   }, [nextText, site, loading, next_page, next_page_params])
   const imageWidth = useBreakpointValue(['100%', '100%', '50%'])
-  if (!page) {
-    return <NotFound />
-  }
+
   return (
     <Page
       id={id}
