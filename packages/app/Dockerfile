@@ -3,7 +3,7 @@ FROM node:18.18.0-alpine AS dependencies
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json yarn.lock ./
-RUN yarn install --production
+RUN yarn install --frozen-lockfile
 
 # Rebuild the source code only when needed
 FROM node:18.18.0-alpine AS builder
