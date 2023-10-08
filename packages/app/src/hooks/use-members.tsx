@@ -1,10 +1,12 @@
 'use client'
 
-import { MemberSearchQueryParams, SearchableMember } from "lib/models";
+import {
+  MemberSearchQueryParams,
+  MemberSearchResults,
+  SearchableMember
+} from "lib/models";
 import { useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
-
-import { ManyItems } from "@directus/sdk";
 
 import { useAuthenticated } from "./use-authenticated";
 
@@ -47,22 +49,28 @@ export const useMemberSearch = (
     error,
     isLoading,
     isValidating,
-  } = useSWR<ManyItems<SearchableMember>>(authenticated && !skip
+  } = useSWR<MemberSearchResults>(authenticated && !skip
     ? key
     : null, {
     keepPreviousData: true,
     refreshInterval: 0,
-
+    fallbackData: {
+      data: [],
+      meta: {
+        total: 0,
+        count: 0,
+      },
+    },
   })
 
   useEffect(() => {
     if (response?.meta) {
-      const { total_count, filter_count } = response.meta
+      const { total = 0, count = 0 } = response.meta
       setMeta({
-        total: total_count || 0,
-        filtered: filter_count || 0,
+        total,
+        filtered: count,
       })
-      setPageCount(filter_count ? Math.ceil(filter_count / size) : 0)
+      setPageCount(count ? Math.ceil(count / size) : 0)
       setMembers(response.data as SearchableMember[])
     }
   }, [response?.data, response?.meta, size])

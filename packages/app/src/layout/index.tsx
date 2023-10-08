@@ -4,7 +4,8 @@ import { useScreenSize, useSite, useUser } from "hooks";
 import { ViewHeightContext } from "hooks/use-view-height";
 import { brand } from "lib/config/brand";
 import { MemberLevel } from "lib/models";
-import { gaEvent, postJSON } from "lib/utils";
+import { postJSON } from "lib/utils";
+import { Arvo, Manrope, Roboto_Mono } from "next/font/google";
 import { useRouter } from "next/router";
 import {
   ReactNode,
@@ -17,8 +18,18 @@ import {
 } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
-import { Box, Flex, Slide, Text, useDisclosure } from "@chakra-ui/react";
+import {
+  Box,
+  ChakraProvider,
+  cookieStorageManager,
+  extendTheme,
+  Flex,
+  Slide,
+  Text,
+  useDisclosure
+} from "@chakra-ui/react";
 
+import getTheme from "../theme";
 import Actions from "./actions";
 import Announcement from "./components/Announcement";
 import Footer from "./Footer";
@@ -26,18 +37,36 @@ import Header from "./Header";
 import Meta from "./Meta";
 import Splash from "./Splash";
 
-export const constrained = {
+const heading = Arvo({
+  variable: '--heading-font',
+  weight: ['400', '700'],
+  subsets: ['latin'],
+})
+
+const body = Manrope({
+  variable: '--body-font',
+  weight: 'variable',
+  subsets: ['latin'],
+})
+
+const mono = Roboto_Mono({
+  variable: '--mono-font',
+  weight: 'variable',
+  subsets: ['latin'],
+})
+
+const constrained = {
   maxW: brand.breakPoints,
   mx: [2, 'auto'],
 }
 
+const theme = extendTheme(getTheme(body, heading, mono))
+
 export default function Layout({
   children,
-  fonts: [heading, body, mono],
 }: {
   children?: ReactNode
   className?: string
-  fonts: any[]
 }) {
   const { authenticated, member, level, loading } = useUser({
     redirectsEnabled: false,
@@ -55,14 +84,14 @@ export default function Layout({
     startTransition(() => {
       setHideFooter(url.startsWith('/members/chat') || url.endsWith('/ticket'))
 
-      //setTimeout(() => {
-      //  if (bodyRef.current != null) {
-      //    bodyRef.current.scrollIntoView({
-      //      behavior: 'smooth',
-      //      block: 'start',
-      //    })
-      //  }
-      //}, 100)
+      setTimeout(() => {
+        if (bodyRef.current != null) {
+          bodyRef.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          })
+        }
+      }, 100)
     })
   }, [])
 
@@ -114,6 +143,8 @@ export default function Layout({
 
   const viewHeight = useMemo(() => `calc(100vh - ${heightSubtraction}px)`, [heightSubtraction])
 
+
+
   const Error = ({ error }: { error: string }) => (
     <Box mx={[4, 4, 0]}>
       <h2>Something went wrong!</h2>
@@ -126,10 +157,12 @@ export default function Layout({
   }
 
   return (
-    <>
+    <ChakraProvider theme={theme} colorModeManager={cookieStorageManager}>
+
       <Meta />
-      <Flex direction="column" flex="1">
-        {site && <Header ref={headerRef} site={site} isAuthenticated={authenticated} userType={member?.user_type} />}
+      <Flex direction="column" flex="1" className={` ${heading.className} ${body.className} ${mono.className}}`}
+      >
+        {site && <Header ref={headerRef} site={site} isAuthenticated={authenticated} userType={member?.user_type} constrained={constrained} />}
         <ErrorBoundary
           fallbackRender={Error}
           onError={(error, errorInfo) => {
@@ -150,7 +183,6 @@ export default function Layout({
               position="relative"
               w="full"
               flex="1 100%"
-              className={` ${heading} ${body} ${mono}}`}
               {...constrained}
             >
               <Box ref={bodyRef}>
@@ -164,13 +196,13 @@ export default function Layout({
 
           {showActions && (
             <Slide in={isOpen} direction="bottom">
-              <Actions ref={actionsRef} />
+              <Actions ref={actionsRef} constrained={constrained as any} />
             </Slide>
           )}
         </ErrorBoundary>
       </Flex>
       {!loading && !authenticated && <Splash />}
-    </>
+    </ChakraProvider >
   )
 }
 

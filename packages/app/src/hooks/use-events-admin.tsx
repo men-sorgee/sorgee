@@ -31,8 +31,7 @@ export const useEventsAdmin = (): EventsAdminResults => {
   })
 
   useEffect(() => {
-    if (!isLoading) {
-      console.log('setting events')
+    if (!isLoading && data && data.length > 0) {
       setEvents(
         data.map((event) => {
           return {

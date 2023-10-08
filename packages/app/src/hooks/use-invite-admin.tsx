@@ -1,6 +1,6 @@
 'use client'
 import { EventInvite } from "lib/models";
-import { postJSON } from "lib/utils";
+import { postJSON } from "lib/utils/apis";
 import useSWR from "swr";
 
 export type InviteAdminProps = {

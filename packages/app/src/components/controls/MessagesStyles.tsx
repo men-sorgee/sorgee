@@ -1,6 +1,6 @@
 import { useViewHeight } from "hooks";
 import { brand } from "lib/config/brand";
-import { useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 
 import { useColorModeValue } from "@chakra-ui/react";
 
@@ -8,7 +8,7 @@ export type MessagesStylesProps = {
   onLoad?: () => void
 }
 
-export default function MessagesStyles({
+export const MessagesStyles = memo(function MessagesStyles({
   onLoad = () => { }
 }: MessagesStylesProps) {
   const stylesRef = useRef<HTMLStyleElement>(null)
@@ -2119,7 +2119,8 @@ export default function MessagesStyles({
       @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
         .ps {
           overflow: auto !important;
-        }
+        }import { MessagesStyles } from 'components/controls/MessagesStyles';
+
       }
       .scrollbar-container {
         position: relative;
@@ -2133,4 +2134,4 @@ export default function MessagesStyles({
       `}
     </style>
   )
-}
+})

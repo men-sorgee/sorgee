@@ -1,6 +1,5 @@
+import { User } from "lib/services/db/entities";
 import * as typeorm from "typeorm";
-
-import { User } from "./User";
 
 @typeorm.Index('user_relationships_pkey', ['id'], { unique: true })
 @typeorm.Entity('user_relationships', { schema: 'public' })

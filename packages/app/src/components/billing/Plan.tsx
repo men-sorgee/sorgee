@@ -15,7 +15,7 @@ import { CheckCircleIcon } from "@heroicons/react/24/solid";
 
 type Params = {
   plan: MembershipNames
-  interval: MembershipRenewalType
+  interval: string | MembershipRenewalType
 }
 
 export const Plan = ({ plan, interval = 'month' }: Params) => {

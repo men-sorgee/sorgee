@@ -1,6 +1,7 @@
 import { Loading } from "components";
 import { useWarnIfUnsavedChanges } from "hooks/use-warn-if-unsaved";
-import { ApiError, debouncedPromise } from "lib/utils";
+import { debouncedPromise } from "lib/utils";
+import { ApiError } from "lib/utils/apis";
 import { ReactElement, ReactNode, useCallback, useEffect } from "react";
 import {
   FormProvider,
@@ -130,7 +131,7 @@ export default function Form<TData = any, TResponse = TData>({
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmitWrapper)}>
-        {isSubmitting ? <Loading /> : children(methods)}
+        {isSubmitting ? <Loading /> : children({...methods, })}
       </form>
     </FormProvider>
   )

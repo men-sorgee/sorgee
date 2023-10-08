@@ -5,11 +5,20 @@ import {
   MessageStatusType,
   User
 } from "lib/models";
-import { getAdminClient } from "lib/services/directus/server";
 
-export async function getMessages(user_id: string) {
-  const adminClient = await getAdminClient()
-  const { data: messages = [] } = await adminClient.items('messages').readByQuery({
+import {
+  createItem,
+  readItem,
+  readItems,
+  updateItem,
+  updateItems
+} from "@directus/sdk";
+
+import { getAdminClient } from "./";
+
+export async function getMessages(user_id: string): Promise<Record<string, ChatMessage[]>> {
+  const admin = getAdminClient()
+  const messages = await admin.request<Message[]>(readItems('messages', {
     filter: {
       status: {
         _neq: 'archived',
@@ -31,19 +40,11 @@ export async function getMessages(user_id: string) {
     limit: -1,
     fields: [
       '*',
-      'from.id',
-      'from.picture',
-      'from.nickname',
-      'from.presence',
-      'from.last_login',
-      'to.id',
-      'to.picture',
-      'to.nickname',
-      'to.presence',
-      'to.last_login',
-      'image.id',
-    ] as any,
-  })
+      { from: ['id', 'picture', 'nickname', 'presence', 'last_login'] },
+      { to: ['id', 'picture', 'nickname', 'presence', 'last_login'] },
+      { image: ['id', 'title'] }
+    ],
+  }))
 
   const userMessages: Record<string, ChatMessage[]> = {}
 
@@ -73,25 +74,23 @@ export async function getMessages(user_id: string) {
   return userMessages
 }
 
-export async function sendMessage(message: Partial<Message>) {
-  const admin = await getAdminClient()
-  return (await admin.items('messages').createOne(message)) as unknown as Message
+export async function sendMessage(message: Partial<Message>): Promise<Message> {
+  const admin = getAdminClient()
+  return admin.request<Message>(createItem('messages', message))
 }
 
-export async function getMessage(id: string) {
-  const admin = await getAdminClient()
-  return (await admin.items('messages').readOne(id)) as unknown as Message
+export async function getMessage(id: string): Promise<Message> {
+  const admin = getAdminClient()
+  return admin.request<Message>(readItem('messages', id))
 }
 
-export async function updateMessage(id: string, message: Partial<Message>) {
-  const admin = await getAdminClient()
+export async function updateMessage(id: string, message: Partial<Message>): Promise<Message> {
+  const admin = getAdminClient()
   if (message.body) message.status = 'edited'
-  return (await admin.items('messages').updateOne(id, message)) as unknown as Message
+  return admin.request<Message>(updateItem('messages', id, message))
 }
 
-export async function markAs(ids: string[], status: MessageStatusType) {
-  const admin = await getAdminClient()
-  await admin.items('messages').updateMany(ids, {
-    status,
-  })
+export async function markAs(ids: string[], status: MessageStatusType): Promise<void> {
+  const admin = getAdminClient()
+  await admin.request<Message[]>(updateItems('messages', ids, { status }))
 }

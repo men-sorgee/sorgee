@@ -1,10 +1,9 @@
 import { ButtonLink, EventCard, EventRSVP } from "components";
 import { useInvites } from "hooks";
 import { EventInvite, Member } from "lib/models";
-import NextLink from "next/link";
 import { ReactNode, useEffect, useState } from "react";
 
-import { Box, BoxProps, chakra, LinkBox, LinkOverlay } from "@chakra-ui/react";
+import { Box, BoxProps, chakra } from "@chakra-ui/react";
 
 export type EventNextProps = BoxProps & {
   member: Member
@@ -34,12 +33,23 @@ export const EventNextBox = chakra(({ member, children, ...props }: EventNextPro
     <Box {...props} w="full">
       {children}
       {invite && (
-        <LinkBox mt={4}>
-          <EventCard event={invite?.event}>
-            <EventRSVP eventId={invite.event.id} invite={invite} canConfirm={member.rating > 3} />
-            <LinkOverlay as={NextLink} href={`/events/${invite.event.id}`} />
-          </EventCard>
-        </LinkBox>
+
+        <EventCard event={invite?.event}>
+
+
+          <ButtonLink
+            href={`/events/${invite.event.id}`}
+            colorScheme="primary"
+            mx="auto"
+            mt={4}
+            size="lg"
+            fontSize={['md', 'lg', 'xl']}
+          >
+            View Event
+          </ButtonLink>
+
+          <EventRSVP eventId={invite.event.id} invite={invite} canConfirm={member.rating > 3} />
+        </EventCard>
       )}
       <ButtonLink
         href="/events"

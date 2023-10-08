@@ -1,4 +1,5 @@
 import { DirectusFile } from "lib/models";
+import { memo } from "react";
 
 import { chakra, Image, ImageProps } from "@chakra-ui/react";
 
@@ -6,7 +7,7 @@ export type PhotoAssetProps = ImageProps & {
   fileId: string | DirectusFile
 }
 
-export const PhotoAsset = chakra(
+export const PhotoAsset = memo(chakra(
   ({ fileId, height, width = '150px', alt, ...props }: PhotoAssetProps) => {
     if (!fileId) return null
     return (
@@ -21,4 +22,4 @@ export const PhotoAsset = chakra(
       />
     )
   }
-)
+))

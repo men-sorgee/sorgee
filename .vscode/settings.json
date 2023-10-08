@@ -8,6 +8,7 @@
     "Chakra",
     "chatscope",
     "checkin",
+    "cloudsdktool",
     "cockroachdb",
     "Codegen",
     "Consolas",
@@ -26,6 +27,7 @@
     "flexbugs",
     "flowbit",
     "flowbite",
+    "gcloud",
     "googleusercontent",
     "gtag",
     "guysnheat",
@@ -48,6 +50,7 @@
     "pexels",
     "pixabay",
     "Polyamorous",
+    "predocker",
     "Qrcode",
     "Rehype",
     "rlig",
@@ -73,7 +76,7 @@
   "typescript.tsdk": "./node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.preferences.importModuleSpecifier": "relative",
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
   "editor.formatOnPaste": false, // required
   "editor.formatOnType": false, // required
   "editor.formatOnSave": true, // optional
@@ -87,7 +90,7 @@
     "editor.defaultFormatter": "ms-azuretools.vscode-docker"
   },
   "[markdown]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "vscode.markdown-language-features"
   },
   "autoimport.filesToScan": "packages/app/**/*.{ts,tsx}",
   "autoimport.showNotifications": true,
@@ -98,8 +101,6 @@
     }
   ],
   "cloudcode.active-kubeconfig": "/home/jason/.kube/config",
-  "vitest.enable": true,
-  "vitest.include": ["**/*.{test,spec}.{ts,tsx}"],
   "testing.automaticallyOpenPeekView": "never",
   "[json]": {
     "editor.defaultFormatter": "vscode.json-language-features"
@@ -108,6 +109,5 @@
     "editor.defaultFormatter": "vscode.typescript-language-features"
   },
   "eslint.codeActionsOnSave.mode": "problems",
-  "importSorter.generalConfiguration.sortOnBeforeSave": true,
   "vs-code-prettier-eslint.prettierLast": true
 }

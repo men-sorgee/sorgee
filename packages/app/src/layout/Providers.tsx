@@ -11,7 +11,7 @@ import { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import React from "react";
 
-import { SWRProvider } from "../hooks/swr";
+import { SWRProvider } from "../hooks/use-swr";
 
 export type ProviderProps = {
   children: React.ReactNode

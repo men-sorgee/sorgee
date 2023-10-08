@@ -1,5 +1,5 @@
 
-import { EventInvite } from "lib/models";
+import { EventInvite, EventUser } from "lib/models/events";
 import {
   findInvite,
   getEvent,
@@ -23,37 +23,46 @@ export default async function EventRSVP(
     const member = await withMember(req, res)
 
     const { id } = req.query
-
     const eventId = String(id)
-
     const event = await getEvent(eventId)
 
     if (!event || !['planned', 'scheduled', 'occurred'].includes(event.status))
       throw new Error('Event not found')
 
-    let eventUser = await findInvite(eventId, member.id)
+    // console.dir({
+    //   eventId: event.id,
+    //   userId: member.id,
+    // })
+    let invite = await findInvite(eventId, member.id)
 
     if (method == 'POST') {
       const { rsvp = 'maybe', reason, paid_at: p } = req.body
-      const paid_at = (p ? String(p) : null) as any
-      if (eventUser) {
-        eventUser = await updateInvite(eventUser.id, { rsvp, reason, paid_at })
-        if (!eventUser) throw new Error('Error updating registration')
+      const update: Partial<EventUser> = { rsvp, reason }
+
+      if (p) {
+        update.paid_at = p
+        update.paid = true
+      }
+
+      if (invite) {
+        invite = await updateInvite(invite.id, update)
+        if (!invite) throw new Error('Error updating registration')
       } else {
         if (event.invite_only && member.user_type != 'staff')
           throw new Error('Invite not found')
-        eventUser = await registerForEvent(eventId, member.id, rsvp, paid_at)
-        if (!eventUser) throw new Error('Error registering for event')
+        const paid_at = p ? String(p) : null
+        invite = await registerForEvent(eventId, member.id, rsvp, paid_at)
+        if (!invite) throw new Error('Error registering for event')
       }
       return res.status(200).json(ApiResponse<EventInvite>({
         member,
         event,
-        ...eventUser
+        ...invite
       }))
 
 
     } else if (method == 'GET') {
-      if (!eventUser && event.invite_only && member.user_type != 'staff')
+      if (!invite && event.invite_only && member.user_type != 'staff')
         return res.status(200).json(ApiResponse<EventInvite>({
           member,
           event,
@@ -65,7 +74,7 @@ export default async function EventRSVP(
       return res.status(200).json(ApiResponse<EventInvite>({
         member,
         event,
-        ...eventUser
+        ...invite
       }))
     }
   } catch (e) {

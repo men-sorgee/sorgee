@@ -7,7 +7,7 @@ import {
   UserVerificationToken
 } from "lib/services/db/entities";
 import { getRepository } from "lib/services/db/server/data-source";
-import { getUTCNow } from "lib/utils";
+import { getUTCNow } from "lib/utils/dates";
 import { LessThan, MoreThan } from "typeorm";
 
 export async function createUser(userData: Partial<User>) {
@@ -115,16 +115,17 @@ export async function deleteAccount(provider: string, id: string) {
   const repo = await getRepository(UserAccount)
   const user = await findUserByAccount(provider, id)
   if (!user) return
-  return await repo.delete(user)
+  return repo.delete(user)
 }
 
 export async function createSession(session: UserSession) {
   const repo = await getRepository(UserSession)
-  return await repo.save(session)
+  return repo.save(session)
 }
 
 export async function findSession(sessionToken: string): Promise<UserSession> {
   const repo = await getRepository(UserSession)
+
   const session = await repo.findOne({
     where: {
       sessionToken,
@@ -144,7 +145,7 @@ export async function updateSession(sessionToken: string, expires: Date) {
       expires,
     }
   )
-  return await repo.findOne({
+  return repo.findOne({
     where: { sessionToken },
     relations: ['user'],
   })
@@ -152,18 +153,26 @@ export async function updateSession(sessionToken: string, expires: Date) {
 
 export async function deleteSession(sessionToken: string) {
   const repo = await getRepository(UserSession)
-  const session = await findSession(sessionToken)
-  if (!session) return
+  const session = await repo.findOne({
+    where: {
+      sessionToken,
+    },
+    relations: ['user'],
+  })
 
-  const { id: userId } = session.user as User
-  await repo.delete(session.id)
-
-  await updateUser(userId,
+  await repo.delete(
     {
-      presence: 'offline',
-      sessionExpire: null,
+      sessionToken,
     }
   )
+
+  if (session)
+    await updateUser(session.user.id,
+      {
+        presence: 'offline',
+        sessionExpire: null,
+      }
+    )
 }
 
 export async function addVerificationToken(
@@ -177,7 +186,7 @@ export async function addVerificationToken(
     token,
     expires,
   })
-  return await repo.save(verificationToken)
+  return repo.save(verificationToken)
 }
 
 export async function findVerificationToken(email: string, token?: string) {
@@ -211,11 +220,11 @@ export async function expireOldVerificationTokens() {
   if (!expired?.length) return
   const ids = expired.map((u) => u.id)
 
-  return await repo.delete(ids)
+  return repo.delete(ids)
 }
 
 export async function deleteVerificationToken(email: string) {
   const repo = await getRepository(UserVerificationToken)
   const token = await findVerificationToken(email)
-  return await repo.delete(token)
+  return repo.delete(token)
 }

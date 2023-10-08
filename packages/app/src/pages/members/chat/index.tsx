@@ -4,9 +4,9 @@ import {
   MemberModal,
   MemberReport,
   MemberShare,
+  MessagesStyles,
   Page
 } from "components";
-import MessagesStyles from "components/controls/MessagesStyles";
 import { formatDistanceToNow } from "date-fns";
 import { useMessages, useUser } from "hooks";
 import { userImageId } from "lib/config";

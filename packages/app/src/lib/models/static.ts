@@ -1,8 +1,13 @@
 import { Block } from "editorjs-blocks-react-renderer";
-import { UserType } from "lib/models";
+import {
+  DirectusField,
+  DirectusFile,
+  DirectusUser,
+  UserIcon,
+  UserType
+} from "lib/models";
 
-import { DirectusFile, DirectusUser } from "./directus";
-import { User, VouchingUser } from "./users";
+export type FieldMap = Record<string, DirectusField>
 
 export type File = {
   filepath: string
@@ -71,21 +76,7 @@ export type Promo = {
   override?: {
     site?: Partial<Site>
   }
-  vouching_user?: string | VouchingUser
-}
-
-export type Promos = {
-  id: number
-  user_created?: string | DirectusUser
-  date_created?: string
-  user_updated?: string | DirectusUser
-  date_updated?: string
-  code: string
-  expires?: string
-  override?: unknown
-  vouching_user?: string | User
-  description?: string
-  name?: string
+  vouching_user?: string | UserIcon
 }
 
 export type PageContent = {
@@ -121,5 +112,4 @@ export type Announcement = {
   show_until?: string;
 };
 
-export * from './directus';
-
+export type FieldOptions = DirectusField['meta']['options'][]

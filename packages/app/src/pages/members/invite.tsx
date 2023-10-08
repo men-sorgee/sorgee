@@ -2,7 +2,7 @@ import { FieldInput, Page } from "components";
 import { useUser } from "hooks/use-user";
 import { baseUrl } from "lib/config";
 import { InviteLink, Member, MemberLevel, UserInvite } from "lib/models";
-import { postJSON } from "lib/utils";
+import { postJSON } from "lib/utils/apis";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 

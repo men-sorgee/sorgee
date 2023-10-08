@@ -1,9 +1,8 @@
-import { Applicant, DirectusFile, MemberLevel } from "lib/models";
+import { Applicant, DirectusFile, MemberLevel, UploadFolder } from "lib/models";
 import {
   getFileInfo,
   updateUser,
-  uploadFile,
-  UploadFolder
+  uploadFile
 } from "lib/services/directus/server";
 import {
   SendGridCategory,

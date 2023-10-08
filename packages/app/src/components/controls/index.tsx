@@ -11,3 +11,4 @@ export * from './Pager'
 export * from './RateItem'
 export * from './Rating'
 
+export * from './MessagesStyles'

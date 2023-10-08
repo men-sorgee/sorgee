@@ -1,28 +1,38 @@
-import { MemberAlert } from "lib/models";
-import { getAdminClient } from "lib/services/directus/server";
+import { GNHSchema, MemberAlert } from "lib/models";
+
+import {
+  createItem,
+  deleteItem,
+  readItem,
+  readItems,
+  RestClient,
+  updateItem
+} from "@directus/sdk";
+
+import { getAdminClient } from "./";
 
 // Alerts
 
 export async function getAlert(id: string): Promise<MemberAlert> {
-  const adminClient = await getAdminClient()
-  let alert = await adminClient.items('user_notification').readOne(id) as MemberAlert
+  const admin = getAdminClient() as RestClient<GNHSchema>
+  let alert = await admin.request<MemberAlert>(readItem('user_notification', id))
   if (alert && alert.icon == null)
     alert.icon = 'info'
   return alert
 }
 
 export async function getAlerts(user_id: string): Promise<MemberAlert[]> {
-  const adminClient = await getAdminClient()
-  const { data } = await adminClient.items('user_notification').readByQuery({
+  const admin = getAdminClient()
+  const data = await admin.request<MemberAlert[]>(readItems('user_notification', {
     filter: {
       user_id: {
         _eq: user_id,
       }
     },
     sort: ['-date_created'],
-    fields: '*' as any,
+    fields: ['*'],
     limit: 20
-  })
+  }))
 
   let notifications = data as MemberAlert[]
   notifications.forEach((alert) => {
@@ -31,21 +41,21 @@ export async function getAlerts(user_id: string): Promise<MemberAlert[]> {
   })
   return notifications
 }
-export async function deleteAlert(id: string) {
-  const admin = await getAdminClient()
-  admin.items('user_notification').deleteOne(id)
+export async function deleteAlert(id: string): Promise<void> {
+  const admin = getAdminClient()
+  admin.request(deleteItem('user_notification', id))
 }
 
-export async function markAlertRead(id: string) {
-  const admin = await getAdminClient()
-  return admin.items('user_notification').updateOne(id, { read: true })
+export async function markAlertRead(id: string): Promise<MemberAlert> {
+  const admin = getAdminClient()
+  return admin.request<MemberAlert>(updateItem('user_notification', id, { read: true }))
 }
 
-export async function addAlert(user_id: string, notification: Partial<MemberAlert>) {
-  const admin = await getAdminClient()
-  return admin.items('user_notification').createOne({
+export async function addAlert(user_id: string, notification: Partial<MemberAlert>): Promise<MemberAlert> {
+  const admin = getAdminClient()
+  return admin.request<MemberAlert>(createItem('user_notification', {
     user_id,
     icon: 'info',
     ...notification,
-  })
+  }))
 }

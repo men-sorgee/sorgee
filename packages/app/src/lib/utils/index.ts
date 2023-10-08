@@ -1,4 +1,5 @@
-import { addMinutes, format } from "date-fns";
+import { addMinutes } from "date-fns";
+import { LocationCoordinates } from "lib/models";
 
 export function toLocalDate(value: string) {
   return addMinutes(new Date(value), new Date().getTimezoneOffset())
@@ -31,23 +32,6 @@ export function uuidv4() {
     return v.toString(16)
   });
 }
-
-export function getEventDate(eventStart: string) {
-  const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-
-  let date = new Date(eventStart)
-  return {
-    day: weekday[date.getDay()],
-    short: format(date, 'MMM d'),
-    month: format(date, 'MMM'),
-    dateOnly: format(date, 'yyyy-MM-dd'),
-    dayOfMonth: format(date, 'd'),
-    date,
-    time: format(date, 'p'),
-  }
-}
-
-
 
 export function pruneUndefined<T = Record<string, any>>(
   obj: T,
@@ -110,10 +94,7 @@ export function debouncedPromise<T>(
   }
 }
 
-export type LocationCoordinates = {
-  latitude: number
-  longitude: number
-}
+
 
 export function getDistance(
   coordinateA: LocationCoordinates,
@@ -140,7 +121,7 @@ export function getDistance(
   return { miles: miles, feet: feet };
 }
 
-export * from './apis';
-export * from './fetchers';
 
+export * from './apis';
 export * from './gtm';
+

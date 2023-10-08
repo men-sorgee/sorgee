@@ -1,32 +1,25 @@
-import type { Readable } from 'node:stream';
-
-import { IncomingMessage } from "http";
 import { baseUrl } from "lib/config";
 import { Member, User, UserPayment } from "lib/models";
 import {
-  findUser,
-  getUser,
-  updateInvite,
-  updateUser
-} from "lib/services/directus/server/users";
-import {
   addUserPayment,
+  findUser,
   findUserByCustomer,
   findUserPayments,
+  getUser,
   saveBillingEvent,
+  updateInvite,
+  updateUser,
   updateUserPayment
-} from "lib/services/directus/server/users/billing";
+} from "lib/services/directus/server";
 import {
   getClient,
   subscriptionData,
   webhookSecret
 } from "lib/services/stripe/server";
-import { NextApiRequest, NextApiResponse } from "next";
+import { pruneUndefined } from "lib/utils";
 import Stripe from "stripe";
 
-import { pruneUndefined } from "../../../lib/utils";
-
-async function getRawBody(readable: Readable): Promise<Buffer> {
+async function getRawBody(readable): Promise<Buffer> {
   const chunks = []
   for await (const chunk of readable) {
     chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk)
@@ -34,9 +27,7 @@ async function getRawBody(readable: Readable): Promise<Buffer> {
   return Buffer.concat(chunks)
 }
 
-
-
-export default async function handler(req: NextApiRequest & IncomingMessage, res: NextApiResponse) {
+export default async function StripeEvents(req, res) {
   console.log('Stripe event received')
   const debug = baseUrl.includes('localhost')
   const rawBody = await getRawBody(req)
@@ -235,7 +226,7 @@ export default async function handler(req: NextApiRequest & IncomingMessage, res
             })
           break;
         }
-      case 'customer.subscription.expired':
+      case 'customer.subscription.pending_update_expired':
         {
           const { membership_end } = extractFromSubscription(subscription, user)
           await updateUser(user.id, {

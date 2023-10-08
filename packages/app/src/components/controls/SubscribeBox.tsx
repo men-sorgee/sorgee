@@ -1,5 +1,5 @@
 import { SubscriptionData } from "lib/models";
-import { postJSON } from "lib/utils";
+import { postJSON } from "lib/utils/apis";
 import { useState } from "react";
 
 import { Box, BoxProps, chakra, Flex, Heading, Text } from "@chakra-ui/react";

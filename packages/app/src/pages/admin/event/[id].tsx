@@ -6,7 +6,8 @@ import {
   MemberModal,
   Page
 } from "components";
-import { isPast } from "date-fns";
+import { EventSurveyAnswers } from "components/events/EventSurveyAnswers";
+import isPast from "date-fns/isPast";
 import { useEvent, useUser } from "hooks";
 import {
   EventDetail,
@@ -17,6 +18,7 @@ import {
   Member,
   MemberLevel
 } from "lib/models";
+import { getAssetUrl } from "lib/utils";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
@@ -26,8 +28,8 @@ import {
   Box,
   Flex,
   FormLabel,
-  HStack,
   Heading,
+  HStack,
   Input,
   Link,
   List,
@@ -48,9 +50,6 @@ import {
   Text,
   useDisclosure
 } from "@chakra-ui/react";
-
-import { EventSurveyAnswers } from "../../../components/events/EventSurveyAnswers";
-import { getAssetUrl } from "../../../lib/utils";
 
 export default function EventAdmin() {
   const router = useRouter()

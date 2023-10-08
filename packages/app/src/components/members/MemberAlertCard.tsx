@@ -1,6 +1,7 @@
 import { ButtonLink } from "components";
 import distance from "date-fns/formatDistanceToNow";
 import { Member, MemberAlert } from "lib/models";
+import { gradient } from "lib/utils";
 import { useEffect, useState } from "react";
 
 import {
@@ -15,8 +16,6 @@ import {
   VStack
 } from "@chakra-ui/react";
 import { TrashIcon } from "@heroicons/react/24/outline";
-
-import { gradient } from "../../lib/utils";
 
 export type MemberAlertCardProps = {
   notification: MemberAlert

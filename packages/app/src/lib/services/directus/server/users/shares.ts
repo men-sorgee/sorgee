@@ -1,18 +1,23 @@
-import { getAdminClient } from "lib/services/directus/server";
+import { UserShare } from "lib/models";
+
+import { createItem, deleteItem, readItems } from "@directus/sdk";
+
+import { getAdminClient } from "../";
 
 export async function createUserShare(user_id: string, viewer_id: string): Promise<void> {
-  const adminClient = await getAdminClient()
-  await adminClient.items('user_shares').createOne({
+  const admin = getAdminClient()
+  await admin.request(createItem('user_shares', {
     user_id,
     viewer_id,
-  })
+  }))
 }
 
 
 
 export async function deleteUserShare(user_id: string, viewer_id: string) {
-  const adminClient = await getAdminClient()
-  const { data: shares } = await adminClient.items('user_shares').readByQuery({
+  const admin = getAdminClient()
+  const shares = await admin.request<UserShare[]>(readItems('user_shares', {
+
     filter: {
       viewer_id: {
         _eq: viewer_id,
@@ -21,8 +26,8 @@ export async function deleteUserShare(user_id: string, viewer_id: string) {
         _eq: user_id,
       }
     }
-  })
+  }))
   if (shares.length > 0) {
-    await adminClient.items('user_shares').deleteOne(shares[0].id)
+    await admin.request(deleteItem('user_shares', shares[0].id))
   }
 }

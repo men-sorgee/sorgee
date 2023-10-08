@@ -1,9 +1,11 @@
 import { SearchableMember, UserView, UserViews } from "lib/models";
 import { getAdminClient } from "lib/services/directus/server";
 
+import { createItem, readItems, updateItem } from "@directus/sdk";
+
 export async function getUserViews(user_id: string): Promise<UserViews> {
-  const adminClient = await getAdminClient()
-  const { data: views } = await adminClient.items('user_views').readByQuery({
+  const admin = getAdminClient()
+  const views = await admin.request<UserView[]>(readItems('user_views', {
     filter: {
       viewed_id: {
         _eq: user_id,
@@ -16,9 +18,9 @@ export async function getUserViews(user_id: string): Promise<UserViews> {
       }
     },
     fields: ['*', 'user_id.*' as any],
-    limit: -1,
+    limit: - 1,
     sort: ['-count'],
-  })
+  }))
 
   const myViews: UserViews = {
     count: views.map((v: UserView) => v.count).reduce((a, b) => a + b, 0),
@@ -33,9 +35,9 @@ export async function getUserViews(user_id: string): Promise<UserViews> {
 }
 
 export async function addUserView(user_id: string, viewed_id: string): Promise<void> {
-  const admin = await getAdminClient()
+  const admin = getAdminClient()
 
-  const { data: existingItems } = await admin.items('user_views').readByQuery({
+  const existingItems = await admin.request<UserView[]>(readItems('user_views', {
     filter: {
       user_id: {
         _eq: user_id,
@@ -45,16 +47,16 @@ export async function addUserView(user_id: string, viewed_id: string): Promise<v
       },
     },
     fields: ['id', 'count'],
-  })
+  }))
 
   if (existingItems?.length == 0) {
-    await admin.items('user_views').createOne({
+    await admin.request<UserView>(createItem('user_views', {
       user_id,
       viewed_id,
-    })
+    }))
   } else {
-    await admin.items('user_views').updateOne(existingItems[0].id, {
+    await admin.request<UserView>(updateItem('user_views', existingItems[0].id, {
       count: existingItems[0].count + 1,
-    })
+    }))
   }
 }

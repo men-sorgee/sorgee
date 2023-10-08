@@ -22,10 +22,10 @@ class MyDocument extends Document {
           />
         </Head>
         {/* Global Site Tag (gtag.js) - Google Analytics */}
-        <Script
+        {process.env.PWA == 'true' && <Script
           strategy="afterInteractive"
           src={`https://www.googletagmanager.com/gtag/js?id=${gtag.GA_TRACKING_ID}`}
-        />
+        />}
 
         <body
           style={{
@@ -66,21 +66,6 @@ class MyDocument extends Document {
               "complete"===document.readyState?a():t.attachEvent?t.attachEvent("onload",a):t.addEventListener("load",a,!1)}();`
             }}
           />
-          <Script
-            id="google-analytics-init"
-            strategy="beforeInteractive"
-            src="https://www.googletagmanager.com/gtag/js?id=G-SJX78PVP26" />
-          <Script
-            id="google-analytics"
-            dangerouslySetInnerHTML={{
-              __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-SJX78PVP26', {
-                page_path: window.location.pathname,
-              });`
-            }} />
         </body >
       </Html >
     )

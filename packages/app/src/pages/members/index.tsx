@@ -258,29 +258,29 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
               <FieldCheckboxes
                 field="user_type"
                 label="User Level"
-                options={fields['user_type'].meta.options.choices.filter((item) =>
+                options={fields['user_type'].options.filter((item) =>
                   allowedUserTypes.includes(item.value as UserType)
                 )}
               />
               {/**<FieldCheckboxes
                 field="spectrum"
                 label="Orientation"
-                options={fields['spectrum'].meta.options.choices}
+                options={fields['spectrum'].options}
               />
               <FieldCheckboxes
                 field="mannerisms"
                 label="Mannerisms"
-                options={fields['mannerisms'].meta.options.choices}
+                options={fields['mannerisms'].options}
               />
               <FieldCheckboxes
                 field="relationship_status"
                 label="Relationship Status"
-                options={fields['relationship_status'].meta.options.choices}
+                options={fields['relationship_status'].options}
               />
               <FieldCheckboxes
                 field="my_positions"
                 label="Positions"
-                options={fields['my_positions'].meta.options.choices}
+                options={fields['my_positions'].options}
              />**/}
             </SimpleGrid>
 

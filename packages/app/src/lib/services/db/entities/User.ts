@@ -1,3 +1,5 @@
+
+
 import {
   Column,
   Entity,
@@ -7,15 +9,13 @@ import {
   OneToMany,
   PrimaryGeneratedColumn
 } from "typeorm";
-
-import { DirectusFile } from "./DirectusFiles";
 import { DirectusUsers } from "./DirectusUsers";
 import { EventsUser } from "./EventsUsers";
-import { Location } from "./Location";
 import { Messages } from "./Messages";
 import { NotificationsUsers } from "./NotificationsUsers";
 import { Promos } from "./Promos";
 import { Rating } from "./Rating";
+import { Location } from "./Location";
 import { SurveyAnswers } from "./SurveyAnswers";
 import { UserAccount } from "./UserAccount";
 import { UserBuddy } from "./UserBuddy";
@@ -24,6 +24,7 @@ import { UserRelationships } from "./UserRelationships";
 import { UserSession } from "./UserSession";
 import { UsersFiles } from "./UsersFiles";
 import { UsersPhotos } from "./UsersPhotos";
+import { DirectusFile } from "./DirectusFiles";
 
 @Index('users_email_unique', ['email'], { unique: true })
 @Index('users_pkey', ['id'], { unique: true })

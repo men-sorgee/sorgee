@@ -1,4 +1,4 @@
-import { getPageBySlug } from "lib/services/directus/static";
+import { getPageBySlug } from "lib/services/directus/static/pages";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function Preview(req: NextApiRequest, res: NextApiResponse) {

@@ -74,7 +74,7 @@ function ButtonConfirmComponent<TResponse>({
         })
       onClose()
     } catch (err) {
-      if (onError) await onError(err)
+      if (onError) await onError(err as Error)
       if (failureMessage)
         toast({
           title: alertTitle,

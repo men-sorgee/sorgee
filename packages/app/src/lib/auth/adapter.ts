@@ -1,3 +1,5 @@
+
+import { UploadFolder } from "lib/models";
 import {
   User,
   UserSession,
@@ -17,8 +19,8 @@ import {
   getUser,
   updateSession,
   updateUser
-} from "lib/services/db/server/users";
-import { importFile, UploadFolder } from "lib/services/directus/server/files";
+} from "lib/services/db/server";
+import { importFile } from "lib/services/directus/server";
 import { getAssetUrl } from "lib/utils";
 import {
   Adapter,

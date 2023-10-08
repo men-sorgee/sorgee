@@ -1,6 +1,6 @@
 'use client'
 import { UserNotification } from "lib/models";
-import { deleteJSON, getJSON } from "lib/utils";
+import { deleteJSON, getJSON } from "lib/utils/apis";
 import {
   createContext,
   ReactNode,

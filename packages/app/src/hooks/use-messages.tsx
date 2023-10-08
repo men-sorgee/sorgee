@@ -6,7 +6,7 @@ import {
   MessageStatusType,
   UserMessages
 } from "lib/models";
-import { putJSON } from "lib/utils";
+import { putJSON } from "lib/utils/apis";
 import { useRouter } from "next/router";
 import {
   createContext,

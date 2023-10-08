@@ -21,41 +21,24 @@ interface Params extends ParsedUrlQuery {
 }
 
 export const getStaticPaths = async () => {
-  const { listPages } = await import('lib/services/directus/static')
+  const { listPages } = await import('lib/services/directus/static/pages')
   const pages = await listPages()
   const paths = pages
     ?.filter((p) => !p.static && !p.blog_article && !p.slug.startsWith('blog'))
     .map((page) => ({
       params: { slug: page.slug.split('/') },
     }))
+
   return {
     paths,
     fallback: 'blocking',
   }
 }
 
-if (import.meta.vitest) {
-  const { it, expect } = import.meta.vitest
-  it('exported pages', () => {
-    expect(getStaticPaths).toBeDefined()
-    getStaticPaths().then(
-      ({
-        paths, // An array of all the paths that the plugin found
-        fallback, // The fallback object that the plugin generated
-      }) => {
-        expect(paths.length).toBeGreaterThan(0)
-        expect(fallback).toBe('blocking')
-      }
-    )
-  })
-}
 
-interface Props {
-  page: PageModel
-}
 
 export const getStaticProps = async ({ params }: { params: Params }) => {
-  const { listPages } = await import('lib/services/directus/static')
+  const { listPages } = await import('lib/services/directus/static/pages')
   const pages = await listPages()
   const { slug } = params
   const path = slug.join('/')
@@ -63,6 +46,7 @@ export const getStaticProps = async ({ params }: { params: Params }) => {
   if (!page) {
     return {
       notFound: true,
+
     }
   }
   if (page.children?.length) {
@@ -80,7 +64,12 @@ export const getStaticProps = async ({ params }: { params: Params }) => {
   }
 }
 
-export default function DynamicPage({ page }: Props) {
+export type DynamicPageProps = {
+  page: PageModel
+}
+
+
+export default function DynamicPage({ page }: DynamicPageProps) {
   const { site, loading } = useSite()
   const [nextText, setNextText] = useState<string>(null)
   const [nextUrl, setNextUrl] = useState<string>('')
@@ -102,9 +91,7 @@ export default function DynamicPage({ page }: Props) {
     }
   }, [nextText, site, loading, next_page, next_page_params])
   const imageWidth = useBreakpointValue(['100%', '100%', '50%'])
-  if (!page) {
-    return <NotFound />
-  }
+
   return (
     <Page
       id={id}

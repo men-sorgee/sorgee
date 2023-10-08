@@ -1,8 +1,7 @@
 import { ButtonBusy, ButtonConfirm } from "components";
 import { useInvite } from "hooks";
-import { EventInvite } from "lib/models";
-import { PurchaseResponse } from "lib/services/stripe/client";
-import { ApiResult } from "lib/utils";
+import { EventInvite, PurchaseResponse } from "lib/models";
+import { ApiResult } from "lib/utils/apis";
 import { useRouter } from "next/router";
 import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
@@ -57,7 +56,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
 
   const completePurchase = useCallback(async (data: PurchaseResponse) => {
     const { loadStripe } = await import('@stripe/stripe-js')
-    const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY)
+    const stripe = await loadStripe("pk_live_51LoPw1EoEUGL2Bgubxo5vTjGRx0ONP4JHo6A0zVJivv7ToiCBoRnKdmRoCIWFbikTTenBSQZ7xy8wmF0woyx4NBH00MykU8UsN")
     stripe.redirectToCheckout({
       sessionId: data.id,
     })
@@ -281,7 +280,11 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
           {heading}
         </Heading>
 
-        {change && <Button size="xs" mb={1} variant="solid" colorScheme="primary" py={2} onClick={onToggle} >{isOpen ? 'Cancel Changes' : 'Change RSVP'}</Button>}
+        {change && <Button size="xs" mb={1} variant="solid" colorScheme="primary" py={2} onClick={(e) => {
+          e.stopPropagation()
+          e.preventDefault()
+          onToggle()
+        }} >{isOpen ? 'Cancel Changes' : 'Change RSVP'}</Button>}
       </Flex>
       {paid && change && (
         <Text textAlign='left'>You pre-paid ${invite?.amount || invite?.event.cost} to guarantee your spot!</Text>
@@ -310,7 +313,7 @@ export const EventRSVP = ({ eventId, canConfirm, onChange }: RSVPProps) => {
               justify="stretch"
               gap="2"
               pt={4}
-              pb={4}
+              pb={2}
             >
               {children}
             </Flex>

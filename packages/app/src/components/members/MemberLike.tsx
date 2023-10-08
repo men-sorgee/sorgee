@@ -1,7 +1,7 @@
 import { UpgradeIcon } from "components";
 import { useUser } from "hooks";
 import { Member, MemberLevel, MembershipType } from "lib/models";
-import { deleteJSON, postJSON } from "lib/utils";
+import { deleteJSON, postJSON } from "lib/utils/apis";
 import { useCallback, useEffect, useState } from "react";
 
 import { chakra, IconButton, IconButtonProps } from "@chakra-ui/react";

@@ -20,7 +20,7 @@ interface Props {
 }
 
 export const getStaticProps = async () => {
-  const { getPageById } = await import('lib/services/directus/static')
+  const { getPageById } = await import('lib/services/directus/static/pages')
   const page = await getPageById(pages.homePage)
 
   return {

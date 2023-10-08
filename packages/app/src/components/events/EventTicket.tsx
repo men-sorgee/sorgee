@@ -1,5 +1,5 @@
 import { EventDetail, GroupEvent, Member } from "lib/models";
-import { useState } from "react";
+import { memo } from "react";
 
 import { Flex, Image, Text } from "@chakra-ui/react";
 
@@ -9,7 +9,7 @@ export type EventTicketProps = {
   responsive?: boolean
 }
 
-export const EventTicket = ({ member, event, responsive = false }: EventTicketProps) => {
+export const EventTicket = memo(function EventTicket({ member, event, responsive = false }: EventTicketProps) {
   if (!member || !event) return null
 
   const checkinUrl = `/api/events/${event?.id}/checkin?user_id=${member?.id}`
@@ -43,4 +43,4 @@ export const EventTicket = ({ member, event, responsive = false }: EventTicketPr
       </div>
     </>
   )
-}
+})

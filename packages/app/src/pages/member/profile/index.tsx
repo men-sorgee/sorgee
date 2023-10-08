@@ -13,7 +13,7 @@ import {
 } from "components";
 import { useFields, useUser } from "hooks";
 import { FieldMap, Member, MemberLevel } from "lib/models";
-import { ApiResult } from "lib/utils";
+import { ApiResult } from "lib/utils/apis";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 
@@ -224,7 +224,7 @@ const ProfileForm = ({
   }
 
   const getOptions = (field: string) => {
-    return fieldMap[field]?.meta.options.choices
+    return fieldMap[field]?.options
   }
 
   const { isOpen, onOpen, onClose } = useDisclosure()

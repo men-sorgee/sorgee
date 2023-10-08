@@ -1,9 +1,8 @@
 'use client'
+import { adminUrl } from "lib/config";
 import { Site } from "lib/models";
+import { JsonFetcher } from "lib/utils";
 import useSWR, { KeyedMutator } from "swr";
-
-import { adminUrl } from "../lib/config";
-import { JsonFetcher } from "../lib/utils";
 
 export type SiteResults = {
   site: Site | null

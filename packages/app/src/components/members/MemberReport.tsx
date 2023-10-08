@@ -1,7 +1,7 @@
 import { useUser } from "hooks";
 import { Member, MemberLevel } from "lib/models";
-import { postJSON } from "lib/utils";
-import { useCallback, useRef, useState } from "react";
+import { postJSON } from "lib/utils/apis";
+import { memo, useCallback, useRef, useState } from "react";
 
 import {
   chakra,
@@ -21,8 +21,8 @@ export type MemberReportProps = Omit<IconButtonProps, 'aria-label' | 'onError'> 
   member: Partial<Member>
 }
 
-export const MemberReport = chakra(
-  ({ member, size = ['sm', 'md', 'lg'], ...props }: MemberReportProps) => {
+export const MemberReport = memo(chakra(
+  function MemberReport({ member, size = ['sm', 'md', 'lg'], ...props }: MemberReportProps) {
     const { loading, member: me } = useUser()
     const [hover, setHover] = useState(false)
     const [message, setMessage] = useState<string>('')
@@ -88,4 +88,4 @@ export const MemberReport = chakra(
       </>
     )
   }
-)
+))

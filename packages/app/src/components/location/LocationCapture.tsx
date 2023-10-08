@@ -1,6 +1,7 @@
 'use client'
 import { Coordinates } from "lib/models";
-import { gradient, postJSON } from "lib/utils";
+import { gradient } from "lib/utils";
+import { postJSON } from "lib/utils/apis";
 import { ReactNode, useCallback, useEffect, useState } from "react";
 
 import { Button } from "@chakra-ui/react";

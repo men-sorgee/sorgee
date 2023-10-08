@@ -96,7 +96,7 @@ export const MemberCard = memo(chakra(
               </LinkBox>
               <CardBody pt={0} m={0}>
                 {(full && (levelValue == MemberLevel.pledge || viewerLevel == MemberLevel.staff)) && (
-                  <MemberMessageStats memberId={member?.id} viewerLevel={level} />
+                  <MemberMessageStats memberId={member?.id} viewerLevel={viewerLevel} memberLevel={levelValue} />
                 )}
                 {full && !member.show_profile && (
                   <>

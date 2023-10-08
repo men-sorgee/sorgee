@@ -33,7 +33,6 @@ import {
 } from "@chakra-ui/react";
 import { Bars4Icon, XMarkIcon } from "@heroicons/react/24/solid";
 
-import { constrained } from "./index";
 import { Logo } from "./Logo";
 import User from "./User";
 
@@ -42,6 +41,7 @@ export type Props = BoxProps & {
   isAuthenticated?: boolean
   userType?: UserType
   children?: ReactNode | ReactNode[]
+  constrained: Record<string, any>
 }
 
 const Header = forwardRef<HTMLDivElement, Props>(({
@@ -49,6 +49,7 @@ const Header = forwardRef<HTMLDivElement, Props>(({
   isAuthenticated,
   userType,
   children,
+  constrained,
   ...props
 },
   boxRef) => {
@@ -97,7 +98,7 @@ const Header = forwardRef<HTMLDivElement, Props>(({
   )
   useEffect(() => {
     if (!pages) {
-      import('lib/services/directus/static')
+      import('lib/services/directus/static/pages')
         .then(({ listPages }) => listPages())
         .then((pages) => {
           setPages(

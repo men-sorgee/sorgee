@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 
 import { Box, Spinner } from "@chakra-ui/react";
 
-export const Lazy = ({ children }) => {
+export const Lazy = ({ children }: { children: ReactNode }) => {
   const containerRef = useRef(null)
   const [isVisible, setIsVisible] = useState(false)
   const [ref, setRef] = useState(null)

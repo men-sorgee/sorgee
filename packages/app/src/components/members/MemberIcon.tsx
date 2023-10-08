@@ -1,6 +1,6 @@
 import { Member } from "lib/models";
 import { getAssetUrl } from "lib/utils";
-import { ReactNode, useState } from "react";
+import { memo, ReactNode, useState } from "react";
 
 import {
   AvatarProps,
@@ -22,8 +22,8 @@ export type MemberIconProps = AvatarProps & {
   children?: ReactNode
 }
 
-export const MemberIcon = chakra(
-  ({ member, size = 'lg', color = 'white', onChange, children, ...props }: MemberIconProps) => {
+export const MemberIcon = memo(chakra(
+  function MemberIcon({ member, size = 'lg', color = 'white', onChange, children, ...props }: MemberIconProps) {
     const [isOpen, setOpen] = useState<boolean>(undefined)
     let name = member?.nickname || member?.first_name
     return (
@@ -101,4 +101,4 @@ export const MemberIcon = chakra(
       </>
     )
   }
-)
+))

@@ -5,10 +5,9 @@ import {
   MemberMessages
 } from "components";
 import { useMessageStats, useUser } from "hooks";
-import { Member, MemberLevel, VouchingUser } from "lib/models";
+import { Member, MemberLevel, UserIcon } from "lib/models";
 import { ApiResult, postJSON, putJSON } from "lib/utils";
 import { memo, useEffect, useRef, useState } from "react";
-import swr from "swr";
 
 import { CheckIcon } from "@chakra-ui/icons";
 import {
@@ -33,30 +32,31 @@ export const MemberVouch = memo(chakra(function MemberVouch({ member, size = ['s
   const [working, setWorking] = useState(false)
   const { user_type: level, nickname: name, vouched_by } = member
   const { loading: userLoading, member: me, level: myLevel } = useUser()
-  const [hasChatted, setHasChatted] = useState(false)
-  const [showVouchButton, setShowVouchButton] = useState(false)
-  const {
-    data: voucher,
-    isLoading,
-    mutate,
-  } = swr<VouchingUser>(member?.id ? `/api/members/${member?.id}/vouch` : null, {
-    fallbackData: vouched_by,
-  })
+  const [hasChatted, setHasChatted] = useState<Boolean>(undefined)
+  const [showVouchButton, setShowVouchButton] = useState<Boolean>(undefined)
+  const [voucher] = useState<UserIcon>(vouched_by as UserIcon)
+  //const {
+  //  data: voucher,
+  //  isLoading,
+  //  mutate,
+  //} = swr<UserIcon>(member?.id ? `/api/members/${member?.id}/vouch` : null, {
+  //  fallbackData: vouched_by,
+  //})
 
 
   useEffect(() => {
-    if (!statsLoading && stats && me?.id) {
+    if (!statsLoading && stats && me?.id && hasChatted == undefined) {
       setHasChatted(myLevel == MemberLevel.staff || stats.conversations.find(c => c.id == me?.id) != undefined)
     }
-    if (!isLoading && member?.id && !userLoading && me?.id) {
+    if (level && myLevel && !statsLoading && !userLoading && showVouchButton == undefined) {
       setShowVouchButton(MemberLevel[level] == MemberLevel.pledge
         && myLevel >= MemberLevel.brother)
     }
-  }, [me, member?.id, isLoading, setShowVouchButton, voucher?.id, level, myLevel, statsLoading, stats, userLoading])
+  }, [me, member.id, setShowVouchButton, level, myLevel, statsLoading, stats, userLoading, hasChatted, showVouchButton])
 
   if (member?.id == me?.id) return null
 
-  if (working || isLoading || statsLoading) return <Loading />
+  if (working || statsLoading) return <Loading />
 
   return (
     <>
@@ -74,7 +74,7 @@ export const MemberVouch = memo(chakra(function MemberVouch({ member, size = ['s
       )}
       {showVouchButton && (<>
         {hasChatted && (<>
-          <ButtonConfirm<ApiResult<VouchingUser>>
+          <ButtonConfirm<ApiResult<UserIcon>>
             size={'sm'}
             title={`Vouch for ${name}`}
             aria-label={`Vouch for ${name}`}
@@ -86,10 +86,10 @@ export const MemberVouch = memo(chakra(function MemberVouch({ member, size = ['s
             buttonText={`Vouch for ${name}`}
             confirmedAction={() => {
               setWorking(true)
-              return postJSON<any, VouchingUser>(`/api/members/${member?.id}/vouch`, {})
+              return postJSON<any, UserIcon>(`/api/members/${member?.id}/vouch`, {})
             }}
             onSuccess={({ data }) => {
-              mutate(data)
+
               setWorking(false)
               setShowVouchButton(false)
               if (onChange) onChange()
@@ -111,7 +111,7 @@ export const MemberVouch = memo(chakra(function MemberVouch({ member, size = ['s
             </Text>
 
           </ButtonConfirm>
-          <ButtonConfirm<ApiResult<VouchingUser>>
+          <ButtonConfirm<ApiResult<UserIcon>>
             size={'sm'}
             title={`Deny ${name}`}
             aria-label={`Deny ${name}`}
@@ -120,14 +120,14 @@ export const MemberVouch = memo(chakra(function MemberVouch({ member, size = ['s
             variant='ghost'
             confirmedAction={() => {
               setWorking(true)
-              return putJSON<any, VouchingUser>(`/api/members/${member?.id}/vouch`, {
+              return putJSON<any, UserIcon>(`/api/members/${member?.id}/vouch`, {
                 reason: reasonRef.current?.value,
               })
             }}
             failureMessage="There was an error voting NO for this user. Please try again later."
             successMessage="You have voted NO for this user."
             onSuccess={({ data }) => {
-              mutate(data)
+
               setWorking(false)
               setShowVouchButton(false)
               if (onChange) onChange()
