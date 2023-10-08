@@ -1,19 +1,23 @@
 const { PHASE_DEVELOPMENT_SERVER } = require('next/constants')
 
-const withPWA = require('next-pwa')({
-  dest: 'public',
-  disable: process.env.PWA !== 'true'
-})
 
-const getConfig = (phase) => {
-  const dev = PHASE_DEVELOPMENT_SERVER === phase
+module.exports = (phase, defaultConfig) =>  {
+  const isDev = PHASE_DEVELOPMENT_SERVER === phase
+  const withBundleAnalyzer = require('@next/bundle-analyzer')({
+    enabled: isDev,
+  })
+  
+  const withPWA = require('next-pwa')({
+    dest: 'public',
+    disable: isDev
+  })
 
   /**
    * @type {import('next').NextConfig}
    */
   const nextConfig = {
     publicRuntimeConfig: {
-      dev
+      dev: isDev
     },
     pageExtensions: ['tsx'],
     //experimental: { appDir: false, },
@@ -40,10 +44,10 @@ const getConfig = (phase) => {
         }
       ]
     },
-    poweredByHeader: false,
-    crossOrigin: false
+    poweredByHeader: true,
+    crossOrigin: 'use-credentials'
   }
-  return nextConfig
+  return  withPWA(withBundleAnalyzer(nextConfig))
 }
 
-module.exports = withPWA(getConfig)
+

@@ -40,6 +40,7 @@
     "@heroicons/react": "^2.0.18",
     "@hookform/error-message": "^2.0.1",
     "@hypertheme-editor/chakra-ui": "^0.1.6-rc.0",
+    "@next/bundle-analyzer": "^13.5.4",
     "@sendgrid/mail": "^7.7.0",
     "@stripe/stripe-js": "2.1.7",
     "add-to-calendar-button-react": "^2.4.1",
