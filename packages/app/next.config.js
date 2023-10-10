@@ -4,7 +4,7 @@ const { PHASE_DEVELOPMENT_SERVER } = require('next/constants')
 module.exports = (phase, defaultConfig) =>  {
   const isDev = PHASE_DEVELOPMENT_SERVER === phase
   const withBundleAnalyzer = require('@next/bundle-analyzer')({
-    enabled: isDev,
+    enabled: process.ANALYZE === 'true',
   })
   
   const withPWA = require('next-pwa')({
