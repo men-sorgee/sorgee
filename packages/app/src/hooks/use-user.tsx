@@ -68,8 +68,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
     isLoading,
   } = useSWR<Member, Error>(() => (authenticated ? key : null), {
     refreshInterval: 1000 * 60 * 1,
-    keepPreviousData: false,
-    fallbackData: user,
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+    refreshWhenHidden: true,
+    keepPreviousData: true
   })
 
   const { application_status, user_type, membership_type } = member || {}

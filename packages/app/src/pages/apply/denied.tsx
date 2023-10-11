@@ -6,7 +6,6 @@ import { useRouter } from "next/router";
 import { Heading, Link, Text } from "@chakra-ui/react";
 
 function Denied() {
-  const router = useRouter()
   const { loading, member } = useUser({
     minLevel: MemberLevel.applicant,
   })

@@ -9,10 +9,15 @@ export default async function SiteFields(
 ) {
   const { collection: c = 'users' } = req.query
   const collection = String(c)
-  const fields = await getFields(collection)
-  if (fields) {
-    res.status(200).json(ApiResponse(fields))
-  } else {
-    res.status(404).json(ApiResponse(null, 'Not found'))
+  try {
+    const fields = await getFields(collection)
+    if (fields) {
+      res.status(200).json(ApiResponse(fields))
+    } else {
+      res.status(404).json(ApiResponse(null, 'Not found'))
+    }
+  } catch (error) {
+    res.status(500).json(ApiResponse(null, error.message))
   }
+
 }

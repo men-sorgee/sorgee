@@ -22,13 +22,11 @@ export default async function CurrentMember(
     const method = withMethods(req, ['GET', 'POST'])
     const me = await withUser(req, res)
 
-
     if (method == 'POST') {
       const userDetails = req.body as Partial<User>
       const updated = await updateUser(me.id, userDetails)
       return res.status(200).json(ApiResponse(updated))
     }
-
 
     let fields: QueryFields<User> = [
       ...memberFields,
@@ -36,8 +34,6 @@ export default async function CurrentMember(
     ]
 
     const user = await getUser<Member>(me.id, fields)
-
-
 
     return res.status(200).json(ApiResponse(user))
   } catch (e) {

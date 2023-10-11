@@ -6,7 +6,7 @@ import { postJSON } from "lib/utils/apis";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-import { Box, Heading, Text } from "@chakra-ui/react";
+import { Alert, Box, Heading, Link, Text } from "@chakra-ui/react";
 
 import ApplicationSteps from "./_steps";
 
@@ -60,35 +60,41 @@ export default function Agreement({ markdown }: Props) {
                 }}
                 mt={4}
               >
-                <Heading as="h2" size="xl">
-                  Site Rules
-                </Heading>
+                <Alert flexDirection="column" rounded='lg' shadow='xl'>
+                  <Heading as="h2" size="xl" mt={0}>
+                    Please Read Our Site Rules
+                  </Heading>
+                  <Text fontSize="xl">
+                    We have a few rules that we need you to follow. Please read them carefully and
+                    check the agree box, then click the Agree button when you are done.
+                  </Text>
+                </Alert>
+
                 <Markdown content={markdown} size="lg" />
                 <Heading as="h2" size="xl">
                   Legal Agreement
                 </Heading>
                 <Text fontSize="xl">
                   Please read and agree to our rules,{' '}
-                  <a
+                  <Link
                     href="/terms"
                     target="_blank"
                     style={{ textDecoration: 'underline' }}
                     className="link"
                   >
                     terms
-                  </a>
+                  </Link>
                   &nbsp;and&nbsp;
-                  <a
+                  <Link
                     href="/terms"
                     target="_blank"
                     style={{ textDecoration: 'underline' }}
                     className="link"
                   >
-                    privacy policy.
-                  </a>
-                  By entering this site, you commit to keep all user information confidential and
-                  not to share it with any third parties. You also agree to not use this site for
-                  any illegal purposes.
+                    privacy policy
+                  </Link>.&nbsp;
+                  By entering this site, you are agreeing to respect the privacy of all members.
+                  You also agree to not use this site for any illegal purposes.
                 </Text>
               </Box>
               <Box mt={4}>

@@ -375,7 +375,7 @@ export default function UserMenu({ site }: Props) {
             color="white"
             onClick={(e) => {
               e.preventDefault()
-              signIn(null, {
+              return signIn(null, {
                 callbackUrl: '/api/my/home',
               })
             }}

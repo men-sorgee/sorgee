@@ -56,12 +56,12 @@ export const authOptions: AuthOptions = {
     colorScheme: 'dark',
     buttonText: 'white',
   },
+  useSecureCookies: process.env.NODE_ENV === 'production',
   logger: {
     debug: (...args) => log('auth:debug', ...args),
     error: (...args) => console.error('auth:error', ...args),
     warn: (...args) => console.warn('auth:warn', ...args),
   },
-
   callbacks: {
     async signIn(data) {
       let { user, email: is, profile, account } = data
@@ -166,15 +166,15 @@ export const authOptions: AuthOptions = {
         log('sendVerificationRequest')
         if (userCanSignin(user)) {
           // check if the user needs to sign in with their phone
-          if (user.phone && user.phoneVerified && user.authWithPhone) {
-            try {
-              await sendNotification(user.phone, `Sign in:  ${url}`)
-              log(`Sent sign in link to ${user.phone} for ${user.email} `)
-              return
-            } catch (e) {
-              console.error(e)
-            }
-          }
+          //if (user.phone && user.phoneVerified && user.authWithPhone) {
+          //  try {
+          //    await sendNotification(user.phone, `Sign in:  ${url}`)
+          //    log(`Sent sign in link to ${user.phone} for ${user.email} `)
+          //    return
+          //  } catch (e) {
+          //    console.error(e)
+          //  }
+          //}
           log(`Sending sign in link to ${user.email} `)
           await sendNotificationEmail(
             email,
@@ -196,7 +196,6 @@ export const authOptions: AuthOptions = {
         let [local, domain] = identifier.toLowerCase().trim().split('@')
         return `${local}@${domain}`
       },
-
     }),
   ],
 }
