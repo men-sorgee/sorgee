@@ -53,14 +53,7 @@ export type PageProps = {
 
 }
 
-type FormProps = PageProps & {
-  spectrumOptions: FieldOptions
-  relationshipOptions: FieldOptions
-  timeOfDayOptions: FieldOptions
-  positionsOptions: FieldOptions
-  skinToneOptions: FieldOptions
-  birthMonthOptions: FieldOptions
-}
+
 
 export const getServerSideProps = async (_context) => {
   const { getPageById } = await import('lib/services/directus/static/pages')
@@ -139,7 +132,7 @@ function Apply({ promo, invite, markdown, ...props }: PageProps) {
     setFormError,
   }
   return (
-    <Page title="Application" loading={loading} header={<ApplicationSteps status={'apply'} />}>
+    <Page title="Application" loading={loading || fieldsLoading} header={<ApplicationSteps status={'apply'} />}>
       <>
         <Text fontSize={'xl'}>{intro}</Text>
         <Box pb={4}>
@@ -182,6 +175,15 @@ type ApplyFormProps = Pick<
   height_inches: string
 }
 
+type FormProps = PageProps & {
+  spectrumOptions: FieldOptions
+  relationshipOptions: FieldOptions
+  timeOfDayOptions: FieldOptions
+  positionsOptions: FieldOptions
+  skinToneOptions: FieldOptions
+  birthMonthOptions: FieldOptions
+}
+
 function ApplyForm({
   user,
   reload,
@@ -210,6 +212,7 @@ function ApplyForm({
         this information to anyone.
       </Text>
       <Form
+        successMessage="Application saved!"
         defaultValues={{
           nickname: user?.nickname || user.first_name || '',
           first_name: user?.first_name || '',
@@ -241,6 +244,9 @@ function ApplyForm({
           reload().then(() => {
             router.push('/apply/verify')
           })
+        }}
+        onError={(error) => {
+          setFormError(error?.message)
         }}
       >
         {({ register }) => (

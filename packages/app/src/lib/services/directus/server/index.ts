@@ -1,17 +1,18 @@
 import { adminUrl } from "lib/config";
 import { GNHSchema } from "lib/models";
 
-import { createDirectus, graphql, rest, staticToken } from "@directus/sdk";
+import { DirectusClient, GraphqlClient, RestClient, createDirectus, graphql, rest, staticToken } from "@directus/sdk";
 
+let client: DirectusClient<GNHSchema> & RestClient<GNHSchema> & GraphqlClient<GNHSchema> = null
 export function getAdminClient() {
-  return createDirectus<GNHSchema>(adminUrl)
+  return client || (client = createDirectus<GNHSchema>(adminUrl)
     .with(staticToken(process.env.ADMIN_TOKEN))
     .with(rest({
       credentials: 'include',
     }))
     .with(graphql({
       credentials: 'include',
-    }))
+    })))
 }
 
 export * from './alerts';
