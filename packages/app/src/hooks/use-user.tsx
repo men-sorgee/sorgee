@@ -7,7 +7,7 @@ import {
   MembershipType
 } from "lib/models";
 import { ApiResult, getAssetUrl, postJSON } from "lib/utils";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import {
   createContext,
@@ -58,8 +58,9 @@ export const UserContext = createContext<UserContextData>({
 
 export function UserProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState<boolean>(true)
+  //const { data: session, status, } = useSession()
   const key = `/api/me`
-  const { authenticated, loading: authLoading } = useAuthenticated()
+  const { authenticated, loading: authLoading, user } = useAuthenticated()
   const {
     data: member,
     mutate: _mutate,
@@ -67,7 +68,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
     isLoading,
   } = useSWR<Member, Error>(() => (authenticated ? key : null), {
     refreshInterval: 1000 * 60 * 1,
-    keepPreviousData: false,
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+    refreshWhenHidden: true,
+    keepPreviousData: true
   })
 
   const { application_status, user_type, membership_type } = member || {}

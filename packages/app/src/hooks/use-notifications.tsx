@@ -1,5 +1,5 @@
 'use client'
-import { UserNotification } from "lib/models";
+import { MemberLevel, UserNotification } from "lib/models";
 import { deleteJSON, getJSON } from "lib/utils/apis";
 import {
   createContext,
@@ -44,7 +44,7 @@ export function NotificationsProvider({
 }: {
   children: ReactNode
 }) {
-  const { authenticated } = useAuthenticated()
+  const { authenticated } = useAuthenticated(MemberLevel.pledge)
   const key = `/api/notifications`
   const {
     data: notifications = [],

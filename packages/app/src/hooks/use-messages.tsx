@@ -3,6 +3,7 @@ import {
   ChatConversation,
   ChatMessage,
   Member,
+  MemberLevel,
   MessageStatusType,
   UserMessages
 } from "lib/models";
@@ -57,7 +58,7 @@ export const MessagesContext = createContext<MessagesContextData>({
 })
 
 export function MessagesProvider({ children }: { children: ReactNode | ReactNode[] }) {
-  const { authenticated } = useAuthenticated()
+  const { authenticated } = useAuthenticated(MemberLevel.pledge)
   const key = `/api/my/messages`
 
   const router = useRouter()
@@ -157,7 +158,7 @@ export function MessagesProvider({ children }: { children: ReactNode | ReactNode
 
       setActiveId(user.id)
       setActiveConversation(convo)
-      router.push(`/members/chat/${user.id}`)
+      router.push(`/member/messages/${user.id}`)
     },
     [conversations, setActiveId, router]
   )

@@ -1,6 +1,5 @@
 import { FieldInput, Page } from "components";
 import { useUser } from "hooks/use-user";
-import { baseUrl } from "lib/config";
 import { InviteLink, Member, MemberLevel, UserInvite } from "lib/models";
 import { postJSON } from "lib/utils/apis";
 import { useState } from "react";
@@ -27,15 +26,9 @@ function Form({ member }: { member: Member }) {
     mode: 'onBlur',
   })
 
-  const { handleSubmit, setError, reset, getFieldState, formState } = methods
+  const { handleSubmit, setError, reset, watch, formState: { isSubmitting } } = methods
 
-  const getLink = ({ e }: UserInvite) => {
-    if (!member) return
-    const data = Buffer.from(JSON.stringify({ e, v: member?.id })).toString('base64')
-    const invite = `${baseUrl}/apply/${data}`
-    setLink(invite)
-    return invite
-  }
+
 
   const onCopyClick = (e: any) => {
     navigator?.clipboard?.writeText(link as string)
@@ -48,23 +41,17 @@ function Form({ member }: { member: Member }) {
     })
   }
 
-  const onSubmit = async (data: InviteLink) => {
-    if (!member) {
-      setError('email', { message: 'Member not found' })
-    }
-    const inviteLink = getLink({
-      e: data.email,
-      v: member?.id,
-    })
-    const { success, error } = await postJSON('/api/members/invite', {
-      ...data,
-      link: inviteLink,
+  const onSubmit = async ({ email }) => {
+
+    const { success, error, data: { link } } = await postJSON<{ email: string }, { link: string }>('/api/members/invite', {
+      email
     })
 
     if (success) {
+      setLink(link)
       toast({
         title: 'Invite Link is Ready',
-        description: 'Share the link with your buddy ' + data.email,
+        description: 'Share the link with your buddy ' + email,
         status: 'success',
         duration: 9000,
         isClosable: true,
@@ -73,7 +60,7 @@ function Form({ member }: { member: Member }) {
       setError('email', { message: error?.message })
     }
   }
-  const email = getFieldState('email', formState)
+  const email = watch('email')
 
   return (
     <>
@@ -100,6 +87,7 @@ function Form({ member }: { member: Member }) {
               onClick={onCopyClick}
               value={link as string}
               readOnly
+              title="Click to Copy"
             />
           ) : (
             <FieldInput
@@ -146,7 +134,7 @@ function Form({ member }: { member: Member }) {
               mt={4}
               colorScheme="accent"
               type="submit"
-              disabled={!member || !email.isTouched}
+              disabled={!member || isSubmitting}
             >
               Create Invite
             </Button>

@@ -67,7 +67,7 @@ const ActionsBar = forwardRef<HTMLDivElement, ActionsBarProps>(({ constrained }:
         <Chat
           member={member}
           hasFeature={hasChat}
-          active={path.startsWith('/members/chat')}
+          active={path.startsWith('/member/messages')}
           iconSize={iconSize}
           iconDimensions={iconDimensions}
         />

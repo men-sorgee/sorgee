@@ -48,7 +48,7 @@ const ChatActions = ({
 
   const ActionIcon = () => (
     <Link
-      href={`/members/chat${activeId ? '/' + activeId : ''}`}
+      href={`/member/messages${activeId ? '/' + activeId : ''}`}
       as={NextLink}
       zIndex="fixed"
     >

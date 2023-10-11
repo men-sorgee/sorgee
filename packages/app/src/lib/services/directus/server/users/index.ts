@@ -23,7 +23,8 @@ import {
   createItem,
   readItem,
   readItems,
-  updateItem
+  updateItem,
+  withOptions
 } from "@directus/sdk";
 
 export async function createUser(member: Partial<User>): Promise<User> {
@@ -45,28 +46,31 @@ export async function getUser<T extends User | Member | Applicant | Profile = Us
   fields: QueryFields<User> = memberFields
 ): Promise<T> {
   const admin = getAdminClient()
-  const user = await admin.request<User>(readItem('users', id, {
-    fields,
-    filter: {
-      status: {
-        _eq: 'active',
+  const user = await admin.request<User>(
+    withOptions(readItem('users', id, {
+      fields,
+      filter: {
+        status: {
+          _eq: 'active',
+        },
       },
-    },
-    deep: {
-      buddies: {
-        _limit: -1,
-      },
-      buddy_of: {
-        _limit: -1
-      },
-      invites: {
-        events_id: {
-          _sort: ['datetime'],
+      deep: {
+        buddies: {
+          _limit: -1,
+        },
+        buddy_of: {
+          _limit: -1
+        },
+        invites: {
+          events_id: {
+            _sort: ['datetime'],
+          }
         }
-      }
-
-    },
-  }))
+      },
+    }), {
+      cache: 'no-cache'
+    })
+  )
 
   return user as T
 }

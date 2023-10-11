@@ -10,7 +10,7 @@ import {
   Markdown,
   Page
 } from "components";
-import { useSite, useUser } from "hooks";
+import { useFields, useSite, useUser } from "hooks";
 import { pages } from "lib/config";
 import {
   Applicant,
@@ -43,12 +43,6 @@ import ApplicationSteps from "./_steps";
 
 export type PageProps = {
   invite?: UserInvite
-  spectrumOptions: FieldOptions
-  relationshipOptions: FieldOptions
-  timeOfDayOptions: FieldOptions
-  positionsOptions: FieldOptions
-  skinToneOptions: FieldOptions
-  birthMonthOptions: FieldOptions
   page?: string
   setComplete: (complete: boolean) => void
   router: NextRouter
@@ -56,20 +50,16 @@ export type PageProps = {
   setFormError: (error: string) => void
   promo?: Promo
   markdown: string
+
 }
 
+
+
 export const getServerSideProps = async (_context) => {
-  const { getFieldOptions } = await import('lib/services/directus/server')
   const { getPageById } = await import('lib/services/directus/static/pages')
   const page = await getPageById(pages.applyPage)
   const { markdown } = page
   const props: Partial<PageProps> = {
-    spectrumOptions: await getFieldOptions('spectrum'),
-    relationshipOptions: await getFieldOptions('relationship_status'),
-    timeOfDayOptions: await getFieldOptions('event_availability'),
-    positionsOptions: await getFieldOptions('my_positions'),
-    skinToneOptions: await getFieldOptions('skin_tone'),
-    birthMonthOptions: await getFieldOptions('birth_month'),
     markdown,
   }
   return { props }
@@ -85,6 +75,34 @@ function Apply({ promo, invite, markdown, ...props }: PageProps) {
     minAppStatus: ApplicationStatus.apply,
     redirectsEnabled: true,
   })
+  const [fields, setFields] = useState<{
+    spectrumOptions: FieldOptions
+    relationshipOptions: FieldOptions
+    timeOfDayOptions: FieldOptions
+    positionsOptions: FieldOptions
+    skinToneOptions: FieldOptions
+    birthMonthOptions: FieldOptions
+  }>(undefined)
+  const { fields: fieldData, loading: fieldsLoading } = useFields('users')
+
+  useEffect(() => {
+    if (!fieldsLoading && fieldData && fields == undefined) {
+      let spectrumOptions = fieldData['spectrum'].options
+      let relationshipOptions = fieldData['relationship_status'].options
+      let timeOfDayOptions = fieldData['event_availability'].options
+      let positionsOptions = fieldData['my_positions'].options
+      let skinToneOptions = fieldData['skin_tone'].options
+      let birthMonthOptions = fieldData['birth_month'].options
+      setFields({
+        spectrumOptions,
+        relationshipOptions,
+        timeOfDayOptions,
+        positionsOptions,
+        skinToneOptions,
+        birthMonthOptions,
+      })
+    }
+  }, [fieldsLoading, fieldData, fields])
 
   const [formError, setFormError] = useState<string>()
 
@@ -106,14 +124,15 @@ function Apply({ promo, invite, markdown, ...props }: PageProps) {
     ? `You've been invited to join our community! You have been vouched for, but we still need to perform a few verification steps.`
     : 'To apply for membership, complete this application. A member of our team will review your application and contact you with next steps.'
 
-  const data: Omit<PageProps, 'markdown'> = {
+  const data: Omit<FormProps, 'markdown'> = {
     invite,
     promo,
     ...props,
+    ...fields,
     setFormError,
   }
   return (
-    <Page title="Application" loading={loading} header={<ApplicationSteps status={'apply'} />}>
+    <Page title="Application" loading={loading || fieldsLoading} header={<ApplicationSteps status={'apply'} />}>
       <>
         <Text fontSize={'xl'}>{intro}</Text>
         <Box pb={4}>
@@ -156,6 +175,15 @@ type ApplyFormProps = Pick<
   height_inches: string
 }
 
+type FormProps = PageProps & {
+  spectrumOptions: FieldOptions
+  relationshipOptions: FieldOptions
+  timeOfDayOptions: FieldOptions
+  positionsOptions: FieldOptions
+  skinToneOptions: FieldOptions
+  birthMonthOptions: FieldOptions
+}
+
 function ApplyForm({
   user,
   reload,
@@ -165,7 +193,7 @@ function ApplyForm({
   relationshipOptions,
   birthMonthOptions,
   setFormError,
-}: Omit<PageProps, 'markdown'> & {
+}: Omit<FormProps, 'markdown'> & {
   user: Applicant
   reload: () => Promise<Member>
 }) {
@@ -184,6 +212,7 @@ function ApplyForm({
         this information to anyone.
       </Text>
       <Form
+        successMessage="Application saved!"
         defaultValues={{
           nickname: user?.nickname || user.first_name || '',
           first_name: user?.first_name || '',
@@ -215,6 +244,9 @@ function ApplyForm({
           reload().then(() => {
             router.push('/apply/verify')
           })
+        }}
+        onError={(error) => {
+          setFormError(error?.message)
         }}
       >
         {({ register }) => (

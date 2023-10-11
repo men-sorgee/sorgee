@@ -7,13 +7,20 @@ import {
   withMethods
 } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";
+import { sendNotificationEmail } from "../../../lib/services/sendgrid/server";
+import { baseUrl } from "../../../lib/config";
+import { aP } from "@directus/sdk/dist/index-5c47c85c";
+
+
 
 async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponseType>) {
   try {
     withMethods(req, ['POST'])
     const member = await withMember(req, res)
+    const { email } = req.body
 
-    const { email, link } = req.body as InviteLink
+    const data = Buffer.from(JSON.stringify({ e: email, v: member?.id })).toString('base64')
+    const link = `${baseUrl}/api/auth/signin/email?email=${email}&callbackUrl=${baseUrl}/apply/${data}`
 
     const existingUser = await findUser(email.toLocaleLowerCase())
     if (existingUser) {
@@ -49,18 +56,19 @@ async function Invite(req: NextApiRequest, res: NextApiResponse<ApiResponseType>
       })
     }
 
-    //await sendNotificationEmail(
-    //  email,
-    //  `${member.first_name}'s Friend`,
-    //  `${member.first_name} ${member.last_name} has invited you to join our community!`,
-    //  `Begin your application, by clicking the button below.`,
-    //  {
-    //    button_text: `Accept Invitation`,
-    //    button_url: link,
-    //  }
-    //)
+    await sendNotificationEmail(
+      email,
+      `${member.first_name}'s Friend`,
+      `${member.first_name} ${member.last_name} has invited you to join our community!`,
+      `Begin your application, by clicking the button below.`,
+      {
+        button_text: `Accept Invitation`,
+        button_url: link,
+      }
+    )
 
-    res.status(200).end()
+    res.status(200).json(ApiResponse({ link }))
+
   } catch (e: any) {
     console.error(e)
     res.status(500).json(ApiResponse(null, e.message || e))

@@ -1,21 +1,22 @@
 const { PHASE_DEVELOPMENT_SERVER } = require('next/constants')
 
-const withPWA = require('next-pwa')({
-  dest: 'public',
-  disable: process.env.PWA !== 'true'
-})
 
-const getConfig = (phase) => {
-  const dev = PHASE_DEVELOPMENT_SERVER === phase
+module.exports = (phase, defaultConfig) =>  {
+  const isDev = PHASE_DEVELOPMENT_SERVER === phase
+  const withBundleAnalyzer = require('@next/bundle-analyzer')({
+    enabled: process.env.ANALYZE === 'true',
+  })
+  
+  const withPWA = require('next-pwa')({
+    dest: 'public',
+    disable: isDev
+  })
 
   /**
    * @type {import('next').NextConfig}
    */
   const nextConfig = {
-    publicRuntimeConfig: {
-      dev
-    },
-    pageExtensions: ['tsx'],
+    trailingSlash: false,
     //experimental: { appDir: false, },
     images: {
       domains: [
@@ -31,6 +32,7 @@ const getConfig = (phase) => {
       ]
     },
     redirects: async () => {
+      if (isDev) return []
       return [
         {
           source: '/:path*',
@@ -40,10 +42,10 @@ const getConfig = (phase) => {
         }
       ]
     },
-    poweredByHeader: false,
-    crossOrigin: false
+    poweredByHeader: true,
+    crossOrigin: "anonymous"
   }
-  return nextConfig
+  return  withPWA(withBundleAnalyzer(nextConfig))
 }
 
-module.exports = withPWA(getConfig)
+

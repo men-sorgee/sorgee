@@ -82,7 +82,7 @@ export default function Layout({
 
   const handleRouteChange = useCallback((url: string) => {
     startTransition(() => {
-      setHideFooter(url.startsWith('/members/chat') || url.endsWith('/ticket'))
+      setHideFooter(url.startsWith('/member/messages') || url.endsWith('/ticket'))
 
       setTimeout(() => {
         if (bodyRef.current != null) {
@@ -112,7 +112,7 @@ export default function Layout({
   useEffect(() => {
     if (router?.asPath == undefined) return
     startTransition(() => {
-      setHideFooter(router?.asPath.startsWith('/members/chat') || router?.asPath.endsWith('/ticket') || false)
+      setHideFooter(router?.asPath.startsWith('/member/messages') || router?.asPath.endsWith('/ticket') || false)
     })
 
     router.events.on('routeChangeComplete', handleRouteChange)
@@ -185,9 +185,11 @@ export default function Layout({
               flex="1 100%"
               {...constrained}
             >
+
               <Box ref={bodyRef}>
                 <ViewHeightContext.Provider value={{ subtract: heightSubtraction }}>{children}</ViewHeightContext.Provider>
               </Box>
+
               {!hideFooter && (
                 <Footer />
               )}

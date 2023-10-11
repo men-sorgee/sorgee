@@ -235,7 +235,7 @@ export default function UserMenu({ site }: Props) {
                         bg="black"
                         _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                         as={Link}
-                        href="/members/chat"
+                        href="/member/messages"
                       >
                         Brother Chat
                       </MenuItem>
@@ -375,7 +375,7 @@ export default function UserMenu({ site }: Props) {
             color="white"
             onClick={(e) => {
               e.preventDefault()
-              signIn(null, {
+              return signIn(null, {
                 callbackUrl: '/api/my/home',
               })
             }}

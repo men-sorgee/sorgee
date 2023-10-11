@@ -92,8 +92,7 @@ export async function withStaff(req: NextApiRequest, res: NextApiResponse): Prom
 
 export function parseInvite(invite: string): UserInvite {
   const inviteJson = Buffer.from(invite, 'base64').toString('utf-8')
-  return JSON.parse(inviteJson)
+  return JSON.parse(inviteJson) as UserInvite
 }
 
 export type { ApiResponseType } from './apis';
-
