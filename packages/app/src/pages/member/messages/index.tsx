@@ -79,7 +79,7 @@ export default function ChatPage({ id }: { id?: string }) {
 
   const handleBackClick = useCallback(async () => {
     setActiveId(undefined)
-    await router.push('/members/chat')
+    await router.push('/member/messages')
     setSidebarVisible(true)
   }, [router, setActiveId])
 
@@ -89,7 +89,7 @@ export default function ChatPage({ id }: { id?: string }) {
       if (sidebarVisible) {
         setSidebarVisible(false)
       }
-      await router.push(`/members/chat/${activeId}`)
+      await router.push(`/member/messages/${activeId}`)
       setActiveId(activeId)
     },
     [router, setActiveId, sidebarVisible]

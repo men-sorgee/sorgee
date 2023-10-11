@@ -80,7 +80,7 @@ export default async function getUserMessages(
             `From ${myName}:\n> \`${body}\``,
             {
               button_text: 'View Message',
-              button_url: `${baseUrl}/members/chat/${me.id}`,
+              button_url: `${baseUrl}/member/messages/${me.id}`,
               user_id: them.id
             },
             SendGridTemplate.Notification,

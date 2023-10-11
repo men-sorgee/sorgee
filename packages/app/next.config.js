@@ -4,7 +4,7 @@ const { PHASE_DEVELOPMENT_SERVER } = require('next/constants')
 module.exports = (phase, defaultConfig) =>  {
   const isDev = PHASE_DEVELOPMENT_SERVER === phase
   const withBundleAnalyzer = require('@next/bundle-analyzer')({
-    enabled: process.ANALYZE === 'true',
+    enabled: process.env.ANALYZE === 'true',
   })
   
   const withPWA = require('next-pwa')({
@@ -16,10 +16,7 @@ module.exports = (phase, defaultConfig) =>  {
    * @type {import('next').NextConfig}
    */
   const nextConfig = {
-    publicRuntimeConfig: {
-      dev: isDev
-    },
-    pageExtensions: ['tsx'],
+    trailingSlash: false,
     //experimental: { appDir: false, },
     images: {
       domains: [
@@ -35,6 +32,7 @@ module.exports = (phase, defaultConfig) =>  {
       ]
     },
     redirects: async () => {
+      if (isDev) return []
       return [
         {
           source: '/:path*',
@@ -45,7 +43,7 @@ module.exports = (phase, defaultConfig) =>  {
       ]
     },
     poweredByHeader: true,
-    crossOrigin: 'use-credentials'
+    crossOrigin: "anonymous"
   }
   return  withPWA(withBundleAnalyzer(nextConfig))
 }

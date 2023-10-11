@@ -235,7 +235,7 @@ export default function UserMenu({ site }: Props) {
                         bg="black"
                         _hover={{ bg: 'gray.400', textDecoration: 'none' }}
                         as={Link}
-                        href="/members/chat"
+                        href="/member/messages"
                       >
                         Brother Chat
                       </MenuItem>

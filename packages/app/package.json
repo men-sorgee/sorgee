@@ -7,7 +7,7 @@
     "clean": "rm -rf .next && rm -rf node_modules",
     "dev": "next dev",
     "next": "next ",
-    "build": "NODE_OPTIONS=\"--max_old_space_size=4096\" next build",
+    "build": "ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint",
     "fix": "next lint --fix",
