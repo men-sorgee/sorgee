@@ -1,0 +1,136 @@
+import {
+  Member,
+  memberEventFields,
+  memberFields,
+  memberInterestsFields,
+  MemberLevel,
+  memberProfileContactFields,
+  memberProfileExplicitFields,
+  memberProfileExplicitRolesFields,
+  memberProfileHealthFields,
+  memberProfileLocationFields,
+  memberProfilePhotoFields,
+  memberProfilePrivateFields,
+  QueryFields,
+  User,
+  UserIconFields,
+  UserPhoto,
+  UserShare
+} from "lib/models";
+import { addUserView, getUser, updateUser } from "lib/services/directus/server";
+import {
+  ApiResponse,
+  ApiResponseType,
+  withMethods,
+  withUser
+} from "lib/utils/server";
+import { NextApiRequest, NextApiResponse } from "next";
+
+export default async function Member(
+  req: NextApiRequest,
+  res: NextApiResponse<ApiResponseType<Member> | ApiResponseType>
+) {
+  try {
+    const method = withMethods(req, ['GET', 'POST'])
+    const viewer = await withUser(req, res)
+    const level = MemberLevel[viewer.user_type]
+
+    const { id } = req.query
+    let user_id: string
+    if (id == 'me') user_id = viewer.id
+    else user_id = String(id)
+
+    let me = viewer.id == user_id
+    let fields: QueryFields<User> = memberFields
+    if (me) {
+      fields = [
+        ...memberFields,
+        { buddies: [{ buddy_id: UserIconFields }] },
+        { likes: [{ liked_id: UserIconFields }] },
+        { invites: ['*', { events_id: ['*'] }] },
+      ] as any
+    }
+
+    let user = await getUser<Member>(user_id, fields)
+    if (!user) {
+      return res.status(404).json(ApiResponse(null, 'Not found'))
+    }
+
+    switch (method) {
+      case 'GET': {
+
+        if (level < MemberLevel.staff && !me) {
+          if (!user.show_profile) {
+            return res.status(404).json(ApiResponse(null, 'Not found'))
+          }
+
+          let shares = user.photo_shares as UserShare[]
+          let canSee = shares?.some((s) => s.viewer_id == viewer.id) || false
+          if (!canSee) {
+            user.my_photos = user.my_photos.map(p => p as UserPhoto).filter((p) => p.is_public)
+          }
+          filter(user)
+        }
+
+        try {
+          await addUserView(viewer.id, user_id)
+        }
+        catch (e) {
+          console.error(e.message || e, e.stack)
+        }
+
+        res.setHeader('Cache-Control', 'cache, store, max-age=1')
+        return res.status(200).json(ApiResponse(user))
+
+      }
+      case 'POST': {
+        if (!me && level < MemberLevel.staff)
+          return res.status(401).json(ApiResponse(null, 'Unauthorized'))
+
+        const userDetails = req.body as Partial<User>
+        const updated = await updateUser(user_id, userDetails)
+        return res.status(200).json(ApiResponse(updated))
+      }
+      default:
+        return res.status(401).json(ApiResponse(null, 'Unauthorized'))
+    }
+  } catch (e) {
+    if (e.message == 'Unauthorized') return res.status(200).json(ApiResponse(null, e))
+    console.error(e.message || e, e.stack)
+    res.status(500).json(ApiResponse(null, e.message || e))
+  }
+}
+
+function filter(member: Member) {
+  filterFields(member, memberProfilePrivateFields)
+  if (!member.show_photos) {
+    filterFields(member, memberProfilePhotoFields)
+  }
+  if (!member.show_contact) {
+    filterFields(member, memberProfileContactFields)
+  }
+  if (!member.show_explicit) {
+    filterFields(member, memberProfileExplicitFields)
+  }
+  if (!member.show_explicit_roles) {
+    filterFields(member, memberProfileExplicitRolesFields)
+  }
+  if (!member.show_location) {
+    filterFields(member, memberProfileLocationFields)
+  }
+  if (!member.show_interests) {
+    filterFields(member, memberInterestsFields)
+  }
+  if (!member.show_health) {
+    filterFields(member, memberProfileHealthFields)
+  }
+  if (!member.show_events) {
+    filterFields(member, memberEventFields)
+  }
+}
+
+function filterFields(member: Member, fieldList: QueryFields<User>) {
+  fieldList.forEach((field) => {
+    delete member[field as string]
+  })
+}

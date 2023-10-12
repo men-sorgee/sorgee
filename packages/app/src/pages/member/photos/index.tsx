@@ -1,0 +1,374 @@
+import {
+  ButtonConfirm,
+  MemberAvatar,
+  Page,
+  PhotoAsset,
+  PhotoCapture,
+  PhotoUpload
+} from "components";
+import { useUser } from "hooks/use-user";
+import { UserPhoto } from "lib/models";
+import { deleteJSON, getAssetUrl } from "lib/utils";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useState } from "react";
+
+import {
+  Alert,
+  AlertIcon,
+  Box,
+  chakra,
+  Flex,
+  HStack,
+  IconButton,
+  Link,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  StackProps,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  useDisclosure,
+  Wrap
+} from "@chakra-ui/react";
+import { ArrowUpTrayIcon, CameraIcon } from "@heroicons/react/24/outline";
+
+export type PageProps = {
+  section?: string
+}
+
+enum PageSection {
+  public,
+  private,
+}
+
+type PhotoItem = {
+  fileId: string
+  photoId: number
+  is_public: boolean
+}
+
+export async function getServerSideProps(context) {
+  if (context?.params == undefined)
+    return {
+      redirect: {
+        destination: `/member/photos/${PageSection[0]}`,
+        permanent: false,
+      },
+    }
+  const { section } = context.params
+
+  const props: PageProps = {}
+  if (section) {
+    props.section = String(section)
+  }
+  return {
+    props,
+  }
+}
+
+export default function PhotoAlbums({ section: s = 'public' }: PageProps) {
+  const { member, loading, reload } = useUser()
+  const [pictureSrc, setPictureSrc] = useState<string>(undefined)
+  const section = PageSection[s]
+  const [tabValue, setTabValue] = useState(section)
+  const router = useRouter()
+
+  const setSection = useCallback((tab: number) => {
+    if (tab != tabValue) {
+      setTabValue(tab)
+      router.push(`/member/photos/${PageSection[tab]}`, null, { shallow: true })
+    }
+  },
+    [tabValue, router]
+  )
+
+
+  useEffect(() => {
+    if (!loading && member) {
+      if (member?.picture && pictureSrc == undefined) {
+        setPictureSrc(getAssetUrl(member?.picture))
+      }
+    }
+  }, [loading, member, pictureSrc, reload])
+
+  const list =
+    member?.my_photos?.map((image: UserPhoto) => {
+      return {
+        fileId: image.directus_files_id as string,
+        photoId: image.id as number,
+        is_public: image.is_public,
+      }
+    }) || []
+  const publicImages = list.filter((image: PhotoItem) => image.is_public)
+  const privateImages = list.filter((image: PhotoItem) => !image.is_public)
+
+  return (
+    <Page title="Your Photos" loading={loading}>
+      {member && (
+        <>
+          <Flex align="center" justify="center">
+            {(pictureSrc && (
+              <Flex direction="column" justify="space-around" align="center" mb={4}>
+                <MemberAvatar member={member} size='2xl' />
+                <ButtonConfirm
+                  alertTitle="Delete Avatar"
+                  buttonText="Delete"
+                  confirmedAction={async () => {
+                    const { success, data, error } = await deleteJSON(
+                      `/api/members/${member?.id}/photos/picture`
+                    )
+                    if (!success) throw new Error(error.message)
+                    return data
+                  }}
+                  onSuccess={() => {
+                    setPictureSrc(null)
+                    reload()
+                  }}
+                  size="xs"
+                  maxW="fit-content"
+                  margin="auto"
+                  successMessage="Avatar deleted"
+                  failureMessage="Avatar not deleted"
+                  mt={'-2rem'}
+                  variant="ghost"
+                  bg="white"
+                  opacity=".8"
+                  color="black"
+                  _hover={{ opacity: 1, bg: 'white' }}
+                >
+                  Are you sure you want to delete this photo?
+                </ButtonConfirm>
+              </Flex>
+            )) || (
+                <AddPhoto
+                  name={`Avatar for ${member?.id}`}
+                  title={'Avatar Picture'}
+                  field={'picture'}
+                  memberId={member?.id}
+                  reload={reload}
+                  rounded="full"
+                />
+              )}
+          </Flex>
+
+          {(member.show_photos && (
+            <Tabs size="lg"
+              isFitted
+              fontSize={{ base: 'sm', md: 'lg' }}
+              mb={10}
+              defaultIndex={tabValue}
+              onChange={(index) => setSection(index)}>
+              <TabList>
+                <Tab
+                  fontSize={['md', 'lg', '2xl']}
+                  fontWeight={tabValue == 0 ? 'bold' : null}
+                  px={[1, 2, 4]}
+                >
+
+                  Public Album</Tab>
+                <Tab
+                  fontSize={['md', 'lg', '2xl']}
+                  fontWeight={tabValue == 1 ? 'bold' : null}
+                  px={[1, 2, 4]}
+                >
+                  Private Album</Tab>
+              </TabList>
+
+              <TabPanels>
+                <TabPanel>
+                  <PhotoList
+                    title="Public Album"
+                    images={publicImages}
+                    field="public"
+                    memberId={member.id}
+                    reload={reload}
+                  />
+                </TabPanel>
+                <TabPanel>
+                  <PhotoList
+                    title="Private Album"
+                    images={privateImages}
+                    field="private"
+                    memberId={member.id}
+                    reload={reload}
+                  />
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
+          )) || (
+              <Alert mt={4} status="warning" rounded="lg" shadow="lg">
+                <AlertIcon />
+                You have photo-sharing turned off. Update&nbsp;
+                <Link href="/member/profile">your profile</Link>&nbsp; to change that.
+              </Alert>
+            )}
+        </>
+      )}
+    </Page>
+  )
+}
+
+type PhotoListProps = PhotoProps & {
+  images: PhotoItem[]
+}
+function PhotoList({ title, field, images, memberId, reload }: PhotoListProps) {
+  return (
+    <Wrap spacing={4}>
+      {images?.map((image: PhotoItem) => (
+        <Box key={image.fileId}>
+          <Link href={`/api/asset/${image.fileId}`} target="_blank">
+            <PhotoAsset fileId={image.fileId} rounded="md" shadow="md" />
+          </Link>
+          <ButtonConfirm
+            alertTitle="Delete Photo"
+            buttonText="Delete"
+            confirmedAction={async () => {
+              const { success, data, error } = await deleteJSON(`/api/my/photo/${image.photoId}`)
+              if (!success) throw new Error(error.message)
+              return data
+            }}
+            onSuccess={(success) => {
+              if (success) {
+                reload()
+              }
+            }}
+            successMessage="Photo deleted"
+            failureMessage="Photo not deleted"
+            mt={'-4rem'}
+            variant="ghost"
+            size='xs'
+            bg="white"
+            opacity=".8"
+            color="black"
+            ml={2}
+            _hover={{ opacity: 1, bg: 'white' }}
+          >
+            Are you sure you want to delete this photo?
+          </ButtonConfirm>
+        </Box>
+      ))}
+
+      <AddPhoto title={title} field={field} memberId={memberId} reload={reload} />
+    </Wrap>
+  )
+}
+
+type PhotoProps = StackProps & {
+  title: string
+  field: 'picture' | 'private' | 'public'
+  memberId: string
+  reload: () => void
+}
+
+const AddPhoto = chakra(
+  ({ title, memberId, field, reload, rounded = 'lg', ...props }: PhotoProps) => {
+    const [image, setImage] = useState<string>()
+    const [file, setFile] = useState<File>()
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const [camera, setCamera] = useState<boolean>()
+
+    const acceptPhoto = useCallback(
+      (data: string) => {
+        setImage(null)
+        fetch(data)
+          .then((res) => res.blob())
+          .then((blob) => {
+            let file = new File([blob], 'photo.jpg', { type: 'image/jpeg' })
+            setFile(file)
+            setImage(data)
+            setCamera(false)
+          })
+      },
+      [setFile]
+    )
+
+    const takePhoto = useCallback(() => {
+      setCamera(true)
+      onOpen()
+    }, [onOpen])
+
+    const uploadPhoto = useCallback(() => {
+      setCamera(false)
+      onOpen()
+    }, [onOpen])
+
+    const setCompleted = useCallback(() => {
+      onClose()
+      setImage(undefined)
+      setFile(undefined)
+      reload()
+    }, [onClose, reload])
+
+    return (
+      <>
+        <HStack
+          py={2}
+          align="center"
+          justify="center"
+          border="2px dashed"
+          borderColor="text"
+          overflow="clip"
+          padding={4}
+          rounded={rounded}
+          h={150}
+          w={150}
+          {...props}
+        >
+          <IconButton
+            aria-label="Take Photo"
+            icon={<CameraIcon />}
+            size="lg"
+            variant="ghost"
+            onClick={takePhoto}
+            color="white"
+            rounded="full"
+            bg="accent.500"
+            _hover={{ shadow: 'md' }}
+            p={2}
+          />
+          <IconButton
+            aria-label="Upload Photo"
+            icon={<ArrowUpTrayIcon />}
+            variant="ghost"
+            onClick={uploadPhoto}
+            color="white"
+            rounded="full"
+            size="lg"
+            bg="accent.500"
+            _hover={{ shadow: 'md' }}
+            p={2}
+          />
+        </HStack>
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Add {title}</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody as={Flex} direction="column">
+              {(camera && <PhotoCapture onAccept={acceptPhoto} />) || (
+                <PhotoUpload
+                  file={file}
+                  name={`${memberId} ${field}-photo`}
+                  description={`Uploaded on ${new Date().toLocaleDateString()}`}
+                  postUrl={`/api/members/${memberId}/photos/${field}`}
+                  onClear={() => {
+                    setImage(undefined)
+                    onClose()
+                  }}
+                  photoUrl={image}
+                  setCompleted={setCompleted}
+                />
+              )}
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      </>
+    )
+  }
+)

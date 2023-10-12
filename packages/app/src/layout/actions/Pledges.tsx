@@ -1,0 +1,63 @@
+import { Member, MemberLevel } from "lib/models";
+import NextLink from "next/link";
+
+import { Icon, IconButton, Link } from "@chakra-ui/react";
+import { UserCircleIcon } from "@heroicons/react/24/outline";
+
+interface Props {
+  member: Member
+  active: boolean
+  iconSize?: string[]
+  iconDimensions?: string[]
+}
+
+const PledgesAction = ({ member, active, iconSize, iconDimensions }: Props) => {
+  const level = MemberLevel[member?.user_type]
+
+  //const { meta } = useMemberSearch(
+  //  {
+  //    sort: 'last_login',
+  //    user_type: MemberLevel[MemberLevel.pledge],
+  //  },
+  //  level < MemberLevel.brother
+  //)
+  //const { filtered: count } = meta
+
+  if (level < MemberLevel.brother) {
+    return <></>
+  }
+
+  return (
+    <>
+      <Link href="/pledges" as={NextLink} zIndex="fixed">
+        <IconButton
+          variant="primary"
+          zIndex="fixed"
+          size={iconSize}
+          w={iconDimensions}
+          icon={<Icon as={UserCircleIcon} w={iconDimensions} h={iconDimensions} />}
+          color={active ? 'accent.500' : 'white'}
+          aria-label="Review Pledges"
+          title="Review Pledges"
+        />
+        {/**count > 0 && (
+          <Badge
+            bg={active ? 'accent.500' : 'white'}
+            color={active ? 'white' : 'accent.500'}
+            ml={-4}
+            zIndex="overlay"
+            position="absolute"
+            rounded="full"
+            px={1.5}
+            py={0.5}
+            fontSize={10}
+          >
+            {count}
+          </Badge>
+        )**/}
+      </Link>
+    </>
+  )
+}
+
+export default PledgesAction

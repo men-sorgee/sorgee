@@ -1,23 +1,23 @@
-const { PHASE_DEVELOPMENT_SERVER } = require( 'next/constants' );
+const { PHASE_DEVELOPMENT_SERVER } = require('next/constants')
 
-const withPWA = require( 'next-pwa' )( {
-  dest: 'public',
-  disable: process.env.PWA !== 'true',
-} );
 
-const getConfig = ( phase ) => {
-  const dev = PHASE_DEVELOPMENT_SERVER === phase;
+module.exports = (phase, defaultConfig) =>  {
+  const isDev = PHASE_DEVELOPMENT_SERVER === phase
+  const withBundleAnalyzer = require('@next/bundle-analyzer')({
+    enabled: process.env.ANALYZE === 'true',
+  })
+  
+  const withPWA = require('next-pwa')({
+    dest: 'public',
+    disable: isDev
+  })
 
   /**
    * @type {import('next').NextConfig}
    */
   const nextConfig = {
-
-    publicRuntimeConfig: {
-      dev
-    },
-    pageExtensions: ['tsx'],
-
+    trailingSlash: false,
+    //experimental: { appDir: false, },
     images: {
       domains: [
         'guysnheat.com',
@@ -28,19 +28,11 @@ const getConfig = ( phase ) => {
         's.gravatar.com',
         'static.guysnheat.com',
         'raw.githubusercontent.com',
-        'guysnheat.whereby.com',
-      ],
-
-    },
-    rewrites: async () => {
-      return [
-        {
-          source: '/api/unsplash/:path*',
-          destination: `https://api.unsplash.com/photos/:path*?client_id=${ process.env.API_KEY_UNSPLASH }`
-        }
-      ];
+        'guysnheat.whereby.com'
+      ]
     },
     redirects: async () => {
+      if (isDev) return []
       return [
         {
           source: '/:path*',
@@ -48,12 +40,12 @@ const getConfig = ( phase ) => {
           destination: 'https://guysnheat.com/:path*',
           permanent: true
         }
-      ];
+      ]
     },
-    poweredByHeader: false,
-    crossOrigin: false
-  };
-  return nextConfig;
-};
+    poweredByHeader: true,
+    crossOrigin: "anonymous"
+  }
+  return  withPWA(withBundleAnalyzer(nextConfig))
+}
 
-module.exports = withPWA( getConfig );
+

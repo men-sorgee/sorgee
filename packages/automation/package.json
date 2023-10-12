@@ -1,0 +1,17 @@
+{
+  "name": "automation",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "scripts": {
+    "build": "docker build -t gcr.io/tbg-gnh/gnh-automation .",
+    "push": "docker push gcr.io/tbg-gnh/gnh-automation",
+    "dev": "docker run -p 8080:8080 -v ./data:/data --name gnh-automation --env-file .env --rm gcr.io/tbg-gnh/gnh-automation",
+    "start": "npx node-red -u ./data",
+    "deploy": "gcloud run services replace service.yaml"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {}
+}

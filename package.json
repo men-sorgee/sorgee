@@ -6,23 +6,32 @@
   "author": "Jason <jason@guysnheat.com>",
   "license": "MIT",
   "workspaces": [
-    "packages/app",
-    "packages/app-chat-styles"
+    "packages/automation",
+    "packages/app"
   ],
   "scripts": {
     "admin": "yarn workspace admin ",
     "app": "yarn workspace app ",
-    "chat": "yarn workspace app-chat-styles ",
+    "automation": "yarn workspace automation ",
     "gcp": "yarn workspace gcp ",
     "email": "yarn workspace email ",
     "start": "docker-compose up -d",
     "stop": "docker-compose down",
-    "clean": "rm -rf .next && rm -rf node_modules && yarn app clean",
+    "preclean": "rm -rf yarn.lock",
+    "clean": "rm -rf node_modules && yarn app clean && yarn",
+    "postclean": "cp yarn.lock ./packages/app/",
     "postinstall": "chmod +x .devcontainer/.bashrc && bash -c 'source .devcontainer/.bashrc'",
     "admin:secrets": "kubectl create secret generic gnh-admin --from-env-file=packages/admin/.env.production -n gnh",
-    "app:secrets": "kubectl create secret generic gnh-app --from-env-file=packages/app/.env.production -n gnh"
+    "app:secrets": "kubectl create secret generic gnh-app --from-env-file=packages/app/.env.production -n gnh",
+    "prettier-format": "prettier --config .prettierrc 'packages/app/**/*.tsx' --write"
   },
   "devDependencies": {
-    "typescript": "5.0.4"
+    "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "@typescript-eslint/parser": "^6.7.4",
+    "eslint": "^8.51.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2"
   }
 }

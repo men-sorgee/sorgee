@@ -1,17 +1,24 @@
 {
-  "editor.formatOnSave": true,
   "cSpell.words": [
+    "adduser",
     "authentification",
     "basemaps",
+    "browserconfig",
+    "BUILDKIT",
     "Chakra",
     "chatscope",
     "checkin",
+    "cloudsdktool",
     "cockroachdb",
     "Codegen",
     "Consolas",
     "convo",
+    "convos",
     "daisyui",
     "datetime",
+    "devcontainer",
+    "directus",
+    "discordapp",
     "editorjs",
     "ethnicities",
     "EXIF",
@@ -20,24 +27,30 @@
     "flexbugs",
     "flowbit",
     "flowbite",
+    "gcloud",
+    "googleusercontent",
     "gtag",
     "guysnheat",
     "headlessui",
     "heroicons",
     "hookform",
     "hypertheme",
+    "icontains",
     "jssdk",
     "KHTML",
     "mapbox",
+    "msapplication",
     "nextauth",
     "nextjs",
     "nnull",
     "openapi",
     "ormconfig",
+    "pageview",
     "Parens",
     "pexels",
     "pixabay",
     "Polyamorous",
+    "predocker",
     "Qrcode",
     "Rehype",
     "rlig",
@@ -50,27 +63,34 @@
     "tanstack",
     "twind",
     "typeorm",
+    "uncaptured",
     "uuidv",
-    "wellenplan"
+    "videocall",
+    "voicecall",
+    "wellenplan",
+    "Zxing"
   ],
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   },
   "typescript.tsdk": "./node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.preferences.importModuleSpecifier": "relative",
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnPaste": true, // required
-  "editor.formatOnType": true, // required
+  "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+  "editor.formatOnPaste": false, // required
+  "editor.formatOnType": false, // required
+  "editor.formatOnSave": true, // optional
   "editor.formatOnSaveMode": "file", // required to format on save
-  "files.autoSave": "onFocusChange", // optional but recommended]
-  "editor.suggest.filterGraceful": true,
-  "editor.suggest.localityBonus": true,
+  "files.autoSave": "onFocusChange", // optional but recommended
+  "editor.codeActionsOnSave": {
+    "source.organizeImports.sortImports": true,
+    "source.fixAll.eslint": true
+  },
   "[dockerfile]": {
     "editor.defaultFormatter": "ms-azuretools.vscode-docker"
   },
   "[markdown]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "vscode.markdown-language-features"
   },
   "autoimport.filesToScan": "packages/app/**/*.{ts,tsx}",
   "autoimport.showNotifications": true,
@@ -81,9 +101,13 @@
     }
   ],
   "cloudcode.active-kubeconfig": "/home/jason/.kube/config",
-  "vitest.enable": true,
-  "vitest.include": [
-    "**/*.{test,spec}.{ts,tsx}"
-  ],
   "testing.automaticallyOpenPeekView": "never",
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "eslint.codeActionsOnSave.mode": "problems",
+  "vs-code-prettier-eslint.prettierLast": true
 }

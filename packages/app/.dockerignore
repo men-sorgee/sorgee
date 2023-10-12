@@ -1,5 +1,8 @@
 Dockerfile
 node_modules
 dist
+.env*
 .next
-.env*ya
+results
+vitest.json
+*.sh

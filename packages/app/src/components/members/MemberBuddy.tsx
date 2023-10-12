@@ -1,0 +1,129 @@
+import { UpgradeIcon } from "components";
+import { useUser } from "hooks";
+import {
+  Member,
+  MemberLevel,
+  MembershipType,
+  User,
+  UserBuddy
+} from "lib/models";
+import { deleteJSON, postJSON } from "lib/utils";
+import { memo, useCallback, useEffect, useState } from "react";
+
+import { chakra, IconButton, IconButtonProps } from "@chakra-ui/react";
+import {
+  UserIcon,
+  UserMinusIcon as RemoveBuddyIcon
+} from "@heroicons/react/24/outline";
+import {
+  UserIcon as BuddyIcon,
+  UserPlusIcon as AddBuddyIcon
+} from "@heroicons/react/24/solid";
+
+export type MemberBuddyProps = Omit<IconButtonProps, 'aria-label'> & {
+  member: Partial<Member>
+}
+
+export const MemberBuddy = memo(chakra(
+  function MemberBuddy({ member, size = ['sm', 'md', 'lg'], ...props }: MemberBuddyProps) {
+    const { loading: userLoading, member: me, level, reload, hasFeature } = useUser()
+    const [hover, setHover] = useState(false)
+    const [isBuddy, setIsBuddy] = useState<boolean | undefined>(undefined)
+
+    const toggleBuddy = useCallback(() => {
+      if (me?.id === member?.id) return
+      setIsBuddy(!isBuddy)
+      if (isBuddy) {
+        deleteJSON(`/api/members/${member?.id}/buddy`)
+      } else {
+        postJSON<Partial<UserBuddy>>(`/api/members/${member?.id}/buddy`, {})
+      }
+    }, [isBuddy, me?.id, member?.id])
+
+    useEffect(() => {
+      if (!userLoading && me?.buddies && isBuddy == undefined) {
+        const buddies = me.buddies as UserBuddy[]
+        setIsBuddy(
+          buddies.some((ur: UserBuddy) => {
+            let buddy = ur.buddy_id as User
+            return buddy?.id === member?.id || ur.buddy_id === member?.id
+          })
+        )
+      }
+    }, [isBuddy, me, member?.id, userLoading])
+
+    if (level < MemberLevel.brother) return null
+    if (userLoading || isBuddy == undefined) return null
+
+    if (!hasFeature('buddy_list'))
+      return (
+        <UpgradeIcon
+          title="Add Buddy"
+          membershipType={MembershipType.basic}
+          icon={<UserIcon width="30px" />}
+          _hover={{ bg: 'primary.500' }}
+          disabled={me?.id === member?.id}
+          size={size}
+        />
+      )
+    return (
+      <>
+        {(isBuddy && (
+          <IconButton
+            icon={
+              hover ? (
+                <RemoveBuddyIcon width="30px" stroke="white" />
+              ) : (
+                <BuddyIcon width="30px" fill={'yellow'} />
+              )
+            }
+            onMouseOver={() => {
+              setHover(true)
+            }}
+            onMouseOut={() => {
+              setHover(false)
+            }}
+            variant="ghost"
+            cursor="pointer"
+            onClick={toggleBuddy}
+            title={`Remove ${member?.nickname || 'this member'} as a Buddy`}
+            aria-label={`Remove ${member?.nickname || 'this member'} as a Buddy`}
+            size={size}
+            color="white"
+            px={[.1, .5]}
+            _hover={{ bg: 'primary.500' }}
+            disabled={me?.id === member?.id}
+            {...props}
+          />
+        )) || (
+            <IconButton
+              icon={
+                hover ? (
+                  <AddBuddyIcon width="30px" fill={'white'} />
+                ) : (
+                  <UserIcon width="30px" stroke="white" />
+                )
+              }
+              onMouseOver={() => {
+                setHover(true)
+              }}
+              onMouseOut={() => {
+                setHover(false)
+              }}
+              variant="ghost"
+              aria-label={`Add ${member?.nickname || 'this member'} as a Buddy`}
+              title={`Add ${member?.nickname || 'this member'} as a Buddy`}
+              cursor="pointer"
+              onClick={toggleBuddy}
+              color="white"
+              size={size}
+              px={[.1, .5]}
+              _hover={{ bg: 'primary.500' }}
+              disabled={me?.id === member?.id}
+              {...props}
+            />
+          )}
+      </>
+    )
+  }
+), (prev, next) => (prev.member?.id == next.member?.id && prev.size == next.size))

@@ -1,0 +1,200 @@
+import { ButtonLink, Markdown } from "components";
+import distance from "date-fns/formatDistanceToNow";
+import { useNotifications } from "hooks/use-notifications";
+import { Member, UserNotification } from "lib/models";
+import { gradient } from "lib/utils";
+import { useCallback, useEffect, useState } from "react";
+
+import {
+  Alert,
+  Button,
+  ButtonGroup,
+  chakra,
+  Heading,
+  HStack,
+  Icon,
+  IconButton,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Spacer,
+  Text,
+  useColorModeValue,
+  useDisclosure,
+  VStack
+} from "@chakra-ui/react";
+import { EnvelopeOpenIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { EnvelopeIcon } from "@heroicons/react/24/solid";
+
+export type MemberNotificationCardProps = {
+  notification: UserNotification
+  member: Member
+  closeDrawer?: () => void
+}
+
+export const MemberNotificationCard = chakra(
+  ({ member, notification, closeDrawer }: MemberNotificationCardProps) => {
+    const [deleted, setDeleted] = useState<boolean>(false)
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const { readNotification, deleteNotification, reloadNotifications } =
+      useNotifications()
+    const [isNew, setIsNew] = useState<boolean>(undefined)
+    const [body, setBody] = useState<string>(undefined)
+    const [message, setMessage] = useState<string>(undefined)
+    const [subject, setSubject] = useState<string>(undefined)
+    const [id, setId] = useState<number>(undefined)
+    useEffect(() => {
+      let name = member?.nickname || member?.first_name || 'Friend'
+      if (member && body == undefined && notification?.body) {
+        setBody(notification.body.replaceAll(/\$NAME\$/g, name))
+      }
+      if (member && message == undefined && notification?.message) {
+        setMessage(notification.message.replaceAll(/\$NAME\$/g, name))
+      }
+      if (member && subject == undefined && notification?.subject) {
+        setSubject(notification.subject.replaceAll(/\$NAME\$/g, name))
+      }
+      if (isNew == undefined) {
+        setIsNew(!notification.read)
+      }
+      if (id == undefined) {
+        setId(notification.id)
+      }
+
+    }, [body, id, isNew, member, message, notification.body, notification.id, notification.message, notification.read, notification.subject, subject])
+
+    const openMessage = useCallback(() => {
+      onOpen()
+      return readNotification(id).then(() => {
+        reloadNotifications
+      })
+    }, [id, onOpen, readNotification, reloadNotifications])
+
+    const markAsDeleted = useCallback(() => {
+      onClose()
+      deleteNotification(id)
+      setDeleted(true)
+    }, [deleteNotification, id, onClose])
+
+    const textNew = useColorModeValue('secondary.800', 'secondary.100')
+    const textRead = useColorModeValue('text', 'secondary.300')
+
+    if (deleted)
+      return null
+    return (
+      <>
+        <Alert
+          mb={4}
+          variant={notification?.read ? 'subtle' : 'left-accent'}
+          borderRadius={'md'}
+          alignItems="start"
+          justifyItems="space-between"
+          color="text"
+          status="success"
+          cursor="pointer"
+          p={2}
+          onClick={openMessage}
+          gap={2}
+        >
+          <Icon
+            color={isNew ? textNew : textRead}
+            as={isNew ? EnvelopeIcon : EnvelopeOpenIcon}
+            w={6}
+            h={6}
+          />
+          <VStack alignItems="start" justify="center" w="full">
+            <Text p={0} m={0} noOfLines={2} fontWeight={isNew ? 'bold' : 'normal'} flex={1}>
+              {subject}
+            </Text>
+            <HStack w="full" gap={2} align="flex-start" justify="space-between">
+              <Text fontSize="xs" w="full" m={0} p={0}>
+                Received {distance(new Date(notification?.date_created))} ago
+              </Text>
+            </HStack>
+            <ButtonGroup size="xs" w="full" justifyItems={'space-between'}>
+              {notification?.link && (
+                <ButtonLink
+                  size="xs"
+                  href={notification?.link}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    closeDrawer?.()
+                    return false
+                  }}
+                  colorScheme="accent"
+                >
+                  {notification?.button_text || 'Check it Out!'}
+                </ButtonLink>
+              )}
+              <Spacer />
+              <IconButton
+                icon={<TrashIcon width={15} />}
+                title="Delete"
+                aria-label="Delete"
+                bgGradient={gradient('red')}
+                _hover={{ bgGradient: gradient('red', 100) }}
+                color="white"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  e.preventDefault()
+                  markAsDeleted()
+                }}
+              />
+            </ButtonGroup>
+          </VStack>
+        </Alert>
+        <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
+          <ModalOverlay />
+          <ModalContent>
+            {subject && (
+              <ModalHeader>
+                <Heading size="lg">{subject}</Heading>
+              </ModalHeader>
+            )}
+            <ModalCloseButton />
+            <ModalBody>{body && <Markdown content={message} size="md" />}</ModalBody>
+            <ModalFooter>
+              <ButtonGroup size="xs">
+                <Button
+                  onClick={onClose}
+                  bgGradient={gradient('primary')}
+                  _hover={{ bgGradient: gradient('primary', 100) }}
+                >
+                  Close
+                </Button>
+                {notification?.link && (
+                  <ButtonLink
+                    onClick={() => {
+                      onClose()
+                      closeDrawer?.()
+                      return false
+                    }}
+                    href={notification?.link}
+                    colorScheme="accent"
+                  >
+                    {notification?.button_text || 'Check it Out!'}
+                  </ButtonLink>
+                )}
+
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    markAsDeleted()
+                  }}
+                  bgGradient={gradient('red')}
+                  _hover={{ bgGradient: gradient('red', 100) }}
+                >
+                  Delete
+                </Button>
+              </ButtonGroup>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </>
+    )
+  }
+)
