@@ -199,7 +199,7 @@ export default function getTheme(body: any, heading: any, mono: any) {
           },
           h2: {
             textStyle: 'h2',
-            fontWeight: 'bold',
+            fontWeight: 'extrabold',
             leading: 'loose',
             fontFamily: 'heading',
             color: mode('primary.500', 'primary.300')(props),
@@ -207,10 +207,10 @@ export default function getTheme(body: any, heading: any, mono: any) {
           },
           h3: {
             textStyle: 'h3',
-            fontWeight: 'extrabold',
+            fontWeight: 'bold',
             leading: 'loose',
             fontFamily: 'heading',
-            color: mode('secondary.500', 'secondary.200')(props),
+            color: mode('primary.500', 'primary.300')(props),
             mt: '1.75rem'
           },
           h4: {
@@ -218,7 +218,7 @@ export default function getTheme(body: any, heading: any, mono: any) {
             fontWeight: 'bold',
             leading: 'loose',
             fontFamily: 'heading',
-            color: 'accent.500',
+            //color: 'accent.500',
             mt: '1.5rem'
           },
           h5: {
@@ -226,7 +226,7 @@ export default function getTheme(body: any, heading: any, mono: any) {
             fontWeight: 'semibold',
             leading: 'loose',
             fontFamily: 'heading',
-            color: mode('primary.400', 'primary.200')(props),
+            //color: mode('primary.400', 'primary.200')(props),
             mt: '1.25rem'
           },
           h6: {
@@ -239,13 +239,12 @@ export default function getTheme(body: any, heading: any, mono: any) {
           },
           ul: {
             margin: '0 auto',
-
             listStylePosition: 'inside',
             padding: '0'
           },
           li: { textAlign: 'left' },
           p: {
-            mt: 2
+            mb: .5
           },
           '.print-only': {
             display: 'none'

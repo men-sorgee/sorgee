@@ -118,11 +118,11 @@ const Header = forwardRef<HTMLDivElement, Props>(({
   const navItems: Array<NavItem> = [
     {
       title: 'INFORMATION',
-      path: null,
+      path: "/",
       children: [
         ...(mainPages.filter((p) => canSee(p.visibility)) || []),
         {
-          title: 'Health & Wellness',
+          title: 'Health & Wellness Blog',
           path: '/blog',
           children: [],
         },
