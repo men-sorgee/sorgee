@@ -1,4 +1,4 @@
-import { DirectusFile, User } from "lib/services/db/entities";
+import { DirectusFile, User } from "lib/db/entities";
 import * as typeorm from "typeorm";
 
 @typeorm.Index('users_files_pkey', ['id'], { unique: true })

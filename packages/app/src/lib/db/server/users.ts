@@ -5,8 +5,8 @@ import {
   UserAccount,
   UserSession,
   UserVerificationToken
-} from "lib/services/db/entities";
-import { getRepository } from "lib/services/db/server/data-source";
+} from "lib/db/entities";
+import { getRepository } from "lib/db/server/data-source";
 import { getUTCNow } from "lib/utils/dates";
 import { LessThan, MoreThan } from "typeorm";
 

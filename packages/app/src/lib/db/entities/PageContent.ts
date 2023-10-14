@@ -1,4 +1,4 @@
-import { DirectusFile, DirectusUsers, Page } from "lib/services/db/entities";
+import { DirectusFile, DirectusUsers, Page } from "lib/db/entities";
 import * as typeorm from "typeorm";
 
 @typeorm.Index('page_content_pkey', ['id'], { unique: true })

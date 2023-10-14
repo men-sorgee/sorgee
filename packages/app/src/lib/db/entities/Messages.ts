@@ -1,4 +1,4 @@
-import { DirectusFile, DirectusUsers, User } from "lib/services/db/entities";
+import { DirectusFile, DirectusUsers, User } from "lib/db/entities";
 import * as typeorm from "typeorm";
 
 @typeorm.Index('messages_pkey', ['id'], { unique: true })

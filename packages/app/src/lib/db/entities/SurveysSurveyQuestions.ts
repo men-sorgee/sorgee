@@ -1,4 +1,4 @@
-import { Survey, SurveyQuestions } from "lib/services/db/entities";
+import { Survey, SurveyQuestions } from "lib/db/entities";
 import * as typeorm from "typeorm";
 
 @typeorm.Index('surveys_survey_questions_pkey', ['id'], { unique: true })

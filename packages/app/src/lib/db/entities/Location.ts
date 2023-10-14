@@ -1,4 +1,4 @@
-import { DirectusFile, Events, Survey, User } from "lib/services/db/entities";
+import { DirectusFile, Events, Survey, User } from "lib/db/entities";
 import * as typeorm from "typeorm";
 
 @typeorm.Index('location_pkey', ['id'], { unique: true })

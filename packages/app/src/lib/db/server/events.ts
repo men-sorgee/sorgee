@@ -1,4 +1,4 @@
-import { NotificationsUsers, UserEmailEvents } from "lib/services/db/entities";
+import { NotificationsUsers, UserEmailEvents } from "lib/db/entities";
 
 import { getRepository } from "./data-source";
 

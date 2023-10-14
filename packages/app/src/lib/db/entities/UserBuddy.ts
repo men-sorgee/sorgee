@@ -1,4 +1,4 @@
-import { DirectusUsers, User } from "lib/services/db/entities";
+import { DirectusUsers, User } from "lib/db/entities";
 import * as typeorm from "typeorm";
 
 @typeorm.Index('user_buddy_pkey', ['id'], { unique: true })

@@ -2,7 +2,7 @@ import {
   DirectusFile,
   DirectusUsers,
   PageContent
-} from "lib/services/db/entities";
+} from "lib/db/entities";
 import * as typeorm from "typeorm";
 
 @typeorm.Tree('nested-set')

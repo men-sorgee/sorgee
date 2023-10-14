@@ -1,4 +1,4 @@
-import { User } from "lib/services/db/entities";
+import { User } from "lib/db/entities";
 import * as typeorm from "typeorm";
 
 @typeorm.Index('user_account_pkey', ['id'], { unique: true })

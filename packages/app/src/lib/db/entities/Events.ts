@@ -5,7 +5,7 @@ import {
   Notifications,
   Rating,
   Survey
-} from "lib/services/db/entities";
+} from "lib/db/entities";
 import {
   Column,
   Entity,

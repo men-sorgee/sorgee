@@ -1,4 +1,4 @@
-import { Events, NotificationsUsers, Survey } from "lib/services/db/entities";
+import { Events, NotificationsUsers, Survey } from "lib/db/entities";
 import * as typeorm from "typeorm";
 
 @typeorm.Index('notifications_pkey', ['id'], { unique: true })

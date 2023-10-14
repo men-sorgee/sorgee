@@ -7,14 +7,13 @@ import {
   getUser,
   recordUserLogin,
   recordUserLogout
-} from "lib/services/db/server/users";
+} from "lib/db/server/users";
 import {
   SendGridCategory,
   SendGridTemplate,
   sendNotificationEmail,
   updateSendGrid
 } from "lib/services/sendgrid/server";
-import { sendNotification } from "lib/services/twilio/server";
 import { AuthOptions } from "next-auth";
 import MicrosoftProvider from "next-auth/providers/azure-ad";
 import DiscordProvider from "next-auth/providers/discord";

@@ -1,4 +1,4 @@
-import { DirectusFolders } from "lib/services/db/entities";
+import { DirectusFolders } from "lib/db/entities";
 import {
   Column,
   Entity,

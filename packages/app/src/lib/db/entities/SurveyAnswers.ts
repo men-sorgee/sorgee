@@ -3,7 +3,7 @@ import {
   Survey,
   SurveyQuestions,
   User
-} from "lib/services/db/entities";
+} from "lib/db/entities";
 import * as typeorm from "typeorm";
 
 @typeorm.Index('survey_answers_pkey', ['id'], { unique: true })

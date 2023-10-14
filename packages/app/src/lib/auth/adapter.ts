@@ -4,7 +4,7 @@ import {
   User,
   UserSession,
   UserVerificationToken
-} from "lib/services/db/entities";
+} from "lib/db/entities";
 import {
   addVerificationToken,
   createAccount,
@@ -19,7 +19,7 @@ import {
   getUser,
   updateSession,
   updateUser
-} from "lib/services/db/server";
+} from "lib/db/server";
 import { importFile } from "lib/services/directus/server";
 import { getAssetUrl } from "lib/utils";
 import {

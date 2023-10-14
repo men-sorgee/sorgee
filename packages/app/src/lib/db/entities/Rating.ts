@@ -1,4 +1,4 @@
-import { Events, User } from "lib/services/db/entities";
+import { Events, User } from "lib/db/entities";
 import * as typeorm from "typeorm";
 
 @typeorm.Index('rating_pkey', ['id'], { unique: true })

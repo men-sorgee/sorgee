@@ -1,5 +1,5 @@
 
-import { QuestionResult, Survey } from "lib/services/db/entities";
+import { QuestionResult, Survey } from "lib/db/entities";
 
 import { getRepository } from "./data-source";
 
