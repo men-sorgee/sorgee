@@ -43,7 +43,10 @@ module.exports = (phase, defaultConfig) =>  {
       ]
     },
     poweredByHeader: true,
-    crossOrigin: "anonymous"
+    crossOrigin: "anonymous",
+    optimizeFonts: true,
+    reactStrictMode: false,
+    swcMinify: true,
   }
   return  withPWA(withBundleAnalyzer(nextConfig))
 }
