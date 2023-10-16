@@ -55,7 +55,7 @@
     "next": "13.5.4",
     "next-auth": "^4.23.2",
     "next-pwa": "^5.6.0",
-    "nodemailer": "^6.9.4",
+    "nodemailer": "^6.9.6",
     "pg": "^8.11.2",
     "pigeon-maps": "^0.21.3",
     "qrcode": "^1.5.3",
