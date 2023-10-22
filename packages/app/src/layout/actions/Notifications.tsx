@@ -51,7 +51,7 @@ const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
   return (
     <>
       <UserNotifications member={member} />
-      <Box>
+      <Box cursor="pointer">
         <IconButton
           aria-label="Notifications"
           variant="primary"
@@ -61,6 +61,7 @@ const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
           icon={<Icon as={BellIcon} w={iconDimensions} h={iconDimensions} />}
           onClick={onOpen}
           w={iconDimensions}
+          title='View Notifications'
         />
         {totalNew > 0 && (
           <Badge
@@ -73,11 +74,12 @@ const NotificationsAction = ({ member, iconSize, iconDimensions }: Props) => {
             px={1.5}
             py={0.5}
             fontSize={10}
+            title={`${totalNew} new notifications`}
           >
             {totalNew}
           </Badge>
         )}
-      </Box>
+      </Box >
 
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />

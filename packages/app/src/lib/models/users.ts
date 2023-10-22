@@ -289,7 +289,7 @@ export type SignUpForm = {
   promo: string
 }
 
-export type MemberSearchResults<T = Member> = { data: T[], meta: { total: number, count: number } }
+export type MemberSearchResults<T = Member> = { data: T[], count: number }
 
 export type UserType =
   | 'reject'

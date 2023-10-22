@@ -1,10 +1,10 @@
-import { UserEmailEvents } from "lib/services/db/entities";
+import { UserEmailEvents } from "lib/db/entities";
 import {
   findUserId,
   storeEmailEvents,
   updateEmailEvent,
   updateNotificationUser
-} from "lib/services/db/server";
+} from "lib/db/server";
 import { uuidv4 } from "lib/utils";
 import { ApiResponse, ApiResponseType } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";

@@ -39,7 +39,7 @@ export default function BuddiesPage({ }: PageProps) {
     refreshWhenHidden: true,
     fallbackData: [],
   })
-  let barBG = useColorModeValue('primary.300', 'gray.700')
+  const barBG = useColorModeValue('primary.300', 'gray.700')
 
   let members = buddies?.map((b) => b) || []
   const onlineMembers = buddies?.filter((m) => m.presence == 'online') || []
@@ -49,7 +49,7 @@ export default function BuddiesPage({ }: PageProps) {
 
   return (
     <Page title="Buddies" loading={loading || isLoading}>
-      <Text mt={0} fontSize={['md', 'lg', 'xl']}>
+      <Text my={0} fontSize={['md', 'lg', 'xl']}>
         Buddies are guys you are want to keep in touch with. You can see their online status easily
         from here.
       </Text>
@@ -102,8 +102,8 @@ export default function BuddiesPage({ }: PageProps) {
             </InputRightElement>
           )}
         </InputGroup>
-        <Text align="center" w={['full', 'full', '40%']}>
-          You have {buddies?.length} buddies with {onlineMembers?.length} online.
+        <Text my={0} align="center" w={['full', 'full', '40%']}>
+          {buddies?.length} Buddies / {onlineMembers?.length} Online
         </Text>
       </Flex>
 

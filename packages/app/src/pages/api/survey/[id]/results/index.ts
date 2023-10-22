@@ -1,7 +1,7 @@
 
 import { Question } from "lib/models";
-import { SurveyResult } from "lib/services/db/entities";
-import { getSurveyResults } from "lib/services/db/server";
+import { SurveyResult } from "lib/db/entities";
+import { getSurveyResults } from "lib/db/server";
 import { getSurvey } from "lib/services/directus/server";
 import { ApiResponse, ApiResponseType, withMember } from "lib/utils/server";
 import { NextApiRequest, NextApiResponse } from "next";

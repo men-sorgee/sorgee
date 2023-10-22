@@ -46,9 +46,8 @@ import {
 } from "@chakra-ui/react";
 import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/24/outline";
 
-type Meta = {
-  total: number
-  filtered: number
+const SortDirection = ({ direction }) => {
+  return <>{direction == 'asc' ? '(Ascending)' : '(Descending)'}</>
 }
 
 export default function Members() {
@@ -99,7 +98,7 @@ export default function Members() {
   const {
     members,
     pageCount,
-    meta,
+    count,
     loading: membersLoading,
     sortTerm,
     direction,
@@ -119,7 +118,7 @@ export default function Members() {
           style={{ width: '100%', display: 'block' }}
         >
           <div ref={topRef}></div>
-          <FilterFields fields={fields} currentMember={currentMember} meta={meta} />
+          <FilterFields fields={fields} currentMember={currentMember} count={count} />
         </form>
 
         <Flex gap={4} mt={4} align="center">
@@ -131,9 +130,24 @@ export default function Members() {
           >
             {[20, 30, 40, 50].map((pageSize) => (
               <option key={pageSize} value={pageSize}>
-                Show {pageSize}
+                Show {pageSize} per Page
               </option>
             ))}
+          </Select>
+
+          <Select
+            value={sortTerm}
+            onChange={(e) => {
+              setParams({
+                sort: `${direction == 'desc' ? '-' : ''}${e.target.value}`,
+                page: 1,
+              })
+            }}
+          >
+            <option value="last_login">Sorted by Recently Online <SortDirection direction={direction} /></option>
+            <option value="date_created">Sorted by Registration Date <SortDirection direction={direction} /></option>
+            <option value="nickname">Sorted by Username <SortDirection direction={direction} /></option>
+            <option value="rating">Sorted by Rating <SortDirection direction={direction} /></option>
           </Select>
           {(direction == 'asc' && (
             <IconButton
@@ -150,20 +164,6 @@ export default function Members() {
                 onClick={() => setParams({ sort: sortTerm, page: 1 })}
               />
             )}
-          <Select
-            value={sortTerm}
-            onChange={(e) => {
-              setParams({
-                sort: `${direction == 'desc' ? '-' : ''}${e.target.value}`,
-                page: 1,
-              })
-            }}
-          >
-            <option value="last_login">Recently Online</option>
-            <option value="date_created">Registration Date</option>
-            <option value="nickname">By Username</option>
-            <option value="rating">Rating</option>
-          </Select>
         </Flex>
 
         <Pager {...{ page, size, pageCount, sort, ...query }} />
@@ -187,7 +187,7 @@ export default function Members() {
                 </Lazy>
               ))}
             </SimpleGrid>
-            {meta.filtered == 0 && (
+            {count == 0 && (
               <Container w="4xl" textAlign="center">
                 <Text>No results found</Text>
               </Container>
@@ -209,10 +209,10 @@ export default function Members() {
 
 type FilterProps = {
   fields: FieldMap
-  meta: Meta
+  count: number
   currentMember: Member
 }
-const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
+const FilterFields = ({ fields, count, currentMember }: FilterProps) => {
   const [showItem, setShowItem] = useState<any>(undefined)
   const level = MemberLevel[currentMember?.user_type || 'inductee']
   const allowedUserTypes = getAllowedUsers(level)
@@ -240,7 +240,7 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
               <StatGroup mt={1}>
                 <Stat>
                   <StatLabel>Filtered</StatLabel>
-                  <StatNumber>{meta.filtered}</StatNumber>
+                  <StatNumber>{count}</StatNumber>
                 </Stat>
               </StatGroup>
             </Flex>

@@ -194,7 +194,7 @@ export default function getTheme(body: any, heading: any, mono: any) {
             fontFamily: 'heading',
             bgGradient: 'linear(to-r, accent.400, blue.400)',
             bgClip: 'text',
-            mt: '2rem',
+            mb: '2rem',
             overflow: 'visible'
           },
           h2: {
@@ -203,31 +203,31 @@ export default function getTheme(body: any, heading: any, mono: any) {
             leading: 'loose',
             fontFamily: 'heading',
             color: mode('primary.500', 'primary.300')(props),
-            mt: '2rem'
+            mb: '2rem'
           },
           h3: {
             textStyle: 'h3',
             fontWeight: 'bold',
             leading: 'loose',
             fontFamily: 'heading',
-            color: mode('primary.500', 'primary.300')(props),
-            mt: '1.75rem'
+            color: mode('secondary.500', 'secondary.200')(props),
+            mb: '1.75rem'
           },
           h4: {
             textStyle: 'h4',
             fontWeight: 'bold',
             leading: 'loose',
             fontFamily: 'heading',
-            //color: 'accent.500',
-            mt: '1.5rem'
+            color: 'accent.500',
+            mb: '1.5rem'
           },
           h5: {
             textStyle: 'h5',
             fontWeight: 'semibold',
             leading: 'loose',
             fontFamily: 'heading',
-            //color: mode('primary.400', 'primary.200')(props),
-            mt: '1.25rem'
+            color: mode('primary.400', 'primary.200')(props),
+            mb: '1.25rem'
           },
           h6: {
             textStyle: 'h6',
@@ -235,7 +235,7 @@ export default function getTheme(body: any, heading: any, mono: any) {
             leading: 'loose',
             fontFamily: 'heading',
             color: mode('primary.400', 'primary.200')(props),
-            mt: '1rem'
+            mb: '1rem'
           },
           ul: {
             margin: '0 auto',
@@ -244,7 +244,7 @@ export default function getTheme(body: any, heading: any, mono: any) {
           },
           li: { textAlign: 'left' },
           p: {
-            mb: .5
+            mb: '1rem'
           },
           '.print-only': {
             display: 'none'

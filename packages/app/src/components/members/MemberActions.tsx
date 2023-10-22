@@ -24,9 +24,10 @@ export const MemberActions = chakra(({ viewer, member, size = ['sm', 'md', 'lg']
 
   const color = "white"
   if (!member || !viewer) return null
+  const isYou = member.id == viewer.id
   return (
     <>
-      <Flex w="full" justify="space-between">
+      {!isYou && <Flex w="full" justify="space-between">
 
         <MemberBlock member={member} size={size} />
         <MemberReport member={member} size={size} />
@@ -39,7 +40,7 @@ export const MemberActions = chakra(({ viewer, member, size = ['sm', 'md', 'lg']
         <MemberBuddy member={member} size={size} />
         <MemberShare member={member} size={size} />
 
-      </Flex>
+      </Flex>}
       <Flex w="full" align='bottom' justify='space-between'>
         <Text fontSize="xs" color={color}>
           {member?.show_profile && member.last_login && (

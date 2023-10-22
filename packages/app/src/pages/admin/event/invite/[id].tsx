@@ -107,7 +107,7 @@ export default function InviteAdmin() {
         onSubmit={updateInvite}
         onSuccess={() => router.push(`/admin/event/${event?.id}`)}
         onError={(error) => {
-
+          console.error(error)
         }}
         defaultValues={defaultValues}
       >

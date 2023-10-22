@@ -30,8 +30,8 @@ const EventsAction = ({ member, active, iconSize, iconDimensions }: Props) => {
             <Icon as={CalendarIcon} w={iconDimensions} h={iconDimensions} />
           }
           color={active ? 'accent.500' : 'white'}
-          aria-label={'Calendar'}
-          title="Calendar"
+          aria-label={'View Events'}
+          title="View Events"
         />
         {newInvitationCount > 0 && (
           <Badge
@@ -44,28 +44,31 @@ const EventsAction = ({ member, active, iconSize, iconDimensions }: Props) => {
             fontSize={10}
             bg={active ? 'accent.500' : 'white'}
             color={active ? 'white' : 'accent.500'}
+            title={`${newInvitationCount} new invitations`}
           >
             {newInvitationCount}
           </Badge>
         )}
       </Link>
-      {activeInvite && (
-        <Link href={`/events/${activeInvite.event.id}/ticket`} as={NextLink}>
-          <IconButton
-            variant="primary"
-            zIndex="fixed"
-            size={iconSize}
-            icon={
-              <Icon as={TicketIcon} w={iconDimensions} h={iconDimensions} />
-            }
-            w={iconDimensions}
-            color="yellow.500"
-            aria-label={`Ticket to ${activeInvite.event.name}`}
-            title={`Ticket to ${activeInvite.event.name}`}
-          />
-        </Link>
-      )}
-    </Box>
+      {
+        activeInvite && (
+          <Link href={`/events/${activeInvite.event.id}/ticket`} as={NextLink}>
+            <IconButton
+              variant="primary"
+              zIndex="fixed"
+              size={iconSize}
+              icon={
+                <Icon as={TicketIcon} w={iconDimensions} h={iconDimensions} />
+              }
+              w={iconDimensions}
+              color="yellow.500"
+              aria-label={`Ticket to ${activeInvite.event.name}`}
+              title={`Ticket to ${activeInvite.event.name}`}
+            />
+          </Link>
+        )
+      }
+    </Box >
   )
 }
 

@@ -22,7 +22,7 @@ export default async function GetUserBuddies(
 
     let buddies = me.buddies
       .map(b => b.buddy_id as unknown as Member)
-      .filter(b => b.show_profile)
+      .filter(b => b.show_profile && b.status == 'active')
       .filter(b => !blocked.includes(b.id))
 
     return res.status(200).json(ApiResponse(buddies))

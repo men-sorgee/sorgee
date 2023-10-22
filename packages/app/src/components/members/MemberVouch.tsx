@@ -80,7 +80,7 @@ export const MemberVouch = memo(chakra(function MemberVouch({ member, size = ['s
             aria-label={`Vouch for ${name}`}
             icon={<HandThumbUpIcon width="30px" />}
             _hover={{ color: 'primary.500' }}
-            mx={2}
+
             variant='ghost'
             alertTitle="Vouch for this user?"
             buttonText={`Vouch for ${name}`}
@@ -139,7 +139,7 @@ export const MemberVouch = memo(chakra(function MemberVouch({ member, size = ['s
 
             icon={<HandThumbDownIcon width="30px" />}
             _hover={{ color: 'primary.500' }}
-            mx={2}
+
             {...props}
 
           >

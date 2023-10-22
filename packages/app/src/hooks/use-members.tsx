@@ -12,7 +12,7 @@ import { useAuthenticated } from "./use-authenticated";
 
 export type MemberSearchContext = {
   members: SearchableMember[]
-  meta: { total: number; filtered: number }
+  count: number
   reload: () => void
   pageCount: number
   pageIndex: number
@@ -30,10 +30,7 @@ export const useMemberSearch = (
   const authenticated = useAuthenticated()
   const [members, setMembers] = useState<SearchableMember[]>([])
   const [pageCount, setPageCount] = useState<number>(0)
-  const [meta, setMeta] = useState({
-    total: 0,
-    filtered: 0,
-  })
+  const [count, setCount] = useState(0)
   const [filters, setFilters] = useState<string>(undefined)
 
   useEffect(() => {
@@ -56,28 +53,22 @@ export const useMemberSearch = (
     refreshInterval: 0,
     fallbackData: {
       data: [],
-      meta: {
-        total: 0,
-        count: 0,
-      },
+      count: 0
     },
   })
 
   useEffect(() => {
-    if (response?.meta) {
-      const { total = 0, count = 0 } = response.meta
-      setMeta({
-        total,
-        filtered: count,
-      })
+    if (response?.count) {
+      const count = response.count
+      setCount(count)
       setPageCount(count ? Math.ceil(count / size) : 0)
       setMembers(response.data as SearchableMember[])
     }
-  }, [response?.data, response?.meta, size])
+  }, [response?.count, response?.data, size])
 
   const result = {
     members,
-    meta,
+    count,
     reload: () => {
       mutate(key, true)
     },

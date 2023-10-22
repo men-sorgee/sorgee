@@ -38,13 +38,14 @@
       }
     ],
     "baseUrl": "./src",
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "types": ["node", "react-dom", "react", "next"]
   },
   "include": [
     "next-env.d.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
-  ],
+    ".next/types/**/*ts."],
   "exclude": [
     ".idea/*",
     "node_modules/*",

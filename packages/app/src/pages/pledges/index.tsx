@@ -22,7 +22,7 @@ export default function PledgeListPage() {
 
   const {
     members,
-    meta,
+    count,
     loading: pledgesLoading,
     reload
   } = useMemberSearch({
@@ -56,8 +56,11 @@ export default function PledgeListPage() {
   return (
     <Page title="Pledges" loading={loading || pledgesLoading}>
       <Text fontSize="xl" fontWeight="bold" mb={4}>
-        These men have pledged a bid to join the brotherhood, but no one has vouched for them yet.
-        To vouch for a Pledge, use the vouch button on their profile.
+        These {count} men have pledged a bid to join the brotherhood and are waiting
+        for you to reach out to them. They need a brother to vouch for them to get in.
+        To vouch for a Pledge, you must initiate a conversation first. Once you have
+        reached out, click the Thumbs-Up to vouch for them or the Thumbs-down to have
+        them rejected.
       </Text>
       <SimpleGrid my={4} columns={[1, 1, 1, 2]} spacing={4} w="full" justifyItems="stretch">
         {members?.map((m: SearchableMember) => (
@@ -91,7 +94,7 @@ export default function PledgeListPage() {
           },
         ]}
       ></MemberModal>
-      {meta.filtered == 0 && (
+      {count == 0 && (
         <Container w="4xl" textAlign="center">
           <Text>No results found</Text>
         </Container>

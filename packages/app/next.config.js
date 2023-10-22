@@ -44,6 +44,9 @@ module.exports = (phase, defaultConfig) =>  {
     },
     poweredByHeader: true,
     crossOrigin: "anonymous",
+    eslint: {
+      ignoreDuringBuilds: process.env.SKIP === 'true',
+    },
     optimizeFonts: true,
     reactStrictMode: false,
     swcMinify: true,

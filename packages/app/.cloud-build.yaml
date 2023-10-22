@@ -1,14 +1,10 @@
 steps:
-  - name: gcr.io/cloud-builders/docker
+  - name: gcr.io/kaniko-project/executor
     args:
-      - build
-      - '--cache-from'
-      - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:latest'
-      - '-t'
-      - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
-      - packages/app
-      - '-f'
-      - packages/app/Dockerfile
+      - --cache=true
+      - --destination=$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+      - --context=packages/app
+      - --dockerfile=packages/app/Dockerfile
     id: Build
     env:
       - 'DOCKER_BUILDKIT=1'
@@ -17,11 +13,6 @@ steps:
       - STRIPE_ACCOUNT_ID
       - STRIPE_SECRET_KEY
       - ADMIN_TOKEN
-  - name: gcr.io/cloud-builders/docker
-    args:
-      - push
-      - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
-    id: Push
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
     args:
       - run

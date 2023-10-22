@@ -62,6 +62,7 @@ const ChatActions = ({
         color={active ? 'accent.500' : 'white'}
         size={iconSize}
         icon={<Icon as={ChatIcon} w={iconDimensions} h={iconDimensions} />}
+
       />
       {hasNewMessages && (
         <Badge
@@ -74,11 +75,13 @@ const ChatActions = ({
           px={1.5}
           py={0.5}
           fontSize={10}
+          title={`${newMessageCount} new messages`}
         >
           {newMessageCount}
         </Badge>
-      )}
-    </Link>
+      )
+      }
+    </Link >
   )
 
   if (conversations?.length) return <ActionIcon />

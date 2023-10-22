@@ -41,3 +41,4 @@ data
 packages/app/results/*
 packages/app/coverage/*
 localhost*
+packages/app/src/lib/db/ormconfig.json

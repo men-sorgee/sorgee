@@ -2,10 +2,11 @@ import { UpgradeIcon } from "components";
 import { Member, MemberLevel, MembershipType } from "lib/models";
 import NextLink from "next/link";
 
-import { Icon, IconButton, Link } from "@chakra-ui/react";
+import { Badge, Icon, IconButton, Link } from "@chakra-ui/react";
 import { UserGroupIcon } from "@heroicons/react/24/outline";
 
 import { useGeolocation } from "../../hooks/use-geolocation";
+import { useMemberSearch } from "../../hooks/use-members";
 
 interface Props {
   member: Member
@@ -18,6 +19,13 @@ interface Props {
 const MembersAction = ({ member, active, hasFeature, iconSize, iconDimensions }: Props) => {
   const level = MemberLevel[member?.user_type]
   const { capture } = useGeolocation(member?.show_location)
+
+  const { count } = useMemberSearch(
+    {
+      online: true,
+    },
+    !hasFeature || level < MemberLevel.brother
+  )
 
   if (level < MemberLevel.brother) {
     return <></>
@@ -47,6 +55,22 @@ const MembersAction = ({ member, active, hasFeature, iconSize, iconDimensions }:
           aria-label={'View Members'}
           title="View Members"
         />
+        {count > 0 && (
+          <Badge
+            bg={active ? 'accent.500' : 'white'}
+            color={active ? 'white' : 'accent.500'}
+            ml={-4}
+            zIndex="overlay"
+            position="absolute"
+            rounded="full"
+            px={1.5}
+            py={0.5}
+            fontSize={10}
+            title={`${count} members online`}
+          >
+            {count}
+          </Badge>
+        )}
       </Link>
     </>
   )

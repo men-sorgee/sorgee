@@ -1,5 +1,5 @@
 import { Markdown } from "components";
-import Blocks from "editorjs-blocks-react-renderer";
+//import Blocks from "editorjs-blocks-react-renderer";
 import { PageContent } from "lib/models";
 
 import { Image, SimpleGrid } from "@chakra-ui/react";
@@ -7,17 +7,17 @@ import { Image, SimpleGrid } from "@chakra-ui/react";
 export const Section = ({ content }: { content: PageContent }) => {
   const { columns, container_classes, type } = content
   switch (type) {
-    case 'control':
-      if (!content?.control?.version) return null
-      return (
-        <Blocks
-          data={{
-            blocks: content.control.blocks,
-            time: content.control.time,
-            version: content.control.version,
-          }}
-        />
-      )
+    //case 'control':
+    //  if (!content?.control?.version) return null
+    //  return (
+    //    <Blocks
+    //      data={{
+    //        blocks: content.control.blocks,
+    //        time: content.control.time,
+    //        version: content.control.version,
+    //      }}
+    //    />
+    //  )
     case 'image':
       return (
         <Image

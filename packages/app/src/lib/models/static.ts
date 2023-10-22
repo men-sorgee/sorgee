@@ -1,4 +1,4 @@
-import { Block } from "editorjs-blocks-react-renderer";
+//import { Block } from "editorjs-blocks-react-renderer";
 import {
   DirectusField,
   DirectusFile,
@@ -86,7 +86,7 @@ export type PageContent = {
   name?: string
   html?: string
   markdown?: string
-  control?: { time: number; blocks: Block[]; version: string }
+  control?: { time: number; blocks: any[]; version: string }
   image?: DirectusFile
   type?: string
   page?: Page

@@ -29,7 +29,7 @@ export const MemberIcon = memo(chakra(
     return (
       <>
         {member && (
-          <Flex gap={2} align="start" position="relative">
+          <Flex px={2} gap={4} mb={2} align="start" position="relative">
             <MemberAvatar
               member={member}
               size={size}
@@ -42,7 +42,7 @@ export const MemberIcon = memo(chakra(
                 if (member?.picture) setOpen(true)
               }}
               {...props}
-            ></MemberAvatar>
+            />
 
             <Flex
               direction="column"
@@ -66,24 +66,24 @@ export const MemberIcon = memo(chakra(
                 {name}
               </Heading>
               <Flex
-                gap={4}
+                gap={1}
                 direction="row"
                 alignItems="center"
                 justifyItems="space-between"
                 w="full"
               >
-                <Box>
-                  <MemberBadge member={member} my={2}
-                    onChange={() => {
-                      if (onChange) onChange()
-                    }} />
-                  {member.show_location && (
-                    <Text fontSize="sm" color={color} mt={0}>
-                      {member?.city} {member?.state}
-                    </Text>
-                  )}
-                </Box>
-                <Spacer flex={1} />
+
+                <MemberBadge member={member} my={2}
+                  onChange={() => {
+                    if (onChange) onChange()
+                  }} />
+                {member.show_location && (
+                  <Text fontSize="sm" color={color} mt={0}>
+                    {member?.city} {member?.state}
+                  </Text>
+                )}
+
+
                 {children}
               </Flex>
             </Flex>
