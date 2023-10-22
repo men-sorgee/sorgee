@@ -1,12 +1,12 @@
 # Get NPM packages
-FROM node:18.18.0-alpine AS dependencies
+FROM node:18.18.1-alpine AS dependencies
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn install 
 
 # Rebuild the source code only when needed
-FROM node:18.18.0-alpine AS builder
+FROM node:18.18.1-alpine AS builder
 ENV PWA=true
 WORKDIR /app
 COPY . .
@@ -21,7 +21,7 @@ ENV NODE_OPTIONS=--max-old-space-size=4096
 RUN yarn build:prod
 
 # Production image, copy all the files and run next
-FROM node:18.18.0-alpine AS runner
+FROM node:18.18.1-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
