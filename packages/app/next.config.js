@@ -43,7 +43,10 @@ module.exports = (phase, defaultConfig) =>  {
       ]
     },
     poweredByHeader: true,
-    crossOrigin: "anonymous"
+    crossOrigin: "anonymous",
+    eslint: {
+      ignoreDuringBuilds: true,
+    },
   }
   return  withPWA(withBundleAnalyzer(nextConfig))
 }
