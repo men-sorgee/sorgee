@@ -20,14 +20,14 @@ export const MemberHeader = memo(function MemberHeader({
   iconChildren,
   children,
   minimal = false,
-  size = 'lg',
+  size = ['md', 'md', 'lg'],
   onChange,
   ...props
 }: MemberHeaderProps) {
   const level = MemberLevel[member?.user_type || 'applicant']
   return (
     <Lazy>
-      <Flex direction="column" align="center" justify="center" gap={2}>
+      <Flex direction="column" align="center" justify="center" gap={1} px={2}>
         <MemberIcon member={member} size={size} onChange={() => {
           if (onChange) onChange()
         }} {...props}>
