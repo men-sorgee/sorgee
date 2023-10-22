@@ -4,7 +4,7 @@ steps:
       - --cache=true
       #- '--cache-from'
       #- '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:latest'
-      - --destination=$GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+      - --destination=$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
       - --context=packages/app
       - --dockerfile=packages/app/Dockerfile
     id: Build
