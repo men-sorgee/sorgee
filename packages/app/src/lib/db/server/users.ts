@@ -8,7 +8,7 @@ import {
 } from "lib/db/entities";
 import { getRepository } from "lib/db/server/data-source";
 import { getUTCNow } from "lib/utils/dates";
-import { LessThan, MoreThan } from "typeorm";
+import { LessThan, MoreThan, SelectQueryBuilder } from "typeorm";
 
 export async function createUser(userData: Partial<User>) {
   const repo = await getRepository(User)

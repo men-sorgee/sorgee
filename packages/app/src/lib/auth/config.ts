@@ -1,6 +1,7 @@
 import { brand } from "lib/config/brand";
 import config from "lib/config/server";
-import { MemberLevel, Profile, User, UserStatusType } from "lib/models";
+import { User as AuthUser } from "lib/db/entities";
+import { ApplicationStatusType, MemberLevel, Profile, User, UserStatusType, UserType } from "lib/models";
 import {
   findUser,
   findUserByAccount,
@@ -39,6 +40,24 @@ const userCanSignin = (user: User | any) => {
 
 const log = (...args) => {
   //console.debug(...args)
+}
+
+const mapUser = (user: AuthUser): Partial<User> => {
+  return {
+    id: user.id,
+    email: user.email,
+    email_verified: !!user.emailVerified,
+    first_name: user.firstName,
+    last_name: user.lastName,
+    user_type: user.userType as UserType,
+    status: user.status as UserStatusType,
+    phone: user.phone,
+    phone_verified: !!user.phoneVerified,
+    application_status: user.applicationStatus as ApplicationStatusType,
+    last_login: user.lastLogin.toISOString(),
+    date_created: user.dateCreated.toISOString(),
+    date_updated: user.dateUpdated.toISOString()
+  } as Partial<User>
 }
 
 export const authOptions: AuthOptions = {
@@ -93,7 +112,9 @@ export const authOptions: AuthOptions = {
     async session({ session, user }) {
       log('callback:session')
       const fullUser = await findUser(user.email)
-      session.user = fullUser
+      if (!fullUser) return null
+
+      session.user = mapUser(fullUser)
       return session
     },
   },
