@@ -99,7 +99,7 @@ export default function Members() {
   const {
     members,
     pageCount,
-    meta,
+    count,
     loading: membersLoading,
     sortTerm,
     direction,
@@ -119,7 +119,7 @@ export default function Members() {
           style={{ width: '100%', display: 'block' }}
         >
           <div ref={topRef}></div>
-          <FilterFields fields={fields} currentMember={currentMember} meta={meta} />
+          <FilterFields fields={fields} currentMember={currentMember} count={count} />
         </form>
 
         <Flex gap={4} mt={4} align="center">
@@ -187,7 +187,7 @@ export default function Members() {
                 </Lazy>
               ))}
             </SimpleGrid>
-            {meta.filtered == 0 && (
+            {count == 0 && (
               <Container w="4xl" textAlign="center">
                 <Text>No results found</Text>
               </Container>
@@ -209,10 +209,10 @@ export default function Members() {
 
 type FilterProps = {
   fields: FieldMap
-  meta: Meta
+  count: number
   currentMember: Member
 }
-const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
+const FilterFields = ({ fields, count, currentMember }: FilterProps) => {
   const [showItem, setShowItem] = useState<any>(undefined)
   const level = MemberLevel[currentMember?.user_type || 'inductee']
   const allowedUserTypes = getAllowedUsers(level)
@@ -240,7 +240,7 @@ const FilterFields = ({ fields, meta, currentMember }: FilterProps) => {
               <StatGroup mt={1}>
                 <Stat>
                   <StatLabel>Filtered</StatLabel>
-                  <StatNumber>{meta.filtered}</StatNumber>
+                  <StatNumber>{count}</StatNumber>
                 </Stat>
               </StatGroup>
             </Flex>

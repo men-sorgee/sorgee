@@ -26,6 +26,7 @@ import {
   updateItem,
   withOptions
 } from "@directus/sdk";
+import { count } from "console";
 
 export async function createUser(member: Partial<User>): Promise<User> {
   const admin = getAdminClient()
@@ -107,26 +108,30 @@ export async function searchUsers<T extends User | SearchableMember = Searchable
 
   const data = await admin.request<T[]>(readItems('users', {
     filter,
-    fields: [...fields,],
+    fields,
     limit,
     page,
-    meta: '*',
     sort,
     deep
   }))
 
-  const meta = await admin.request<{ count: number }>(aggregate('users', {
-    aggregate: {
-      count: '*',
+  const meta = await admin.request<[{ count: number }]>(aggregate('users', {
+    query: {
+      filter
     },
-    filter,
+    aggregate: {
+      count: '*'
+    }
   }))
+
+  console.dir({
+    data,
+    meta
+  })
+
   return {
     data,
-    meta: {
-      total: meta.count,
-      count: data.length,
-    }
+    count: meta[0].count,
   }
 }
 
