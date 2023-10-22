@@ -1,4 +1,4 @@
-import { AddToCalendarButton } from "add-to-calendar-button-react";
+
 import { capitalCase } from "change-case";
 import { Markdown } from "components";
 import { differenceInDays, isAfter, isFuture } from "date-fns";
@@ -308,36 +308,7 @@ export const EventCard = memo(function EventCard({
       {!hideFooter && (
         <CardFooter as={Flex} direction="column" >
           <Flex direction={['column', 'row']} gap={4} w="full" align="center">
-            {event.status == 'scheduled' && showAddToCalendar && (
-              <>
-                <AddToCalendarButton
-                  uid={event.id}
-                  size="2"
-                  trigger="click"
-                  name={event.name}
-                  description={event.description}
-                  startDate={event.datetime}
-                  endDate={event.datetime_end}
-                  location={
-                    viewLocation
-                      ? [
-                        location?.street,
-                        location?.unit,
-                        location?.city,
-                        location?.state,
-                        location?.zip,
-                      ].join(' ')
-                      : ''
-                  }
-                  timeZone="America/Denver"
-                  options={['Apple', 'Google', 'Outlook.com', 'Yahoo', 'iCal']}
-                  buttonStyle="text"
-                  hideBackground
-                  lightMode={mode}
-                />
-                <Spacer />
-              </>
-            )}
+
             {footer}
           </Flex>
           {event.status == 'planned' && (

@@ -1,4 +1,4 @@
-import { ButtonLink, Markdown, NotFound, Page, Section } from "components";
+import { ButtonLink, Markdown, Page, Section } from "components";
 import { useSite } from "hooks/use-site";
 import { Page as PageModel } from "lib/models";
 import NextLink from "next/link";

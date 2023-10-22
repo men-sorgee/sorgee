@@ -45,8 +45,7 @@
     "next-env.d.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
-    ".next/types/**/*ts."
-, "src/lib/db/naming.ts"  ],
+    ".next/types/**/*ts."],
   "exclude": [
     ".idea/*"
   ]
