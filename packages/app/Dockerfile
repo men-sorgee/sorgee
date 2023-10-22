@@ -18,7 +18,7 @@ ENV NEXT_PUBLIC_GA_MEASUREMENT_ID=${NEXT_PUBLIC_GA_MEASUREMENT_ID}
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_OPTIONS=--max-old-space-size=4096
 
-RUN yarn build
+RUN yarn build:prod
 
 # Production image, copy all the files and run next
 FROM node:18.18.0-alpine AS runner

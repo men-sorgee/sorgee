@@ -45,8 +45,9 @@ module.exports = (phase, defaultConfig) =>  {
     poweredByHeader: true,
     crossOrigin: "anonymous",
     eslint: {
-      ignoreDuringBuilds: true,
+      ignoreDuringBuilds: process.env.SKIP === 'true',
     },
+    
   }
   return  withPWA(withBundleAnalyzer(nextConfig))
 }
