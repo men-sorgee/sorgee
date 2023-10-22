@@ -14,7 +14,7 @@ export type MembersNewProps = BoxProps & {
 export const MembersNewBox = chakra(({ member, children, ...props }: MembersNewProps) => {
   const [newestPledges, setNewestPledges] = useState<SearchableMember[]>(undefined)
   const [oldestPledges, setOldestPledges] = useState<SearchableMember[]>(undefined)
-  const { members: pledges, meta: pledgeMeta } = useMemberSearch({
+  const { members: pledges, count } = useMemberSearch({
     sort: '-approved_date',
     user_type: MemberLevel[MemberLevel.pledge],
   })
@@ -45,7 +45,7 @@ export const MembersNewBox = chakra(({ member, children, ...props }: MembersNewP
         )}
 
         <Text textAlign="center" my={2}>
-          The oldest {oldestPledges?.length} of {pledgeMeta?.filtered} Pledges still waiting...
+          The oldest {oldestPledges?.length} of {count} Pledges still waiting...
         </Text>
 
         {oldestPledges && (

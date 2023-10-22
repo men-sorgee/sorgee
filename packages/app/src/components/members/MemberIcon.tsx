@@ -29,7 +29,7 @@ export const MemberIcon = memo(chakra(
     return (
       <>
         {member && (
-          <Flex px={2} gap={1} align="start" position="relative">
+          <Flex px={2} gap={4} mb={2} align="start" position="relative">
             <MemberAvatar
               member={member}
               size={size}
@@ -42,7 +42,7 @@ export const MemberIcon = memo(chakra(
                 if (member?.picture) setOpen(true)
               }}
               {...props}
-            ></MemberAvatar>
+            />
 
             <Flex
               direction="column"

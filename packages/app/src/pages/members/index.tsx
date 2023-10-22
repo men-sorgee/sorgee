@@ -46,11 +46,6 @@ import {
 } from "@chakra-ui/react";
 import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/24/outline";
 
-type Meta = {
-  total: number
-  filtered: number
-}
-
 export default function Members() {
   const router = useRouter()
   let { page: p, size: s, sort: o, id: i, ...query } = router.query
