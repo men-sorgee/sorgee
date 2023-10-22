@@ -4,12 +4,7 @@ import { useSession } from "next-auth/react";
 import { MemberLevel, User } from "../lib/models";
 
 export function useAuthenticated(minimumLevel: MemberLevel = MemberLevel.applicant) {
-  const { status, data }: {
-    status: string
-    data: {
-      user: User
-    }
-  } = useSession({
+  const { status, data } = useSession({
     required: false
   })
   const results = {
