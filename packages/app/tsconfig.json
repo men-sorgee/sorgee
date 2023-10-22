@@ -47,6 +47,7 @@
     "src/**/*.tsx",
     ".next/types/**/*ts."],
   "exclude": [
-    ".idea/*"
+    ".idea/*",
+    "node_modules/*",
   ]
 }

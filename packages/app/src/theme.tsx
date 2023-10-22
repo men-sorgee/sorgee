@@ -199,7 +199,7 @@ export default function getTheme(body: any, heading: any, mono: any) {
           },
           h2: {
             textStyle: 'h2',
-            fontWeight: 'bold',
+            fontWeight: 'extrabold',
             leading: 'loose',
             fontFamily: 'heading',
             color: mode('primary.500', 'primary.300')(props),
@@ -207,7 +207,7 @@ export default function getTheme(body: any, heading: any, mono: any) {
           },
           h3: {
             textStyle: 'h3',
-            fontWeight: 'extrabold',
+            fontWeight: 'bold',
             leading: 'loose',
             fontFamily: 'heading',
             color: mode('secondary.500', 'secondary.200')(props),
@@ -239,7 +239,6 @@ export default function getTheme(body: any, heading: any, mono: any) {
           },
           ul: {
             margin: '0 auto',
-
             listStylePosition: 'inside',
             padding: '0'
           },

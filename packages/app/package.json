@@ -24,7 +24,7 @@
     "coverage": "vitest run --coverage --config ./vitest.config.ts --outDir results",
     "test:view": "vite preview --outDir results",
     "gen": "bash types.sh",
-    "madge": "madge -i graph.svg -c --extensions ts,tsx .",
+    "madge": "madge -i ./analyze/graph.svg -c --extensions ts,tsx .",
     "dependency-fix": "npx fix-peer-dependencies --install"
   },
   "resolutions": {

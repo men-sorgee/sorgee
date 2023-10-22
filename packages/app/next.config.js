@@ -47,7 +47,9 @@ module.exports = (phase, defaultConfig) =>  {
     eslint: {
       ignoreDuringBuilds: process.env.SKIP === 'true',
     },
-    
+    optimizeFonts: true,
+    reactStrictMode: false,
+    swcMinify: true,
   }
   return  withPWA(withBundleAnalyzer(nextConfig))
 }
