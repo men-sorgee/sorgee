@@ -46,6 +46,10 @@ import {
 } from "@chakra-ui/react";
 import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/24/outline";
 
+const SortDirection = ({ direction }) => {
+  return <>{direction == 'asc' ? '(Ascending)' : '(Descending)'}</>
+}
+
 export default function Members() {
   const router = useRouter()
   let { page: p, size: s, sort: o, id: i, ...query } = router.query
@@ -126,9 +130,24 @@ export default function Members() {
           >
             {[20, 30, 40, 50].map((pageSize) => (
               <option key={pageSize} value={pageSize}>
-                Show {pageSize}
+                Show {pageSize} per Page
               </option>
             ))}
+          </Select>
+
+          <Select
+            value={sortTerm}
+            onChange={(e) => {
+              setParams({
+                sort: `${direction == 'desc' ? '-' : ''}${e.target.value}`,
+                page: 1,
+              })
+            }}
+          >
+            <option value="last_login">Sorted by Recently Online <SortDirection direction={direction} /></option>
+            <option value="date_created">Sorted by Registration Date <SortDirection direction={direction} /></option>
+            <option value="nickname">Sorted by Username <SortDirection direction={direction} /></option>
+            <option value="rating">Sorted by Rating <SortDirection direction={direction} /></option>
           </Select>
           {(direction == 'asc' && (
             <IconButton
@@ -145,20 +164,6 @@ export default function Members() {
                 onClick={() => setParams({ sort: sortTerm, page: 1 })}
               />
             )}
-          <Select
-            value={sortTerm}
-            onChange={(e) => {
-              setParams({
-                sort: `${direction == 'desc' ? '-' : ''}${e.target.value}`,
-                page: 1,
-              })
-            }}
-          >
-            <option value="last_login">Recently Online</option>
-            <option value="date_created">Registration Date</option>
-            <option value="nickname">By Username</option>
-            <option value="rating">Rating</option>
-          </Select>
         </Flex>
 
         <Pager {...{ page, size, pageCount, sort, ...query }} />
