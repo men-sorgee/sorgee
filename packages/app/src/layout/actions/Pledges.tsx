@@ -51,6 +51,7 @@ const PledgesAction = ({ member, active, iconSize, iconDimensions }: Props) => {
             px={1.5}
             py={0.5}
             fontSize={10}
+            title={`${count} pledges`}
           >
             {count}
           </Badge>

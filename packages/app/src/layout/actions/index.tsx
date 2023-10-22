@@ -56,7 +56,7 @@ const ActionsBar = forwardRef<HTMLDivElement, ActionsBarProps>(({ constrained }:
       bottom={0}
       px={8}
     >
-      <Flex w="full" align='center' justify='space-between' gap={[2, 4, 6]} p={4} pl={[5, 12, 12, 0]} {...constrained}>
+      <Flex w="full" align='center' justify='space-between' gap={[2, 4, 6]} p={4} pl={[5, 12, 16, 0]} {...constrained}>
 
         <Events
           member={member}

@@ -64,6 +64,7 @@ const BuddiesAction = ({ member, active, hasFeature, iconSize, iconDimensions }:
             py={0.5}
             fontSize={10}
             size="xs"
+            title={`${online} buddies online`}
           >
             {online}
           </Badge>
