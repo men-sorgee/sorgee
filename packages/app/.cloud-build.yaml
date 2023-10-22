@@ -1,15 +1,12 @@
 steps:
   - name: gcr.io/kaniko-project/executor
     args:
-      - build
-      - '--cache=true'
-       #- '--cache-from'
+      - --cache=true
+      #- '--cache-from'
       #- '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:latest'
-      - '--destination'
-      - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
-      - packages/app
-      - '-f'
-      - packages/app/Dockerfile
+      - --destination=$GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+      - --context=packages/app
+      - --dockerfile=packages/app/Dockerfile
     id: Build
     env:
       - 'DOCKER_BUILDKIT=1'
