@@ -60,12 +60,10 @@ export const Rating = memo(function Rating({
     />)
   }
 
-  const RatingButton = ({ index, fill }: { index: number; fill: boolean }) => {
-    const [on, setOn] = useState(fill != undefined)
+  const RatingButton = ({ index, on }: { index: number; on: boolean }) => {
     return (
       <ButtonConfirm<number>
-        onMouseOver={() => setOn(true)}
-        onMouseOut={() => setOn(fill)}
+
         boxSize={[5, 6, 7, 8, 9]}
         _hover={{ stroke: 'white' }}
         aria-label={`Rate ${index}`}
@@ -82,7 +80,7 @@ export const Rating = memo(function Rating({
         size="xx-small"
         color={fillColor}
         stroke={strokeColor}
-        fill={fill ? fillColor : null}
+        fill={on ? fillColor : null}
         cursor={readonly ? 'default' : 'pointer'}
         {...props}
       >
@@ -95,7 +93,7 @@ export const Rating = memo(function Rating({
     if (readonly)
       buttons.push(<RatingIcon key={i} on={i <= rating} />)
     else
-      buttons.push(<RatingButton key={i} index={i} fill={i <= rating} />)
+      buttons.push(<RatingButton key={i} index={i} on={i <= rating} />)
   }
 
   if (simple)

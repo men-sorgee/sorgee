@@ -162,7 +162,7 @@ export default function SurveyPage({ survey, question, step }: Props) {
             index={index}
             my={8}
             colorScheme="primary"
-            color="white"
+
             w='full'
           >
             {survey.questions.map((q, i) => (
