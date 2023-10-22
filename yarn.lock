@@ -3008,13 +3008,6 @@
   dependencies:
     "@types/node" "*"
 
-"@types/react-calendar@^4.1.0":
-  version "4.1.0"
-  resolved "https://registry.npmjs.org/@types/react-calendar/-/react-calendar-4.1.0.tgz"
-  integrity sha512-CZL0+bOJ43+ZxnScd6n6SbA3RvoT/FurMIKevvTnRhLdncTRO7LyvBaFu3Bmwoad8ApVBJsMyAiPO79vGWRbbA==
-  dependencies:
-    react-calendar "*"
-
 "@types/react-dom@^18.0.0":
   version "18.2.7"
   resolved "https://registry.npmjs.org/@types/react-dom/-/react-dom-18.2.7.tgz"
@@ -8376,7 +8369,7 @@ randombytes@^2.1.0:
   dependencies:
     safe-buffer "^5.1.0"
 
-react-calendar@*, react-calendar@^4.6.0:
+react-calendar@^4.6.0:
   version "4.6.0"
   resolved "https://registry.npmjs.org/react-calendar/-/react-calendar-4.6.0.tgz"
   integrity sha512-GJ6ZipKMQmlK666t+0hgmecu6WHydEnMWJjKdEkUxW6F471hiM5DkbWXkfr8wlAg9tc9feNCBhXw3SqsPOm01A==
