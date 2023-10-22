@@ -124,11 +124,6 @@ export async function searchUsers<T extends User | SearchableMember = Searchable
     }
   }))
 
-  console.dir({
-    data,
-    meta
-  })
-
   return {
     data,
     count: meta[0].count,
