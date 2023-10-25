@@ -44,7 +44,7 @@
     "@hypertheme-editor/chakra-ui": "^0.1.6-rc.0",
     "@next/bundle-analyzer": "^13.5.4",
     "@sendgrid/mail": "^7.7.0",
-    "@stripe/stripe-js": "2.1.9",
+    "@stripe/stripe-js": "2.1.10",
     "change-case": "^4.1.2",
     "client-only": "^0.0.1",
     "date-fns": "^2.30.0",
