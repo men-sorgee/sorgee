@@ -2119,31 +2119,31 @@
   dependencies:
     regenerator-runtime "^0.13.11"
 
-"@directus/api@14.0.0":
-  version "14.0.0"
-  resolved "https://registry.yarnpkg.com/@directus/api/-/api-14.0.0.tgz#2a60a03590ffe8111337a28ca2459b1b34ead0b9"
-  integrity sha512-KpEMUvSnJwdDDfu1dC6pZD7E0YZp6x+LYRUSmdP22FngU6Uw2slleaoA5Uv2dBZ4Kw/NS8B69ZF4avu7EWm8Gg==
+"@directus/api@14.1.1":
+  version "14.1.1"
+  resolved "https://registry.yarnpkg.com/@directus/api/-/api-14.1.1.tgz#0c9fc6b5fe3ae7024e20572269dd2734da02906e"
+  integrity sha512-ouT/4fBHmYivEwcAPjxbLPigZfIi7sXmjva+v2+qz86IKyC090l9+j0NAODOF0mKkDIUnWnhzfZR0z9ENt5bgw==
   dependencies:
     "@authenio/samlify-node-xmllint" "2.0.0"
     "@aws-sdk/client-ses" "3.332.0"
-    "@directus/app" "10.10.0"
+    "@directus/app" "10.13.1"
     "@directus/constants" "11.0.1"
     "@directus/errors" "0.2.0"
-    "@directus/extensions" "0.1.0"
-    "@directus/extensions-sdk" "10.1.13"
+    "@directus/extensions" "0.2.0"
+    "@directus/extensions-sdk" "10.2.0"
     "@directus/format-title" "10.1.0"
-    "@directus/pressure" "1.0.12"
+    "@directus/pressure" "1.0.13"
     "@directus/schema" "11.0.0"
-    "@directus/specs" "10.2.0"
+    "@directus/specs" "10.2.3"
     "@directus/storage" "10.0.7"
-    "@directus/storage-driver-azure" "10.0.13"
-    "@directus/storage-driver-cloudinary" "10.0.13"
-    "@directus/storage-driver-gcs" "10.0.13"
-    "@directus/storage-driver-local" "10.0.13"
-    "@directus/storage-driver-s3" "10.0.13"
-    "@directus/storage-driver-supabase" "1.0.5"
-    "@directus/utils" "11.0.1"
-    "@directus/validation" "0.0.8"
+    "@directus/storage-driver-azure" "10.0.14"
+    "@directus/storage-driver-cloudinary" "10.0.14"
+    "@directus/storage-driver-gcs" "10.0.14"
+    "@directus/storage-driver-local" "10.0.14"
+    "@directus/storage-driver-s3" "10.0.14"
+    "@directus/storage-driver-supabase" "1.0.6"
+    "@directus/utils" "11.0.2"
+    "@directus/validation" "0.0.9"
     "@godaddy/terminus" "4.12.0"
     "@rollup/plugin-alias" "5.0.0"
     "@rollup/plugin-node-resolve" "15.0.2"
@@ -2205,6 +2205,7 @@
     openid-client "5.4.2"
     ora "6.3.1"
     otplib "12.0.1"
+    p-queue "7.4.1"
     papaparse "5.4.1"
     pino "8.14.1"
     pino-http "8.3.3"
@@ -2346,10 +2347,10 @@
     sqlite3 "5.1.6"
     tedious "16.0.0"
 
-"@directus/app@10.10.0":
-  version "10.10.0"
-  resolved "https://registry.yarnpkg.com/@directus/app/-/app-10.10.0.tgz#ea571b26e1e3f424e244a424670fc02be9656114"
-  integrity sha512-oVwLvNt5kmdsh5t8qgaXCsPK+qeM0p9eE4CtZ2ZFp7Sac7HcpLIq0CQ24rKylAm4bCApEmNpLs5koNTF4Te8ew==
+"@directus/app@10.13.1":
+  version "10.13.1"
+  resolved "https://registry.yarnpkg.com/@directus/app/-/app-10.13.1.tgz#73ef716b709900e7b86c1bffe72758b9d7981c4b"
+  integrity sha512-BMI3RO6XJjEFyHGBxP326ret1aQcgxYFkrJLO5kKwtsy8aAMpoUyQzLynSW4AwXZcTCs8fSluULnff4m/uqXBA==
 
 "@directus/app@9.26.0":
   version "9.26.0"
@@ -2358,13 +2359,13 @@
   dependencies:
     "@directus/composables" "9.26.0"
 
-"@directus/composables@10.1.5":
-  version "10.1.5"
-  resolved "https://registry.yarnpkg.com/@directus/composables/-/composables-10.1.5.tgz#66cf5eeaaa2a2bbb0368bba5c2a18061e1c21799"
-  integrity sha512-CZS11wBKXUQgYdbkvg9liy9kNdXU8/dUXyMu955NfdmxjqtSEiuzUGw57h85FfXckRenQWNtGyO0TqAlJJbvVw==
+"@directus/composables@10.1.6":
+  version "10.1.6"
+  resolved "https://registry.yarnpkg.com/@directus/composables/-/composables-10.1.6.tgz#32c3c542d4d76e32c854fd85749079fd0a6fe38a"
+  integrity sha512-RuhiLSidCD/SoTCxVU7td4geQEojajBUemCbHi0zxmWU23pNG9R1Vxiv8ksVK+PMLmnyx0GRLtBlTVkNStr0eA==
   dependencies:
     "@directus/constants" "11.0.1"
-    "@directus/utils" "11.0.1"
+    "@directus/utils" "11.0.2"
     axios "1.4.0"
     lodash-es "4.17.21"
     nanoid "4.0.2"
@@ -2407,16 +2408,16 @@
   resolved "https://registry.yarnpkg.com/@directus/exceptions/-/exceptions-9.26.0.tgz#c74b928dec9f71bab82047a74459e53e498818f9"
   integrity sha512-FZi//c1jaOZm3RMkm9akeTcBryf/V8qR0ZQHTAjTA6KYhLOpVV/0d3svzshZzkXypmKELUIIxIOlPipS8uACdQ==
 
-"@directus/extensions-sdk@10.1.13":
-  version "10.1.13"
-  resolved "https://registry.yarnpkg.com/@directus/extensions-sdk/-/extensions-sdk-10.1.13.tgz#f16ea8df875e5b46e70b3c40566ab53b7b4c341a"
-  integrity sha512-9Z0u/PUN/NBgis/UfeuXHzwQ/CbVilzCjqVKaz+NDp894H3+3G5yLYuyx3UUAvcSAFvU1CclZPE7NjEe8yMv5g==
+"@directus/extensions-sdk@10.2.0":
+  version "10.2.0"
+  resolved "https://registry.yarnpkg.com/@directus/extensions-sdk/-/extensions-sdk-10.2.0.tgz#97efd4bca759879c7e552601221cf499531ed26a"
+  integrity sha512-4barSzaQskAOig/D3J7N4XmT8heZVa6exBRUeWS2fPClIVWcTERz9Ih6gzrg9g4JBms8H0Pj7tcE+0fbynLwlA==
   dependencies:
-    "@directus/composables" "10.1.5"
+    "@directus/composables" "10.1.6"
     "@directus/constants" "11.0.1"
-    "@directus/extensions" "0.1.0"
-    "@directus/types" "11.0.1"
-    "@directus/utils" "11.0.1"
+    "@directus/extensions" "0.2.0"
+    "@directus/types" "11.0.2"
+    "@directus/utils" "11.0.2"
     "@rollup/plugin-commonjs" "25.0.0"
     "@rollup/plugin-json" "6.0.0"
     "@rollup/plugin-node-resolve" "15.0.2"
@@ -2465,12 +2466,12 @@
     rollup-plugin-styles "4.0.0"
     rollup-plugin-vue "6.0.0"
 
-"@directus/extensions@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@directus/extensions/-/extensions-0.1.0.tgz#a9fae9ba931f4fe7fbf7e803c40d6eb49c64ab05"
-  integrity sha512-E7NKG53oRDXomWbeHNDlyesGcbYTckoqB0prtZax770Lc2/eia8tXpLmGgj97KgdfSo2Waazc0GriCIEupUItg==
+"@directus/extensions@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@directus/extensions/-/extensions-0.2.0.tgz#295fa68c02bc98a9e1fac1e845b5ffc9e251733a"
+  integrity sha512-F5YCqF1i+FJMLdC6Do6gBndMnx4pvQFTFSDxO20kmkTBsL0mKt5CsaIN68l3mu0odOPJK23k7uQMPTVa68hbJQ==
   dependencies:
-    "@directus/utils" "11.0.1"
+    "@directus/utils" "11.0.2"
     fs-extra "11.1.1"
     lodash-es "4.17.21"
     tmp "0.2.1"
@@ -2486,12 +2487,12 @@
   resolved "https://registry.yarnpkg.com/@directus/format-title/-/format-title-10.1.0.tgz#819eb07f39bafe5002e663b726ea067b99b186f9"
   integrity sha512-5TmkYfDCKPh/Xy9qYiVO4y6bxPIAFb8dnBn4RgXBQyndffq9GVuCX66FdxdjGqn+ti2t4yuQOGZ+E9a/GjmWcw==
 
-"@directus/pressure@1.0.12":
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/@directus/pressure/-/pressure-1.0.12.tgz#916bb150bf9ddd04954bdd35b272d306f1e81bce"
-  integrity sha512-OWjAO3e9tkK2Wl9Q5PTEQL3W2/69oFCfnXDe6EFi/bKLMp19fIxZx2PNR7SmfjkLg9Cr46lEztickbjWq6wILQ==
+"@directus/pressure@1.0.13":
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/@directus/pressure/-/pressure-1.0.13.tgz#494c26b0ebad8b74215aaba895597fa9d50a0dac"
+  integrity sha512-b2odJ2Hhc8gV5jtdTa5hj18HDP0gdpLuk48Y1ZP/gcf5yQxtY/K5wEtAFH3I2KWpMmtygeF4xHKiteGJKhGWlw==
   dependencies:
-    "@directus/utils" "11.0.1"
+    "@directus/utils" "11.0.2"
 
 "@directus/schema@11.0.0":
   version "11.0.0"
@@ -2507,10 +2508,10 @@
   dependencies:
     knex "2.4.2"
 
-"@directus/specs@10.2.0":
-  version "10.2.0"
-  resolved "https://registry.yarnpkg.com/@directus/specs/-/specs-10.2.0.tgz#a7f7ddaa15eebf48d3e21c18ee0637f3ab30b14a"
-  integrity sha512-NbaL2LpMKlplTkxuEk4xhGd2v+ThkN4peJaUjP2UuVCyvDds5un20pppKxqJfEFrkrBaRm2o/2qUW1itiOg15w==
+"@directus/specs@10.2.3":
+  version "10.2.3"
+  resolved "https://registry.yarnpkg.com/@directus/specs/-/specs-10.2.3.tgz#7ebdc6a727c1fc628e35498fd2a6b92b101e2435"
+  integrity sha512-Snqses8X8MNOigYaJsHyaxVLNuGLi68pJ8c0R6VbqHuB348LFDPwMwmycD6nLvT7ZjeZhYIKVHb2IJqpa2D6mg==
   dependencies:
     openapi3-ts "4.1.2"
 
@@ -2521,14 +2522,14 @@
   dependencies:
     openapi3-ts "3.2.0"
 
-"@directus/storage-driver-azure@10.0.13":
-  version "10.0.13"
-  resolved "https://registry.yarnpkg.com/@directus/storage-driver-azure/-/storage-driver-azure-10.0.13.tgz#324ea92b9a00487e9ce9ffde2347d29f1d6d1a74"
-  integrity sha512-FvTMB83K26pOG73mGpY04PsLc+vCspu6MpohPQ6gfbPsEV9gFS+nhgRdaHkav4JO0vwEGKBM/2gfr7M1ig6HBg==
+"@directus/storage-driver-azure@10.0.14":
+  version "10.0.14"
+  resolved "https://registry.yarnpkg.com/@directus/storage-driver-azure/-/storage-driver-azure-10.0.14.tgz#6b93c1d07569f10ffd07cbff4de9b90438130ccc"
+  integrity sha512-rfICFdIfRSYEIPL/nWKx1X+U7yJoFFf2Eh/ZBEwx0jkdiPZq32M+5aFqzDsdq4YXsYziEuZzbhihb+WbZy/0CA==
   dependencies:
     "@azure/storage-blob" "12.14.0"
     "@directus/storage" "10.0.7"
-    "@directus/utils" "11.0.1"
+    "@directus/utils" "11.0.2"
 
 "@directus/storage-driver-azure@9.26.0":
   version "9.26.0"
@@ -2539,13 +2540,13 @@
     "@directus/storage" "9.26.0"
     "@directus/utils" "9.26.0"
 
-"@directus/storage-driver-cloudinary@10.0.13":
-  version "10.0.13"
-  resolved "https://registry.yarnpkg.com/@directus/storage-driver-cloudinary/-/storage-driver-cloudinary-10.0.13.tgz#5725d272147e6664b838cd872319ba1835e6250a"
-  integrity sha512-GIhHzS2djuq5SXsPOqW1GVzfvCJk83LGJmQUSno0CBkuO0ymEJwNwqdj+wL46oeG7LTy3TC2jQfSflIc/lJ/AQ==
+"@directus/storage-driver-cloudinary@10.0.14":
+  version "10.0.14"
+  resolved "https://registry.yarnpkg.com/@directus/storage-driver-cloudinary/-/storage-driver-cloudinary-10.0.14.tgz#1daa8c3955284e12d6bbfe0b2fd3c291f907af98"
+  integrity sha512-Ka07KizzykdPoveTUmfbs3zWSDKyU7m08AWGywGMOQ7Z+hz2wXFINaTgB6l0ct4wqFLNI1cYVulaibI5rx3DAQ==
   dependencies:
     "@directus/storage" "10.0.7"
-    "@directus/utils" "11.0.1"
+    "@directus/utils" "11.0.2"
     p-queue "7.3.4"
     undici "5.22.1"
 
@@ -2559,13 +2560,13 @@
     p-queue "7.3.4"
     undici "5.22.0"
 
-"@directus/storage-driver-gcs@10.0.13":
-  version "10.0.13"
-  resolved "https://registry.yarnpkg.com/@directus/storage-driver-gcs/-/storage-driver-gcs-10.0.13.tgz#597766ae67793f64df70b79110592682ddcce92d"
-  integrity sha512-0IgxCWtoyMCNFkZ4vKjO8iawJ1YQsP7INXpXRO+/prOOWmm3d4flKEUbCE5lQFYZIW/bC3C1JBDzCw8eOyXZPg==
+"@directus/storage-driver-gcs@10.0.14":
+  version "10.0.14"
+  resolved "https://registry.yarnpkg.com/@directus/storage-driver-gcs/-/storage-driver-gcs-10.0.14.tgz#909410a84e6b09838fe8bf9bc563b72566f80036"
+  integrity sha512-Bi+Uv9adiiECFiUclDWKVt8GHyozQw3EhNadaAArQA3lXJ3dzbeLfsJeHMaG8cl18TGD1k3zpGr87H4iUjxKfQ==
   dependencies:
     "@directus/storage" "10.0.7"
-    "@directus/utils" "11.0.1"
+    "@directus/utils" "11.0.2"
     "@google-cloud/storage" "6.10.1"
 
 "@directus/storage-driver-gcs@9.26.0":
@@ -2577,13 +2578,13 @@
     "@directus/utils" "9.26.0"
     "@google-cloud/storage" "6.9.5"
 
-"@directus/storage-driver-local@10.0.13":
-  version "10.0.13"
-  resolved "https://registry.yarnpkg.com/@directus/storage-driver-local/-/storage-driver-local-10.0.13.tgz#6cee08b3d330957cb7825c1b2e9d67171b4548c0"
-  integrity sha512-CXCKPJnakifLFbvjOh44Xn4yBdQPeJmqt5BHhCuzK/BiCDZUFUc+XmVP3HUSOXaMIcmfScdCGxY6ncTQT0R7Wg==
+"@directus/storage-driver-local@10.0.14":
+  version "10.0.14"
+  resolved "https://registry.yarnpkg.com/@directus/storage-driver-local/-/storage-driver-local-10.0.14.tgz#4c4dab01e015dc87d1f8a15d39f5e398189b4fc2"
+  integrity sha512-+a7aRhucZQaaxMbDHra68revHICXUXGLJ/T4fcFjDtmnLEsE/v6sdXLPNZvSfcjUmqLiAOGPtydR+UBBRrZoFg==
   dependencies:
     "@directus/storage" "10.0.7"
-    "@directus/utils" "11.0.1"
+    "@directus/utils" "11.0.2"
 
 "@directus/storage-driver-local@9.26.0":
   version "9.26.0"
@@ -2593,17 +2594,17 @@
     "@directus/storage" "9.26.0"
     "@directus/utils" "9.26.0"
 
-"@directus/storage-driver-s3@10.0.13":
-  version "10.0.13"
-  resolved "https://registry.yarnpkg.com/@directus/storage-driver-s3/-/storage-driver-s3-10.0.13.tgz#15a353b39e45ea8782ea875cdb8a2a75e2e7fc53"
-  integrity sha512-MlAf4BvqJt2DLV9Eyf6E3r/45liu5cgCXq4nVewZkEAfUOut8smkmJnP318CiBuZOvoPYT32tMNhTMGcnoojFg==
+"@directus/storage-driver-s3@10.0.14":
+  version "10.0.14"
+  resolved "https://registry.yarnpkg.com/@directus/storage-driver-s3/-/storage-driver-s3-10.0.14.tgz#3e0c96c7ad9c7d42615c0d6c1d6dc0a42172f939"
+  integrity sha512-8Ik7u3zGWrdfoosJ9zxxtRmeJYvgDyFnSOYi2Qvde0gxhI6pseKDPHknqB0cuxUQJ11hyiVlHtzM6a2gSyDsIw==
   dependencies:
     "@aws-sdk/abort-controller" "3.329.0"
     "@aws-sdk/client-s3" "3.332.0"
     "@aws-sdk/lib-storage" "3.332.0"
     "@aws-sdk/node-http-handler" "3.344.0"
     "@directus/storage" "10.0.7"
-    "@directus/utils" "11.0.1"
+    "@directus/utils" "11.0.2"
 
 "@directus/storage-driver-s3@9.26.0":
   version "9.26.0"
@@ -2616,13 +2617,13 @@
     "@directus/storage" "9.26.0"
     "@directus/utils" "9.26.0"
 
-"@directus/storage-driver-supabase@1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@directus/storage-driver-supabase/-/storage-driver-supabase-1.0.5.tgz#c75988e0ccb42dbf553bd5cd0ea515ab211bc55e"
-  integrity sha512-jmciQP5ebsCKFoKKm1+4MxbX63yldutdcS987MhMxqznrsqZMb4Bdsp9hDGglvp+qm5INcomrD6iv2CJAhXOcg==
+"@directus/storage-driver-supabase@1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@directus/storage-driver-supabase/-/storage-driver-supabase-1.0.6.tgz#527cf3ba2d1a37d633aef0d64093ca0da54407b7"
+  integrity sha512-fwi3hB1O5XotgO5nLGmjGPDXRz3jnCcMhW9hrAvrO04qhAuCp4scmK07FG6jbrNn/oBTpjh0omDuE6kNn8+mkg==
   dependencies:
     "@directus/storage" "10.0.7"
-    "@directus/utils" "11.0.1"
+    "@directus/utils" "11.0.2"
     "@supabase/storage-js" "2.5.1"
     undici "5.22.1"
 
@@ -2636,10 +2637,10 @@
   resolved "https://registry.yarnpkg.com/@directus/storage/-/storage-9.26.0.tgz#93a476bd8ba08b510eb82df0de92c8e242b414ab"
   integrity sha512-BLjy9NEPd1DfqsAwpC/fKdwFbIfPbEulvU1nVMnRJZ8uipkExQwPMvwFw5gJjF4O9iRyQ1FVAkrZqmLM0m1yqA==
 
-"@directus/types@11.0.1":
-  version "11.0.1"
-  resolved "https://registry.yarnpkg.com/@directus/types/-/types-11.0.1.tgz#e7a6826d032b8707e36657dc77b8b58a79d8039b"
-  integrity sha512-cs0DsVH3hsFQ5SVbO7acFSNMHzRSWUpVsLQr3gQAMDievRHKqeRwA/6CCnHBPLxfrQ2gS1befPr+jRDyXqKkWw==
+"@directus/types@11.0.2":
+  version "11.0.2"
+  resolved "https://registry.yarnpkg.com/@directus/types/-/types-11.0.2.tgz#1ca4d1ef1c0014a3b4359ed8bf6247bad862ddad"
+  integrity sha512-vr42KGJtWxQbPxeEmXXYhQNc9W/5WHV9nKY1A3bSuOZoLS3l3HLBcQPmXa9JDqvfm8gLB6dvWT8zU9mPgqt5JA==
   dependencies:
     "@directus/constants" "11.0.1"
     "@directus/schema" "11.0.0"
@@ -2678,10 +2679,10 @@
     semver "7.5.0"
     undici "5.22.0"
 
-"@directus/utils@11.0.1":
-  version "11.0.1"
-  resolved "https://registry.yarnpkg.com/@directus/utils/-/utils-11.0.1.tgz#78c67e4ee1e2f2ddd59f4633471197a2d4cf5c3f"
-  integrity sha512-I1cpMf2fxh8Cv8XeyYUOXH//teeNyEZ3loqHBTIV0m8TlBxdIeWqND8Bqm1AFcep3r6Adolx3vCp/9OvUH0aBg==
+"@directus/utils@11.0.2":
+  version "11.0.2"
+  resolved "https://registry.yarnpkg.com/@directus/utils/-/utils-11.0.2.tgz#44b771736875b7cfbd0d4d4bf4872435fdfbd1ce"
+  integrity sha512-GXcMgZI61bQYeJlXyDC8gkZhXwFSZg7b5nbXfKR8MvhwK2w4jGkV7ybQUxKUsWsKxait0ixuxxgAoZrfqbHfYg==
   dependencies:
     "@directus/constants" "11.0.1"
     date-fns "2.30.0"
@@ -2706,13 +2707,13 @@
     tmp "0.2.1"
     vue "3.2.47"
 
-"@directus/validation@0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@directus/validation/-/validation-0.0.8.tgz#b78c7fd7b520b611d4cde6d523208202e2d5dd10"
-  integrity sha512-zVuALrsCppGFj/qWHWsquIn6jZ33EHafAyAYydFEtqbhGHPoNWq6gwDtpXGx86YGPW1RqByknTh4DbPUYjqt+A==
+"@directus/validation@0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@directus/validation/-/validation-0.0.9.tgz#bb07fc690840e2c456d4800a83005e9a883274da"
+  integrity sha512-YwiSE7HmFUb9hUycXzv+rCrInjKXRQ11uLCusiOrfm5YUgmkyufD5i5EB5tEmxfaectfGg0qC9vHb7VDgH9eig==
   dependencies:
     "@directus/errors" "0.2.0"
-    "@directus/utils" "11.0.1"
+    "@directus/utils" "11.0.2"
     joi "17.9.2"
 
 "@esbuild-kit/cjs-loader@^2.4.2":
@@ -5128,12 +5129,12 @@ directus-extension-vgrid-interface@^1.0.15:
     apexcharts "^3.35.0"
     papaparse "^5.3.2"
 
-directus@^10.7.0:
-  version "10.7.0"
-  resolved "https://registry.yarnpkg.com/directus/-/directus-10.7.0.tgz#166184d10d6e740bfc396d2613c7a0b905b4c2b2"
-  integrity sha512-iJVlCW6xAnmX1XmRiPobyk3DeFagIEKz0RMJ8o/XmfewVk0r5U1dC40DWBA0vWfwaSDaRnMn1LYFEF6DRJYlYA==
+directus@^10.8.0:
+  version "10.8.1"
+  resolved "https://registry.yarnpkg.com/directus/-/directus-10.8.1.tgz#999c33e2c8a49fa2c837ffd2252d8f0e0efecb63"
+  integrity sha512-8nazk6dSYLl6BLIdJ+p0hR9FY4u8CdUkN97EN4rXVN0HHxRw1dxqeOk04hxWKkzWYBsUoNLkPEenbnRIRYNzJg==
   dependencies:
-    "@directus/api" "14.0.0"
+    "@directus/api" "14.1.1"
     "@directus/update-check" "11.0.3"
 
 directus@^9.23.1:
@@ -5500,6 +5501,11 @@ eventemitter3@^4.0.4, eventemitter3@^4.0.7:
   version "4.0.7"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
   integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
+
+eventemitter3@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-5.0.1.tgz#53f5ffd0a492ac800721bb42c66b841de96423c4"
+  integrity sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==
 
 events@3.3.0, events@^3.0.0, events@^3.3.0:
   version "3.3.0"
@@ -7818,6 +7824,14 @@ p-queue@7.3.4:
   integrity sha512-esox8CWt0j9EZECFvkFl2WNPat8LN4t7WWeXq73D9ha0V96qPRufApZi4ZhPwXAln1uVVal429HVVKPa2X0yQg==
   dependencies:
     eventemitter3 "^4.0.7"
+    p-timeout "^5.0.2"
+
+p-queue@7.4.1:
+  version "7.4.1"
+  resolved "https://registry.yarnpkg.com/p-queue/-/p-queue-7.4.1.tgz#7f86f853048beca8272abdbb7cec1ed2afc0f265"
+  integrity sha512-vRpMXmIkYF2/1hLBKisKeVYJZ8S2tZ0zEAmIJgdVKP2nq0nh4qCdf8bgw+ZgKrkh71AOCaqzwbJJk1WtdcF3VA==
+  dependencies:
+    eventemitter3 "^5.0.1"
     p-timeout "^5.0.2"
 
 p-queue@^6.6.2:
