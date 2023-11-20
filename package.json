@@ -7,7 +7,8 @@
   "license": "MIT",
   "workspaces": [
     "packages/automation",
-    "packages/app"
+    "packages/app",
+    "packages/admin"
   ],
   "scripts": {
     "admin": "yarn workspace admin ",
@@ -26,12 +27,12 @@
     "prettier-format": "prettier --config .prettierrc 'packages/app/**/*.tsx' --write"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^6.7.4",
-    "@typescript-eslint/parser": "^6.7.4",
-    "eslint": "^8.51.0",
+    "@typescript-eslint/eslint-plugin": "^6.11.0",
+    "@typescript-eslint/parser": "^6.11.0",
+    "eslint": "^8.54.0",
     "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-prettier": "^5.0.0",
-    "prettier": "^3.0.3",
+    "eslint-plugin-prettier": "^5.0.1",
+    "prettier": "^3.1.0",
     "typescript": "^5.2.2"
   }
 }

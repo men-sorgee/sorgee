@@ -83,8 +83,8 @@
   "editor.formatOnSaveMode": "file", // required to format on save
   "files.autoSave": "onFocusChange", // optional but recommended
   "editor.codeActionsOnSave": {
-    "source.organizeImports.sortImports": true,
-    "source.fixAll.eslint": true
+    "source.organizeImports.sortImports": "explicit",
+    "source.fixAll.eslint": "explicit"
   },
   "[dockerfile]": {
     "editor.defaultFormatter": "ms-azuretools.vscode-docker"
