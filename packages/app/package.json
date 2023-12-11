@@ -76,7 +76,7 @@
     "server-only": "^0.0.1",
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",
-    "stripe": "^13.9.0",
+    "stripe": "^14.8.0",
     "styled-components": "^6.1.1",
     "swr": "2.2.4",
     "typeorm": "^0.3.17",
