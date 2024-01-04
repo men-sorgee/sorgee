@@ -79,7 +79,7 @@
     "stripe": "^13.9.0",
     "styled-components": "^6.1.1",
     "swr": "2.2.4",
-    "typeorm": "^0.3.17",
+    "typeorm": "^0.3.18",
     "web-vitals": "^3.5.0",
     "webpack": "5.89.0"
   },
